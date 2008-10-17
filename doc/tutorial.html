@@ -1,0 +1,78 @@
+<html>
+<head>
+	<title>Seed Tutorial : Standalone</title>
+	<style>
+body
+{
+	font-size: 10pt;
+	font-face: "Sans";
+	text-align: justify;
+}
+
+#header
+{
+	text-align: right;
+	font-size: 18pt;
+	width: 100%;
+	border-bottom: 1px solid #aaa;
+	
+}
+
+#subheader
+{
+	text-align: right;
+	font-size: 12pt;
+	width: 100%;
+}
+
+div.section
+{
+	font-size: 16pt;
+	font-weight: bold;
+	width: 100%;
+	border-bottom: 1px solid #ccc;
+	margin-bottom: 10px;
+}
+
+p
+{
+	margin-left: 10px;
+}
+
+pre
+{
+	margin-left: 20px;
+	padding-left: 5px;
+	border-left: 1px solid #ddd;
+}
+
+	</style>
+</head>
+<body>
+<div id="header">Seed Tutorial : Standalone</div>
+<div id="subheader">v.0.1</div>
+<div class="section">Introduction</div>
+<p>Seed, first and foremost, provides an easily embeddable Javascript engine to developers looking for a straightforward way to create extensible applications. It also provides bindings between <a href="#">GObject</a> and the <a href="#">WebKit</a> Javascript engine, giving new developers access to the power of the GNOME stack from a familiar and simple language, and allowing rapid prototyping of applications for hardened GNOME developers.</p>
+<p>This tutorial begins with a few brief examples, and then dives right in, following the development of a simple Seed program, from beginning to end. By the end of the tutorial, you'll have your very own minimalist audio player, as well as a summary knowledge of the use of Seed to build Gtk+ applications.</p>
+<div class="section">Beginning Seed</div>
+<p>It makes sense to start our exploration with a program you're probably quite familiar with:</p>
+<pre>
+#!/usr/local/bin/seed
+
+Seed.print("Hello, world!");
+</pre>
+<p>If you were to make this script executable (<code>chmod +x hello.js</code>), and run it, you'd hopefully see the following, just as expected (if you don't, for some reason, make sure you have the latest version of Seed installed, then <a href="#">email us</a>):</p>
+<pre>
+Hello, world!
+</pre>
+<p>Make sure that you include the header (<code>#!/usr/local/seed</code>) at the top of every Seed program you write; I'm only going to include it when listing a whole file, from now on. This is what tells the shell that it should run the program using <code>seed</code>, and that <code>seed</code> is installed to <code>/usr/local/bin</code> (you'll recognize this if you've used another scripting language, such as Python).
+<p>Variables in Javascript are rather interesting, in that they are not given any <em>type</em>, and conversion between different kinds of values is automatic and painless. Thus, the following code is perfectly valid:</p>
+<pre>
+my_name = Seed.readline("Your name? ");
+my_age = 25;
+Seed.print(my_name + " is " + my_age);
+</pre>
+<div class="section">Our Media Player</div>
+<p></p>
+</body>
+</html>
