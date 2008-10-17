@@ -530,6 +530,7 @@ static bool seed_gobject_set_property(JSContextRef context,
 		GParamSpec * spec = 0;
 		GObject * obj;
 		GValue gval = {0};
+		GType type;
 		gchar * cproperty_name;
 		int length;
 
@@ -578,9 +579,12 @@ static bool seed_gobject_set_property(JSContextRef context,
 		}
 	
 		g_value_unset(&gval);
+		
+		if (g_type_is_a(spec->value_type, G_TYPE_ENUM))
+			type = G_TYPE_INT;
 
-		if (!(seed_gvalue_from_seed_value(value, spec->value_type, &gval) &&
-			  g_type_is_a(G_VALUE_TYPE(&gval), spec->value_type)))
+		if (!(seed_gvalue_from_seed_value(value, type, &gval) &&
+			  g_type_is_a(G_VALUE_TYPE(&gval), type)))
 		{
 				gchar * mes = g_strdup_printf("Not able to set property %s on object of type %s."
 											  " Expected type: %s. \n", cproperty_name, 
