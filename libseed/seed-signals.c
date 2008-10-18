@@ -65,7 +65,7 @@ static void seed_add_signal_to_object(JSObjectRef object_ref,
 	
 	modified_signal_name = 
 		g_strconcat("signal_", 
-			    my_signal_name, 0);
+			    my_signal_name, NULL);
 	
 	seed_value_set_property(object_ref, 
 				modified_signal_name,

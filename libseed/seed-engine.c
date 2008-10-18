@@ -224,7 +224,7 @@ seed_gobject_method_invoked (JSContextRef ctx,
 				else
 				{
 						g_error("GI_DIRECTION_IN argument: %d"
-								". In function %s \n",
+								". In function %s \n",i,
 								g_base_info_get_name(
 										(GIBaseInfo *) info));
 				}
@@ -583,11 +583,12 @@ static bool seed_gobject_set_property(JSContextRef context,
 		if (g_type_is_a(spec->value_type, G_TYPE_ENUM))
 			type = G_TYPE_INT;
 
-		if (!(seed_gvalue_from_seed_value(value, type, &gval) &&
-			  g_type_is_a(G_VALUE_TYPE(&gval), type)))
+		if (!seed_gvalue_from_seed_value(value, type, &gval))
 		{
-				gchar * mes = g_strdup_printf("Not able to set property %s on object of type %s."
-											  " Expected type: %s. \n", cproperty_name, 
+				gchar * mes = g_strdup_printf("Not able to set property %s"
+											  "on object of type %s."
+											  " Expected type: %s. \n",
+											  cproperty_name, 
 											  g_type_name(G_OBJECT_TYPE(obj)),
 											  g_type_name(spec->value_type));
 				seed_make_exception(exception, "InvalidPropertyValue", mes);
