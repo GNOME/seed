@@ -41,5 +41,6 @@ JSObjectRef seed_gobject_get_prototype_for_gtype(GType type);
 JSClassRef seed_gobject_get_class_for_gtype(GType type);
 
 JSValueRef seed_locale_string_to_seed_value(char * str);
+void seed_gobject_define_property_from_function_info(GIFunctionInfo *info, JSObjectRef object);
 
 #endif

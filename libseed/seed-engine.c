@@ -264,7 +264,7 @@ seed_gobject_method_invoked (JSContextRef ctx,
 		return retval_ref;
 }
 
-static void seed_gobject_define_property_from_function_info(GIFunctionInfo *info, JSObjectRef object)
+void seed_gobject_define_property_from_function_info(GIFunctionInfo *info, JSObjectRef object)
 {
 		GIFunctionInfoFlags flags;
 		int n_args, i;

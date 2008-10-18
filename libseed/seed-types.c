@@ -68,8 +68,9 @@ static SeedValue seed_wrap_object(GObject * object)
 		SeedValue user_data;
 		SeedValue js_ref;
 		JSClassRef class;
-		GType type;
+		GType type, *interfaces;
 		JSValueRef prototype;
+		guint i, n;
 	
 
 		type = G_OBJECT_TYPE(object);
@@ -88,10 +89,32 @@ static SeedValue seed_wrap_object(GObject * object)
 				class = seed_gobject_get_class_for_gtype(type);
 		}
 
-
 		prototype = seed_gobject_get_prototype_for_gtype(type);
 		js_ref = JSObjectMake(eng->context, class, object);
-		JSObjectSetPrototype(eng->context, (JSObjectRef)js_ref, prototype);
+		if (prototype)
+				JSObjectSetPrototype(eng->context, 
+									 (JSObjectRef)js_ref, prototype);
+		else
+		{
+				interfaces = g_type_interfaces(G_OBJECT_TYPE(object), &n);
+				for (i = 0; i < n; i++)
+				{
+						GIFunctionInfo * function;
+						GIBaseInfo * interface;
+						gint n_functions, k;
+						
+						interface = g_irepository_find_by_gtype(0,
+																interfaces[i]);
+						
+						n_functions = g_interface_info_get_n_methods((GIInterfaceInfo*)interface);
+						for (k = 0; k < n_functions; k++)
+						{
+								function = g_interface_info_get_method((GIInterfaceInfo*)interface, k);
+								seed_gobject_define_property_from_function_info(function,
+																				(JSObjectRef)js_ref);
+						}
+				}
+		}
 
 		// Is this going to work? g_free seems wrong, don't we need some
 		// variety of finalize. This is a pointer declared on the stack anyway.
@@ -106,10 +129,6 @@ static SeedValue seed_wrap_object(GObject * object)
 		   0); */
 	
 		return js_ref;
-	
-	
-	
-	
 }
 
 /* Should update to try and use glib type conversion */
@@ -193,7 +212,8 @@ GType seed_gi_type_to_gtype(GITypeInfo *type_info, GITypeTag tag)
 
 				interface = g_type_info_get_interface(type_info);
 				interface_type = g_base_info_get_type(interface);
-				if (interface_type == GI_INFO_TYPE_OBJECT)
+				if (interface_type == GI_INFO_TYPE_OBJECT || 
+					interface_type == GI_INFO_TYPE_INTERFACE)
 						return G_TYPE_OBJECT;
 				else if (interface_type == GI_INFO_TYPE_ENUM)
 						return G_TYPE_LONG;
@@ -288,7 +308,8 @@ gboolean seed_gi_make_argument(SeedValue value,
 		
 				arg->v_pointer = NULL;
 		
-				if (interface_type == GI_INFO_TYPE_OBJECT)
+				if (interface_type == GI_INFO_TYPE_OBJECT
+					|| interface_type == GI_INFO_TYPE_INTERFACE)
 				{
 						if (!G_VALUE_HOLDS_OBJECT(&gval))
 						{
@@ -399,8 +420,14 @@ JSValueRef seed_gi_argument_make_js(GArgument * arg, GITypeInfo *type_info)
 				interface_type = g_base_info_get_type(interface);
 		
 		
-				if (interface_type == GI_INFO_TYPE_OBJECT)
+				if (interface_type == GI_INFO_TYPE_OBJECT ||
+					interface_type == GI_INFO_TYPE_INTERFACE)
 				{
+						if (arg->v_pointer == 0)
+						{
+								g_value_unset(&gval);
+								return JSValueMakeNull(eng->context);
+						}
 						g_value_set_object(&gval, arg->v_pointer);
 						break;
 				}
@@ -561,8 +588,8 @@ SeedValue seed_value_from_gvalue(GValue * gval)
 				else
 						val = seed_wrap_object(gobject);
 
-
-				g_object_unref(gobject);
+				if (gobject)
+					g_object_unref(gobject);
 		
 				return val;
 		}
