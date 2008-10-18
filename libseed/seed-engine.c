@@ -571,7 +571,7 @@ static bool seed_gobject_set_property(JSContextRef context,
 				{
 					//gchar * mes = g_strdup_printf("No such property: %s on object of type %s \n",
 					//							  cproperty_name, g_type_name(G_OBJECT_TYPE(obj)));
-						//						seed_make_exception(exception, "InvalidProperty", mes);
+						//						seed_make_exception(exception, "InvalidProperty", mes)
 						//g_free(mes);
 						g_free(cproperty_name);
 						return 0;
