@@ -453,15 +453,14 @@ static void seed_gobject_initialize(JSContextRef ctx,
 
 		base = g_irepository_find_by_gtype(g_irepository_get_default(),
 										   G_OBJECT_TYPE(gobject));
+
+		seed_add_signals_to_object(object, gobject);
 		if (!base)
 		{
-				g_warning("No GIBaseInfo for: %s \n",
-						  G_OBJECT_TYPE_NAME(gobject));
+				g_value_unset(&gval);
 				return;
 		}
 	
-		seed_add_signals_to_object(object, gobject);
-
 		g_assert(g_base_info_get_type(base) == GI_INFO_TYPE_OBJECT);
 	
 		g_value_unset(&gval);
