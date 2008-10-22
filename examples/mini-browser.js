@@ -3,6 +3,8 @@
 Seed.import_namespace("Gtk");
 Seed.import_namespace("WebKit");
 
+var tabs;
+
 function quit()
 {
 	Gtk.main_quit();
@@ -43,10 +45,13 @@ function browse(url_entry)
 	this.open(url_entry.text);
 }
 
-function new_tab(browser_view, browser_frame)
+function new_tab(browser_view, browser_frame, new_frame)
 {
-	//create_tab(tabs
-	//Seed.print("Do shit with: " + browser_frame.get_name());
+	//new_frame = new WebKit.WebView();
+	//Seed.print(browser_view);
+	//Seed.print(browser_frame);
+	//Seed.print(new_frame);
+	new_frame = this.create_tab("");
 	return true;
 }
 
@@ -54,6 +59,14 @@ function url_changed(browser_view, browser_frame)
 {
 	this.text = browser_frame.get_uri();
 	return true;
+}
+
+function close_tab(button)
+{
+    if(tabs.get_n_pages() > 1)
+    {
+        tabs.remove_page(tabs.page_num(this));
+    }
 }
 
 function create_toolbar(browser_view)
@@ -79,7 +92,7 @@ function create_toolbar(browser_view)
 	return toolbar;
 }
 
-function create_tab()
+function create_tab(loc)
 {
 	var tab = new Gtk.VBox();
 	
@@ -92,8 +105,8 @@ function create_tab()
 	browser_view.set_scroll_adjustments(null,null);
 	browser_view.signal_title_changed.connect(title_changed, browser_title);
 	browser_view.signal_load_committed.connect(url_changed, url_entry);
-	browser_view.signal_load_started.connect(new_tab, this);
-	browser_view.open("http://www.google.com/");
+	//browser_view.signal_create_web_view.connect(new_tab, this);
+	browser_view.open(loc);
 	
 	var toolbar = create_toolbar(browser_view);
 	toolbar.pack_start(url_entry, true, true);
@@ -101,18 +114,30 @@ function create_tab()
 	tab.pack_start(toolbar);
 	tab.pack_start(browser_view, true, true);
 	
-	this.append_page(tab, browser_title);
+	var close_button = new Gtk.Button();
+	close_button.set_image(new Gtk.Image({"stock": "gtk-close", "icon-size": Gtk.IconSize.menu}));
+	close_button.signal_clicked.connect(close_tab, tab);
+	close_button.set_relief(Gtk.ReliefStyle.none);
+	
+	var tab_header = new Gtk.HBox();
+	tab_header.pack_start(browser_title);
+	tab_header.pack_start(close_button);
+	tab_header.show_all();
+	
+	this.append_page(tab, tab_header);
 	this.set_tab_reorderable(tab, true);
+	this.show_all();
 }
 
 function create_ui()
 {
 	var vbox = new Gtk.VBox();
-	var tabs = new Gtk.Notebook();
+	
+	tabs = new Gtk.Notebook();
 	tabs.create_tab = create_tab;
 	
-	tabs.create_tab();
-	tabs.create_tab();
+	tabs.create_tab("http://www.reddit.com/");
+	tabs.create_tab("http://www.google.com/");
 	vbox.pack_start(tabs, true, true);
 	
 	return vbox;
@@ -121,9 +146,8 @@ function create_ui()
 function browser_init()
 {
 	Gtk.init(null, null);
-	var window = new Gtk.Window();
+	var window = new Gtk.Window({"title":"Browser"});
 	window.signal_hide.connect(quit);
-	window.title = "Browser";
 	window.resize(800,800);
 	
 	window.add(create_ui());
