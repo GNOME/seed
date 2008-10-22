@@ -103,7 +103,7 @@ seed_readline(JSContextRef ctx,
 	if(str && *str)
 	{
 		add_history(str);
-		valstr = seed_locale_string_to_seed_value(str);
+		valstr = seed_value_from_string(str);
 		free(str);
 	}
 	

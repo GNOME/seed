@@ -48,7 +48,7 @@ for f in os.listdir("."):
 		run_err = "".join(err.readlines()).rstrip()
 	
 		if not re.match(test_out,run_out):
-			failed.append([f,test_out,run_out,0])
+			failed.append([f,test_out,run_out,0,run_err])
 			sys.stdout.write("x")
 		elif not re.match(test_err,run_err):
 			failed.append([f,test_err,run_err,1])
@@ -59,10 +59,10 @@ for f in os.listdir("."):
 		sys.stdout.flush()
 print
 
-revnof = os.popen("bzr revno");
+revnof = os.popen("svn info | grep \"Revision\"")
 revno = "".join(revnof.readlines()).rstrip()
 
-print "libseed test run (rev. %s):" % revno
+print "libseed test run (%s):" % revno
 print "%d tests passed; %d tests failed.\n" % (len(passed), len(failed))
 for fail in failed:
 	print "-------------FAILED TEST---------------"
@@ -73,5 +73,6 @@ for fail in failed:
 	else:
 		print "  Expected Output:\t" + fail[1]
 		print "  Actual Output:\t" + fail[2]
+		print "  STDERR:\t\t" + fail[4]
 if len(failed):
 	print "---------------------------------------"	

@@ -789,16 +789,6 @@ JSClassDefinition gobject_constructor_def[] = {
 		NULL  /* Convert To Type */
 };
 
-JSValueRef seed_locale_string_to_seed_value(char * str)
-{
-		// TODO: lots of these functions, and all in their own file!
-		JSStringRef jsstr = JSStringCreateWithUTF8CString(str);
-		JSValueRef valstr = JSValueMakeString(eng->context, jsstr);
-		JSStringRelease(jsstr);
-	
-		return valstr;
-}
-
 void seed_create_function(char * name, gpointer func, JSObjectRef obj)
 {
 		JSObjectRef oref;
