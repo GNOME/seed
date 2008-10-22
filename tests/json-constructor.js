@@ -4,7 +4,6 @@
 // STDOUT:JSON Win!
 // STDERR:
 
-Seed.import_namespace("Gdk");
 Seed.import_namespace("Gtk");
 Seed.import_namespace("GLib");
 
