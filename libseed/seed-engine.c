@@ -152,6 +152,27 @@ seed_gobject_constructor_invoked (JSContextRef ctx,
 		return ret;
 }
 
+static JSValueRef
+seed_gobject_equals (JSContextRef ctx,
+							JSObjectRef function,
+							JSObjectRef this_object,
+							size_t argumentCount,
+							const JSValueRef arguments[],
+							JSValueRef * exception)
+{
+	GObject * this, * that;
+	GValue gval = {0};
+	
+	g_assert(argumentCount == 1);
+
+	this = seed_value_to_object((JSValueRef)this_object);
+	that = seed_value_to_object(arguments[0]);
+	
+	if (this == that)
+		return seed_value_from_boolean(0);
+	return seed_value_from_boolean(1);
+}
+
 static  JSValueRef 
 seed_gobject_method_invoked (JSContextRef ctx,
 							 JSObjectRef function, 
@@ -729,13 +750,18 @@ seed_gi_import_namespace(JSContextRef ctx,
 		return 0;
 }
 
+JSStaticFunction gobject_static_funcs[] = {
+	{"equals", seed_gobject_equals, 0},
+	{0, 0, 0}
+};
+
 JSClassDefinition gobject_def[] = {
 		0, /* Version, always 0 */
 		kJSClassAttributeNoAutomaticPrototype, /* JSClassAttributes */
 		"gobject", /* Class Name */
 		NULL, /* Parent Class */
 		NULL, /* Static Values */
-		NULL, /* Static Functions */
+	    gobject_static_funcs, /* Static Functions */
 		seed_gobject_initialize,  /* Initialize */
 		seed_gobject_finalize, /* Finalize */
 		NULL, /* Has Property */
@@ -768,7 +794,7 @@ JSClassDefinition gobject_method_def[] = {
 		NULL, /* Has Instance */
 		NULL  /* Convert To Type */
 };
-
+ 
 JSClassDefinition gobject_constructor_def[] = {
 		0, /* Version, always 0 */
 		0,
