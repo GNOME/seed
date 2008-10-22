@@ -78,6 +78,5 @@ JSValueRef	seed_value_from_string(gchar * val);
 GObject *	seed_value_to_object(JSValueRef val);
 JSValueRef	seed_value_from_object(GObject * val);
 
-
 #endif
 
