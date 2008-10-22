@@ -41,7 +41,6 @@ struct _SeedEngine
 #include "seed-types.h"
 #include "seed-signals.h"
 #include "seed-builtins.h"
-#include "seed-utils.h"
 #include "seed-structs.h"
 
 #endif

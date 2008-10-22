@@ -616,10 +616,10 @@ seed_gi_import_namespace(JSContextRef ctx,
 		JSObjectRef namespace_ref;
 		int n,i;
 	
-		namespace = seed_value_to_locale_string(arguments[0]);
+		namespace = seed_value_to_string(arguments[0]);
 		if (argumentCount == 2)
 		{
-				version = seed_value_to_locale_string(arguments[1]);
+				version = seed_value_to_string(arguments[1]);
 		}
 	
 		if(!g_irepository_require (g_irepository_get_default (), namespace,
@@ -886,7 +886,7 @@ gchar * seed_exception_get_name(JSValueRef e)
 				return 0;
 
 		name = seed_value_get_property(e, "name");
-		return seed_value_to_locale_string(name);
+		return seed_value_to_string(name);
 }
 
 gchar * seed_exception_get_message(JSValueRef e)
@@ -897,5 +897,5 @@ gchar * seed_exception_get_message(JSValueRef e)
 				return 0;
 
 		name = seed_value_get_property(e, "message");
-		return seed_value_to_locale_string(name);
+		return seed_value_to_string(name);
 }

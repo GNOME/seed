@@ -23,7 +23,6 @@
 
 #include "seed-private.h"
 
-gchar * seed_value_to_locale_string(SeedValue val);
 SeedValue seed_value_from_gvalue(GValue * gval);
 SeedValue seed_value_get_property(SeedValue val,
 				  const char * name);
@@ -39,6 +38,46 @@ gboolean seed_gi_make_argument(SeedValue value, GITypeInfo *type_info,
 JSValueRef seed_gi_argument_make_js(GArgument * arg, GITypeInfo *type_info);
 
 GType seed_gi_type_to_gtype(GITypeInfo *type_info, GITypeTag tag);
+
+gboolean	seed_value_to_boolean(JSValueRef val);
+JSValueRef	seed_value_from_boolean(gboolean val);
+
+guint		seed_value_to_uint(JSValueRef val);
+JSValueRef	seed_value_from_uint(guint val);
+
+gint		seed_value_to_int(JSValueRef val);
+JSValueRef	seed_value_from_int(gint val);
+
+gchar		seed_value_to_char(JSValueRef val);
+JSValueRef	seed_value_from_char(gchar val);
+
+guchar		seed_value_to_uchar(JSValueRef val);
+JSValueRef	seed_value_from_uchar(guchar val);
+
+glong		seed_value_to_long(JSValueRef val);
+JSValueRef	seed_value_from_long(glong val);
+
+gulong		seed_value_to_ulong(JSValueRef val);
+JSValueRef	seed_value_from_ulong(gulong val);
+
+gint64		seed_value_to_int64(JSValueRef val);
+JSValueRef	seed_value_from_int64(gint64 val);
+
+guint64		seed_value_to_uint64(JSValueRef val);
+JSValueRef	seed_value_from_uint64(guint64 val);
+
+gfloat		seed_value_to_float(JSValueRef val);
+JSValueRef	seed_value_from_float(gfloat val);
+
+gdouble		seed_value_to_double(JSValueRef val);
+JSValueRef	seed_value_from_double(gdouble val);
+
+gchar *		seed_value_to_string(JSValueRef val);
+JSValueRef	seed_value_from_string(gchar * val);
+
+GObject *	seed_value_to_object(JSValueRef val);
+JSValueRef	seed_value_from_object(GObject * val);
+
 
 #endif
 

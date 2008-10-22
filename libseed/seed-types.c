@@ -19,11 +19,239 @@
 
 
 #include "seed-private.h"
+#include <string.h>
 
 JSClassRef gobject_class;
 JSClassRef gobject_method_class;
 JSClassRef gobject_constructor_class;
 SeedEngine * eng;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+gboolean	seed_value_to_boolean(JSValueRef val)
+{
+}
+
+JSValueRef	seed_value_from_boolean(gboolean val)
+{
+}
+
+guint		seed_value_to_uint(JSValueRef val)
+{
+}
+
+JSValueRef	seed_value_from_uint(guint val)
+{
+}
+
+gint		seed_value_to_int(JSValueRef val)
+{
+}
+
+JSValueRef	seed_value_from_int(gint val)
+{
+}
+
+gchar		seed_value_to_char(JSValueRef val)
+{
+}
+
+JSValueRef	seed_value_from_char(gchar val)
+{
+}
+
+guchar		seed_value_to_uchar(JSValueRef val)
+{
+}
+
+JSValueRef	seed_value_from_uchar(guchar val)
+{
+}
+
+glong		seed_value_to_long(JSValueRef val)
+{
+}
+
+JSValueRef	seed_value_from_long(glong val)
+{
+}
+
+gulong		seed_value_to_ulong(JSValueRef val)
+{
+}
+
+JSValueRef	seed_value_from_ulong(gulong val)
+{
+}
+
+gint64		seed_value_to_int64(JSValueRef val)
+{
+}
+
+JSValueRef	seed_value_from_int64(gint64 val)
+{
+}
+
+guint64		seed_value_to_uint64(JSValueRef val)
+{
+}
+
+JSValueRef	seed_value_from_uint64(guint64 val)
+{
+}
+
+gfloat		seed_value_to_float(JSValueRef val)
+{
+}
+
+JSValueRef	seed_value_from_float(gfloat val)
+{
+}
+
+gdouble		seed_value_to_double(JSValueRef val)
+{
+}
+
+JSValueRef	seed_value_from_double(gdouble val)
+{
+}
+
+gchar *		seed_value_to_string(JSValueRef val)
+{
+	JSStringRef jsstr;
+	JSValueRef func, str;
+	gchar * buf;
+	gint length;
+	
+	if(val == NULL)
+		return NULL;	
+	
+	if(JSValueIsBoolean(eng->context, val) || JSValueIsNumber(eng->context, val))
+	{
+		buf = g_strdup_printf("%f", JSValueToNumber(eng->context, val, NULL));
+	}
+	else if(JSValueIsNull(eng->context, val) || JSValueIsUndefined(eng->context, val))
+	{
+		buf = strdup("[null]");
+	}
+	else
+	{
+		if(!JSValueIsString(eng->context, val)) // In this case, it's an object
+		{
+			func = seed_value_get_property(val, "toString");
+			str = JSObjectCallAsFunction(eng->context, (JSObjectRef)func, (JSObjectRef)val, 0, NULL, NULL);
+		}
+		
+		jsstr = JSValueToStringCopy(eng->context, val, NULL);
+		length = JSStringGetMaximumUTF8CStringSize(jsstr);
+		
+		buf = malloc(length * sizeof(gchar));
+		JSStringGetUTF8CString(jsstr, buf, length);
+		JSStringRelease(jsstr);
+	}
+	
+	return buf;
+}
+
+JSValueRef	seed_value_from_string(gchar * val)
+{
+}
+
+GObject *	seed_value_to_object(JSValueRef val)
+{
+}
+
+JSValueRef	seed_value_from_object(GObject * val)
+{
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 static void seed_protect_object(SeedValue val)
 {
@@ -129,31 +357,6 @@ static SeedValue seed_wrap_object(GObject * object)
 		   0); */
 	
 		return js_ref;
-}
-
-/* Should update to try and use glib type conversion */
-gchar * seed_value_to_locale_string (SeedValue val)
-{
-		JSStringRef jsstr;
-		gint length;
-		gchar * ret;
-	
-		g_return_if_fail(val);
-
-		if (!JSValueIsString(eng->context, val))
-				return 0;
-
-	
-		jsstr = JSValueToStringCopy(eng->context, val, NULL);
-	
-		length = JSStringGetMaximumUTF8CStringSize(jsstr);
-		ret = malloc(length * sizeof(gchar));
-
-		JSStringGetUTF8CString(jsstr, ret, length);
-
-		JSStringRelease(jsstr);
-	
-		return ret;
 }
 
 GType seed_gi_type_to_gtype(GITypeInfo *type_info, GITypeTag tag)
@@ -756,7 +959,7 @@ gboolean seed_gvalue_from_seed_value(SeedValue val,
 				}
 				case kJSTypeString:
 				{
-						gchar * cv = seed_value_to_locale_string(val);
+						gchar * cv = seed_value_to_string(val);
 
 						g_value_init(ret, G_TYPE_STRING);
 						g_value_take_string(ret, cv);
