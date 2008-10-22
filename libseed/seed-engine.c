@@ -169,8 +169,8 @@ seed_gobject_equals (JSContextRef ctx,
 	that = seed_value_to_object(arguments[0]);
 	
 	if (this == that)
-		return seed_value_from_boolean(0);
-	return seed_value_from_boolean(1);
+		return seed_value_from_boolean(1);
+	return seed_value_from_boolean(0);
 }
 
 static  JSValueRef 
