@@ -602,6 +602,8 @@ static bool seed_gobject_set_property(JSContextRef context,
 		
 		if (g_type_is_a(spec->value_type, G_TYPE_ENUM))
 			type = G_TYPE_INT;
+		else
+			type = spec->value_type;
 
 		if (!seed_gvalue_from_seed_value(value, type, &gval))
 		{
