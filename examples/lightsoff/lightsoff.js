@@ -1,5 +1,4 @@
 #!/usr/local/bin/seed
-
 Seed.import_namespace("Gtk");
 
 image_off = new Gtk.Image({"file": "./tim-off.svg"});
@@ -133,6 +132,7 @@ function flip_color(i, j)
 Gtk.init(null, null);
 
 var window = new Gtk.Window({"title": "Lights Off"});
+window.resizable = false;
 window.signal_hide.connect(Gtk.main_quit);
 window.add(create_board());
 window.show_all();
