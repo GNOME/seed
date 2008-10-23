@@ -5,7 +5,7 @@ image_off = new Gtk.Image({"file": "./tim-off.svg"});
 image_on = new Gtk.Image({"file": "./tim-on.svg"});
 
 /* SxS size*/
-var size = 10;
+var size = 20;
 var wincount = 0;
 
 function create_board()
@@ -84,7 +84,7 @@ function button_clicked( button )
 /* simulate random clicks to generate a random but solvable puzzle */
 function random_clicks()
 {
-	var count = Math.round(20 * Math.random());
+	var count = Math.round(size*5* Math.random());
 
 	var sym = Math.floor(3*Math.random());
 
