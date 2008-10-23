@@ -28,7 +28,7 @@ function create_board()
 		    buttons[i][j].set_relief(Gtk.ReliefStyle.none);
 		    buttons[i][j].can_focus = false;
 		
-		    buttons[i][j].signal_clicked.connect(buttoon, buttons[i][j]);
+		    buttons[i][j].signal_clicked.connect(button_clicked, buttons[i][j]);
 		    table.attach_defaults(buttons[i][j], j, j+1, i, i+1);
 	    }
     }
@@ -70,14 +70,14 @@ function do_click(x , y)
 	flip_color(x,y);
 }
 
-function buttoon( button )
+function button_clicked( button )
 {
 	do_click(this.x, this.y);
 
 	if ( wincount == 0 )
 	{
 		Seed.print("GLORIOUS VICTORY");
-		exit(0);
+		initialize_game();
 	}
 }
 
