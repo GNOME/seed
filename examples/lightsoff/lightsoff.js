@@ -5,7 +5,7 @@ image_off = new Gtk.Image({"file": "./tim-off.svg"});
 image_on = new Gtk.Image({"file": "./tim-on.svg"});
 
 /* SxS size*/
-var size = 5;
+var size = 10;
 var wincount = 0;
 
 function create_board()
@@ -90,22 +90,22 @@ function random_clicks()
 
 	for (q = 0; q < count + 5; ++q)
 	{
-	    i = Math.round(4 * Math.random());
-	    j = Math.round(4 * Math.random());
+	    i = Math.round((size-1) * Math.random());
+	    j = Math.round((size-1) * Math.random());
 	    
 	    do_click(i, j);
 	    
 	    if (sym == 0)
 	    {
-		    do_click(Math.abs(i-4), j);
+		do_click(Math.abs(i-(size-1)), j);
 	    }
 	    else if (sym == 1)
 	    {
-		    do_click(Math.abs(i-4), Math.abs(j-4));
+		do_click(Math.abs(i-(size-1)), Math.abs(j-(size-1)));
 	    }
 	    else
 	    {
-		    do_click(i,Math.abs(j-4));
+		do_click(i,Math.abs(j-(size-1)));
 	    }
 	}
 	//do it again if you won already
