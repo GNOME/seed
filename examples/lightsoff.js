@@ -74,14 +74,32 @@ function buttoon( button )
 function random_clicks()
 {
 	var count = Math.round(20 * Math.random());
-	for ( q = 0; q < count; ++q)
+
+	var sym = Math.floor(3*Math.random());
+
+	for ( q = 0; q < count+5; ++q)
 	{
-		i = Math.round(4 * Math.random());
-		j = Math.round(4 * Math.random());
-		do_click(i, j);
+
+	  	    
+	    i = Math.round(4 * Math.random());
+	    j = Math.round(4 * Math.random());
+	    do_click(i, j);
+	    if (sym == 0)
+	    {
+		    do_click(Math.abs(i-4), j);
+	    }
+	    else if (sym ==1)
+	    {
+		    do_click(Math.abs(i-4), Math.abs(j-4));
+	    }
+	    else
+	    {
+		    do_click(i,Math.abs(j-4));
+	    }
+	    
 	}
 	//do it again if you won already
-	if ( wincount == size * size)
+	if ( wincount == 0)
 		random_clicks();
 }
 
