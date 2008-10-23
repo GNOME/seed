@@ -131,8 +131,7 @@ function flip_color(i, j)
 
 Gtk.init(null, null);
 
-var window = new Gtk.Window({"title": "Lights Off"});
-window.resizable = false;
+var window = new Gtk.Window({"title": "Lights Off", "resizable" : false});
 window.signal_hide.connect(Gtk.main_quit);
 window.add(create_board());
 window.show_all();
