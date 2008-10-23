@@ -88,7 +88,7 @@ function random_clicks()
 {
 	var count = Math.round(size*5* Math.random());
 
-	var sym = Math.floor(3*Math.random(level));
+	var sym = Math.floor(3*Math.random());
 
 	for (q = 0; q < count + 5; ++q)
 	{
