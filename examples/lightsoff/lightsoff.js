@@ -7,42 +7,55 @@ image_on = new Gtk.Image({"file": "./tim-on.svg"});
 
 /* SxS size*/
 var size = 5;
-
-Gtk.init(null, null);
-var window = new Gtk.Window({"title": "Lights Off"});
-window.signal_hide.connect(Gtk.main_quit);
-
 var wincount = 0;
 
-var table = new Gtk.Table();
-table.resize(size,size);
-
-window.add(table);
-
-var buttons = new Array(size);
-
-for (i = 0; i < size; ++i)
+function create_board()
 {
-	buttons[i] = new Array(size);
-	for (j = 0; j < size; ++j)
-	{
-		buttons[i][j] = new Gtk.Button();
-		buttons[i][j].lit = false;
-		// everything starts out black
-	
-		buttons[i][j].x = i;
-		buttons[i][j].y = j;
+    var table = new Gtk.Table();
+    table.resize(size,size);
+    
+    buttons = new Array(size);
 
-		buttons[i][j].set_image(new Gtk.Image({"pixbuf": image_off.pixbuf}));
-		buttons[i][j].set_relief(Gtk.ReliefStyle.none);
-		buttons[i][j].can_focus = false;
+    for (i = 0; i < size; ++i)
+    {
+	    buttons[i] = new Array(size);
+	    for (j = 0; j < size; ++j)
+	    {
+		    buttons[i][j] = new Gtk.Button();
+	
+		    buttons[i][j].x = i;
+		    buttons[i][j].y = j;
+
+		    buttons[i][j].set_relief(Gtk.ReliefStyle.none);
+		    buttons[i][j].can_focus = false;
 		
-		buttons[i][j].signal_clicked.connect(buttoon, buttons[i][j]);
-		table.attach_defaults(buttons[i][j], j, j+1, i, i+1);
-	}
+		    buttons[i][j].signal_clicked.connect(buttoon, buttons[i][j]);
+		    table.attach_defaults(buttons[i][j], j, j+1, i, i+1);
+	    }
+    }
+    
+    return table;
 }
-/* generate random puzzle */ 
-random_clicks();
+
+function clear_board()
+{
+    for(i = 0; i < size; ++i)
+    {
+        for(j = 0; j < size; ++j)
+        {
+            buttons[i][j].lit = false;
+            buttons[i][j].set_image(new Gtk.Image({"pixbuf": image_off.pixbuf}));
+        }
+    }
+}
+
+function initialize_game()
+{
+    wincount = 0;
+    
+    clear_board();
+    random_clicks(); // generate random puzzle
+}
 
 function do_click(x , y)
 {
@@ -67,7 +80,6 @@ function buttoon( button )
 		Seed.print("GLORIOUS VICTORY");
 		exit(0);
 	}
-		
 }
 
 /* simulate random clicks to generate a random but solvable puzzle */
@@ -77,18 +89,18 @@ function random_clicks()
 
 	var sym = Math.floor(3*Math.random());
 
-	for ( q = 0; q < count+5; ++q)
+	for (q = 0; q < count + 5; ++q)
 	{
-
-	  	    
 	    i = Math.round(4 * Math.random());
 	    j = Math.round(4 * Math.random());
+	    
 	    do_click(i, j);
+	    
 	    if (sym == 0)
 	    {
 		    do_click(Math.abs(i-4), j);
 	    }
-	    else if (sym ==1)
+	    else if (sym == 1)
 	    {
 		    do_click(Math.abs(i-4), Math.abs(j-4));
 	    }
@@ -96,10 +108,9 @@ function random_clicks()
 	    {
 		    do_click(i,Math.abs(j-4));
 	    }
-	    
 	}
 	//do it again if you won already
-	if ( wincount == 0)
+	if ( wincount == 0 )
 		random_clicks();
 }
 
@@ -107,20 +118,25 @@ function flip_color(i, j)
 {
 	if ( buttons[i][j].lit )
 	{
-		buttons[i][j].lit = false;
 		--wincount;
 		buttons[i][j].set_image(new Gtk.Image({"pixbuf": image_off.pixbuf}));
 	}
 	else
 	{
-		buttons[i][j].lit = true;
 		++wincount;
 		buttons[i][j].set_image(new Gtk.Image({"pixbuf": image_on.pixbuf}));
 	}
 
+    buttons[i][j].lit = !buttons[i][j].lit;
 }
 
-table.show_all();
+Gtk.init(null, null);
+
+var window = new Gtk.Window({"title": "Lights Off"});
+window.signal_hide.connect(Gtk.main_quit);
+window.add(create_board());
 window.show_all();
+initialize_game();
+
 Gtk.main();
 
