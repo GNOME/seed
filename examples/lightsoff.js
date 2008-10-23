@@ -1,14 +1,15 @@
 #!/usr/local/bin/seed
 
-Seed.import_namespace("Gdk");
 Seed.import_namespace("Gtk");
+
+image_off = new Gtk.Image({"file": "./tim-off.svg"});
+image_on = new Gtk.Image({"file": "./tim-on.svg"});
 
 /* SxS size*/
 var size = 5;
 
 Gtk.init(null, null);
-var window = new Gtk.Window();
-window.title = "Lights Off";
+var window = new Gtk.Window({"title": "Lights Off"});
 window.signal_hide.connect(Gtk.main_quit);
 
 var wincount = 0;
@@ -26,16 +27,16 @@ for (i = 0; i < size; ++i)
 	for (j = 0; j < size; ++j)
 	{
 		buttons[i][j] = new Gtk.Button();
-		image = new Gtk.Image();
-		image.set_from_file("./black.png");
 		buttons[i][j].lit = false;
 		// everything starts out black
 	
 		buttons[i][j].x = i;
 		buttons[i][j].y = j;
 
-		buttons[i][j].set_image(image);
-
+		buttons[i][j].set_image(new Gtk.Image({"pixbuf": image_off.pixbuf}));
+		buttons[i][j].set_relief(Gtk.ReliefStyle.none);
+		buttons[i][j].can_focus = false;
+		
 		buttons[i][j].signal_clicked.connect(buttoon, buttons[i][j]);
 		table.attach_defaults(buttons[i][j], j, j+1, i, i+1);
 	}
@@ -86,22 +87,17 @@ function random_clicks()
 
 function flip_color(i, j)
 {
-	var black = new Gtk.Image();
-	black.set_from_file("./black.png");
-	var white = new Gtk.Image();
-	white.set_from_file("./white.png");
-	
 	if ( buttons[i][j].lit )
 	{
 		buttons[i][j].lit = false;
 		--wincount;
-		buttons[i][j].set_image(black);
+		buttons[i][j].set_image(new Gtk.Image({"pixbuf": image_off.pixbuf}));
 	}
 	else
 	{
 		buttons[i][j].lit = true;
 		++wincount;
-		buttons[i][j].set_image(white);
+		buttons[i][j].set_image(new Gtk.Image({"pixbuf": image_on.pixbuf}));
 	}
 
 }
