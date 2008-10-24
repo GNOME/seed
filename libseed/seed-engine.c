@@ -279,7 +279,6 @@ void seed_gobject_define_property_from_function_info(GIFunctionInfo *info, JSObj
 		GITypeInfo *type_info;
 		GIDirection dir;
 		SeedValue method_ref;
-		const gchar * symbol_name;
 
 		//if (g_base_info_is_deprecated ((GIBaseInfo *) info))
 		//	g_printf("Not defining deprecated symbol: %s \n",
@@ -347,7 +346,7 @@ static void seed_gobject_add_methods_for_interfaces(GIObjectInfo * oinfo, JSObje
 static void seed_gobject_add_methods_for_type(GIObjectInfo * oinfo, JSObjectRef object)
 {
 		int n_methods;
-		int i, j;
+		int i;
 		GIFunctionInfo * info;
 
 		n_methods = g_object_info_get_n_methods(oinfo);
@@ -387,7 +386,7 @@ seed_gobject_get_class_for_gtype(GType type)
 
 	
 		def.className = g_type_name(type);
-		if (parent = g_type_parent(type))
+		if ((parent = g_type_parent(type)))
 				parent_class = seed_gobject_get_class_for_gtype(parent);
 		def.parentClass = parent_class;
 		def.attributes = kJSClassAttributeNoAutomaticPrototype;

@@ -76,7 +76,7 @@ seed_print(JSContextRef ctx,
 {
 	// TODO: careful!
 	gchar * buf = seed_value_to_string(arguments[0]);
-	printf("%s\n", buf, 0);
+	printf("%s\n", buf);
 	free(buf);
 	
 	return 0;
@@ -94,7 +94,6 @@ seed_readline(JSContextRef ctx,
 	// Perhaps Seed.readline_bind('a', function)
 	// Then automagically do function stuff and make it happen!
 	
-	JSStringRef jsstr = 0;
 	JSValueRef valstr = 0;
 	gchar * str = 0;
 	gchar * buf = seed_value_to_string(arguments[0]);
