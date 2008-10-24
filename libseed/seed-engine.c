@@ -364,7 +364,7 @@ seed_gobject_get_class_for_gtype(GType type)
 		JSClassDefinition def;
 		GType parent;
 		JSClassRef ref;
-		JSClassRef parent_class;
+		JSClassRef parent_class = 0; 
 		GIBaseInfo * info;
 		JSObjectRef prototype_obj;
 		JSObjectRef parent_prototype;

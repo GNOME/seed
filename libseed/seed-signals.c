@@ -39,7 +39,7 @@ static void seed_add_signal_to_object(JSObjectRef object_ref,
 				      GObject * obj,
 				      GSignalQuery * signal)
 {
-	int k;
+	guint k;
 	JSObjectRef signal_ref;
 	signal_privates * priv  =
 		malloc(sizeof(signal_privates));

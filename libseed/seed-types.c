@@ -747,7 +747,7 @@ JSValueRef	seed_value_from_int(gint val)
 
 gchar		seed_value_to_char(JSValueRef val)
 {
-	gchar cv;
+	int cv;
 	
 	if(!JSValueIsNumber(eng->context, val))
 	{
@@ -763,7 +763,7 @@ gchar		seed_value_to_char(JSValueRef val)
 		return 0;
 	}
 	
-	return cv;
+	return (char)cv;
 }
 
 JSValueRef	seed_value_from_char(gchar val)
@@ -773,7 +773,7 @@ JSValueRef	seed_value_from_char(gchar val)
 
 guchar		seed_value_to_uchar(JSValueRef val)
 {
-	guchar cv;
+	guint cv;
 	
 	if(!JSValueIsNumber(eng->context, val))
 	{
@@ -783,13 +783,13 @@ guchar		seed_value_to_uchar(JSValueRef val)
 	
 	cv = JSValueToNumber(eng->context, val, NULL);
 	
-	if(cv < 0 || cv > G_MAXUINT8)
+	if(cv > G_MAXUINT8)
 	{
 		seed_value_wrong_type();
 		return 0;
 	}
 	
-	return cv;
+	return (guchar)cv;
 }
 
 JSValueRef	seed_value_from_uchar(guchar val)
