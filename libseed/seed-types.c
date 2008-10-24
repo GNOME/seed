@@ -26,16 +26,6 @@ JSClassRef gobject_method_class;
 JSClassRef gobject_constructor_class;
 SeedEngine * eng;
 
-static void seed_protect_object(SeedValue val)
-{
-		JSValueProtect(eng->context, val);
-}
-
-static void seed_unprotect_object(SeedValue val)
-{
-		JSValueUnprotect(eng->context, val);
-}
-
 static gboolean seed_value_is_gobject(SeedValue value)
 {
 		gboolean ret;
