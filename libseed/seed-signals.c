@@ -158,7 +158,6 @@ seed_gobject_signal_connect (JSContextRef ctx,
 			     const JSValueRef arguments[],
 			     JSValueRef * exception)
 {
-	JSObjectRef object;
 	signal_privates * privates;
 	GClosure * closure;
 	
@@ -194,7 +193,7 @@ JSStaticFunction signal_static_functions[] =
 {{ "connect",seed_gobject_signal_connect,0},
  { 0, 0, 0}};
 
-JSClassDefinition gobject_signal_def[] = {
+JSClassDefinition gobject_signal_def = {
 	0, /* Version, always 0 */
 	kJSClassAttributeNoAutomaticPrototype,
 	"gobject_signal", /* Class Name */
@@ -216,7 +215,7 @@ JSClassDefinition gobject_signal_def[] = {
 
 JSClassDefinition * seed_get_signal_class(void)
 {
-	return gobject_signal_def;
+	return &gobject_signal_def;
 }
 
 

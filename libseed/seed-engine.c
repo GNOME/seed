@@ -425,7 +425,6 @@ JSObjectRef seed_gobject_get_prototype_for_gtype(GType type)
 static void seed_gobject_finalize(JSObjectRef object)
 {
 		GObject * gobject;
-		GIBaseInfo * base;
 	
 		gobject = seed_value_to_object((JSValueRef)object);
 		if (!gobject)
@@ -468,10 +467,10 @@ static JSValueRef seed_gobject_get_property(JSContextRef context,
 		int length;
 		SeedValue ret;
 		int i, len;
-		GType parent;
 
 		b = seed_value_to_object((JSValueRef)object);
-		g_return_if_fail((b));
+		if (!b)
+			return 0;
 
 		length = JSStringGetMaximumUTF8CStringSize(property_name);
 		cproperty_name = malloc(length * sizeof(gchar));
@@ -713,7 +712,7 @@ JSStaticFunction gobject_static_funcs[] = {
 	{0, 0, 0}
 };
 
-JSClassDefinition gobject_def[] = {
+JSClassDefinition gobject_def = {
 		0, /* Version, always 0 */
 		kJSClassAttributeNoAutomaticPrototype, /* JSClassAttributes */
 		"gobject", /* Class Name */
@@ -733,7 +732,7 @@ JSClassDefinition gobject_def[] = {
 		NULL  /* Convert To Type */
 };
 
-JSClassDefinition gobject_method_def[] = {
+JSClassDefinition gobject_method_def = {
 		0, /* Version, always 0 */
 		0,
 		"gobject_method", /* Class Name */
@@ -753,7 +752,7 @@ JSClassDefinition gobject_method_def[] = {
 		NULL  /* Convert To Type */
 };
  
-JSClassDefinition gobject_constructor_def[] = {
+JSClassDefinition gobject_constructor_def = {
 		0, /* Version, always 0 */
 		0,
 		"gobject_constructor", /* Class Name */
@@ -784,7 +783,7 @@ void seed_create_function(char * name, gpointer func, JSObjectRef obj)
 
 gboolean seed_init(int * argc, char *** argv)
 {
-	JSObjectRef import_namespace_ref, seed_obj_ref;
+	JSObjectRef seed_obj_ref;
 
 	g_type_init ();
 
@@ -795,11 +794,11 @@ gboolean seed_init(int * argc, char *** argv)
 	
 	eng->context = JSGlobalContextCreateInGroup(NULL,NULL);
 	eng->global = JSContextGetGlobalObject(eng->context);
-	gobject_class = JSClassCreate(gobject_def);
+	gobject_class = JSClassCreate(&gobject_def);
 	JSClassRetain(gobject_class);
-	gobject_method_class = JSClassCreate(gobject_method_def);
+	gobject_method_class = JSClassCreate(&gobject_method_def);
 	JSClassRetain(gobject_method_class);
-	gobject_constructor_class = JSClassCreate(gobject_constructor_def);
+	gobject_constructor_class = JSClassCreate(&gobject_constructor_def);
 	JSClassRetain(gobject_constructor_class);
 	gobject_signal_class = JSClassCreate(seed_get_signal_class());
 	JSClassRetain(gobject_signal_class);

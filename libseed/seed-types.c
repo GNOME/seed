@@ -28,12 +28,9 @@ SeedEngine * eng;
 
 static gboolean seed_value_is_gobject(SeedValue value)
 {
-		gboolean ret;
-	
 		if (!JSValueIsObject(eng->context, value) || 
 			JSValueIsNull(eng->context, value))
 				return FALSE;
-
 	
 		return JSValueIsObjectOfClass(eng->context, value, gobject_class);
 }
@@ -155,6 +152,8 @@ GType seed_gi_type_to_gtype(GITypeInfo *type_info, GITypeTag tag)
 		case GI_TYPE_TAG_GSLIST:
 		case GI_TYPE_TAG_GHASH:
 		case GI_TYPE_TAG_ERROR:
+		case GI_TYPE_TAG_TIME_T:
+		case GI_TYPE_TAG_GTYPE:
 				return G_TYPE_INVALID;
 		case GI_TYPE_TAG_INTERFACE:
 		{
@@ -364,8 +363,6 @@ JSValueRef seed_gi_argument_make_js(GArgument * arg, GITypeInfo *type_info)
 		{
 				GIBaseInfo *interface;
 				GIInfoType interface_type;
-				GType required_gtype;
-				GObject * gobject;
 
 				interface = g_type_info_get_interface(type_info);
 				interface_type = g_base_info_get_type(interface);
@@ -429,6 +426,7 @@ gboolean seed_gi_supports_type(GITypeInfo * type_info)
 		case GI_TYPE_TAG_FLOAT:
 		case GI_TYPE_TAG_DOUBLE:
 		case GI_TYPE_TAG_UTF8:
+		case GI_TYPE_TAG_INTERFACE:
 				return TRUE;
 	       
 		case GI_TYPE_TAG_FILENAME:
@@ -437,15 +435,14 @@ gboolean seed_gi_supports_type(GITypeInfo * type_info)
 		case GI_TYPE_TAG_GSLIST:
 		case GI_TYPE_TAG_GHASH:
 		case GI_TYPE_TAG_ERROR:
+			// We should support time_t easily.
+		case GI_TYPE_TAG_TIME_T:
+		case GI_TYPE_TAG_GTYPE:
 				return FALSE;
 		
-		case GI_TYPE_TAG_INTERFACE:
-		{
-				return TRUE;
-		}
-	
 	
 		}
+		return FALSE;
 }
 
 SeedValue seed_value_from_gvalue(GValue * gval)
@@ -454,8 +451,6 @@ SeedValue seed_value_from_gvalue(GValue * gval)
 	{
 		return false;
 	}
-
-	JSValueRef val;
 
 	switch(G_VALUE_TYPE(gval))
 	{
@@ -523,8 +518,6 @@ gboolean seed_gvalue_from_seed_value(SeedValue val,
 									 GValue * ret)
 	
 {
-	gint32 cv;
-
 	switch(type)
 	{
 	case G_TYPE_BOOLEAN:
@@ -630,6 +623,8 @@ gboolean seed_gvalue_from_seed_value(SeedValue val,
 			g_value_take_string(ret, cv);
 			return TRUE;
 		}
+		default:
+			break;
 		}
 		break;
 	}
@@ -663,9 +658,7 @@ gboolean seed_gvalue_from_seed_value(SeedValue val,
 
 		g_object_unref(o);
 	}
-
-bad_type:
-	return 0;
+	return FALSE;
 }
 
 SeedValue seed_value_get_property(SeedValue val, 
@@ -701,7 +694,7 @@ gboolean seed_value_set_property(JSObjectRef object,
 
 static void seed_value_wrong_type()
 {
-	g_printf("Wrong type in type conversion!\n");
+	printf("Wrong type in type conversion!\n");
 }
 
 gboolean	seed_value_to_boolean(JSValueRef val)

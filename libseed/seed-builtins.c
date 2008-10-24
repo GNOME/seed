@@ -20,6 +20,7 @@
 
 #include "seed-private.h"
 #include <readline/readline.h>
+#include <readline/history.h>
 #include <string.h>
 
 JSValueRef
@@ -61,7 +62,8 @@ seed_include(JSContextRef ctx,
 	walk = strdup(walk);
 	g_free(buffer);
 	
-	JSEvaluateScript(ctx, JSStringCreateWithUTF8CString(walk), NULL, JSStringCreateWithUTF8CString(import_file), 0, NULL);
+	JSEvaluateScript(ctx, JSStringCreateWithUTF8CString(walk), 
+					 NULL, JSStringCreateWithUTF8CString(import_file), 0, NULL);
 	
 	return 0;
 }
