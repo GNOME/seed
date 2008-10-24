@@ -73,7 +73,6 @@ seed_gobject_constructor_invoked (JSContextRef ctx,
 		GParamSpec * param_spec;
 		gchar * prop_name;
 		int i, nparams = 0, length;
-		GValue gval = {0};
 		JSObjectRef ret;
 		JSPropertyNameArrayRef jsprops = 0;
 		JSStringRef jsprop_name;
@@ -138,12 +137,9 @@ seed_gobject_constructor_invoked (JSContextRef ctx,
 	
 		if (!gobject)
 				return 0;
-		g_value_init(&gval, G_TYPE_OBJECT);
-		g_value_set_object(&gval, gobject);
 
-		ret = (JSObjectRef)seed_value_from_gvalue(&gval);
+		ret = (JSObjectRef)seed_value_from_object(gobject);
 	
-		g_value_unset(&gval);
 		g_object_unref(gobject);
 		g_type_class_unref(oclass);
 	
@@ -161,7 +157,6 @@ seed_gobject_equals (JSContextRef ctx,
 							JSValueRef * exception)
 {
 	GObject * this, * that;
-	GValue gval = {0};
 	
 	g_assert(argumentCount == 1);
 
@@ -185,7 +180,6 @@ seed_gobject_method_invoked (JSContextRef ctx,
 		GObject * object;
 		gboolean instance_method = TRUE;
 		GArgument retval;
-		GValue gval = {0};
 		GArgument *in_args;
 		GArgument *out_args;
 		int n_args, n_in_args, n_out_args, i;
@@ -196,15 +190,9 @@ seed_gobject_method_invoked (JSContextRef ctx,
 		GError * error = 0;
 	
 		info = JSObjectGetPrivate(function);
-		if (!
-			seed_gvalue_from_seed_value((SeedValue)this_object, 
-										G_TYPE_OBJECT,
-										&gval))
+		if (!(object = seed_value_to_object(this_object)))
 				instance_method = FALSE;
 
-		if (instance_method)
-				object = g_value_get_object(&gval);
-	
 		n_args = g_callable_info_get_n_args((GICallableInfo *) info);
 
 	
@@ -280,8 +268,6 @@ seed_gobject_method_invoked (JSContextRef ctx,
 
 		g_free(in_args);
 		g_free(out_args);
-		if (instance_method)
-				g_value_unset(&gval);
 		return retval_ref;
 }
 
@@ -439,36 +425,23 @@ JSObjectRef seed_gobject_get_prototype_for_gtype(GType type)
 
 static void seed_gobject_finalize(JSObjectRef object)
 {
-		GValue gval = {0};
 		GObject * gobject;
 		GIBaseInfo * base;
 	
-		seed_gvalue_from_seed_value((SeedValue) object,
-									G_TYPE_OBJECT, &gval);
-		/* Something would have to go very wrong here */
-		if (!G_VALUE_HOLDS_OBJECT(&gval))
-				return;
-		gobject = g_value_get_object(&gval);
+		gobject = seed_value_to_object((JSValueRef)object);
 		if (!gobject)
 				return;
 
-		g_value_unset(&gval);
 		g_object_unref(gobject);
 }
 
 static void seed_gobject_initialize(JSContextRef ctx,				    
 									JSObjectRef object)
 {
-		GValue gval = {0};
 		GObject * gobject;
 		GIBaseInfo * base;
 	
-		seed_gvalue_from_seed_value((SeedValue) object,
-									G_TYPE_OBJECT, &gval);
-		/* Something would have to go very wrong here */
-		if (!G_VALUE_HOLDS_OBJECT(&gval))
-				return;
-		gobject = g_value_get_object(&gval);
+		gobject = seed_value_to_object((JSValueRef)object);
 		if (!gobject)
 				return;
 
@@ -478,13 +451,10 @@ static void seed_gobject_initialize(JSContextRef ctx,
 		seed_add_signals_to_object(object, gobject);
 		if (!base)
 		{
-				g_value_unset(&gval);
 				return;
 		}
-	
 		g_assert(g_base_info_get_type(base) == GI_INFO_TYPE_OBJECT);
 	
-		g_value_unset(&gval);
 }
 
 static JSValueRef seed_gobject_get_property(JSContextRef context, 
@@ -501,11 +471,8 @@ static JSValueRef seed_gobject_get_property(JSContextRef context,
 		int i, len;
 		GType parent;
 
-		if (!seed_gvalue_from_seed_value((SeedValue)object, 
-										 G_TYPE_OBJECT, &gval))
-				return 0;
-
-		b = g_value_get_object(&gval);
+		b = seed_value_to_object((JSValueRef)object);
+		g_return_if_fail((b));
 
 		length = JSStringGetMaximumUTF8CStringSize(property_name);
 		cproperty_name = malloc(length * sizeof(gchar));
@@ -531,7 +498,6 @@ static JSValueRef seed_gobject_get_property(JSContextRef context,
 
 	
 	
-		g_value_unset(&gval);
 		g_value_init(&gval, spec->value_type);
 		g_object_get_property(b, cproperty_name, &gval);
 		ret = seed_value_from_gvalue(&gval);
@@ -556,15 +522,8 @@ static bool seed_gobject_set_property(JSContextRef context,
 
 		if (JSValueIsNull(eng->context, value))
 				return 0;
-	
-		seed_gvalue_from_seed_value((SeedValue) object, G_TYPE_OBJECT, &gval);
 
-		/* Should probably free here. I lolled */
-		if (!G_VALUE_HOLDS_OBJECT(&gval))
-				return FALSE;
-
-	
-		obj = g_value_get_object(&gval);
+		obj = seed_value_to_object(object);
 		if (!obj || !G_IS_OBJECT(obj))
 				return FALSE;
 	
@@ -598,8 +557,6 @@ static bool seed_gobject_set_property(JSContextRef context,
 				}
 		}
 	
-		g_value_unset(&gval);
-		
 		if (g_type_is_a(spec->value_type, G_TYPE_ENUM))
 			type = G_TYPE_INT;
 		else
