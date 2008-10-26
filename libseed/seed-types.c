@@ -28,8 +28,8 @@ SeedEngine * eng;
 
 static gboolean seed_value_is_gobject(SeedValue value)
 {
-		if (!JSValueIsObject(eng->context, value) || 
-			JSValueIsNull(eng->context, value))
+		if (!JSValueIsObject(eng->context, value))
+			
 				return FALSE;
 	
 		return JSValueIsObjectOfClass(eng->context, value, gobject_class);
