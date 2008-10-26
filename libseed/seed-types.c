@@ -28,7 +28,8 @@ SeedEngine * eng;
 
 static gboolean seed_value_is_gobject(SeedValue value)
 {
-		if (!JSValueIsObject(eng->context, value))
+		if (!JSValueIsObject(eng->context, value) ||
+			JSValueIsNull(eng->context, value))
 			
 				return FALSE;
 	
@@ -945,7 +946,6 @@ GObject *	seed_value_to_object(JSValueRef val)
 	
 	if(!seed_value_is_gobject(val))
 	{
-		seed_value_wrong_type();
 		return NULL;
 	}	
 	
