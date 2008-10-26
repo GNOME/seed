@@ -810,7 +810,7 @@ gboolean seed_init(int * argc, char *** argv)
 	JSValueProtect(eng->context, seed_obj_ref);
 
 	seed_create_function("import_namespace", &seed_gi_import_namespace, seed_obj_ref);
-	seed_init_builtins();
+	seed_init_builtins(argc, argv);
 	
 	return TRUE;
 

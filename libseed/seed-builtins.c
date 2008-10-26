@@ -76,12 +76,14 @@ seed_print(JSContextRef ctx,
 			  const JSValueRef arguments[],
 			  JSValueRef * exception)
 {
-	// TODO: careful!
+	if(argumentCount < 1)
+		return JSValueMakeNull(eng->context);
+	
 	gchar * buf = seed_value_to_string(arguments[0]);
 	printf("%s\n", buf);
 	free(buf);
 	
-	return 0;
+	return JSValueMakeNull(eng->context);
 }
 
 JSValueRef
@@ -116,12 +118,26 @@ seed_readline(JSContextRef ctx,
 	return valstr;
 }
 
-void seed_init_builtins()
+void seed_init_builtins(int * argc, char *** argv)
 {
+	int i;
+	JSObjectRef arrayObj;
 	JSObjectRef obj = (JSObjectRef)seed_value_get_property(eng->global, "Seed");
 	
 	seed_create_function("include", &seed_include, obj);
 	seed_create_function("print", &seed_print, obj);
 	seed_create_function("readline", &seed_readline, obj);
+	
+	arrayObj = JSObjectMake(eng->context, NULL, NULL);
+	
+	for(i = 0; i < *argc; ++i)
+	{
+		// TODO: exceptions!
+		
+		JSObjectSetPropertyAtIndex(eng->context, arrayObj, i,
+								   seed_value_from_string((*argv)[i]), NULL);
+	}
+	
+	seed_value_set_property(obj, "argv", arrayObj);
 }
 

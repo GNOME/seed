@@ -24,13 +24,24 @@
 #include "readline/readline.h"
 #include <stdlib.h>
 
+void seed_repl(int argc, char ** argv)
+{
+	SeedScript  * script;
+
+	script = seed_make_script("while(1) { try { Seed.print(eval("
+							  "Seed.readline(\"> \"))); } catch(e) {"
+							  "Seed.print(e.name + \" \" + e.message);}}",
+							  NULL, 0);
+	seed_evaluate(script, 0);
+	
+	g_free(script);
+}
+
 void seed_exec(int argc, char ** argv)
 {
 	SeedScript  * script;
 	SeedException e;
 	gchar * buffer;
-	
-	g_assert((argc==2));
 
 	g_file_get_contents(argv[1], 
 	&buffer, 0, 0);
@@ -62,17 +73,18 @@ int main(int argc, char ** argv)
 
 	// Apparently our name for glib logging gets set in g*_init. can we set
 	// that ourselves so that when we do on-the-fly init, we don't lose that?
+	
 	gst_init(&argc, &argv);	
 	seed_init(&argc, &argv);
 
 	if (!g_irepository_require(g_irepository_get_default(), 
 				   "GObject", 0, 0))
 		g_critical("Unable to import GObject repository");
-	
-	if(argc == 2)
-		seed_exec(argc, argv);
+		
+	if(argc == 1)
+		seed_repl(argc, argv);
 	else
-		printf("Usage: %s file.js\n", argv[0]);
+		seed_exec(argc, argv);
 	
 	return 0;
 }

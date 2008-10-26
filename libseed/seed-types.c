@@ -696,6 +696,7 @@ gboolean seed_value_set_property(JSObjectRef object,
 static void seed_value_wrong_type()
 {
 	printf("Wrong type in type conversion!\n");
+	abort();
 }
 
 gboolean	seed_value_to_boolean(JSValueRef val)
@@ -964,3 +965,4 @@ JSValueRef	seed_value_from_object(GObject * val)
 	else
 		return seed_wrap_object(val);
 }
+

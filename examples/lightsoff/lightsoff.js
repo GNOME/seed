@@ -7,6 +7,48 @@ image_on = new Gtk.Image({"file": "./tim-on.svg"});
 /* SxS size*/
 var size = 5;
 var wincount = 0;
+var moves = 0;
+
+function create_board_size_menu()
+{
+    var menu = new Gtk.Menu();
+    
+    var size_5 = new Gtk.MenuItem({"child": new Gtk.Label({"label": "5x5"})});
+    var size_7 = new Gtk.MenuItem({"child": new Gtk.Label({"label": "7x7"})});
+    var size_9 = new Gtk.MenuItem({"child": new Gtk.Label({"label": "9x9"})});
+    
+    menu.append(size_5);
+    menu.append(size_7);
+    menu.append(size_9);
+    
+    return menu;
+}
+
+function create_menu()
+{
+    var menu = new Gtk.MenuBar();
+    
+    var game_menu = new Gtk.Menu();
+    var size_item = new Gtk.MenuItem({"child":
+                                      new Gtk.Label({"label": "Board Size"})});
+    size_item.signal_activate.connect(Gtk.main_quit);
+    //size_item.submenu = create_board_size_menu(); // crashy?!
+    
+    var quit_item = new Gtk.MenuItem({"child":
+                                      new Gtk.Label({"label": "Quit"})});
+    quit_item.signal_activate.connect(Gtk.main_quit);
+    
+    game_menu.append(size_item);
+    game_menu.append(quit_item);
+    
+    var game_menu_item = new Gtk.MenuItem({"child":
+                                           new Gtk.Label({"label": "Game"})});
+    game_menu_item.submenu = game_menu;
+    
+    menu.append(game_menu_item);
+    
+    return menu;
+}
 
 function create_board()
 {
@@ -53,9 +95,11 @@ function clear_board()
 function initialize_game()
 {
 	wincount = 0;
-    
+	  
 	clear_board();
 	random_clicks(); // generate random puzzle
+	
+	moves = 0;
 }
 
 function do_click(x , y)
@@ -70,6 +114,8 @@ function do_click(x , y)
 		flip_color(x, y - 1);
 
 	flip_color(x,y);
+	
+	++moves;
 }
 
 function button_clicked( button )
@@ -78,7 +124,7 @@ function button_clicked( button )
 
 	if ( wincount == 0 )
 	{
-		Seed.print("GLORIOUS VICTORY");
+		Seed.print("GLORIOUS VICTORY in " + moves + " moves!");
 		initialize_game();
 	}
 }
@@ -137,7 +183,14 @@ Gtk.init(null, null);
 
 var window = new Gtk.Window({"title": "Lights Off", "resizable" : false});
 window.signal_hide.connect(Gtk.main_quit);
-window.add(create_board());
+
+vbox = new Gtk.VBox();
+
+vbox.pack_start(create_menu());
+vbox.pack_start(create_board());
+
+window.add(vbox);
+
 window.show_all();
 initialize_game();
 
