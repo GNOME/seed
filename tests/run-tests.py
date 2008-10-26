@@ -35,8 +35,8 @@ for f in os.listdir("."):
 		rfile = open(f, "r")
 		test_code = rfile.readlines()
 		test_in = test_code[2].replace("// STDIN:","").rstrip().replace("\\n","\n");
-		test_out = test_code[3].replace("// STDOUT:","").rstrip().replace("\\n","\n");
-		test_err = test_code[4].replace("// STDERR:","").rstrip().replace("\\n","\n");
+		test_out = "^" + test_code[3].replace("// STDOUT:","").rstrip().replace("\\n","\n") + "$";
+		test_err = "^" + test_code[4].replace("// STDERR:","").rstrip().replace("\\n","\n") + "$";
 		
 		(n,out,err) = os.popen3("./" + f)
 		

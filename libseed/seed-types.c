@@ -90,17 +90,7 @@ static SeedValue seed_wrap_object(GObject * object)
 				}
 		}
 
-		// Is this going to work? g_free seems wrong, don't we need some
-		// variety of finalize. This is a pointer declared on the stack anyway.
-		// What is happening. You had &js_ref, after this ramblign comment
-		// I am changing it to js_ref, and protecting/unprotecting it.
-		object = g_object_ref(object);
-		//g_object_set_data_full(object, "js-ref", (gpointer)js_ref, 
-		//		       (GDestroyNotify) seed_unprotect_object);
-		/* I think we avoid the need for this
-		   g_object_add_toggle_ref(object,
-		   object_toggle_notify_cb,
-		   0); */
+		object = g_object_ref_sink(object);
 	
 		return js_ref;
 }

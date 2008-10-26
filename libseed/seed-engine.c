@@ -140,7 +140,6 @@ seed_gobject_constructor_invoked (JSContextRef ctx,
 
 		ret = (JSObjectRef)seed_value_from_object(gobject);
 	
-		g_object_unref(gobject);
 		g_type_class_unref(oclass);
 	
 		g_free(params);
