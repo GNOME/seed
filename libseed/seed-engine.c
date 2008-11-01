@@ -29,6 +29,7 @@ JSClassRef gobject_signal_class;
 
 GParamSpec ** global_prop_cache;
 
+
 static void seed_make_exception(JSValueRef * exception, 
 								gchar * name, gchar * message)
 {
@@ -136,10 +137,10 @@ seed_gobject_constructor_invoked (JSContextRef ctx,
 		gobject = g_object_newv(type, nparams, params);
 	
 		if (!gobject)
-				return 0;
+				JSValueMakeNull(eng->context);
 
 		ret = (JSObjectRef)seed_value_from_object(gobject);
-	
+
 		g_type_class_unref(oclass);
 	
 		g_free(params);
@@ -267,7 +268,9 @@ seed_gobject_method_invoked (JSContextRef ctx,
 		return retval_ref;
 }
 
-void seed_gobject_define_property_from_function_info(GIFunctionInfo *info, JSObjectRef object, gboolean instance)
+void seed_gobject_define_property_from_function_info(GIFunctionInfo *info, 
+													 JSObjectRef object, 
+													 gboolean instance)
 {
 		GIFunctionInfoFlags flags;
 		int n_args, i;
