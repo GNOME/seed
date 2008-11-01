@@ -59,7 +59,8 @@ function pressed_number(button)
 
 function swap_sign(button)
 {
-	calc_val = ((calc_val[0] == "-") ? calc_val.substring(1) : "-" + calc_val) 
+	calc_val = ((calc_val[0] == "-") ? 
+		    calc_val.substring(1) : "-" + calc_val) 
 	update_display();
 }
 
