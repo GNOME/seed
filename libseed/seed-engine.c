@@ -252,7 +252,7 @@ seed_gobject_method_invoked (JSContextRef ctx,
 						g_callable_info_get_return_type((GICallableInfo *)
 														info);
 				if (g_type_info_get_tag(type_info) == GI_TYPE_TAG_VOID)
-						retval_ref = 0;
+						retval_ref = JSValueMakeNull(eng->context);
 				else
 						retval_ref = 
 								seed_gi_argument_make_js(&retval, type_info);
