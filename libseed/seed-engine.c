@@ -703,7 +703,7 @@ seed_gi_import_namespace(JSContextRef ctx,
 
 		g_free((gchar *)namespace);
 
-		return 0;
+		return JSValueMakeNull(eng->context);
 }
 
 JSStaticFunction gobject_static_funcs[] = {
