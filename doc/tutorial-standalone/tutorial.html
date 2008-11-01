@@ -1,0 +1,247 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+	<title>Seed Tutorial : Standalone</title>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<style type="text/css">
+body
+{
+	font-size: 10pt;
+	font-family: "sans-serif";
+	text-align: justify;
+}
+
+#header
+{
+	text-align: right;
+	font-size: 18pt;
+	width: 100%;
+	border-bottom: 1px solid #aaa;
+	
+}
+
+#subheader
+{
+	text-align: right;
+	font-size: 12pt;
+	width: 100%;
+}
+
+div.section
+{
+	font-size: 16pt;
+	font-weight: bold;
+	width: 100%;
+	border-bottom: 1px solid #ccc;
+	margin-bottom: 10px;
+}
+
+p
+{
+	margin-left: 10px;
+	text-indent: 0em;
+}
+
+pre
+{
+	margin-left: 20px;
+	padding-left: 5px;
+	border-left: 2px solid #ddd;
+}
+
+div.filename
+{
+    margin-left: 25px;
+    font-weight: bold;
+    width: 70%;
+    border-bottom: 1px solid #ccc;
+}
+	</style>
+</head>
+<body>
+<div id="header">Seed Tutorial : Standalone</div>
+<div id="subheader">v.0.1</div>
+<div class="section">Introduction</div>
+<p><b><big>ROBB SAYS MAKE IT MORE DUMBED DOWN. TALK ABOUT PACKING AND STUFF. AND GTK. MAKE IT A GTK TUTORIAL, AND DO IT LIVE.</big></b></p>
+<p>Seed, first and foremost, provides an easily embeddable Javascript engine to developers looking for a straightforward way to create extensible applications. It also provides bindings between <a href="http://library.gnome.org/devel/gobject/stable/">GObject</a> and the <a href="http://www.webkit.org">WebKit</a> Javascript engine, giving new developers access to the power of the GNOME stack from a familiar and simple language, and allowing rapid prototyping of applications for hardened GNOME developers.</p>
+<p>This tutorial begins with a few brief examples, and then dives right in, following the development of a simple Seed program, from beginning to end. By the end of the tutorial, you'll have your very own tiny WebKit-based web browser, as well as a summary knowledge of the use of Seed to build Gtk+ applications.</p>
+<div class="section">Beginning Seed</div>
+<p>It makes sense to start our exploration with a program you're probably quite familiar with:</p>
+<pre>
+#!/usr/local/bin/seed
+
+Seed.print("Hello, world!");
+</pre>
+<p>If you were to make this script executable (<code>chmod +x hello.js</code>), and run it, you'd hopefully see the following, just as expected (if you don't, for some reason, make sure you have the latest version of Seed installed, then <a href="racarr@svn.gnome.org">email us</a>):</p>
+<pre>
+Hello, world!
+</pre>
+<p>In order to make the file executable, include (<code>#!/usr/local/bin/seed</code>) at the top of every Seed program you write. This is known as the <em>shebang line</em>, and tells your shell where to find the <code>seed</code> interpreter; I'm only going to include it when listing a whole file, from now on.</p>
+<p>Variables in Javascript are not given any <em>type</em>, and conversion between different kinds of values is automatic and painless. For example, you can:</p>
+<ul>
+<li>Add two strings <code>("Hello, " + "World!")</code> turns into <code>"Hello, World!"</code></li>
+<li>Add a number to a string <code>("Example" + (2 * 2))</code> turns into <code>"Example4"</code></li>
+</ul>
+<p>There is one exception: in order to convert a string of digits into a 'number', Javascript needs to be explicitly instructed to do so: <code>parseFloat("42.5")</code>.</p>
+<p>Seed also provides a very simple interface to the <a href="http://directory.fsf.org/project/readline/">GNU Readline</a> library, which allows programs to ask the user for input. The only argument <code>Seed.readline()</code> requires is the prompt for the user. Also, the current version of Seed ensures that everything typed is automatically saved in the prompt's history; if you press the up key while at a prompt, you can access and edit lines you've previously entered. Future versions of Seed will provide more control over the history and other parts of readline.</p>
+<pre>
+var my_name = Seed.readline("Your name? ");
+var my_age = Seed.readline("Your age? ");
+var old = 25;
+var old_age = old + parseFloat(my_age);
+Seed.print(my_name + " will be " + old_age + " in " + old + " years!");
+</pre>
+<p>You've probably noticed that the word '<code>var</code>' precedes the first use of every variable in Javascript. This is important, because it ensures that the memory consumed by the variable is freed to be used elsewhere at the end of the current block of code, when the variable goes <em>out of scope</em>. If, instead, you want to create a variable which is <em>global</em> (available forever, after it is created), you can omit the '<code>var</code>'. Keep in mind that making many global variables is generally considered bad practice, and can be expensive in terms of memory use.</p>
+<div class="section">A Javascript Shell</div>
+<p>Javascript, being a scripting language, includes a construct, <code>eval()</code> which allows you to evaluate a <em>string</em> of Javascript. This allows, for example, a user to input Javascript with <code>readline</code>, and it to be executed as if it had been part of your source file. In addition, <code>eval()</code>'s return value is the return value of the snippet of code. For example:</p>
+<pre>
+var output = eval("2+2");
+Seed.print(output);
+</pre>
+<p>Will, in fact, output:</p>
+<pre>
+4.000000
+</pre>
+<p>When something goes <em>wrong</em> in a piece of Javascript code, the program will exit, most likely leaving the user in a confused state. For example, if you try to access a variable that doesn't exist: <code>Seed.print(asdf);</code> Seed will exit with the message: <code>ReferenceError Can't find variable: asdf</code>. It is possible to catch this sort of error, or exception, inside of your Javascript program, ensuring that it doesn't terminate your program - or that if it does, it prints a useful error message. The <code>try/catch</code> construct provides a way to <em>try</em> to execute a segment of Javascript, and, if it fails, run a second segment, without exiting the program. The second segment could print a user-friendly error message, ignore the exception entirely, or try to work around the problem. A quick example of <code>try/catch</code>:</p>
+<pre>
+try
+{
+    Seed.print(asdf);
+}
+catch(e)
+{
+    Seed.print("Something went wrong!");
+}
+</pre>
+<p>It's also possible to determine what, exactly, went wrong. The '<code>e</code>' in the <code>catch</code> statement (which, by the way, you <em>cannot</em> omit) is actually an object containing information about the exception! We can access some of the basic properties of this object:</p>
+<pre>
+try
+{
+    Seed.print(asdf);
+}
+catch(e)
+{
+    Seed.print("Something went wrong!");
+    Seed.print(e.name);
+    Seed.print(e.message);
+}
+</pre>
+<p>This will print a message similar to what would be printed if you hadn't caught the exception, but <em>without exiting the program!</em></p>
+<p>Combining <code>readline</code>, <code>eval</code>, exceptions, and <code>print</code>, we can write a simple shell, allowing interactive use of Seed. This shell is included in the Seed distribution, in <code>examples/repl.js</code>. Looking at the source, you'll note that it takes very little code to implement a shell:</p>
+<div class="filename">examples/repl.js</div>
+<pre>
+#!/usr/local/bin/seed
+
+while(1)
+{
+    try
+    {
+        Seed.print(eval(Seed.readline("> ")));
+    }
+    catch(e)
+    {
+        Seed.print(e.name + " " + e.message);
+    }
+}
+</pre>
+<p>You can (and <em>should!</em>) use this shell in order to experiment with and learn to use Seed.</p>
+<div class="section">Getting GTK Going</div>
+<p>Thus far in this tutorial, we've been completely ignoring the most useful part of Seed: the ability to use external libraries from within Javascript. The single most useful of these libraries is GTK, the widget and windowing toolkit used by all GNOME applications, which will provide the ability to create and manipulate graphical windows, as well as just about any sort of widget you should require.</p>
+<p>In order to use GTK (or any other external library) in a Seed program, you first have to import the functions from said library. <code>Seed.import_namespace()</code>, taking as its only argument the name of the library to import, does this for us.</p>
+<p>Once the library has been imported, all of its functions are available on a global object with the same name as the library. For example, if we <code>Seed.import_namespace("Gtk")</code>, all of the imported functions are on the Gtk object: <code>Gtk.init()</code>, etc.</p>
+<p>Let's start off the development of our browser by getting Gtk working. It takes very little to get a window displayed with Seed:</p>
+<pre>
+#!/usr/local/bin/seed
+
+Seed.import_namespace("Gtk");
+Gtk.init(null, null);
+
+var window = new Gtk.Window();
+window.show_all();
+
+Gtk.main();
+</pre>
+<p>I've you've ever used GTK from C, you'll notice some similarities here. All of the GTK functions have been mapped into Javascript in a reasonable way, but it will certainly take a bit to get used to, for example, <code>new Gtk.Window()</code> instead of <code>gtk_window_new()</code>.</p>
+<p>Executing the above script should give you a window that looks entirely empty and boring, something like the following:</p>
+<div style="text-align: center;"><img src="tutorial-images/1.png" alt="Blank GTK Window"/></div>
+<div class="section">JSON Constructors</div>
+<p>Notice that the title of the window is 'seed'. We'll fix that, using another Seed feature: you can use <a href="http://www.json.org/js.html">JSON notation</a> to set properties while constructing objects, like so:</p>
+<pre>
+var window = new Gtk.Window({"title": "Browser"});
+</pre>
+<p>This saves a lot of typing from the alternative, conventional method:</p>
+<pre>
+var window = new Gtk.Window();
+window.set_title("Browser");
+</pre>
+<p>You can set any number of properties this way, by separating them by commas (<code>{"title": "Browser", "default-height": 500}</code>, etc.). This method should work for any GObject constructor.</p>
+<div class="section">Signals</div>
+<p>You'll notice that our program, as it stands, fails to quit when you click the 'Close' button. You can, of course, quit it with Ctrl-C, but this isn't very 'GNOME-y'. To fix it, we'll connect a Javascript function to the signal that gets emitted when the 'Close' button is clicked:</p>
+<pre>
+function quit()
+{
+    Gtk.main_quit();
+}
+
+window.signal_hide.connect(quit);
+</pre>
+<p>The signal names are the same as in the <a href="http://library.gnome.org/devel/gtk/stable/">GTK documentation</a>, except using underscores instead of dashes between words. </p>
+<div class="section">Working with Widgets</div>
+<p>We'll start by making the browser's toolbar buttons. It makes sense to split this out into a function, to keep the program readable, and in case we want to reuse the code (who knows!):</p>
+<pre>
+function create_toolbar()
+{
+    var toolbar = new Gtk.HBox();
+
+    var back_button = new Gtk.ToolButton({"stock-id": "gtk-go-back"});
+    var forward_button = new Gtk.ToolButton({"stock-id": "gtk-go-forward"});
+    var refresh_button = new Gtk.ToolButton({"stock-id": "gtk-refresh"});
+
+    var url_entry = new Gtk.Entry();
+
+    back_button.signal_clicked.connect(back);
+    forward_button.signal_clicked.connect(forward);
+    refresh_button.signal_clicked.connect(refresh);
+
+    url_entry.signal_activate.connect(browse);
+
+    toolbar.pack_start(back_button);
+    toolbar.pack_start(forward_button);
+    toolbar.pack_start(refresh_button);
+    toolbar.pack_start(url_entry, true, true);
+
+    return toolbar;
+}
+</pre>
+<p>We also need a bunch of callbacks (for all three buttons, and for when you're done entering text in the URL bar). We'll make them just print the function they're supposed to perform, for now, since we don't have a WebKit view to operate on yet.</p>
+<pre>
+function forward(button)
+{
+    Seed.print("forward");
+}
+
+function back(button)
+{
+    Seed.print("back");
+}
+
+function refresh(button)
+{
+    Seed.print("refresh");
+}
+
+function browse(button)
+{
+    Seed.print("browser");
+}
+</pre>
+<p>Right now, nothing's calling <code>create_toolbar()</code>, so you won't see the toolbar drawn. You'll notice that <code>create_toolbar()</code> returns an HBox with all of the widgets in it - thinking ahead, we'll pack this HBox into a VBox (eventually, we'll add the WebKit view, too!).</p>
+<p>Before window.show_all(), add a line to pack the toolbar:</p>
+<pre>
+window.add(create_toolbar());
+</pre>
+<div style="text-align: center;"><img src="tutorial-images/2.png" alt="GTK Window with buttons and text entry field" /></div>
+<p>If, for some reason, something doesn't work, compare your code to <a href="tutorial-scripts/1.js">the tutorial version</a>.</p>
+</body>
+</html>
