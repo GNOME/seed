@@ -122,6 +122,7 @@ void seed_init_builtins(int * argc, char *** argv)
 {
 	int i;
 	JSObjectRef arrayObj;
+	JSValueRef argcref;
 	JSObjectRef obj = (JSObjectRef)seed_value_get_property(eng->global, "Seed");
 	
 	seed_create_function("include", &seed_include, obj);
@@ -138,6 +139,9 @@ void seed_init_builtins(int * argc, char *** argv)
 								   seed_value_from_string((*argv)[i]), NULL);
 	}
 	
+	argcref = seed_value_from_int(*argc);
+
+	seed_value_set_property(arrayObj, "length", argcref);
 	seed_value_set_property(obj, "argv", arrayObj);
 }
 

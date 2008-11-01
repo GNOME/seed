@@ -85,7 +85,7 @@ static SeedValue seed_wrap_object(GObject * object)
 						{
 								function = g_interface_info_get_method((GIInterfaceInfo*)interface, k);
 								seed_gobject_define_property_from_function_info(function,
-																				(JSObjectRef)js_ref);
+																				(JSObjectRef)js_ref, TRUE);
 						}
 				}
 		}

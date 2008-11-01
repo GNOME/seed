@@ -229,12 +229,9 @@ seed_gobject_method_invoked (JSContextRef ctx,
 
 
 				}
-				else
+				else if (dir == GI_DIRECTION_OUT)
 				{
-						g_error("GI_DIRECTION_IN argument: %d"
-								". In function %s \n",i,
-								g_base_info_get_name(
-										(GIBaseInfo *) info));
+						n_out_args++;
 				}
 
 				g_base_info_unref((GIBaseInfo *) type_info);
@@ -270,7 +267,7 @@ seed_gobject_method_invoked (JSContextRef ctx,
 		return retval_ref;
 }
 
-void seed_gobject_define_property_from_function_info(GIFunctionInfo *info, JSObjectRef object)
+void seed_gobject_define_property_from_function_info(GIFunctionInfo *info, JSObjectRef object, gboolean instance)
 {
 		GIFunctionInfoFlags flags;
 		int n_args, i;
@@ -278,6 +275,7 @@ void seed_gobject_define_property_from_function_info(GIFunctionInfo *info, JSObj
 		GITypeInfo *type_info;
 		GIDirection dir;
 		SeedValue method_ref;
+		const gchar * name;
 
 		//if (g_base_info_is_deprecated ((GIBaseInfo *) info))
 		//	g_printf("Not defining deprecated symbol: %s \n",
@@ -285,9 +283,9 @@ void seed_gobject_define_property_from_function_info(GIFunctionInfo *info, JSObj
 	
 		flags = g_function_info_get_flags (info);
 	
-		if ((flags & GI_FUNCTION_IS_CONSTRUCTOR) ||
+		if (instance && ((flags & GI_FUNCTION_IS_CONSTRUCTOR) ||
 			(flags & GI_FUNCTION_IS_GETTER) ||
-			(flags & GI_FUNCTION_IS_SETTER))
+			 (flags & GI_FUNCTION_IS_SETTER)))
 		{
 				return;
 		}
@@ -297,9 +295,7 @@ void seed_gobject_define_property_from_function_info(GIFunctionInfo *info, JSObj
 		{
 				arg_info = g_callable_info_get_arg((GICallableInfo *) info, i);
 				dir = g_arg_info_get_direction(arg_info);
-				if (dir == GI_DIRECTION_OUT)//||
-						//   dir == GI_DIRECTION_INOUT)
-						return;
+
 				type_info = g_arg_info_get_type(arg_info);
 
 		
@@ -309,10 +305,12 @@ void seed_gobject_define_property_from_function_info(GIFunctionInfo *info, JSObj
 		}
 	
 		method_ref = JSObjectMake(eng->context, gobject_method_class, info);
-		// This is not clear to me.
-		//	JSValueProtect(eng->context, (JSValueRef)method_ref);
+
+		name = g_base_info_get_name((GIBaseInfo *) info);
+		if (!strcmp(name, "new"))
+			name = "_new";
 		seed_value_set_property(object, 
-								g_base_info_get_name((GIBaseInfo *) info), 
+								name,
 								method_ref);
 
 }
@@ -336,7 +334,7 @@ static void seed_gobject_add_methods_for_interfaces(GIObjectInfo * oinfo, JSObje
 				{
 						function = g_interface_info_get_method(interface, k);
 						seed_gobject_define_property_from_function_info
-								(function, object);
+							(function, object, TRUE);
 				}
 				//	g_base_info_unref((GIBaseInfo*)interface);
 		}
@@ -353,7 +351,7 @@ static void seed_gobject_add_methods_for_type(GIObjectInfo * oinfo, JSObjectRef 
 		for (i = 0; i < n_methods; i++)
 		{
 				info = g_object_info_get_method(oinfo, i);
-				seed_gobject_define_property_from_function_info(info, object);
+				seed_gobject_define_property_from_function_info(info, object, TRUE);
 		}
 }
 
@@ -619,7 +617,7 @@ seed_gi_import_namespace(JSContextRef ctx,
 					(g_base_info_get_type(info) == GI_INFO_TYPE_FUNCTION))
 				{
 						seed_gobject_define_property_from_function_info(
-								(GIFunctionInfo *) info, namespace_ref);
+																		(GIFunctionInfo *) info, namespace_ref, FALSE);
 				}
 				else if (info && 
 						 (g_base_info_get_type(info) == GI_INFO_TYPE_ENUM))
@@ -683,13 +681,38 @@ seed_gi_import_namespace(JSContextRef ctx,
 						if (type != 0)
 						{
 								JSObjectRef constructor_ref;
+								int i, n_methods;
+								GIFunctionInfo * finfo;
+								GIFunctionInfoFlags flags;
+
 								class_ref = 
 										seed_gobject_get_class_for_gtype(type);
-				
+								
 								constructor_ref = 
 										JSObjectMake(eng->context, 
 													 gobject_constructor_class, 
 													 (gpointer)type);
+
+
+								n_methods = g_object_info_get_n_methods((GIObjectInfo *)info);
+								for (i = 0; i < n_methods; i++)
+								{
+										finfo = g_object_info_get_method((GIObjectInfo *)info, i);
+										flags = g_function_info_get_flags(finfo);
+										if (flags & GI_FUNCTION_IS_CONSTRUCTOR)
+										{
+												seed_gobject_define_property_from_function_info(finfo,
+																								constructor_ref,
+																								FALSE);
+										}
+										else
+										{
+												g_base_info_unref((GIBaseInfo*)finfo);
+										}
+								}
+				
+
+
 								seed_value_set_property(namespace_ref,
 														g_base_info_get_name(
 																info), 
