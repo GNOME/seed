@@ -10,6 +10,6 @@ Gtk.init(null, null);
 
 for(var i = 0; i < 100; i++)
 {
-    var button = new Gtk.Button({"label":"Test!"});
+    var button = new Gtk.Button({label: "Test!"});
 }
 

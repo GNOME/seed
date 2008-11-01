@@ -85,7 +85,7 @@ function pack_buttons(buttons, vbox)
 
 function create_button(str, func)
 {
-	var btn = new Gtk.Button({"label":str});
+	var btn = new Gtk.Button({label:str});
 	btn.signal_clicked.connect(func, btn);
 	return btn;
 }
@@ -130,13 +130,13 @@ function create_buttons()
 	return vbox;
 }
 
-var window = new Gtk.Window({"title": "Calculator", "resizable": false});
+var window = new Gtk.Window({title: "Calculator", resizable: false});
 
 window.resize(250, 250);
 window.signal_hide.connect(end_program);
 window.opacity = 0.95;
 
-var label = new Gtk.Label({"label": ""});
+var label = new Gtk.Label({label: ""});
 label.set_alignment(1,0);
 update_display();
 

@@ -10,9 +10,9 @@ function oscillator(freq)
 	this.hbox = new Gtk.HBox();
 	this.vscale = new Gtk.VScale();
 	this.volscale = new Gtk.VScale();
-	this.button = new Gtk.Button({"label": "Toggle"});
+	this.button = new Gtk.Button({label: "Toggle"});
 	
-	this.pipeline = new Gst.Pipeline({"name": "test"});
+	this.pipeline = new Gst.Pipeline({name: "test"});
 	this.audiosrc = Gst.element_factory_make("audiotestsrc", "audio");
 	this.audiosink = Gst.element_factory_make("alsasink", "sink");
 	this.volume = Gst.element_factory_make("volume", "vcontrol");
@@ -71,7 +71,7 @@ function end_program()
 }
 
 var window = new Gtk.Window();
-var button = new Gtk.Button({"label": "Add Oscillator"});
+var button = new Gtk.Button({label: "Add Oscillator"});
 
 window.signal_hide.connect(end_program);
 window.resize(600,300);

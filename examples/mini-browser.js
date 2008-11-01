@@ -5,11 +5,6 @@ Seed.import_namespace("WebKit");
 
 var tabs;
 
-function quit()
-{
-	Gtk.main_quit();
-}
-
 function forward(button)
 {
 	this.go_forward();
@@ -73,16 +68,13 @@ function create_toolbar(browser_view)
 {
 	var toolbar = new Gtk.HBox();
 	
-	var back_button = new Gtk.ToolButton();
-	back_button.set_stock_id("gtk-go-back");
+	var back_button = new Gtk.ToolButton({stock_id:"gtk-go-back"});
 	back_button.signal_clicked.connect(back, browser_view);
 	
-	var forward_button = new Gtk.ToolButton();
-	forward_button.set_stock_id("gtk-go-forward");
+	var forward_button = new Gtk.ToolButton({stock_id:"gtk-go-forward"});
 	forward_button.signal_clicked.connect(forward, browser_view);
 	
-	var refresh_button = new Gtk.ToolButton();
-	refresh_button.set_stock_id("gtk-refresh");
+	var refresh_button = new Gtk.ToolButton({stock_id:"gtk-refresh"});
 	refresh_button.signal_clicked.connect(refresh, browser_view);
 	
 	toolbar.pack_start(back_button);
@@ -96,7 +88,7 @@ function create_tab(loc)
 {
 	var tab = new Gtk.VBox();
 	
-	var browser_title = new Gtk.Label({"label":"Untitled"});
+	var browser_title = new Gtk.Label({label:"Untitled"});
 	var browser_view = new WebKit.WebView();
 	
 	var url_entry = new Gtk.Entry();
@@ -115,7 +107,7 @@ function create_tab(loc)
 	tab.pack_start(browser_view, true, true);
 	
 	var close_button = new Gtk.Button();
-	close_button.set_image(new Gtk.Image({"stock": "gtk-close", "icon-size": Gtk.IconSize.menu}));
+	close_button.set_image(new Gtk.Image({stock: "gtk-close", icon_size: Gtk.IconSize.menu}));
 	close_button.signal_clicked.connect(close_tab, tab);
 	close_button.set_relief(Gtk.ReliefStyle.none);
 	
@@ -146,8 +138,8 @@ function create_ui()
 function browser_init()
 {
 	Gtk.init(null, null);
-	var window = new Gtk.Window({"title":"Browser"});
-	window.signal_hide.connect(quit);
+	var window = new Gtk.Window({title: "Browser"});
+	window.signal_hide.connect(Gtk.main_quit);
 	window.resize(800,800);
 	
 	window.add(create_ui());

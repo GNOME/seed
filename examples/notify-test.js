@@ -8,8 +8,8 @@ Gtk.init(null, null);
 function file_changed(monitor, child, other, event)
 {
     var notification = 
-	new Notify.Notification({"summary": "File Notification",
-				 "body" : "This is a poor libnotify example" });
+	new Notify.Notification({summary: "File Notification",
+				 body : "This is a poor libnotify example" });
     notification.set_timeout(5000);
     notification.show();
 }
