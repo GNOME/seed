@@ -57,6 +57,16 @@ div.filename
     width: 70%;
     border-bottom: 1px solid #ccc;
 }
+
+code
+{
+    font-weight: bold;
+}
+
+span.changed
+{
+    color: red;
+}
 	</style>
 </head>
 <body>
@@ -98,7 +108,7 @@ Seed.print(my_name + " will be " + old_age + " in " + old + " years!");
 var output = eval("2+2");
 Seed.print(output);
 </pre>
-<p>Will, in fact, output:</p>
+<p>Will output:</p>
 <pre>
 4.000000
 </pre>
@@ -187,7 +197,7 @@ window.signal_hide.connect(quit);
 </pre>
 <p>The signal names are the same as in the <a href="http://library.gnome.org/devel/gtk/stable/">GTK documentation</a>, except using underscores instead of dashes between words. </p>
 <div class="section">Local Context with '<code>this</code>'</div>
-<p>Javascript, like some other object-oriented languages, has the concept of a local <i>context</i>. Accessed with the '<code>this</code>' keyword, local contexts allow for neatly contained, transparent signal callbacks, among other things. Imagine we have a WebKit view, <code>browser</code>, and a button, <code>back_button</code>. We could certainly make the browser object global, but this would make having multiple browsers (think tabs!) rather annoying. Instead, when setting up the callback, we can provide <code>browser</code> as the '<code>this</code>' object. This gives us the following code:</p>
+<p>Javascript, like some other object-oriented languages, has the concept of a local <i>context</i>. Accessed with the '<code>this</code>' keyword, local contexts allow for neatly contained, transparent signal callbacks, among other things. Imagine we have, a WebKit view, say, <code>browser</code>, and a button, call it <code>back_button</code>. We could certainly make the browser object global, but this would make having multiple browsers (think tabs!) rather annoying. Instead, when setting up the callback, we can provide <code>browser</code> as the '<code>this</code>' object. This gives us the following code:</p>
 <pre>
 function back(button)
 {
@@ -267,14 +277,14 @@ window.add(create_ui());
 <div style="text-align: center;"><img src="2.png" alt="GTK Window with buttons and text entry field" /></div>
 <p>If, for some reason, something doesn't work, compare your code to <a href="1.js">the tutorial version</a>.</p>
 <div class="section">Adding WebKit</div>
-<p>It's finally time to start displaying some web pages with our little browser! Let's create and pack a WebKit web view below our toolbar, first. Create the browser at the top of the <code>create_ui()</code> function (we'll also need to pass the browser as the <code>this</code> object for our button callbacks, so it needs to already be created), and pack it into the <code>main_ui</code> VBox <em>after</em> you pack the toolbar:</p>
+<p>It's finally time to start displaying some web pages with our little browser! Let's create and pack a WebKit web view below our toolbar, first. Create the browser at the top of the <code>create_ui()</code> function (we'll also need to pass the browser as the <code>this</code> object for our button callbacks, so it needs to already be created), and pack it into the <code>main_ui</code> VBox <em>after</em> you pack the toolbar. Here's an updated version of our <code>create_ui()</code> function:</p>
 <pre>
 function create_ui()
 {
     var main_ui = new Gtk.VBox();
     var toolbar = new Gtk.HBox();
 
-    var browser = new WebKit.WebView();
+    <span class="changed">var browser = new WebKit.WebView();</span>
 
     var back_button = new Gtk.ToolButton({stock_id: "gtk-go-back"});
     var forward_button = new Gtk.ToolButton({stock_id: "gtk-go-forward"});
@@ -282,11 +292,11 @@ function create_ui()
 
     var url_entry = new Gtk.Entry();
 
-    back_button.signal_clicked.connect(back, browser);
-    forward_button.signal_clicked.connect(forward, browser);
-    refresh_button.signal_clicked.connect(refresh, browser);
+    back_button.signal_clicked.connect(back<span class="changed">, browser</span>);
+    forward_button.signal_clicked.connect(forward<span class="changed">, browser</span>);
+    refresh_button.signal_clicked.connect(refresh<span class="changed">, browser</span>);
 
-    url_entry.signal_activate.connect(browse, browser);
+    url_entry.signal_activate.connect(browse<span class="changed">, browser</span>);
 
     toolbar.pack_start(back_button);
     toolbar.pack_start(forward_button);
@@ -294,7 +304,7 @@ function create_ui()
     toolbar.pack_start(url_entry, true, true);
 
     main_ui.pack_start(toolbar);
-    main_ui.pack_start(browser, true, true);
+    <span class="changed">main_ui.pack_start(browser, true, true);</span>
     return main_ui;
 }
 </pre>
@@ -350,7 +360,7 @@ function url_changed(browser, frame)
     this.text = frame.get_uri();
 }
 </pre>
-<p>If all goes well, your browser should now be in an entirely working state, looking much like the following:</p>
+<p>If all goes well, your browser should now be in a working state, looking much like the following:</p>
 <div style="text-align: center;"><img src="4.png" alt="GTK Window with toolbar and browser view at GNOME.org" /></div>
 <p>You will probably notice, at some point, that opening content in a new tab or new window doesn't work in your browser. This is, in fact, due to an open WebKit bug, <a href="http://bugs.webkit.org/show_bug.cgi?id=19130">#19130</a>. Once this bug is fixed, the straightforward design of your browser will make it <em>simple</em> to add support for multiple windows.</p>
 <p>The final version of the tutorial's source code is available if you're having trouble; if, however, you made easy work of the tutorial, you should consider making some improvements to your browser: change the window title when the web page title changes (look at the title_changed signal!); add tabs (GtkNotebook is probably what you're looking for); bookmarks are often useful!; perhaps a status menu? Or, go ahead and write your own application in Seed!</p>
