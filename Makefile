@@ -3,6 +3,8 @@ all:
 	gcc `pkg-config --cflags --libs gstreamer-0.10 glib-2.0 webkit-1.0 gobject-introspection-1.0` *.c -g -o seed  -L libseed -lseed -lreadline -lffi
 install:
 	cp libseed/libseed.so /usr/local/lib
-	cp ./seed /usr/local/bin/seed 
+	cp ./seed /usr/local/bin/seed
+	mkdir -p /usr/local/share/seed
+	cp extensions/* /usr/local/share/seed 
 test:
 	cd tests ; ./run-tests.py

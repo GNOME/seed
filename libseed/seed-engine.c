@@ -546,11 +546,7 @@ static bool seed_gobject_set_property(JSContextRef context,
 													cproperty_name);
 				if (!spec)
 				{
-					//gchar * mes = g_strdup_printf("No such property: %s on object of type %s \n",
-					//							  cproperty_name, g_type_name(G_OBJECT_TYPE(obj)));
-						//						seed_make_exception(exception, "InvalidProperty", mes)
-						//g_free(mes);
-						g_free(cproperty_name);
+					g_free(cproperty_name);
 						return 0;
 				}
 		}
@@ -590,8 +586,10 @@ seed_gi_import_namespace(JSContextRef ctx,
 {
 		GIBaseInfo * info;
 		const gchar * namespace;
+		const gchar * extension;
 		const gchar * version = 0;
 		JSObjectRef namespace_ref;
+		JSStringRef extension_script;
 		int n,i;
 	
 		namespace = seed_value_to_string(arguments[0]);
@@ -620,7 +618,7 @@ seed_gi_import_namespace(JSContextRef ctx,
 					(g_base_info_get_type(info) == GI_INFO_TYPE_FUNCTION))
 				{
 						seed_gobject_define_property_from_function_info(
-																		(GIFunctionInfo *) info, namespace_ref, FALSE);
+							(GIFunctionInfo *) info, namespace_ref, FALSE);
 				}
 				else if (info && 
 						 (g_base_info_get_type(info) == GI_INFO_TYPE_ENUM))
@@ -697,16 +695,20 @@ seed_gi_import_namespace(JSContextRef ctx,
 													 (gpointer)type);
 
 
-								n_methods = g_object_info_get_n_methods((GIObjectInfo *)info);
+								n_methods = 
+									g_object_info_get_n_methods((GIObjectInfo *)info);
 								for (i = 0; i < n_methods; i++)
 								{
-										finfo = g_object_info_get_method((GIObjectInfo *)info, i);
+										finfo = 
+											g_object_info_get_method(
+													 (GIObjectInfo *)info, i);
 										flags = g_function_info_get_flags(finfo);
 										if (flags & GI_FUNCTION_IS_CONSTRUCTOR)
 										{
-												seed_gobject_define_property_from_function_info(finfo,
-																								constructor_ref,
-																								FALSE);
+												seed_gobject_define_property_from_function_info(
+													finfo,
+													constructor_ref,
+													FALSE);
 										}
 										else
 										{
@@ -726,6 +728,13 @@ seed_gi_import_namespace(JSContextRef ctx,
 
 				}
 		}
+		
+
+		extension = g_strdup_printf("Seed.include(\"/usr/local/share/seed/%s.js\")", 
+									namespace);
+		extension_script = JSStringCreateWithUTF8CString(extension);
+		JSEvaluateScript(eng->context, extension_script, NULL, NULL, 0, NULL);
+		JSStringRelease(extension_script);
 
 		g_free((gchar *)namespace);
 

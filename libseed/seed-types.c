@@ -693,6 +693,9 @@ gboolean	seed_value_to_boolean(JSValueRef val)
 {
 	if(!JSValueIsBoolean(eng->context, val))
 	{
+		if(!JSValueIsNull(eng->context, val))
+			seed_value_wrong_type();
+			
 		seed_value_wrong_type();
 		return 0;
 	}
@@ -709,7 +712,8 @@ guint		seed_value_to_uint(JSValueRef val)
 {
 	if(!JSValueIsNumber(eng->context, val))
 	{
-		seed_value_wrong_type();
+		if(!JSValueIsNull(eng->context, val))
+			seed_value_wrong_type();
 		return 0;
 	}
 	
@@ -725,7 +729,8 @@ gint		seed_value_to_int(JSValueRef val)
 {
 	if(!JSValueIsNumber(eng->context, val))
 	{
-		seed_value_wrong_type();
+		if(!JSValueIsNull(eng->context, val))
+			seed_value_wrong_type();
 		return 0;
 	}
 	
@@ -743,7 +748,8 @@ gchar		seed_value_to_char(JSValueRef val)
 	
 	if(!JSValueIsNumber(eng->context, val))
 	{
-		seed_value_wrong_type();
+		if(!JSValueIsNull(eng->context, val))
+			seed_value_wrong_type();
 		return 0;
 	}
 	
@@ -769,7 +775,8 @@ guchar		seed_value_to_uchar(JSValueRef val)
 	
 	if(!JSValueIsNumber(eng->context, val))
 	{
-		seed_value_wrong_type();
+		if(!JSValueIsNull(eng->context, val))
+			seed_value_wrong_type();
 		return 0;
 	}
 	
@@ -793,7 +800,8 @@ glong		seed_value_to_long(JSValueRef val)
 {
 	if(!JSValueIsNumber(eng->context, val))
 	{
-		seed_value_wrong_type();
+		if(!JSValueIsNull(eng->context, val))
+			seed_value_wrong_type();
 		return 0;
 	}
 	
@@ -809,7 +817,8 @@ gulong		seed_value_to_ulong(JSValueRef val)
 {
 	if(!JSValueIsNumber(eng->context, val))
 	{
-		seed_value_wrong_type();
+		if(!JSValueIsNull(eng->context, val))
+			seed_value_wrong_type();
 		return 0;
 	}
 	
@@ -825,7 +834,8 @@ gint64		seed_value_to_int64(JSValueRef val)
 {
 	if(!JSValueIsNumber(eng->context, val))
 	{
-		seed_value_wrong_type();
+		if(!JSValueIsNull(eng->context, val))
+			seed_value_wrong_type();
 		return 0;
 	}
 	
@@ -841,7 +851,8 @@ guint64		seed_value_to_uint64(JSValueRef val)
 {
 	if(!JSValueIsNumber(eng->context, val))
 	{
-		seed_value_wrong_type();
+		if(!JSValueIsNull(eng->context, val))
+			seed_value_wrong_type();
 		return 0;
 	}
 	
@@ -857,7 +868,8 @@ gfloat		seed_value_to_float(JSValueRef val)
 {
 	if(!JSValueIsNumber(eng->context, val))
 	{
-		seed_value_wrong_type();
+		if(!JSValueIsNull(eng->context, val))
+			seed_value_wrong_type();
 		return 0;
 	}
 	
@@ -873,7 +885,8 @@ gdouble		seed_value_to_double(JSValueRef val)
 {
 	if(!JSValueIsNumber(eng->context, val))
 	{
-		seed_value_wrong_type();
+		if(!JSValueIsNull(eng->context, val))
+			seed_value_wrong_type();
 		return 0;
 	}
 	

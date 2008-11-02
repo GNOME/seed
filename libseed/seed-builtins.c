@@ -33,12 +33,8 @@ seed_include(JSContextRef ctx,
 {
 	const gchar * import_file;
 	gchar * buffer, * walk;
-	GValue gval = {0};
 	
-	seed_gvalue_from_seed_value((SeedValue)arguments[0], G_TYPE_STRING, &gval);
-	g_assert(G_VALUE_HOLDS_STRING(&gval));
-	
-	import_file = g_value_get_string(&gval);
+	import_file = seed_value_to_string(arguments[0]);
 	
 	g_file_get_contents(import_file, &buffer, 0, 0);
 	
@@ -118,6 +114,26 @@ seed_readline(JSContextRef ctx,
 	return valstr;
 }
 
+JSValueRef
+seed_prototype(JSContextRef ctx,
+			  JSObjectRef function,
+			  JSObjectRef this_object,
+			  size_t argumentCount,
+			  const JSValueRef arguments[],
+			  JSValueRef * exception)
+{
+	GType type;
+
+	if (argumentCount != 1)
+		return JSValueMakeNull(eng->context);
+	if (!JSValueIsObject(eng->context, arguments[0]))
+		return JSValueMakeNull(eng->context);
+	
+	type = (GType)JSObjectGetPrivate((JSObjectRef)arguments[0]);
+	
+	return seed_gobject_get_prototype_for_gtype(type);
+}
+
 void seed_init_builtins(int * argc, char *** argv)
 {
 	int i;
@@ -128,6 +144,7 @@ void seed_init_builtins(int * argc, char *** argv)
 	seed_create_function("include", &seed_include, obj);
 	seed_create_function("print", &seed_print, obj);
 	seed_create_function("readline", &seed_readline, obj);
+	seed_create_function("prototype", &seed_prototype, obj);
 	
 	arrayObj = JSObjectMake(eng->context, NULL, NULL);
 	
