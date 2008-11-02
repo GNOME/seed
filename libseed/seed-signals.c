@@ -175,10 +175,12 @@ seed_gobject_signal_connect (JSContextRef ctx,
 	((SeedClosure *) closure)->function = (JSObjectRef)arguments[0];
 	((SeedClosure *)closure)->object = 
 		g_object_get_data(privates->object, "js-ref");
-	if (argumentCount == 2)
+	if (argumentCount == 2 && !JSValueIsNull(eng->context,arguments[1]))
 		((SeedClosure *)closure)->this = (JSObjectRef)arguments[1];
 	else
 		((SeedClosure *)closure)->this = 0;
+	
+
 	
 	
 	g_signal_connect_closure_by_id (privates->object,
