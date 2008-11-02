@@ -31,6 +31,7 @@ seed_include(JSContextRef ctx,
 				 const JSValueRef arguments[],
 				 JSValueRef * exception)
 {
+	JSStringRef file_contents, file_name;
 	const gchar * import_file;
 	gchar * buffer, * walk;
 	
@@ -58,8 +59,13 @@ seed_include(JSContextRef ctx,
 	walk = strdup(walk);
 	g_free(buffer);
 	
-	JSEvaluateScript(ctx, JSStringCreateWithUTF8CString(walk), 
-					 NULL, JSStringCreateWithUTF8CString(import_file), 0, NULL);
+	file_contents = JSStringCreateWithUTF8CString(walk);
+	file_name = JSStringCreateWithUTF8CString(import_file);
+	JSEvaluateScript(ctx, file_contents, 
+					 NULL, file_name, 0, NULL);
+	
+	JSStringRelease(file_contents);
+	JSStringRelease(file_name);
 	
 	return 0;
 }
