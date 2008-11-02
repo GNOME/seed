@@ -140,6 +140,24 @@ seed_prototype(JSContextRef ctx,
 	return seed_gobject_get_prototype_for_gtype(type);
 }
 
+JSValueRef
+seed_check_syntax(JSContextRef ctx,
+			  JSObjectRef function,
+			  JSObjectRef this_object,
+			  size_t argumentCount,
+			  const JSValueRef arguments[],
+			  JSValueRef * exception)
+{										
+		if (argumentCount != 0)
+		{
+				JSStringRef jsstr = JSValueToStringCopy(eng->context, arguments[0], exception);
+				JSCheckScriptSyntax(ctx, jsstr, 0, 0, exception);
+				if (jsstr)
+						JSStringRelease(jsstr);
+		}
+		return JSValueMakeNull(eng->context);
+}
+
 void seed_init_builtins(int * argc, char *** argv)
 {
 	int i;
@@ -151,6 +169,7 @@ void seed_init_builtins(int * argc, char *** argv)
 	seed_create_function("print", &seed_print, obj);
 	seed_create_function("readline", &seed_readline, obj);
 	seed_create_function("prototype", &seed_prototype, obj);
+	seed_create_function("check_syntax", &seed_check_syntax, obj);
 	
 	arrayObj = JSObjectMake(eng->context, NULL, NULL);
 	

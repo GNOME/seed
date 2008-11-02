@@ -877,14 +877,16 @@ SeedScript * seed_make_script(const gchar * js, const gchar * source_url,
 		SeedScript * ret = g_new0(SeedScript, 1);
 
 		ret->script = JSStringCreateWithUTF8CString(js);
-		JSCheckScriptSyntax(eng->context, ret->script,
-							0, 0, &ret->exception);
 	
 		if (source_url)
 		{
 				ret->source_url = JSStringCreateWithUTF8CString(source_url);
 		}
 		ret->line_number = line_number;
+
+		JSCheckScriptSyntax(eng->context, ret->script,
+							ret->source_url, ret->line_number, &ret->exception);
+
 
 		return ret;
 }
