@@ -63,7 +63,6 @@ div.filename
 <div id="header">Seed Tutorial : Standalone</div>
 <div id="subheader">v.0.1</div>
 <div class="section">Introduction</div>
-<p><b><big>ROBB SAYS MAKE IT MORE DUMBED DOWN. TALK ABOUT PACKING AND STUFF. AND GTK. MAKE IT A GTK TUTORIAL, AND DO IT LIVE.</big></b></p>
 <p>Seed, first and foremost, provides an easily embeddable Javascript engine to developers looking for a straightforward way to create extensible applications. It also provides bindings between <a href="http://library.gnome.org/devel/gobject/stable/">GObject</a> and the <a href="http://www.webkit.org">WebKit</a> Javascript engine, giving new developers access to the power of the GNOME stack from a familiar and simple language, and allowing rapid prototyping of applications for hardened GNOME developers.</p>
 <p>This tutorial begins with a few brief examples, and then dives right in, following the development of a simple Seed program, from beginning to end. By the end of the tutorial, you'll have your very own tiny WebKit-based web browser, as well as a summary knowledge of the use of Seed to build Gtk+ applications.</p>
 <div class="section">Beginning Seed</div>
@@ -149,7 +148,7 @@ while(1)
 <div class="section">Getting GTK Going</div>
 <p>Thus far in this tutorial, we've been completely ignoring the most useful part of Seed: the ability to use external libraries from within Javascript. The single most useful of these libraries is GTK, the widget and windowing toolkit used by all GNOME applications, which will provide the ability to create and manipulate graphical windows, as well as just about any sort of widget you should require.</p>
 <p>In order to use GTK (or any other external library) in a Seed program, you first have to import the functions from said library. <code>Seed.import_namespace()</code>, taking as its only argument the name of the library to import, does this for us.</p>
-<p>Once the library has been imported, all of its functions are available on a global object with the same name as the library. For example, if we <code>Seed.import_namespace("Gtk")</code>, all of the imported functions are on the Gtk object: <code>Gtk.init()</code>, etc.</p>
+<p>Once the library has been imported, all of its functions are available on a global object with the same name as the library. For example, if we <code>Seed.import_namespace("Gtk")</code>, all of the imported functions are available on the Gtk object: <code><a href="http://library.gnome.org/devel/gtk/2.14/gtk-General.html#gtk-init">Gtk.init()</a></code>, etc.</p>
 <p>Let's start off the development of our browser by getting Gtk working. It takes very little to get a window displayed with Seed:</p>
 <pre>
 #!/usr/local/bin/seed
@@ -162,13 +161,13 @@ window.show_all();
 
 Gtk.main();
 </pre>
-<p>I've you've ever used GTK from C, you'll notice some similarities here. All of the GTK functions have been mapped into Javascript in a reasonable way, but it will certainly take a bit to get used to, for example, <code>new Gtk.Window()</code> instead of <code>gtk_window_new()</code>.</p>
+<p>If you've ever used GTK from C, you'll notice some similarities here. All of the GTK functions have been mapped into Javascript in a reasonable way, but it will certainly take a bit to get used to, for example, <code>new Gtk.Window()</code> instead of <code>gtk_window_new()</code>.</p>
 <p>Executing the above script should give you a window that looks entirely empty and boring, something like the following:</p>
-<div style="text-align: center;"><img src="tutorial-images/1.png" alt="Blank GTK Window"/></div>
+<div style="text-align: center;"><img src="1.png" alt="Blank GTK Window"/></div>
 <div class="section">JSON Constructors</div>
 <p>Notice that the title of the window is 'seed'. We'll fix that, using another Seed feature: you can use <a href="http://www.json.org/js.html">JSON notation</a> to set properties while constructing objects, like so:</p>
 <pre>
-var window = new Gtk.Window({"title": "Browser"});
+var window = new Gtk.Window({title: "Browser"});
 </pre>
 <p>This saves a lot of typing from the alternative, conventional method:</p>
 <pre>
@@ -177,7 +176,7 @@ window.set_title("Browser");
 </pre>
 <p>You can set any number of properties this way, by separating them by commas (<code>{"title": "Browser", "default-height": 500}</code>, etc.). This method should work for any GObject constructor.</p>
 <div class="section">Signals</div>
-<p>You'll notice that our program, as it stands, fails to quit when you click the 'Close' button. You can, of course, quit it with Ctrl-C, but this isn't very 'GNOME-y'. To fix it, we'll connect a Javascript function to the signal that gets emitted when the 'Close' button is clicked:</p>
+<p>You'll notice that our program, as it stands, fails to quit when you click the 'Close' button. You can, of course, quit it with Ctrl-C, but this is certainly unacceptable behaviour. To fix it, we'll connect a Javascript function to the signal that gets emitted when the 'Close' button is clicked:</p>
 <pre>
 function quit()
 {
@@ -187,16 +186,36 @@ function quit()
 window.signal_hide.connect(quit);
 </pre>
 <p>The signal names are the same as in the <a href="http://library.gnome.org/devel/gtk/stable/">GTK documentation</a>, except using underscores instead of dashes between words. </p>
-<div class="section">Working with Widgets</div>
-<p>We'll start by making the browser's toolbar buttons. It makes sense to split this out into a function, to keep the program readable, and in case we want to reuse the code (who knows!):</p>
+<div class="section">Local Context with '<code>this</code>'</div>
+<p>Javascript, like some other object-oriented languages, has the concept of a local <i>context</i>. Accessed with the '<code>this</code>' keyword, local contexts allow for neatly contained, transparent signal callbacks, among other things. Imagine we have a WebKit view, <code>browser</code>, and a button, <code>back_button</code>. We could certainly make the browser object global, but this would make having multiple browsers (think tabs!) rather annoying. Instead, when setting up the callback, we can provide <code>browser</code> as the '<code>this</code>' object. This gives us the following code:</p>
 <pre>
-function create_toolbar()
+function back(button)
 {
+    this.go_back();
+}
+
+function create_browser()
+{
+    var browser;
+    var back_button;
+
+    ...
+
+    back_button.signal_clicked.connect(back, browser);
+}
+</pre>
+<p>In this case, the <code>browser</code> object is passed as the magical <code>this</code> object into the <code>back()</code> function, so <code>go_back()</code> is actually called on <code>browser</code>. The upside to this model is that, no matter how many times <code>create_browser()</code> is called, <code>back()</code> is always provided the <code>browser</code> that corresponds with its <code>back_button</code>.</p>
+<div class="section">Working with Widgets</div>
+<p>We'll start by making the browser's toolbar buttons. GTK provides a ToolButton widget, which is generally used for making such toolbars, as well as various different stock icons (to ensure consistency within all GTK applications). Browsing through <a href="http://library.gnome.org/devel/gtk/2.14/gtk-Stock-Items.html">the GTK Stock Item documentation</a>, we find that we're looking for "<code>gtk-go-back</code>", "<code>gtk-go-forward</code>", and "<code>gtk-refresh</code>". A glance at the <a href="">GtkToolButton documentation</a> shows us that we can choose a stock icon by setting the <code>stock-id</code> property - we'll use JSON constructors to keep things tidy. Do note that we use underscores instead of dashes, because the property name isn't quoted (thus, a dash would indicate subtraction, which isn't what we're looking for!):</p>
+<pre>
+function create_ui()
+{
+    var main_ui = new Gtk.VBox();
     var toolbar = new Gtk.HBox();
 
-    var back_button = new Gtk.ToolButton({"stock-id": "gtk-go-back"});
-    var forward_button = new Gtk.ToolButton({"stock-id": "gtk-go-forward"});
-    var refresh_button = new Gtk.ToolButton({"stock-id": "gtk-refresh"});
+    var back_button = new Gtk.ToolButton({stock_id: "gtk-go-back"});
+    var forward_button = new Gtk.ToolButton({stock_id: "gtk-go-forward"});
+    var refresh_button = new Gtk.ToolButton({stock_id: "gtk-refresh"});
 
     var url_entry = new Gtk.Entry();
 
@@ -211,9 +230,11 @@ function create_toolbar()
     toolbar.pack_start(refresh_button);
     toolbar.pack_start(url_entry, true, true);
 
-    return toolbar;
+    main_ui.pack_start(toolbar);
+    return main_ui;
 }
 </pre>
+<p>There are a few things in the snippet above which you probably haven't seen before (unless you've used GTK in another language). Firstly, the Gtk.Entry widget is a simple text entry field, like you would expect in a browser's URL bar. Secondly, you'll notice the use of the Gtk.HBox widget, and its <code>pack_start()</code> function. These serve as the foundation of GUI layout in GTK: a window is subdivided into boxes, which 'pack' widgets in a particular direction (HBoxes pack horizontally, VBoxes pack vertically, as expected). We use a HBox, since we want our toolbar arranged horizontally. <code>pack_start()</code> adds a widget to a Box; widgets are packed in the order they're added. There are optional arguments, which are addressed in more depth in the <a href="http://library.gnome.org/devel/gtk/2.14/GtkBox.html">GtkBox documentation</a>, which allow you to force widgets to expand into the usable space (the second and third arguments used when packing <code>url_entry</code> above serve this purpose).</p>
 <p>We also need a bunch of callbacks (for all three buttons, and for when you're done entering text in the URL bar). We'll make them just print the function they're supposed to perform, for now, since we don't have a WebKit view to operate on yet.</p>
 <pre>
 function forward(button)
@@ -236,12 +257,102 @@ function browse(button)
     Seed.print("browser");
 }
 </pre>
-<p>Right now, nothing's calling <code>create_toolbar()</code>, so you won't see the toolbar drawn. You'll notice that <code>create_toolbar()</code> returns an HBox with all of the widgets in it - thinking ahead, we'll pack this HBox into a VBox (eventually, we'll add the WebKit view, too!).</p>
-<p>Before window.show_all(), add a line to pack the toolbar:</p>
+<p>You'll notice that <code>create_ui()</code> returns an VBox with all of the widgets in it - thinking ahead, we're packing the toolbar HBox into a VBox (eventually, we'll add the WebKit view, too!). In fact, to try and get a more visual feel of packing, let's take a look at the Box layout for our browser:</p>
+<div style="text-align: center;"><img src="packing.png" alt="Packing Layout"/></div>
+<p>Right now, nothing's calling <code>create_ui()</code>, so you won't see the toolbar drawn. To remedy this, before <code>window.show_all()</code>, add a line to pack the toolbar:</p>
 <pre>
-window.add(create_toolbar());
+window.add(create_ui());
 </pre>
-<div style="text-align: center;"><img src="tutorial-images/2.png" alt="GTK Window with buttons and text entry field" /></div>
-<p>If, for some reason, something doesn't work, compare your code to <a href="tutorial-scripts/1.js">the tutorial version</a>.</p>
+<p>Your code should be in a runnable state now; take a minute to try it out, stand back, and admire what you've learned:</p>
+<div style="text-align: center;"><img src="2.png" alt="GTK Window with buttons and text entry field" /></div>
+<p>If, for some reason, something doesn't work, compare your code to <a href="1.js">the tutorial version</a>.</p>
+<div class="section">Adding WebKit</div>
+<p>It's finally time to start displaying some web pages with our little browser! Let's create and pack a WebKit web view below our toolbar, first. Create the browser at the top of the <code>create_ui()</code> function (we'll also need to pass the browser as the <code>this</code> object for our button callbacks, so it needs to already be created), and pack it into the <code>main_ui</code> VBox <em>after</em> you pack the toolbar:</p>
+<pre>
+function create_ui()
+{
+    var main_ui = new Gtk.VBox();
+    var toolbar = new Gtk.HBox();
+
+    var browser = new WebKit.WebView();
+
+    var back_button = new Gtk.ToolButton({stock_id: "gtk-go-back"});
+    var forward_button = new Gtk.ToolButton({stock_id: "gtk-go-forward"});
+    var refresh_button = new Gtk.ToolButton({stock_id: "gtk-refresh"});
+
+    var url_entry = new Gtk.Entry();
+
+    back_button.signal_clicked.connect(back, browser);
+    forward_button.signal_clicked.connect(forward, browser);
+    refresh_button.signal_clicked.connect(refresh, browser);
+
+    url_entry.signal_activate.connect(browse, browser);
+
+    toolbar.pack_start(back_button);
+    toolbar.pack_start(forward_button);
+    toolbar.pack_start(refresh_button);
+    toolbar.pack_start(url_entry, true, true);
+
+    main_ui.pack_start(toolbar);
+    main_ui.pack_start(browser, true, true);
+    return main_ui;
+}
+</pre>
+<p>Also, remember that we need to import a namespace before its functions are available to us! So, go back to the top of the file and import "WebKit", just after you import "Gtk". One final thing, before you again try to run your browser: we haven't yet specified a 'recommended' size for our window - let's go ahead and do that (if we didn't do so, the WebKit view would have no space to fill!). Just after you create the Gtk.Window(), add:</p>
+<pre>
+window.resize(600,600);
+</pre>
+<p>Now, fire up your browser! Hopefully, you'll see a nice blank WebKit view, like below. If you don't, take a peek at <a href="2.js">our version</a>.</p>
+<div style="text-align: center;"><img src="3.png" alt="GTK Window with toolbar and empty browser view" /></div>
+<p>That's really not a very interesting browser, at all - nothing works yet, and there's no way to navigate! Still, we're almost done.</p>
+<div class="section">Finishing our Browser</div>
+<p>Poking around in the <a href="http://svn.webkit.org/repository/webkit/trunk/WebKit/gtk/webkit/webkitwebview.h">WebKit documentation</a> (the WebKit team is a bit behind on documentation, so all we have to work with is header files), we find that the <code>open()</code> function on a WebView allows you to navigate to a particular page. Just after you create the WebView, have it navigate to your favorite page:</p>
+<pre>
+browser.open("http://www.gnome.org");
+</pre>
+<p>A quick note about WebKit: if you omit the protocol part of a URL (e.g., http://), WebKit won't even bother to try to figure it out - so make sure you specify it! This is also important for the browse() callback, which is called when you press enter in the URL field, which we'll implement now. To get around this shortcoming, we'll use Javascript's string search function to see if a protocol has been specified, and, if it hasn't, we'll assume it's '<code>http://</code>':</p>
+<pre>
+function browse(url)
+{
+    if(url.text.search("://") < 0)
+    {
+        url.text = "http://" + url.text;
+    }
+
+    this.open(url.text);
+}
+</pre>
+<p>Almost done! Next we need to implement the button callbacks. Again browsing webkitwebview.h, we find reload(), go_forward(), and go_back() - the last functions needed to finish our browser! Remembering that the browser view is passed as '<code>this</code>' to the functions, go ahead and fill them in:</p>
+<pre>
+function forward(button)
+{
+    this.go_forward();
+}
+
+function back(button)
+{
+    this.go_back();
+}
+
+function refresh(button)
+{
+    this.reload();
+}
+</pre>
+<p>Our final modification will listen to a WebKit signal, and adjust the URL bar when you click a link. The aforementioned webkitwebview.h header file provides us with the name of the signal (load_committed). This signal is different than those we've worked with in the past, as it provides two arguments: the WebView, and a WebFrame. The distinction is important in WebKit-land, but we'll ignore it, noting only that (from the headers, again - this time, webkitwebframe.h) there is a WebFrame get_uri() function which provides the current URL of the frame. Let's first add our signal connection code. Make sure to connect to load_committed <em>after</em> you've created both the WebView and the URL entry field, as the signal is <em>on</em> the browser view, and we want to pass the URL entry field as its <code>this</code> object:</p>
+<pre>
+    browser.signal_load_committed.connect(url_changed, url_entry);
+</pre>
+<p>Next, the callback, <code>url_changed</code>. Remember that we're given two arguments, and that <code>this</code> is the URL entry field:</p>
+<pre>
+function url_changed(browser, frame)
+{
+    this.text = frame.get_uri();
+}
+</pre>
+<p>If all goes well, your browser should now be in an entirely working state, looking much like the following:</p>
+<div style="text-align: center;"><img src="4.png" alt="GTK Window with toolbar and browser view at GNOME.org" /></div>
+<p>You will probably notice, at some point, that opening content in a new tab or new window doesn't work in your browser. This is, in fact, due to an open WebKit bug, <a href="http://bugs.webkit.org/show_bug.cgi?id=19130">#19130</a>. Once this bug is fixed, the straightforward design of your browser will make it <em>simple</em> to add support for multiple windows.</p>
+<p>The final version of the tutorial's source code is available if you're having trouble; if, however, you made easy work of the tutorial, you should consider making some improvements to your browser: change the window title when the web page title changes (look at the title_changed signal!); add tabs (GtkNotebook is probably what you're looking for); bookmarks are often useful!; perhaps a status menu? Or, go ahead and write your own application in Seed!</p>
 </body>
 </html>
