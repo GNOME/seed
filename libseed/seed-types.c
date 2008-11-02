@@ -167,7 +167,7 @@ GType seed_gi_type_to_gtype(GITypeInfo *type_info, GITypeTag tag)
 
 
 gboolean seed_gi_make_argument(SeedValue value,
-							   GITypeInfo *type_info,
+							   GITypeInfo * type_info,
 							   GArgument * arg)
 {
 		GITypeTag gi_tag = g_type_info_get_tag(type_info);
@@ -283,7 +283,7 @@ gboolean seed_gi_make_argument(SeedValue value,
 		
 }
 
-JSValueRef seed_gi_argument_make_js(GArgument * arg, GITypeInfo *type_info)
+JSValueRef seed_gi_argument_make_js(GArgument * arg, GITypeInfo * type_info)
 {
 		GITypeTag gi_tag = g_type_info_get_tag(type_info);
 		switch (gi_tag)
@@ -347,7 +347,7 @@ JSValueRef seed_gi_argument_make_js(GArgument * arg, GITypeInfo *type_info)
 				}
 				else if (interface_type == GI_INFO_TYPE_STRUCT)
 				{
-						return seed_make_struct(arg->v_pointer);
+						return seed_make_struct(arg->v_pointer, interface);
 				}
 		}
 	  
@@ -458,12 +458,12 @@ SeedValue seed_value_from_gvalue(GValue * gval)
 		
 		if (type == GI_INFO_TYPE_UNION)
 		{
-				return seed_make_union(g_value_peek_pointer(gval));
+				return seed_make_union(g_value_peek_pointer(gval), info);
 
 		}
 		else if (type == GI_INFO_TYPE_STRUCT)
 		{
-				return seed_make_struct(g_value_peek_pointer(gval));
+				return seed_make_struct(g_value_peek_pointer(gval), info);
 									
 		}
 			
@@ -617,6 +617,17 @@ gboolean seed_gvalue_from_seed_value(SeedValue val,
 
 		g_object_unref(o);
 	}
+	else if(g_type_is_a(type, G_TYPE_BOXED))
+	{
+			gpointer p = seed_struct_get_pointer(val);
+			if (p)
+			{
+					g_value_init(ret, type);
+					g_value_set_boxed(ret, p);
+					return TRUE;
+			}
+	}
+
 	return FALSE;
 }
 

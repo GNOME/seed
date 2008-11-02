@@ -196,7 +196,9 @@ seed_gobject_method_invoked (JSContextRef ctx,
 		GError * error = 0;
 	
 		info = JSObjectGetPrivate(function);
-		if (!(object = seed_value_to_object(this_object)))
+		if (!
+			((object = seed_value_to_object(this_object)) ||
+			 (object = seed_struct_get_pointer(this_object))))
 				instance_method = FALSE;
 
 		n_args = g_callable_info_get_n_args((GICallableInfo *) info);
@@ -279,10 +281,6 @@ void seed_gobject_define_property_from_function_info(GIFunctionInfo *info,
 													 gboolean instance)
 {
 		GIFunctionInfoFlags flags;
-		int n_args, i;
-		GIArgInfo *arg_info;
-		GITypeInfo *type_info;
-		GIDirection dir;
 		SeedValue method_ref;
 		const gchar * name;
 
@@ -292,26 +290,12 @@ void seed_gobject_define_property_from_function_info(GIFunctionInfo *info,
 	
 		flags = g_function_info_get_flags (info);
 	
-		if (instance && ((flags & GI_FUNCTION_IS_CONSTRUCTOR) ||
-			(flags & GI_FUNCTION_IS_GETTER) ||
-			 (flags & GI_FUNCTION_IS_SETTER)))
+		if (instance && (flags & GI_FUNCTION_IS_CONSTRUCTOR))
+
 		{
 				return;
 		}
 	
-		n_args = g_callable_info_get_n_args((GICallableInfo *) info);
-		for (i = 0; i < n_args; i++)
-		{
-				arg_info = g_callable_info_get_arg((GICallableInfo *) info, i);
-				dir = g_arg_info_get_direction(arg_info);
-
-				type_info = g_arg_info_get_type(arg_info);
-
-		
-				if (!seed_gi_supports_type(type_info))
-						g_base_info_unref((GIBaseInfo *)type_info);
-		
-		}
 	
 		method_ref = JSObjectMake(eng->context, gobject_method_class, info);
 
@@ -360,7 +344,8 @@ static void seed_gobject_add_methods_for_type(GIObjectInfo * oinfo, JSObjectRef 
 		for (i = 0; i < n_methods; i++)
 		{
 				info = g_object_info_get_method(oinfo, i);
-				seed_gobject_define_property_from_function_info(info, object, TRUE);
+				seed_gobject_define_property_from_function_info(info, 
+																object, TRUE);
 		}
 }
 
@@ -702,7 +687,7 @@ seed_gi_import_namespace(JSContextRef ctx,
 
 
 								n_methods = 
-									g_object_info_get_n_methods((GIObjectInfo *)info);
+							  g_object_info_get_n_methods((GIObjectInfo *)info);
 								for (i = 0; i < n_methods; i++)
 								{
 										finfo = 
@@ -738,7 +723,6 @@ seed_gi_import_namespace(JSContextRef ctx,
 						JSObjectRef struct_ref;
 						int i, n_methods;
 						GIFunctionInfo *finfo;
-						GIFunctionInfoFlags flags;
 						
 						struct_ref = JSObjectMake(eng->context, 0, 0);
 						
@@ -749,13 +733,10 @@ seed_gi_import_namespace(JSContextRef ctx,
 								finfo =
 										g_struct_info_get_method(
 												(GIStructInfo*)info, i);
-								flags = g_function_info_get_flags(finfo);
-								if (flags & GI_FUNCTION_IS_CONSTRUCTOR)
-								{
 										seed_gobject_define_property_from_function_info(finfo, 
 																						struct_ref,
 																						FALSE);
-								}
+
 						}
 						
 						seed_value_set_property(namespace_ref,
