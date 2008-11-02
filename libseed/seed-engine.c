@@ -100,6 +100,7 @@ seed_gobject_constructor_invoked (JSContextRef ctx,
 	
 		while(i < nparams)
 		{
+				GType type;
 				jsprop_name = JSPropertyNameArrayGetNameAtIndex(jsprops, i);
 		
 				length = JSStringGetMaximumUTF8CStringSize(jsprop_name);
@@ -116,10 +117,15 @@ seed_gobject_constructor_invoked (JSContextRef ctx,
 												   (JSObjectRef)arguments[0],
 												   jsprop_name,
 												   NULL);
+				
+				if (g_type_is_a(param_spec->value_type, G_TYPE_ENUM))
+						type = G_TYPE_INT;
+				else
+						type = param_spec->value_type;
 		
 				if (!seed_gvalue_from_seed_value(
 							jsprop_value,
-							G_PARAM_SPEC_VALUE_TYPE(param_spec), 
+							type,
 							&params[i].value))
 				{
 						g_free(prop_name);
