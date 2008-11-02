@@ -250,7 +250,7 @@ gboolean seed_gi_make_argument(SeedValue value,
 						required_gtype = 
 								g_registered_type_info_get_g_type(
 										(GIRegisteredTypeInfo *) interface);
-						if (!g_type_is_a(G_OBJECT_TYPE (gobject), 
+						if (!gobject || !g_type_is_a(G_OBJECT_TYPE (gobject), 
 										 required_gtype))
 						{
 								return FALSE;
@@ -331,7 +331,7 @@ JSValueRef seed_gi_argument_make_js(GArgument * arg, GITypeInfo * type_info)
 				interface = g_type_info_get_interface(type_info);
 				interface_type = g_base_info_get_type(interface);
 		
-		
+				
 				if (interface_type == GI_INFO_TYPE_OBJECT ||
 					interface_type == GI_INFO_TYPE_INTERFACE)
 				{
