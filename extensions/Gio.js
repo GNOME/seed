@@ -16,3 +16,13 @@ Gio.simple_write = function(file, name)
 	dstream.put_string(name);
 	fstream.close();
 }
+
+Gio.simple_read = function(name)
+{
+	var file = Gio.file_new_for_path(name);
+	var fstream = file.read();
+	var dstream = Gio.DataInputStream._new(fstream);
+	var line = dstream.read_until("", 0);
+	fstream.close();
+	return line;
+}
