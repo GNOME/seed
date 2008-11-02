@@ -22,21 +22,16 @@
 #include <string.h>
 JSClassRef seed_struct_class = 0;
 
-typedef struct _SeedStructPrivates
-{
-	gpointer object;
-	GIBaseInfo * info;
-} SeedStructPrivates;
 
-static void seed_struct_finalize(JSObjectRef younion)
+static void seed_struct_finalize(JSObjectRef strukt)
 {
-		g_free(JSObjectGetPrivate(younion));
+		g_free(JSObjectGetPrivate(strukt));
 }
 
 JSClassDefinition gobject_struct_def = {
 		0, /* Version, always 0 */
 		0,
-		"gobject_union", /* Class Name */
+		"seed_struct", /* Class Name */
 		NULL, /* Parent Class */
 		NULL, /* Static Values */
 		NULL, /* Static Functions */
@@ -53,21 +48,22 @@ JSClassDefinition gobject_struct_def = {
 		NULL  /* Convert To Type */
 };
 
-JSObjectRef seed_make_union(gpointer younion, GIBaseInfo * info)
+gpointer seed_struct_get_pointer(JSValueRef strukt)
 {
-	SeedStructPrivates * privates;
+	if (JSValueIsObjectOfClass(eng->context, strukt, seed_struct_class))
+		return JSObjectGetPrivate((JSObjectRef)strukt);
+	return 0;
+}
+
+JSObjectRef seed_make_union(gpointer younion)
+{
 	if (!seed_struct_class)
 		seed_struct_class = JSClassCreate(&gobject_struct_def);
 	
-	privates = g_new0(SeedStructPrivates, 1);
-
-	privates->object = younion;
-	privates->info = info;
-	
-	return JSObjectMake(eng->context, seed_struct_class, privates);
+	return JSObjectMake(eng->context, seed_struct_class, younion);
 }
 
-JSObjectRef seed_make_struct(gpointer strukt, GIBaseInfo * info)
+JSObjectRef seed_make_struct(gpointer strukt)
 {
-		return seed_make_union(strukt, info);
+		return seed_make_union(strukt);
 }

@@ -158,6 +158,8 @@ GType seed_gi_type_to_gtype(GITypeInfo *type_info, GITypeTag tag)
 						return G_TYPE_OBJECT;
 				else if (interface_type == GI_INFO_TYPE_ENUM)
 						return G_TYPE_LONG;
+				else if (interface_type == GI_INFO_TYPE_STRUCT)
+						return G_TYPE_POINTER;
 		}
 		}
 		return 0;
@@ -168,10 +170,8 @@ gboolean seed_gi_make_argument(SeedValue value,
 							   GITypeInfo *type_info,
 							   GArgument * arg)
 {
-		GValue gval = {0};
 		GITypeTag gi_tag = g_type_info_get_tag(type_info);
-		GType gtag = seed_gi_type_to_gtype(type_info,
-										   gi_tag);
+
 	
 		if (!value || JSValueIsNull(eng->context, value))
 		{
@@ -179,63 +179,57 @@ gboolean seed_gi_make_argument(SeedValue value,
 				return 1;
 		}
 
-		seed_gvalue_from_seed_value(value,
-									gtag,
-									&gval);
-	
 		switch(gi_tag)
 		{
 		case GI_TYPE_TAG_VOID:
 				break;
 		case GI_TYPE_TAG_BOOLEAN:
-				arg->v_boolean = g_value_get_boolean(&gval);
+				arg->v_boolean = seed_value_to_boolean(value);
 				break;
 		case GI_TYPE_TAG_INT8:
-				arg->v_int8 = g_value_get_char(&gval);
+				arg->v_int8 = seed_value_to_char(value);
 				break;
 		case GI_TYPE_TAG_UINT8:
-				arg->v_uint8 = g_value_get_uchar(&gval);
+				arg->v_uint8 = seed_value_to_uchar(value);
 				break;
 		case GI_TYPE_TAG_INT16:
-				arg->v_int16 = g_value_get_int(&gval);
+				arg->v_int16 = seed_value_to_int(value);
 				break;
 		case GI_TYPE_TAG_UINT16:
-				arg->v_uint16 = g_value_get_uint(&gval);
+				arg->v_uint16 = seed_value_to_uint(value);
 				break;
 		case GI_TYPE_TAG_INT32:
-				arg->v_int32 = g_value_get_int(&gval);
+				arg->v_int32 = seed_value_to_int(value);
 				break;
 		case GI_TYPE_TAG_UINT32:
-				arg->v_uint32 = g_value_get_uint(&gval);
+				arg->v_uint32 = seed_value_to_uint(value);
 				break;
 		case GI_TYPE_TAG_LONG:
 		case GI_TYPE_TAG_INT64:
-				arg->v_int64 = (gint64)g_value_get_long(&gval);
+				arg->v_int64 = seed_value_to_long(value);
 				break;
 		case GI_TYPE_TAG_ULONG:
 		case GI_TYPE_TAG_UINT64:
-				arg->v_uint64 = (guint64)g_value_get_ulong(&gval);
+				arg->v_uint64 = seed_value_to_ulong(value);
 				break;
 		case GI_TYPE_TAG_INT:
-				arg->v_int = g_value_get_int(&gval);
+				arg->v_int = seed_value_to_int(value);
 				break;
 		case GI_TYPE_TAG_UINT:
-				arg->v_uint = g_value_get_uint(&gval);
-				break;
-		case GI_TYPE_TAG_SSIZE:
-				arg->v_int = g_value_get_int(&gval);
+				arg->v_uint = seed_value_to_uint(value);
 				break;
 		case GI_TYPE_TAG_SIZE:
-				arg->v_int = g_value_get_int(&gval);
+		case GI_TYPE_TAG_SSIZE:
+				arg->v_int = seed_value_to_int(value);
 				break;
 		case GI_TYPE_TAG_FLOAT:
-				arg->v_float = g_value_get_float(&gval);
+				arg->v_float = seed_value_to_float(value);
 				break;
 		case GI_TYPE_TAG_DOUBLE:
-				arg->v_double = g_value_get_double(&gval);
+				arg->v_double = seed_value_to_double(value);
 				break;
 		case GI_TYPE_TAG_UTF8:
-				arg->v_string = g_strdup(g_value_get_string(&gval));
+				arg->v_string = seed_value_to_string(value);
 				break;
 		case GI_TYPE_TAG_INTERFACE:
 		{
@@ -252,11 +246,7 @@ gboolean seed_gi_make_argument(SeedValue value,
 				if (interface_type == GI_INFO_TYPE_OBJECT
 					|| interface_type == GI_INFO_TYPE_INTERFACE)
 				{
-						if (!G_VALUE_HOLDS_OBJECT(&gval))
-						{
-								return FALSE;
-						}
-						gobject = g_value_get_object(&gval);
+						gobject = seed_value_to_object(value);
 						required_gtype = 
 								g_registered_type_info_get_g_type(
 										(GIRegisteredTypeInfo *) interface);
@@ -275,6 +265,11 @@ gboolean seed_gi_make_argument(SeedValue value,
 													  value, NULL);
 						break;
 				}
+				else if (interface_type == GI_INFO_TYPE_STRUCT)
+				{
+						arg->v_pointer = seed_struct_get_pointer(value);
+						break;
+				}
 		}
 	  
 		default:
@@ -290,66 +285,44 @@ gboolean seed_gi_make_argument(SeedValue value,
 
 JSValueRef seed_gi_argument_make_js(GArgument * arg, GITypeInfo *type_info)
 {
-		GValue gval = {0};
 		GITypeTag gi_tag = g_type_info_get_tag(type_info);
-		GType gtag = seed_gi_type_to_gtype(type_info, gi_tag);
-		SeedValue ret;
-	
-		g_value_init(&gval, gtag);
 		switch (gi_tag)
 		{
 		case GI_TYPE_TAG_VOID:
 				return 0;
 		case GI_TYPE_TAG_BOOLEAN:
-				g_value_set_boolean(&gval,arg->v_boolean );
-				break;
+				return seed_value_from_boolean(arg->v_boolean);
 		case GI_TYPE_TAG_INT8:
-				g_value_set_char(&gval,arg->v_int8 );
-				break;
+				return seed_value_from_char(arg->v_int8);
 		case GI_TYPE_TAG_UINT8:
-				g_value_set_uchar(&gval,arg->v_uint8 );
-				break;
+				return seed_value_from_uchar(arg->v_uint8);
 		case GI_TYPE_TAG_INT16:
-				g_value_set_int(&gval,arg->v_int16 );
-				break;
+				return seed_value_from_int(arg->v_int16);
 		case GI_TYPE_TAG_UINT16:
-				g_value_set_uint(&gval,arg->v_uint16 );
-				break;
+				return seed_value_from_uint(arg->v_uint16);
 		case GI_TYPE_TAG_INT32:
-				g_value_set_int(&gval,arg->v_int32 );
-				break;
+				return seed_value_from_int(arg->v_int32);
 		case GI_TYPE_TAG_UINT32:
-				g_value_set_uint(&gval,arg->v_uint32 );
-				break;
+				return seed_value_from_uint(arg->v_uint32);
 		case GI_TYPE_TAG_LONG:
 		case GI_TYPE_TAG_INT64:
-				g_value_set_long(&gval,arg->v_int64);
-				break;
+				return seed_value_from_long(arg->v_int64);
 		case GI_TYPE_TAG_ULONG:
 		case GI_TYPE_TAG_UINT64:
-				g_value_set_ulong(&gval,arg->v_uint64);
-				break;
+				return seed_value_from_ulong(arg->v_uint64);
 		case GI_TYPE_TAG_INT:
-				g_value_set_int(&gval,arg->v_int );
-				break;
+				return seed_value_from_int(arg->v_int32);
 		case GI_TYPE_TAG_UINT:
-				g_value_set_uint(&gval,arg->v_uint );
-				break;
+				return seed_value_from_uint(arg->v_uint32);
 		case GI_TYPE_TAG_SSIZE:
-				g_value_set_int(&gval,arg->v_int );
-				break;
 		case GI_TYPE_TAG_SIZE:
-				g_value_set_int(&gval,arg->v_int );
-				break;
+				return seed_value_from_int(arg->v_int);
 		case GI_TYPE_TAG_FLOAT:
-				g_value_set_float(&gval,arg->v_float );
-				break;
+				return seed_value_from_float(arg->v_float);
 		case GI_TYPE_TAG_DOUBLE:
-				g_value_set_double(&gval,arg->v_double );
-				break;
+				return seed_value_from_double(arg->v_double);
 		case GI_TYPE_TAG_UTF8:
-				g_value_set_string(&gval,arg->v_string);
-				break;
+				return seed_value_from_string(arg->v_string);
 		case GI_TYPE_TAG_INTERFACE:
 		{
 				GIBaseInfo *interface;
@@ -364,20 +337,17 @@ JSValueRef seed_gi_argument_make_js(GArgument * arg, GITypeInfo *type_info)
 				{
 						if (arg->v_pointer == 0)
 						{
-								g_value_unset(&gval);
 								return JSValueMakeNull(eng->context);
 						}
-						g_value_set_object(&gval, arg->v_pointer);
-						break;
+						return seed_value_from_object(arg->v_pointer);
 				}
 				else if (interface_type == GI_INFO_TYPE_ENUM)
 				{
-						g_value_set_long(&gval, arg->v_double);
-						return 0;
+						return seed_value_from_double(arg->v_double);
 				}
-				else
+				else if (interface_type == GI_INFO_TYPE_STRUCT)
 				{
-						printf("OH NO! \n");
+						return seed_make_struct(arg->v_pointer);
 				}
 		}
 	  
@@ -385,9 +355,7 @@ JSValueRef seed_gi_argument_make_js(GArgument * arg, GITypeInfo *type_info)
 				return FALSE;
 
 		}
-		ret = seed_value_from_gvalue(&gval);
-		g_value_unset(&gval);
-		return ret;
+		return 0;
 }
 
 gboolean seed_gi_supports_type(GITypeInfo * type_info)
@@ -490,13 +458,13 @@ SeedValue seed_value_from_gvalue(GValue * gval)
 		
 		if (type == GI_INFO_TYPE_UNION)
 		{
-				return seed_make_union(g_value_peek_pointer(gval),
-									   info);
+				return seed_make_union(g_value_peek_pointer(gval));
+
 		}
 		else if (type == GI_INFO_TYPE_STRUCT)
 		{
-				return seed_make_struct(g_value_peek_pointer(gval),
-										info);
+				return seed_make_struct(g_value_peek_pointer(gval));
+									
 		}
 			
 	}

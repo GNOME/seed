@@ -725,8 +725,42 @@ seed_gi_import_namespace(JSContextRef ctx,
 								JSValueProtect(eng->context, 
 											   (JSValueRef)constructor_ref);
 						}
-
 				}
+				else if (info &&
+						 (g_base_info_get_type(info) == GI_INFO_TYPE_STRUCT))
+				{
+						JSObjectRef struct_ref;
+						int i, n_methods;
+						GIFunctionInfo *finfo;
+						GIFunctionInfoFlags flags;
+						
+						struct_ref = JSObjectMake(eng->context, 0, 0);
+						
+						n_methods =
+								g_struct_info_get_n_methods((GIStructInfo *)info);
+						for (i = 0; i < n_methods; i++)
+						{
+								finfo =
+										g_struct_info_get_method(
+												(GIStructInfo*)info, i);
+								flags = g_function_info_get_flags(finfo);
+								if (flags & GI_FUNCTION_IS_CONSTRUCTOR)
+								{
+										seed_gobject_define_property_from_function_info(finfo, 
+																						struct_ref,
+																						FALSE);
+								}
+						}
+						
+						seed_value_set_property(namespace_ref,
+												g_base_info_get_name(info),
+												struct_ref);
+
+						JSValueProtect(eng->context,
+									   (JSValueRef)struct_ref);
+				}
+				
+				
 		}
 		
 
