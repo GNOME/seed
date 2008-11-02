@@ -52,16 +52,20 @@ void seed_exec(int argc, char ** argv)
 			buffer++;
 		buffer++;
 	}
-	script = seed_make_script(buffer, argv[1], 0);
+	script = seed_make_script(buffer, argv[1], 1);
 	if (e =seed_script_exception(script))
-		g_critical("%s. %s",
+		g_critical("%s. %s in %s at line %d",
 			   seed_exception_get_name(e),
-			   seed_exception_get_message(e));
+			   seed_exception_get_message(e),
+				seed_exception_get_file(e),
+				seed_exception_get_line(e));
 	seed_evaluate(script, 0);
 	if (e = seed_script_exception(script))
-		g_critical("%s. %s",
+		g_critical("%s. %s in %s at line %d",
 			   seed_exception_get_name(e),
-			   seed_exception_get_message(e));
+			   seed_exception_get_message(e),
+				seed_exception_get_file(e),
+				seed_exception_get_line(e));
 	
 	g_free(script);
 }

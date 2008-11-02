@@ -906,3 +906,24 @@ gchar * seed_exception_get_message(JSValueRef e)
 		name = seed_value_get_property(e, "message");
 		return seed_value_to_string(name);
 }
+
+guint seed_exception_get_line(JSValueRef e)
+{
+	SeedValue line;
+	g_assert((e));
+	if (!JSValueIsObject(eng->context, e))
+			return 0;
+	line = seed_value_get_property(e, "line");
+	return seed_value_to_uint(line);
+}
+
+gchar * seed_exception_get_file(JSValueRef e)
+{
+	SeedValue file;
+	g_assert((e));
+	if (!JSValueIsObject(eng->context, e))
+			return 0;
+	file = seed_value_get_property(e, "sourceURL");
+	return seed_value_to_string(file);
+}
+

@@ -38,6 +38,8 @@ SeedException seed_script_exception(SeedScript *s);
 SeedException seed_make_exception(gchar * name, gchar * message);
 gchar * seed_exception_get_name(SeedException e);
 gchar * seed_exception_get_message(SeedException e);
+guint seed_exception_get_line(SeedException e);
+gchar * seed_exception_get_file(SeedException e);
 
 SeedValue seed_evaluate(SeedScript *s, SeedObject this);
 
