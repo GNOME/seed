@@ -262,6 +262,20 @@ seed_check_syntax(JSContextRef ctx,
 		return JSValueMakeNull(eng->context);
 }
 
+JSValueRef
+seed_fork(JSContextRef ctx,
+			  JSObjectRef function,
+			  JSObjectRef this_object,
+			  size_t argumentCount,
+			  const JSValueRef arguments[],
+			  JSValueRef * exception)
+{
+	pid_t child;
+	
+	child = fork();
+	return seed_value_from_int(child);
+}
+
 void seed_init_builtins(int * argc, char *** argv)
 {
 	int i;
@@ -275,6 +289,7 @@ void seed_init_builtins(int * argc, char *** argv)
 	seed_create_function("prototype", &seed_prototype, obj);
 	seed_create_function("check_syntax", &seed_check_syntax, obj);
 	seed_create_function("introspect", &seed_introspect, obj);
+	seed_create_function("fork", &seed_fork, obj);
 	
 	arrayObj = JSObjectMake(eng->context, NULL, NULL);
 	

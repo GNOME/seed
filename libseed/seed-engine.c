@@ -753,15 +753,15 @@ seed_gi_import_namespace(JSContextRef ctx,
 						struct_ref = JSObjectMake(eng->context, 0, 0);
 						
 						n_methods =
-								g_struct_info_get_n_methods((GIStructInfo *)info);
+							g_struct_info_get_n_methods((GIStructInfo *)info);
+
 						for (i = 0; i < n_methods; i++)
 						{
 								finfo =
-										g_struct_info_get_method(
-												(GIStructInfo*)info, i);
-										seed_gobject_define_property_from_function_info(finfo, 
-																						struct_ref,
-																						FALSE);
+							   	g_struct_info_get_method(
+								(GIStructInfo*)info, i);
+					    		seed_gobject_define_property_from_function_info
+									(finfo,struct_ref,FALSE);
 
 						}
 						
@@ -772,8 +772,6 @@ seed_gi_import_namespace(JSContextRef ctx,
 						JSValueProtect(eng->context,
 									   (JSValueRef)struct_ref);
 				}
-				
-				
 		}
 		
 
