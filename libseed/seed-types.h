@@ -73,7 +73,7 @@ gdouble		seed_value_to_double(JSValueRef val);
 JSValueRef	seed_value_from_double(gdouble val);
 
 gchar *		seed_value_to_string(JSValueRef val);
-JSValueRef	seed_value_from_string(gchar * val);
+JSValueRef	seed_value_from_string(const gchar * val);
 
 GObject *	seed_value_to_object(JSValueRef val);
 JSValueRef	seed_value_from_object(GObject * val);

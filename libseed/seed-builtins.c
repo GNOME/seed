@@ -162,6 +162,79 @@ seed_prototype(JSContextRef ctx,
 	return seed_gobject_get_prototype_for_gtype(type);
 }
 
+const char * seed_g_type_name_to_string(GITypeInfo * type)
+{
+	GITypeTag type_tag = g_type_info_get_tag(type);
+	
+	const char * type_name;
+	
+	if (type_tag == GI_TYPE_TAG_INTERFACE)
+	{
+		GIBaseInfo * interface = g_type_info_get_interface(type);
+		type_name = g_base_info_get_name(interface);
+		g_base_info_unref(interface);
+	}
+	else
+	{
+		type_name = g_type_tag_to_string(type_tag);
+	}
+	
+	return type_name;
+}
+
+JSValueRef
+seed_introspect(JSContextRef ctx,
+			    JSObjectRef function,
+			    JSObjectRef this_object,
+			    size_t argumentCount,
+			    const JSValueRef arguments[],
+			    JSValueRef * exception)
+{
+	// TODO: LEAKY!
+	
+	GICallableInfo * info;
+	JSObjectRef data_obj, args_obj;
+	int i;
+
+	if (argumentCount != 1)
+		return JSValueMakeNull(eng->context);
+	if (!JSValueIsObject(eng->context, arguments[0]))
+		return JSValueMakeNull(eng->context);
+	if (!JSValueIsObjectOfClass(eng->context, arguments[0],
+							    gobject_method_class))
+		return JSValueMakeNull(eng->context);
+	
+	info = (GICallableInfo*)JSObjectGetPrivate((JSObjectRef)arguments[0]);
+	data_obj = JSObjectMake(eng->context, NULL, NULL);
+	
+	seed_value_set_property(data_obj, "name", 
+							(JSValueRef)seed_value_from_string(
+							g_base_info_get_name((GIBaseInfo*)info)));
+	
+	seed_value_set_property(data_obj, "return_type", 
+		seed_value_from_string(seed_g_type_name_to_string(
+			g_callable_info_get_return_type(info))));
+	
+	args_obj = JSObjectMake(eng->context, NULL, NULL);
+	
+	seed_value_set_property(data_obj, "args", args_obj);
+	
+	for(i = 0; i < g_callable_info_get_n_args(info); ++i)
+	{
+		JSObjectRef argument = JSObjectMake(eng->context, NULL, NULL);
+		
+		const gchar * arg_name = seed_g_type_name_to_string(
+			g_arg_info_get_type(g_callable_info_get_arg(info, i)));
+		
+		seed_value_set_property(argument, "type",
+			seed_value_from_string(arg_name));
+
+		JSObjectSetPropertyAtIndex(eng->context, args_obj, i, argument, NULL);
+	}
+	
+	return data_obj;
+}
+
 JSValueRef
 seed_check_syntax(JSContextRef ctx,
 			  JSObjectRef function,
@@ -201,6 +274,7 @@ void seed_init_builtins(int * argc, char *** argv)
 	seed_create_function("readline", &seed_readline, obj);
 	seed_create_function("prototype", &seed_prototype, obj);
 	seed_create_function("check_syntax", &seed_check_syntax, obj);
+	seed_create_function("introspect", &seed_introspect, obj);
 	
 	arrayObj = JSObjectMake(eng->context, NULL, NULL);
 	

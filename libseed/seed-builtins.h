@@ -48,6 +48,14 @@ seed_readline(JSContextRef ctx,
 			     size_t argumentCount,
 			     const JSValueRef arguments[],
 			     JSValueRef * exception);
+
+JSValueRef
+seed_introspect(JSContextRef ctx,
+			    JSObjectRef function,
+			    JSObjectRef this_object,
+			    size_t argumentCount,
+			    const JSValueRef arguments[],
+			    JSValueRef * exception);
 			     
 void seed_init_builtins();
 

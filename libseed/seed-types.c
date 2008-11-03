@@ -969,7 +969,7 @@ gchar *		seed_value_to_string(JSValueRef val)
 	return buf;
 }
 
-JSValueRef	seed_value_from_string(gchar * val)
+JSValueRef	seed_value_from_string(const gchar * val)
 {
 	JSStringRef jsstr = JSStringCreateWithUTF8CString(val);
 	JSValueRef valstr = JSValueMakeString(eng->context, jsstr);

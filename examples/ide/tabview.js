@@ -55,28 +55,22 @@ function ide_tab(fn)
     tabs.append_page(this.main_vbox, this.tab_header.tab_header);
 	tabs.set_tab_reorderable(this.main_vbox, true);
 	tabs.show_all();
+	
+	tabs.page = tabs.get_n_pages() - 1;
 }
 
-function change_page(a, b, c)
+function change_page(notebook, tab, n)
 {
-    Seed.print("lol");
-    //Seed.print(tabs.get_tab_label(tabs.get_nth_page(n)));
+    //Seed.print("lol");
+    //tabs.get_tab_label(tabs.get_nth_page(n));
     //update_window();
-}
-
-function select_page(nb, tab, n)
-{
-    tabs.set_current_page(n);
 }
 
 function ide_ui()
 {
     tabs = new Gtk.Notebook();
     
-    // FIXME: ROBB: tabs.signal_switch_page.connect(change_page);
-    
-    //tabs.signal_switch_page.connect(change_page);
-    tabs.signal_page_added.connect(select_page);
+    tabs.signal_switch_page.connect(change_page);
     
     tabs.set_scrollable(true);
     

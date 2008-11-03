@@ -4,41 +4,42 @@ Seed.import_namespace("Vte");
 Seed.import_namespace("Gtk");
 Seed.import_namespace("GtkSource");
 Seed.import_namespace("Gio");
+Seed.import_namespace("Pango");
 
 Gtk.init(null, null);
 
 Seed.include("toolbar.js");
 Seed.include("tabview.js");
 
-//var itr = Gtk.text_iter_create();
+var itr = Gtk.text_iter_create();
 
 function exception_clear(sbuf)
 {
-    //var begin = Gtk.text_iter_create();
-    //var end = Gtk.text_iter_create();
+    var begin = Gtk.text_iter_create();
+    var end = Gtk.text_iter_create();
     
-    //sbuf.get_start_iter(begin);
-    //sbuf.get_end_iter(end);
+    sbuf.get_start_iter(begin);
+    sbuf.get_end_iter(end);
     
-    //sbuf.remove_source_marks(begin, end, "exception");
+    sbuf.remove_source_marks(begin, end, "exception");
 }
 
 function exception_line(sbuf, e)
 {
-    //var itr = Gtk.text_iter_create();
+    var itr = Gtk.text_iter_create();
 
-    //sbuf.get_iter_at_line(itr, e.line - 1);
+    sbuf.get_iter_at_line(itr, e.line - 1);
     
-    //exception_clear(sbuf);
+    exception_clear(sbuf);
     
-    //sbuf.create_source_mark("error!!", "exception", itr);
+    sbuf.create_source_mark("error!!", "exception", itr);
 }
 
 function text_changed(sbuf)
 {
     sbuf.update_undo_state(this);
     
-    var text = sbuf.text.replace(/#!.*/, "");
+    var text = sbuf.text.replace(new RegExp("#!.*"), "");
     
     try
     {
@@ -111,6 +112,13 @@ function ide_source_view()
     this.source_view.set_right_margin_position(80);
     this.source_view.set_mark_category_pixbuf("exception", epb.pixbuf);
     this.source_view.set_show_line_marks(true);
+    
+    this.source_view.modify_font(Pango.font_description_from_string("monospace 10"));
+    
+    var source_style_mgr = GtkSource.style_scheme_manager_get_default();
+    var source_style = source_style_mgr.get_scheme("oblivion");
+    
+    this.source_buf.style_scheme = source_style;
 }
 
 function create_frame(child)
