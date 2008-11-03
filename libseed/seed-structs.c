@@ -23,11 +23,6 @@
 JSClassRef seed_struct_class = 0;
 
 
-static void seed_struct_finalize(JSObjectRef strukt)
-{
-		g_free(JSObjectGetPrivate(strukt));
-}
-
 JSClassDefinition gobject_struct_def = {
 		0, /* Version, always 0 */
 		0,
@@ -36,7 +31,7 @@ JSClassDefinition gobject_struct_def = {
 		NULL, /* Static Values */
 		NULL, /* Static Functions */
 		NULL,
-		seed_struct_finalize, /* Finalize */
+		NULL,
 		NULL, /* Has Property */
 		0, 
 		NULL,  /* Set Property */
