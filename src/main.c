@@ -23,6 +23,7 @@
 #include "libseed/seed.h"
 #include "readline/readline.h"
 #include <stdlib.h>
+#include <girepository.h>
 
 void seed_repl(int argc, char ** argv)
 {
@@ -75,13 +76,11 @@ void seed_exec(int argc, char ** argv)
 
 int main(int argc, char ** argv)
 {	
-	// Apparently our name for glib logging gets set in g*_init. can we set
-	// that ourselves so that when we do on-the-fly init, we don't lose that?
-	
+	g_set_prgname("seed");
 	seed_init(&argc, &argv);
 
 	if (!g_irepository_require(g_irepository_get_default(), 
-				   "GObject", 0, 0))
+							   "GObject", 0, 0, 0))
 		g_critical("Unable to import GObject repository");
 		
 	if(argc == 1)
