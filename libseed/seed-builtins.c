@@ -79,7 +79,12 @@ seed_print(JSContextRef ctx,
 			  JSValueRef * exception)
 {
 	if(argumentCount < 1)
-		return JSValueMakeNull(eng->context);
+	{
+			gchar * mes = g_strdup_printf("Seed.print Expected 1 argument,"
+										  " got %d", argumentCount);
+			seed_make_exception(exception, "ArgumentError", mes);
+			return JSValueMakeNull(eng->context);
+	}
 	
 	gchar * buf = seed_value_to_string(arguments[0]);
 	printf("%s\n", buf);
