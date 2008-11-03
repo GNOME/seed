@@ -350,6 +350,60 @@ JSValueRef seed_gi_argument_make_js(GArgument * arg, GITypeInfo * type_info)
 						return seed_make_struct(arg->v_pointer, interface);
 				}
 		}
+		case GI_TYPE_TAG_GLIST:
+		{
+				GIBaseInfo *interface;
+				GITypeInfo * list_type;
+				JSObjectRef ret;
+				GArgument larg;
+				int i = 0;
+				GList *list = arg->v_pointer;
+				
+				ret = JSObjectMake(eng->context, NULL, NULL);
+				list_type = g_type_info_get_param_type(type_info, 0);
+				
+				for (; list != NULL; list = list->next)
+				{
+						JSValueRef ival;
+
+						larg.v_pointer = list->data;
+						ival = 
+						 (JSValueRef)seed_gi_argument_make_js(&larg, list_type);
+						JSObjectSetPropertyAtIndex(eng->context, 
+												   ret, i,
+												   ival, NULL);
+						i++;
+				}
+				return ret;				
+				
+		}
+		case GI_TYPE_TAG_GSLIST:
+		{
+				
+				GIBaseInfo *interface;
+				GITypeInfo * list_type;
+				JSObjectRef ret;
+				GArgument larg;
+				int i = 0;
+				GSList *list = arg->v_pointer;
+				
+				ret = JSObjectMake(eng->context, NULL, NULL);
+				list_type = g_type_info_get_param_type(type_info, 0);
+				
+				for (; list != NULL; list = list->next)
+				{
+						JSValueRef ival;
+
+						larg.v_pointer = list->data;
+						ival = 
+						 (JSValueRef)seed_gi_argument_make_js(&larg, list_type);
+						JSObjectSetPropertyAtIndex(eng->context, 
+												   ret, i,
+												   ival, NULL);
+						i++;
+				}
+				return ret;				
+		}
 	  
 		default:
 				return FALSE;
