@@ -29,9 +29,11 @@ JSClassRef gobject_signal_class;
 
 GParamSpec ** global_prop_cache;
 
+gchar * glib_message = 0;
+
 
 void seed_make_exception(JSValueRef * exception, 
-								gchar * name, gchar * message)
+								const gchar * name, const gchar * message)
 {
 		JSStringRef js_name = 0;
 		JSStringRef js_message = 0;
@@ -562,6 +564,14 @@ static bool seed_gobject_set_property(JSContextRef context,
 		}
 
 		g_object_set_property(obj, cproperty_name, &gval);
+		if (glib_message != 0)
+		{
+				seed_make_exception(exception, "PropertyError", glib_message);
+
+				g_free(glib_message);
+				glib_message = 0;
+				return FALSE;
+		}
 		g_free(cproperty_name);
 	
 		return TRUE;
@@ -852,11 +862,20 @@ void seed_create_function(char * name, gpointer func, JSObjectRef obj)
 		seed_value_set_property(obj, name, oref);
 }
 
+static void seed_log_handler (const gchar * domain,
+							  GLogLevelFlags log_level,
+							  const gchar * message,
+							  gpointer user_data)
+{
+		glib_message = g_strdup(message);
+}
+
 gboolean seed_init(int * argc, char *** argv)
 {
 	JSObjectRef seed_obj_ref;
 
 	g_type_init ();
+	g_log_set_handler("GLib-GObject", G_LOG_LEVEL_WARNING, seed_log_handler, 0);
 
 	qname = g_quark_from_static_string("js-type");
 	qprototype = g_quark_from_static_string("js-prototype");
