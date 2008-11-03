@@ -75,13 +75,9 @@ void seed_exec(int argc, char ** argv)
 
 int main(int argc, char ** argv)
 {	
-	// TODO: GStreamer doesn't like to be initialized late. I don't remember
-	// how to fix this right now.
-
 	// Apparently our name for glib logging gets set in g*_init. can we set
 	// that ourselves so that when we do on-the-fly init, we don't lose that?
 	
-	gst_init(&argc, &argv);	
 	seed_init(&argc, &argv);
 
 	if (!g_irepository_require(g_irepository_get_default(), 

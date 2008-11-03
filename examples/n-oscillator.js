@@ -2,6 +2,7 @@
 Seed.import_namespace("Gtk","2.0");
 Seed.import_namespace("Gst","0.10");
 
+Gst.init(null, null);
 Gtk.init(null, null);
 
 function oscillator(freq)
