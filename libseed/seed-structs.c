@@ -60,18 +60,21 @@ JSObjectRef seed_make_union(gpointer younion, GIBaseInfo *info)
 		
 		object = JSObjectMake(eng->context, seed_struct_class, younion);
 		
-		n_methods =
-				g_struct_info_get_n_methods((GIStructInfo *)info);
-		for (i = 0; i < n_methods; i++)
+		if (info)
 		{
-				GIFunctionInfo *finfo;
-
-				finfo = g_struct_info_get_method(
-						(GIStructInfo*)info, i);
-				
-				seed_gobject_define_property_from_function_info((GIFunctionInfo *)finfo,
-																object,
-																TRUE);
+				n_methods =
+						g_struct_info_get_n_methods((GIStructInfo *)info);
+				for (i = 0; i < n_methods; i++)
+				{
+						GIFunctionInfo *finfo;
+						
+						finfo = g_struct_info_get_method(
+								(GIStructInfo*)info, i);
+						
+						seed_gobject_define_property_from_function_info((GIFunctionInfo *)finfo,
+																		object,
+																		TRUE);
+				}
 		}
 		seed_value_set_property(object, "test", seed_value_from_int(5));
 		return object;

@@ -410,7 +410,6 @@ SeedValue seed_value_from_gvalue(GValue * gval)
 	{
 		return false;
 	}
-
 	switch(G_VALUE_TYPE(gval))
 	{
 	case G_TYPE_BOOLEAN:
@@ -437,6 +436,8 @@ SeedValue seed_value_from_gvalue(GValue * gval)
 		return seed_value_from_double(g_value_get_double(gval));
 	case G_TYPE_STRING:
 		return seed_value_from_string((gchar*)g_value_get_string(gval));
+	case G_TYPE_POINTER:
+		return seed_make_struct(g_value_get_pointer(gval), 0);
 	}
 
 	if(g_type_is_a(G_VALUE_TYPE(gval), G_TYPE_ENUM))

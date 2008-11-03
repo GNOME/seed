@@ -132,11 +132,12 @@ seed_signal_marshal_func (GClosure * closure,
 	JSValueRef * args;
 	int i;
 
-	args = g_new0(JSValueRef, n_param_values);
+	args = g_newa(JSValueRef, n_param_values);
 	
 	for (i = 0; i < n_param_values; i++)
 	{
 		args[i] = seed_value_from_gvalue((GValue *)&param_values[i]);
+
 		if (!args[i])
 			g_error("Error in signal marshal. "
 				"Unable to convert argument of type: %s \n",
@@ -147,7 +148,6 @@ seed_signal_marshal_func (GClosure * closure,
 	JSObjectCallAsFunction(eng->context, seed_closure->function, 
 			       seed_closure->this,
 			       n_param_values, args, 0);
-	g_free(args);	
 }
 
 static JSValueRef
