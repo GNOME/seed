@@ -30,7 +30,7 @@ JSClassRef gobject_signal_class;
 GParamSpec ** global_prop_cache;
 
 
-static void seed_make_exception(JSValueRef * exception, 
+void seed_make_exception(JSValueRef * exception, 
 								gchar * name, gchar * message)
 {
 		JSStringRef js_name = 0;
@@ -591,7 +591,23 @@ seed_gi_import_namespace(JSContextRef ctx,
 	
 		if(!g_irepository_require (g_irepository_get_default (), namespace,
 								   version, 0, NULL))
-				g_error("No namespace: %s \n", namespace);
+		{
+				gchar * mes;
+				if (!version)
+				{
+						mes = g_strdup_printf("No such namespace: %s", 
+											  namespace);
+				}
+				else
+				{
+						mes =
+					    g_strdup_printf("No such namespace: %s (version %s)", 
+										namespace, version);
+				}
+				seed_make_exception(exception, "NamespaceError",mes);
+				return JSValueMakeNull(eng->context);
+		}
+
 
 		n = g_irepository_get_n_infos(g_irepository_get_default(),
 									  namespace);
