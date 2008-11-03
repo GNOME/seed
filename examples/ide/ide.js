@@ -11,12 +11,12 @@ Gtk.init(null, null);
 Seed.include("toolbar.js");
 Seed.include("tabview.js");
 
-var itr = Gtk.text_iter_create();
+var itr = Gtk.TextIter._new();
 
 function exception_clear(sbuf)
 {
-    var begin = Gtk.text_iter_create();
-    var end = Gtk.text_iter_create();
+    var begin = Gtk.TextIter._new();
+    var end = Gtk.TextIter._new();
     
     sbuf.get_start_iter(begin);
     sbuf.get_end_iter(end);
@@ -26,7 +26,7 @@ function exception_clear(sbuf)
 
 function exception_line(sbuf, e)
 {
-    var itr = Gtk.text_iter_create();
+    var itr = Gtk.TextIter._new();
 
     sbuf.get_iter_at_line(itr, e.line - 1);
     
