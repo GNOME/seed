@@ -1,4 +1,5 @@
 #!/usr/local/bin/seed
+Seed.include("json2.js");
 
 while(1)
 {
