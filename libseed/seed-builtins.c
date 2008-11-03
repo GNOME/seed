@@ -35,6 +35,13 @@ seed_include(JSContextRef ctx,
 	const gchar * import_file;
 	gchar * buffer, * walk;
 	
+	if (argumentCount != 1)
+	{
+			gchar * mes = g_strdup_printf("Seed.include expected 1 argument, "
+										"got %d", argumentCount);
+			seed_make_exception(exception, "ArgumentError", mes);
+			return JSValueMakeNull(eng->context);
+	}
 	import_file = seed_value_to_string(arguments[0]);
 	
 	g_file_get_contents(import_file, &buffer, 0, 0);
@@ -107,7 +114,17 @@ seed_readline(JSContextRef ctx,
 	
 	JSValueRef valstr = 0;
 	gchar * str = 0;
-	gchar * buf = seed_value_to_string(arguments[0]);
+	gchar * buf;
+	
+	if (argumentCount != 1)
+	{
+			gchar * mes = g_strdup_printf("Seed.readline Expected 1 argument, "
+										  "got %d", argumentCount);
+			seed_make_exception(exception, "ArgumentError", mes);
+			return JSValueMakeNull(eng->context);
+	}
+
+	buf = seed_value_to_string(arguments[0]);
 	
 	str = readline(buf);
 	if(str && *str)
@@ -155,10 +172,19 @@ seed_check_syntax(JSContextRef ctx,
 {										
 		if (argumentCount != 0)
 		{
-				JSStringRef jsstr = JSValueToStringCopy(eng->context, arguments[0], exception);
+				JSStringRef jsstr = 
+						JSValueToStringCopy(eng->context, 
+											arguments[0], 
+											exception);
 				JSCheckScriptSyntax(ctx, jsstr, 0, 0, exception);
 				if (jsstr)
 						JSStringRelease(jsstr);
+		}
+		else
+		{
+				gchar * mes = g_strdup_printf("Seed.check_syntax expected"
+											  "1 argument, got %d",
+											  argumentCount);
 		}
 		return JSValueMakeNull(eng->context);
 }
