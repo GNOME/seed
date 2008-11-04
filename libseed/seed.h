@@ -42,47 +42,45 @@ gchar *seed_exception_get_file(SeedException e);
 
 SeedValue seed_evaluate(SeedScript * s, SeedObject this);
 
-gchar *seed_value_to_string(SeedValue obj);
-
 /* seed-types.c */
 
-gboolean seed_value_to_boolean(SeedValue val);
-SeedValue seed_value_from_boolean(gboolean val);
+gboolean seed_value_to_boolean(SeedValue val, SeedException *exception);
+SeedValue seed_value_from_boolean(gboolean val, SeedException *exception);
 
-guint seed_value_to_uint(SeedValue val);
-SeedValue seed_value_from_uint(guint val);
+guint seed_value_to_uint(SeedValue val, SeedException *exception);
+SeedValue seed_value_from_uint(guint val, SeedException *exception);
 
-gint seed_value_to_int(SeedValue val);
-SeedValue seed_value_from_int(gint val);
+gint seed_value_to_int(SeedValue val, SeedException *exception);
+SeedValue seed_value_from_int(gint val, SeedException *exception);
 
-gchar seed_value_to_char(SeedValue val);
-SeedValue seed_value_from_char(gchar val);
+gchar seed_value_to_char(SeedValue val, SeedException *exception);
+SeedValue seed_value_from_char(gchar val, SeedException *exception);
 
-guchar seed_value_to_uchar(SeedValue val);
-SeedValue seed_value_from_uchar(guchar val);
+guchar seed_value_to_uchar(SeedValue val, SeedException *exception);
+SeedValue seed_value_from_uchar(guchar val, SeedException *exception);
 
-glong seed_value_to_long(SeedValue val);
-SeedValue seed_value_from_long(glong val);
+glong seed_value_to_long(SeedValue val, SeedException *exception);
+SeedValue seed_value_from_long(glong val, SeedException *exception);
 
-gulong seed_value_to_ulong(SeedValue val);
-SeedValue seed_value_from_ulong(gulong val);
+gulong seed_value_to_ulong(SeedValue val, SeedException *exception);
+SeedValue seed_value_from_ulong(gulong val, SeedException *exception);
 
-gint64 seed_value_to_int64(SeedValue val);
-SeedValue seed_value_from_int64(gint64 val);
+gint64 seed_value_to_int64(SeedValue val, SeedException *exception);
+SeedValue seed_value_from_int64(gint64 val, SeedException *exception);
 
-guint64 seed_value_to_uint64(SeedValue val);
-SeedValue seed_value_from_uint64(guint64 val);
+guint64 seed_value_to_uint64(SeedValue val, SeedException *exception);
+SeedValue seed_value_from_uint64(guint64 val, SeedException *exception);
 
-gfloat seed_value_to_float(SeedValue val);
-SeedValue seed_value_from_float(gfloat val);
+gfloat seed_value_to_float(SeedValue val, SeedException *exception);
+SeedValue seed_value_from_float(gfloat val, SeedException *exception);
 
-gdouble seed_value_to_double(SeedValue val);
-SeedValue seed_value_from_double(gdouble val);
+gdouble seed_value_to_double(SeedValue val, SeedException *exception);
+SeedValue seed_value_from_double(gdouble val, SeedException *exception);
 
-gchar *seed_value_to_string(SeedValue val);
-SeedValue seed_value_from_string(gchar * val);
+gchar *seed_value_to_string(SeedValue val, SeedException *exception);
+SeedValue seed_value_from_string(gchar * val, SeedException *exception);
 
-GObject *seed_value_to_object(SeedValue val);
-SeedValue seed_value_from_object(GObject * val);
+GObject *seed_value_to_object(SeedValue val, SeedException *exception);
+SeedValue seed_value_from_object(GObject * val, SeedException *exception);
 
 #endif

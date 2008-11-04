@@ -163,7 +163,8 @@ GType seed_gi_type_to_gtype(GITypeInfo * type_info, GITypeTag tag)
 }
 
 gboolean seed_gi_make_argument(SeedValue value,
-			       GITypeInfo * type_info, GArgument * arg)
+							   GITypeInfo * type_info, GArgument * arg,
+							   JSValueRef * exception)
 {
 	GITypeTag gi_tag = g_type_info_get_tag(type_info);
 
@@ -176,52 +177,52 @@ gboolean seed_gi_make_argument(SeedValue value,
 	case GI_TYPE_TAG_VOID:
 		break;
 	case GI_TYPE_TAG_BOOLEAN:
-		arg->v_boolean = seed_value_to_boolean(value);
+		arg->v_boolean = seed_value_to_boolean(value, exception);
 		break;
 	case GI_TYPE_TAG_INT8:
-		arg->v_int8 = seed_value_to_char(value);
+		arg->v_int8 = seed_value_to_char(value, exception);
 		break;
 	case GI_TYPE_TAG_UINT8:
-		arg->v_uint8 = seed_value_to_uchar(value);
+		arg->v_uint8 = seed_value_to_uchar(value, exception);
 		break;
 	case GI_TYPE_TAG_INT16:
-		arg->v_int16 = seed_value_to_int(value);
+		arg->v_int16 = seed_value_to_int(value, exception);
 		break;
 	case GI_TYPE_TAG_UINT16:
-		arg->v_uint16 = seed_value_to_uint(value);
+		arg->v_uint16 = seed_value_to_uint(value, exception);
 		break;
 	case GI_TYPE_TAG_INT32:
-		arg->v_int32 = seed_value_to_int(value);
+		arg->v_int32 = seed_value_to_int(value, exception);
 		break;
 	case GI_TYPE_TAG_UINT32:
-		arg->v_uint32 = seed_value_to_uint(value);
+		arg->v_uint32 = seed_value_to_uint(value, exception);
 		break;
 	case GI_TYPE_TAG_LONG:
 	case GI_TYPE_TAG_INT64:
-		arg->v_int64 = seed_value_to_long(value);
+		arg->v_int64 = seed_value_to_long(value, exception);
 		break;
 	case GI_TYPE_TAG_ULONG:
 	case GI_TYPE_TAG_UINT64:
-		arg->v_uint64 = seed_value_to_ulong(value);
+		arg->v_uint64 = seed_value_to_ulong(value, exception);
 		break;
 	case GI_TYPE_TAG_INT:
-		arg->v_int = seed_value_to_int(value);
+		arg->v_int = seed_value_to_int(value, exception);
 		break;
 	case GI_TYPE_TAG_UINT:
-		arg->v_uint = seed_value_to_uint(value);
+		arg->v_uint = seed_value_to_uint(value, exception);
 		break;
 	case GI_TYPE_TAG_SIZE:
 	case GI_TYPE_TAG_SSIZE:
-		arg->v_int = seed_value_to_int(value);
+		arg->v_int = seed_value_to_int(value, exception);
 		break;
 	case GI_TYPE_TAG_FLOAT:
-		arg->v_float = seed_value_to_float(value);
+		arg->v_float = seed_value_to_float(value, exception);
 		break;
 	case GI_TYPE_TAG_DOUBLE:
-		arg->v_double = seed_value_to_double(value);
+		arg->v_double = seed_value_to_double(value, exception);
 		break;
 	case GI_TYPE_TAG_UTF8:
-		arg->v_string = seed_value_to_string(value);
+		arg->v_string = seed_value_to_string(value, exception);
 		break;
 	case GI_TYPE_TAG_INTERFACE:
 		{
@@ -237,9 +238,10 @@ gboolean seed_gi_make_argument(SeedValue value,
 
 			if (interface_type == GI_INFO_TYPE_OBJECT
 			    || interface_type == GI_INFO_TYPE_INTERFACE) {
-				gobject = seed_value_to_object(value);
+				gobject = seed_value_to_object(value, exception);
 				required_gtype =
-				    g_registered_type_info_get_g_type((GIRegisteredTypeInfo *) interface);
+				    g_registered_type_info_get_g_type((GIRegisteredTypeInfo *)
+													  interface);
 				if (!gobject
 				    || !g_type_is_a(G_OBJECT_TYPE(gobject),
 						    required_gtype)) {
@@ -283,45 +285,46 @@ gboolean seed_gi_make_argument(SeedValue value,
 
 }
 
-JSValueRef seed_gi_argument_make_js(GArgument * arg, GITypeInfo * type_info)
+JSValueRef seed_gi_argument_make_js(GArgument * arg, GITypeInfo * type_info,
+									JSValueRef * exception)
 {
 	GITypeTag gi_tag = g_type_info_get_tag(type_info);
 	switch (gi_tag) {
 	case GI_TYPE_TAG_VOID:
 		return 0;
 	case GI_TYPE_TAG_BOOLEAN:
-		return seed_value_from_boolean(arg->v_boolean);
+		return seed_value_from_boolean(arg->v_boolean, exception);
 	case GI_TYPE_TAG_INT8:
-		return seed_value_from_char(arg->v_int8);
+		return seed_value_from_char(arg->v_int8, exception);
 	case GI_TYPE_TAG_UINT8:
-		return seed_value_from_uchar(arg->v_uint8);
+		return seed_value_from_uchar(arg->v_uint8, exception);
 	case GI_TYPE_TAG_INT16:
-		return seed_value_from_int(arg->v_int16);
+		return seed_value_from_int(arg->v_int16, exception);
 	case GI_TYPE_TAG_UINT16:
-		return seed_value_from_uint(arg->v_uint16);
+		return seed_value_from_uint(arg->v_uint16, exception);
 	case GI_TYPE_TAG_INT32:
-		return seed_value_from_int(arg->v_int32);
+		return seed_value_from_int(arg->v_int32, exception);
 	case GI_TYPE_TAG_UINT32:
-		return seed_value_from_uint(arg->v_uint32);
+		return seed_value_from_uint(arg->v_uint32, exception);
 	case GI_TYPE_TAG_LONG:
 	case GI_TYPE_TAG_INT64:
-		return seed_value_from_long(arg->v_int64);
+		return seed_value_from_long(arg->v_int64, exception);
 	case GI_TYPE_TAG_ULONG:
 	case GI_TYPE_TAG_UINT64:
-		return seed_value_from_ulong(arg->v_uint64);
+		return seed_value_from_ulong(arg->v_uint64, exception);
 	case GI_TYPE_TAG_INT:
-		return seed_value_from_int(arg->v_int32);
+		return seed_value_from_int(arg->v_int32, exception);
 	case GI_TYPE_TAG_UINT:
-		return seed_value_from_uint(arg->v_uint32);
+		return seed_value_from_uint(arg->v_uint32, exception);
 	case GI_TYPE_TAG_SSIZE:
 	case GI_TYPE_TAG_SIZE:
-		return seed_value_from_int(arg->v_int);
+		return seed_value_from_int(arg->v_int, exception);
 	case GI_TYPE_TAG_FLOAT:
-		return seed_value_from_float(arg->v_float);
+		return seed_value_from_float(arg->v_float, exception);
 	case GI_TYPE_TAG_DOUBLE:
-		return seed_value_from_double(arg->v_double);
+		return seed_value_from_double(arg->v_double, exception);
 	case GI_TYPE_TAG_UTF8:
-		return seed_value_from_string(arg->v_string);
+		return seed_value_from_string(arg->v_string, exception);
 	case GI_TYPE_TAG_INTERFACE:
 		{
 			GIBaseInfo *interface;
@@ -335,9 +338,9 @@ JSValueRef seed_gi_argument_make_js(GArgument * arg, GITypeInfo * type_info)
 				if (arg->v_pointer == 0) {
 					return JSValueMakeNull(eng->context);
 				}
-				return seed_value_from_object(arg->v_pointer);
+				return seed_value_from_object(arg->v_pointer, exception);
 			} else if (interface_type == GI_INFO_TYPE_ENUM) {
-				return seed_value_from_double(arg->v_double);
+				return seed_value_from_double(arg->v_double, exception);
 			} else if (interface_type == GI_INFO_TYPE_STRUCT) {
 				return seed_make_struct(arg->v_pointer,
 							interface);
@@ -361,7 +364,7 @@ JSValueRef seed_gi_argument_make_js(GArgument * arg, GITypeInfo * type_info)
 				larg.v_pointer = list->data;
 				ival =
 				    (JSValueRef) seed_gi_argument_make_js(&larg,
-									  list_type);
+														  list_type, exception);
 				JSObjectSetPropertyAtIndex(eng->context, ret, i,
 							   ival, NULL);
 				i++;
@@ -388,7 +391,7 @@ JSValueRef seed_gi_argument_make_js(GArgument * arg, GITypeInfo * type_info)
 				larg.v_pointer = list->data;
 				ival =
 				    (JSValueRef) seed_gi_argument_make_js(&larg,
-									  list_type);
+														  list_type, exception);
 				JSObjectSetPropertyAtIndex(eng->context, ret, i,
 							   ival, NULL);
 				i++;
@@ -447,48 +450,48 @@ gboolean seed_gi_supports_type(GITypeInfo * type_info)
 	return FALSE;
 }
 
-SeedValue seed_value_from_gvalue(GValue * gval)
+SeedValue seed_value_from_gvalue(GValue * gval, JSValueRef * exception)
 {
 	if (!G_IS_VALUE(gval)) {
 		return false;
 	}
 	switch (G_VALUE_TYPE(gval)) {
 	case G_TYPE_BOOLEAN:
-		return seed_value_from_boolean(g_value_get_boolean(gval));
+		return seed_value_from_boolean(g_value_get_boolean(gval), exception);
 	case G_TYPE_CHAR:
-		return seed_value_from_char(g_value_get_char(gval));
+		return seed_value_from_char(g_value_get_char(gval), exception);
 	case G_TYPE_UCHAR:
-		return seed_value_from_uchar(g_value_get_uchar(gval));
+		return seed_value_from_uchar(g_value_get_uchar(gval), exception);
 	case G_TYPE_INT:
-		return seed_value_from_int(g_value_get_int(gval));
+		return seed_value_from_int(g_value_get_int(gval), exception);
 	case G_TYPE_UINT:
-		return seed_value_from_uint(g_value_get_uint(gval));
+		return seed_value_from_uint(g_value_get_uint(gval), exception);
 	case G_TYPE_LONG:
-		return seed_value_from_long(g_value_get_long(gval));
+		return seed_value_from_long(g_value_get_long(gval), exception);
 	case G_TYPE_ULONG:
-		return seed_value_from_ulong(g_value_get_ulong(gval));
+		return seed_value_from_ulong(g_value_get_ulong(gval), exception);
 	case G_TYPE_INT64:
-		return seed_value_from_int64(g_value_get_int64(gval));
+		return seed_value_from_int64(g_value_get_int64(gval), exception);
 	case G_TYPE_UINT64:
-		return seed_value_from_uint64(g_value_get_uint64(gval));
+		return seed_value_from_uint64(g_value_get_uint64(gval), exception);
 	case G_TYPE_FLOAT:
-		return seed_value_from_float(g_value_get_float(gval));
+		return seed_value_from_float(g_value_get_float(gval), exception);
 	case G_TYPE_DOUBLE:
-		return seed_value_from_double(g_value_get_double(gval));
+		return seed_value_from_double(g_value_get_double(gval), exception);
 	case G_TYPE_STRING:
 		return seed_value_from_string((gchar *)
-					      g_value_get_string(gval));
+									  g_value_get_string(gval), exception);
 	case G_TYPE_POINTER:
 		return seed_make_struct(g_value_get_pointer(gval), 0);
 	}
 
 	if (g_type_is_a(G_VALUE_TYPE(gval), G_TYPE_ENUM))
-		return seed_value_from_long(gval->data[0].v_long);
+		return seed_value_from_long(gval->data[0].v_long, exception);
 	else if (g_type_is_a(G_VALUE_TYPE(gval), G_TYPE_ENUM))
-		return seed_value_from_long(gval->data[0].v_long);
+		return seed_value_from_long(gval->data[0].v_long, exception);
 	else if (g_type_is_a(G_VALUE_TYPE(gval), G_TYPE_OBJECT)) {
 		// TODO: check for leaks
-		return seed_value_from_object(g_value_get_object(gval));
+		return seed_value_from_object(g_value_get_object(gval), exception);
 	} else {
 		GIBaseInfo *info;
 		GIInfoType type;
@@ -513,7 +516,8 @@ SeedValue seed_value_from_gvalue(GValue * gval)
 	return NULL;
 }
 
-gboolean seed_gvalue_from_seed_value(SeedValue val, GType type, GValue * ret)
+gboolean seed_gvalue_from_seed_value(SeedValue val, GType type, GValue * ret,
+									 JSValueRef * exception)
 {
 	switch (type) {
 	case G_TYPE_BOOLEAN:
@@ -525,7 +529,7 @@ gboolean seed_gvalue_from_seed_value(SeedValue val, GType type, GValue * ret)
 			//              goto bad_type;
 
 			g_value_init(ret, G_TYPE_BOOLEAN);
-			g_value_set_boolean(ret, seed_value_to_boolean(val));
+			g_value_set_boolean(ret, seed_value_to_boolean(val, exception));
 			return TRUE;
 		}
 	case G_TYPE_INT:
@@ -533,21 +537,21 @@ gboolean seed_gvalue_from_seed_value(SeedValue val, GType type, GValue * ret)
 		{
 			g_value_init(ret, type);
 			if (type == G_TYPE_INT)
-				g_value_set_int(ret, seed_value_to_int(val));
+				g_value_set_int(ret, seed_value_to_int(val, exception));
 			else
-				g_value_set_uint(ret, seed_value_to_uint(val));
+				g_value_set_uint(ret, seed_value_to_uint(val, exception));
 			return TRUE;
 		}
 	case G_TYPE_CHAR:
 		{
 			g_value_init(ret, G_TYPE_CHAR);
-			g_value_set_char(ret, seed_value_to_char(val));
+			g_value_set_char(ret, seed_value_to_char(val, exception));
 			return TRUE;
 		}
 	case G_TYPE_UCHAR:
 		{
 			g_value_init(ret, G_TYPE_UCHAR);
-			g_value_set_uchar(ret, seed_value_to_uchar(val));
+			g_value_set_uchar(ret, seed_value_to_uchar(val, exception));
 			return TRUE;
 		}
 	case G_TYPE_LONG:
@@ -560,39 +564,39 @@ gboolean seed_gvalue_from_seed_value(SeedValue val, GType type, GValue * ret)
 			switch (type) {
 			case G_TYPE_LONG:
 				g_value_init(ret, G_TYPE_LONG);
-				g_value_set_long(ret, seed_value_to_long(val));
+				g_value_set_long(ret, seed_value_to_long(val, exception));
 				break;
 			case G_TYPE_ULONG:
 				g_value_init(ret, G_TYPE_ULONG);
 				g_value_set_ulong(ret,
-						  seed_value_to_ulong(val));
+								  seed_value_to_ulong(val, exception));
 				break;
 			case G_TYPE_INT64:
 				g_value_init(ret, G_TYPE_INT64);
 				g_value_set_int64(ret,
-						  seed_value_to_int64(val));
+								  seed_value_to_int64(val, exception));
 				break;
 			case G_TYPE_UINT64:
 				g_value_init(ret, G_TYPE_UINT64);
 				g_value_set_uint64(ret,
-						   seed_value_to_uint64(val));
+								   seed_value_to_uint64(val, exception));
 				break;
 			case G_TYPE_FLOAT:
 				g_value_init(ret, G_TYPE_FLOAT);
 				g_value_set_float(ret,
-						  seed_value_to_float(val));
+								  seed_value_to_float(val, exception));
 				break;
 			case G_TYPE_DOUBLE:
 				g_value_init(ret, G_TYPE_DOUBLE);
 				g_value_set_double(ret,
-						   seed_value_to_double(val));
+								   seed_value_to_double(val, exception));
 				break;
 			}
 			return TRUE;
 		}
 	case G_TYPE_STRING:
 		{
-			gchar *cval = seed_value_to_string(val);
+			gchar *cval = seed_value_to_string(val, exception);
 
 			g_value_init(ret, G_TYPE_STRING);
 			g_value_take_string(ret, cval);
@@ -607,7 +611,7 @@ gboolean seed_gvalue_from_seed_value(SeedValue val, GType type, GValue * ret)
 					g_value_init(ret, G_TYPE_BOOLEAN);
 					g_value_set_boolean(ret,
 							    seed_value_to_boolean
-							    (val));
+										(val, exception));
 					return TRUE;
 				}
 			case kJSTypeNumber:
@@ -615,12 +619,12 @@ gboolean seed_gvalue_from_seed_value(SeedValue val, GType type, GValue * ret)
 					g_value_init(ret, G_TYPE_DOUBLE);
 					g_value_set_double(ret,
 							   seed_value_to_double
-							   (val));
+									   (val, exception));
 					return TRUE;
 				}
 			case kJSTypeString:
 				{
-					gchar *cv = seed_value_to_string(val);
+					gchar *cv = seed_value_to_string(val, exception);
 
 					g_value_init(ret, G_TYPE_STRING);
 					g_value_take_string(ret, cv);
@@ -636,17 +640,17 @@ gboolean seed_gvalue_from_seed_value(SeedValue val, GType type, GValue * ret)
 	if (g_type_is_a(type, G_TYPE_ENUM)
 	    && JSValueIsNumber(eng->context, val)) {
 		g_value_init(ret, type);
-		ret->data[0].v_long = seed_value_to_long(val);
+		ret->data[0].v_long = seed_value_to_long(val, exception);
 		return TRUE;
 	} else if (g_type_is_a(type, G_TYPE_FLAGS)
 		   && JSValueIsNumber(eng->context, val)) {
 		g_value_init(ret, type);
-		ret->data[0].v_long = seed_value_to_long(val);
+		ret->data[0].v_long = seed_value_to_long(val, exception);
 		return TRUE;
 	} else if (g_type_is_a(type, G_TYPE_OBJECT)
 		   && (JSValueIsNull(eng->context, val)
 		       || seed_value_is_gobject(val))) {
-		GObject *o = seed_value_to_object(val);
+		GObject *o = seed_value_to_object(val, exception);
 
 		if (o == NULL || g_type_is_a(G_OBJECT_TYPE(o), type)) {
 			g_value_init(ret, G_TYPE_OBJECT);
@@ -701,7 +705,7 @@ static void seed_value_wrong_type()
 	abort();
 }
 
-gboolean seed_value_to_boolean(JSValueRef val)
+gboolean seed_value_to_boolean(JSValueRef val, JSValueRef * exception)
 {
 	if (!JSValueIsBoolean(eng->context, val)) {
 		if (!JSValueIsNull(eng->context, val))
@@ -714,12 +718,12 @@ gboolean seed_value_to_boolean(JSValueRef val)
 	return JSValueToBoolean(eng->context, val);
 }
 
-JSValueRef seed_value_from_boolean(gboolean val)
+JSValueRef seed_value_from_boolean(gboolean val, JSValueRef * exception)
 {
 	return JSValueMakeBoolean(eng->context, val);
 }
 
-guint seed_value_to_uint(JSValueRef val)
+guint seed_value_to_uint(JSValueRef val, JSValueRef * exception)
 {
 	if (!JSValueIsNumber(eng->context, val)) {
 		if (!JSValueIsNull(eng->context, val))
@@ -730,12 +734,12 @@ guint seed_value_to_uint(JSValueRef val)
 	return (guint) JSValueToNumber(eng->context, val, NULL);
 }
 
-JSValueRef seed_value_from_uint(guint val)
+JSValueRef seed_value_from_uint(guint val, JSValueRef * exception)
 {
 	return JSValueMakeNumber(eng->context, (gdouble) val);
 }
 
-gint seed_value_to_int(JSValueRef val)
+gint seed_value_to_int(JSValueRef val, JSValueRef * exception)
 {
 	if (!JSValueIsNumber(eng->context, val)) {
 		if (!JSValueIsNull(eng->context, val))
@@ -746,12 +750,12 @@ gint seed_value_to_int(JSValueRef val)
 	return (gint) JSValueToNumber(eng->context, val, NULL);
 }
 
-JSValueRef seed_value_from_int(gint val)
+JSValueRef seed_value_from_int(gint val, JSValueRef * exception)
 {
 	return JSValueMakeNumber(eng->context, (gdouble) val);
 }
 
-gchar seed_value_to_char(JSValueRef val)
+gchar seed_value_to_char(JSValueRef val, JSValueRef * exception)
 {
 	int cv;
 
@@ -771,12 +775,12 @@ gchar seed_value_to_char(JSValueRef val)
 	return (char)cv;
 }
 
-JSValueRef seed_value_from_char(gchar val)
+JSValueRef seed_value_from_char(gchar val, JSValueRef * exception)
 {
 	return JSValueMakeNumber(eng->context, (gdouble) val);
 }
 
-guchar seed_value_to_uchar(JSValueRef val)
+guchar seed_value_to_uchar(JSValueRef val, JSValueRef * exception)
 {
 	guint cv;
 
@@ -796,12 +800,12 @@ guchar seed_value_to_uchar(JSValueRef val)
 	return (guchar) cv;
 }
 
-JSValueRef seed_value_from_uchar(guchar val)
+JSValueRef seed_value_from_uchar(guchar val, JSValueRef * exception)
 {
 	return JSValueMakeNumber(eng->context, (gdouble) val);
 }
 
-glong seed_value_to_long(JSValueRef val)
+glong seed_value_to_long(JSValueRef val, JSValueRef * exception)
 {
 	if (!JSValueIsNumber(eng->context, val)) {
 		if (!JSValueIsNull(eng->context, val))
@@ -812,12 +816,12 @@ glong seed_value_to_long(JSValueRef val)
 	return (glong) JSValueToNumber(eng->context, val, NULL);
 }
 
-JSValueRef seed_value_from_long(glong val)
+JSValueRef seed_value_from_long(glong val, JSValueRef * exception)
 {
 	return JSValueMakeNumber(eng->context, (gdouble) val);
 }
 
-gulong seed_value_to_ulong(JSValueRef val)
+gulong seed_value_to_ulong(JSValueRef val, JSValueRef * exception)
 {
 	if (!JSValueIsNumber(eng->context, val)) {
 		if (!JSValueIsNull(eng->context, val))
@@ -828,12 +832,12 @@ gulong seed_value_to_ulong(JSValueRef val)
 	return (gulong) JSValueToNumber(eng->context, val, NULL);
 }
 
-JSValueRef seed_value_from_ulong(gulong val)
+JSValueRef seed_value_from_ulong(gulong val, JSValueRef * exception)
 {
 	return JSValueMakeNumber(eng->context, (gdouble) val);
 }
 
-gint64 seed_value_to_int64(JSValueRef val)
+gint64 seed_value_to_int64(JSValueRef val, JSValueRef * exception)
 {
 	if (!JSValueIsNumber(eng->context, val)) {
 		if (!JSValueIsNull(eng->context, val))
@@ -844,12 +848,12 @@ gint64 seed_value_to_int64(JSValueRef val)
 	return (gint64) JSValueToNumber(eng->context, val, NULL);
 }
 
-JSValueRef seed_value_from_int64(gint64 val)
+JSValueRef seed_value_from_int64(gint64 val, JSValueRef * exception)
 {
 	return JSValueMakeNumber(eng->context, (gdouble) val);
 }
 
-guint64 seed_value_to_uint64(JSValueRef val)
+guint64 seed_value_to_uint64(JSValueRef val, JSValueRef * exception)
 {
 	if (!JSValueIsNumber(eng->context, val)) {
 		if (!JSValueIsNull(eng->context, val))
@@ -860,12 +864,12 @@ guint64 seed_value_to_uint64(JSValueRef val)
 	return (guint64) JSValueToNumber(eng->context, val, NULL);
 }
 
-JSValueRef seed_value_from_uint64(guint64 val)
+JSValueRef seed_value_from_uint64(guint64 val, JSValueRef * exception)
 {
 	return JSValueMakeNumber(eng->context, (gdouble) val);
 }
 
-gfloat seed_value_to_float(JSValueRef val)
+gfloat seed_value_to_float(JSValueRef val, JSValueRef * exception)
 {
 	if (!JSValueIsNumber(eng->context, val)) {
 		if (!JSValueIsNull(eng->context, val))
@@ -876,12 +880,12 @@ gfloat seed_value_to_float(JSValueRef val)
 	return (gfloat) JSValueToNumber(eng->context, val, NULL);
 }
 
-JSValueRef seed_value_from_float(gfloat val)
+JSValueRef seed_value_from_float(gfloat val, JSValueRef * exception)
 {
 	return JSValueMakeNumber(eng->context, (gdouble) val);
 }
 
-gdouble seed_value_to_double(JSValueRef val)
+gdouble seed_value_to_double(JSValueRef val, JSValueRef * exception)
 {
 	if (!JSValueIsNumber(eng->context, val)) {
 		if (!JSValueIsNull(eng->context, val))
@@ -892,12 +896,12 @@ gdouble seed_value_to_double(JSValueRef val)
 	return (gdouble) JSValueToNumber(eng->context, val, NULL);
 }
 
-JSValueRef seed_value_from_double(gdouble val)
+JSValueRef seed_value_from_double(gdouble val, JSValueRef * exception)
 {
 	return JSValueMakeNumber(eng->context, (gdouble) val);
 }
 
-gchar *seed_value_to_string(JSValueRef val)
+gchar *seed_value_to_string(JSValueRef val, JSValueRef * exception)
 {
 	JSStringRef jsstr;
 	JSValueRef func, str;
@@ -937,7 +941,7 @@ gchar *seed_value_to_string(JSValueRef val)
 	return buf;
 }
 
-JSValueRef seed_value_from_string(const gchar * val)
+JSValueRef seed_value_from_string(const gchar * val, JSValueRef * exception)
 {
 	JSStringRef jsstr = JSStringCreateWithUTF8CString(val);
 	JSValueRef valstr = JSValueMakeString(eng->context, jsstr);
@@ -946,7 +950,7 @@ JSValueRef seed_value_from_string(const gchar * val)
 	return valstr;
 }
 
-GObject *seed_value_to_object(JSValueRef val)
+GObject *seed_value_to_object(JSValueRef val, JSValueRef * exception)
 {
 	GObject *gobject;
 
@@ -962,7 +966,7 @@ GObject *seed_value_to_object(JSValueRef val)
 	return gobject;
 }
 
-JSValueRef seed_value_from_object(GObject * val)
+JSValueRef seed_value_from_object(GObject * val, JSValueRef * exception)
 {
 	if (val == NULL)
 		return JSValueMakeNull(eng->context);

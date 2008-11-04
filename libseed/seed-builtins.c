@@ -40,7 +40,7 @@ seed_include(JSContextRef ctx,
 		seed_make_exception(exception, "ArgumentError", mes);
 		return JSValueMakeNull(eng->context);
 	}
-	import_file = seed_value_to_string(arguments[0]);
+	import_file = seed_value_to_string(arguments[0], exception);
 
 	g_file_get_contents(import_file, &buffer, 0, 0);
 
@@ -86,7 +86,7 @@ seed_print(JSContextRef ctx,
 		return JSValueMakeNull(eng->context);
 	}
 
-	gchar *buf = seed_value_to_string(arguments[0]);
+	gchar *buf = seed_value_to_string(arguments[0], exception);
 	printf("%s\n", buf);
 	free(buf);
 
@@ -116,12 +116,12 @@ seed_readline(JSContextRef ctx,
 		return JSValueMakeNull(eng->context);
 	}
 
-	buf = seed_value_to_string(arguments[0]);
+	buf = seed_value_to_string(arguments[0], exception);
 
 	str = readline(buf);
 	if (str && *str) {
 		add_history(str);
-		valstr = seed_value_from_string(str);
+		valstr = seed_value_from_string(str, exception);
 		free(str);
 	}
 
@@ -197,12 +197,12 @@ seed_introspect(JSContextRef ctx,
 	seed_value_set_property(data_obj, "name",
 				(JSValueRef)
 				seed_value_from_string(g_base_info_get_name
-						       ((GIBaseInfo *) info)));
+									   ((GIBaseInfo *) info), exception));
 
 	seed_value_set_property(data_obj, "return_type",
 				seed_value_from_string
 				(seed_g_type_name_to_string
-				 (g_callable_info_get_return_type(info))));
+				 (g_callable_info_get_return_type(info)), exception));
 
 	args_obj = JSObjectMake(eng->context, NULL, NULL);
 
@@ -217,7 +217,7 @@ seed_introspect(JSContextRef ctx,
 						(info, i)));
 
 		seed_value_set_property(argument, "type",
-					seed_value_from_string(arg_name));
+								seed_value_from_string(arg_name, exception));
 
 		JSObjectSetPropertyAtIndex(eng->context, args_obj, i, argument,
 					   NULL);
@@ -258,7 +258,7 @@ seed_fork(JSContextRef ctx,
 	pid_t child;
 
 	child = fork();
-	return seed_value_from_int(child);
+	return seed_value_from_int(child, exception);
 }
 
 static gboolean seed_timeout_function(gpointer user_data)
@@ -294,7 +294,7 @@ seed_set_timeout(JSContextRef ctx,
 						arguments[0],
 						exception);
 
-	guint interval = seed_value_to_uint(arguments[1]);
+	guint interval = seed_value_to_uint(arguments[1], exception);
 	g_timeout_add(interval, &seed_timeout_function, jsstr);
 
 	return JSValueMakeBoolean(ctx, 1);
@@ -323,11 +323,11 @@ void seed_init_builtins(int *argc, char ***argv)
 		// TODO: exceptions!
 
 		JSObjectSetPropertyAtIndex(eng->context, arrayObj, i,
-					   seed_value_from_string((*argv)[i]),
+								   seed_value_from_string((*argv)[i], 0),
 					   NULL);
 	}
 
-	argcref = seed_value_from_int(*argc);
+	argcref = seed_value_from_int(*argc, 0);
 
 	seed_value_set_property(arrayObj, "length", argcref);
 	seed_value_set_property(obj, "argv", arrayObj);

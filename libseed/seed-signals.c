@@ -114,7 +114,7 @@ seed_signal_marshal_func(GClosure * closure,
 	args = g_newa(JSValueRef, n_param_values);
 
 	for (i = 0; i < n_param_values; i++) {
-		args[i] = seed_value_from_gvalue((GValue *) & param_values[i]);
+		args[i] = seed_value_from_gvalue((GValue *) & param_values[i], 0);
 
 		if (!args[i])
 			g_error("Error in signal marshal. "
