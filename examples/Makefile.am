@@ -4,6 +4,7 @@ SUBDIRS = ide \
           
 EXTRA_DIST = \
 	calculator.js \
+	gconf.js \
 	clutter.js \
 	introspect.js \
 	json2.js \

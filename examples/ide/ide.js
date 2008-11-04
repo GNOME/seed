@@ -5,8 +5,10 @@ Seed.import_namespace("Gtk");
 Seed.import_namespace("GtkSource");
 Seed.import_namespace("Gio");
 Seed.import_namespace("Pango");
+Seed.import_namespace("GConf");
 
 Gtk.init(null, null);
+GConf.init(null, null);
 
 Seed.include("toolbar.js");
 Seed.include("tabview.js");
@@ -83,6 +85,7 @@ function ide_source_view()
 {
     var source_lang_mgr = new GtkSource.SourceLanguageManager();
     var js_lang = source_lang_mgr.get_language("js");
+    var client = GConf.client_get_default();
 
     this.source_buf = new GtkSource.SourceBuffer({language: js_lang});
     
@@ -118,7 +121,8 @@ function ide_source_view()
     this.source_view.modify_font(Pango.font_description_from_string("monospace 10"));
     
     var source_style_mgr = GtkSource.style_scheme_manager_get_default();
-    var source_style = source_style_mgr.get_scheme("oblivion");
+    var gedit_style = client.get_string("/apps/gedit-2/preferences/editor/colors/scheme");
+    var source_style = source_style_mgr.get_scheme(gedit_style);
     
     this.source_buf.style_scheme = source_style;
 }
