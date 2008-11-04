@@ -40,6 +40,9 @@ function browse(url_entry)
 	this.open(url_entry.text);
 }
 
+// Being able to make new tabs is blocking on a GtkWebkit bug.
+// Yes this is why you've never been able to use open in new window in epiphany
+// webkit.
 function new_tab(browser_view, browser_frame, new_frame)
 {
 	//new_frame = new WebKit.WebView();
@@ -107,7 +110,8 @@ function create_tab(loc)
 	tab.pack_start(browser_view, true, true);
 	
 	var close_button = new Gtk.Button();
-	close_button.set_image(new Gtk.Image({stock: "gtk-close", icon_size: Gtk.IconSize.menu}));
+	close_button.set_image(new Gtk.Image({stock: "gtk-close", 
+			icon_size: Gtk.IconSize.menu}));
 	close_button.signal_clicked.connect(close_tab, tab);
 	close_button.set_relief(Gtk.ReliefStyle.none);
 	

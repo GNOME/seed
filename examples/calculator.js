@@ -9,11 +9,6 @@ Gtk.init(null, null);
 var window, label;
 var calc_val = "";
 
-function end_program()
-{
-	Gtk.main_quit();
-}
-
 function update_display()
 {
 	label.set_markup("<span size='30000'>" + calc_val + "</span>");
@@ -42,6 +37,11 @@ function pressed_equals(button)
 	calc_val = calc_val.replace("cos", "Math.cos");
 	calc_val = calc_val.replace("tan", "Math.tan");
 	calc_val = eval(calc_val) + "";
+	// Avoid rediculous amounts of precision from toString.
+	if (calc_val == Math.floor(calc_val))
+	    calc_val = Seed.sprintf("%d", calc_val);
+	else
+	    calc_val = Seed.sprintf("%.4f", calc_val);
 	label.set_markup("<span size='30000'>" + calc_val + "</span>");
 }
 
@@ -134,7 +134,7 @@ function create_buttons()
 var window = new Gtk.Window({title: "Calculator", resizable: false});
 
 window.resize(250, 250);
-window.signal_hide.connect(end_program);
+window.signal_hide.connect(Gtk.main_quit);
 window.opacity = 0.95;
 
 var label = new Gtk.Label({label: ""});

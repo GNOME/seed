@@ -26,10 +26,10 @@ function draw_document()
 }
 function set_page(num)
 {
-    Seed.print(typeof num);
     current_page = current_document.get_page(num);
     draw_document();
     
+    //Get rid of precision.
     entry.text = Seed.sprintf("%d",num+1);
     page_num = num;
     if (page_num == num_pages-1)
@@ -54,7 +54,10 @@ function open_file(sv)
     
     if(file_chooser.run() == Gtk.ResponseType.accept)
     {
-	current_document = Poppler.Document.new_from_file(file_chooser.get_uri());
+	// Poppler.Document will not take a uri as a construction property,
+	// use this:
+	current_document = 
+	    Poppler.Document.new_from_file(file_chooser.get_uri());
 	set_page(0);
 	num_pages = current_document.get_n_pages();
 	page_label.label = " of " + num_pages;
@@ -116,7 +119,6 @@ window.title = "Poppler Demo";
 main_vbox = new Gtk.VBox();
 
 drawing_area = new Gtk.DrawingArea();
-drawing_area.app_paintable = true;
 drawing_area.signal_expose_event.connect(draw_document);
 
 window.add(main_vbox);

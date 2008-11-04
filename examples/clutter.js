@@ -47,7 +47,8 @@ for (var i = 0; i < colors.length; i++)
 	stage.add_actor(r);
 	rectangles[i] = r;
 }
-
+// Was initially intended as a test to see if performance was accetable to do
+// custom animations at 60fps. Turns out to be fine, serves as an example now.
 timeline.signal_new_frame.connect(
 	function(timeline, frame_num)
 	{
@@ -80,7 +81,8 @@ timeline.signal_completed.connect(
 		Clutter.effect_fade(effect,text,0);
 		for (i in rectangles)
 		{
-			Clutter.effect_move(effect, rectangles[i], Math.random()*stage.width,
+			Clutter.effect_move(effect, rectangles[i], 
+					    Math.random()*stage.width,
 					    Math.random()*stage.height);
 		}
 	});

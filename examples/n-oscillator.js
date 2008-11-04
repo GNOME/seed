@@ -5,6 +5,8 @@ Seed.import_namespace("Gst","0.10");
 Gst.init(null, null);
 Gtk.init(null, null);
 
+// This is a really ugly program.
+
 function oscillator(freq)
 {
 	this.vbox = new Gtk.VBox();
@@ -14,6 +16,9 @@ function oscillator(freq)
 	this.button = new Gtk.Button({label: "Toggle"});
 	
 	this.pipeline = new Gst.Pipeline({name: "test"});
+	// No actual introspection data for audiotestsrc, so can not
+	// instantiate one with a constructor, have to use element_factory,
+	// likewise for the others.
 	this.audiosrc = Gst.element_factory_make("audiotestsrc", "audio");
 	this.audiosink = Gst.element_factory_make("alsasink", "sink");
 	this.volume = Gst.element_factory_make("volume", "vcontrol");
