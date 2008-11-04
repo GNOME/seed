@@ -105,8 +105,17 @@ seed_gobject_constructor_invoked(JSContextRef ctx,
 
 		param_spec = g_object_class_find_property(oclass, prop_name);
 		if (param_spec == NULL)
-			g_error("Constructor called "
-				"with invalid property \n");
+		{
+				gchar * mes =
+			    g_strdup_printf("Invalid property for construction: %s", 
+								prop_name);
+				seed_make_exception(exception, "PropertyError", mes);
+				
+				g_free(mes);
+				g_free(params);
+				
+				return (JSObjectRef)JSValueMakeNull(eng->context);
+		}
 
 		// TODO: exception handling
 		jsprop_value = JSObjectGetProperty(eng->context,
@@ -211,10 +220,19 @@ seed_gobject_method_invoked(JSContextRef ctx,
 			if (!seed_gi_make_argument(arguments[i],
 						   type_info,
 						   &in_args[n_in_args++])) {
-				g_error("Unable to make argument %d for"
+				gchar * mes = g_strdup_printf("Unable to make argument %d for"
 					" function: %s. \n",
 					i + 1, g_base_info_get_name((GIBaseInfo
 								     *) info));
+				seed_make_exception(exception, "ArgumentError", mes);
+				
+				g_free(mes);
+				g_base_info_unref((GIBaseInfo *) type_info);
+				g_base_info_unref((GIBaseInfo *) arg_info);
+				g_free(in_args);
+				g_free(out_args);
+				
+				return JSValueMakeNull(eng->context);
 			}
 			if (dir == GI_DIRECTION_INOUT)
 				n_out_args++;
