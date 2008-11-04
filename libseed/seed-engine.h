@@ -25,6 +25,7 @@
 extern JSClassRef gobject_class;
 extern JSClassRef gobject_method_class;
 extern JSClassRef gobject_constructor_class;
+extern JSClassRef seed_callback_class;
 extern SeedEngine *eng;
 
 typedef struct _SeedScript {

@@ -708,8 +708,15 @@ seed_gi_import_namespace(JSContextRef ctx,
 						struct_ref);
 
 			JSValueProtect(eng->context, (JSValueRef) struct_ref);
+		} else if (info &&
+				 (g_base_info_get_type(info) == GI_INFO_TYPE_CALLBACK))
+		{
+				JSObjectRef callback_ref = JSObjectMake(eng->context, seed_callback_class, info);
+				seed_value_set_property(namespace_ref,
+										g_base_info_get_name(info),
+										(JSValueRef)callback_ref);
 		}
-	}
+	} 
 
 	extension =
 	    g_strdup_printf("Seed.include(\"/usr/local/share/seed/%s.js\")",
@@ -764,6 +771,26 @@ JSClassDefinition gobject_method_def = {
 	NULL,			/* Delete Property */
 	NULL,			/* Get Property Names */
 	seed_gobject_method_invoked,	/* Call As Function */
+	NULL,			/* Call As Constructor */
+	NULL,			/* Has Instance */
+	NULL			/* Convert To Type */
+};
+
+JSClassDefinition seed_callback_def = {
+	0,			/* Version, always 0 */
+	0,
+	"seed_callback",	/* Class Name */
+	NULL,			/* Parent Class */
+	NULL,			/* Static Values */
+	NULL,			/* Static Functions */
+	NULL,
+	NULL,			/* Finalize */
+	NULL,			/* Has Property */
+	NULL,			/* Get Property */
+	NULL,			/* Set Property */
+	NULL,			/* Delete Property */
+	NULL,			/* Get Property Names */
+	NULL,	/* Call As Function */
 	NULL,			/* Call As Constructor */
 	NULL,			/* Has Instance */
 	NULL			/* Convert To Type */
@@ -829,6 +856,8 @@ gboolean seed_init(int *argc, char ***argv)
 	JSClassRetain(gobject_constructor_class);
 	gobject_signal_class = JSClassCreate(seed_get_signal_class());
 	JSClassRetain(gobject_signal_class);
+	seed_callback_class = JSClassCreate(&seed_callback_def);
+	JSClassRetain(seed_callback_class);
 
 	g_type_set_qdata(G_TYPE_OBJECT, qname, gobject_class);
 
