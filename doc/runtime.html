@@ -1,0 +1,115 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+	<title>Seed Tutorial : Standalone</title>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<style type="text/css">
+body
+{
+	font-size: 10pt;
+	font-family: "sans-serif";
+	text-align: justify;
+}
+
+#header
+{
+	text-align: right;
+	font-size: 18pt;
+	width: 100%;
+	border-bottom: 1px solid #aaa;
+	
+}
+
+#subheader
+{
+	text-align: right;
+	font-size: 12pt;
+	width: 100%;
+}
+
+div.section
+{
+	font-size: 14pt;
+	width: 100%;
+	border-bottom: 1px solid #ccc;
+	margin-bottom: 10px;
+}
+
+p
+{
+	margin-left: 10px;
+	text-indent: 0em;
+}
+
+pre
+{
+	margin-left: 20px;
+	padding-left: 5px;
+	border-left: 2px solid #ddd;
+}
+
+div.filename
+{
+    margin-left: 25px;
+    font-weight: bold;
+    width: 70%;
+    border-bottom: 1px solid #ccc;
+}
+
+code
+{
+    font-weight: bold;
+}
+
+span.changed
+{
+    color: red;
+}
+	</style>
+</head>
+<body>
+<div id="header">Seed Runtime</div>
+<div id="subheader">v.0.1</div>
+<div class="section"><b>Seed.import_namespace</b>(namespace, <i>version</i>)</div>
+<p>
+Imports functions and constructors from the given gobject-introspection <i>namespace</i>. The optional <i>version</i> parameter forces a particular version, and will throw an exception if the typelib for that version is not installed; if it is omitted, the latest version is loaded.
+</p>
+<pre>
+Seed.import_namespace("Gtk", "2.0");
+</pre>
+<div class="section"><b>Seed.include</b>(file)</div>
+<p>
+Evaluates a Javascript <i>file</i> as if it were included in the file at the point include is called.
+</p>
+<pre>
+Seed.include("tabview.js");
+</pre>
+<div class="section"><b>Seed.print</b>(value)</div>
+<p>
+Prints, to standard output, a representation of <i>value</i>. Number types are printed as floating-point values (with 6 decimal places); strings are printed as-is; objects are printed as <code>[object <i>type</i>]</code>.
+</p>
+<pre>
+Seed.print(5);
+Seed.print("This is a test!".replace(" is ", " was "));
+
+var win = new Gtk.Window();
+Seed.print(win);
+</pre>
+<div class="section"><b>Seed.readline</b>(prompt)</div>
+<p><i>Returns: user input</i></p>
+<p>
+Uses the GNU Readline library to display a prompt (using the <i>prompt</i> argument) and then wait for input from the user. The readline prompt provides history (using the up and down arrow keys) within a single Seed process.
+</p>
+Seed.{import_namespace, include, print, readline, prototype, check_syntax, introspect, fork}
+Seed.argv
+
+.signal_<xyz>.connect
+
+Exceptions
+
+when you have things that aren't actually objects , like cluttercolor, you don't have an actual construction and it gets mappppppeed to Clutter.Color._new()
+
+</p>
+</body>
+</html>

@@ -4,7 +4,11 @@
 SUBDIRS = po \
 	libseed\
 	src\
-	extensions
+	extensions\
+	doc\
+	examples\
+	test
+	
 
 seeddocdir = ${prefix}/doc/seed
 seeddoc_DATA = \
