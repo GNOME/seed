@@ -16,7 +16,8 @@ EXTRA_DIST = \
 	quine.js \
 	repl.js \
 	soup.js \
-	vte-test.js
+	vte-test.js \
+	HACKING
 
 ## File created by the gnome-build tools
 
