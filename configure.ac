@@ -43,4 +43,11 @@ libseed/Makefile
 po/Makefile.in
 src/Makefile
 extensions/Makefile
+tests/Makefile
+doc/Makefile
+doc/tutorial-standalone/Makefile
+examples/Makefile
+examples/ide/Makefile
+examples/lightsoff/Makefile
+examples/shader/Makefile
 ])

@@ -7,7 +7,7 @@ SUBDIRS = po \
 	extensions\
 	doc\
 	examples\
-	test
+	tests
 	
 
 seeddocdir = ${prefix}/doc/seed

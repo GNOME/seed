@@ -8,7 +8,7 @@ EXTRA_DIST = \
 	4.png \
 	packing.png \
 	packing.svg \
-	tutorial.html \
+	tutorial.html
 	
 
 ## File created by the gnome-build tools
