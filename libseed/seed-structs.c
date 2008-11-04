@@ -63,6 +63,36 @@ JSObjectRef seed_make_union(gpointer younion, GIBaseInfo *info)
 		if (info)
 		{
 				n_methods =
+						g_union_info_get_n_methods((GIUnionInfo *)info);
+				for (i = 0; i < n_methods; i++)
+				{
+						GIFunctionInfo *finfo;
+						
+						finfo = g_union_info_get_method(
+								(GIUnionInfo*)info, i);
+						
+						seed_gobject_define_property_from_function_info((GIFunctionInfo *)finfo,
+																		object,
+																		TRUE);
+				}
+		}
+
+		return object;
+}
+
+JSObjectRef seed_make_struct(gpointer strukt, GIBaseInfo *info)
+{
+		JSObjectRef object;
+		int i, n_methods;
+		
+		if (!seed_struct_class)
+				seed_struct_class = JSClassCreate(&gobject_struct_def);
+		
+		object = JSObjectMake(eng->context, seed_struct_class, strukt);
+		
+		if (info)
+		{
+				n_methods =
 						g_struct_info_get_n_methods((GIStructInfo *)info);
 				for (i = 0; i < n_methods; i++)
 				{
@@ -76,11 +106,6 @@ JSObjectRef seed_make_union(gpointer younion, GIBaseInfo *info)
 																		TRUE);
 				}
 		}
-		seed_value_set_property(object, "test", seed_value_from_int(5));
-		return object;
-}
 
-JSObjectRef seed_make_struct(gpointer strukt, GIBaseInfo *info)
-{
-		return seed_make_union(strukt, info);
+		return object;
 }

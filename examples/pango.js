@@ -40,8 +40,7 @@ window.show_all();
 
 function mouse_click(win, evt)
 {
-	Seed.print(evt);
-	Seed.print(evt.get_stage);
+	Seed.print(evt.get_x()+" "+evt.get_y());
 }
 
 var stage = gtkstage.get_stage();

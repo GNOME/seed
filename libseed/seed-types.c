@@ -493,7 +493,7 @@ SeedValue seed_value_from_gvalue(GValue * gval)
 	case G_TYPE_POINTER:
 		return seed_make_struct(g_value_get_pointer(gval), 0);
 	}
-
+	
 	if(g_type_is_a(G_VALUE_TYPE(gval), G_TYPE_ENUM))
 		return seed_value_from_long(gval->data[0].v_long);
 	else if(g_type_is_a(G_VALUE_TYPE(gval), G_TYPE_ENUM))
@@ -520,6 +520,10 @@ SeedValue seed_value_from_gvalue(GValue * gval)
 		{
 				return seed_make_struct(g_value_peek_pointer(gval), info);
 									
+		}
+		else if (type == GI_INFO_TYPE_BOXED)
+		{
+				printf("Trying to marshal boxed type \n");
 		}
 			
 	}
