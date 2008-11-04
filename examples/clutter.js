@@ -16,25 +16,27 @@ colors = [ "blanched almond",
 	   "LemonChiffon2",
 	   "RosyBrown3"];
 
-stage = new Clutter.Stage();
-timeline = new Clutter.Timeline({fps:60, num_frames:600});
+var stage = new Clutter.Stage();
+var timeline = new Clutter.Timeline({fps:60, num_frames:300});
 stage.show_all();
 
-rheight = stage.height/(colors.length);
-width = stage.width;
-rectangles = new Array(colors.length);
+var rheight = stage.height/(colors.length);
+var width = stage.width;
+var rectangles = new Array(colors.length);
 
-black = Clutter.Color._new();
+var black = Clutter.Color._new();
 Clutter.color_parse("Black", black);
+var white = Clutter.Color._new();
+Clutter.color_parse("White", white);
 
 stage.color = black;
 
 for (var i = 0; i < colors.length; i++)
 {
-	c = Clutter.Color._new();
+	var c = Clutter.Color._new();
 	Clutter.color_parse(colors[i],c);
 	
-	r = new Clutter.Rectangle();
+	var r = new Clutter.Rectangle();
 	r.width = r.height = rheight;
 	r.color = c;
 	r.y = i * r.height+r.height/2;
@@ -47,7 +49,7 @@ for (var i = 0; i < colors.length; i++)
 }
 
 timeline.signal_new_frame.connect(
-	function(frame_num)
+	function(timeline, frame_num)
 	{
 		for (var i = 0; i < colors.length; i++)
 		{
@@ -55,6 +57,34 @@ timeline.signal_new_frame.connect(
 			rectangles[i].rotation_angle_z += 1;
 		}
 	});
+timeline.signal_completed.connect(
+	function(timeline)
+	{
+		
+		var text = new Clutter.Label({text:"Congratulations!",
+					  font_name:"Bitstream Vera Sans 40"});
+		var fadeline = new Clutter.Timeline({fps:60, num_frames:200});
+		var effect = Clutter.EffectTemplate._new(timeline,
+							 Clutter.sine_inc_func);
+		
+		text.show();
+		stage.add_actor(text);
+		text.color = white;
+		
+		text.anchor_x = text.width/2;
+		text.anchor_y = text.height/2;
+		
+		text.x = stage.width/2;
+		text.y = stage.height/2;
+		
+		(Clutter.effect_fade(effect,text,0)).signal_completed.connect(
+			Clutter.main_quit);
+		for (i in rectangles)
+		{
+			Clutter.effect_fade(effect, rectangles[i], 0);
+		}
+	});
+
 timeline.start();
 
 Clutter.main();
