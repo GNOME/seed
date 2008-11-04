@@ -276,6 +276,46 @@ seed_fork(JSContextRef ctx,
 	return seed_value_from_int(child);
 }
 
+static gboolean seed_timeout_function(gpointer user_data)
+{
+	// Evaluate timeout script
+	
+	const JSStringRef script = (const JSStringRef) user_data;
+	JSEvaluateScript(eng->context, script, NULL, NULL, 0, NULL);
+	JSStringRelease(script);
+
+	return FALSE; // remove timeout from main loop
+}
+
+JSValueRef
+seed_set_timeout(JSContextRef ctx,
+			  JSObjectRef function,
+			  JSObjectRef this_object,
+			  size_t argumentCount,
+			  const JSValueRef arguments[],
+			  JSValueRef * exception)
+{
+	// TODO: check if a main loop is running. if not, return failure.
+	
+	//GMainLoop* loop = g_main_loop_new(NULL,FALSE);
+	//if (!g_main_loop_is_running(loop))
+	//	return JSValueMakeBoolean(ctx, 0);
+
+	// TODO: convert to use an exception! (Matt!)
+
+	if (argumentCount != 2)
+		return JSValueMakeBoolean(ctx, 0);
+
+	JSStringRef jsstr = JSValueToStringCopy(eng->context,
+											arguments[0],
+											exception);
+	
+	guint interval = seed_value_to_uint(arguments[1]);
+	g_timeout_add(interval, &seed_timeout_function, jsstr);
+
+	return JSValueMakeBoolean(ctx, 1);
+}
+
 void seed_init_builtins(int * argc, char *** argv)
 {
 	int i;
@@ -290,6 +330,7 @@ void seed_init_builtins(int * argc, char *** argv)
 	seed_create_function("check_syntax", &seed_check_syntax, obj);
 	seed_create_function("introspect", &seed_introspect, obj);
 	seed_create_function("fork", &seed_fork, obj);
+	seed_create_function("setTimeout", &seed_set_timeout, obj);
 	
 	arrayObj = JSObjectMake(eng->context, NULL, NULL);
 	

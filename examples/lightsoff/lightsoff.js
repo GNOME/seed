@@ -8,6 +8,7 @@ image_on = new Gtk.Image({"file": "./tim-on.svg"});
 var size = 5;
 var wincount = 0;
 var moves = 0;
+var timeout = 0;
 
 function create_board_size_menu()
 {
@@ -97,7 +98,7 @@ function initialize_game()
 	wincount = 0;
 	  
 	clear_board();
-	random_clicks(); // generate random puzzle
+	Seed.setTimeout("random_clicks()", timeout); // generate random puzzle
 	
 	moves = 0;
 }
@@ -125,6 +126,7 @@ function button_clicked( button )
 	if ( wincount == 0 )
 	{
 		Seed.print("GLORIOUS VICTORY in " + moves + " moves!");
+		win_animation();
 		initialize_game();
 	}
 }
@@ -196,3 +198,42 @@ initialize_game();
 
 Gtk.main();
 
+function lightrow(start, end, col)
+{
+	if ( end > start )
+		for ( i = start; i <= end; ++i )
+			Seed.setTimeout("turn_on(buttons["+col+"]["+i+"])", timeout += 30);
+	else
+		for ( i = start; i >= end; --i )
+			Seed.setTimeout("turn_on(buttons["+col+"]["+i+"])", timeout += 30);
+}
+
+function turn_on(button)
+{
+	button.lit = true;
+	button.set_image(new Gtk.Image({"pixbuf": image_on.pixbuf}));
+}
+
+function lightcol(start, end, row)
+{
+	if ( end > start )
+		for ( var i = start; i <= end; ++i )
+			Seed.setTimeout("turn_on(buttons["+i+"]["+row+"])", timeout += 30);
+	else
+		for ( var i = start; i >= end; --i )
+			Seed.setTimeout("turn_on(buttons["+i+"]["+row+"])", timeout += 30);
+}
+
+function win_animation()
+{
+	timeout = 0;
+	var max = size - 1;
+	var i, j;
+	for ( i = 0; i <= max; ++i )
+	{
+		lightrow(i, max - i, i);
+		lightcol(i, max - i, max - i);
+		lightrow(max - i, i, max - i); 
+		lightcol(max - i, i, i);
+	}
+}

@@ -112,6 +112,8 @@ function ide_source_view()
     this.source_view.set_right_margin_position(80);
     this.source_view.set_mark_category_pixbuf("exception", epb.pixbuf);
     this.source_view.set_show_line_marks(true);
+    this.source_view.set_auto_indent(true);
+    this.source_view.set_indent_width(4);
     
     this.source_view.modify_font(Pango.font_description_from_string("monospace 10"));
     
