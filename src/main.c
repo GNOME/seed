@@ -77,6 +77,7 @@ void seed_exec(int argc, char ** argv)
 int main(int argc, char ** argv)
 {	
 	g_set_prgname("seed");
+	g_thread_init(0);
 	seed_init(&argc, &argv);
 
 	if (!g_irepository_require(g_irepository_get_default(), 
