@@ -715,7 +715,22 @@ seed_gi_import_namespace(JSContextRef ctx,
 				seed_value_set_property(namespace_ref,
 										g_base_info_get_name(info),
 										(JSValueRef)callback_ref);
+		} else if (info &&
+				   (g_base_info_get_type(info) == GI_INFO_TYPE_CONSTANT))
+		{
+				GArgument argument;
+				JSValueRef constant_value;
+				
+				g_constant_info_get_value((GIConstantInfo *)info, &argument);
+				constant_value = 
+						seed_gi_argument_make_js(&argument,
+							  g_constant_info_get_type((GIConstantInfo *)info));
+				seed_value_set_property(namespace_ref, 
+										g_base_info_get_name(info),
+										constant_value);
+				
 		}
+		
 	} 
 
 	extension =
