@@ -20,8 +20,8 @@
 #ifndef _SEED_STRUCT_H
 #define _SEED_STRUCT_H
 
-JSObjectRef seed_make_union(gpointer younion, GIBaseInfo *info);
-JSObjectRef seed_make_struct(gpointer strukt, GIBaseInfo *info);
+JSObjectRef seed_make_union(gpointer younion, GIBaseInfo * info);
+JSObjectRef seed_make_struct(gpointer strukt, GIBaseInfo * info);
 gpointer seed_struct_get_pointer(JSValueRef strukt);
 
 #endif

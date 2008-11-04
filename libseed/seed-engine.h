@@ -17,7 +17,6 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 #ifndef _SEED_ENGINE_H
 #define _SEED_ENGINE_H
 
@@ -26,13 +25,12 @@
 extern JSClassRef gobject_class;
 extern JSClassRef gobject_method_class;
 extern JSClassRef gobject_constructor_class;
-extern SeedEngine * eng;
+extern SeedEngine *eng;
 
-typedef struct _SeedScript 
-{
+typedef struct _SeedScript {
 	JSStringRef script;
 	JSValueRef exception;
-	
+
 	JSStringRef source_url;
 	int line_number;
 } SeedScript;
@@ -40,8 +38,10 @@ typedef struct _SeedScript
 JSObjectRef seed_gobject_get_prototype_for_gtype(GType type);
 JSClassRef seed_gobject_get_class_for_gtype(GType type);
 
-void seed_gobject_define_property_from_function_info(GIFunctionInfo *info, JSObjectRef object, gboolean instance);
-void seed_create_function(char * name, gpointer func, JSObjectRef obj);
-void seed_make_exception(JSValueRef * exception, 
-						 const gchar * name, const gchar * message);
+void seed_gobject_define_property_from_function_info(GIFunctionInfo * info,
+						     JSObjectRef object,
+						     gboolean instance);
+void seed_create_function(char *name, gpointer func, JSObjectRef obj);
+void seed_make_exception(JSValueRef * exception,
+			 const gchar * name, const gchar * message);
 #endif

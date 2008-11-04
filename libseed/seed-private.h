@@ -17,7 +17,6 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 #ifndef _SEED_PRIVATE_H
 #define _SEED_PRIVATE_H
 
@@ -31,8 +30,7 @@
 typedef struct _SeedEngine SeedEngine;
 typedef JSValueRef SeedValue;
 
-struct _SeedEngine
-{
+struct _SeedEngine {
 	JSGlobalContextRef context;
 	JSObjectRef global;
 };

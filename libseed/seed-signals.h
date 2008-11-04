@@ -17,14 +17,13 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 #ifndef _SEED_SIGNALS_H
 #define _SEED_SIGNALS_H
 
 #include "seed-private.h"
 
-void seed_add_signals_to_object(JSObjectRef object_ref, GObject *obj);
-JSClassDefinition * seed_get_signal_class(void);
+void seed_add_signals_to_object(JSObjectRef object_ref, GObject * obj);
+JSClassDefinition *seed_get_signal_class(void);
 extern JSClassRef gobject_signal_class;
 
 #endif
