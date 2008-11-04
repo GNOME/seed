@@ -77,11 +77,11 @@ timeline.signal_completed.connect(
 		text.x = stage.width/2;
 		text.y = stage.height/2;
 		
-		(Clutter.effect_fade(effect,text,0)).signal_completed.connect(
-			Clutter.main_quit);
+		Clutter.effect_fade(effect,text,0);
 		for (i in rectangles)
 		{
-			Clutter.effect_fade(effect, rectangles[i], 0);
+			Clutter.effect_move(effect, rectangles[i], Math.random()*stage.width,
+					    Math.random()*stage.height);
 		}
 	});
 

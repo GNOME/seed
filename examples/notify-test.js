@@ -9,11 +9,12 @@ function file_changed(monitor, child, other, event)
 {
     var notification = 
 	new Notify.Notification({summary: "File Notification",
-				 body : "This is a poor libnotify example" });
+                                 body : "It's not clear what notification system this file is providing an example of." });
     notification.set_timeout(5000);
     notification.show();
 }
 
+Seed.print("Monitoring files in current directory");
 Notify.init("Seed Test!");
 
 file = Gio.file_new_for_path(".");
