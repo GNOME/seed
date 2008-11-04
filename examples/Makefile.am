@@ -15,6 +15,7 @@ EXTRA_DIST = \
 	pango.js \
 	quine.js \
 	repl.js \
+	soup.js \
 	vte-test.js
 
 ## File created by the gnome-build tools
