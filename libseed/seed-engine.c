@@ -871,6 +871,7 @@ static void seed_log_handler (const gchar * domain,
 gboolean seed_init(int * argc, char *** argv)
 {
 	JSObjectRef seed_obj_ref;
+	JSStringRef defaults_script;
 
 	g_type_init ();
 	g_log_set_handler("GLib-GObject", G_LOG_LEVEL_WARNING, seed_log_handler, 0);
@@ -899,6 +900,12 @@ gboolean seed_init(int * argc, char *** argv)
 
 	seed_create_function("import_namespace", &seed_gi_import_namespace, seed_obj_ref);
 	seed_init_builtins(argc, argv);
+	
+	defaults_script = 
+		JSStringCreateWithUTF8CString("Seed.include(\"/usr/local/share"
+									  "/seed/Seed.js\")");
+	JSEvaluateScript(eng->context, defaults_script, NULL, NULL, 0, NULL);
+	JSStringRelease(defaults_script);
 	
 	return TRUE;
 

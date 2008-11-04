@@ -42,4 +42,5 @@ Makefile
 libseed/Makefile
 po/Makefile.in
 src/Makefile
+extensions/Makefile
 ])
