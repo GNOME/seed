@@ -7,6 +7,7 @@ EXTRA_DIST = \
 	gconf.js \
 	clutter.js \
 	introspect.js \
+	poppler.js \
 	ls.js \
 	mini-browser.js \
 	n-oscillator.js \
