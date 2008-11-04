@@ -534,6 +534,15 @@ seed_gi_import_namespace(JSContextRef ctx,
 	JSStringRef extension_script;
 	int n, i;
 
+	if (argumentCount == 0)
+	{
+			seed_make_exception(exception,
+								"ArgumentError", 
+								"Seed.import_namespace"
+								" expected 1 or 2 arguments, got 0");
+			return JSValueMakeNull(eng->context);
+	}
+
 	namespace = seed_value_to_string(arguments[0]);
 	if (argumentCount == 2) {
 		version = seed_value_to_string(arguments[1]);
