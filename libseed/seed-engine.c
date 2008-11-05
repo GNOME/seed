@@ -599,7 +599,8 @@ seed_gi_import_namespace(JSContextRef ctx,
 			seed_gobject_define_property_from_function_info(
 					(GIFunctionInfo *) info, namespace_ref, FALSE);
 		} else if (info &&
-			   (g_base_info_get_type(info) == GI_INFO_TYPE_ENUM)) {
+			   (g_base_info_get_type(info) == GI_INFO_TYPE_ENUM || 
+				g_base_info_get_type(info) == GI_INFO_TYPE_FLAGS)) {
 			int num_vals =
 			    g_enum_info_get_n_values((GIEnumInfo *) info);
 			int j;
