@@ -9,6 +9,7 @@ EXTRA_DIST = \
 	clutter.js \
 	introspect.js \
 	poppler.js \
+	json-packing.js \
 	ls.js \
 	mini-browser.js \
 	n-oscillator.js \

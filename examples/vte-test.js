@@ -5,6 +5,7 @@ Seed.import_namespace("Vte");
 Gtk.init(null, null);
 
 var window = new Gtk.Window();
+var scroll = new Gtk.ScrolledWindow();
 
 var vte = new Vte.Terminal();
 vte.fork_command("/bin/bash");
@@ -15,9 +16,16 @@ vte.signal_window_title_changed.connect
 	 this.set_title(terminal.get_window_title());
      }, window);
 
-window.add(vte);
 
+scroll.add(vte);
+scroll.set_policy(Gtk.PolicyType.automatic,
+		  Gtk.PolicyType.automatic);
+
+window.add(scroll);
 window.show_all();
+
+window.width_request = 500;
+window.height_request = 400;
 
 Gtk.main();
 
