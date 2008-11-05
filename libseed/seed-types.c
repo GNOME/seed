@@ -155,6 +155,8 @@ GType seed_gi_type_to_gtype(GITypeInfo * type_info, GITypeTag tag)
 				return G_TYPE_OBJECT;
 			else if (interface_type == GI_INFO_TYPE_ENUM)
 				return G_TYPE_LONG;
+			else if (interface_type == GI_INFO_TYPE_FLAGS)
+				return G_TYPE_LONG;
 			else if (interface_type == GI_INFO_TYPE_STRUCT)
 				return G_TYPE_POINTER;
 		}
@@ -250,7 +252,8 @@ gboolean seed_gi_make_argument(SeedValue value,
 
 				arg->v_pointer = g_object_ref(gobject);
 				break;
-			} else if (interface_type == GI_INFO_TYPE_ENUM) {
+			} else if (interface_type == GI_INFO_TYPE_ENUM ||
+					   interface_type == GI_INFO_TYPE_FLAGS) {
 				arg->v_long = JSValueToNumber(eng->context,
 							      value, NULL);
 				break;
@@ -339,7 +342,8 @@ JSValueRef seed_gi_argument_make_js(GArgument * arg, GITypeInfo * type_info,
 					return JSValueMakeNull(eng->context);
 				}
 				return seed_value_from_object(arg->v_pointer, exception);
-			} else if (interface_type == GI_INFO_TYPE_ENUM) {
+			} else if (interface_type == GI_INFO_TYPE_ENUM ||
+					   interface_type == GI_INFO_TYPE_FLAGS) {
 				return seed_value_from_double(arg->v_double, exception);
 			} else if (interface_type == GI_INFO_TYPE_STRUCT) {
 				return seed_make_struct(arg->v_pointer,
@@ -485,7 +489,8 @@ SeedValue seed_value_from_gvalue(GValue * gval, JSValueRef * exception)
 		return seed_make_struct(g_value_get_pointer(gval), 0);
 	}
 
-	if (g_type_is_a(G_VALUE_TYPE(gval), G_TYPE_ENUM))
+	if (g_type_is_a(G_VALUE_TYPE(gval), G_TYPE_ENUM) || 
+		g_type_is_a(G_VALUE_TYPE(gval), G_TYPE_FLAGS))
 		return seed_value_from_long(gval->data[0].v_long, exception);
 	else if (g_type_is_a(G_VALUE_TYPE(gval), G_TYPE_ENUM))
 		return seed_value_from_long(gval->data[0].v_long, exception);

@@ -26,13 +26,6 @@ typedef struct _signal_privates {
 	GObject *object;
 } signal_privates;
 
-typedef struct _SeedClosure {
-	GClosure closure;
-	JSObjectRef function;
-	JSObjectRef object;
-	JSObjectRef this;
-} SeedClosure;
-
 static void seed_add_signal_to_object(JSObjectRef object_ref,
 				      GObject * obj, GSignalQuery * signal)
 {
@@ -100,7 +93,7 @@ void seed_add_signals_to_object(JSObjectRef object_ref, GObject * obj)
 	}
 }
 
-static void
+void
 seed_signal_marshal_func(GClosure * closure,
 			 GValue * return_value,
 			 guint n_param_values,

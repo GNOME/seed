@@ -714,7 +714,9 @@ seed_gi_import_namespace(JSContextRef ctx,
 		} else if (info &&
 				 (g_base_info_get_type(info) == GI_INFO_TYPE_CALLBACK))
 		{
-				JSObjectRef callback_ref = JSObjectMake(eng->context, seed_callback_class, info);
+				JSObjectRef callback_ref = JSObjectMake(eng->context, 
+														seed_callback_class, 
+														info);
 				seed_value_set_property(namespace_ref,
 										g_base_info_get_name(info),
 										(JSValueRef)callback_ref);

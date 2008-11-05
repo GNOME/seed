@@ -22,6 +22,20 @@
 
 #include "seed-private.h"
 
+typedef struct _SeedClosure {
+	GClosure closure;
+	JSObjectRef function;
+	JSObjectRef object;
+	JSObjectRef this;
+} SeedClosure;
+
+void
+seed_signal_marshal_func(GClosure * closure,
+						 GValue * return_value,
+						 guint n_param_values,
+						 const GValue * param_values,
+						 gpointer invocation_hint, gpointer marshall_data);
+
 void seed_add_signals_to_object(JSObjectRef object_ref, GObject * obj);
 JSClassDefinition *seed_get_signal_class(void);
 extern JSClassRef gobject_signal_class;

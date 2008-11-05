@@ -300,6 +300,42 @@ seed_set_timeout(JSContextRef ctx,
 	return JSValueMakeBoolean(ctx, 1);
 }
 
+JSValueRef
+seed_closure(JSContextRef ctx,
+		 JSObjectRef function,
+		 JSObjectRef this_object,
+		 size_t argumentCount,
+		 const JSValueRef arguments[], JSValueRef * exception)
+{
+		GClosure * closure;
+
+		if (argumentCount < 1 || argumentCount > 2)
+		{
+				gchar * mes = g_strdup_printf("Seed.closure expected 1 or 2"
+											  "arguments, got %d",
+											  argumentCount);
+				seed_make_exception(exception, "ArgumentError", mes);
+				g_free(mes);
+				return JSValueMakeNull(ctx);
+		}
+		
+		closure = g_closure_new_simple(sizeof(SeedClosure), 0);
+		g_closure_set_marshal(closure, seed_signal_marshal_func);
+		
+		((SeedClosure *) closure)->function = (JSObjectRef) arguments[0];
+		((SeedClosure *) closure)->object =
+				0;
+		if (argumentCount == 2 && !JSValueIsNull(eng->context, arguments[1])) {
+				JSValueProtect(eng->context, (JSObjectRef) arguments[1]);
+				((SeedClosure *) closure)->this = (JSObjectRef) arguments[1];
+		} else
+				((SeedClosure *) closure)->this = 0;
+		
+		JSValueProtect(eng->context, (JSObjectRef) arguments[0]);
+		
+		return (JSValueRef)seed_make_struct(closure, 0);
+}
+
 void seed_init_builtins(int *argc, char ***argv)
 {
 	int i;
@@ -315,6 +351,7 @@ void seed_init_builtins(int *argc, char ***argv)
 	seed_create_function("check_syntax", &seed_check_syntax, obj);
 	seed_create_function("introspect", &seed_introspect, obj);
 	seed_create_function("fork", &seed_fork, obj);
+	seed_create_function("closure", &seed_closure, obj);
 	seed_create_function("setTimeout", &seed_set_timeout, obj);
 
 	arrayObj = JSObjectMake(eng->context, NULL, NULL);
