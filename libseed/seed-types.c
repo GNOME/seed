@@ -80,8 +80,8 @@ static SeedValue seed_wrap_object(GObject * object)
 			for (k = 0; k < n_functions; k++) {
 				function =
 				    g_interface_info_get_method((GIInterfaceInfo
-								 *) interface,
-								k);
+												 *) interface, k);
+
 				seed_gobject_define_property_from_function_info
 				    (function, (JSObjectRef) js_ref, TRUE);
 			}
@@ -699,17 +699,15 @@ gboolean seed_value_set_property(JSObjectRef object,
 	return TRUE;
 }
 
-static void seed_value_wrong_type()
-{
-	printf("Wrong type in type conversion!\n");
-	abort();
-}
-
 gboolean seed_value_to_boolean(JSValueRef val, JSValueRef * exception)
 {
 	if (!JSValueIsBoolean(eng->context, val)) {
-		if (!JSValueIsNull(eng->context, val))
-			seed_value_wrong_type();
+		if (!JSValueIsNull(eng->context, val)) {
+			seed_make_exception(exception, "ConversionError",
+								"Can not convert Javascript value to boolean");
+			return 0;
+		}
+			
 
 		seed_value_wrong_type();
 		return 0;
@@ -727,7 +725,11 @@ guint seed_value_to_uint(JSValueRef val, JSValueRef * exception)
 {
 	if (!JSValueIsNumber(eng->context, val)) {
 		if (!JSValueIsNull(eng->context, val))
-			seed_value_wrong_type();
+		{
+				seed_make_exception(exception, "ConversionError",
+										  "Can not convert Javascript value to"
+										  " boolean");
+		}
 		return 0;
 	}
 
@@ -743,7 +745,9 @@ gint seed_value_to_int(JSValueRef val, JSValueRef * exception)
 {
 	if (!JSValueIsNumber(eng->context, val)) {
 		if (!JSValueIsNull(eng->context, val))
-			seed_value_wrong_type();
+				seed_make_exception(exception, "ConversionError",
+										  "Can not convert Javascript value to"
+										  " int");
 		return 0;
 	}
 
@@ -761,15 +765,18 @@ gchar seed_value_to_char(JSValueRef val, JSValueRef * exception)
 
 	if (!JSValueIsNumber(eng->context, val)) {
 		if (!JSValueIsNull(eng->context, val))
-			seed_value_wrong_type();
+				seed_make_exception(exception, "ConversionError",
+										  "Can not convert Javascript value to"
+										  " gchar");
 		return 0;
 	}
 
 	cv = JSValueToNumber(eng->context, val, NULL);
 
 	if (cv < G_MININT8 || cv > G_MAXINT8) {
-		seed_value_wrong_type();
-		return 0;
+		seed_make_exception(exception, "ConversionError",
+								  "Javascript number out of range of gchar");
+					return 0;
 	}
 
 	return (char)cv;
@@ -786,14 +793,17 @@ guchar seed_value_to_uchar(JSValueRef val, JSValueRef * exception)
 
 	if (!JSValueIsNumber(eng->context, val)) {
 		if (!JSValueIsNull(eng->context, val))
-			seed_value_wrong_type();
+				seed_make_exception(exception, "ConversionError",
+										  "Can not convert Javascript value to"
+										  " guchar");
 		return 0;
 	}
 
 	cv = JSValueToNumber(eng->context, val, NULL);
 
 	if (cv > G_MAXUINT8) {
-		seed_value_wrong_type();
+		seed_make_exception(exception, "ConversionError",
+								  "Javascript number out of range of guchar");
 		return 0;
 	}
 
@@ -809,7 +819,9 @@ glong seed_value_to_long(JSValueRef val, JSValueRef * exception)
 {
 	if (!JSValueIsNumber(eng->context, val)) {
 		if (!JSValueIsNull(eng->context, val))
-			seed_value_wrong_type();
+				seed_make_exception(exception, "ConversionError",
+										  "Can not convert Javascript value to"
+										  " long");
 		return 0;
 	}
 
@@ -825,7 +837,10 @@ gulong seed_value_to_ulong(JSValueRef val, JSValueRef * exception)
 {
 	if (!JSValueIsNumber(eng->context, val)) {
 		if (!JSValueIsNull(eng->context, val))
-			seed_value_wrong_type();
+			seed_make_exception(exception, "ConversionError",
+									  "Can not convert Javascript value to"
+									  " ulong");
+
 		return 0;
 	}
 
@@ -841,7 +856,10 @@ gint64 seed_value_to_int64(JSValueRef val, JSValueRef * exception)
 {
 	if (!JSValueIsNumber(eng->context, val)) {
 		if (!JSValueIsNull(eng->context, val))
-			seed_value_wrong_type();
+			seed_make_exception(exception, "ConversionError",
+									  "Can not convert Javascript value to"
+									  " gint64");
+
 		return 0;
 	}
 
@@ -857,12 +875,16 @@ guint64 seed_value_to_uint64(JSValueRef val, JSValueRef * exception)
 {
 	if (!JSValueIsNumber(eng->context, val)) {
 		if (!JSValueIsNull(eng->context, val))
-			seed_value_wrong_type();
+			seed_make_exception(exception, "ConversionError",
+									  "Can not convert Javascript value to"
+									  " guint64");
+
 		return 0;
 	}
 
 	return (guint64) JSValueToNumber(eng->context, val, NULL);
 }
+
 
 JSValueRef seed_value_from_uint64(guint64 val, JSValueRef * exception)
 {
@@ -873,7 +895,9 @@ gfloat seed_value_to_float(JSValueRef val, JSValueRef * exception)
 {
 	if (!JSValueIsNumber(eng->context, val)) {
 		if (!JSValueIsNull(eng->context, val))
-			seed_value_wrong_type();
+				seed_make_exception(exception, "ConversionError",
+										  "Can not convert Javascript value to"
+										  " gfloat");
 		return 0;
 	}
 
@@ -889,7 +913,9 @@ gdouble seed_value_to_double(JSValueRef val, JSValueRef * exception)
 {
 	if (!JSValueIsNumber(eng->context, val)) {
 		if (!JSValueIsNull(eng->context, val))
-			seed_value_wrong_type();
+				seed_make_exception(exception, "ConversionError",
+										  "Can not convert Javascript value to"
+										  " double");
 		return 0;
 	}
 
@@ -958,10 +984,7 @@ GObject *seed_value_to_object(JSValueRef val, JSValueRef * exception)
 		return NULL;
 	}
 
-	if (JSValueIsObjectOfClass(eng->context, val, gobject_class))
-		gobject = (GObject *) JSObjectGetPrivate((JSObjectRef) val);
-	else
-		gobject = NULL;
+	gobject = (GObject *) JSObjectGetPrivate((JSObjectRef) val);
 
 	return gobject;
 }

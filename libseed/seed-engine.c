@@ -38,6 +38,9 @@ void seed_make_exception(JSValueRef * exception,
 	JSValueRef js_name_ref = 0, js_message_ref = 0;
 	JSObjectRef exception_obj;
 
+	if (!exception)
+		return;
+
 	if (name) {
 		js_name = JSStringCreateWithUTF8CString(name);
 		js_name_ref = JSValueMakeString(eng->context, js_name);
@@ -196,10 +199,14 @@ seed_gobject_method_invoked(JSContextRef ctx,
 	GError *error = 0;
 
 	info = JSObjectGetPrivate(function);
+	// We just want to check if there IS an object, not actually throw an exception if we don't
+	// get it.
 	if (!
-	    ((object = seed_value_to_object(this_object, exception)) ||
+	    ((object = seed_value_to_object(this_object, 0)) ||
 	     (object = seed_struct_get_pointer(this_object))))
 		instance_method = FALSE;
+
+
 
 	n_args = g_callable_info_get_n_args((GICallableInfo *) info);
 
@@ -480,9 +487,7 @@ static bool seed_gobject_set_property(JSContextRef context,
 	if (JSValueIsNull(eng->context, value))
 		return 0;
 
-	obj = seed_value_to_object(object, exception);
-	if (!obj || !G_IS_OBJECT(obj))
-		return FALSE;
+	obj = seed_value_to_object(object, 0);
 
 	length = JSStringGetMaximumUTF8CStringSize(property_name);
 	cproperty_name = malloc(length * sizeof(gchar));
@@ -511,17 +516,11 @@ static bool seed_gobject_set_property(JSContextRef context,
 	else
 		type = spec->value_type;
 
-	if (!seed_gvalue_from_seed_value(value, type, &gval, exception)) {
-		gchar *mes = g_strdup_printf("Not able to set property %s"
-					     "on object of type %s."
-					     " Expected type: %s. \n",
-					     cproperty_name,
-					     g_type_name(G_OBJECT_TYPE(obj)),
-					     g_type_name(spec->value_type));
-		seed_make_exception(exception, "InvalidPropertyValue", mes);
-		g_free(mes);
-		g_free(cproperty_name);
-		return 0;
+	seed_gvalue_from_seed_value(value, type, &gval, exception);
+	if (*exception)
+	{
+			g_free(cproperty_name);
+			return 0;
 	}
 
 	g_object_set_property(obj, cproperty_name, &gval);
