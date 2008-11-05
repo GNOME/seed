@@ -12,6 +12,7 @@ EXTRA_DIST = \
 	mini-browser.js \
 	n-oscillator.js \
 	notify-test.js \
+	pango-fontset.js \
 	pango.js \
 	quine.js \
 	repl.js \
