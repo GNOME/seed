@@ -51,7 +51,7 @@ gpointer seed_struct_get_pointer(JSValueRef strukt)
 JSObjectRef seed_make_union(gpointer younion, GIBaseInfo * info)
 {
 	JSObjectRef object;
-	int i, n_methods;
+	gint i, n_methods;
 
 	if (!seed_struct_class)
 		seed_struct_class = JSClassCreate(&gobject_struct_def);

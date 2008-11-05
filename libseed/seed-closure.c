@@ -116,7 +116,7 @@ seed_handle_closure(ffi_cif *cif,
 		    void * userdata)
 {
 	SeedNativeClosure * privates = userdata;
-	int num_args, i;
+	gint num_args, i;
 	JSValueRef * jsargs;
 	JSValueRef return_value;
 	GITypeTag return_tag;

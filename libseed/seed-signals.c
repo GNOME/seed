@@ -102,7 +102,7 @@ seed_signal_marshal_func(GClosure * closure,
 {
 	SeedClosure *seed_closure = (SeedClosure *) closure;
 	JSValueRef *args;
-	int i;
+	gint i;
 
 	args = g_newa(JSValueRef, n_param_values);
 

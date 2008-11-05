@@ -399,7 +399,7 @@ JSValueRef seed_gi_argument_make_js(GArgument * arg, GITypeInfo * type_info,
 			GITypeInfo *list_type;
 			JSObjectRef ret;
 			GArgument larg;
-			int i = 0;
+			gint i = 0;
 			GList *list = arg->v_pointer;
 
 			ret = JSObjectMake(eng->context, NULL, NULL);
@@ -426,7 +426,7 @@ JSValueRef seed_gi_argument_make_js(GArgument * arg, GITypeInfo * type_info,
 			GITypeInfo *list_type;
 			JSObjectRef ret;
 			GArgument larg;
-			int i = 0;
+			gint i = 0;
 			GSList *list = arg->v_pointer;
 
 			ret = JSObjectMake(eng->context, NULL, NULL);
@@ -808,7 +808,7 @@ JSValueRef seed_value_from_int(gint val, JSValueRef * exception)
 
 gchar seed_value_to_char(JSValueRef val, JSValueRef * exception)
 {
-	int cv;
+	gint cv;
 
 	if (!JSValueIsNumber(eng->context, val)) {
 		if (!JSValueIsNull(eng->context, val))

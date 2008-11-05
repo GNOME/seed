@@ -195,7 +195,7 @@ seed_gobject_method_invoked(JSContextRef ctx,
 	GArgument retval;
 	GArgument *in_args;
 	GArgument *out_args;
-	int n_args, n_in_args, n_out_args, i;
+	gint n_args, n_in_args, n_out_args, i;
 	GIArgInfo *arg_info;
 	GITypeInfo *type_info;
 	GIDirection dir;
@@ -332,8 +332,8 @@ static void seed_gobject_add_methods_for_interfaces(GIObjectInfo * oinfo,
 static void seed_gobject_add_methods_for_type(GIObjectInfo * oinfo,
 					      JSObjectRef object)
 {
-	int n_methods;
-	int i;
+	gint n_methods;
+	gint i;
 	GIFunctionInfo *info;
 
 	n_methods = g_object_info_get_n_methods(oinfo);
@@ -440,9 +440,9 @@ static JSValueRef seed_gobject_get_property(JSContextRef context,
 	GObject *b;
 	GValue gval = { 0 };
 	char *cproperty_name;
-	int length;
+	gint length;
 	SeedValue ret;
-	int i, len;
+	gint i, len;
 
 	b = seed_value_to_object((JSValueRef) object, exception);
 	if (!b)
@@ -486,7 +486,7 @@ static bool seed_gobject_set_property(JSContextRef context,
 	GValue gval = { 0 };
 	GType type;
 	gchar *cproperty_name;
-	int length;
+	gint length;
 
 	if (JSValueIsNull(eng->context, value))
 		return 0;
@@ -501,7 +501,7 @@ static bool seed_gobject_set_property(JSContextRef context,
 					    cproperty_name);
 
 	if (!spec) {
-		int i, len;
+		gint i, len;
 		len = strlen(cproperty_name);
 		for (i = 0; i < len; i++) {
 			if (cproperty_name[i] == '_')
@@ -553,7 +553,7 @@ seed_gi_import_namespace(JSContextRef ctx,
 	const gchar *version = 0;
 	JSObjectRef namespace_ref;
 	JSStringRef extension_script;
-	int n, i;
+	gint n, i;
 
 	if (argumentCount == 0)
 	{
@@ -601,9 +601,9 @@ seed_gi_import_namespace(JSContextRef ctx,
 		} else if (info &&
 			   (g_base_info_get_type(info) == GI_INFO_TYPE_ENUM || 
 				g_base_info_get_type(info) == GI_INFO_TYPE_FLAGS)) {
-			int num_vals =
+			gint num_vals =
 			    g_enum_info_get_n_values((GIEnumInfo *) info);
-			int j;
+			gint j;
 			JSObjectRef enum_class = JSObjectMake(eng->context,
 							      0, 0);
 			JSValueProtect(eng->context, (JSValueRef) enum_class);
@@ -618,8 +618,8 @@ seed_gi_import_namespace(JSContextRef ctx,
 				gint value = g_value_info_get_value(val);
 				gchar *name = g_strdup(g_base_info_get_name(
 									  (GIBaseInfo *) val));
-				int name_len = strlen(name);
-				int j;
+				gint name_len = strlen(name);
+				gint j;
 				JSValueRef value_ref;
 
 				value_ref = JSValueMakeNumber
@@ -649,7 +649,7 @@ seed_gi_import_namespace(JSContextRef ctx,
 
 			if (type != 0) {
 				JSObjectRef constructor_ref;
-				int i, n_methods;
+				gint i, n_methods;
 				GIFunctionInfo *finfo;
 				GIFunctionInfoFlags flags;
 
@@ -690,7 +690,7 @@ seed_gi_import_namespace(JSContextRef ctx,
 			   (g_base_info_get_type(info) == GI_INFO_TYPE_STRUCT))
 		{
 			JSObjectRef struct_ref;
-			int i, n_methods;
+			gint i, n_methods;
 			GIFunctionInfo *finfo;
 
 			struct_ref = JSObjectMake(eng->context, 0, 0);
