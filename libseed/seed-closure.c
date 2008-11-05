@@ -322,7 +322,13 @@ SeedNativeClosure * seed_make_native_closure(GICallableInfo * info,
 	GIArgInfo * arg_info;
 	gint num_args, i;
 	SeedNativeClosure * privates;
+	JSObjectRef cached;
 	
+	cached = (JSObjectRef)seed_value_get_property(function, "__seed_native_closure");
+	if (cached && JSValueIsObjectOfClass(eng->context, cached, seed_native_callback_class))
+	{
+			return (SeedNativeClosure *)JSObjectGetPrivate(cached);
+	}
 	
 	num_args = g_callable_info_get_n_args(info);
 	return_type = g_callable_info_get_return_type(info);
@@ -351,6 +357,10 @@ SeedNativeClosure * seed_make_native_closure(GICallableInfo * info,
 	ffi_prep_cif(cif, FFI_DEFAULT_ABI, 2, 
 				 get_ffi_type(return_type), arg_types);
 	ffi_prep_closure(closure, cif, seed_handle_closure, privates);
+	
+	seed_value_set_property((JSObjectRef)function, "__seed_native_closure", (JSValueRef)JSObjectMake(eng->context,
+																			seed_native_callback_class,
+																			privates));
 	
 	return privates;
 }
