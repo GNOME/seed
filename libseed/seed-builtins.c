@@ -23,6 +23,8 @@
 #include <string.h>
 #include <sys/mman.h>
 
+JSClassRef seed_native_callback_class;
+
 JSValueRef
 seed_include(JSContextRef ctx,
 	     JSObjectRef function,
@@ -596,9 +598,28 @@ seed_closure_native(JSContextRef ctx,
 		ffi_prep_closure(closure, cif, seed_handle_closure, privates);
 
 		
-		return seed_make_struct(closure, 0);
+		return JSObjectMake(eng->context, seed_native_callback_class, closure);
 }
 
+JSClassDefinition seed_native_callback_def = {
+	0,			/* Version, always 0 */
+	0,
+	"seed_native_callback",	/* Class Name */
+	0,			/* Parent Class */
+	NULL,			/* Static Values */
+	NULL,			/* Static Functions */
+	NULL,
+	NULL,			/* Finalize */
+	NULL,			/* Has Property */
+	NULL,			/* Get Property */
+	NULL,			/* Set Property */
+	NULL,			/* Delete Property */
+	NULL,			/* Get Property Names */
+	NULL,	/* Call As Function */
+	NULL,			/* Call As Constructor */
+	NULL,			/* Has Instance */
+	NULL			/* Convert To Type */
+};
 
 void seed_init_builtins(int *argc, char ***argv)
 {
@@ -620,6 +641,9 @@ void seed_init_builtins(int *argc, char ***argv)
 	seed_create_function("closure_native", &seed_closure_native, obj);
 
 
+	seed_native_callback_def.parentClass = seed_struct_class;
+	seed_native_callback_class = JSClassCreate(&seed_native_callback_def);
+	JSClassRetain(seed_native_callback_class);
 
 	arrayObj = JSObjectMake(eng->context, NULL, NULL);
 

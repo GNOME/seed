@@ -19,6 +19,7 @@
 
 #ifndef _SEED_STRUCT_H
 #define _SEED_STRUCT_H
+extern JSClassRef seed_struct_class;
 
 JSObjectRef seed_make_union(gpointer younion, GIBaseInfo * info);
 JSObjectRef seed_make_struct(gpointer strukt, GIBaseInfo * info);
