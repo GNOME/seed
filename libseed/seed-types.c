@@ -292,7 +292,10 @@ gboolean seed_gi_make_argument(SeedValue value,
 				else if (JSObjectIsFunction(eng->context,
 											(JSObjectRef)value))
 				{
-						
+						SeedClosurePrivates * privates =
+								seed_make_closure((GICallableInfo*)interface, value);
+						arg->v_pointer = privates->closure;
+						break;
 				}
 
 			}

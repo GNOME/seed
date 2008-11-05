@@ -9,8 +9,7 @@ Gtk.init(null, null);
 w = new Gtk.Window();
 vbox = new Gtk.VBox();
 
-closure = Seed.closure_native(function(widget){Seed.print(widget)}, 
-			      Gtk.Callback);
+closure = function(widget){Seed.print(widget)};
 w.add(vbox);
 
 vbox.pack_start(new Gtk.Label());
