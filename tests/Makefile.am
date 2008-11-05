@@ -14,7 +14,8 @@ EXTRA_DIST = \
     readline.js \
     run-tests.py \
     signal.js \
-    syntax-test.js
+    syntax-test.js \
+    native-closure.js 
 
 
 ## File created by the gnome-build tools
