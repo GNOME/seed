@@ -280,9 +280,13 @@ gboolean seed_gi_make_argument(SeedValue value,
 								break;
 						}
 				}
-				else 
+				else  if (JSValueIsObjectOfClass(eng->context,
+												 value, seed_native_callback_class))
 				{
-						arg->v_pointer = seed_struct_get_pointer(value);
+						SeedClosurePrivates * privates =
+								(SeedClosurePrivates*)
+								JSObjectGetPrivate((JSObjectRef)value);
+						arg->v_pointer = privates->closure;
 						break;
 				}
 

@@ -24,6 +24,17 @@
 
 // TODO: someday, maybe, move import_namespace here!
 
+typedef struct _SeedClosurePrivates
+{
+		GICallableInfo * info;
+		JSValueRef function;
+		
+		ffi_closure * closure;
+		ffi_cif * cif;
+} SeedClosurePrivates;
+
+extern JSClassRef seed_native_callback_class;
+
 JSValueRef
 seed_include(JSContextRef ctx,
 	     JSObjectRef function,

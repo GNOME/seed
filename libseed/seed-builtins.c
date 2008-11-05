@@ -417,11 +417,17 @@ get_ffi_type (GITypeInfo *info)
 		return rettype;
 }
  
-typedef struct _SeedClosurePrivates
+
+static void seed_closure_finalize(JSObjectRef object)
 {
-		GICallableInfo * info;
-		JSValueRef function;
-} SeedClosurePrivates;
+		SeedClosurePrivates * privates = 
+				(SeedClosurePrivates*)JSObjectGetPrivate(object);
+
+		g_free(privates->cif->arg_types);
+		g_free(privates->cif);
+		JSValueUnprotect(eng->context, privates->function);
+		munmap(privates->closure, sizeof(ffi_closure));
+}
 
 static void
 seed_handle_closure(ffi_cif *cif, 
@@ -577,6 +583,7 @@ seed_closure_native(JSContextRef ctx,
 		privates = g_new0(SeedClosurePrivates, 1);
 		privates->info = info;
 		privates->function = arguments[0];
+		privates->cif = cif;
 		//Leaks the function? Would need a new class for closures and finalize
 		//handler.
 		JSValueProtect(eng->context, privates->function);
@@ -592,13 +599,13 @@ seed_closure_native(JSContextRef ctx,
 		closure = mmap(0, sizeof(ffi_closure), PROT_READ | PROT_WRITE | 
 					  	   PROT_EXEC,
 					   MAP_ANON | MAP_PRIVATE, -1, 0);
+		privates->closure = closure;
 
 		ffi_prep_cif(cif, FFI_DEFAULT_ABI, 2, 
 					 &ffi_type_void, arg_types);
 		ffi_prep_closure(closure, cif, seed_handle_closure, privates);
 
-		
-		return JSObjectMake(eng->context, seed_native_callback_class, closure);
+		return JSObjectMake(eng->context, seed_native_callback_class, privates);
 }
 
 JSClassDefinition seed_native_callback_def = {
@@ -609,7 +616,7 @@ JSClassDefinition seed_native_callback_def = {
 	NULL,			/* Static Values */
 	NULL,			/* Static Functions */
 	NULL,
-	NULL,			/* Finalize */
+	seed_closure_finalize,			/* Finalize */
 	NULL,			/* Has Property */
 	NULL,			/* Get Property */
 	NULL,			/* Set Property */
@@ -641,7 +648,6 @@ void seed_init_builtins(int *argc, char ***argv)
 	seed_create_function("closure_native", &seed_closure_native, obj);
 
 
-	seed_native_callback_def.parentClass = seed_struct_class;
 	seed_native_callback_class = JSClassCreate(&seed_native_callback_def);
 	JSClassRetain(seed_native_callback_class);
 
