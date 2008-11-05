@@ -16,6 +16,22 @@ colors = [ "blanched almond",
 	   "LemonChiffon2",
 	   "RosyBrown3"];
 
+function alpha_func(alpha)
+{
+    try
+    {
+	    timeline = alpha.get_timeline();
+	    frame = timeline.get_current_frame();
+	    n_frames = timeline.num_frames;
+	    
+	    return (frame * Clutter.ALPHA_MAX_ALPHA)/n_frames;
+    }   
+    catch (e)
+    {
+	    Seed.print(e.message);
+    }
+}
+
 var stage = new Clutter.Stage();
 var timeline = new Clutter.Timeline({fps:60, num_frames:300});
 stage.show_all();
@@ -66,7 +82,7 @@ timeline.signal_completed.connect(
 					  font_name:"Bitstream Vera Sans 40"});
 		var fadeline = new Clutter.Timeline({fps:60, num_frames:200});
 		var effect = Clutter.EffectTemplate._new(timeline,
-							 Clutter.sine_inc_func);
+							 alpha_func);
 		
 		text.show();
 		stage.add_actor(text);
