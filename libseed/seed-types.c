@@ -714,7 +714,6 @@ gboolean seed_value_to_boolean(JSValueRef val, JSValueRef * exception)
 		}
 			
 
-		seed_value_wrong_type();
 		return 0;
 	}
 
