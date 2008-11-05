@@ -26,6 +26,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <girepository.h>
+#include <ffi.h>
 
 typedef struct _SeedEngine SeedEngine;
 typedef JSValueRef SeedValue;
@@ -40,5 +41,6 @@ struct _SeedEngine {
 #include "seed-signals.h"
 #include "seed-builtins.h"
 #include "seed-structs.h"
+
 
 #endif

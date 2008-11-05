@@ -261,20 +261,29 @@ gboolean seed_gi_make_argument(SeedValue value,
 				arg->v_pointer = seed_struct_get_pointer(value);
 				break;
 			} else if (interface_type == GI_INFO_TYPE_CALLBACK) {
-				GIFunctionInfo *info =
-				    JSObjectGetPrivate((JSObjectRef) value);
-				const gchar *symbol =
-				    g_function_info_get_symbol(info);
-				gchar *error;
-				void *fp;
-
-				dlerror();
-				fp = (void *)dlsym(0, symbol);
-				if ((error = dlerror()) != NULL) {
-					g_critical("dlerror: %s \n", error);
-				} else {
-					arg->v_pointer = fp;
-					break;
+				if (JSValueIsObjectOfClass(eng->context, 
+										   value, gobject_method_class))
+				{
+						GIFunctionInfo *info =
+								JSObjectGetPrivate((JSObjectRef) value);
+						const gchar *symbol =
+								g_function_info_get_symbol(info);
+						gchar *error;
+						void *fp;
+						
+						dlerror();
+						fp = (void *)dlsym(0, symbol);
+						if ((error = dlerror()) != NULL) {
+								g_critical("dlerror: %s \n", error);
+						} else {
+								arg->v_pointer = fp;
+								break;
+						}
+				}
+				else 
+				{
+						arg->v_pointer = seed_struct_get_pointer(value);
+						break;
 				}
 
 			}
