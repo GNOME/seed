@@ -54,8 +54,8 @@ libLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(lib_LTLIBRARIES)
 am__DEPENDENCIES_1 =
 libseed_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
-am_libseed_la_OBJECTS = seed-builtins.lo seed-engine.lo \
-	seed-signals.lo seed-structs.lo seed-types.lo
+am_libseed_la_OBJECTS = seed-closure.lo seed-builtins.lo \
+	seed-engine.lo seed-signals.lo seed-structs.lo seed-types.lo
 libseed_la_OBJECTS = $(am_libseed_la_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -236,6 +236,8 @@ lib_LTLIBRARIES = \
 	libseed.la
 
 libseed_la_SOURCES = \
+	seed-closure.c \
+	seed-closure.h \
 	seed-builtins.c\
 	seed-builtins.h \
 	seed-engine.c \
@@ -333,6 +335,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/seed-builtins.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/seed-closure.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/seed-engine.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/seed-signals.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/seed-structs.Plo@am__quote@

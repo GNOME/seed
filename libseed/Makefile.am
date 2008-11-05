@@ -3,6 +3,8 @@ lib_LTLIBRARIES = \
 	libseed.la
 
 libseed_la_SOURCES = \
+	seed-closure.c \
+	seed-closure.h \
 	seed-builtins.c\
 	seed-builtins.h \
 	seed-engine.c \

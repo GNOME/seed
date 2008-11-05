@@ -289,6 +289,11 @@ gboolean seed_gi_make_argument(SeedValue value,
 						arg->v_pointer = privates->closure;
 						break;
 				}
+				else if (JSObjectIsFunction(eng->context,
+											(JSObjectRef)value))
+				{
+						
+				}
 
 			}
 		}
