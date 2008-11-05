@@ -15,6 +15,7 @@ EXTRA_DIST = \
     run-tests.py \
     signal.js \
     syntax-test.js \
+    type-conversion.js \
     native-closure.js 
 
 
