@@ -22,13 +22,6 @@
 
 #include "seed-private.h"
 
-typedef struct _SeedClosure {
-	GClosure closure;
-	JSObjectRef function;
-	JSObjectRef object;
-	JSObjectRef this;
-} SeedClosure;
-
 void
 seed_signal_marshal_func(GClosure * closure,
 						 GValue * return_value,

@@ -258,7 +258,21 @@ gboolean seed_gi_make_argument(SeedValue value,
 							      value, NULL);
 				break;
 			} else if (interface_type == GI_INFO_TYPE_STRUCT) {
-				arg->v_pointer = seed_struct_get_pointer(value);
+				if (JSValueIsObjectOfClass(eng->context, value, gobject_method_class))
+					arg->v_pointer = seed_struct_get_pointer(value);
+				else
+				{
+						GType type = g_registered_type_info_get_g_type((GIRegisteredTypeInfo*)interface);
+						if (!type)
+								return FALSE;
+						else if (g_type_is_a(type, G_TYPE_CLOSURE))
+						{
+								if (JSObjectIsFunction(eng->context, (JSObjectRef)value))
+								{
+										arg->v_pointer = seed_make_gclosure((JSObjectRef)value, 0);
+								}
+						}
+				}
 				break;
 			} else if (interface_type == GI_INFO_TYPE_CALLBACK) {
 				if (JSValueIsObjectOfClass(eng->context, 
@@ -283,8 +297,8 @@ gboolean seed_gi_make_argument(SeedValue value,
 				else  if (JSValueIsObjectOfClass(eng->context,
 												 value, seed_native_callback_class))
 				{
-						SeedClosurePrivates * privates =
-								(SeedClosurePrivates*)
+						SeedNativeClosure * privates =
+								(SeedNativeClosure*)
 								JSObjectGetPrivate((JSObjectRef)value);
 						arg->v_pointer = privates->closure;
 						break;
@@ -292,8 +306,9 @@ gboolean seed_gi_make_argument(SeedValue value,
 				else if (JSObjectIsFunction(eng->context,
 											(JSObjectRef)value))
 				{
-						SeedClosurePrivates * privates =
-								seed_make_closure((GICallableInfo*)interface, value);
+						SeedNativeClosure * privates =
+								seed_make_native_closure(
+									   (GICallableInfo*)interface, value);
 						arg->v_pointer = privates->closure;
 						break;
 				}

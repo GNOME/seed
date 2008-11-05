@@ -100,8 +100,8 @@ get_ffi_type (GITypeInfo *info)
 
 static void seed_closure_finalize(JSObjectRef object)
 {
-	SeedClosurePrivates * privates = 
-		(SeedClosurePrivates*)JSObjectGetPrivate(object);
+	SeedNativeClosure * privates = 
+		(SeedNativeClosure*)JSObjectGetPrivate(object);
 
 	g_free(privates->cif->arg_types);
 	g_free(privates->cif);
@@ -115,7 +115,7 @@ seed_handle_closure(ffi_cif *cif,
 		    void ** args, 
 		    void * userdata)
 {
-	SeedClosurePrivates * privates = userdata;
+	SeedNativeClosure * privates = userdata;
 	int num_args, i;
 	JSValueRef * jsargs;
 	JSValueRef return_value;
@@ -310,7 +310,7 @@ seed_handle_closure(ffi_cif *cif,
 }
 
 
-SeedClosurePrivates * seed_make_closure(GICallableInfo * info,
+SeedNativeClosure * seed_make_native_closure(GICallableInfo * info,
 					JSValueRef function)
 {
 	ffi_cif * cif;
@@ -321,7 +321,7 @@ SeedClosurePrivates * seed_make_closure(GICallableInfo * info,
 	GITypeInfo * return_type;
 	GIArgInfo * arg_info;
 	gint num_args, i;
-	SeedClosurePrivates * privates;
+	SeedNativeClosure * privates;
 	
 	
 	num_args = g_callable_info_get_n_args(info);
@@ -329,7 +329,7 @@ SeedClosurePrivates * seed_make_closure(GICallableInfo * info,
 	arg_types = (ffi_type **)g_new0(ffi_type, num_args+1);
 	cif = g_new0(ffi_cif, 1);
 	
-	privates = g_new0(SeedClosurePrivates, 1);
+	privates = g_new0(SeedNativeClosure, 1);
 	privates->info = info;
 	privates->function = function;
 	privates->cif = cif;
@@ -353,6 +353,27 @@ SeedClosurePrivates * seed_make_closure(GICallableInfo * info,
 	ffi_prep_closure(closure, cif, seed_handle_closure, privates);
 	
 	return privates;
+}
+
+SeedClosure * seed_make_gclosure(JSObjectRef function,
+								 JSObjectRef this)
+{
+		GClosure * closure;
+
+		closure = g_closure_new_simple(sizeof(SeedClosure), 0);
+		g_closure_set_marshal(closure, seed_signal_marshal_func);
+		
+		((SeedClosure *) closure)->function = function;
+		((SeedClosure *) closure)->object = 	0;
+		if (this && !JSValueIsNull(eng->context, this)){
+				JSValueProtect(eng->context, this);
+				((SeedClosure *) closure)->this = this;
+		} else
+				((SeedClosure *) closure)->this = 0;
+		
+		JSValueProtect(eng->context, function);
+		
+		return (SeedClosure *)closure;
 }
 
 JSClassDefinition seed_native_callback_def = {
