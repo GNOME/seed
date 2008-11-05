@@ -31,7 +31,7 @@ static void seed_add_signal_to_object(JSObjectRef object_ref,
 {
 	guint k;
 	JSObjectRef signal_ref;
-	signal_privates *priv = malloc(sizeof(signal_privates));
+	signal_privates *priv = g_malloc(sizeof(signal_privates));
 	gchar *my_signal_name = g_strdup(signal->signal_name);
 	gchar *modified_signal_name;
 

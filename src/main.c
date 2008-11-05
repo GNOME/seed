@@ -38,7 +38,7 @@ void seed_repl(int argc, char ** argv)
 	g_free(script);
 }
 
-void seed_exec(int argc, char ** argv)
+void seed_exec(gint argc, gchar ** argv)
 {
 	SeedScript  * script;
 	SeedException e;
@@ -74,7 +74,7 @@ void seed_exec(int argc, char ** argv)
 	g_free(script);
 }
 
-int main(int argc, char ** argv)
+int main(gint argc, gchar ** argv)
 {	
 	g_set_prgname("seed");
 	g_thread_init(0);
@@ -91,3 +91,4 @@ int main(int argc, char ** argv)
 	
 	return 0;
 }
+

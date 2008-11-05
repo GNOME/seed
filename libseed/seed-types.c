@@ -55,7 +55,8 @@ static SeedValue seed_wrap_object(GObject * object)
 
 	class = seed_gobject_get_class_for_gtype(type);
 
-	while (!class && (type = g_type_parent(type))) {
+	while (!class && (type = g_type_parent(type)))
+	{
 		class = seed_gobject_get_class_for_gtype(type);
 	}
 
@@ -170,7 +171,8 @@ gboolean seed_gi_make_argument(SeedValue value,
 {
 	GITypeTag gi_tag = g_type_info_get_tag(type_info);
 
-	if (!value || JSValueIsNull(eng->context, value)) {
+	if (!value || JSValueIsNull(eng->context, value))
+	{
 		arg->v_pointer = 0;
 		return 1;
 	}
@@ -258,18 +260,23 @@ gboolean seed_gi_make_argument(SeedValue value,
 							      value, NULL);
 				break;
 			} else if (interface_type == GI_INFO_TYPE_STRUCT) {
-				if (JSValueIsObjectOfClass(eng->context, value, gobject_method_class))
-					arg->v_pointer = seed_struct_get_pointer(value);
+				if (JSValueIsObjectOfClass(eng->context, 
+										   value, seed_struct_class))
+						arg->v_pointer = seed_struct_get_pointer(value);
 				else
 				{
-						GType type = g_registered_type_info_get_g_type((GIRegisteredTypeInfo*)interface);
+						GType type = 
+								g_registered_type_info_get_g_type(
+										(GIRegisteredTypeInfo*)interface);
 						if (!type)
 								return FALSE;
 						else if (g_type_is_a(type, G_TYPE_CLOSURE))
 						{
-								if (JSObjectIsFunction(eng->context, (JSObjectRef)value))
+								if (JSObjectIsFunction(eng->context,
+													   (JSObjectRef)value))
 								{
-										arg->v_pointer = seed_make_gclosure((JSObjectRef)value, 0);
+										arg->v_pointer = 
+								  seed_make_gclosure((JSObjectRef)value, 0);
 								}
 						}
 				}
@@ -712,7 +719,7 @@ gboolean seed_gvalue_from_seed_value(SeedValue val, GType type, GValue * ret,
 	return FALSE;
 }
 
-SeedValue seed_value_get_property(SeedValue val, const char *name)
+SeedValue seed_value_get_property(SeedValue val, const gchar *name)
 {
 
 	JSStringRef jname = JSStringCreateWithUTF8CString(name);
@@ -726,7 +733,7 @@ SeedValue seed_value_get_property(SeedValue val, const char *name)
 }
 
 gboolean seed_value_set_property(JSObjectRef object,
-				 const char *name, JSValueRef value)
+				 const gchar *name, JSValueRef value)
 {
 	JSStringRef jname = JSStringCreateWithUTF8CString(name);
 
@@ -999,7 +1006,7 @@ gchar *seed_value_to_string(JSValueRef val, JSValueRef * exception)
 		jsstr = JSValueToStringCopy(eng->context, val, NULL);
 		length = JSStringGetMaximumUTF8CStringSize(jsstr);
 
-		buf = malloc(length * sizeof(gchar));
+		buf = g_malloc(length * sizeof(gchar));
 		JSStringGetUTF8CString(jsstr, buf, length);
 		JSStringRelease(jsstr);
 	}

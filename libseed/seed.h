@@ -29,10 +29,10 @@ typedef gpointer SeedFunction;
 typedef struct _SeedScript SeedScript;
 
 /* seed-engine.c */
-gboolean seed_init(int *argc, char ***argv);
+gboolean seed_init(gint *argc, gchar ***argv);
 
 SeedScript *seed_make_script(const gchar * s, const gchar * source_url,
-			     int line_number);
+			     gint line_number);
 SeedException seed_script_exception(SeedScript * s);
 SeedException seed_make_exception(gchar * name, gchar * message);
 gchar *seed_exception_get_name(SeedException e);

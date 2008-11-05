@@ -74,7 +74,7 @@ seed_gobject_constructor_invoked(JSContextRef ctx,
 	// Do we free GParamSpecs...? It's not clear.
 	GParamSpec *param_spec;
 	gchar *prop_name;
-	int i, nparams = 0, length;
+	gint i, nparams = 0, length;
 	JSObjectRef ret;
 	JSPropertyNameArrayRef jsprops = 0;
 	JSStringRef jsprop_name;
@@ -103,7 +103,7 @@ seed_gobject_constructor_invoked(JSContextRef ctx,
 		jsprop_name = JSPropertyNameArrayGetNameAtIndex(jsprops, i);
 
 		length = JSStringGetMaximumUTF8CStringSize(jsprop_name);
-		prop_name = malloc(length * sizeof(gchar));
+		prop_name = g_malloc(length * sizeof(gchar));
 		JSStringGetUTF8CString(jsprop_name, prop_name, length);
 
 		param_spec = g_object_class_find_property(oclass, prop_name);
@@ -449,7 +449,7 @@ static JSValueRef seed_gobject_get_property(JSContextRef context,
 		return 0;
 
 	length = JSStringGetMaximumUTF8CStringSize(property_name);
-	cproperty_name = malloc(length * sizeof(gchar));
+	cproperty_name = g_malloc(length * sizeof(gchar));
 	JSStringGetUTF8CString(property_name, cproperty_name, length);
 
 	spec = g_object_class_find_property(G_OBJECT_GET_CLASS(b),
@@ -494,7 +494,7 @@ static bool seed_gobject_set_property(JSContextRef context,
 	obj = seed_value_to_object(object, 0);
 
 	length = JSStringGetMaximumUTF8CStringSize(property_name);
-	cproperty_name = malloc(length * sizeof(gchar));
+	cproperty_name = g_malloc(length * sizeof(gchar));
 	JSStringGetUTF8CString(property_name, cproperty_name, length);
 
 	spec = g_object_class_find_property(G_OBJECT_GET_CLASS(obj),
@@ -838,7 +838,7 @@ JSClassDefinition gobject_constructor_def = {
 	NULL			/* Convert To Type */
 };
 
-void seed_create_function(char *name, gpointer func, JSObjectRef obj)
+void seed_create_function(gchar *name, gpointer func, JSObjectRef obj)
 {
 	JSObjectRef oref;
 
@@ -854,7 +854,7 @@ static void seed_log_handler(const gchar * domain,
 	glib_message = g_strdup(message);
 }
 
-gboolean seed_init(int *argc, char ***argv)
+gboolean seed_init(gint *argc, gchar ***argv)
 {
 	JSObjectRef seed_obj_ref;
 	JSStringRef defaults_script;
@@ -866,7 +866,7 @@ gboolean seed_init(int *argc, char ***argv)
 	qname = g_quark_from_static_string("js-type");
 	qprototype = g_quark_from_static_string("js-prototype");
 
-	eng = (SeedEngine *) malloc(sizeof(SeedEngine));
+	eng = (SeedEngine *) g_malloc(sizeof(SeedEngine));
 
 	eng->context = JSGlobalContextCreateInGroup(NULL, NULL);
 	eng->global = JSContextGetGlobalObject(eng->context);
@@ -903,7 +903,7 @@ gboolean seed_init(int *argc, char ***argv)
 }
 
 SeedScript *seed_make_script(const gchar * js, const gchar * source_url,
-			     int line_number)
+			     gint line_number)
 {
 	SeedScript *ret = g_new0(SeedScript, 1);
 

@@ -41,17 +41,18 @@ seed_include(JSContextRef ctx,
 		    g_strdup_printf("Seed.include expected 1 argument, "
 				    "got %d", argumentCount);
 		seed_make_exception(exception, "ArgumentError", mes);
-		return JSValueMakeNull(eng->context);
+		g_free(mes);
+		return JSValueMakeNull(ctx);
 	}
 	import_file = seed_value_to_string(arguments[0], exception);
 
 	g_file_get_contents(import_file, &buffer, 0, 0);
 
 	if (!buffer) {
-		//gchar * mes = g_strdup_printf("File not found: %s.\n", import_file);
-		//seed_make_exception(exception, "FileNotFound", mes);
-		//g_free(mes);
-		return 0;	// TODO: raise exception?
+		gchar * mes = g_strdup_printf("File not found: %s.\n", import_file);
+		seed_make_exception(exception, "FileNotFound", mes);
+		g_free(mes);
+		return JSValueMakeNull(ctx);
 	}
 
 	walk = buffer;
@@ -72,7 +73,7 @@ seed_include(JSContextRef ctx,
 	JSStringRelease(file_contents);
 	JSStringRelease(file_name);
 
-	return 0;
+	return JSValueMakeNull(ctx);
 }
 
 JSValueRef
@@ -82,18 +83,19 @@ seed_print(JSContextRef ctx,
 	   size_t argumentCount,
 	   const JSValueRef arguments[], JSValueRef * exception)
 {
-	if (argumentCount < 1) {
+	if (argumentCount != 1) {
 		gchar *mes = g_strdup_printf("Seed.print Expected 1 argument,"
 					     " got %d", argumentCount);
 		seed_make_exception(exception, "ArgumentError", mes);
-		return JSValueMakeNull(eng->context);
+		g_free(mes);
+		return JSValueMakeNull(ctx);
 	}
 
 	gchar *buf = seed_value_to_string(arguments[0], exception);
 	printf("%s\n", buf);
-	free(buf);
+	g_free(buf);
 
-	return JSValueMakeNull(eng->context);
+	return JSValueMakeNull(ctx);
 }
 
 JSValueRef
@@ -116,7 +118,8 @@ seed_readline(JSContextRef ctx,
 		    g_strdup_printf("Seed.readline Expected 1 argument, "
 				    "got %d", argumentCount);
 		seed_make_exception(exception, "ArgumentError", mes);
-		return JSValueMakeNull(eng->context);
+		g_free(mes);
+		return JSValueMakeNull(ctx);
 	}
 
 	buf = seed_value_to_string(arguments[0], exception);
@@ -125,13 +128,13 @@ seed_readline(JSContextRef ctx,
 	if (str && *str) {
 		add_history(str);
 		valstr = seed_value_from_string(str, exception);
-		free(str);
+		g_free(str);
 	}
 
-	free(buf);
+	g_free(buf);
 
 	if (valstr == 0)
-		valstr = JSValueMakeNull(eng->context);
+		valstr = JSValueMakeNull(ctx);
 
 	return valstr;
 }
@@ -146,7 +149,14 @@ seed_prototype(JSContextRef ctx,
 	GType type;
 
 	if (argumentCount != 1)
+	{
+		gchar *mes =
+		    g_strdup_printf("Seed.prototype Expected 1 argument, "
+				    "got %d", argumentCount);
+		seed_make_exception(exception, "ArgumentError", mes);
+		g_free(mes);
 		return JSValueMakeNull(eng->context);
+	}
 	if (!JSValueIsObject(eng->context, arguments[0]))
 		return JSValueMakeNull(eng->context);
 
@@ -155,11 +165,11 @@ seed_prototype(JSContextRef ctx,
 	return seed_gobject_get_prototype_for_gtype(type);
 }
 
-const char *seed_g_type_name_to_string(GITypeInfo * type)
+const gchar *seed_g_type_name_to_string(GITypeInfo * type)
 {
 	GITypeTag type_tag = g_type_info_get_tag(type);
 
-	const char *type_name;
+	const gchar *type_name;
 
 	if (type_tag == GI_TYPE_TAG_INTERFACE) {
 		GIBaseInfo *interface = g_type_info_get_interface(type);
@@ -183,19 +193,27 @@ seed_introspect(JSContextRef ctx,
 
 	GICallableInfo *info;
 	JSObjectRef data_obj, args_obj;
-	int i;
+	gint i;
 
 	if (argumentCount != 1)
-		return JSValueMakeNull(eng->context);
-	if (!JSValueIsObject(eng->context, arguments[0]))
-		return JSValueMakeNull(eng->context);
-	if (!JSValueIsObjectOfClass(eng->context, arguments[0],
+	{
+		gchar *mes =
+		    g_strdup_printf("Seed.introspection Expected 1 argument, "
+				    "got %d", argumentCount);
+		seed_make_exception(exception, "ArgumentError", mes);
+		g_free(mes);
+		return JSValueMakeNull(ctx);
+	}
+
+	if (!JSValueIsObject(ctx, arguments[0]))
+		return JSValueMakeNull(ctx);
+	if (!JSValueIsObjectOfClass(ctx, arguments[0],
 				    gobject_method_class))
-		return JSValueMakeNull(eng->context);
+		return JSValueMakeNull(ctx);
 
 	info =
 	    (GICallableInfo *) JSObjectGetPrivate((JSObjectRef) arguments[0]);
-	data_obj = JSObjectMake(eng->context, NULL, NULL);
+	data_obj = JSObjectMake(ctx, NULL, NULL);
 
 	seed_value_set_property(data_obj, "name",
 				(JSValueRef)
@@ -212,7 +230,7 @@ seed_introspect(JSContextRef ctx,
 	seed_value_set_property(data_obj, "args", args_obj);
 
 	for (i = 0; i < g_callable_info_get_n_args(info); ++i) {
-		JSObjectRef argument = JSObjectMake(eng->context, NULL, NULL);
+		JSObjectRef argument = JSObjectMake(ctx, NULL, NULL);
 
 		const gchar *arg_name =
 		    seed_g_type_name_to_string(g_arg_info_get_type
@@ -222,7 +240,7 @@ seed_introspect(JSContextRef ctx,
 		seed_value_set_property(argument, "type",
 								seed_value_from_string(arg_name, exception));
 
-		JSObjectSetPropertyAtIndex(eng->context, args_obj, i, argument,
+		JSObjectSetPropertyAtIndex(ctx, args_obj, i, argument,
 					   NULL);
 	}
 
@@ -237,7 +255,7 @@ seed_check_syntax(JSContextRef ctx,
 		  const JSValueRef arguments[], JSValueRef * exception)
 {
 	if (argumentCount != 0) {
-		JSStringRef jsstr = JSValueToStringCopy(eng->context,
+		JSStringRef jsstr = JSValueToStringCopy(ctx,
 							arguments[0],
 							exception);
 		JSCheckScriptSyntax(ctx, jsstr, 0, 0, exception);
@@ -245,10 +263,12 @@ seed_check_syntax(JSContextRef ctx,
 			JSStringRelease(jsstr);
 	} else {
 		gchar *mes = g_strdup_printf("Seed.check_syntax expected"
-					     "1 argument, got %d",
+					     "0 argument, got %d",
 					     argumentCount);
+		seed_make_exception(exception, "ArgumentError", mes);
+		g_free(mes);
 	}
-	return JSValueMakeNull(eng->context);
+	return JSValueMakeNull(ctx);
 }
 
 JSValueRef
@@ -288,12 +308,17 @@ seed_set_timeout(JSContextRef ctx,
 	//if (!g_main_loop_is_running(loop))
 	//      return JSValueMakeBoolean(ctx, 0);
 
-	// TODO: convert to use an exception! (Matt!)
-
-	if (argumentCount != 2)
+	if (argumentCount != 1)
+	{
+		gchar *mes =
+		    g_strdup_printf("Seed.set_timeout Expected 1 argument, "
+				    "got %d", argumentCount);
+		seed_make_exception(exception, "ArgumentError", mes);
+		g_free(mes);
 		return JSValueMakeBoolean(ctx, 0);
+	}
 
-	JSStringRef jsstr = JSValueToStringCopy(eng->context,
+	JSStringRef jsstr = JSValueToStringCopy(ctx,
 						arguments[0],
 						exception);
 
@@ -370,9 +395,9 @@ seed_closure_native(JSContextRef ctx,
 		return JSObjectMake(eng->context, seed_native_callback_class, privates);
 }
 
-void seed_init_builtins(int *argc, char ***argv)
+void seed_init_builtins(gint *argc, gchar ***argv)
 {
-	int i;
+	guint i;
 	JSObjectRef arrayObj;
 	JSValueRef argcref;
 	JSObjectRef obj =
@@ -405,3 +430,4 @@ void seed_init_builtins(int *argc, char ***argv)
 	seed_value_set_property(arrayObj, "length", argcref);
 	seed_value_set_property(obj, "argv", arrayObj);
 }
+

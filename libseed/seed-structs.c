@@ -76,7 +76,7 @@ JSObjectRef seed_make_union(gpointer younion, GIBaseInfo * info)
 JSObjectRef seed_make_struct(gpointer strukt, GIBaseInfo * info)
 {
 	JSObjectRef object;
-	int i, n_methods;
+	gint i, n_methods;
 
 	if (!seed_struct_class)
 		seed_struct_class = JSClassCreate(&gobject_struct_def);
@@ -97,3 +97,4 @@ JSObjectRef seed_make_struct(gpointer strukt, GIBaseInfo * info)
 
 	return object;
 }
+

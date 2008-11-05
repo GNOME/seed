@@ -33,7 +33,7 @@ typedef struct _SeedScript {
 	JSValueRef exception;
 
 	JSStringRef source_url;
-	int line_number;
+	gint line_number;
 } SeedScript;
 
 JSObjectRef seed_gobject_get_prototype_for_gtype(GType type);
@@ -42,7 +42,7 @@ JSClassRef seed_gobject_get_class_for_gtype(GType type);
 void seed_gobject_define_property_from_function_info(GIFunctionInfo * info,
 						     JSObjectRef object,
 						     gboolean instance);
-void seed_create_function(char *name, gpointer func, JSObjectRef obj);
+void seed_create_function(gchar *name, gpointer func, JSObjectRef obj);
 void seed_make_exception(JSValueRef * exception,
 			 const gchar * name, const gchar * message);
 #endif
