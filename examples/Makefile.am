@@ -5,6 +5,7 @@ SUBDIRS = ide \
 EXTRA_DIST = \
 	calculator.js \
 	gconf.js \
+	accelgroup.js \
 	clutter.js \
 	introspect.js \
 	poppler.js \
