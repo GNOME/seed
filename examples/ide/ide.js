@@ -6,6 +6,7 @@ Seed.import_namespace("GtkSource");
 Seed.import_namespace("Gio");
 Seed.import_namespace("Pango");
 Seed.import_namespace("GConf");
+Seed.import_namespace("Gdk");
 
 Gtk.init(null, null);
 GConf.init(null, null);

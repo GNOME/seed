@@ -31,7 +31,7 @@ passed = []
 failed = []
 
 for f in os.listdir("."):
-	if f.endswith(".js"):
+	if f.endswith(".js") and not f.endswith("_.js"):
 		rfile = open(f, "r")
 		test_code = rfile.readlines()
 		test_in = test_code[2].replace("// STDIN:","").rstrip().replace("\\n","\n");

@@ -61,9 +61,7 @@ function ide_tab(fn)
 
 function change_page(notebook, tab, n)
 {
-    //Seed.print("lol");
-    //tabs.get_tab_label(tabs.get_nth_page(n));
-    //update_window();
+    update_window(tabs.get_tab_label(tabs.get_nth_page(n)).get_children()[0].label);
 }
 
 function ide_ui()

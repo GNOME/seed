@@ -1,3 +1,47 @@
+function ide_actions(tab)
+{
+    this.actions = new Gtk.ActionGroup({name:"toolbar"});
+    
+    this.accels = new Gtk.AccelGroup();
+    window.add_accel_group(this.accels);
+    
+    this.new_action = new Gtk.Action({name:"new", label:"New",
+                                      tooltip:"New File", stock_id:"gtk-new"});
+    this.new_action.set_accel_group(this.accels);
+    this.actions.add_action_with_accel(this.new_action, "<Control>n");
+    this.new_action.connect_accelerator();
+    this.new_action.signal_activate.connect(new_file, tab);
+    
+    this.open_action = new Gtk.Action({name:"open", label:"Open",
+                                      tooltip:"Open File", stock_id:"gtk-open"});
+    this.open_action.set_accel_group(this.accels);
+    this.actions.add_action_with_accel(this.open_action, "<Control>o");
+    this.open_action.connect_accelerator();
+    this.open_action.signal_activate.connect(open_file, tab);
+    
+    this.save_action = new Gtk.Action({name:"save", label:"Save",
+                                      tooltip:"Save File", stock_id:"gtk-save"});
+    this.save_action.set_accel_group(this.accels);
+    this.actions.add_action_with_accel(this.save_action, "<Control>s");
+    this.save_action.connect_accelerator();
+    this.save_action.signal_activate.connect(save_file, tab);
+    
+    this.undo_action = new Gtk.Action({name:"undo", label:"Undo",
+                                      tooltip:"Undo", stock_id:"gtk-undo"});
+    this.undo_action.signal_activate.connect(undo, tab);
+    
+    this.redo_action = new Gtk.Action({name:"redo", label:"Redo",
+                                      tooltip:"Redo", stock_id:"gtk-redo"});
+    this.redo_action.signal_activate.connect(redo, tab);
+    
+    this.execute_action = new Gtk.Action({name:"execute", label:"Execute",
+                                      tooltip:"Execute File", stock_id:"gtk-execute"});
+    this.execute_action.set_accel_group(this.accels);
+    this.actions.add_action_with_accel(this.execute_action, "<Control>r");
+    this.execute_action.connect_accelerator();
+    this.execute_action.signal_activate.connect(execute, tab);
+}
+
 function new_file(sv)
 {
     var tab = new ide_tab("");
@@ -77,21 +121,15 @@ function execute()
 
 function ide_toolbar(tab)
 {
+    actions = new ide_actions(tab);
     this.toolbar = new Gtk.Toolbar();
     
-    this.new_button = new Gtk.ToolButton({stock_id:"gtk-new"});
-    this.open_button = new Gtk.ToolButton({stock_id:"gtk-open"});
-    this.save_button = new Gtk.ToolButton({stock_id:"gtk-save"});
-    this.undo_button = new Gtk.ToolButton({stock_id:"gtk-undo"});
-    this.redo_button = new Gtk.ToolButton({stock_id:"gtk-redo"});
-    this.run_button = new Gtk.ToolButton({stock_id:"gtk-execute"});
-
-    this.new_button.signal_clicked.connect(new_file, tab);
-    this.open_button.signal_clicked.connect(open_file, tab);
-    this.save_button.signal_clicked.connect(save_file, tab);
-    this.undo_button.signal_clicked.connect(undo, tab);
-    this.redo_button.signal_clicked.connect(redo, tab);
-    this.run_button.signal_clicked.connect(execute, tab);
+    this.new_button = actions.new_action.create_tool_item();
+    this.open_button = actions.open_action.create_tool_item();
+    this.save_button = actions.save_action.create_tool_item();
+    this.undo_button = actions.undo_action.create_tool_item();
+    this.redo_button = actions.redo_action.create_tool_item();
+    this.execute_button = actions.execute_action.create_tool_item();
     
     this.toolbar.insert(this.new_button, -1);
     this.toolbar.insert(this.open_button, -1);
@@ -100,6 +138,6 @@ function ide_toolbar(tab)
     this.toolbar.insert(this.undo_button, -1);
     this.toolbar.insert(this.redo_button, -1);
     this.toolbar.insert(new Gtk.SeparatorToolItem(), -1);
-    this.toolbar.insert(this.run_button, -1);
+    this.toolbar.insert(this.execute_button, -1);
 }
 
