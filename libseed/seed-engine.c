@@ -130,11 +130,15 @@ seed_gobject_constructor_invoked(JSContextRef ctx,
 		else
 			type = param_spec->value_type;
 
-		if (!seed_gvalue_from_seed_value(jsprop_value,
-										 type, &params[i].value, exception)) {
-			g_free(prop_name);
-			g_free(params);
-			return 0;
+		seed_gvalue_from_seed_value(jsprop_value,
+									type, &params[i].value, exception);
+			
+		if (*exception)
+		{
+
+				g_free(prop_name);
+				g_free(params);
+				return 0;
 		}
 		params[i].name = prop_name;
 
@@ -149,7 +153,7 @@ seed_gobject_constructor_invoked(JSContextRef ctx,
 	if (!gobject)
 		JSValueMakeNull(eng->context);
 
-	ret = (JSObjectRef) seed_value_from_object(gobject, exception);
+	ret = (JSObjectRef) seed_value_from_object(gobject, 0);
 
 	g_type_class_unref(oclass);
 
