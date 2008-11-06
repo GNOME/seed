@@ -8,21 +8,21 @@ function ide_actions(tab)
     this.new_action = new Gtk.Action({name:"new", label:"New",
                                       tooltip:"New File", stock_id:"gtk-new"});
     this.new_action.set_accel_group(this.accels);
-    this.actions.add_action_with_accel(this.new_action, "<Control>n");
+    this.actions.add_action_with_accel(this.new_action);
     this.new_action.connect_accelerator();
     this.new_action.signal_activate.connect(new_file, tab);
     
     this.open_action = new Gtk.Action({name:"open", label:"Open",
                                       tooltip:"Open File", stock_id:"gtk-open"});
     this.open_action.set_accel_group(this.accels);
-    this.actions.add_action_with_accel(this.open_action, "<Control>o");
+    this.actions.add_action_with_accel(this.open_action);
     this.open_action.connect_accelerator();
     this.open_action.signal_activate.connect(open_file, tab);
     
     this.save_action = new Gtk.Action({name:"save", label:"Save",
                                       tooltip:"Save File", stock_id:"gtk-save"});
     this.save_action.set_accel_group(this.accels);
-    this.actions.add_action_with_accel(this.save_action, "<Control>s");
+    this.actions.add_action_with_accel(this.save_action);
     this.save_action.connect_accelerator();
     this.save_action.signal_activate.connect(save_file, tab);
     
