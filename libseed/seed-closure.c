@@ -354,7 +354,7 @@ SeedNativeClosure * seed_make_native_closure(GICallableInfo * info,
 		       MAP_ANON | MAP_PRIVATE, -1, 0);
 	privates->closure = closure;
 	
-	ffi_prep_cif(cif, FFI_DEFAULT_ABI, 2, 
+	ffi_prep_cif(cif, FFI_DEFAULT_ABI, num_args, 
 				 get_ffi_type(return_type), arg_types);
 	ffi_prep_closure(closure, cif, seed_handle_closure, privates);
 	
