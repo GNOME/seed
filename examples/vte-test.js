@@ -9,8 +9,8 @@ var scroll = new Gtk.ScrolledWindow();
 
 var vte = new Vte.Terminal();
 vte.fork_command("/bin/bash");
-vte.signal_child_exited.connect(Gtk.main_quit);
-vte.signal_window_title_changed.connect
+vte.signal.child_exited.connect(Gtk.main_quit);
+vte.signal.window_title_changed.connect
     (function(terminal)
      {
 	 this.set_title(terminal.get_window_title());

@@ -144,7 +144,7 @@ function ide_init()
 {
     window = new Gtk.Window();
     window.resize(600, 600);
-    window.signal_hide.connect(Gtk.main_quit);
+    window.signal.hide.connect(Gtk.main_quit);
     ui = new ide_ui();
     window.add(tabs);
     window.show_all();

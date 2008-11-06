@@ -10,36 +10,36 @@ function ide_actions(tab)
     this.new_action.set_accel_group(this.accels);
     this.actions.add_action_with_accel(this.new_action);
     this.new_action.connect_accelerator();
-    this.new_action.signal_activate.connect(new_file, tab);
+    this.new_action.signal.activate.connect(new_file, tab);
     
     this.open_action = new Gtk.Action({name:"open", label:"Open",
                                       tooltip:"Open File", stock_id:"gtk-open"});
     this.open_action.set_accel_group(this.accels);
     this.actions.add_action_with_accel(this.open_action);
     this.open_action.connect_accelerator();
-    this.open_action.signal_activate.connect(open_file, tab);
+    this.open_action.signal.activate.connect(open_file, tab);
     
     this.save_action = new Gtk.Action({name:"save", label:"Save",
                                       tooltip:"Save File", stock_id:"gtk-save"});
     this.save_action.set_accel_group(this.accels);
     this.actions.add_action_with_accel(this.save_action);
     this.save_action.connect_accelerator();
-    this.save_action.signal_activate.connect(save_file, tab);
+    this.save_action.signal.activate.connect(save_file, tab);
     
     this.undo_action = new Gtk.Action({name:"undo", label:"Undo",
                                       tooltip:"Undo", stock_id:"gtk-undo"});
-    this.undo_action.signal_activate.connect(undo, tab);
+    this.undo_action.signal.activate.connect(undo, tab);
     
     this.redo_action = new Gtk.Action({name:"redo", label:"Redo",
                                       tooltip:"Redo", stock_id:"gtk-redo"});
-    this.redo_action.signal_activate.connect(redo, tab);
+    this.redo_action.signal.activate.connect(redo, tab);
     
     this.execute_action = new Gtk.Action({name:"execute", label:"Execute",
                                       tooltip:"Execute File", stock_id:"gtk-execute"});
     this.execute_action.set_accel_group(this.accels);
     this.actions.add_action_with_accel(this.execute_action, "<Control>r");
     this.execute_action.connect_accelerator();
-    this.execute_action.signal_activate.connect(execute, tab);
+    this.execute_action.signal.activate.connect(execute, tab);
 }
 
 function new_file(sv)

@@ -65,7 +65,7 @@ for (var i = 0; i < colors.length; i++)
 }
 // Was initially intended as a test to see if performance was accetable to do
 // custom animations at 60fps. Turns out to be fine, serves as an example now.
-timeline.signal_new_frame.connect(
+timeline.signal.new_frame.connect(
 	function(timeline, frame_num)
 	{
 		for (var i = 0; i < colors.length; i++)
@@ -74,7 +74,7 @@ timeline.signal_new_frame.connect(
 			rectangles[i].rotation_angle_z += 1;
 		}
 	});
-timeline.signal_completed.connect(
+timeline.signal.completed.connect(
 	function(timeline)
 	{
 		

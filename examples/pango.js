@@ -23,10 +23,10 @@ function add_actor()
 function prop_editor()
 {
 	this.text = new Gtk.Entry();
-	this.text.signal_changed.connect(update_text);
+	this.text.signal.changed.connect(update_text);
 	
 	this.new_button = new Gtk.ToolButton({stock_id:"gtk-add"});
-	this.new_button.signal_clicked.connect(add_actor);
+	this.new_button.signal.clicked.connect(add_actor);
 	
 	this.font_combo = new Gtk.ComboBox();
 	
@@ -95,7 +95,7 @@ function pango_actor(label, font)
 {
     this.label = new Clutter.Label({text:label, font_name:font});
     this.label.reactive = true;
-    this.label.signal_button_press_event.connect(mouse_click);
+    this.label.signal.button_press_event.connect(mouse_click);
     
     stage.add_actor(this.label);
 }
@@ -104,7 +104,7 @@ function pulser()
 {
     timeline = new Clutter.Timeline({fps:30, num_frames:628, loop:true});
 
-    timeline.signal_new_frame.connect(function(timeline, frame_num)
+    timeline.signal.new_frame.connect(function(timeline, frame_num)
 	{ current_actor.opacity = ((Math.sin(frame_num/7)+1) * 67) + 120; });
 
     timeline.start();
@@ -133,9 +133,9 @@ function pangotest_init()
     
     Clutter.set_motion_events_frequency(60);
     
-    stage.signal_motion_event.connect(mouse_moved);
-    stage.signal_button_release_event.connect(mouse_release);
-    stage.signal_button_press_event.connect(clear_selected);
+    stage.signal.motion_event.connect(mouse_moved);
+    stage.signal.button_release_event.connect(mouse_release);
+    stage.signal.button_press_event.connect(clear_selected);
     
     pulser();
     

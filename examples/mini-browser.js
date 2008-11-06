@@ -72,13 +72,13 @@ function create_toolbar(browser_view)
 	var toolbar = new Gtk.HBox();
 	
 	var back_button = new Gtk.ToolButton({stock_id:"gtk-go-back"});
-	back_button.signal_clicked.connect(back, browser_view);
+	back_button.signal.clicked.connect(back, browser_view);
 	
 	var forward_button = new Gtk.ToolButton({stock_id:"gtk-go-forward"});
-	forward_button.signal_clicked.connect(forward, browser_view);
+	forward_button.signal.clicked.connect(forward, browser_view);
 	
 	var refresh_button = new Gtk.ToolButton({stock_id:"gtk-refresh"});
-	refresh_button.signal_clicked.connect(refresh, browser_view);
+	refresh_button.signal.clicked.connect(refresh, browser_view);
 	
 	toolbar.pack_start(back_button);
 	toolbar.pack_start(forward_button);
@@ -95,12 +95,12 @@ function create_tab(loc)
 	var browser_view = new WebKit.WebView();
 	
 	var url_entry = new Gtk.Entry();
-	url_entry.signal_activate.connect(browse, browser_view);
+	url_entry.signal.activate.connect(browse, browser_view);
 
 	browser_view.set_scroll_adjustments(null,null);
-	browser_view.signal_title_changed.connect(title_changed, browser_title);
-	browser_view.signal_load_committed.connect(url_changed, url_entry);
-	//browser_view.signal_create_web_view.connect(new_tab, this);
+	browser_view.signal.title_changed.connect(title_changed, browser_title);
+	browser_view.signal.load_committed.connect(url_changed, url_entry);
+	//browser_view.signal.create_web_view.connect(new_tab, this);
 	browser_view.open(loc);
 	
 	var toolbar = create_toolbar(browser_view);
@@ -112,7 +112,7 @@ function create_tab(loc)
 	var close_button = new Gtk.Button();
 	close_button.set_image(new Gtk.Image({stock: "gtk-close", 
 			icon_size: Gtk.IconSize.menu}));
-	close_button.signal_clicked.connect(close_tab, tab);
+	close_button.signal.clicked.connect(close_tab, tab);
 	close_button.set_relief(Gtk.ReliefStyle.none);
 	
 	var tab_header = new Gtk.HBox();
@@ -143,7 +143,7 @@ function browser_init()
 {
 	Gtk.init(null, null);
 	var window = new Gtk.Window({title: "Browser"});
-	window.signal_hide.connect(Gtk.main_quit);
+	window.signal.hide.connect(Gtk.main_quit);
 	window.resize(800,800);
 	
 	window.add(create_ui());

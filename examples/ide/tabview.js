@@ -15,7 +15,7 @@ function tab_header(nm, tab)
 {
     var close_button = new Gtk.Button();
 	close_button.set_image(new Gtk.Image({stock: "gtk-close", icon_size: Gtk.IconSize.menu}));
-	close_button.signal_clicked.connect(close_tab, tab);
+	close_button.signal.clicked.connect(close_tab, tab);
 	close_button.set_relief(Gtk.ReliefStyle.none);
 	
 	this.tab_label = new Gtk.Label({label:nm});
@@ -38,7 +38,7 @@ function ide_tab(fn)
     
     this.pane.set_position(600 * (2/3));
 
-    this.source_view.source_buf.signal_changed.connect(text_changed, this.toolbar);
+    this.source_view.source_buf.signal.changed.connect(text_changed, this.toolbar);
     this.source_view.source_buf.update_undo_state(this.toolbar);
     
     this.main_vbox = new Gtk.VBox();
@@ -68,7 +68,7 @@ function ide_ui()
 {
     tabs = new Gtk.Notebook();
     
-    tabs.signal_switch_page.connect(change_page);
+    tabs.signal.switch_page.connect(change_page);
     
     tabs.set_scrollable(true);
     

@@ -37,7 +37,7 @@ function create_menu()
     
     var quit_item = new Gtk.MenuItem({"child":
                                       new Gtk.Label({"label": "Quit"})});
-    quit_item.signal_activate.connect(Gtk.main_quit);
+    quit_item.signal.activate.connect(Gtk.main_quit);
     
     game_menu.append(size_item);
     game_menu.append(quit_item);
@@ -71,7 +71,7 @@ function create_board()
 			buttons[i][j].set_relief(Gtk.ReliefStyle.none);
 			buttons[i][j].can_focus = false;
 		
-			buttons[i][j].signal_clicked.connect(button_clicked,
+			buttons[i][j].signal.clicked.connect(button_clicked,
 							     buttons[i][j]);
 			table.attach_defaults(buttons[i][j], j, j+1, i, i+1);
 		}
@@ -184,7 +184,7 @@ function flip_color(i, j)
 Gtk.init(null, null);
 
 var window = new Gtk.Window({"title": "Lights Off", "resizable" : false});
-window.signal_hide.connect(Gtk.main_quit);
+window.signal.hide.connect(Gtk.main_quit);
 
 vbox = new Gtk.VBox();
 

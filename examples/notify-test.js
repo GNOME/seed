@@ -20,7 +20,7 @@ Notify.init("Seed Test!");
 file = Gio.file_new_for_path(".");
 monitor = file.monitor_directory();
 
-monitor.signal_changed.connect(file_changed);
+monitor.signal.changed.connect(file_changed);
 
 Gtk.main();
 

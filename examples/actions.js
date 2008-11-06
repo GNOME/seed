@@ -18,21 +18,21 @@ new_action.set_accel_group(accels);
 actions.add_action_with_accel(new_action);
 //Could pass string, but this makes it use default accelerator for gtk-new
 new_action.connect_accelerator();
-new_action.signal_activate.connect(function(){Seed.print("New file")});
+new_action.signal.activate.connect(function(){Seed.print("New file")});
 
 open_action = new Gtk.Action({name:"open", label: "Open",
 			      tooltip:"Open File", stock_id:Gtk.STOCK_OPEN});
 open_action.set_accel_group(accels);
 actions.add_action_with_accel(open_action);
 open_action.connect_accelerator();
-open_action.signal_activate.connect(function(){Seed.print("Open file")});
+open_action.signal.activate.connect(function(){Seed.print("Open file")});
 
 save_action = new Gtk.Action({name:"save", label: "Save",
 			      tooltip:"Save File", stock_id:Gtk.STOCK_SAVE});
 save_action.set_accel_group(accels);
 actions.add_action_with_accel(save_action);
 save_action.connect_accelerator();
-save_action.signal_activate.connect(function(){Seed.print("Save file")});
+save_action.signal.activate.connect(function(){Seed.print("Save file")});
 
 
 toolbar.insert(new_action.create_tool_item());

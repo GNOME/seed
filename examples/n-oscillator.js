@@ -66,9 +66,9 @@ function oscillator(freq)
 	{
 		this.volume.volume = range.get_value();
 	}
-	this.button.signal_clicked.connect(this.toggle, this);
-	this.vscale.signal_value_changed.connect(this.update_freq, this);
-	this.volscale.signal_value_changed.connect(this.update_vol, this);
+	this.button.signal.clicked.connect(this.toggle, this);
+	this.vscale.signal.value_changed.connect(this.update_freq, this);
+	this.volscale.signal.value_changed.connect(this.update_vol, this);
 }
 
 function end_program()
@@ -79,7 +79,7 @@ function end_program()
 var window = new Gtk.Window();
 var button = new Gtk.Button({label: "Add Oscillator"});
 
-window.signal_hide.connect(end_program);
+window.signal.hide.connect(end_program);
 window.resize(600,300);
 var hbox = new Gtk.HBox();
 
@@ -92,7 +92,7 @@ function add_oscillator(button)
 	this.pack_start(os.vbox, true, true, 10);
 	os.vbox.show_all();
 }
-button.signal_clicked.connect(add_oscillator, hbox);
+button.signal.clicked.connect(add_oscillator, hbox);
 
 window.add(hbox);
 hbox.pack_start(button, true, true, 10);

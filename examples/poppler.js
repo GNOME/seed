@@ -82,18 +82,18 @@ function make_toolbar()
     entry = new Gtk.Entry({text:"0"});
     entry_item.add(entry);
     entry_item.width_request = 40;
-    entry.signal_activate.connect(function(){set_page(parseInt(entry.text)-1)});
+    entry.signal.activate.connect(function(){set_page(parseInt(entry.text)-1)});
     var label_item = new Gtk.ToolItem();
     page_label = new Gtk.Label({label: " of 0"});
     label_item.add(page_label);
     
-    open_button.signal_clicked.connect(open_file);
-    next_button.signal_clicked.connect(
+    open_button.signal.clicked.connect(open_file);
+    next_button.signal.clicked.connect(
 	function(button)
 	{
 	    set_page(page_num+1);
 	});
-    previous_button.signal_clicked.connect(
+    previous_button.signal.clicked.connect(
 	function(button)
 	{
 	    set_page(page_num-1);
@@ -119,13 +119,13 @@ window.title = "Poppler Demo";
 main_vbox = new Gtk.VBox();
 
 drawing_area = new Gtk.DrawingArea();
-drawing_area.signal_expose_event.connect(draw_document);
+drawing_area.signal.expose_event.connect(draw_document);
 
 window.add(main_vbox);
 main_vbox.pack_start(toolbar);
 main_vbox.pack_start(drawing_area, true, true);
 
-window.signal_hide.connect(Gtk.main_quit);
+window.signal.hide.connect(Gtk.main_quit);
 
 window.show_all();
 window.resize(600,800);

@@ -41,5 +41,5 @@ function ShaderView(source_type, actor, reflection)
 	this.reflection.set_shader(shader);
     }
 
-    compile.signal_clicked.connect(this.make_shader, this);
+    compile.signal.clicked.connect(this.make_shader, this);
 }
