@@ -11,12 +11,14 @@ function HelloLabel()
 {
     this.gobject_parent = new Gtk.Label({label: "Hello World"});
 }
+HelloLabel.prototype = Seed.prototype(Gtk.Label);
 
 function FooedHelloLabel()
 {
     this.gobject_parent = new HelloLabel();
     this.fooed = true;
 }
+FooedHelloLabel.prototype = HelloLabel.prototype;
 
 function NotALabel()
 {
@@ -39,7 +41,13 @@ vbox.foreach(function(widget)
 	  {
 	      if (widget.fooed == true)
 	      {
-		      Seed.print("Found a fooed widget");
+		      widget.set_text("Fooed");
+	      }
+	      else
+	      {
+		      widget.set_text("Not fooed");
 	      }
 	  });
 
+w.show_all();
+Gtk.main()
