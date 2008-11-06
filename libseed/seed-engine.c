@@ -407,7 +407,8 @@ static void seed_gobject_finalize(JSObjectRef object)
 	gobject = seed_value_to_object((JSValueRef) object, 0);
 	if (!gobject)
 		return;
-
+	
+	g_object_remove_toggle_ref(gobject, seed_toggle_ref, 0);
 	g_object_unref(gobject);
 }
 

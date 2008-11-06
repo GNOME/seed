@@ -37,6 +37,25 @@ static gboolean seed_value_is_gobject(SeedValue value)
 	return JSValueIsObjectOfClass(eng->context, value, gobject_class);
 }
 
+void seed_toggle_ref(gpointer data,
+							GObject * object,
+							gboolean is_last_ref)
+{
+		JSValueRef wrapper;
+		
+		wrapper = (JSValueRef)data;
+
+		if (is_last_ref)
+		{
+				JSValueUnprotect(eng->context, wrapper);
+		}
+		else
+		{
+				JSValueProtect(eng->context, wrapper);
+		}
+
+}
+
 static SeedValue seed_wrap_object(GObject * object)
 {
 	SeedValue user_data;
@@ -89,7 +108,14 @@ static SeedValue seed_wrap_object(GObject * object)
 		}
 	}
 
-	object = g_object_ref_sink(object);
+	g_object_ref_sink(object);
+	   
+	g_object_set_data(object, "js-ref", (gpointer)js_ref);
+
+	JSValueProtect(eng->context, js_ref);
+	g_object_add_toggle_ref(object, seed_toggle_ref, (gpointer)js_ref);
+
+	g_object_unref(object);
 
 	return js_ref;
 }
@@ -252,7 +278,7 @@ gboolean seed_gi_make_argument(SeedValue value,
 					return FALSE;
 				}
 
-				arg->v_pointer = g_object_ref(gobject);
+				arg->v_pointer = gobject;
 				break;
 			} else if (interface_type == GI_INFO_TYPE_ENUM ||
 					   interface_type == GI_INFO_TYPE_FLAGS) {
@@ -1028,7 +1054,21 @@ GObject *seed_value_to_object(JSValueRef val, JSValueRef * exception)
 	GObject *gobject;
 
 	if (!seed_value_is_gobject(val)) {
-		return NULL;
+			JSValueRef object;
+			if(!JSValueIsObject(eng->context, val))
+					return NULL;
+			object = seed_value_get_property(val, "gobject_parent");
+			if (val && object && JSValueIsObject(eng->context, object));
+			{
+					JSValueRef ref_data = 0;
+					gobject = seed_value_to_object(object, exception);
+					if (gobject)
+					{
+							g_object_set_data(gobject, "js-ref",
+											  (gpointer)val);
+					}
+					return gobject;
+			}
 	}
 
 	gobject = (GObject *) JSObjectGetPrivate((JSObjectRef) val);
