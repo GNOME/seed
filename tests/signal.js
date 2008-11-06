@@ -13,6 +13,6 @@ function mapped(window)
 }
 
 w = new Gtk.Window();
-w.signal_map.connect(mapped);
+w.signal.map.connect(mapped);
 
 w.show_all();
