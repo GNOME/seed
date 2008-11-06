@@ -4,6 +4,7 @@ SUBDIRS = ide \
           
 examplesdir=$(datadir)/doc/seed/examples
 examples_DATA = \
+	actions.js \ 
 	calculator.js \
 	gconf.js \
 	accelgroup.js \
@@ -23,6 +24,7 @@ examples_DATA = \
 	vte-test.js \
 	HACKING
 EXTRA_DIST = \
+	actions.js \
 	calculator.js \
 	gconf.js \
 	accelgroup.js \
