@@ -32,8 +32,8 @@ function create_menu()
     var game_menu = new Gtk.Menu();
     var size_item = new Gtk.MenuItem({"child":
                                       new Gtk.Label({"label": "Board Size"})});
-    size_item.signal_activate.connect(Gtk.main_quit);
-    //size_item.submenu = create_board_size_menu(); // crashy?!
+
+    size_item.submenu = create_board_size_menu();
     
     var quit_item = new Gtk.MenuItem({"child":
                                       new Gtk.Label({"label": "Quit"})});
