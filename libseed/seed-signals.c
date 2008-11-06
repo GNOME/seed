@@ -26,20 +26,20 @@ typedef struct _signal_privates {
 	GObject *object;
 } signal_privates;
 
+JSClassRef signal_holder_class;
+
 static void seed_add_signal_to_object(JSObjectRef object_ref,
 				      GObject * obj, GSignalQuery * signal)
 {
 	guint k;
 	JSObjectRef signal_ref;
 	signal_privates *priv = g_malloc(sizeof(signal_privates));
-	gchar *my_signal_name = g_strdup(signal->signal_name);
-	gchar *modified_signal_name;
-
+	gchar *js_signal_name = g_strdup(signal->signal_name);
 	g_assert(signal);
 
-	for (k = 0; k < strlen(my_signal_name); k++) {
-		if (my_signal_name[k] == '-')
-			my_signal_name[k] = '_';
+	for (k = 0; k < strlen(js_signal_name); k++) {
+		if (js_signal_name[k] == '-')
+			js_signal_name[k] = '_';
 	}
 
 	signal_ref = JSObjectMake(eng->context, gobject_signal_class, priv);
@@ -47,11 +47,8 @@ static void seed_add_signal_to_object(JSObjectRef object_ref,
 	priv->signal_id = signal->signal_id;
 	priv->object = obj;
 
-	modified_signal_name = g_strconcat("signal_", my_signal_name, NULL);
-
-	seed_value_set_property(object_ref, modified_signal_name, signal_ref);
-	g_free(my_signal_name);
-	g_free(modified_signal_name);
+	seed_value_set_property(object_ref, js_signal_name, signal_ref);
+	g_free(js_signal_name);
 }
 
 static void seed_add_signals_for_type(JSObjectRef object_ref,
@@ -75,22 +72,28 @@ void seed_add_signals_to_object(JSObjectRef object_ref, GObject * obj)
 	GType type;
 	GType *interfaces;
 	guint n, i;
+	JSObjectRef signals_ref;
 
 	g_assert(obj);
 
 	type = G_OBJECT_TYPE(obj);
+	
+	signals_ref = JSObjectMake(eng->context, signal_holder_class, 0);
+
 	while (type != 0) {
-		seed_add_signals_for_type(object_ref, obj, type);
+		seed_add_signals_for_type(signals_ref, obj, type);
 
 		interfaces = g_type_interfaces(type, &n);
 		for (i = 0; i < n; i++)
-			seed_add_signals_for_type(object_ref, obj,
+			seed_add_signals_for_type(signals_ref, obj,
 						  interfaces[i]);
 
 		type = g_type_parent(type);
 
 		g_free(interfaces);
 	}
+	
+	seed_value_set_property(object_ref, "signal", signals_ref);
 }
 
 void
@@ -186,5 +189,11 @@ JSClassDefinition gobject_signal_def = {
 
 JSClassDefinition *seed_get_signal_class(void)
 {
+	JSClassDefinition signal_holder = kJSClassDefinitionEmpty;
+	
+	signal_holder.className = "gobject_signals";
+	signal_holder_class = JSClassCreate(&signal_holder);
+	JSClassRetain(signal_holder_class);
+
 	return &gobject_signal_def;
 }
