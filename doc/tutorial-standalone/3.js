@@ -12,7 +12,7 @@ function quit()
     Gtk.main_quit();
 }
 
-window.signal_hide.connect(quit);
+window.signal.hide.connect(quit);
 
 function create_ui()
 {
@@ -28,12 +28,12 @@ function create_ui()
 
     var url_entry = new Gtk.Entry();
 
-    back_button.signal_clicked.connect(back, browser);
-    forward_button.signal_clicked.connect(forward, browser);
-    refresh_button.signal_clicked.connect(refresh, browser);
+    back_button.signal.clicked.connect(back, browser);
+    forward_button.signal.clicked.connect(forward, browser);
+    refresh_button.signal.clicked.connect(refresh, browser);
 
-    url_entry.signal_activate.connect(browse, browser);
-    browser.signal_load_committed.connect(url_changed, url_entry);
+    url_entry.signal.activate.connect(browse, browser);
+    browser.signal.load_committed.connect(url_changed, url_entry);
 
     toolbar.pack_start(back_button);
     toolbar.pack_start(forward_button);

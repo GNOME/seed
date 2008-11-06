@@ -195,7 +195,7 @@ Seed.print(Seed.stringify(method);
 <p>
 An array representing the arguments passed to the <code>seed</code> interpreter.
 </p>
-<div class="section"><b><i>object</i>.signal_<i>signame</i>.connect</b>(function<i>, context</i>)</div>
+<div class="section"><b><i>object</i>.signal.<i>signame</i>.connect</b>(function<i>, context</i>)</div>
 <p>
 Connects <i>function</i> to the signal, <i>signame</i>, on <i>object</i>. Any GObject signal will work. <i>context</i> is passed to the signal handler as the <code>this</code> object; if omitted, the global context is used.
 </p>
@@ -206,7 +206,7 @@ function button_clicked()
 }
 
 var button = new Gtk.Button();
-button.signal_clicked.connect(button_clicked);
+button.signal.clicked.connect(button_clicked);
 </pre>
 <div class="section"><b>Exceptions</b></div>
 <p>

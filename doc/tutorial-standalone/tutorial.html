@@ -193,7 +193,7 @@ function quit()
     Gtk.main_quit();
 }
 
-window.signal_hide.connect(quit);
+window.signal.hide.connect(quit);
 </pre>
 <p>The signal names are the same as in the <a href="http://library.gnome.org/devel/gtk/stable/">GTK documentation</a>, except using underscores instead of dashes between words. </p>
 <div class="section">Local Context with '<code>this</code>'</div>
@@ -211,7 +211,7 @@ function create_browser()
 
     ...
 
-    back_button.signal_clicked.connect(back, browser);
+    back_button.signal.clicked.connect(back, browser);
 }
 </pre>
 <p>In this case, the <code>browser</code> object is passed as the magical <code>this</code> object into the <code>back()</code> function, so <code>go_back()</code> is actually called on <code>browser</code>. The upside to this model is that, no matter how many times <code>create_browser()</code> is called, <code>back()</code> is always provided the <code>browser</code> that corresponds with its <code>back_button</code>.</p>
@@ -229,11 +229,11 @@ function create_ui()
 
     var url_entry = new Gtk.Entry();
 
-    back_button.signal_clicked.connect(back);
-    forward_button.signal_clicked.connect(forward);
-    refresh_button.signal_clicked.connect(refresh);
+    back_button.signal.clicked.connect(back);
+    forward_button.signal.clicked.connect(forward);
+    refresh_button.signal.clicked.connect(refresh);
 
-    url_entry.signal_activate.connect(browse);
+    url_entry.signal.activate.connect(browse);
 
     toolbar.pack_start(back_button);
     toolbar.pack_start(forward_button);
@@ -292,11 +292,11 @@ function create_ui()
 
     var url_entry = new Gtk.Entry();
 
-    back_button.signal_clicked.connect(back<span class="changed">, browser</span>);
-    forward_button.signal_clicked.connect(forward<span class="changed">, browser</span>);
-    refresh_button.signal_clicked.connect(refresh<span class="changed">, browser</span>);
+    back_button.signal.clicked.connect(back<span class="changed">, browser</span>);
+    forward_button.signal.clicked.connect(forward<span class="changed">, browser</span>);
+    refresh_button.signal.clicked.connect(refresh<span class="changed">, browser</span>);
 
-    url_entry.signal_activate.connect(browse<span class="changed">, browser</span>);
+    url_entry.signal.activate.connect(browse<span class="changed">, browser</span>);
 
     toolbar.pack_start(back_button);
     toolbar.pack_start(forward_button);
@@ -351,7 +351,7 @@ function refresh(button)
 </pre>
 <p>Our final modification will listen to a WebKit signal, and adjust the URL bar when you click a link. The aforementioned webkitwebview.h header file provides us with the name of the signal (load_committed). This signal is different than those we've worked with in the past, as it provides two arguments: the WebView, and a WebFrame. The distinction is important in WebKit-land, but we'll ignore it, noting only that (from the headers, again - this time, webkitwebframe.h) there is a WebFrame get_uri() function which provides the current URL of the frame. Let's first add our signal connection code. Make sure to connect to load_committed <em>after</em> you've created both the WebView and the URL entry field, as the signal is <em>on</em> the browser view, and we want to pass the URL entry field as its <code>this</code> object:</p>
 <pre>
-    browser.signal_load_committed.connect(url_changed, url_entry);
+    browser.signal.load_committed.connect(url_changed, url_entry);
 </pre>
 <p>Next, the callback, <code>url_changed</code>. Remember that we're given two arguments, and that <code>this</code> is the URL entry field:</p>
 <pre>
