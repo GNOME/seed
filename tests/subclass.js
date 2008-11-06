@@ -41,7 +41,8 @@ vbox.foreach(function(widget)
 	  {
 	      if (widget.fooed == true)
 	      {
-		      widget.set_text("Fooed");
+			widget.set_text("Fooed");
+	Seed.print("Found a fooed widget");
 	      }
 	      else
 	      {
@@ -50,4 +51,3 @@ vbox.foreach(function(widget)
 	  });
 
 w.show_all();
-Gtk.main()

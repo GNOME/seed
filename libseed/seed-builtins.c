@@ -421,6 +421,25 @@ seed_define_gtype(JSContextRef ctx,
 	};
 	gchar * new_type_name;
 	
+	if (argumentCount != 3)
+	{
+			gchar * mes = g_strdup_printf("Seed.define_gtype expected 3"
+										  " arguments, got %d",
+										  argumentCount);
+			seed_make_exception(exception, "ArgumentError", mes);
+			g_free(mes);
+			return JSValueMakeNull(eng->context);
+	}
+	
+	if (!JSValueIsObjectOfClass(eng->context, 
+								arguments[0], 
+								gobject_constructor_class))
+	{
+					seed_make_exception(exception, "ArgumentError",
+										"Seed.define_gtype expected"
+										" GObject type as first argument");
+					return JSValueMakeNull(eng->context);
+	}
 	parent_type = (GType)JSObjectGetPrivate((JSObjectRef)arguments[0]);
 	
 	parent_interfaces = g_type_interfaces(parent_type, &n_parent_interfaces);

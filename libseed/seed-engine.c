@@ -361,8 +361,6 @@ JSClassRef seed_gobject_get_class_for_gtype(GType type)
 
 	info = g_irepository_find_by_gtype(g_irepository_get_default(), type);
 
-	if (!info || !(g_base_info_get_type(info) == GI_INFO_TYPE_OBJECT))
-		return 0;
 
 	memset(&def, 0, sizeof(JSClassDefinition));
 
@@ -379,9 +377,6 @@ JSClassRef seed_gobject_get_class_for_gtype(GType type)
 			JSObjectSetPrototype(eng->context,
 					     prototype_obj, parent_prototype);
 	}
-	seed_gobject_add_methods_for_type((GIObjectInfo *) info, prototype_obj);
-	seed_gobject_add_methods_for_interfaces((GIObjectInfo *) info,
-						prototype_obj);
 
 	ref = JSClassCreate(&def);
 	JSClassRetain(ref);
@@ -390,6 +385,13 @@ JSClassRef seed_gobject_get_class_for_gtype(GType type)
 
 	g_type_set_qdata(type, qname, ref);
 	g_type_set_qdata(type, qprototype, prototype_obj);
+
+	if (!info || !(g_base_info_get_type(info) == GI_INFO_TYPE_OBJECT))
+		return 0;
+
+	seed_gobject_add_methods_for_type((GIObjectInfo *) info, prototype_obj);
+	seed_gobject_add_methods_for_interfaces((GIObjectInfo *) info,
+						prototype_obj);
 
 	return ref;
 }
