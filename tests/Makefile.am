@@ -16,6 +16,7 @@ EXTRA_DIST = \
     signal.js \
     syntax-test.js \
     type-conversion.js \
+    subclass.js \
     native-closure.js 
 
 
