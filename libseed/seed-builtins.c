@@ -308,10 +308,10 @@ seed_set_timeout(JSContextRef ctx,
 	//if (!g_main_loop_is_running(loop))
 	//      return JSValueMakeBoolean(ctx, 0);
 
-	if (argumentCount != 1)
+	if (argumentCount != 2)
 	{
 		gchar *mes =
-		    g_strdup_printf("Seed.set_timeout Expected 1 argument, "
+		    g_strdup_printf("Seed.set_timeout expected 2 arguments, "
 				    "got %d", argumentCount);
 		seed_make_exception(exception, "ArgumentError", mes);
 		g_free(mes);

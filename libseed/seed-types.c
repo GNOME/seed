@@ -976,7 +976,7 @@ JSValueRef seed_value_from_double(gdouble val, JSValueRef * exception)
 
 gchar *seed_value_to_string(JSValueRef val, JSValueRef * exception)
 {
-	JSStringRef jsstr;
+	JSStringRef jsstr = 0;
 	JSValueRef func, str;
 	gchar *buf;
 	gint length;
@@ -1005,10 +1005,10 @@ gchar *seed_value_to_string(JSValueRef val, JSValueRef * exception)
 
 		jsstr = JSValueToStringCopy(eng->context, val, NULL);
 		length = JSStringGetMaximumUTF8CStringSize(jsstr);
-
 		buf = g_malloc(length * sizeof(gchar));
 		JSStringGetUTF8CString(jsstr, buf, length);
-		JSStringRelease(jsstr);
+		if (jsstr)
+				JSStringRelease(jsstr);
 	}
 
 	return buf;
