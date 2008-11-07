@@ -2,7 +2,7 @@
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-	<title>Seed Tutorial : Standalone</title>
+	<title>Seed Runtime Documentation</title>
 	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 	<style type="text/css">
 body
@@ -213,7 +213,7 @@ button.signal.clicked.connect(button_clicked);
 Seed throws Javascript exceptions for errors in the GObject layer; our custom exception types are as follows:</p>
 <ul>
 <li><b>InvalidPropertyValue</b> - a property was set to a value out of range</li>
-<li><b>PropertyError</b> - an error occurred in GLib while trying to set a property</li>
+<li><b>PropertyError</b> - a warning occurred in GLib while trying to set a property</li>
 <li><b>NamespaceError</b> - Seed.import_namespace() was called with a nonexistant namespace or namespace version</li>
 <li><b>ArgumentError</b> - a function was called with the wrong number of arguments</li>
 <li><b>ConversionError</b> - one of the type conversion functions threw an exception </li>
@@ -243,7 +243,49 @@ catch(e)
 </ul>
 <div class="section"><b>Inheritance</b></div>
 <p>
-Seed
+JavaScript being a prototypal language, rather than a class based language, has no strict inheritance model. A plethora of documentation can be found on the internet for implementing various inheritance models inside your program. However, a clear and common use case is to subclass GObjects, and Seed provides an interface to define and implement new GTypes.
 </p>
+<b>Type Objects</b>
+To implement a new GType, an object describing the type is required.
+<pre>
+  NewType = {
+     parent: ParentTypeConstructor,
+     name: "NewTypeName",
+     class_init: function(klass, prototype)
+     {
+     },
+     instance_init: function(klass)
+     {
+     }}
+</pre>
+<p>
+Indicates that the new type derives from ParentType, i.e. Gtk.Window, with name "NewTypeName". The class_init function is called when the class comes in to existence, and allows you to add to the prototype of objects constructed by the type. The instance_init function is called on the creation of each instance, with the "this" variable set to the new instance. An example type:
+</p>
+<pre>
+HelloLabelType = {
+     parent: Gtk.Label,
+     name: "HelloLabel",
+     class_init: function(klass, prototype)
+     {
+          prototype.say_goodbye = 
+                              function()
+                              {
+                                   this.label = "Goodbye";
+                              }
+     },
+     instance_init: function(klass)
+     {
+          this.label = "Hello"; // Hello Labels Always Say Hello.
+     }};
+</pre>
+<p> Now to create a constructor, and instance of the object: </p>
+<pre>
+HelloLabel = new GType(HelloLabelType);
+label = new HelloLabel();
+box.pack_start(label);
+label.show();
+label.say_goodbye();
+</pre>
+The label inherits all the methods, signals, and properties of the Gtk.Label class and it's parents, and internally has it's own GType.
 </body>
 </html>
