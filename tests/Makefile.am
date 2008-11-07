@@ -2,9 +2,11 @@ EXTRA_DIST = \
 	argv.js \
     compare.js \
     gtype.js \
+    json.js \ 
     enum.js \
     gobject-scope.js \
     include.js \
+    printf.js \
     json-constructor.js \
     list-test.js \
     namespace-exception-test.js \
