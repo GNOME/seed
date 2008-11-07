@@ -22,19 +22,20 @@ if(test_in != ""):
 outf = open(sys.argv[1].replace("_.js",".js"),"w")
 
 def sanitize(san):
-    san = san.replace("(","\\(");
-    san = san.replace(")","\\)");
-    san = san.replace("[","\\[");
-    san = san.replace("]","\\]");
-    san = san.replace("{","\\{");
-    san = san.replace("}","\\}");
-    san = san.replace(".","\\.");
-    san = san.replace("*","\\*");
-    san = san.replace("$","\\$");
-    san = san.replace("^","\\^");
-    san = san.replace("/","\\/");
     san = san.replace("\\","\\\\");
-    san = san.replace("+","\\+");
+    san = san.replace("(","\(");
+    san = san.replace(")","\)");
+    san = san.replace("[","\[");
+    san = san.replace("]","\]");
+    san = san.replace("{","\{");
+    san = san.replace("}","\}");
+    san = san.replace(".","\.");
+    san = san.replace("*","\*");
+    san = san.replace("$","\$");
+    san = san.replace("^","\^");
+    san = san.replace("/","\/");
+    san = san.replace("+","\+");
+    san = san.replace("\n","\\n");
     return san
 
 outf.write(test_code[0])
@@ -43,7 +44,10 @@ outf.write("// STDIN:" + test_in + "\n")
 outf.write("// STDOUT:" + sanitize("".join(out.readlines()).rstrip()) + "\n")
 outf.write("// STDERR:" + sanitize("".join(out.readlines()).rstrip()) + "\n")
 
-outf.write("".join(test_code[2:]))
+if(test_in != ""):
+	outf.write("".join(test_code[2:]))
+else:
+	outf.write("".join(test_code[1:]))
 
 outf.close()
 
