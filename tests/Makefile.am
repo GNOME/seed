@@ -20,7 +20,8 @@ EXTRA_DIST = \
     syntax-test.js \
     type-conversion.js \
     gsuper.js \
-    native-closure.js 
+    native-closure.js \
+    make-tests.py
 
 
 ## File created by the gnome-build tools
