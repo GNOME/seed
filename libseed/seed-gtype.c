@@ -47,14 +47,16 @@ static void seed_handle_instance_init_closure(ffi_cif * cif,
 											  void * userdata)
 {
 		JSObjectRef function = (JSObjectRef) userdata;
-		JSValueRef jsargs[2];
+		JSValueRef jsargs;
+		JSObjectRef this_object;
 		
-		jsargs[0] = seed_value_from_object(*(GObject**)args[0], 0);
-		jsargs[1] = seed_make_struct(*(gpointer*)args[1],0);
+		jsargs = seed_make_struct(*(gpointer*)args[1],0);
+		this_object = 
+			(JSObjectRef)seed_value_from_object(*(GObject**)args[0],0);
 		
 		JSObjectCallAsFunction(eng->context,
 							   function,
-							   0, 2, jsargs, 0);
+							   this_object, 1, &jsargs, 0);
 }
 
 static ffi_closure * seed_make_class_init_closure(JSObjectRef function)

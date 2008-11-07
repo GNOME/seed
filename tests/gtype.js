@@ -15,10 +15,10 @@ HelloWindowType = {
 	prototype.message = "Prototypes!";
 	Seed.print("In klass init");
     },
-    instance_init: function(widget, klass)
+    instance_init: function(klass)
     {
-	widget.title = "Hello!";
-	Seed.print("In constructor for " + widget);
+	this.title = "Hello!";
+	Seed.print("In constructor for " + this);
     }};
 
 HelloWindow = new GType(HelloWindowType);
