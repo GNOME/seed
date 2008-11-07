@@ -29,9 +29,12 @@ static void seed_handle_class_init_closure(ffi_cif * cif,
 {
 		JSObjectRef function = (JSObjectRef) userdata;
 		JSValueRef jsargs[2];
+		GType type;
 		
+		
+		type = (GType)JSObjectGetPrivate(*(JSObjectRef*)args[1]);
 		jsargs[0] = seed_make_struct(*(gpointer*)args[0], 0);
-		jsargs[1] = seed_value_from_int(*(gint*)args[1],0);
+		jsargs[1] = seed_gobject_get_prototype_for_gtype(type);
 		
 		JSObjectCallAsFunction(eng->context,
 							   function,
@@ -131,6 +134,7 @@ static JSObjectRef seed_gtype_constructor_invoked(JSContextRef ctx,
 		ffi_closure * init_closure = 0;
 		ffi_closure * instance_init_closure = 0;
 		GTypeQuery query;
+		JSObjectRef constructor_ref;
 
 		if (argumentCount != 1)
 		{
@@ -183,10 +187,17 @@ static JSObjectRef seed_gtype_constructor_invoked(JSContextRef ctx,
 		type_info.class_init = (GClassInitFunc)init_closure;
 		type_info.instance_init = (GInstanceInitFunc)instance_init_closure;
 		
+		constructor_ref = JSObjectMake(eng->context, gobject_constructor_class,
+									   (gpointer) new_type);
+		JSValueProtect(eng->context, constructor_ref);
+
+		type_info.class_data = constructor_ref;
+
 		new_type = g_type_register_static(parent_type,
 										  new_name,
 										  &type_info, 0);
 		seed_gobject_get_class_for_gtype(new_type);
+		JSObjectSetPrivate(constructor_ref, (gpointer)new_type);
 		
 		g_free(new_name);
 		return JSObjectMake(eng->context, gobject_constructor_class, 
