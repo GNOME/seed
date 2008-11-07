@@ -4,20 +4,49 @@ Seed.import_namespace("Clutter");
 Seed.import_namespace("Gtk");
 Seed.import_namespace("GtkClutter");
 Seed.import_namespace("Pango");
+Seed.import_namespace("PangoFT2");
 
 var current_actor;
+var font_list = new Array();
 
 Gtk.init(null, null);
 GtkClutter.init(null, null);
+
+function get_font_list()
+{
+    context = new Pango.Context();
+    description = Pango.FontDescription._new();
+    description.set_family("");
+
+    fontmap = new PangoFT2.FontMap();
+    fontset = fontmap.load_fontset(context, 
+			           description, 
+			           Pango.language_get_default());
+    fontset.foreach(
+		function(fontset, font)
+		{
+		    font_list.push(font.describe().to_string().replace(" 0", ""));
+		});
+	
+	font_list = font_list.sort();
+}
 
 function update_text(entry)
 {
 	current_actor.text = entry.text;
 }
 
+function update_font()
+{
+    current_actor.font_name = font_list[properties.font_combo.get_active()] + " " + parseFloat(properties.size_entry.text,10);
+    
+    Seed.print(properties.size_entry.text);
+    Seed.print(parseFloat(properties.size_entry.text,10));
+}
+
 function add_actor()
 {
-    new pango_actor("Oh hi!", "Bitstream Vera Serif 28");
+    new pango_actor("Oh hi!", "DejaVu Serif 28");
 }
 
 function prop_editor()
@@ -28,12 +57,20 @@ function prop_editor()
 	this.new_button = new Gtk.ToolButton({stock_id:"gtk-add"});
 	this.new_button.signal.clicked.connect(add_actor);
 	
-	this.font_combo = new Gtk.ComboBox();
-	
+	this.font_combo = Gtk.ComboBox.new_text();
+	this.font_combo.signal.changed.connect(update_font);
+	for(var i in font_list)
+    {
+        this.font_combo.append_text(font_list[i]);
+    }
+    
+    this.size_entry = new Gtk.Entry();
+    this.size_entry.signal.activate.connect(update_font);
 	
 	this.hbox = new Gtk.HBox();
 	this.hbox.pack_start(this.text, true, true);
 	this.hbox.pack_start(this.font_combo, true, true);
+	this.hbox.pack_start(this.size_entry);
 	this.hbox.pack_start(this.new_button);
 }
 
@@ -56,13 +93,15 @@ function select_actor(actor)
     {
         // defaults
         properties.text.text = "";
+        properties.font_combo.set_active(font_list.indexOf("DejaVu Sans"));
         return;
     }
     
     properties.text.text = actor.text;
     var pfd = Pango.font_description_from_string(actor.get_font_name());
-    
-    Seed.print(pfd.get_family());
+
+    properties.size_entry.text = pfd.to_string().match(new RegExp("[0-9]+$"),"");
+    properties.font_combo.set_active(font_list.indexOf(pfd.to_string().replace(new RegExp(" [0-9]+$"),"")));
 }
 
 function mouse_click(actor, evt)
@@ -129,6 +168,8 @@ function ui_setup()
 
 function pangotest_init()
 {
+    get_font_list();
+    
     stage = ui_setup().get_stage();
     
     Clutter.set_motion_events_frequency(60);
@@ -148,8 +189,8 @@ function pangotest_init()
 
 function create_default_actors()
 {
-    select_actor((new pango_actor("Hello, world!", "Bitstream Vera Sans 24")).label);
-    new pango_actor("Oh hi!", "Bitstream Vera Serif 28");
+    select_actor((new pango_actor("Hello, world!", "DejaVu Sans 24")).label);
+    new pango_actor("Oh hi!", "DejaVu Serif 28");
 }
 
 pangotest_init();
