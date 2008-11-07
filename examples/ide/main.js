@@ -34,8 +34,8 @@ window.resize(700, 700);
 window.signal.hide.connect(Gtk.main_quit);
 
 var tab_view = new IDETabView();
-tab_view.create_tab("/home/hortont/seed/examples/ls.js");
-//tab_view.create_tab("/home/hortont/seed/examples/pango.js");
+tab_view.create_tab("../ls.js");
+tab_view.create_tab("../pango.js");
 
 
 init_ide_actions();

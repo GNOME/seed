@@ -24,11 +24,18 @@ IDESourceViewType = {
             if(this.filename == "")
                 return;
             
-            var buf = this.get_buffer();
+            try
+            {
+                var buf = this.get_buffer();
             
-            buf.begin_not_undoable_action();
-            buf.text = Gio.simple_read(this.filename);
-            buf.end_not_undoable_action();
+                buf.begin_not_undoable_action();
+                buf.text = Gio.simple_read(this.filename);
+                buf.end_not_undoable_action();
+            }
+            catch(e)
+            {
+                Seed.print(e.name + " " + e.message);
+            }
         }
     },
     instance_init: function(klass)

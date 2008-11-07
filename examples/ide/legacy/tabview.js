@@ -72,6 +72,6 @@ function ide_ui()
     
     tabs.set_scrollable(true);
     
-    var tab = new ide_tab("../ls.js");
+    var tab = new ide_tab("../../ls.js");
 }
 

@@ -5,18 +5,63 @@ function new_file()
 
 function open_file()
 {
+    var file_chooser = new Gtk.FileChooserDialog();
+    var file_filter = new Gtk.FileFilter();
+    file_filter.add_mime_type("text/javascript");
+    file_chooser.set_filter(file_filter);
+    file_chooser.add_button("Cancel", Gtk.ResponseType.cancel);
+    file_chooser.add_button("Open", Gtk.ResponseType.accept);
+    file_chooser.set_action(Gtk.FileChooserAction.open);
+    
+    var current_tab = tab_view.get_nth_page(tab_view.page);
+    
+    if(file_chooser.run() == Gtk.ResponseType.accept)
+    {
+        if(current_tab.source_view.filename == "")
+            current_tab.source_view.load_file(file_chooser.get_filename(), current_tab);
+        else
+            tab_view.create_tab(file_chooser.get_filename());
+    }
+    
+    file_chooser.destroy();
 }
 
 function save_file()
 {
+    var current_tab = tab_view.get_nth_page(tab_view.page);
+    
+    if(current_tab.source_view.filename == "")
+    {
+        var file_chooser = new Gtk.FileChooserDialog();
+        var file_filter = new Gtk.FileFilter();
+        file_filter.add_mime_type("text/javascript");
+        file_chooser.set_filter(file_filter);
+        file_chooser.add_button("Cancel", Gtk.ResponseType.cancel);
+        file_chooser.add_button("Save", Gtk.ResponseType.accept);
+        file_chooser.set_action(Gtk.FileChooserAction.save);
+
+        if(file_chooser.run() == Gtk.ResponseType.accept)
+        {
+            current_tab.source_view.update_filename(file_chooser.get_filename(), current_tab);
+        }
+
+        file_chooser.destroy();
+    }
+    
+    if(current_tab.source_view.filename != "")
+        Gio.simple_write(current_tab.source_view.filename, current_tab.source_view.get_buffer().text);
 }
 
 function undo()
 {
+    var current_tab = tab_view.get_nth_page(tab_view.page);
+    current_tab.source_view.get_buffer().undo();
 }
 
 function redo()
 {
+    var current_tab = tab_view.get_nth_page(tab_view.page);
+    current_tab.source_view.get_buffer().redo();
 }
 
 function execute()
