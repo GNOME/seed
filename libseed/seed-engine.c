@@ -386,20 +386,52 @@ JSClassRef seed_gobject_get_class_for_gtype(GType type)
 	g_type_set_qdata(type, qname, ref);
 	g_type_set_qdata(type, qprototype, prototype_obj);
 
-	if (!info || !(g_base_info_get_type(info) == GI_INFO_TYPE_OBJECT))
-		return 0;
-
-	seed_gobject_add_methods_for_type((GIObjectInfo *) info, prototype_obj);
-	seed_gobject_add_methods_for_interfaces((GIObjectInfo *) info,
-						prototype_obj);
+	if (info && (g_base_info_get_type(info) == GI_INFO_TYPE_OBJECT))
+	{
+			seed_gobject_add_methods_for_type((GIObjectInfo *) info,
+											  prototype_obj);
+			seed_gobject_add_methods_for_interfaces((GIObjectInfo *) info,
+													prototype_obj);
+	}
+	else
+	{
+			GType * interfaces;
+			GIFunctionInfo * function;
+			GIBaseInfo * interface;
+			gint n_functions, k, i, n;
+			
+			interfaces = g_type_interfaces(type, &n);
+			for (i = 0; i < n; i++)
+			{
+					interface = g_irepository_find_by_gtype(0,
+															interfaces[i]);
+					if (!interface)
+							break;
+					n_functions =
+				g_interface_info_get_n_methods((GIInterfaceInfo *) interface);
+					for (k = 0; k < n_functions; k++)
+					{
+							function = g_interface_info_get_method(
+									(GIInterfaceInfo *) interface, k);
+							seed_gobject_define_property_from_function_info(
+									function, prototype_obj, TRUE);
+					}
+			}
+	}
 
 	return ref;
 }
 
 JSObjectRef seed_gobject_get_prototype_for_gtype(GType type)
 {
-
-	return g_type_get_qdata(type, qprototype);
+	JSObjectRef prototype = 0;
+	while (type && !prototype)
+	{
+			prototype = g_type_get_qdata(type, qprototype);
+			type = g_type_parent(type);
+	}
+	
+	return prototype;
 }
 
 static void seed_gobject_finalize(JSObjectRef object)
