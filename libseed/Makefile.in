@@ -55,7 +55,8 @@ LTLIBRARIES = $(lib_LTLIBRARIES)
 am__DEPENDENCIES_1 =
 libseed_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
 am_libseed_la_OBJECTS = seed-closure.lo seed-builtins.lo \
-	seed-engine.lo seed-signals.lo seed-structs.lo seed-types.lo
+	seed-engine.lo seed-signals.lo seed-structs.lo seed-gtype.lo \
+	seed-types.lo
 libseed_la_OBJECTS = $(am_libseed_la_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -246,6 +247,8 @@ libseed_la_SOURCES = \
 	seed-signals.c \
 	seed-signals.h \
 	seed-structs.c \
+	seed-gtype.c \
+	seed-gtype.h \
 	seed-structs.h \
 	seed-types.c \
 	seed-types.h
@@ -337,6 +340,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/seed-builtins.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/seed-closure.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/seed-engine.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/seed-gtype.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/seed-signals.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/seed-structs.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/seed-types.Plo@am__quote@

@@ -13,6 +13,8 @@ libseed_la_SOURCES = \
 	seed-signals.c \
 	seed-signals.h \
 	seed-structs.c \
+	seed-gtype.c \
+	seed-gtype.h \
 	seed-structs.h \
 	seed-types.c \
 	seed-types.h

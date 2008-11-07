@@ -1,6 +1,6 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*- */
 /*
- * seed-private.h
+ * seed-gtype.h
  * Copyright (C) Robert Carr 2008 <carrr@rpi.edu>
  *
  * libseed is free software: you can redistribute it and/or modify it
@@ -17,32 +17,11 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _SEED_PRIVATE_H
-#define _SEED_PRIVATE_H
+#ifndef _SEED_GTYPE_H
+#define _SEED_GTYPE_H
 
-#include <JavaScriptCore/JavaScript.h>
-#include <glib.h>
-#include <glib-object.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <girepository.h>
-#include <ffi.h>
+#include "seed-private.h"
 
-typedef struct _SeedEngine SeedEngine;
-typedef JSValueRef SeedValue;
-
-struct _SeedEngine {
-	JSGlobalContextRef context;
-	JSObjectRef global;
-};
-
-#include "seed-engine.h"
-#include "seed-types.h"
-#include "seed-signals.h"
-#include "seed-builtins.h"
-#include "seed-structs.h"
-#include "seed-closure.h"
-#include "seed-gtype.h"
-
+void seed_gtype_init(void);
 
 #endif

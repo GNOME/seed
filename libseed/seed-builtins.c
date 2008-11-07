@@ -395,76 +395,6 @@ seed_closure_native(JSContextRef ctx,
 		return JSObjectMake(eng->context, seed_native_callback_class, privates);
 }
 
-JSValueRef 
-seed_define_gtype(JSContextRef ctx,
-		 JSObjectRef function,
-		 JSObjectRef this_object,
-		 size_t argumentCount,
-		 const JSValueRef arguments[], JSValueRef * exception)
-{
-	GType parent_type, instance_type;
-	GType *parent_interfaces;
-	guint n_parent_interfaces;
-	gint i;
-	GTypeQuery query;
-	gpointer gclass;
-	GTypeInfo type_info  = {
-		0,
-		(GBaseInitFunc) NULL,
-		(GBaseFinalizeFunc) NULL,
-		(GClassInitFunc) NULL,
-		(GClassFinalizeFunc) NULL,
-		NULL,
-		0,
-		0,
-		(GInstanceInitFunc) NULL
-	};
-	gchar * new_type_name;
-	
-	if (argumentCount != 3)
-	{
-			gchar * mes = g_strdup_printf("Seed.define_gtype expected 3"
-										  " arguments, got %d",
-										  argumentCount);
-			seed_make_exception(exception, "ArgumentError", mes);
-			g_free(mes);
-			return JSValueMakeNull(eng->context);
-	}
-	
-	if (!JSValueIsObjectOfClass(eng->context, 
-								arguments[0], 
-								gobject_constructor_class))
-	{
-					seed_make_exception(exception, "ArgumentError",
-										"Seed.define_gtype expected"
-										" GObject type as first argument");
-					return JSValueMakeNull(eng->context);
-	}
-	parent_type = (GType)JSObjectGetPrivate((JSObjectRef)arguments[0]);
-	
-	parent_interfaces = g_type_interfaces(parent_type, &n_parent_interfaces);
-	new_type_name = seed_value_to_string(arguments[1], exception);
-	
-	type_info.class_data = (gpointer)arguments[2];
-	
-	g_type_query(parent_type, &query);
-	type_info.class_size = query.class_size;
-	type_info.instance_size = query.instance_size;
-	
-	instance_type = g_type_register_static(parent_type,
-										   new_type_name,
-										   &type_info, 0);
-	printf("Type name: %s \n", g_type_name(instance_type));
-	
-	seed_gobject_get_class_for_gtype(instance_type);
-	
-	return JSObjectMake(eng->context, 
-						gobject_constructor_class, 
-						(gpointer)instance_type);
-}
-	
-	
-
 void seed_init_builtins(gint *argc, gchar ***argv)
 {
 	guint i;
@@ -483,8 +413,6 @@ void seed_init_builtins(gint *argc, gchar ***argv)
 	seed_create_function("closure", &seed_closure, obj);
 	seed_create_function("setTimeout", &seed_set_timeout, obj);
 	seed_create_function("closure_native", &seed_closure_native, obj);
-	seed_create_function("define_gtype", &seed_define_gtype, obj);
-
 
 	arrayObj = JSObjectMake(eng->context, NULL, NULL);
 

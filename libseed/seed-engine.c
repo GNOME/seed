@@ -859,43 +859,46 @@ static void seed_log_handler(const gchar * domain,
 
 gboolean seed_init(gint *argc, gchar ***argv)
 {
-	JSObjectRef seed_obj_ref;
-	JSStringRef defaults_script;
+		JSObjectRef seed_obj_ref;
+		JSStringRef defaults_script;
 
-	g_type_init();
-	g_log_set_handler("GLib-GObject", G_LOG_LEVEL_WARNING, seed_log_handler,
-			  0);
+		g_type_init();
+		g_log_set_handler("GLib-GObject", G_LOG_LEVEL_WARNING, seed_log_handler,
+						  0);
+		
+		qname = g_quark_from_static_string("js-type");
+		qprototype = g_quark_from_static_string("js-prototype");
+		
+		eng = (SeedEngine *) g_malloc(sizeof(SeedEngine));
+		
+		eng->context = JSGlobalContextCreateInGroup(NULL, NULL);
+		eng->global = JSContextGetGlobalObject(eng->context);
+		gobject_class = JSClassCreate(&gobject_def);
+		JSClassRetain(gobject_class);
+		gobject_method_class = JSClassCreate(&gobject_method_def);
+		JSClassRetain(gobject_method_class);
+		gobject_constructor_class = JSClassCreate(&gobject_constructor_def);
+		JSClassRetain(gobject_constructor_class);
+		gobject_signal_class = JSClassCreate(seed_get_signal_class());
+		JSClassRetain(gobject_signal_class);
+		seed_callback_class = JSClassCreate(&seed_callback_def);
+		JSClassRetain(seed_callback_class);
+		
+		g_type_set_qdata(G_TYPE_OBJECT, qname, gobject_class);
+		
+		seed_obj_ref = JSObjectMake(eng->context, NULL, NULL);
+		seed_value_set_property(eng->global, "Seed", seed_obj_ref);
+		JSValueProtect(eng->context, seed_obj_ref);
+		
+		seed_create_function("import_namespace", &seed_gi_import_namespace,
+							 seed_obj_ref);
+		seed_init_builtins(argc, argv);
+		seed_closures_init();
+		
+		seed_gtype_init();
 
-	qname = g_quark_from_static_string("js-type");
-	qprototype = g_quark_from_static_string("js-prototype");
 
-	eng = (SeedEngine *) g_malloc(sizeof(SeedEngine));
-
-	eng->context = JSGlobalContextCreateInGroup(NULL, NULL);
-	eng->global = JSContextGetGlobalObject(eng->context);
-	gobject_class = JSClassCreate(&gobject_def);
-	JSClassRetain(gobject_class);
-	gobject_method_class = JSClassCreate(&gobject_method_def);
-	JSClassRetain(gobject_method_class);
-	gobject_constructor_class = JSClassCreate(&gobject_constructor_def);
-	JSClassRetain(gobject_constructor_class);
-	gobject_signal_class = JSClassCreate(seed_get_signal_class());
-	JSClassRetain(gobject_signal_class);
-	seed_callback_class = JSClassCreate(&seed_callback_def);
-	JSClassRetain(seed_callback_class);
-
-	g_type_set_qdata(G_TYPE_OBJECT, qname, gobject_class);
-
-	seed_obj_ref = JSObjectMake(eng->context, NULL, NULL);
-	seed_value_set_property(eng->global, "Seed", seed_obj_ref);
-	JSValueProtect(eng->context, seed_obj_ref);
-
-	seed_create_function("import_namespace", &seed_gi_import_namespace,
-			     seed_obj_ref);
-	seed_init_builtins(argc, argv);
-	seed_closures_init();
-
-	defaults_script =
+		defaults_script =
 	    JSStringCreateWithUTF8CString("Seed.include(\"/usr/local/share"
 					  "/seed/Seed.js\")");
 	JSEvaluateScript(eng->context, defaults_script, NULL, NULL, 0, NULL);
