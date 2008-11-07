@@ -85,27 +85,7 @@ static SeedValue seed_wrap_object(GObject * object)
 		JSObjectSetPrototype(eng->context,
 				     (JSObjectRef) js_ref, prototype);
 	else {
-		interfaces = g_type_interfaces(G_OBJECT_TYPE(object), &n);
-		for (i = 0; i < n; i++) {
-			GIFunctionInfo *function;
-			GIBaseInfo *interface;
-			gint n_functions, k;
-
-			interface = g_irepository_find_by_gtype(0,
-								interfaces[i]);
-
-			n_functions =
-			    g_interface_info_get_n_methods((GIInterfaceInfo *)
-							   interface);
-			for (k = 0; k < n_functions; k++) {
-				function =
-				    g_interface_info_get_method((GIInterfaceInfo
-												 *) interface, k);
-
-				seed_gobject_define_property_from_function_info
-				    (function, (JSObjectRef) js_ref, TRUE);
-			}
-		}
+		g_assert_not_reached();
 	}
 
 	g_object_ref_sink(object);
