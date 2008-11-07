@@ -37,3 +37,6 @@ dist-hook:
 		fi \
 	done
 
+test:
+	cd tests ; ./run-tests.py
+
