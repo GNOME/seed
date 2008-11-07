@@ -16,7 +16,7 @@ AC_HEADER_STDC
 
 
 dnl ***************************************************************************
-dnl Internatinalization
+dnl Internationalization
 dnl ***************************************************************************
 GETTEXT_PACKAGE=seed
 AC_SUBST(GETTEXT_PACKAGE)

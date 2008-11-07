@@ -4,7 +4,7 @@ SUBDIRS = ide \
           
 examplesdir=$(datadir)/doc/seed/examples
 examples_DATA = \
-	actions.js \ 
+	actions.js \
 	calculator.js \
 	gconf.js \
 	accelgroup.js \

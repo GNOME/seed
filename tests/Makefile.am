@@ -2,7 +2,7 @@ EXTRA_DIST = \
 	argv.js \
     compare.js \
     gtype.js \
-    json.js \ 
+    json.js \
     enum.js \
     gobject-scope.js \
     include.js \
