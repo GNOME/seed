@@ -332,7 +332,7 @@ SeedNativeClosure * seed_make_native_closure(GICallableInfo * info,
 	
 	num_args = g_callable_info_get_n_args(info);
 	return_type = g_callable_info_get_return_type(info);
-	arg_types = (ffi_type **)g_new0(ffi_type, num_args+1);
+	arg_types = (ffi_type **)g_new0(ffi_type *, num_args+1);
 	cif = g_new0(ffi_cif, 1);
 	
 	privates = g_new0(SeedNativeClosure, 1);
