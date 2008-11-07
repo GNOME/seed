@@ -3,7 +3,6 @@ Seed.import_namespace("cairo");
 Seed.import_namespace("Gdk");
 Seed.import_namespace("Gtk");
 Seed.import_namespace("Poppler");
-Seed.import_namespace("PopplerGlib");
 
 Gtk.init(null, null);
 
@@ -17,29 +16,38 @@ function draw_document()
 {
     if (current_page != null)
     {
-	drawing_area.window.clear();
+	    drawing_area.window.clear();
         cairo = Gdk.cairo_create(drawing_area.window);
         current_page.render(cairo);
     }
-	
+    
     return true;
 }
+
 function set_page(num)
 {
+    if(num >= num_pages)
+    {
+        set_page(num_pages - 1);
+        return;
+    }
+       
     current_page = current_document.get_page(num);
     draw_document();
     
     //Get rid of precision.
     entry.text = Seed.sprintf("%d",num+1);
     page_num = num;
+    
     if (page_num == num_pages-1)
-	next_button.sensitive = false;
+	    next_button.sensitive = false;
     else
-	next_button.sensitive = true;
+	    next_button.sensitive = true;
+    
     if (page_num == 0)
-	previous_button.sensitive = false;
+	    previous_button.sensitive = false;
     else
-	previous_button.sensitive = true;
+	    previous_button.sensitive = true;
 }
 
 function open_file(sv)
@@ -54,16 +62,21 @@ function open_file(sv)
     
     if(file_chooser.run() == Gtk.ResponseType.accept)
     {
-	// Poppler.Document will not take a uri as a construction property,
-	// use this:
-	current_document = 
-	    Poppler.Document.new_from_file(file_chooser.get_uri());
-	set_page(0);
-	num_pages = current_document.get_n_pages();
-	page_label.label = " of " + num_pages;
-	draw_document();
-	if (num_pages > 1)
-	    next_button.sensitive = true;
+	    // Poppler.Document will not take a uri as a construction property,
+	    // use this:
+	    current_document = 
+	        Poppler.Document.new_from_file(file_chooser.get_uri());
+	    num_pages = current_document.get_n_pages();
+	    set_page(0);
+	    
+	    if(num_pages == 1)
+	        next_button.sensitive = previous_button.sensitive = false;
+	    
+	    page_label.label = " of " + num_pages;
+	    draw_document();
+	
+	    if (num_pages > 1)
+	        next_button.sensitive = true;
     }
     
     file_chooser.destroy();
@@ -82,7 +95,7 @@ function make_toolbar()
     entry = new Gtk.Entry({text:"0"});
     entry_item.add(entry);
     entry_item.width_request = 40;
-    entry.signal.activate.connect(function(){set_page(parseInt(entry.text)-1)});
+    entry.signal.activate.connect(function(){set_page(parseInt(entry.text, 10)-1)});
     var label_item = new Gtk.ToolItem();
     page_label = new Gtk.Label({label: " of 0"});
     label_item.add(page_label);
