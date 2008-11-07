@@ -1057,7 +1057,7 @@ GObject *seed_value_to_object(JSValueRef val, JSValueRef * exception)
 			JSValueRef object;
 			if(!JSValueIsObject(eng->context, val))
 					return NULL;
-			object = seed_value_get_property(val, "gobject_parent");
+			object = seed_value_get_property(val, "gsuper");
 			if (val && object && JSValueIsObject(eng->context, object));
 			{
 					JSValueRef ref_data = 0;

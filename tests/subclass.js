@@ -9,20 +9,20 @@ Gtk.init(null, null);
 
 function HelloLabel()
 {
-    this.gobject_parent = new Gtk.Label({label: "Hello World"});
+    this.gsuper = new Gtk.Label({label: "Hello World"});
 }
 HelloLabel.prototype = Seed.prototype(Gtk.Label);
 
 function FooedHelloLabel()
 {
-    this.gobject_parent = new HelloLabel();
+    this.gsuper = new HelloLabel();
     this.fooed = true;
 }
 FooedHelloLabel.prototype = HelloLabel.prototype;
 
 function NotALabel()
 {
-    this.gobject_parent = 3;
+    this.gsuper = 3;
 }
 
 var w = new Gtk.Window();

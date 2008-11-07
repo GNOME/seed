@@ -215,7 +215,9 @@ Seed throws Javascript exceptions for errors in the GObject layer; our custom ex
 <li><b>InvalidPropertyValue</b> - a property was set to a value out of range</li>
 <li><b>PropertyError</b> - an error occurred in GLib while trying to set a property</li>
 <li><b>NamespaceError</b> - Seed.import_namespace() was called with a nonexistant namespace or namespace version</li>
-<li><b>ArgumentError</b> - a function was called with the wrong number/type of arguments</li>
+<li><b>ArgumentError</b> - a function was called with the wrong number of arguments</li>
+<li><b>ConversionError</b> - one of the type conversion functions threw an exception </li>
+<li><b>TypeError</b> - a required argument was of the wrong type </li>
 <li><b>SyntaxError</b> - a syntax error was thrown from JavaScriptCore</li>
 <li><b>ParseError</b> - a parsing error was thrown from JavaScriptCore (make sure you close all of your brackets!)</li>
 </ul>
@@ -239,5 +241,9 @@ catch(e)
 <li><b>line</b> - the line on which the exception took place</li>
 <li><b>sourceURL</b> - the source file, if any, in which the exception took place</li>
 </ul>
+<div class="section"><b>Inheritance</b></div>
+<p>
+Seed
+</p>
 </body>
 </html>
