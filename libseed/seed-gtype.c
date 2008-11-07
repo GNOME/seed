@@ -162,11 +162,13 @@ static JSObjectRef seed_gtype_constructor_invoked(JSContextRef ctx,
 									" GObject type for parent");
 		}
 		if (!JSValueIsNull(eng->context, class_init) &&
+			JSValueIsObject(eng->context, class_init) &&
 			JSObjectIsFunction(eng->context, (JSObjectRef)class_init))
 		{
 				init_closure = seed_make_class_init_closure((JSObjectRef)class_init);
 		}
 		if (!JSValueIsNull(eng->context, instance_init) &&
+			JSValueIsObject(eng->context, instance_init) &&
 			JSObjectIsFunction(eng->context, (JSObjectRef)instance_init))
 		{
 				instance_init_closure = 
@@ -185,8 +187,6 @@ static JSObjectRef seed_gtype_constructor_invoked(JSContextRef ctx,
 										  new_name,
 										  &type_info, 0);
 		seed_gobject_get_class_for_gtype(new_type);
-		printf("Type_name: %s \n", g_type_name(new_type));
-		
 		
 		g_free(new_name);
 		return JSObjectMake(eng->context, gobject_constructor_class, 
