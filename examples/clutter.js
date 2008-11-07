@@ -23,9 +23,23 @@ function alpha_func(alpha)
 	    timeline = alpha.get_timeline();
 	    frame = timeline.get_current_frame();
 	    n_frames = timeline.num_frames;
+	    fps = timeline.fps;
+	    duration = n_frames/fps;
+	    time = frame/fps;
 	    
-	    return (frame * Clutter.ALPHA_MAX_ALPHA)/n_frames;
-    }   
+	    if ((time/=duration) < (1/2.75))
+		return Clutter.ALPHA_MAX_ALPHA*(7.5625*time*time);
+	    else if (time < (2/2.75))
+		return Clutter.ALPHA_MAX_ALPHA*(7.5625 * 
+						(time-=(1.5/2.75))*time+.75);
+	    else if (time < (2.5/2.75))
+		return Clutter.ALPHA_MAX_ALPHA*(7.5625 *
+						(time-=(2.25/2.75))*time+.9375);
+	    else
+		return Clutter.ALPHA_MAX_ALPHA*(7.5625 * (time-=
+							  (2.625/2.75))*time+.984375);
+	    
+    }
     catch (e)
     {
 	    Seed.print(e.message);
@@ -92,9 +106,14 @@ timeline.signal.completed.connect(
 		text.anchor_y = text.height/2;
 		
 		text.x = stage.width/2;
-		text.y = stage.height/2;
+		//text.y = stage.height/2;
+		text.y = -text.height;
+		Clutter.effect_move(effect,
+				    text,
+				    text.x,
+				    stage.height/2);
 		
-		Clutter.effect_fade(effect,text,0);
+			    //		Clutter.effect_fade(effect,text,0);
 		for (i in rectangles)
 		{
 			Clutter.effect_move(effect, rectangles[i], 
