@@ -10,7 +10,7 @@ SUBDIRS = po \
 	tests
 	
 
-seeddocdir = ${prefix}/doc/seed
+seeddocdir = ${prefix}/share/doc/seed
 seeddoc_DATA = \
 	README\
 	COPYING\
