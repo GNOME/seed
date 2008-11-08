@@ -17,7 +17,7 @@ new_action = new Gtk.Action({name:"new", label: "New",
 			      tooltip:"New File", stock_id:Gtk.STOCK_NEW});
 new_action.set_accel_group(accels);
 actions.add_action_with_accel(new_action);
-//Could pass string, but this makes it use default accelerator for gtk-new
+//Could pass string, but this makes it use default accelerator for Gtk.STOCK_NEW
 new_action.connect_accelerator();
 new_action.signal.activate.connect(function(){Seed.print("New file")});
 

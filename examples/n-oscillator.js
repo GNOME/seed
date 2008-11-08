@@ -83,8 +83,9 @@ window.signal.hide.connect(end_program);
 window.resize(600,300);
 var hbox = new Gtk.HBox();
 
-var os1 = new oscillator(500);
-var os2 = new oscillator(700);
+var os1 = new oscillator(523.25);
+var os2 = new oscillator(659.26);
+var os3 = new oscillator(783.99);
 
 function add_oscillator(button)
 {
@@ -98,6 +99,7 @@ window.add(hbox);
 hbox.pack_start(button, true, true, 10);
 hbox.pack_start(os1.vbox, true, true, 10);
 hbox.pack_start(os2.vbox, true, true, 10);
+hbox.pack_start(os3.vbox, true, true, 10);
 window.show_all();
 
 

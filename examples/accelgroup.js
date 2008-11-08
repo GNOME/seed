@@ -14,6 +14,7 @@ w.add_accel_group(group);
 
 label = new Gtk.Label({label: "Press Q to quit"});
 w.add(label);
+w.width_request = w.height_request = 300;
 w.show_all();
 
 Gtk.main();

@@ -408,6 +408,24 @@ seed_closure_native(JSContextRef ctx,
     return JSObjectMake(eng->context, seed_native_callback_class, privates);
 }
 
+JSValueRef
+seed_quit(JSContextRef ctx,
+		    JSObjectRef function,
+		    JSObjectRef this_object,
+		    size_t argumentCount,
+		    const JSValueRef arguments[], JSValueRef * exception)
+{
+	if (argumentCount != 0)
+	{
+	    if (!seed_value_to_int(arguments[0], NULL))
+	     	exit(EXIT_SUCCESS);
+	    else
+		exit(EXIT_FAILURE);
+	}
+
+	exit(EXIT_SUCCESS);
+}
+
 void seed_init_builtins(gint * argc, gchar *** argv)
 {
     guint i;
@@ -426,6 +444,7 @@ void seed_init_builtins(gint * argc, gchar *** argv)
     seed_create_function("closure", &seed_closure, obj);
     seed_create_function("setTimeout", &seed_set_timeout, obj);
     seed_create_function("closure_native", &seed_closure_native, obj);
+    seed_create_function("quit", &seed_quit, obj);
 
     arrayObj = JSObjectMake(eng->context, NULL, NULL);
 
