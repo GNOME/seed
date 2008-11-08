@@ -33,14 +33,12 @@ var window = new Gtk.Window();
 window.resize(700, 700);
 window.signal.hide.connect(Gtk.main_quit);
 
-var tab_view = new IDETabView();
-tab_view.create_tab("../ls.js");
-tab_view.create_tab("../pango.js");
-
-
 init_ide_actions();
 
 var toolbar = new IDEToolbar();
+
+var tab_view = new IDETabView();
+tab_view.create_tab("../ls.js");
 
 var vbox = new Gtk.VBox();
 vbox.pack_start(toolbar);

@@ -18,8 +18,6 @@ IDESourceViewType = {
         prototype.load_file = function(new_filename, tab)
         {
             this.update_filename(new_filename, tab);
-
-            // update the window!
             
             if(this.filename == "")
                 return;
@@ -37,6 +35,44 @@ IDESourceViewType = {
                 Seed.print(e.name + " " + e.message);
             }
         }
+        
+        prototype.exception_clear = function ()
+        {
+            var begin = Gtk.TextIter._new();
+            var end = Gtk.TextIter._new();
+            
+            this.get_buffer().get_start_iter(begin);
+            this.get_buffer().get_end_iter(end);
+            
+            this.get_buffer().remove_source_marks(begin, end, "exception");
+        }
+        
+        prototype.exception_show = function (e)
+        {
+            var itr = Gtk.TextIter._new();
+            this.get_buffer().get_iter_at_line(itr, e.line - 1);
+            this.exception_clear();            
+            this.get_buffer().create_source_mark("error!!", "exception", itr);
+        }
+        
+        prototype.text_changed = function(sbuf)
+        {
+            toolbar.update_undo_state(this);
+            
+            var text = sbuf.text.replace(new RegExp("#!.*"), "");
+    
+            try
+            {
+                Seed.check_syntax(text);
+            }
+            catch(e)
+            {
+                this.exception_show(e);
+                return;
+            }
+            
+            this.exception_clear();
+        }
     },
     instance_init: function(klass)
     {
@@ -52,8 +88,8 @@ IDESourceViewType = {
         
         this.modify_font(Pango.font_description_from_string("monospace 10"));
         
-        //var epb = new Gtk.Image({"file": "./exception.svg"});
-        //this.source_view.set_mark_category_pixbuf("exception", epb.pixbuf);
+        var epb = new Gtk.Image({"file": "./exception.svg"});
+        this.set_mark_category_pixbuf("exception", epb.pixbuf);
         
         var lang_manager = new GtkSource.SourceLanguageManager();
         var js_lang = lang_manager.get_language("js");
@@ -61,6 +97,7 @@ IDESourceViewType = {
         var buf = new GtkSource.SourceBuffer({language: js_lang});
 
         this.set_buffer(buf);
+        buf.signal.changed.connect(this.text_changed, this);
         
         var gconf_client = GConf.client_get_default();
         var source_style_mgr = GtkSource.style_scheme_manager_get_default();

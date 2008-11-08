@@ -30,7 +30,9 @@ IDETabViewType = {
         
         prototype.update_page = function (notebook, page, n)
         {
-            update_window(notebook.get_nth_page(n).source_view.filename);
+            var my_page = notebook.get_nth_page(n);
+            update_window(my_page.source_view.filename);
+            toolbar.update_undo_state(my_page.source_view);
         }
     },
     instance_init: function(klass)

@@ -3,6 +3,11 @@ IDEToolbarType = {
     name: "IDEToolbar",
     class_init: function(klass, prototype)
     {
+        prototype.update_undo_state = function (source_view)
+        {
+            toolbar.undo_button.sensitive = source_view.get_buffer().can_undo;
+            toolbar.redo_button.sensitive = source_view.get_buffer().can_redo;
+        }
     },
     instance_init: function(klass)
     {

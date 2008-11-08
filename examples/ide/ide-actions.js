@@ -43,6 +43,7 @@ function save_file()
         if(file_chooser.run() == Gtk.ResponseType.accept)
         {
             current_tab.source_view.update_filename(file_chooser.get_filename(), current_tab);
+            update_window(file_chooser.get_filename());
         }
 
         file_chooser.destroy();
@@ -56,16 +57,36 @@ function undo()
 {
     var current_tab = tab_view.get_nth_page(tab_view.page);
     current_tab.source_view.get_buffer().undo();
+    toolbar.update_undo_state(current_tab.source_view);
 }
 
 function redo()
 {
     var current_tab = tab_view.get_nth_page(tab_view.page);
     current_tab.source_view.get_buffer().redo();
+    toolbar.update_undo_state(current_tab.source_view);
 }
 
 function execute()
 {
+    var current_tab = tab_view.get_nth_page(tab_view.page);
+    
+    if(current_tab.source_view.filename == "")
+        save_file();
+    
+    Gio.simple_write(current_tab.source_view.filename, current_tab.source_view.get_buffer().text);
+    
+    current_tab.terminal.reset(true, true);
+    current_tab.terminal.fork_command("/bin/dash");
+    
+    var command = "clear ; env seed \"" + current_tab.source_view.filename + "\" ; sleep 1d\n";
+    
+    current_tab.terminal.feed_child(command, command.length);
+}
+
+function close_tab()
+{
+    tab_view.close_tab();
 }
 
 function init_ide_actions()
@@ -112,4 +133,11 @@ function init_ide_actions()
     actions.add_action_with_accel(execute_action, "<Control>r");
     execute_action.connect_accelerator();
     execute_action.signal.activate.connect(execute);
+    
+    var close_tab_action = new Gtk.Action({name:"close", label:"Close",
+                                          tooltip:"Close Tab"});
+    close_tab_action.set_accel_group(accels);
+    actions.add_action_with_accel(close_tab_action, "<Control>w");
+    close_tab_action.connect_accelerator();
+    close_tab_action.signal.activate.connect(close_tab);
 }
