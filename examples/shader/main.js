@@ -10,6 +10,7 @@ Gtk.init(null, null);
 GtkClutter.init(null, null);
 
 var window = new Gtk.Window();
+window.signal.hide.connect(Gtk.main_quit);
 var gtkstage = new GtkClutter.Embed();
 var stage = gtkstage.get_stage();
 var texture = new Clutter.Texture({filename:"bob.jpg"});

@@ -19,6 +19,7 @@ packing = [
 	];
 
 window = new Gtk.Window();
+window.signal.hide.connect(Gtk.main_quit);
 vbox = new Gtk.VBox();
 
 vbox.pack(packing);

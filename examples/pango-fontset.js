@@ -15,5 +15,5 @@ fontset.foreach(
 		function(fontset, font)
 		{
 		    description = font.describe();
-		    Seed.print(description.get_family());
+		    Seed.print(description.to_string());
 		});

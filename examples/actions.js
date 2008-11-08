@@ -3,6 +3,7 @@ Seed.import_namespace("Gtk");
 Gtk.init(null, null);
 
 window = new Gtk.Window();
+window.signal.hide.connect(Gtk.main_quit);
 toolbar = new Gtk.Toolbar();
 vbox = new Gtk.VBox();
 window.add(vbox);

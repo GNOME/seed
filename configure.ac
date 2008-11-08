@@ -24,7 +24,7 @@ IT_PROG_INTLTOOL([0.35.0])
 AM_PROG_LIBTOOL
 
 dnl libffi
-PKG_CHECK_MODULES(FFI, libffi, have_ffi_pkgconfig=yes, have_ffi_pkgconfig=no)
+PKG_CHECK_MODULES(libffi, libffi, have_ffi_pkgconfig=yes, have_ffi_pkgconfig=no)
 
 if test x"$have_ffi_pkgconfig" = xno ; then
   AC_MSG_CHECKING(for ffi.h)
@@ -64,11 +64,12 @@ AC_CHECK_LIB(readline, readline,
     AC_DEFINE(HAVE_LIBREADLINE, 1, [have readline]),
     AC_MSG_ERROR([readline not found]))
 
-PKG_CHECK_MODULES(LIBSEED, gobject-introspection-1.0 webkit-1.0)
 PKG_CHECK_MODULES(SEED, gobject-introspection-1.0 webkit-1.0)
+PKG_CHECK_MODULES(LIBSEED, gobject-introspection-1.0 webkit-1.0)
 
 AC_CONFIG_FILES([
 seed.pc])
+
 AC_OUTPUT([
 Makefile
 libseed/Makefile

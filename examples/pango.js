@@ -39,9 +39,6 @@ function update_text(entry)
 function update_font()
 {
     current_actor.font_name = font_list[properties.font_combo.get_active()] + " " + parseFloat(properties.size_entry.text,10);
-    
-    Seed.print(properties.size_entry.text);
-    Seed.print(parseFloat(properties.size_entry.text,10));
 }
 
 function add_actor()
@@ -152,6 +149,7 @@ function pulser()
 function ui_setup()
 {
     var window = new Gtk.Window();
+    window.signal.hide.connect(Gtk.main_quit);
     var gtkstage = new GtkClutter.Embed();
 
     properties = new prop_editor();
