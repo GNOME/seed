@@ -20,7 +20,7 @@
 
 #include <glib.h>
 #include <glib-object.h>
-#include "libseed/seed.h"
+#include "../libseed/seed.h"
 #include "readline/readline.h"
 #include <stdlib.h>
 #include <girepository.h>
