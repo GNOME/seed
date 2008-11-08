@@ -31,11 +31,11 @@ extern JSClassRef seed_callback_class;
 extern SeedEngine *eng;
 
 typedef struct _SeedScript {
-	JSStringRef script;
-	JSValueRef exception;
+    JSStringRef script;
+    JSValueRef exception;
 
-	JSStringRef source_url;
-	gint line_number;
+    JSStringRef source_url;
+    gint line_number;
 } SeedScript;
 
 JSObjectRef seed_gobject_get_prototype_for_gtype(GType type);

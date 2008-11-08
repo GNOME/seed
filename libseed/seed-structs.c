@@ -24,82 +24,84 @@
 JSClassRef seed_struct_class = 0;
 
 JSClassDefinition gobject_struct_def = {
-	0,			/* Version, always 0 */
-	0,
-	"seed_struct",		/* Class Name */
-	NULL,			/* Parent Class */
-	NULL,			/* Static Values */
-	NULL,			/* Static Functions */
-	NULL,
-	NULL,
-	NULL,			/* Has Property */
-	0,
-	NULL,			/* Set Property */
-	NULL,			/* Delete Property */
-	NULL,			/* Get Property Names */
-	NULL,			/* Call As Function */
-	NULL,			/* Call As Constructor */
-	NULL,			/* Has Instance */
-	NULL			/* Convert To Type */
+    0,				/* Version, always 0 */
+    0,
+    "seed_struct",		/* Class Name */
+    NULL,			/* Parent Class */
+    NULL,			/* Static Values */
+    NULL,			/* Static Functions */
+    NULL,
+    NULL,
+    NULL,			/* Has Property */
+    0,
+    NULL,			/* Set Property */
+    NULL,			/* Delete Property */
+    NULL,			/* Get Property Names */
+    NULL,			/* Call As Function */
+    NULL,			/* Call As Constructor */
+    NULL,			/* Has Instance */
+    NULL			/* Convert To Type */
 };
 
 gpointer seed_struct_get_pointer(JSValueRef strukt)
 {
-	if (JSValueIsObjectOfClass(eng->context, strukt, seed_struct_class))
-		return JSObjectGetPrivate((JSObjectRef) strukt);
-	return 0;
+    if (JSValueIsObjectOfClass(eng->context, strukt, seed_struct_class))
+	return JSObjectGetPrivate((JSObjectRef) strukt);
+    return 0;
 }
 
 JSObjectRef seed_make_union(gpointer younion, GIBaseInfo * info)
 {
-	JSObjectRef object;
-	gint i, n_methods;
+    JSObjectRef object;
+    gint i, n_methods;
 
-	if (!seed_struct_class)
-		seed_struct_class = JSClassCreate(&gobject_struct_def);
+    if (!seed_struct_class)
+	seed_struct_class = JSClassCreate(&gobject_struct_def);
 
-	object = JSObjectMake(eng->context, seed_struct_class, younion);
+    object = JSObjectMake(eng->context, seed_struct_class, younion);
 
-	if (info)
+    if (info)
+    {
+	n_methods = g_union_info_get_n_methods((GIUnionInfo *) info);
+	for (i = 0; i < n_methods; i++)
 	{
-		n_methods = g_union_info_get_n_methods((GIUnionInfo *) info);
-		for (i = 0; i < n_methods; i++)
-		{
-			GIFunctionInfo *finfo;
+	    GIFunctionInfo *finfo;
 
-			finfo =
-			    g_union_info_get_method((GIUnionInfo *) info, i);
+	    finfo = g_union_info_get_method((GIUnionInfo *) info, i);
 
-			seed_gobject_define_property_from_function_info((GIFunctionInfo *) finfo, object, TRUE);
-		}
+	    seed_gobject_define_property_from_function_info((GIFunctionInfo *)
+							    finfo, object,
+							    TRUE);
 	}
+    }
 
-	return object;
+    return object;
 }
 
 JSObjectRef seed_make_struct(gpointer strukt, GIBaseInfo * info)
 {
-	JSObjectRef object;
-	gint i, n_methods;
+    JSObjectRef object;
+    gint i, n_methods;
 
-	if (!seed_struct_class)
-		seed_struct_class = JSClassCreate(&gobject_struct_def);
+    if (!seed_struct_class)
+	seed_struct_class = JSClassCreate(&gobject_struct_def);
 
-	object = JSObjectMake(eng->context, seed_struct_class, strukt);
+    object = JSObjectMake(eng->context, seed_struct_class, strukt);
 
-	if (info)
+    if (info)
+    {
+	n_methods = g_struct_info_get_n_methods((GIStructInfo *) info);
+	for (i = 0; i < n_methods; i++)
 	{
-		n_methods = g_struct_info_get_n_methods((GIStructInfo *) info);
-		for (i = 0; i < n_methods; i++)
-		{
-			GIFunctionInfo *finfo;
+	    GIFunctionInfo *finfo;
 
-			finfo =
-			    g_struct_info_get_method((GIStructInfo *) info, i);
+	    finfo = g_struct_info_get_method((GIStructInfo *) info, i);
 
-			seed_gobject_define_property_from_function_info((GIFunctionInfo *) finfo, object, TRUE);
-		}
+	    seed_gobject_define_property_from_function_info((GIFunctionInfo *)
+							    finfo, object,
+							    TRUE);
 	}
+    }
 
-	return object;
+    return object;
 }
