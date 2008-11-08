@@ -268,28 +268,31 @@ seed_gobject_method_invoked(JSContextRef ctx,
 			    seed_gi_argument_make_js(&retval, type_info, exception);
 		g_base_info_unref((GIBaseInfo *) type_info);
 	} else {
-			GString * string = g_string_new(g_quark_to_string(error->domain));
-		int w;
-		
-		*(string->str) = g_unichar_toupper(*(string->str));
-		for (w = 0; w < string->len; w++)
-		{
-				if (*(string->str+w) == '-')
-				{
-						*(string->str+w+1) = 
-								g_unichar_toupper(*(string->str+w+1));
-						g_string_erase(string, w,1);
-				}
-				else if (!strcmp(string->str+w-1, "Quark"))
-						g_string_truncate(string, w-1);
+			const gchar * domain = g_quark_to_string(error->domain);
+			GString * string = g_string_new(domain);
+			int w;
+			
+			*(string->str) = g_unichar_toupper(*(string->str));
+			for (w = 0; w < string->len; w++)
+			{
+					if (*(string->str+w) == '-')
+					{
+							*(string->str+w+1) = 
+									g_unichar_toupper(*(string->str+w+1));
+							g_string_erase(string, w,1);
+					}
+					else if (!strcmp(string->str+w-1, "Quark"))
+							g_string_truncate(string, w-1);
+					
+			}
+			seed_make_exception(exception, string->str,
+								error->message);
 
-		}
-		seed_make_exception(exception, string->str,
-							error->message);
-		g_free(in_args);
-		g_free(out_args);
-		
-		return JSValueMakeNull(eng->context);
+			g_string_free(string, TRUE);
+			g_free(in_args);
+			g_free(out_args);
+			
+			return JSValueMakeNull(eng->context);
 	}
 
 	g_free(in_args);
