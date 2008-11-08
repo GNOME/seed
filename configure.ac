@@ -82,5 +82,5 @@ doc/tutorial-standalone/Makefile
 examples/Makefile
 examples/ide/Makefile
 examples/lightsoff/Makefile
-examples/shader/Makefile
+examples/clutter-shader/Makefile
 ])
