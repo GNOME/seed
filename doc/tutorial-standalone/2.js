@@ -1,4 +1,4 @@
-#!/usr/local/bin/seed
+#!/usr/bin/env seed
 
 Seed.import_namespace("Gtk");
 Seed.import_namespace("WebKit");

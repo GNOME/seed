@@ -114,7 +114,7 @@ function execute()
     this.terminal.reset(true, true);
     this.terminal.fork_command("/bin/dash");
     
-    var command = "clear ; /usr/local/bin/seed \"" + this.filename + "\" ; sleep 1d\n";
+    var command = "clear ; /usr/bin/env seed \"" + this.filename + "\" ; sleep 1d\n";
     
     this.terminal.feed_child(command, command.length);
 }

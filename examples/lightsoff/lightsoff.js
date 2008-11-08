@@ -1,4 +1,4 @@
-#!/usr/local/bin/seed
+#!/usr/bin/env seed
 Seed.import_namespace("Gtk");
 
 image_off = new Gtk.Image({"file": "./tim-off.svg"});

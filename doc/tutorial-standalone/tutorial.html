@@ -78,7 +78,7 @@ span.changed
 <div class="section">Beginning Seed</div>
 <p>It makes sense to start our exploration with a program you're probably quite familiar with:</p>
 <pre>
-#!/usr/local/bin/seed
+#!/usr/bin/env seed
 
 Seed.print("Hello, world!");
 </pre>
@@ -86,7 +86,7 @@ Seed.print("Hello, world!");
 <pre>
 Hello, world!
 </pre>
-<p>In order to make the file executable, include (<code>#!/usr/local/bin/seed</code>) at the top of every Seed program you write. This is known as the <em>shebang line</em>, and tells your shell where to find the <code>seed</code> interpreter; I'm only going to include it when listing a whole file, from now on.</p>
+<p>In order to make the file executable, include (<code>#!/usr/bin/env seed</code>) at the top of every Seed program you write. This is known as the <em>shebang line</em>, and tells your shell where to find the <code>seed</code> interpreter; I'm only going to include it when listing a whole file, from now on.</p>
 <p>Variables in Javascript are not given any <em>type</em>, and conversion between different kinds of values is automatic and painless. For example, you can:</p>
 <ul>
 <li>Add two strings <code>("Hello, " + "World!")</code> turns into <code>"Hello, World!"</code></li>
@@ -140,7 +140,7 @@ catch(e)
 <p>Combining <code>readline</code>, <code>eval</code>, exceptions, and <code>print</code>, we can write a simple shell, allowing interactive use of Seed. This shell is included in the Seed distribution, in <code>examples/repl.js</code>. Looking at the source, you'll note that it takes very little code to implement a shell:</p>
 <div class="filename">examples/repl.js</div>
 <pre>
-#!/usr/local/bin/seed
+#!/usr/bin/env seed
 
 while(1)
 {
@@ -161,7 +161,7 @@ while(1)
 <p>Once the library has been imported, all of its functions are available on a global object with the same name as the library. For example, if we <code>Seed.import_namespace("Gtk")</code>, all of the imported functions are available on the Gtk object: <code><a href="http://library.gnome.org/devel/gtk/2.14/gtk-General.html#gtk-init">Gtk.init()</a></code>, etc.</p>
 <p>Let's start off the development of our browser by getting Gtk working. It takes very little to get a window displayed with Seed:</p>
 <pre>
-#!/usr/local/bin/seed
+#!/usr/bin/env seed
 
 Seed.import_namespace("Gtk");
 Gtk.init(null, null);
