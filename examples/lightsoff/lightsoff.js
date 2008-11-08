@@ -10,6 +10,49 @@ var wincount = 0;
 var moves = 0;
 var timeout = 0;
 
+Gtk.init(null, null);
+
+var window = new Gtk.Window({"title": "Lights Off", "resizable" : false});
+var table = new Gtk.Table();
+var buttons;
+window.signal.hide.connect(Gtk.main_quit);
+
+var vbox = new Gtk.VBox();
+
+vbox.pack_start(create_menu());
+Seed.print("Initial size: " + size);
+vbox.pack_start(table);
+
+window.add(vbox);
+
+create_board();
+window.show_all();
+initialize_game();
+
+Gtk.main();
+
+function change_size()
+{
+	destroy_board();
+	size = this.size;
+	create_board();
+	initialize_game();	
+	window.show_all();
+	return;
+}
+
+function destroy_board()
+{
+	for ( var i = 0; i < size; ++i )
+	{
+		for ( var j = 0; j < size; ++j )
+		{
+			buttons[i][j].destroy();
+		}
+	}
+	return;
+}
+
 function create_board_size_menu()
 {
     var menu = new Gtk.Menu();
@@ -21,8 +64,38 @@ function create_board_size_menu()
     menu.append(size_5);
     menu.append(size_7);
     menu.append(size_9);
-    
+
+    size_5.signal.activate.connect(change_size, {size: 5});
+    size_7.signal.activate.connect(change_size, {size: 7});
+    size_9.signal.activate.connect(change_size, {size: 9});
     return menu;
+}
+
+function create_board()
+{
+	table.resize(size,size);
+	buttons = new Array(size);
+
+	for (i = 0; i < size; ++i)
+	{
+		buttons[i] = new Array(size);
+		for (j = 0; j < size; ++j)
+		{
+			buttons[i][j] = new Gtk.Button();
+	
+			buttons[i][j].x = i;
+			buttons[i][j].y = j;
+
+			buttons[i][j].set_relief(Gtk.ReliefStyle.none);
+			buttons[i][j].can_focus = false;
+		
+			buttons[i][j].signal.clicked.connect(button_clicked,
+							     buttons[i][j]);
+			table.attach_defaults(buttons[i][j], j, j+1, i, i+1);
+		}
+	}
+    
+	return;
 }
 
 function create_menu()
@@ -51,35 +124,6 @@ function create_menu()
     return menu;
 }
 
-function create_board()
-{
-	var table = new Gtk.Table();
-	table.resize(size,size);
-    
-	buttons = new Array(size);
-
-	for (i = 0; i < size; ++i)
-	{
-		buttons[i] = new Array(size);
-		for (j = 0; j < size; ++j)
-		{
-			buttons[i][j] = new Gtk.Button();
-	
-			buttons[i][j].x = i;
-			buttons[i][j].y = j;
-
-			buttons[i][j].set_relief(Gtk.ReliefStyle.none);
-			buttons[i][j].can_focus = false;
-		
-			buttons[i][j].signal.clicked.connect(button_clicked,
-							     buttons[i][j]);
-			table.attach_defaults(buttons[i][j], j, j+1, i, i+1);
-		}
-	}
-    
-	return table;
-}
-
 function clear_board()
 {
 	for(i = 0; i < size; ++i)
@@ -92,6 +136,7 @@ function clear_board()
 		}
 	}
 }
+
 
 function initialize_game()
 {
@@ -181,22 +226,6 @@ function flip_color(i, j)
 	buttons[i][j].lit = !buttons[i][j].lit;
 }
 
-Gtk.init(null, null);
-
-var window = new Gtk.Window({"title": "Lights Off", "resizable" : false});
-window.signal.hide.connect(Gtk.main_quit);
-
-vbox = new Gtk.VBox();
-
-vbox.pack_start(create_menu());
-vbox.pack_start(create_board());
-
-window.add(vbox);
-
-window.show_all();
-initialize_game();
-
-Gtk.main();
 
 function lightrow(start, end, col)
 {
@@ -237,3 +266,4 @@ function win_animation()
 		lightcol(max - i, i, i);
 	}
 }
+
