@@ -151,7 +151,16 @@ seed_gobject_signal_connect(JSContextRef ctx,
 	g_error("Signal constructed with invalid parameters"
 		"in namespace import \n");
 
-    g_assert((argumentCount <= 3));
+    if ((argumentCount > 3) || (argumentCount == 0))
+    {
+	gchar * mes = g_strdup_printf("Signal connection expected"
+				      " 1, 2, or 3 arguments. Got "
+				      "%d", argumentCount);
+	seed_make_exception(exception, "ArgumentError", mes);
+
+	g_free(mes);
+	return JSValueMakeNull(eng->context);
+    }
 
     closure = g_closure_new_simple(sizeof(SeedClosure), 0);
     g_closure_set_marshal(closure, seed_signal_marshal_func);
