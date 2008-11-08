@@ -4,6 +4,7 @@ EXTRA_DIST = \
     gtype.js \
     json.js \
     enum.js \
+    gerror.js \
     gobject-scope.js \
     include.js \
     printf.js \
