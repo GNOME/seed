@@ -834,8 +834,10 @@ seed_gi_import_namespace(JSContextRef ctx,
     }
 
     extension =
-	g_strdup_printf("Seed.include(\"/usr/local/share/seed/%s.js\")",
-			namespace);
+	g_strdup_printf("try{Seed.include(\"/usr/share/seed/%s.js\");}"
+			"catch(e){}"
+			"Seed.include(\"/usr/local/share/seed/%s.js\");",
+			namespace, namespace);
     extension_script = JSStringCreateWithUTF8CString(extension);
     JSEvaluateScript(eng->context, extension_script, NULL, NULL, 0, NULL);
     JSStringRelease(extension_script);
