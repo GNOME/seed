@@ -1,4 +1,4 @@
-#!/usr/local/bin/seed
+#!/usr/bin/env seed
 // Returns: 0
 // STDIN:
 // STDOUT:string\nstring\ninteger 4\nfloat 0\.333333\nmore 0\.333333333\nless 0\.33

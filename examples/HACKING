@@ -3,7 +3,7 @@ The goal of this file is to tell you what each example serves as an example of, 
 == Large Examples ==
 
 ide/
-    - A Seed IDE. Utilizes much of GTK; GtkToolbar, GtkSourceView, GtkFileChooser, GtkNotebook, VTE, a practical use of GConf.
+    - A Seed IDE. Utilizes much of GTK; GtkToolbar, GtkSourceView, GtkFileChooser, GtkNotebook, VTE, a practical use of GConf. Intelligently uses inheritance.
     
 lightsoff/
     - A simple game. Utilizes GtkImage, GtkMenu, Seed.setTimeout.

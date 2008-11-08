@@ -1,4 +1,4 @@
-#!/usr/local/bin/seed
+#!/usr/bin/env seed
 Seed.import_namespace("Gio");
 
 // Gio.File is an interface, not an actual instantiable class, so we can not

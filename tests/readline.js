@@ -1,4 +1,4 @@
-#!/usr/local/bin/seed
+#!/usr/bin/env seed
 // Returns: 0
 // STDIN:2+2
 // STDOUT:4.000000

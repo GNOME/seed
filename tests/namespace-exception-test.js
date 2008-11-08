@@ -1,4 +1,4 @@
-#!/usr/local/bin/seed
+#!/usr/bin/env seed
 // Returns: 0
 // STDIN:
 // STDOUT:No such namespace: CoreAnimation\nNo such namespace: Gtk \(version 3\.0\)

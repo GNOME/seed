@@ -1,4 +1,4 @@
-#!/usr/local/bin/seed
+#!/usr/bin/env seed
 // Returns: 0
 // STDIN:
 // STDOUT:Javascript number out of range of guchar\nCan not convert Javascript value to boolean\nCan not convert Javascript value to int

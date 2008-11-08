@@ -1,4 +1,4 @@
-#!/usr/local/bin/seed
+#!/usr/bin/env seed
 function ShaderView(source_type, actor, reflection)
 {
     this.hbox = new Gtk.HBox();

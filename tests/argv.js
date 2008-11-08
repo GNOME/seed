@@ -1,6 +1,6 @@
-#!/usr/local/bin/seed
+#!/usr/bin/env seed
 // Returns: 0
 // STDIN:
-// STDOUT:/usr/local/bin/seed
+// STDOUT:seed
 // STDERR:
 Seed.print(Seed.argv[0]);
