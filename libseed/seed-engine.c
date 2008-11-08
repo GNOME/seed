@@ -997,8 +997,10 @@ gboolean seed_init(gint * argc, gchar *** argv)
     seed_gtype_init();
 
     defaults_script =
-	JSStringCreateWithUTF8CString("Seed.include(\"/usr/local/share"
-				      "/seed/Seed.js\")");
+	JSStringCreateWithUTF8CString("Seed.include(\"/usr/share/"
+				      "seed/Seed.js\");"
+				      "Seed.include(\"/usr/local/share"
+				      "/seed/Seed.js\");");
     JSEvaluateScript(eng->context, defaults_script, NULL, NULL, 0, NULL);
     JSStringRelease(defaults_script);
 
