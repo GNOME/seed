@@ -112,8 +112,9 @@ seed_signal_marshal_func(GClosure * closure,
     SeedClosure *seed_closure = (SeedClosure *) closure;
     JSValueRef *args;
     gint i;
+    
 
-    args = g_newa(JSValueRef, n_param_values);
+    args = g_newa(JSValueRef, n_param_values+1);
 
     for (i = 0; i < n_param_values; i++)
     {
@@ -126,8 +127,10 @@ seed_signal_marshal_func(GClosure * closure,
 
     }
 
+    args[i] = seed_closure->user_data;
+
     JSObjectCallAsFunction(eng->context, seed_closure->function,
-			   seed_closure->this, n_param_values, args, 0);
+			   seed_closure->this, n_param_values+1, args, 0);
 }
 
 static JSValueRef
@@ -146,22 +149,28 @@ seed_gobject_signal_connect(JSContextRef ctx,
 	g_error("Signal constructed with invalid parameters"
 		"in namespace import \n");
 
-    g_assert((argumentCount <= 2));
+    g_assert((argumentCount <= 3));
 
-    closure = g_closure_new_simple(sizeof(SeedClosure), 0);
+    closure = g_closure_new_simple(sizeof(SeedClosure), 
+				   0);
     g_closure_set_marshal(closure, seed_signal_marshal_func);
-    // Losing a ref here. Fix please.
-    // g_closure_add_finalize_notifier(closure, NULL, NULL);
+
     ((SeedClosure *) closure)->function = (JSObjectRef) arguments[0];
     ((SeedClosure *) closure)->object =
 	g_object_get_data(privates->object, "js-ref");
-    if (argumentCount == 2 && !JSValueIsNull(eng->context, arguments[1]))
+    if (argumentCount >= 2 && !JSValueIsNull(eng->context, arguments[1]))
     {
 	JSValueProtect(eng->context, (JSObjectRef) arguments[1]);
 	((SeedClosure *) closure)->this = (JSObjectRef) arguments[1];
     }
     else
 	((SeedClosure *) closure)->this = 0;
+    
+    if (argumentCount == 3)
+    {
+	    ((SeedClosure *) closure)->user_data = arguments[2];
+	    JSValueProtect(eng->context, arguments[2]);
+    }
 
     JSValueProtect(eng->context, (JSObjectRef) arguments[0]);
 

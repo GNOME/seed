@@ -24,10 +24,7 @@
 
 #include "seed-private.h"
 
-void
-
-
-seed_signal_marshal_func(GClosure * closure,
+void seed_signal_marshal_func(GClosure * closure,
 			 GValue * return_value,
 			 guint n_param_values,
 			 const GValue * param_values,

@@ -24,10 +24,12 @@
 #include "seed-private.h"
 
 typedef struct _SeedClosure {
-    GClosure closure;
-    JSObjectRef function;
-    JSObjectRef object;
-    JSObjectRef this;
+	GClosure closure;
+	JSObjectRef function;
+	JSObjectRef object;
+	JSObjectRef this;
+  
+	JSValueRef user_data;
 } SeedClosure;
 
 typedef struct _SeedNativeClosure {
