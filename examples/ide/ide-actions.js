@@ -74,7 +74,14 @@ function execute()
     if(current_tab.source_view.filename == "")
         save_file();
     
-    Gio.simple_write(current_tab.source_view.filename, current_tab.source_view.get_buffer().text);
+    try
+    {
+    	Gio.simple_write(current_tab.source_view.filename, current_tab.source_view.get_buffer().text);
+    }
+    catch(e)
+    {
+    	Seed.print(e.name + " " + e.message); // TODO: popup
+    }
     
     current_tab.terminal.reset(true, true);
     current_tab.terminal.fork_command("/bin/dash");
