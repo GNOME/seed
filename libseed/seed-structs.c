@@ -1,4 +1,6 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*- */
+/*
+ * -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*- 
+ */
 /*
  * seed-structs.h
  * Copyright (C) Robert Carr 2008 <carrr@rpi.edu>
@@ -58,13 +60,15 @@ JSObjectRef seed_make_union(gpointer younion, GIBaseInfo * info)
 
 	object = JSObjectMake(eng->context, seed_struct_class, younion);
 
-	if (info) {
+	if (info)
+	{
 		n_methods = g_union_info_get_n_methods((GIUnionInfo *) info);
-		for (i = 0; i < n_methods; i++) {
+		for (i = 0; i < n_methods; i++)
+		{
 			GIFunctionInfo *finfo;
 
-			finfo = g_union_info_get_method((GIUnionInfo *) info,
-							i);
+			finfo =
+			    g_union_info_get_method((GIUnionInfo *) info, i);
 
 			seed_gobject_define_property_from_function_info((GIFunctionInfo *) finfo, object, TRUE);
 		}
@@ -83,13 +87,15 @@ JSObjectRef seed_make_struct(gpointer strukt, GIBaseInfo * info)
 
 	object = JSObjectMake(eng->context, seed_struct_class, strukt);
 
-	if (info) {
+	if (info)
+	{
 		n_methods = g_struct_info_get_n_methods((GIStructInfo *) info);
-		for (i = 0; i < n_methods; i++) {
+		for (i = 0; i < n_methods; i++)
+		{
 			GIFunctionInfo *finfo;
 
-			finfo = g_struct_info_get_method((GIStructInfo *) info,
-							 i);
+			finfo =
+			    g_struct_info_get_method((GIStructInfo *) info, i);
 
 			seed_gobject_define_property_from_function_info((GIFunctionInfo *) finfo, object, TRUE);
 		}
@@ -97,4 +103,3 @@ JSObjectRef seed_make_struct(gpointer strukt, GIBaseInfo * info)
 
 	return object;
 }
-

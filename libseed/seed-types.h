@@ -1,4 +1,6 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*- */
+/*
+ * -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*- 
+ */
 /*
  * seed-types.h
  * Copyright (C) Robert Carr 2008 <carrr@rpi.edu>
@@ -23,17 +25,19 @@
 #include "seed-private.h"
 
 SeedValue seed_value_from_gvalue(GValue * gval, JSValueRef * exception);
-SeedValue seed_value_get_property(SeedValue val, const gchar *name);
+SeedValue seed_value_get_property(SeedValue val, const gchar * name);
 
 gboolean seed_value_set_property(JSObjectRef object,
-				 const gchar *name, JSValueRef value);
-gboolean seed_gvalue_from_seed_value(SeedValue val, GType type, GValue * gval,
-									 JSValueRef * exception);
+				 const gchar * name, JSValueRef value);
+gboolean seed_gvalue_from_seed_value(SeedValue val, GType type,
+				     GValue * gval, JSValueRef * exception);
 gboolean seed_gi_supports_type(GITypeInfo * type_info);
-gboolean seed_gi_make_argument(SeedValue value, GITypeInfo * type_info,
-							   GArgument * arg, JSValueRef * exception);
-JSValueRef seed_gi_argument_make_js(GArgument * arg, GITypeInfo * type_info,
-									JSValueRef * exception);
+gboolean seed_gi_make_argument(SeedValue value,
+			       GITypeInfo * type_info,
+			       GArgument * arg, JSValueRef * exception);
+JSValueRef seed_gi_argument_make_js(GArgument * arg,
+				    GITypeInfo * type_info,
+				    JSValueRef * exception);
 
 GType seed_gi_type_to_gtype(GITypeInfo * type_info, GITypeTag tag);
 
@@ -76,8 +80,6 @@ JSValueRef seed_value_from_string(const gchar * val, JSValueRef * exception);
 GObject *seed_value_to_object(JSValueRef val, JSValueRef * exception);
 JSValueRef seed_value_from_object(GObject * val, JSValueRef * exception);
 
-void seed_toggle_ref(gpointer data,
-							GObject * object,
-					 gboolean is_last_ref);
+void seed_toggle_ref(gpointer data, GObject * object, gboolean is_last_ref);
 
 #endif

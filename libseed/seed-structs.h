@@ -1,4 +1,6 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*- */
+/*
+ * -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*- 
+ */
 /*
  * seed-struct.h
  * Copyright (C) Robert Carr 2008 <carrr@rpi.edu>

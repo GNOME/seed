@@ -1,4 +1,6 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*- */
+/*
+ * -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*- 
+ */
 /*
  * seed-signals.h
  * Copyright (C) Robert Carr 2008 <carrr@rpi.edu>
@@ -23,11 +25,13 @@
 #include "seed-private.h"
 
 void
+
+
 seed_signal_marshal_func(GClosure * closure,
-						 GValue * return_value,
-						 guint n_param_values,
-						 const GValue * param_values,
-						 gpointer invocation_hint, gpointer marshall_data);
+			 GValue * return_value,
+			 guint n_param_values,
+			 const GValue * param_values,
+			 gpointer invocation_hint, gpointer marshall_data);
 
 void seed_add_signals_to_object(JSObjectRef object_ref, GObject * obj);
 JSClassDefinition *seed_get_signal_class(void);

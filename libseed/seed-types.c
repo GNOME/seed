@@ -1,4 +1,6 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*- */
+/*
+ * -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*- 
+ */
 /*
  * seed-types.c
  * Copyright (C) Robert Carr 2008 <carrr@rpi.edu>
@@ -37,22 +39,20 @@ static gboolean seed_value_is_gobject(SeedValue value)
 	return JSValueIsObjectOfClass(eng->context, value, gobject_class);
 }
 
-void seed_toggle_ref(gpointer data,
-							GObject * object,
-							gboolean is_last_ref)
+void seed_toggle_ref(gpointer data, GObject * object, gboolean is_last_ref)
 {
-		JSValueRef wrapper;
-		
-		wrapper = (JSValueRef)data;
+	JSValueRef wrapper;
 
-		if (is_last_ref)
-		{
-				JSValueUnprotect(eng->context, wrapper);
-		}
-		else
-		{
-				JSValueProtect(eng->context, wrapper);
-		}
+	wrapper = (JSValueRef) data;
+
+	if (is_last_ref)
+	{
+		JSValueUnprotect(eng->context, wrapper);
+	}
+	else
+	{
+		JSValueProtect(eng->context, wrapper);
+	}
 
 }
 
@@ -84,16 +84,17 @@ static SeedValue seed_wrap_object(GObject * object)
 	if (prototype)
 		JSObjectSetPrototype(eng->context,
 				     (JSObjectRef) js_ref, prototype);
-	else {
+	else
+	{
 		g_assert_not_reached();
 	}
 
 	g_object_ref_sink(object);
-	   
-	g_object_set_data(object, "js-ref", (gpointer)js_ref);
+
+	g_object_set_data(object, "js-ref", (gpointer) js_ref);
 
 	JSValueProtect(eng->context, js_ref);
-	g_object_add_toggle_ref(object, seed_toggle_ref, (gpointer)js_ref);
+	g_object_add_toggle_ref(object, seed_toggle_ref, (gpointer) js_ref);
 
 	g_object_unref(object);
 
@@ -102,7 +103,8 @@ static SeedValue seed_wrap_object(GObject * object)
 
 GType seed_gi_type_to_gtype(GITypeInfo * type_info, GITypeTag tag)
 {
-	switch (tag) {
+	switch (tag)
+	{
 	case GI_TYPE_TAG_VOID:
 		return G_TYPE_NONE;
 	case GI_TYPE_TAG_BOOLEAN:
@@ -171,9 +173,10 @@ GType seed_gi_type_to_gtype(GITypeInfo * type_info, GITypeTag tag)
 	return 0;
 }
 
-gboolean seed_gi_make_argument(SeedValue value,
-							   GITypeInfo * type_info, GArgument * arg,
-							   JSValueRef * exception)
+gboolean
+seed_gi_make_argument(SeedValue value,
+		      GITypeInfo * type_info, GArgument * arg,
+		      JSValueRef * exception)
 {
 	GITypeTag gi_tag = g_type_info_get_tag(type_info);
 
@@ -183,7 +186,8 @@ gboolean seed_gi_make_argument(SeedValue value,
 		return 1;
 	}
 
-	switch (gi_tag) {
+	switch (gi_tag)
+	{
 	case GI_TYPE_TAG_VOID:
 		break;
 	case GI_TYPE_TAG_BOOLEAN:
@@ -247,83 +251,103 @@ gboolean seed_gi_make_argument(SeedValue value,
 			arg->v_pointer = NULL;
 
 			if (interface_type == GI_INFO_TYPE_OBJECT
-			    || interface_type == GI_INFO_TYPE_INTERFACE) {
-				gobject = seed_value_to_object(value, exception);
+			    || interface_type == GI_INFO_TYPE_INTERFACE)
+			{
+				gobject =
+				    seed_value_to_object(value, exception);
 				required_gtype =
-				    g_registered_type_info_get_g_type((GIRegisteredTypeInfo *)
-													  interface);
+				    g_registered_type_info_get_g_type((GIRegisteredTypeInfo *) interface);
 				if (!gobject
 				    || !g_type_is_a(G_OBJECT_TYPE(gobject),
-						    required_gtype)) {
+						    required_gtype))
+				{
 					return FALSE;
 				}
 
 				arg->v_pointer = gobject;
 				break;
-			} else if (interface_type == GI_INFO_TYPE_ENUM ||
-					   interface_type == GI_INFO_TYPE_FLAGS) {
-				arg->v_long = JSValueToNumber(eng->context,
-							      value, NULL);
+			}
+			else if (interface_type == GI_INFO_TYPE_ENUM ||
+				 interface_type == GI_INFO_TYPE_FLAGS)
+			{
+				arg->v_long =
+				    JSValueToNumber(eng->context, value, NULL);
 				break;
-			} else if (interface_type == GI_INFO_TYPE_STRUCT) {
-				if (JSValueIsObjectOfClass(eng->context, 
-										   value, seed_struct_class))
-						arg->v_pointer = seed_struct_get_pointer(value);
+			}
+			else if (interface_type == GI_INFO_TYPE_STRUCT)
+			{
+				if (JSValueIsObjectOfClass(eng->context,
+							   value,
+							   seed_struct_class))
+					arg->v_pointer =
+					    seed_struct_get_pointer(value);
 				else
 				{
-						GType type = 
-								g_registered_type_info_get_g_type(
-										(GIRegisteredTypeInfo*)interface);
-						if (!type)
-								return FALSE;
-						else if (g_type_is_a(type, G_TYPE_CLOSURE))
+					GType type =
+					    g_registered_type_info_get_g_type((GIRegisteredTypeInfo *) interface);
+					if (!type)
+						return FALSE;
+					else if (g_type_is_a
+						 (type, G_TYPE_CLOSURE))
+					{
+						if (JSObjectIsFunction
+						    (eng->context,
+						     (JSObjectRef) value))
 						{
-								if (JSObjectIsFunction(eng->context,
-													   (JSObjectRef)value))
-								{
-										arg->v_pointer = 
-								  seed_make_gclosure((JSObjectRef)value, 0);
-								}
+							arg->v_pointer =
+							    seed_make_gclosure((JSObjectRef) value, 0);
 						}
+					}
 				}
 				break;
-			} else if (interface_type == GI_INFO_TYPE_CALLBACK) {
-				if (JSValueIsObjectOfClass(eng->context, 
-										   value, gobject_method_class))
+			}
+			else if (interface_type == GI_INFO_TYPE_CALLBACK)
+			{
+				if (JSValueIsObjectOfClass(eng->context,
+							   value,
+							   gobject_method_class))
 				{
-						GIFunctionInfo *info =
-								JSObjectGetPrivate((JSObjectRef) value);
-						const gchar *symbol =
-								g_function_info_get_symbol(info);
-						gchar *error;
-						void *fp;
-						
-						dlerror();
-						fp = (void *)dlsym(0, symbol);
-						if ((error = dlerror()) != NULL) {
-								g_critical("dlerror: %s \n", error);
-						} else {
-								arg->v_pointer = fp;
-								break;
-						}
-				}
-				else  if (JSValueIsObjectOfClass(eng->context,
-												 value, seed_native_callback_class))
-				{
-						SeedNativeClosure * privates =
-								(SeedNativeClosure*)
-								JSObjectGetPrivate((JSObjectRef)value);
-						arg->v_pointer = privates->closure;
+					GIFunctionInfo *info =
+					    JSObjectGetPrivate((JSObjectRef)
+							       value);
+					const gchar *symbol =
+					    g_function_info_get_symbol(info);
+					gchar *error;
+					void *fp;
+
+					dlerror();
+					fp = (void *)dlsym(0, symbol);
+					if ((error = dlerror()) != NULL)
+					{
+						g_critical("dlerror: %s \n",
+							   error);
+					}
+					else
+					{
+						arg->v_pointer = fp;
 						break;
+					}
+				}
+				else if (JSValueIsObjectOfClass(eng->context,
+								value,
+								seed_native_callback_class))
+				{
+					SeedNativeClosure *privates =
+					    (SeedNativeClosure *)
+					    JSObjectGetPrivate((JSObjectRef)
+							       value);
+					arg->v_pointer = privates->closure;
+					break;
 				}
 				else if (JSObjectIsFunction(eng->context,
-											(JSObjectRef)value))
+							    (JSObjectRef)
+							    value))
 				{
-						SeedNativeClosure * privates =
-								seed_make_native_closure(
-									   (GICallableInfo*)interface, value);
-						arg->v_pointer = privates->closure;
-						break;
+					SeedNativeClosure *privates =
+					    seed_make_native_closure((GICallableInfo *) interface,
+								     value);
+					arg->v_pointer = privates->closure;
+					break;
 				}
 
 			}
@@ -337,11 +361,13 @@ gboolean seed_gi_make_argument(SeedValue value,
 
 }
 
-JSValueRef seed_gi_argument_make_js(GArgument * arg, GITypeInfo * type_info,
-									JSValueRef * exception)
+JSValueRef
+seed_gi_argument_make_js(GArgument * arg, GITypeInfo * type_info,
+			 JSValueRef * exception)
 {
 	GITypeTag gi_tag = g_type_info_get_tag(type_info);
-	switch (gi_tag) {
+	switch (gi_tag)
+	{
 	case GI_TYPE_TAG_VOID:
 		return 0;
 	case GI_TYPE_TAG_BOOLEAN:
@@ -386,15 +412,23 @@ JSValueRef seed_gi_argument_make_js(GArgument * arg, GITypeInfo * type_info,
 			interface_type = g_base_info_get_type(interface);
 
 			if (interface_type == GI_INFO_TYPE_OBJECT ||
-			    interface_type == GI_INFO_TYPE_INTERFACE) {
-				if (arg->v_pointer == 0) {
+			    interface_type == GI_INFO_TYPE_INTERFACE)
+			{
+				if (arg->v_pointer == 0)
+				{
 					return JSValueMakeNull(eng->context);
 				}
-				return seed_value_from_object(arg->v_pointer, exception);
-			} else if (interface_type == GI_INFO_TYPE_ENUM ||
-					   interface_type == GI_INFO_TYPE_FLAGS) {
-				return seed_value_from_double(arg->v_double, exception);
-			} else if (interface_type == GI_INFO_TYPE_STRUCT) {
+				return seed_value_from_object(arg->v_pointer,
+							      exception);
+			}
+			else if (interface_type == GI_INFO_TYPE_ENUM
+				 || interface_type == GI_INFO_TYPE_FLAGS)
+			{
+				return seed_value_from_double(arg->v_double,
+							      exception);
+			}
+			else if (interface_type == GI_INFO_TYPE_STRUCT)
+			{
 				return seed_make_struct(arg->v_pointer,
 							interface);
 			}
@@ -411,13 +445,15 @@ JSValueRef seed_gi_argument_make_js(GArgument * arg, GITypeInfo * type_info,
 			ret = JSObjectMake(eng->context, NULL, NULL);
 			list_type = g_type_info_get_param_type(type_info, 0);
 
-			for (; list != NULL; list = list->next) {
+			for (; list != NULL; list = list->next)
+			{
 				JSValueRef ival;
 
 				larg.v_pointer = list->data;
 				ival =
 				    (JSValueRef) seed_gi_argument_make_js(&larg,
-														  list_type, exception);
+									  list_type,
+									  exception);
 				JSObjectSetPropertyAtIndex(eng->context, ret, i,
 							   ival, NULL);
 				i++;
@@ -438,13 +474,15 @@ JSValueRef seed_gi_argument_make_js(GArgument * arg, GITypeInfo * type_info,
 			ret = JSObjectMake(eng->context, NULL, NULL);
 			list_type = g_type_info_get_param_type(type_info, 0);
 
-			for (; list != NULL; list = list->next) {
+			for (; list != NULL; list = list->next)
+			{
 				JSValueRef ival;
 
 				larg.v_pointer = list->data;
 				ival =
 				    (JSValueRef) seed_gi_argument_make_js(&larg,
-														  list_type, exception);
+									  list_type,
+									  exception);
 				JSObjectSetPropertyAtIndex(eng->context, ret, i,
 							   ival, NULL);
 				i++;
@@ -465,7 +503,8 @@ gboolean seed_gi_supports_type(GITypeInfo * type_info)
 
 	type_tag = g_type_info_get_tag(type_info);
 
-	switch (type_tag) {
+	switch (type_tag)
+	{
 	case GI_TYPE_TAG_VOID:
 	case GI_TYPE_TAG_BOOLEAN:
 	case GI_TYPE_TAG_INT8:
@@ -505,16 +544,20 @@ gboolean seed_gi_supports_type(GITypeInfo * type_info)
 
 SeedValue seed_value_from_gvalue(GValue * gval, JSValueRef * exception)
 {
-	if (!G_IS_VALUE(gval)) {
+	if (!G_IS_VALUE(gval))
+	{
 		return false;
 	}
-	switch (G_VALUE_TYPE(gval)) {
+	switch (G_VALUE_TYPE(gval))
+	{
 	case G_TYPE_BOOLEAN:
-		return seed_value_from_boolean(g_value_get_boolean(gval), exception);
+		return seed_value_from_boolean(g_value_get_boolean(gval),
+					       exception);
 	case G_TYPE_CHAR:
 		return seed_value_from_char(g_value_get_char(gval), exception);
 	case G_TYPE_UCHAR:
-		return seed_value_from_uchar(g_value_get_uchar(gval), exception);
+		return seed_value_from_uchar(g_value_get_uchar(gval),
+					     exception);
 	case G_TYPE_INT:
 		return seed_value_from_int(g_value_get_int(gval), exception);
 	case G_TYPE_UINT:
@@ -522,46 +565,61 @@ SeedValue seed_value_from_gvalue(GValue * gval, JSValueRef * exception)
 	case G_TYPE_LONG:
 		return seed_value_from_long(g_value_get_long(gval), exception);
 	case G_TYPE_ULONG:
-		return seed_value_from_ulong(g_value_get_ulong(gval), exception);
+		return seed_value_from_ulong(g_value_get_ulong(gval),
+					     exception);
 	case G_TYPE_INT64:
-		return seed_value_from_int64(g_value_get_int64(gval), exception);
+		return seed_value_from_int64(g_value_get_int64(gval),
+					     exception);
 	case G_TYPE_UINT64:
-		return seed_value_from_uint64(g_value_get_uint64(gval), exception);
+		return seed_value_from_uint64(g_value_get_uint64(gval),
+					      exception);
 	case G_TYPE_FLOAT:
-		return seed_value_from_float(g_value_get_float(gval), exception);
+		return seed_value_from_float(g_value_get_float(gval),
+					     exception);
 	case G_TYPE_DOUBLE:
-		return seed_value_from_double(g_value_get_double(gval), exception);
+		return seed_value_from_double(g_value_get_double(gval),
+					      exception);
 	case G_TYPE_STRING:
 		return seed_value_from_string((gchar *)
-									  g_value_get_string(gval), exception);
+					      g_value_get_string(gval),
+					      exception);
 	case G_TYPE_POINTER:
 		return seed_make_struct(g_value_get_pointer(gval), 0);
 	}
 
-	if (g_type_is_a(G_VALUE_TYPE(gval), G_TYPE_ENUM) || 
-		g_type_is_a(G_VALUE_TYPE(gval), G_TYPE_FLAGS))
+	if (g_type_is_a(G_VALUE_TYPE(gval), G_TYPE_ENUM) ||
+	    g_type_is_a(G_VALUE_TYPE(gval), G_TYPE_FLAGS))
 		return seed_value_from_long(gval->data[0].v_long, exception);
 	else if (g_type_is_a(G_VALUE_TYPE(gval), G_TYPE_ENUM))
 		return seed_value_from_long(gval->data[0].v_long, exception);
-	else if (g_type_is_a(G_VALUE_TYPE(gval), G_TYPE_OBJECT)) {
+	else if (g_type_is_a(G_VALUE_TYPE(gval), G_TYPE_OBJECT))
+	{
 		// TODO: check for leaks
-		return seed_value_from_object(g_value_get_object(gval), exception);
-	} else {
+		return seed_value_from_object(g_value_get_object(gval),
+					      exception);
+	}
+	else
+	{
 		GIBaseInfo *info;
 		GIInfoType type;
 
 		info = g_irepository_find_by_gtype(0, G_VALUE_TYPE(gval));
 		type = g_base_info_get_type(info);
 
-		if (type == GI_INFO_TYPE_UNION) {
+		if (type == GI_INFO_TYPE_UNION)
+		{
 			return seed_make_union(g_value_peek_pointer(gval),
 					       info);
 
-		} else if (type == GI_INFO_TYPE_STRUCT) {
+		}
+		else if (type == GI_INFO_TYPE_STRUCT)
+		{
 			return seed_make_struct(g_value_peek_pointer(gval),
 						info);
 
-		} else if (type == GI_INFO_TYPE_BOXED) {
+		}
+		else if (type == GI_INFO_TYPE_BOXED)
+		{
 			printf("Trying to marshal boxed type \n");
 		}
 
@@ -570,20 +628,25 @@ SeedValue seed_value_from_gvalue(GValue * gval, JSValueRef * exception)
 	return NULL;
 }
 
-gboolean seed_gvalue_from_seed_value(SeedValue val, GType type, GValue * ret,
-									 JSValueRef * exception)
+gboolean
+seed_gvalue_from_seed_value(SeedValue val, GType type, GValue * ret,
+			    JSValueRef * exception)
 {
-	switch (type) {
+	switch (type)
+	{
 	case G_TYPE_BOOLEAN:
 		{
-			/* This is fail. Need to call
-			   seed_gvalue_from_seed_value with no type, and then
-			   try gobject cast. */
-			//if(!JSValueIsBoolean(eng->context, val))
-			//              goto bad_type;
+			/*
+			 * This is fail. Need to call seed_gvalue_from_seed_value with 
+			 * no type, and then try gobject cast. 
+			 */
+			// if(!JSValueIsBoolean(eng->context, val))
+			// goto bad_type;
 
 			g_value_init(ret, G_TYPE_BOOLEAN);
-			g_value_set_boolean(ret, seed_value_to_boolean(val, exception));
+			g_value_set_boolean(ret,
+					    seed_value_to_boolean(val,
+								  exception));
 			return TRUE;
 		}
 	case G_TYPE_INT:
@@ -591,21 +654,27 @@ gboolean seed_gvalue_from_seed_value(SeedValue val, GType type, GValue * ret,
 		{
 			g_value_init(ret, type);
 			if (type == G_TYPE_INT)
-				g_value_set_int(ret, seed_value_to_int(val, exception));
+				g_value_set_int(ret,
+						seed_value_to_int(val,
+								  exception));
 			else
-				g_value_set_uint(ret, seed_value_to_uint(val, exception));
+				g_value_set_uint(ret,
+						 seed_value_to_uint(val,
+								    exception));
 			return TRUE;
 		}
 	case G_TYPE_CHAR:
 		{
 			g_value_init(ret, G_TYPE_CHAR);
-			g_value_set_char(ret, seed_value_to_char(val, exception));
+			g_value_set_char(ret,
+					 seed_value_to_char(val, exception));
 			return TRUE;
 		}
 	case G_TYPE_UCHAR:
 		{
 			g_value_init(ret, G_TYPE_UCHAR);
-			g_value_set_uchar(ret, seed_value_to_uchar(val, exception));
+			g_value_set_uchar(ret,
+					  seed_value_to_uchar(val, exception));
 			return TRUE;
 		}
 	case G_TYPE_LONG:
@@ -615,35 +684,43 @@ gboolean seed_gvalue_from_seed_value(SeedValue val, GType type, GValue * ret,
 	case G_TYPE_FLOAT:
 	case G_TYPE_DOUBLE:
 		{
-			switch (type) {
+			switch (type)
+			{
 			case G_TYPE_LONG:
 				g_value_init(ret, G_TYPE_LONG);
-				g_value_set_long(ret, seed_value_to_long(val, exception));
+				g_value_set_long(ret,
+						 seed_value_to_long(val,
+								    exception));
 				break;
 			case G_TYPE_ULONG:
 				g_value_init(ret, G_TYPE_ULONG);
 				g_value_set_ulong(ret,
-								  seed_value_to_ulong(val, exception));
+						  seed_value_to_ulong(val,
+								      exception));
 				break;
 			case G_TYPE_INT64:
 				g_value_init(ret, G_TYPE_INT64);
 				g_value_set_int64(ret,
-								  seed_value_to_int64(val, exception));
+						  seed_value_to_int64(val,
+								      exception));
 				break;
 			case G_TYPE_UINT64:
 				g_value_init(ret, G_TYPE_UINT64);
 				g_value_set_uint64(ret,
-								   seed_value_to_uint64(val, exception));
+						   seed_value_to_uint64(val,
+									exception));
 				break;
 			case G_TYPE_FLOAT:
 				g_value_init(ret, G_TYPE_FLOAT);
 				g_value_set_float(ret,
-								  seed_value_to_float(val, exception));
+						  seed_value_to_float(val,
+								      exception));
 				break;
 			case G_TYPE_DOUBLE:
 				g_value_init(ret, G_TYPE_DOUBLE);
 				g_value_set_double(ret,
-								   seed_value_to_double(val, exception));
+						   seed_value_to_double(val,
+									exception));
 				break;
 			}
 			return TRUE;
@@ -659,13 +736,14 @@ gboolean seed_gvalue_from_seed_value(SeedValue val, GType type, GValue * ret,
 		}
 	default:
 		{
-			switch (JSValueGetType(eng->context, val)) {
+			switch (JSValueGetType(eng->context, val))
+			{
 			case kJSTypeBoolean:
 				{
 					g_value_init(ret, G_TYPE_BOOLEAN);
 					g_value_set_boolean(ret,
 							    seed_value_to_boolean
-										(val, exception));
+							    (val, exception));
 					return TRUE;
 				}
 			case kJSTypeNumber:
@@ -673,12 +751,13 @@ gboolean seed_gvalue_from_seed_value(SeedValue val, GType type, GValue * ret,
 					g_value_init(ret, G_TYPE_DOUBLE);
 					g_value_set_double(ret,
 							   seed_value_to_double
-									   (val, exception));
+							   (val, exception));
 					return TRUE;
 				}
 			case kJSTypeString:
 				{
-					gchar *cv = seed_value_to_string(val, exception);
+					gchar *cv = seed_value_to_string(val,
+									 exception);
 
 					g_value_init(ret, G_TYPE_STRING);
 					g_value_take_string(ret, cv);
@@ -692,30 +771,39 @@ gboolean seed_gvalue_from_seed_value(SeedValue val, GType type, GValue * ret,
 	}
 
 	if (g_type_is_a(type, G_TYPE_ENUM)
-	    && JSValueIsNumber(eng->context, val)) {
+	    && JSValueIsNumber(eng->context, val))
+	{
 		g_value_init(ret, type);
 		ret->data[0].v_long = seed_value_to_long(val, exception);
 		return TRUE;
-	} else if (g_type_is_a(type, G_TYPE_FLAGS)
-		   && JSValueIsNumber(eng->context, val)) {
+	}
+	else if (g_type_is_a(type, G_TYPE_FLAGS)
+		 && JSValueIsNumber(eng->context, val))
+	{
 		g_value_init(ret, type);
 		ret->data[0].v_long = seed_value_to_long(val, exception);
 		return TRUE;
-	} else if (g_type_is_a(type, G_TYPE_OBJECT)
-		   && (JSValueIsNull(eng->context, val)
-		       || seed_value_is_gobject(val))) {
+	}
+	else if (g_type_is_a(type, G_TYPE_OBJECT)
+		 && (JSValueIsNull(eng->context, val)
+		     || seed_value_is_gobject(val)))
+	{
 		GObject *o = seed_value_to_object(val, exception);
 
-		if (o == NULL || g_type_is_a(G_OBJECT_TYPE(o), type)) {
+		if (o == NULL || g_type_is_a(G_OBJECT_TYPE(o), type))
+		{
 			g_value_init(ret, G_TYPE_OBJECT);
 			g_value_set_object(ret, o);
 			return TRUE;
 		}
 
 		g_object_unref(o);
-	} else if (g_type_is_a(type, G_TYPE_BOXED)) {
+	}
+	else if (g_type_is_a(type, G_TYPE_BOXED))
+	{
 		gpointer p = seed_struct_get_pointer(val);
-		if (p) {
+		if (p)
+		{
 			g_value_init(ret, type);
 			g_value_set_boxed(ret, p);
 			return TRUE;
@@ -725,7 +813,7 @@ gboolean seed_gvalue_from_seed_value(SeedValue val, GType type, GValue * ret,
 	return FALSE;
 }
 
-SeedValue seed_value_get_property(SeedValue val, const gchar *name)
+SeedValue seed_value_get_property(SeedValue val, const gchar * name)
 {
 
 	JSStringRef jname = JSStringCreateWithUTF8CString(name);
@@ -738,12 +826,14 @@ SeedValue seed_value_get_property(SeedValue val, const gchar *name)
 	return ret;
 }
 
-gboolean seed_value_set_property(JSObjectRef object,
-				 const gchar *name, JSValueRef value)
+gboolean
+seed_value_set_property(JSObjectRef object,
+			const gchar * name, JSValueRef value)
 {
 	JSStringRef jname = JSStringCreateWithUTF8CString(name);
 
-	if (value) {
+	if (value)
+	{
 		JSObjectSetProperty(eng->context, (JSObjectRef) object,
 				    jname, value, 0, 0);
 	}
@@ -755,13 +845,14 @@ gboolean seed_value_set_property(JSObjectRef object,
 
 gboolean seed_value_to_boolean(JSValueRef val, JSValueRef * exception)
 {
-	if (!JSValueIsBoolean(eng->context, val)) {
-		if (!JSValueIsNull(eng->context, val)) {
+	if (!JSValueIsBoolean(eng->context, val))
+	{
+		if (!JSValueIsNull(eng->context, val))
+		{
 			seed_make_exception(exception, "ConversionError",
-								"Can not convert Javascript value to boolean");
+					    "Can not convert Javascript value to boolean");
 			return 0;
 		}
-			
 
 		return 0;
 	}
@@ -776,12 +867,13 @@ JSValueRef seed_value_from_boolean(gboolean val, JSValueRef * exception)
 
 guint seed_value_to_uint(JSValueRef val, JSValueRef * exception)
 {
-	if (!JSValueIsNumber(eng->context, val)) {
+	if (!JSValueIsNumber(eng->context, val))
+	{
 		if (!JSValueIsNull(eng->context, val))
 		{
-				seed_make_exception(exception, "ConversionError",
-										  "Can not convert Javascript value to"
-										  " boolean");
+			seed_make_exception(exception, "ConversionError",
+					    "Can not convert Javascript value to"
+					    " boolean");
 		}
 		return 0;
 	}
@@ -796,11 +888,12 @@ JSValueRef seed_value_from_uint(guint val, JSValueRef * exception)
 
 gint seed_value_to_int(JSValueRef val, JSValueRef * exception)
 {
-	if (!JSValueIsNumber(eng->context, val)) {
+	if (!JSValueIsNumber(eng->context, val))
+	{
 		if (!JSValueIsNull(eng->context, val))
-				seed_make_exception(exception, "ConversionError",
-										  "Can not convert Javascript value to"
-										  " int");
+			seed_make_exception(exception, "ConversionError",
+					    "Can not convert Javascript value to"
+					    " int");
 		return 0;
 	}
 
@@ -816,20 +909,22 @@ gchar seed_value_to_char(JSValueRef val, JSValueRef * exception)
 {
 	gint cv;
 
-	if (!JSValueIsNumber(eng->context, val)) {
+	if (!JSValueIsNumber(eng->context, val))
+	{
 		if (!JSValueIsNull(eng->context, val))
-				seed_make_exception(exception, "ConversionError",
-										  "Can not convert Javascript value to"
-										  " gchar");
+			seed_make_exception(exception, "ConversionError",
+					    "Can not convert Javascript value to"
+					    " gchar");
 		return 0;
 	}
 
 	cv = JSValueToNumber(eng->context, val, NULL);
 
-	if (cv < G_MININT8 || cv > G_MAXINT8) {
+	if (cv < G_MININT8 || cv > G_MAXINT8)
+	{
 		seed_make_exception(exception, "ConversionError",
-								  "Javascript number out of range of gchar");
-					return 0;
+				    "Javascript number out of range of gchar");
+		return 0;
 	}
 
 	return (char)cv;
@@ -844,19 +939,21 @@ guchar seed_value_to_uchar(JSValueRef val, JSValueRef * exception)
 {
 	guint cv;
 
-	if (!JSValueIsNumber(eng->context, val)) {
+	if (!JSValueIsNumber(eng->context, val))
+	{
 		if (!JSValueIsNull(eng->context, val))
-				seed_make_exception(exception, "ConversionError",
-										  "Can not convert Javascript value to"
-										  " guchar");
+			seed_make_exception(exception, "ConversionError",
+					    "Can not convert Javascript value to"
+					    " guchar");
 		return 0;
 	}
 
 	cv = JSValueToNumber(eng->context, val, NULL);
 
-	if (cv > G_MAXUINT8) {
+	if (cv > G_MAXUINT8)
+	{
 		seed_make_exception(exception, "ConversionError",
-								  "Javascript number out of range of guchar");
+				    "Javascript number out of range of guchar");
 		return 0;
 	}
 
@@ -870,11 +967,12 @@ JSValueRef seed_value_from_uchar(guchar val, JSValueRef * exception)
 
 glong seed_value_to_long(JSValueRef val, JSValueRef * exception)
 {
-	if (!JSValueIsNumber(eng->context, val)) {
+	if (!JSValueIsNumber(eng->context, val))
+	{
 		if (!JSValueIsNull(eng->context, val))
-				seed_make_exception(exception, "ConversionError",
-										  "Can not convert Javascript value to"
-										  " long");
+			seed_make_exception(exception, "ConversionError",
+					    "Can not convert Javascript value to"
+					    " long");
 		return 0;
 	}
 
@@ -888,11 +986,12 @@ JSValueRef seed_value_from_long(glong val, JSValueRef * exception)
 
 gulong seed_value_to_ulong(JSValueRef val, JSValueRef * exception)
 {
-	if (!JSValueIsNumber(eng->context, val)) {
+	if (!JSValueIsNumber(eng->context, val))
+	{
 		if (!JSValueIsNull(eng->context, val))
 			seed_make_exception(exception, "ConversionError",
-									  "Can not convert Javascript value to"
-									  " ulong");
+					    "Can not convert Javascript value to"
+					    " ulong");
 
 		return 0;
 	}
@@ -907,11 +1006,12 @@ JSValueRef seed_value_from_ulong(gulong val, JSValueRef * exception)
 
 gint64 seed_value_to_int64(JSValueRef val, JSValueRef * exception)
 {
-	if (!JSValueIsNumber(eng->context, val)) {
+	if (!JSValueIsNumber(eng->context, val))
+	{
 		if (!JSValueIsNull(eng->context, val))
 			seed_make_exception(exception, "ConversionError",
-									  "Can not convert Javascript value to"
-									  " gint64");
+					    "Can not convert Javascript value to"
+					    " gint64");
 
 		return 0;
 	}
@@ -926,18 +1026,18 @@ JSValueRef seed_value_from_int64(gint64 val, JSValueRef * exception)
 
 guint64 seed_value_to_uint64(JSValueRef val, JSValueRef * exception)
 {
-	if (!JSValueIsNumber(eng->context, val)) {
+	if (!JSValueIsNumber(eng->context, val))
+	{
 		if (!JSValueIsNull(eng->context, val))
 			seed_make_exception(exception, "ConversionError",
-									  "Can not convert Javascript value to"
-									  " guint64");
+					    "Can not convert Javascript value to"
+					    " guint64");
 
 		return 0;
 	}
 
 	return (guint64) JSValueToNumber(eng->context, val, NULL);
 }
-
 
 JSValueRef seed_value_from_uint64(guint64 val, JSValueRef * exception)
 {
@@ -946,11 +1046,12 @@ JSValueRef seed_value_from_uint64(guint64 val, JSValueRef * exception)
 
 gfloat seed_value_to_float(JSValueRef val, JSValueRef * exception)
 {
-	if (!JSValueIsNumber(eng->context, val)) {
+	if (!JSValueIsNumber(eng->context, val))
+	{
 		if (!JSValueIsNull(eng->context, val))
-				seed_make_exception(exception, "ConversionError",
-										  "Can not convert Javascript value to"
-										  " gfloat");
+			seed_make_exception(exception, "ConversionError",
+					    "Can not convert Javascript value to"
+					    " gfloat");
 		return 0;
 	}
 
@@ -964,11 +1065,12 @@ JSValueRef seed_value_from_float(gfloat val, JSValueRef * exception)
 
 gdouble seed_value_to_double(JSValueRef val, JSValueRef * exception)
 {
-	if (!JSValueIsNumber(eng->context, val)) {
+	if (!JSValueIsNumber(eng->context, val))
+	{
 		if (!JSValueIsNull(eng->context, val))
-				seed_make_exception(exception, "ConversionError",
-										  "Can not convert Javascript value to"
-										  " double");
+			seed_make_exception(exception, "ConversionError",
+					    "Can not convert Javascript value to"
+					    " double");
 		return 0;
 	}
 
@@ -991,15 +1093,21 @@ gchar *seed_value_to_string(JSValueRef val, JSValueRef * exception)
 		return NULL;
 
 	if (JSValueIsBoolean(eng->context, val)
-	    || JSValueIsNumber(eng->context, val)) {
+	    || JSValueIsNumber(eng->context, val))
+	{
 		buf =
 		    g_strdup_printf("%f",
 				    JSValueToNumber(eng->context, val, NULL));
-	} else if (JSValueIsNull(eng->context, val)
-		   || JSValueIsUndefined(eng->context, val)) {
+	}
+	else if (JSValueIsNull(eng->context, val)
+		 || JSValueIsUndefined(eng->context, val))
+	{
 		buf = strdup("[null]");
-	} else {
-		if (!JSValueIsString(eng->context, val))	// In this case, it's an object
+	}
+	else
+	{
+		if (!JSValueIsString(eng->context, val))	// In this case,
+			// it's an object
 		{
 			func = seed_value_get_property(val, "toString");
 			str =
@@ -1014,7 +1122,7 @@ gchar *seed_value_to_string(JSValueRef val, JSValueRef * exception)
 		buf = g_malloc(length * sizeof(gchar));
 		JSStringGetUTF8CString(jsstr, buf, length);
 		if (jsstr)
-				JSStringRelease(jsstr);
+			JSStringRelease(jsstr);
 	}
 
 	return buf;
@@ -1033,22 +1141,23 @@ GObject *seed_value_to_object(JSValueRef val, JSValueRef * exception)
 {
 	GObject *gobject;
 
-	if (!seed_value_is_gobject(val)) {
-			JSValueRef object;
-			if(!JSValueIsObject(eng->context, val))
-					return NULL;
-			object = seed_value_get_property(val, "gsuper");
-			if (val && object && JSValueIsObject(eng->context, object));
+	if (!seed_value_is_gobject(val))
+	{
+		JSValueRef object;
+		if (!JSValueIsObject(eng->context, val))
+			return NULL;
+		object = seed_value_get_property(val, "gsuper");
+		if (val && object && JSValueIsObject(eng->context, object)) ;
+		{
+			JSValueRef ref_data = 0;
+			gobject = seed_value_to_object(object, exception);
+			if (gobject)
 			{
-					JSValueRef ref_data = 0;
-					gobject = seed_value_to_object(object, exception);
-					if (gobject)
-					{
-							g_object_set_data(gobject, "js-ref",
-											  (gpointer)val);
-					}
-					return gobject;
+				g_object_set_data(gobject, "js-ref",
+						  (gpointer) val);
 			}
+			return gobject;
+		}
 	}
 
 	gobject = (GObject *) JSObjectGetPrivate((JSObjectRef) val);

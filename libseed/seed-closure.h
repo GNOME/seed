@@ -1,4 +1,6 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*- */
+/*
+ * -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*- 
+ */
 /*
  * seed-builtins.h
  * Copyright (C) Robert Carr 2008 <carrr@rpi.edu>
@@ -28,21 +30,19 @@ typedef struct _SeedClosure {
 	JSObjectRef this;
 } SeedClosure;
 
-typedef struct _SeedNativeClosure
-{
-		GICallableInfo * info;
-		JSValueRef function;
-		
-		ffi_closure * closure;
-		ffi_cif * cif;
+typedef struct _SeedNativeClosure {
+	GICallableInfo *info;
+	JSValueRef function;
+
+	ffi_closure *closure;
+	ffi_cif *cif;
 } SeedNativeClosure;
 
 extern JSClassRef seed_native_callback_class;
 
-SeedNativeClosure * seed_make_native_closure(GICallableInfo * info,
-					JSValueRef function);
-SeedClosure * seed_make_gclosure(JSObjectRef function,
-								 JSObjectRef this);
+SeedNativeClosure *seed_make_native_closure(GICallableInfo * info,
+					    JSValueRef function);
+SeedClosure *seed_make_gclosure(JSObjectRef function, JSObjectRef this);
 
 void seed_closures_init();
 

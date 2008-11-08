@@ -1,4 +1,6 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*- */
+/*
+ * -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*- 
+ */
 /*
  * seed-private.h
  * Copyright (C) Robert Carr 2008 <carrr@rpi.edu>
@@ -43,6 +45,5 @@ struct _SeedEngine {
 #include "seed-structs.h"
 #include "seed-closure.h"
 #include "seed-gtype.h"
-
 
 #endif

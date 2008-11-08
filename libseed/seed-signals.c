@@ -1,4 +1,6 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*- */
+/*
+ * -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*- 
+ */
 /*
  * seed-signals.c
  * Copyright (C) Robert Carr 2008 <carrr@rpi.edu>
@@ -28,8 +30,9 @@ typedef struct _signal_privates {
 
 JSClassRef signal_holder_class;
 
-static void seed_add_signal_to_object(JSObjectRef object_ref,
-				      GObject * obj, GSignalQuery * signal)
+static void
+seed_add_signal_to_object(JSObjectRef object_ref,
+			  GObject * obj, GSignalQuery * signal)
 {
 	guint k;
 	JSObjectRef signal_ref;
@@ -37,7 +40,8 @@ static void seed_add_signal_to_object(JSObjectRef object_ref,
 	gchar *js_signal_name = g_strdup(signal->signal_name);
 	g_assert(signal);
 
-	for (k = 0; k < strlen(js_signal_name); k++) {
+	for (k = 0; k < strlen(js_signal_name); k++)
+	{
 		if (js_signal_name[k] == '-')
 			js_signal_name[k] = '_';
 	}
@@ -51,16 +55,18 @@ static void seed_add_signal_to_object(JSObjectRef object_ref,
 	g_free(js_signal_name);
 }
 
-static void seed_add_signals_for_type(JSObjectRef object_ref,
-				      GObject * obj, GType type)
+static void
+seed_add_signals_for_type(JSObjectRef object_ref, GObject * obj, GType type)
 {
 	guint n, i;
 	guint *signal_ids;
 	GSignalQuery query;
 	signal_ids = g_signal_list_ids(type, &n);
-	for (i = 0; i < n; i++) {
+	for (i = 0; i < n; i++)
+	{
 		g_signal_query(signal_ids[i], &query);
-		if (query.signal_id != 0) {
+		if (query.signal_id != 0)
+		{
 			seed_add_signal_to_object(object_ref, obj, &query);
 		}
 	}
@@ -77,10 +83,11 @@ void seed_add_signals_to_object(JSObjectRef object_ref, GObject * obj)
 	g_assert(obj);
 
 	type = G_OBJECT_TYPE(obj);
-	
+
 	signals_ref = JSObjectMake(eng->context, signal_holder_class, 0);
 
-	while (type != 0) {
+	while (type != 0)
+	{
 		seed_add_signals_for_type(signals_ref, obj, type);
 
 		interfaces = g_type_interfaces(type, &n);
@@ -92,7 +99,7 @@ void seed_add_signals_to_object(JSObjectRef object_ref, GObject * obj)
 
 		g_free(interfaces);
 	}
-	
+
 	seed_value_set_property(object_ref, "signal", signals_ref);
 }
 
@@ -109,8 +116,10 @@ seed_signal_marshal_func(GClosure * closure,
 
 	args = g_newa(JSValueRef, n_param_values);
 
-	for (i = 0; i < n_param_values; i++) {
-		args[i] = seed_value_from_gvalue((GValue *) & param_values[i], 0);
+	for (i = 0; i < n_param_values; i++)
+	{
+		args[i] =
+		    seed_value_from_gvalue((GValue *) & param_values[i], 0);
 
 		if (!args[i])
 			g_error("Error in signal marshal. "
@@ -143,15 +152,17 @@ seed_gobject_signal_connect(JSContextRef ctx,
 
 	closure = g_closure_new_simple(sizeof(SeedClosure), 0);
 	g_closure_set_marshal(closure, seed_signal_marshal_func);
-	//Losing a ref here. Fix please.
-	//g_closure_add_finalize_notifier(closure, NULL, NULL);
+	// Losing a ref here. Fix please.
+	// g_closure_add_finalize_notifier(closure, NULL, NULL);
 	((SeedClosure *) closure)->function = (JSObjectRef) arguments[0];
 	((SeedClosure *) closure)->object =
 	    g_object_get_data(privates->object, "js-ref");
-	if (argumentCount == 2 && !JSValueIsNull(eng->context, arguments[1])) {
+	if (argumentCount == 2 && !JSValueIsNull(eng->context, arguments[1]))
+	{
 		JSValueProtect(eng->context, (JSObjectRef) arguments[1]);
 		((SeedClosure *) closure)->this = (JSObjectRef) arguments[1];
-	} else
+	}
+	else
 		((SeedClosure *) closure)->this = 0;
 
 	JSValueProtect(eng->context, (JSObjectRef) arguments[0]);
@@ -190,7 +201,7 @@ JSClassDefinition gobject_signal_def = {
 JSClassDefinition *seed_get_signal_class(void)
 {
 	JSClassDefinition signal_holder = kJSClassDefinitionEmpty;
-	
+
 	signal_holder.className = "gobject_signals";
 	signal_holder_class = JSClassCreate(&signal_holder);
 	JSClassRetain(signal_holder_class);

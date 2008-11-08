@@ -1,4 +1,6 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*- */
+/*
+ * -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*- 
+ */
 /*
  * seed-builtins.h
  * Copyright (C) Robert Carr 2008 <carrr@rpi.edu>
@@ -23,7 +25,6 @@
 #include "seed-private.h"
 
 // TODO: someday, maybe, move import_namespace here!
-
 
 JSValueRef
 seed_include(JSContextRef ctx,

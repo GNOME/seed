@@ -1,4 +1,6 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*- */
+/*
+ * -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*- 
+ */
 /*
  * seed-engine.c
  * Copyright (C) Robert Carr 2008 <carrr@rpi.edu>
@@ -30,8 +32,9 @@ GParamSpec **global_prop_cache;
 
 gchar *glib_message = 0;
 
-void seed_make_exception(JSValueRef * exception,
-			 const gchar * name, const gchar * message)
+void
+seed_make_exception(JSValueRef * exception,
+		    const gchar * name, const gchar * message)
 {
 	JSStringRef js_name = 0;
 	JSStringRef js_message = 0;
@@ -41,11 +44,13 @@ void seed_make_exception(JSValueRef * exception,
 	if (!exception)
 		return;
 
-	if (name) {
+	if (name)
+	{
 		js_name = JSStringCreateWithUTF8CString(name);
 		js_name_ref = JSValueMakeString(eng->context, js_name);
 	}
-	if (message) {
+	if (message)
+	{
 		js_message = JSStringCreateWithUTF8CString(message);
 		js_message_ref = JSValueMakeString(eng->context, js_message);
 	}
@@ -87,7 +92,8 @@ seed_gobject_constructor_invoked(JSContextRef ctx,
 
 	g_assert(argumentCount <= 1);
 
-	if (argumentCount == 1) {
+	if (argumentCount == 1)
+	{
 		jsprops = JSObjectCopyPropertyNames(eng->context,
 						    (JSObjectRef) arguments[0]);
 		nparams = JSPropertyNameArrayGetCount(jsprops);
@@ -96,9 +102,11 @@ seed_gobject_constructor_invoked(JSContextRef ctx,
 
 	params = g_new0(GParameter, nparams + 1);
 
-	// TODO: make sure we don't die if we get passed something other than an object
+	// TODO: make sure we don't die if we get passed something other than
+	// an object
 
-	while (i < nparams) {
+	while (i < nparams)
+	{
 		GType type;
 		jsprop_name = JSPropertyNameArrayGetNameAtIndex(jsprops, i);
 
@@ -109,17 +117,17 @@ seed_gobject_constructor_invoked(JSContextRef ctx,
 		param_spec = g_object_class_find_property(oclass, prop_name);
 		if (param_spec == NULL)
 		{
-				gchar * mes =
-			    g_strdup_printf("Invalid property for construction: %s", 
-								prop_name);
-				seed_make_exception(exception, "PropertyError", mes);
-				
-				g_free(mes);
-				g_free(params);
-				
-				return (JSObjectRef)JSValueMakeNull(eng->context);
-		}
+			gchar *mes =
+			    g_strdup_printf
+			    ("Invalid property for construction: %s",
+			     prop_name);
+			seed_make_exception(exception, "PropertyError", mes);
 
+			g_free(mes);
+			g_free(params);
+
+			return (JSObjectRef) JSValueMakeNull(eng->context);
+		}
 		// TODO: exception handling
 		jsprop_value = JSObjectGetProperty(eng->context,
 						   (JSObjectRef) arguments[0],
@@ -131,14 +139,14 @@ seed_gobject_constructor_invoked(JSContextRef ctx,
 			type = param_spec->value_type;
 
 		seed_gvalue_from_seed_value(jsprop_value,
-									type, &params[i].value, exception);
-			
+					    type, &params[i].value, exception);
+
 		if (*exception)
 		{
 
-				g_free(prop_name);
-				g_free(params);
-				return 0;
+			g_free(prop_name);
+			g_free(params);
+			return 0;
 		}
 		params[i].name = prop_name;
 
@@ -203,14 +211,13 @@ seed_gobject_method_invoked(JSContextRef ctx,
 	GError *error = 0;
 
 	info = JSObjectGetPrivate(function);
-	// We just want to check if there IS an object, not actually throw an exception if we don't
+	// We just want to check if there IS an object, not actually throw an
+	// exception if we don't
 	// get it.
 	if (!
 	    ((object = seed_value_to_object(this_object, 0)) ||
 	     (object = seed_struct_get_pointer(this_object))))
 		instance_method = FALSE;
-
-
 
 	n_args = g_callable_info_get_n_args((GICallableInfo *) info);
 
@@ -220,35 +227,46 @@ seed_gobject_method_invoked(JSContextRef ctx,
 
 	if (instance_method)
 		in_args[n_in_args++].v_pointer = object;
-	for (i = 0; (i < (n_args)); i++) {
+	for (i = 0; (i < (n_args)); i++)
+	{
 		arg_info = g_callable_info_get_arg((GICallableInfo *) info, i);
 		dir = g_arg_info_get_direction(arg_info);
 		type_info = g_arg_info_get_type(arg_info);
-		if (i + 1 > argumentCount) {
+		if (i + 1 > argumentCount)
+		{
 			in_args[n_in_args++].v_pointer = 0;
-		} else if (dir == GI_DIRECTION_IN || dir == GI_DIRECTION_INOUT) {
+		}
+		else if (dir == GI_DIRECTION_IN || dir == GI_DIRECTION_INOUT)
+		{
 
 			if (!seed_gi_make_argument(arguments[i],
 						   type_info,
-						   &in_args[n_in_args++], exception)) {
-				gchar * mes = g_strdup_printf("Unable to make argument %d for"
-					" function: %s. \n",
-					i + 1, g_base_info_get_name((GIBaseInfo
-								     *) info));
-				seed_make_exception(exception, "ArgumentError", mes);
-				
+						   &in_args[n_in_args++],
+						   exception))
+			{
+				gchar *mes =
+				    g_strdup_printf
+				    ("Unable to make argument %d for"
+				     " function: %s. \n",
+				     i + 1,
+				     g_base_info_get_name((GIBaseInfo *) info));
+				seed_make_exception(exception, "ArgumentError",
+						    mes);
+
 				g_free(mes);
 				g_base_info_unref((GIBaseInfo *) type_info);
 				g_base_info_unref((GIBaseInfo *) arg_info);
 				g_free(in_args);
 				g_free(out_args);
-				
+
 				return JSValueMakeNull(eng->context);
 			}
 			if (dir == GI_DIRECTION_INOUT)
 				n_out_args++;
 
-		} else if (dir == GI_DIRECTION_OUT) {
+		}
+		else if (dir == GI_DIRECTION_OUT)
+		{
 			n_out_args++;
 		}
 
@@ -258,41 +276,44 @@ seed_gobject_method_invoked(JSContextRef ctx,
 	if (g_function_info_invoke((GIFunctionInfo *) info,
 				   in_args,
 				   n_in_args,
-				   out_args, n_out_args, &retval, &error)) {
+				   out_args, n_out_args, &retval, &error))
+	{
 		type_info = g_callable_info_get_return_type((GICallableInfo *)
 							    info);
 		if (g_type_info_get_tag(type_info) == GI_TYPE_TAG_VOID)
 			retval_ref = JSValueMakeNull(eng->context);
 		else
 			retval_ref =
-			    seed_gi_argument_make_js(&retval, type_info, exception);
+			    seed_gi_argument_make_js(&retval, type_info,
+						     exception);
 		g_base_info_unref((GIBaseInfo *) type_info);
-	} else {
-			const gchar * domain = g_quark_to_string(error->domain);
-			GString * string = g_string_new(domain);
-			int w;
-			
-			*(string->str) = g_unichar_toupper(*(string->str));
-			for (w = 0; w < string->len; w++)
-			{
-					if (*(string->str+w) == '-')
-					{
-							*(string->str+w+1) = 
-									g_unichar_toupper(*(string->str+w+1));
-							g_string_erase(string, w,1);
-					}
-					else if (!strcmp(string->str+w-1, "Quark"))
-							g_string_truncate(string, w-1);
-					
-			}
-			seed_make_exception(exception, string->str,
-								error->message);
+	}
+	else
+	{
+		const gchar *domain = g_quark_to_string(error->domain);
+		GString *string = g_string_new(domain);
+		int w;
 
-			g_string_free(string, TRUE);
-			g_free(in_args);
-			g_free(out_args);
-			
-			return JSValueMakeNull(eng->context);
+		*(string->str) = g_unichar_toupper(*(string->str));
+		for (w = 0; w < string->len; w++)
+		{
+			if (*(string->str + w) == '-')
+			{
+				*(string->str + w + 1) =
+				    g_unichar_toupper(*(string->str + w + 1));
+				g_string_erase(string, w, 1);
+			}
+			else if (!strcmp(string->str + w - 1, "Quark"))
+				g_string_truncate(string, w - 1);
+
+		}
+		seed_make_exception(exception, string->str, error->message);
+
+		g_string_free(string, TRUE);
+		g_free(in_args);
+		g_free(out_args);
+
+		return JSValueMakeNull(eng->context);
 	}
 
 	g_free(in_args);
@@ -300,17 +321,18 @@ seed_gobject_method_invoked(JSContextRef ctx,
 	return retval_ref;
 }
 
-void seed_gobject_define_property_from_function_info(GIFunctionInfo * info,
-						     JSObjectRef object,
-						     gboolean instance)
+void
+seed_gobject_define_property_from_function_info(GIFunctionInfo * info,
+						JSObjectRef object,
+						gboolean instance)
 {
 	GIFunctionInfoFlags flags;
 	SeedValue method_ref;
 	const gchar *name;
 
-	//if (g_base_info_is_deprecated ((GIBaseInfo *) info))
-	//      g_printf("Not defining deprecated symbol: %s \n",
-	//               g_base_info_get_name((GIBaseInfo *)info));
+	// if (g_base_info_is_deprecated ((GIBaseInfo *) info))
+	// g_printf("Not defining deprecated symbol: %s \n",
+	// g_base_info_get_name((GIBaseInfo *)info));
 
 	flags = g_function_info_get_flags(info);
 
@@ -328,31 +350,34 @@ void seed_gobject_define_property_from_function_info(GIFunctionInfo * info,
 
 }
 
-static void seed_gobject_add_methods_for_interfaces(GIObjectInfo * oinfo,
-						    JSObjectRef object)
+static void
+seed_gobject_add_methods_for_interfaces(GIObjectInfo * oinfo,
+					JSObjectRef object)
 {
 	GIInterfaceInfo *interface;
 	gint n_interfaces, i;
 
 	n_interfaces = g_object_info_get_n_interfaces(oinfo);
 
-	for (i = 0; i < n_interfaces; i++) {
+	for (i = 0; i < n_interfaces; i++)
+	{
 		GIFunctionInfo *function;
 		gint n_functions, k;
 		interface = g_object_info_get_interface(oinfo, i);
 
 		n_functions = g_interface_info_get_n_methods(interface);
-		for (k = 0; k < n_functions; k++) {
+		for (k = 0; k < n_functions; k++)
+		{
 			function = g_interface_info_get_method(interface, k);
 			seed_gobject_define_property_from_function_info
 			    (function, object, TRUE);
 		}
-		//      g_base_info_unref((GIBaseInfo*)interface);
+		// g_base_info_unref((GIBaseInfo*)interface);
 	}
 }
 
-static void seed_gobject_add_methods_for_type(GIObjectInfo * oinfo,
-					      JSObjectRef object)
+static void
+seed_gobject_add_methods_for_type(GIObjectInfo * oinfo, JSObjectRef object)
 {
 	gint n_methods;
 	gint i;
@@ -360,7 +385,8 @@ static void seed_gobject_add_methods_for_type(GIObjectInfo * oinfo,
 
 	n_methods = g_object_info_get_n_methods(oinfo);
 
-	for (i = 0; i < n_methods; i++) {
+	for (i = 0; i < n_methods; i++)
+	{
 		info = g_object_info_get_method(oinfo, i);
 		seed_gobject_define_property_from_function_info(info,
 								object, TRUE);
@@ -377,12 +403,12 @@ JSClassRef seed_gobject_get_class_for_gtype(GType type)
 	JSObjectRef prototype_obj;
 	JSObjectRef parent_prototype;
 
-	if ((ref = g_type_get_qdata(type, qname)) != NULL) {
+	if ((ref = g_type_get_qdata(type, qname)) != NULL)
+	{
 		return ref;
 	}
 
 	info = g_irepository_find_by_gtype(g_irepository_get_default(), type);
-
 
 	memset(&def, 0, sizeof(JSClassDefinition));
 
@@ -393,7 +419,8 @@ JSClassRef seed_gobject_get_class_for_gtype(GType type)
 	def.attributes = kJSClassAttributeNoAutomaticPrototype;
 
 	prototype_obj = JSObjectMake(eng->context, 0, 0);
-	if (parent) {
+	if (parent)
+	{
 		parent_prototype = seed_gobject_get_prototype_for_gtype(parent);
 		if (parent_prototype)
 			JSObjectSetPrototype(eng->context,
@@ -410,35 +437,38 @@ JSClassRef seed_gobject_get_class_for_gtype(GType type)
 
 	if (info && (g_base_info_get_type(info) == GI_INFO_TYPE_OBJECT))
 	{
-			seed_gobject_add_methods_for_type((GIObjectInfo *) info,
-											  prototype_obj);
-			seed_gobject_add_methods_for_interfaces((GIObjectInfo *) info,
-													prototype_obj);
+		seed_gobject_add_methods_for_type((GIObjectInfo *) info,
+						  prototype_obj);
+		seed_gobject_add_methods_for_interfaces((GIObjectInfo *) info,
+							prototype_obj);
 	}
 	else
 	{
-			GType * interfaces;
-			GIFunctionInfo * function;
-			GIBaseInfo * interface;
-			gint n_functions, k, i, n;
-			
-			interfaces = g_type_interfaces(type, &n);
-			for (i = 0; i < n; i++)
+		GType *interfaces;
+		GIFunctionInfo *function;
+		GIBaseInfo *interface;
+		gint n_functions, k, i, n;
+
+		interfaces = g_type_interfaces(type, &n);
+		for (i = 0; i < n; i++)
+		{
+			interface =
+			    g_irepository_find_by_gtype(0, interfaces[i]);
+			if (!interface)
+				break;
+			n_functions =
+			    g_interface_info_get_n_methods((GIInterfaceInfo *)
+							   interface);
+			for (k = 0; k < n_functions; k++)
 			{
-					interface = g_irepository_find_by_gtype(0,
-															interfaces[i]);
-					if (!interface)
-							break;
-					n_functions =
-				g_interface_info_get_n_methods((GIInterfaceInfo *) interface);
-					for (k = 0; k < n_functions; k++)
-					{
-							function = g_interface_info_get_method(
-									(GIInterfaceInfo *) interface, k);
-							seed_gobject_define_property_from_function_info(
-									function, prototype_obj, TRUE);
-					}
+				function =
+				    g_interface_info_get_method((GIInterfaceInfo
+								 *)
+								interface, k);
+				seed_gobject_define_property_from_function_info
+				    (function, prototype_obj, TRUE);
 			}
+		}
 	}
 
 	return ref;
@@ -449,10 +479,10 @@ JSObjectRef seed_gobject_get_prototype_for_gtype(GType type)
 	JSObjectRef prototype = 0;
 	while (type && !prototype)
 	{
-			prototype = g_type_get_qdata(type, qprototype);
-			type = g_type_parent(type);
+		prototype = g_type_get_qdata(type, qprototype);
+		type = g_type_parent(type);
 	}
-	
+
 	return prototype;
 }
 
@@ -463,7 +493,7 @@ static void seed_gobject_finalize(JSObjectRef object)
 	gobject = seed_value_to_object((JSValueRef) object, 0);
 	if (!gobject)
 		return;
-	
+
 	g_object_remove_toggle_ref(gobject, seed_toggle_ref, 0);
 	g_object_unref(gobject);
 }
@@ -481,17 +511,18 @@ static void seed_gobject_initialize(JSContextRef ctx, JSObjectRef object)
 					   G_OBJECT_TYPE(gobject));
 
 	seed_add_signals_to_object(object, gobject);
-	if (!base) {
+	if (!base)
+	{
 		return;
 	}
 	g_assert(g_base_info_get_type(base) == GI_INFO_TYPE_OBJECT);
 
 }
 
-static JSValueRef seed_gobject_get_property(JSContextRef context,
-					    JSObjectRef object,
-					    JSStringRef property_name,
-					    JSValueRef * exception)
+static JSValueRef
+seed_gobject_get_property(JSContextRef context,
+			  JSObjectRef object,
+			  JSStringRef property_name, JSValueRef * exception)
 {
 	GParamSpec *spec;
 	GObject *b;
@@ -512,9 +543,11 @@ static JSValueRef seed_gobject_get_property(JSContextRef context,
 	spec = g_object_class_find_property(G_OBJECT_GET_CLASS(b),
 					    cproperty_name);
 
-	if (!spec) {
+	if (!spec)
+	{
 		len = strlen(cproperty_name);
-		for (i = 0; i < len - 1; i++) {
+		for (i = 0; i < len - 1; i++)
+		{
 			if (cproperty_name[i] == '_')
 				cproperty_name[i] = '-';
 		}
@@ -533,10 +566,11 @@ static JSValueRef seed_gobject_get_property(JSContextRef context,
 	return (JSValueRef) ret;
 }
 
-static bool seed_gobject_set_property(JSContextRef context,
-				      JSObjectRef object,
-				      JSStringRef property_name,
-				      JSValueRef value, JSValueRef * exception)
+static bool
+seed_gobject_set_property(JSContextRef context,
+			  JSObjectRef object,
+			  JSStringRef property_name,
+			  JSValueRef value, JSValueRef * exception)
 {
 	GParamSpec *spec = 0;
 	GObject *obj;
@@ -557,16 +591,19 @@ static bool seed_gobject_set_property(JSContextRef context,
 	spec = g_object_class_find_property(G_OBJECT_GET_CLASS(obj),
 					    cproperty_name);
 
-	if (!spec) {
+	if (!spec)
+	{
 		gint i, len;
 		len = strlen(cproperty_name);
-		for (i = 0; i < len; i++) {
+		for (i = 0; i < len; i++)
+		{
 			if (cproperty_name[i] == '_')
 				cproperty_name[i] = '-';
 		}
 		spec = g_object_class_find_property(G_OBJECT_GET_CLASS(obj),
 						    cproperty_name);
-		if (!spec) {
+		if (!spec)
+		{
 			g_free(cproperty_name);
 			return 0;
 		}
@@ -580,17 +617,18 @@ static bool seed_gobject_set_property(JSContextRef context,
 	seed_gvalue_from_seed_value(value, type, &gval, exception);
 	if (*exception)
 	{
-			g_free(cproperty_name);
-			return 0;
+		g_free(cproperty_name);
+		return 0;
 	}
 
 	if (glib_message)
 	{
-			g_free(glib_message);
-			glib_message = 0;
+		g_free(glib_message);
+		glib_message = 0;
 	}
 	g_object_set_property(obj, cproperty_name, &gval);
-	if (glib_message != 0) {
+	if (glib_message != 0)
+	{
 		seed_make_exception(exception, "PropertyError", glib_message);
 
 		return FALSE;
@@ -617,25 +655,30 @@ seed_gi_import_namespace(JSContextRef ctx,
 
 	if (argumentCount == 0)
 	{
-			seed_make_exception(exception,
-								"ArgumentError", 
-								"Seed.import_namespace"
-								" expected 1 or 2 arguments, got 0");
-			return JSValueMakeNull(eng->context);
+		seed_make_exception(exception,
+				    "ArgumentError",
+				    "Seed.import_namespace"
+				    " expected 1 or 2 arguments, got 0");
+		return JSValueMakeNull(eng->context);
 	}
 
 	namespace = seed_value_to_string(arguments[0], exception);
-	if (argumentCount == 2) {
+	if (argumentCount == 2)
+	{
 		version = seed_value_to_string(arguments[1], exception);
 	}
 
 	if (!g_irepository_require(g_irepository_get_default(), namespace,
-				   version, 0, NULL)) {
+				   version, 0, NULL))
+	{
 		gchar *mes;
-		if (!version) {
-			mes = g_strdup_printf("No such namespace: %s",
-					      namespace);
-		} else {
+		if (!version)
+		{
+			mes =
+			    g_strdup_printf("No such namespace: %s", namespace);
+		}
+		else
+		{
 			mes =
 			    g_strdup_printf
 			    ("No such namespace: %s (version %s)", namespace,
@@ -651,16 +694,20 @@ seed_gi_import_namespace(JSContextRef ctx,
 	JSValueProtect(eng->context, namespace_ref);
 	seed_value_set_property(eng->global, namespace, namespace_ref);
 
-	for (i = 0; i < n; i++) {
+	for (i = 0; i < n; i++)
+	{
 		info = g_irepository_get_info(g_irepository_get_default(),
 					      namespace, i);
-		if (info &&
-		    (g_base_info_get_type(info) == GI_INFO_TYPE_FUNCTION)) {
-			seed_gobject_define_property_from_function_info(
-					(GIFunctionInfo *) info, namespace_ref, FALSE);
-		} else if (info &&
-			   (g_base_info_get_type(info) == GI_INFO_TYPE_ENUM || 
-				g_base_info_get_type(info) == GI_INFO_TYPE_FLAGS)) {
+		if (info
+		    && (g_base_info_get_type(info) == GI_INFO_TYPE_FUNCTION))
+		{
+			seed_gobject_define_property_from_function_info((GIFunctionInfo *) info, namespace_ref, FALSE);
+		}
+		else if (info
+			 && (g_base_info_get_type(info) == GI_INFO_TYPE_ENUM
+			     || g_base_info_get_type(info) ==
+			     GI_INFO_TYPE_FLAGS))
+		{
 			gint num_vals =
 			    g_enum_info_get_n_values((GIEnumInfo *) info);
 			gint j;
@@ -671,43 +718,48 @@ seed_gi_import_namespace(JSContextRef ctx,
 						g_base_info_get_name(info),
 						enum_class);
 
-			for (j = 0; j < num_vals; j++) {
+			for (j = 0; j < num_vals; j++)
+			{
 				GIValueInfo *val =
 				    g_enum_info_get_value((GIEnumInfo *)
 							  info, j);
 				gint value = g_value_info_get_value(val);
-				gchar *name = g_strdup(g_base_info_get_name(
-									  (GIBaseInfo *) val));
+				gchar *name =
+				    g_strdup(g_base_info_get_name
+					     ((GIBaseInfo *) val));
 				gint name_len = strlen(name);
 				gint j;
 				JSValueRef value_ref;
 
-				value_ref = JSValueMakeNumber
-				    (eng->context, value);
-				JSValueProtect
-				    (eng->context, (JSValueRef) value_ref);
+				value_ref =
+				    JSValueMakeNumber(eng->context, value);
+				JSValueProtect(eng->context,
+					       (JSValueRef) value_ref);
 
-				for (j = 0; j < name_len; j++) {
+				for (j = 0; j < name_len; j++)
+				{
 					if (name[j] == '-')
 						name[j] = '_';
 				}
 
-				seed_value_set_property(enum_class,
-							name, value_ref);
+				seed_value_set_property(enum_class, name,
+							value_ref);
 
 				g_free(name);
 
 			}
-		} else if (info &&
-			   (g_base_info_get_type(info) == GI_INFO_TYPE_OBJECT))
+		}
+		else if (info &&
+			 (g_base_info_get_type(info) == GI_INFO_TYPE_OBJECT))
 		{
 			GType type;
 			JSClassRef class_ref;
 
-			type = g_registered_type_info_get_g_type(
-					  (GIRegisteredTypeInfo *) info);
+			type =
+			    g_registered_type_info_get_g_type((GIRegisteredTypeInfo *) info);
 
-			if (type != 0) {
+			if (type != 0)
+			{
 				JSObjectRef constructor_ref;
 				gint i, n_methods;
 				GIFunctionInfo *finfo;
@@ -724,16 +776,20 @@ seed_gi_import_namespace(JSContextRef ctx,
 				n_methods =
 				    g_object_info_get_n_methods((GIObjectInfo *)
 								info);
-				for (i = 0; i < n_methods; i++) {
+				for (i = 0; i < n_methods; i++)
+				{
 					finfo =
 					    g_object_info_get_method((GIObjectInfo *) info, i);
 					flags =
 					    g_function_info_get_flags(finfo);
-					if (flags & GI_FUNCTION_IS_CONSTRUCTOR) {
+					if (flags & GI_FUNCTION_IS_CONSTRUCTOR)
+					{
 						seed_gobject_define_property_from_function_info
 						    (finfo, constructor_ref,
 						     FALSE);
-					} else {
+					}
+					else
+					{
 						g_base_info_unref((GIBaseInfo *)
 								  finfo);
 					}
@@ -746,8 +802,9 @@ seed_gi_import_namespace(JSContextRef ctx,
 				JSValueProtect(eng->context,
 					       (JSValueRef) constructor_ref);
 			}
-		} else if (info &&
-			   (g_base_info_get_type(info) == GI_INFO_TYPE_STRUCT))
+		}
+		else if (info &&
+			 (g_base_info_get_type(info) == GI_INFO_TYPE_STRUCT))
 		{
 			JSObjectRef struct_ref;
 			gint i, n_methods;
@@ -758,7 +815,8 @@ seed_gi_import_namespace(JSContextRef ctx,
 			n_methods =
 			    g_struct_info_get_n_methods((GIStructInfo *) info);
 
-			for (i = 0; i < n_methods; i++) {
+			for (i = 0; i < n_methods; i++)
+			{
 				finfo =
 				    g_struct_info_get_method((GIStructInfo *)
 							     info, i);
@@ -772,33 +830,35 @@ seed_gi_import_namespace(JSContextRef ctx,
 						struct_ref);
 
 			JSValueProtect(eng->context, (JSValueRef) struct_ref);
-		} else if (info &&
-				 (g_base_info_get_type(info) == GI_INFO_TYPE_CALLBACK))
-		{
-				JSObjectRef callback_ref = JSObjectMake(eng->context, 
-														seed_callback_class, 
-														info);
-				seed_value_set_property(namespace_ref,
-										g_base_info_get_name(info),
-										(JSValueRef)callback_ref);
-		} else if (info &&
-				   (g_base_info_get_type(info) == GI_INFO_TYPE_CONSTANT))
-		{
-				GArgument argument;
-				JSValueRef constant_value;
-				
-				g_constant_info_get_value((GIConstantInfo *)info, &argument);
-				constant_value = 
-						seed_gi_argument_make_js(&argument,
-							 g_constant_info_get_type((GIConstantInfo *)info),
-												 exception);
-				seed_value_set_property(namespace_ref, 
-										g_base_info_get_name(info),
-										constant_value);
-				
 		}
-		
-	} 
+		else if (info &&
+			 (g_base_info_get_type(info) == GI_INFO_TYPE_CALLBACK))
+		{
+			JSObjectRef callback_ref = JSObjectMake(eng->context,
+								seed_callback_class,
+								info);
+			seed_value_set_property(namespace_ref,
+						g_base_info_get_name(info),
+						(JSValueRef) callback_ref);
+		}
+		else if (info &&
+			 (g_base_info_get_type(info) == GI_INFO_TYPE_CONSTANT))
+		{
+			GArgument argument;
+			JSValueRef constant_value;
+
+			g_constant_info_get_value((GIConstantInfo *) info,
+						  &argument);
+			constant_value =
+			    seed_gi_argument_make_js(&argument,
+						     g_constant_info_get_type((GIConstantInfo *) info), exception);
+			seed_value_set_property(namespace_ref,
+						g_base_info_get_name(info),
+						constant_value);
+
+		}
+
+	}
 
 	extension =
 	    g_strdup_printf("Seed.include(\"/usr/local/share/seed/%s.js\")",
@@ -872,7 +932,7 @@ JSClassDefinition seed_callback_def = {
 	NULL,			/* Set Property */
 	NULL,			/* Delete Property */
 	NULL,			/* Get Property Names */
-	NULL,	/* Call As Function */
+	NULL,			/* Call As Function */
 	NULL,			/* Call As Constructor */
 	NULL,			/* Has Instance */
 	NULL			/* Convert To Type */
@@ -898,7 +958,7 @@ JSClassDefinition gobject_constructor_def = {
 	NULL			/* Convert To Type */
 };
 
-void seed_create_function(gchar *name, gpointer func, JSObjectRef obj)
+void seed_create_function(gchar * name, gpointer func, JSObjectRef obj)
 {
 	JSObjectRef oref;
 
@@ -907,55 +967,55 @@ void seed_create_function(gchar *name, gpointer func, JSObjectRef obj)
 	seed_value_set_property(obj, name, oref);
 }
 
-static void seed_log_handler(const gchar * domain,
-			     GLogLevelFlags log_level,
-			     const gchar * message, gpointer user_data)
+static void
+seed_log_handler(const gchar * domain,
+		 GLogLevelFlags log_level,
+		 const gchar * message, gpointer user_data)
 {
 	glib_message = g_strdup(message);
 }
 
-gboolean seed_init(gint *argc, gchar ***argv)
+gboolean seed_init(gint * argc, gchar *** argv)
 {
-		JSObjectRef seed_obj_ref;
-		JSStringRef defaults_script;
+	JSObjectRef seed_obj_ref;
+	JSStringRef defaults_script;
 
-		g_type_init();
-		g_log_set_handler("GLib-GObject", G_LOG_LEVEL_WARNING, seed_log_handler,
-						  0);
-		
-		qname = g_quark_from_static_string("js-type");
-		qprototype = g_quark_from_static_string("js-prototype");
-		
-		eng = (SeedEngine *) g_malloc(sizeof(SeedEngine));
-		
-		eng->context = JSGlobalContextCreateInGroup(NULL, NULL);
-		eng->global = JSContextGetGlobalObject(eng->context);
-		gobject_class = JSClassCreate(&gobject_def);
-		JSClassRetain(gobject_class);
-		gobject_method_class = JSClassCreate(&gobject_method_def);
-		JSClassRetain(gobject_method_class);
-		gobject_constructor_class = JSClassCreate(&gobject_constructor_def);
-		JSClassRetain(gobject_constructor_class);
-		gobject_signal_class = JSClassCreate(seed_get_signal_class());
-		JSClassRetain(gobject_signal_class);
-		seed_callback_class = JSClassCreate(&seed_callback_def);
-		JSClassRetain(seed_callback_class);
-		
-		g_type_set_qdata(G_TYPE_OBJECT, qname, gobject_class);
-		
-		seed_obj_ref = JSObjectMake(eng->context, NULL, NULL);
-		seed_value_set_property(eng->global, "Seed", seed_obj_ref);
-		JSValueProtect(eng->context, seed_obj_ref);
-		
-		seed_create_function("import_namespace", &seed_gi_import_namespace,
-							 seed_obj_ref);
-		seed_init_builtins(argc, argv);
-		seed_closures_init();
-		
-		seed_gtype_init();
+	g_type_init();
+	g_log_set_handler("GLib-GObject", G_LOG_LEVEL_WARNING,
+			  seed_log_handler, 0);
 
+	qname = g_quark_from_static_string("js-type");
+	qprototype = g_quark_from_static_string("js-prototype");
 
-		defaults_script =
+	eng = (SeedEngine *) g_malloc(sizeof(SeedEngine));
+
+	eng->context = JSGlobalContextCreateInGroup(NULL, NULL);
+	eng->global = JSContextGetGlobalObject(eng->context);
+	gobject_class = JSClassCreate(&gobject_def);
+	JSClassRetain(gobject_class);
+	gobject_method_class = JSClassCreate(&gobject_method_def);
+	JSClassRetain(gobject_method_class);
+	gobject_constructor_class = JSClassCreate(&gobject_constructor_def);
+	JSClassRetain(gobject_constructor_class);
+	gobject_signal_class = JSClassCreate(seed_get_signal_class());
+	JSClassRetain(gobject_signal_class);
+	seed_callback_class = JSClassCreate(&seed_callback_def);
+	JSClassRetain(seed_callback_class);
+
+	g_type_set_qdata(G_TYPE_OBJECT, qname, gobject_class);
+
+	seed_obj_ref = JSObjectMake(eng->context, NULL, NULL);
+	seed_value_set_property(eng->global, "Seed", seed_obj_ref);
+	JSValueProtect(eng->context, seed_obj_ref);
+
+	seed_create_function("import_namespace", &seed_gi_import_namespace,
+			     seed_obj_ref);
+	seed_init_builtins(argc, argv);
+	seed_closures_init();
+
+	seed_gtype_init();
+
+	defaults_script =
 	    JSStringCreateWithUTF8CString("Seed.include(\"/usr/local/share"
 					  "/seed/Seed.js\")");
 	JSEvaluateScript(eng->context, defaults_script, NULL, NULL, 0, NULL);
@@ -972,7 +1032,8 @@ SeedScript *seed_make_script(const gchar * js, const gchar * source_url,
 
 	ret->script = JSStringCreateWithUTF8CString(js);
 
-	if (source_url) {
+	if (source_url)
+	{
 		ret->source_url = JSStringCreateWithUTF8CString(source_url);
 	}
 	ret->line_number = line_number;

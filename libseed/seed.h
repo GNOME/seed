@@ -1,4 +1,6 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*- */
+/*
+ * -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*- 
+ */
 /*
  * seed.h
  * Copyright (C) Robert Carr 2008 <carrr@rpi.edu>
@@ -29,8 +31,10 @@ typedef gpointer SeedContextRef;
 
 typedef struct _SeedScript SeedScript;
 
-/* seed-engine.c */
-gboolean seed_init(gint *argc, gchar ***argv);
+/*
+ * seed-engine.c 
+ */
+gboolean seed_init(gint * argc, gchar *** argv);
 
 SeedScript *seed_make_script(const gchar * s, const gchar * source_url,
 			     gint line_number);
@@ -43,55 +47,57 @@ gchar *seed_exception_get_file(SeedException e);
 
 SeedValue seed_evaluate(SeedScript * s, SeedObject this);
 
-/* seed-types.c */
+/*
+ * seed-types.c 
+ */
 
-gboolean seed_value_to_boolean(SeedValue val, SeedException *exception);
-SeedValue seed_value_from_boolean(gboolean val, SeedException *exception);
+gboolean seed_value_to_boolean(SeedValue val, SeedException * exception);
+SeedValue seed_value_from_boolean(gboolean val, SeedException * exception);
 
-guint seed_value_to_uint(SeedValue val, SeedException *exception);
-SeedValue seed_value_from_uint(guint val, SeedException *exception);
+guint seed_value_to_uint(SeedValue val, SeedException * exception);
+SeedValue seed_value_from_uint(guint val, SeedException * exception);
 
-gint seed_value_to_int(SeedValue val, SeedException *exception);
-SeedValue seed_value_from_int(gint val, SeedException *exception);
+gint seed_value_to_int(SeedValue val, SeedException * exception);
+SeedValue seed_value_from_int(gint val, SeedException * exception);
 
-gchar seed_value_to_char(SeedValue val, SeedException *exception);
-SeedValue seed_value_from_char(gchar val, SeedException *exception);
+gchar seed_value_to_char(SeedValue val, SeedException * exception);
+SeedValue seed_value_from_char(gchar val, SeedException * exception);
 
-guchar seed_value_to_uchar(SeedValue val, SeedException *exception);
-SeedValue seed_value_from_uchar(guchar val, SeedException *exception);
+guchar seed_value_to_uchar(SeedValue val, SeedException * exception);
+SeedValue seed_value_from_uchar(guchar val, SeedException * exception);
 
-glong seed_value_to_long(SeedValue val, SeedException *exception);
-SeedValue seed_value_from_long(glong val, SeedException *exception);
+glong seed_value_to_long(SeedValue val, SeedException * exception);
+SeedValue seed_value_from_long(glong val, SeedException * exception);
 
-gulong seed_value_to_ulong(SeedValue val, SeedException *exception);
-SeedValue seed_value_from_ulong(gulong val, SeedException *exception);
+gulong seed_value_to_ulong(SeedValue val, SeedException * exception);
+SeedValue seed_value_from_ulong(gulong val, SeedException * exception);
 
-gint64 seed_value_to_int64(SeedValue val, SeedException *exception);
-SeedValue seed_value_from_int64(gint64 val, SeedException *exception);
+gint64 seed_value_to_int64(SeedValue val, SeedException * exception);
+SeedValue seed_value_from_int64(gint64 val, SeedException * exception);
 
-guint64 seed_value_to_uint64(SeedValue val, SeedException *exception);
-SeedValue seed_value_from_uint64(guint64 val, SeedException *exception);
+guint64 seed_value_to_uint64(SeedValue val, SeedException * exception);
+SeedValue seed_value_from_uint64(guint64 val, SeedException * exception);
 
-gfloat seed_value_to_float(SeedValue val, SeedException *exception);
-SeedValue seed_value_from_float(gfloat val, SeedException *exception);
+gfloat seed_value_to_float(SeedValue val, SeedException * exception);
+SeedValue seed_value_from_float(gfloat val, SeedException * exception);
 
-gdouble seed_value_to_double(SeedValue val, SeedException *exception);
-SeedValue seed_value_from_double(gdouble val, SeedException *exception);
+gdouble seed_value_to_double(SeedValue val, SeedException * exception);
+SeedValue seed_value_from_double(gdouble val, SeedException * exception);
 
-gchar *seed_value_to_string(SeedValue val, SeedException *exception);
-SeedValue seed_value_from_string(gchar * val, SeedException *exception);
+gchar *seed_value_to_string(SeedValue val, SeedException * exception);
+SeedValue seed_value_from_string(gchar * val, SeedException * exception);
 
-GObject *seed_value_to_object(SeedValue val, SeedException *exception);
-SeedValue seed_value_from_object(GObject * val, SeedException *exception);
+GObject *seed_value_to_object(SeedValue val, SeedException * exception);
+SeedValue seed_value_from_object(GObject * val, SeedException * exception);
 
 typedef void (*SeedFunctionCallback) (SeedContextRef ctx,
-									  SeedObject function,
-									  SeedObject this_object,
-									  size_t argument_count,
-									  const SeedValue arguments[],
-									  SeedException * exception);
+				      SeedObject function,
+				      SeedObject this_object,
+				      size_t argument_count,
+				      const SeedValue arguments[],
+				      SeedException * exception);
 
 void seed_create_function(gchar * name, SeedFunctionCallback,
-						  SeedObject object);
+			  SeedObject object);
 
 #endif
