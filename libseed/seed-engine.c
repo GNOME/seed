@@ -584,12 +584,15 @@ static bool seed_gobject_set_property(JSContextRef context,
 			return 0;
 	}
 
+	if (glib_message)
+	{
+			g_free(glib_message);
+			glib_message = 0;
+	}
 	g_object_set_property(obj, cproperty_name, &gval);
 	if (glib_message != 0) {
 		seed_make_exception(exception, "PropertyError", glib_message);
 
-		g_free(glib_message);
-		glib_message = 0;
 		return FALSE;
 	}
 	g_free(cproperty_name);
