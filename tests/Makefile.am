@@ -1,6 +1,7 @@
 EXTRA_DIST = \
 	argv.js \
     compare.js \
+    constructor-args.js \
     signal-this.js \
     signal-userdata.js \
     signal-expects.js \
