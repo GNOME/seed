@@ -25,6 +25,7 @@ typedef gpointer SeedObject;
 typedef gpointer SeedClass;
 typedef gpointer SeedException;
 typedef gpointer SeedFunction;
+typedef gpointer SeedContextRef;
 
 typedef struct _SeedScript SeedScript;
 
@@ -82,5 +83,15 @@ SeedValue seed_value_from_string(gchar * val, SeedException *exception);
 
 GObject *seed_value_to_object(SeedValue val, SeedException *exception);
 SeedValue seed_value_from_object(GObject * val, SeedException *exception);
+
+typedef void (*SeedFunctionCallback) (SeedContextRef ctx,
+									  SeedObject function,
+									  SeedObject this_object,
+									  size_t argument_count,
+									  const SeedValue arguments[],
+									  SeedException * exception);
+
+void seed_create_function(gchar * name, SeedFunctionCallback,
+						  SeedObject object);
 
 #endif
