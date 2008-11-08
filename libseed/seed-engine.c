@@ -224,6 +224,7 @@ seed_gobject_method_invoked(JSContextRef ctx,
     GArgument retval;
     GArgument *in_args;
     GArgument *out_args;
+    GArgument * out_values;
     gint n_args, n_in_args, n_out_args, i;
     GIArgInfo *arg_info;
     GITypeInfo *type_info;
@@ -244,10 +245,12 @@ seed_gobject_method_invoked(JSContextRef ctx,
 
     in_args = g_new0(GArgument, n_args + 1);
     out_args = g_new0(GArgument, n_args + 1);
+    out_values = g_new0(GArgument, n_args + 1);
     n_in_args = n_out_args = 0;
 
     if (instance_method)
         in_args[n_in_args++].v_pointer = object;
+
     for (i = 0; (i < (n_args)); i++)
     {
         arg_info = g_callable_info_get_arg((GICallableInfo *) info, i);
@@ -281,14 +284,15 @@ seed_gobject_method_invoked(JSContextRef ctx,
             }
             if (dir == GI_DIRECTION_INOUT)
             {
-                n_out_args++;
+                GArgument * out_value = &out_values[n_out_args];
+                out_args[n_out_args++].v_pointer = out_value;
             }
 
         }
         else if (dir == GI_DIRECTION_OUT)
         {
-            printf("%p\n",(gpointer)&out_args[i]);
-            n_out_args++;
+            GArgument * out_value = &out_values[n_out_args];
+            out_args[n_out_args++].v_pointer = out_value;
         }
 
         g_base_info_unref((GIBaseInfo *) type_info);
@@ -334,28 +338,39 @@ seed_gobject_method_invoked(JSContextRef ctx,
 
         return JSValueMakeNull(eng->context);
     }
+    
     if (n_out_args != 0)
     {
-        for (i = 0; i < n_args; i++)
+        for (i = 0; (i < n_args); i++)
         {
+            JSValueRef jsout_val;
             arg_info = g_callable_info_get_arg((GICallableInfo *) info, i);
             dir = g_arg_info_get_direction(arg_info);
-            if (dir == GI_DIRECTION_OUT)
+            if (dir == GI_DIRECTION_IN)
             {
-                type_info = g_arg_info_get_type(arg_info);
-                if (!JSValueIsNull(eng->context, arguments[i]) && 
-                    JSValueIsObject(eng->context, arguments[i]))
-                {
-                    JSValueRef out_val = seed_gi_argument_make_js(&out_args[i], type_info, exception);
-                    seed_value_set_property((JSObjectRef)arguments[i], "value", out_val);
-                }
+                g_base_info_unref((GIBaseInfo*)arg_info);
+                continue;
             }
-
+            type_info = g_arg_info_get_type(arg_info);
+            jsout_val = seed_gi_argument_make_js(&out_values[i], 
+                                                 type_info, 
+                                                 exception);
+            if (!JSValueIsNull(eng->context, arguments[i]) &&
+                JSValueIsObject(eng->context, arguments[i]))
+            {
+                seed_value_set_property((JSObjectRef)arguments[i], 
+                                        "value",
+                                        jsout_val);
+            }
+            
+            g_base_info_unref((GIBaseInfo *)arg_info);
+            g_base_info_unref((GIBaseInfo *)type_info);
         }
     }
 
     g_free(in_args);
     g_free(out_args);
+    g_free(out_values);
     return retval_ref;
 }
 

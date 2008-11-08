@@ -4,6 +4,7 @@ EXTRA_DIST = \
     constructor-args.js \
     signal-this.js \
     signal-userdata.js \
+    out-test.js \
     signal-expects.js \
     gtype.js \
     json.js \
