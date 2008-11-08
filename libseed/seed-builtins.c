@@ -410,20 +410,20 @@ seed_closure_native(JSContextRef ctx,
 
 JSValueRef
 seed_quit(JSContextRef ctx,
-		    JSObjectRef function,
-		    JSObjectRef this_object,
-		    size_t argumentCount,
-		    const JSValueRef arguments[], JSValueRef * exception)
+	  JSObjectRef function,
+	  JSObjectRef this_object,
+	  size_t argumentCount,
+	  const JSValueRef arguments[], JSValueRef * exception)
 {
-	if (argumentCount != 0)
-	{
-	    if (!seed_value_to_int(arguments[0], NULL))
-	     	exit(EXIT_SUCCESS);
-	    else
-		exit(EXIT_FAILURE);
-	}
+    if (argumentCount != 0)
+    {
+	if (!seed_value_to_int(arguments[0], NULL))
+	    exit(EXIT_SUCCESS);
+	else
+	    exit(EXIT_FAILURE);
+    }
 
-	exit(EXIT_SUCCESS);
+    exit(EXIT_SUCCESS);
 }
 
 void seed_init_builtins(gint * argc, gchar *** argv)
