@@ -1,4 +1,4 @@
-shaderdir = $(datadir)/doc/seed/examples/shader
+shaderdir = $(datadir)/doc/seed/examples/clutter-shader
 shader_DATA = \
 	bob.jpg \
 	default.glsl \
