@@ -195,6 +195,10 @@ Seed.print(Seed.stringify(method));
 <p>
 An array representing the arguments passed to the <code>seed</code> interpreter.
 </p>
+<div class="section"><b>Seed.quit(<i>exitcode</i>)</b></div>
+<p>
+Terminates the execution of the Seed interpreter, returning <i>exitcode</i> as the exit value of the program.
+</p>
 <div class="section"><b><i>object</i>.signal.<i>signame</i>.connect</b>(function<i>, context, user_data </i>)</div>
 <p>
 Connects <i>function</i> to the signal, <i>signame</i>, on <i>object</i>. Any GObject signal will work. <i>context</i> is passed to the signal handler as the <code>this</code> object; if omitted, the global context is used. If present, user_data is passed as the last argument to the callback.
