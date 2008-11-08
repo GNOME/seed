@@ -1,6 +1,9 @@
 EXTRA_DIST = \
 	argv.js \
     compare.js \
+    signal-this.js \
+    signal-userdata.js \
+    signal-expects.js \
     gtype.js \
     json.js \
     enum.js \
