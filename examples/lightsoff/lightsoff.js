@@ -20,7 +20,6 @@ window.signal.hide.connect(Gtk.main_quit);
 var vbox = new Gtk.VBox();
 
 vbox.pack_start(create_menu());
-Seed.print("Initial size: " + size);
 vbox.pack_start(table);
 
 window.add(vbox);
