@@ -112,9 +112,8 @@ seed_signal_marshal_func(GClosure * closure,
     SeedClosure *seed_closure = (SeedClosure *) closure;
     JSValueRef *args;
     gint i;
-    
 
-    args = g_newa(JSValueRef, n_param_values+1);
+    args = g_newa(JSValueRef, n_param_values + 1);
 
     for (i = 0; i < n_param_values; i++)
     {
@@ -128,12 +127,12 @@ seed_signal_marshal_func(GClosure * closure,
     }
 
     if (seed_closure->user_data)
-      args[i] = seed_closure->user_data;
+	args[i] = seed_closure->user_data;
     else
-      args[i] = JSValueMakeNull(eng->context);
+	args[i] = JSValueMakeNull(eng->context);
 
     JSObjectCallAsFunction(eng->context, seed_closure->function,
-			   seed_closure->this, n_param_values+1, args, 0);
+			   seed_closure->this, n_param_values + 1, args, 0);
 }
 
 static JSValueRef
@@ -154,8 +153,7 @@ seed_gobject_signal_connect(JSContextRef ctx,
 
     g_assert((argumentCount <= 3));
 
-    closure = g_closure_new_simple(sizeof(SeedClosure), 
-				   0);
+    closure = g_closure_new_simple(sizeof(SeedClosure), 0);
     g_closure_set_marshal(closure, seed_signal_marshal_func);
 
     ((SeedClosure *) closure)->function = (JSObjectRef) arguments[0];
@@ -168,11 +166,11 @@ seed_gobject_signal_connect(JSContextRef ctx,
     }
     else
 	((SeedClosure *) closure)->this = 0;
-    
+
     if (argumentCount == 3)
     {
-	    ((SeedClosure *) closure)->user_data = arguments[2];
-	    JSValueProtect(eng->context, arguments[2]);
+	((SeedClosure *) closure)->user_data = arguments[2];
+	JSValueProtect(eng->context, arguments[2]);
     }
 
     JSValueProtect(eng->context, (JSObjectRef) arguments[0]);

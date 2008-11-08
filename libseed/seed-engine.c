@@ -87,33 +87,33 @@ seed_gobject_constructor_invoked(JSContextRef ctx,
 
     type = (GType) JSObjectGetPrivate(constructor);
     if (!type)
-			return 0;
+	return 0;
 
     oclass = g_type_class_ref(type);
 
     if (argumentCount > 1)
     {
-	    gchar * mes = g_strdup_printf("Constructor expects"
-					  " 1 argument, got %d", argumentCount);
-	    seed_make_exception(exception, "ArgumentError", mes);
-	    g_free(mes);
-	    
-	    return (JSObjectRef)JSValueMakeNull(eng->context);
+	gchar *mes = g_strdup_printf("Constructor expects"
+				     " 1 argument, got %d", argumentCount);
+	seed_make_exception(exception, "ArgumentError", mes);
+	g_free(mes);
+
+	return (JSObjectRef) JSValueMakeNull(eng->context);
     }
 
     if (argumentCount == 1)
     {
-	    if (!JSValueIsObject(eng->context, arguments[0]))
-		{
-				seed_make_exception(exception, "ArgmuentError",
-									"Constructor expects object as argument");
-                g_type_class_unref(oclass);
-				return (JSObjectRef)JSValueMakeNull(eng->context);
-		}
-		
-		jsprops = JSObjectCopyPropertyNames(eng->context,
-											(JSObjectRef) arguments[0]);
-		nparams = JSPropertyNameArrayGetCount(jsprops);
+	if (!JSValueIsObject(eng->context, arguments[0]))
+	{
+	    seed_make_exception(exception, "ArgmuentError",
+				"Constructor expects object as argument");
+	    g_type_class_unref(oclass);
+	    return (JSObjectRef) JSValueMakeNull(eng->context);
+	}
+
+	jsprops = JSObjectCopyPropertyNames(eng->context,
+					    (JSObjectRef) arguments[0]);
+	nparams = JSPropertyNameArrayGetCount(jsprops);
     }
     i = 0;
 
@@ -192,7 +192,15 @@ seed_gobject_equals(JSContextRef ctx,
 {
     GObject *this, *that;
 
-    g_assert(argumentCount == 1);
+    if (argumentCount != 1)
+    {
+	gchar *mes = g_strdup_printf("GObject equals comparison expected"
+				     " 1 argument, got %d", argumentCount);
+	seed_make_exception(exception, "ArgumentError", mes);
+	g_free(mes);
+
+	return JSValueMakeNull(eng->context);
+    }
 
     this = seed_value_to_object((JSValueRef) this_object, exception);
     that = seed_value_to_object(arguments[0], exception);
@@ -514,9 +522,8 @@ static void seed_gobject_initialize(JSContextRef ctx, JSObjectRef object)
 
     seed_add_signals_to_object(object, gobject);
     if (!base)
-    {
 	return;
-    }
+
     g_assert(g_base_info_get_type(base) == GI_INFO_TYPE_OBJECT);
 
 }
