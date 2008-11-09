@@ -113,6 +113,8 @@ gchar * seed_exception_to_string(JSValueRef e)
     g_free(mes);
     g_free(file);
     g_free(name);
+    
+    return ret;
 }
 
 

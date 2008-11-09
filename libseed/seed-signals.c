@@ -110,7 +110,7 @@ seed_signal_marshal_func(GClosure * closure,
 			 gpointer invocation_hint, gpointer marshall_data)
 {
     SeedClosure *seed_closure = (SeedClosure *) closure;
-    JSValueRef *args;
+    JSValueRef *args, exception = 0;
     gint i;
 
     args = g_newa(JSValueRef, n_param_values + 1);
@@ -132,7 +132,17 @@ seed_signal_marshal_func(GClosure * closure,
 	args[i] = JSValueMakeNull(eng->context);
 
     JSObjectCallAsFunction(eng->context, seed_closure->function,
-			   seed_closure->this, n_param_values + 1, args, 0);
+			   seed_closure->this, 
+			   n_param_values + 1, 
+			   args, &exception);
+    
+    if (exception)
+    {
+	gchar * mes = seed_exception_to_string(exception);
+	g_warning("Exception in signal handler. %s \n", mes, 0);
+	g_free(mes);
+    }
+    
 }
 
 static JSValueRef

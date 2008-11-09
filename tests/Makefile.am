@@ -9,6 +9,7 @@ EXTRA_DIST = \
     gtype.js \
     json.js \
     enum.js \
+    signal-exception.js \
     gerror.js \
     gobject-scope.js \
     include.js \

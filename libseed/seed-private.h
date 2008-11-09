@@ -45,5 +45,6 @@ struct _SeedEngine {
 #include "seed-structs.h"
 #include "seed-closure.h"
 #include "seed-gtype.h"
+#include "seed-exceptions.h"
 
 #endif
