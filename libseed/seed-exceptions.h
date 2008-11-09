@@ -18,34 +18,20 @@
  * You should have received a copy of the GNU General Public License along
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-#ifndef _SEED_ENGINE_H
-#define _SEED_ENGINE_H
+#ifndef _SEED_EXCEPTIONS_H
+#define _SEED_EXCEPTIONS_H
 
 #include "seed-private.h"
 
-extern JSClassRef gobject_class;
-extern JSClassRef gobject_method_class;
-extern JSClassRef gobject_constructor_class;
-extern JSClassRef seed_callback_class;
-extern SeedEngine *eng;
+void seed_make_exception(JSValueRef * exception,
+			 const gchar * name, const gchar * message);
 
-typedef struct _SeedScript {
-    JSStringRef script;
-    JSValueRef exception;
+gchar *seed_exception_get_name(JSValueRef e);
+gchar *seed_exception_get_message(JSValueRef e);
+guint seed_exception_get_line(JSValueRef e);
+gchar *seed_exception_get_file(JSValueRef e);
 
-    JSStringRef source_url;
-    gint line_number;
-} SeedScript;
-
-JSObjectRef seed_gobject_get_prototype_for_gtype(GType type);
-JSClassRef seed_gobject_get_class_for_gtype(GType type);
-
-void
-seed_gobject_define_property_from_function_info(GIFunctionInfo * info,
-						JSObjectRef object,
-						gboolean instance);
-void seed_create_function(gchar * name, gpointer func, JSObjectRef obj);
+gchar * seed_exception_to_string(JSValueRef e);
 
 
-#endif
+#endif _SEED_ENGINE_H

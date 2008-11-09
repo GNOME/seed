@@ -32,39 +32,6 @@ GParamSpec **global_prop_cache;
 
 gchar *glib_message = 0;
 
-void
-seed_make_exception(JSValueRef * exception,
-                    const gchar * name, const gchar * message)
-{
-    JSStringRef js_name = 0;
-    JSStringRef js_message = 0;
-    JSValueRef js_name_ref = 0, js_message_ref = 0;
-    JSObjectRef exception_obj;
-
-    if (!exception)
-        return;
-
-    if (name)
-    {
-        js_name = JSStringCreateWithUTF8CString(name);
-        js_name_ref = JSValueMakeString(eng->context, js_name);
-    }
-    if (message)
-    {
-        js_message = JSStringCreateWithUTF8CString(message);
-        js_message_ref = JSValueMakeString(eng->context, js_message);
-    }
-
-    exception_obj = JSObjectMake(eng->context, 0, NULL);
-    seed_value_set_property(exception_obj, "message", js_message_ref);
-    seed_value_set_property(exception_obj, "name", js_name_ref);
-
-    *exception = exception_obj;
-
-    JSStringRelease(js_name);
-    JSStringRelease(js_message);
-}
-
 static JSObjectRef
 seed_gobject_constructor_invoked(JSContextRef ctx,
                                  JSObjectRef constructor,
@@ -1079,46 +1046,4 @@ JSValueRef seed_evaluate(SeedScript * js, JSObjectRef this)
 SeedValue seed_script_exception(SeedScript * s)
 {
     return s->exception;
-}
-
-gchar *seed_exception_get_name(JSValueRef e)
-{
-    SeedValue name;
-    g_assert((e));
-    if (!JSValueIsObject(eng->context, e))
-        return 0;
-
-    name = seed_value_get_property(e, "name");
-    return seed_value_to_string(name, 0);
-}
-
-gchar *seed_exception_get_message(JSValueRef e)
-{
-    SeedValue name;
-    g_assert((e));
-    if (!JSValueIsObject(eng->context, e))
-        return 0;
-
-    name = seed_value_get_property(e, "message");
-    return seed_value_to_string(name, 0);
-}
-
-guint seed_exception_get_line(JSValueRef e)
-{
-    SeedValue line;
-    g_assert((e));
-    if (!JSValueIsObject(eng->context, e))
-        return 0;
-    line = seed_value_get_property(e, "line");
-    return seed_value_to_uint(line, 0);
-}
-
-gchar *seed_exception_get_file(JSValueRef e)
-{
-    SeedValue file;
-    g_assert((e));
-    if (!JSValueIsObject(eng->context, e))
-        return 0;
-    file = seed_value_get_property(e, "sourceURL");
-    return seed_value_to_string(file, 0);
 }
