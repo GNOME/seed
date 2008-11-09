@@ -1,6 +1,10 @@
 #!/usr/bin/env seed
 // Returns: 0
 // STDIN:
+// STDOUT:Typelib file for namespace 'CoreAnimation' \(any version\) not found\nTypelib file for namespace 'Gtk', version '3\.0' not found
+// STDERR:
+// Returns: 0
+// STDIN:
 // STDOUT:No such namespace: CoreAnimation\nNo such namespace: Gtk \(version 3\.0\)
 // STDERR:
 try

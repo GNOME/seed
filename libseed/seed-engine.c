@@ -668,18 +668,7 @@ seed_gi_import_namespace(JSContextRef ctx,
     if (!g_irepository_require(g_irepository_get_default(), namespace,
                                version, 0, &e))
     {
-        gchar *mes;
-        if (!version)
-        {
-            mes = g_strdup_printf("No such namespace: %s", namespace);
-        }
-        else
-        {
-            mes =
-                g_strdup_printf
-                ("No such namespace: %s (version %s)", namespace, version);
-        }
-        seed_make_exception(exception, "NamespaceError", mes);
+        seed_make_exception_from_gerror(exception, e);
         return JSValueMakeNull(eng->context);
     }
 
