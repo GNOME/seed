@@ -5,6 +5,7 @@ SUBDIRS = po \
 	libseed\
 	src\
 	extensions\
+	gir \
 	doc\
 	examples\
 	tests
