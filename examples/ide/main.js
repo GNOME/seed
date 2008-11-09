@@ -18,7 +18,7 @@ Seed.include("ide-tabheader.js");
 Seed.include("ide-tabview.js");
 Seed.include("ide-toolbar.js");
 
-// TODO: put this in a subclass of the window
+// TODO: put this in a subclass of the window and give it a tab (read it out of the header)
 function update_window(new_filename)
 {
     var shortfilename = new_filename.split("/").slice(-1);
@@ -27,6 +27,11 @@ function update_window(new_filename)
         window.title = "Seed IDE - " + shortfilename;
     else
         window.title = "Seed IDE";
+}
+
+function current_tab()
+{
+	return tab_view.get_nth_page(tab_view.page);
 }
 
 var window = new Gtk.Window();

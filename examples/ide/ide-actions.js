@@ -13,12 +13,10 @@ function open_file()
     file_chooser.add_button("Open", Gtk.ResponseType.accept);
     file_chooser.set_action(Gtk.FileChooserAction.open);
     
-    var current_tab = tab_view.get_nth_page(tab_view.page);
-    
     if(file_chooser.run() == Gtk.ResponseType.accept)
     {
-        if(current_tab.source_view.filename == "")
-            current_tab.source_view.load_file(file_chooser.get_filename(), current_tab);
+        if(current_tab().source_view.filename == "" && !current_tab().source_view.edited)
+            current_tab().source_view.load(file_chooser.get_filename());
         else
             tab_view.create_tab(file_chooser.get_filename());
     }
@@ -28,67 +26,32 @@ function open_file()
 
 function save_file()
 {
-    var current_tab = tab_view.get_nth_page(tab_view.page);
-    
-    if(current_tab.source_view.filename == "")
-    {
-        var file_chooser = new Gtk.FileChooserDialog();
-        var file_filter = new Gtk.FileFilter();
-        file_filter.add_mime_type("text/javascript");
-        file_chooser.set_filter(file_filter);
-        file_chooser.add_button("Cancel", Gtk.ResponseType.cancel);
-        file_chooser.add_button("Save", Gtk.ResponseType.accept);
-        file_chooser.set_action(Gtk.FileChooserAction.save);
-
-        if(file_chooser.run() == Gtk.ResponseType.accept)
-        {
-            current_tab.source_view.update_filename(file_chooser.get_filename(), current_tab);
-            update_window(file_chooser.get_filename());
-        }
-
-        file_chooser.destroy();
-    }
-    
-    if(current_tab.source_view.filename != "")
-        Gio.simple_write(current_tab.source_view.filename, current_tab.source_view.get_buffer().text);
+    current_tab().source_view.save();
 }
 
 function undo()
 {
-    var current_tab = tab_view.get_nth_page(tab_view.page);
-    current_tab.source_view.get_buffer().undo();
-    toolbar.update_undo_state(current_tab.source_view);
+    current_tab().source_view.get_buffer().undo();
+    current_tab().source_view.update_undo_state();
 }
 
 function redo()
 {
-    var current_tab = tab_view.get_nth_page(tab_view.page);
-    current_tab.source_view.get_buffer().redo();
-    toolbar.update_undo_state(current_tab.source_view);
+    current_tab().source_view.get_buffer().redo();
+    current_tab().source_view.update_undo_state();
 }
 
 function execute()
 {
-    var current_tab = tab_view.get_nth_page(tab_view.page);
+    if(current_tab().source_view.save())
+    	return;
     
-    if(current_tab.source_view.filename == "")
-        save_file();
+    current_tab().terminal.reset(true, true);
+    current_tab().terminal.fork_command("/bin/dash");
     
-    try
-    {
-    	Gio.simple_write(current_tab.source_view.filename, current_tab.source_view.get_buffer().text);
-    }
-    catch(e)
-    {
-    	Seed.print(e.name + " " + e.message); // TODO: popup
-    }
+    var command = "clear ; /usr/bin/env seed \"" + current_tab().source_view.filename + "\" ; sleep 1d\n";
     
-    current_tab.terminal.reset(true, true);
-    current_tab.terminal.fork_command("/bin/dash");
-    
-    var command = "clear ; env seed \"" + current_tab.source_view.filename + "\" ; sleep 1d\n";
-    
-    current_tab.terminal.feed_child(command, command.length);
+    current_tab().terminal.feed_child(command, command.length);
 }
 
 function close_tab()

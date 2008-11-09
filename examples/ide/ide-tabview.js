@@ -9,7 +9,7 @@ IDETabViewType = {
             
             tab.header = new IDETabHeader();
             tab.header.set_tab(tab);
-            tab.source_view.load_file(filename, tab);
+            tab.source_view.load(filename);
             
             this.append_page(tab, tab.header);
             this.set_tab_reorderable(tab, true);
@@ -22,6 +22,10 @@ IDETabViewType = {
         
         prototype.close_tab = function (button)
         {
+            if(this.source_view.edited)
+                Seed.print("oh noes!!");
+            // TODO: warn first!! return if they don't want to...
+            
             tab_view.remove_page(tab_view.page_num(this));
             
             if(tab_view.get_n_pages() == 0)
@@ -32,7 +36,7 @@ IDETabViewType = {
         {
             var my_page = notebook.get_nth_page(n);
             update_window(my_page.source_view.filename);
-            toolbar.update_undo_state(my_page.source_view);
+            my_page.source_view.update_undo_state(my_page.source_view);
         }
     },
     instance_init: function(klass)

@@ -20,6 +20,7 @@ IDETabType = {
     instance_init: function(klass)
     {
         this.source_view = new IDESourceView();
+        this.source_view.tab = this;
         this.terminal = new Vte.Terminal();
         this.pane = new Gtk.VPaned();
         

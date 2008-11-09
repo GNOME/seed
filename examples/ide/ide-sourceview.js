@@ -15,9 +15,9 @@ IDESourceViewType = {
                 tab.header.label.label = "Untitled";
         }
         
-        prototype.load_file = function(new_filename, tab)
+        prototype.load = function(new_filename)
         {
-            this.update_filename(new_filename, tab);
+            this.update_filename(new_filename, this.tab);
             
             if(this.filename == "")
                 return;
@@ -29,11 +29,55 @@ IDESourceViewType = {
                 buf.begin_not_undoable_action();
                 buf.text = Gio.simple_read(this.filename);
                 buf.end_not_undoable_action();
+                
+                this.update_edited(false);
+                
+                return 0;
             }
             catch(e)
             {
-                Seed.print(e.name + " " + e.message);
+                Seed.print(e.name + " " + e.message); //TODO: popup
             }
+            
+            return -1;
+        }
+        
+        prototype.save = function()
+        {
+        	if(this.filename == "")
+			{
+				var file_chooser = new Gtk.FileChooserDialog();
+				var file_filter = new Gtk.FileFilter();
+				file_filter.add_mime_type("text/javascript");
+				file_chooser.set_filter(file_filter);
+				file_chooser.add_button("Cancel", Gtk.ResponseType.cancel);
+				file_chooser.add_button("Save", Gtk.ResponseType.accept);
+				file_chooser.set_action(Gtk.FileChooserAction.save);
+
+				if(file_chooser.run() == Gtk.ResponseType.accept)
+				{
+					this.update_filename(file_chooser.get_filename(), current_tab());
+					update_window(file_chooser.get_filename());
+				}
+
+				file_chooser.destroy();
+			}
+	
+			if(this.filename != "")
+			{
+				try
+				{
+					Gio.simple_write(this.filename, this.get_buffer().text);
+					this.update_edited(false);
+					return 0;
+				}
+				catch(e)
+				{
+					Seed.print("had a problem writing!!"); // TODO: popup
+				}
+			}
+			
+			return -1;
         }
         
         prototype.exception_clear = function ()
@@ -57,10 +101,11 @@ IDESourceViewType = {
         
         prototype.text_changed = function(sbuf)
         {
-            toolbar.update_undo_state(this);
+            this.update_undo_state();
+            this.update_edited(true);
             
             var text = sbuf.text.replace(new RegExp("#!.*"), "");
-    
+
             try
             {
                 Seed.check_syntax(text);
@@ -73,10 +118,32 @@ IDESourceViewType = {
             
             this.exception_clear();
         }
+        
+        prototype.update_undo_state = function ()
+        {
+            actions.get_action("undo").sensitive = this.get_buffer().can_undo;
+            actions.get_action("redo").sensitive = this.get_buffer().can_redo;
+        }
+        
+        prototype.update_edited = function (edit)
+        {
+	        var current_label = this.tab.header.label;
+	
+	        if(edit)
+	        {
+		        if(!this.edited)
+			        current_label.label = "*" + current_label.label;
+	        }
+	        else if(this.edited && current_label.label[0] == "*")
+		        current_label.label = current_label.label.substr(1);
+		    
+		    this.edited = edit;
+        }
     },
     instance_init: function(klass)
     {
         this.filename = "";
+        this.edited = false;
         
         this.set_show_line_numbers(true);
         this.set_show_right_margin(true);

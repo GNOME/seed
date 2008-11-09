@@ -42,7 +42,7 @@ outf.write(test_code[0])
 outf.write("// Returns: 0\n")
 outf.write("// STDIN:" + test_in + "\n")
 outf.write("// STDOUT:" + sanitize("".join(out.readlines()).rstrip()) + "\n")
-outf.write("// STDERR:" + sanitize("".join(out.readlines()).rstrip()) + "\n")
+outf.write("// STDERR:" + sanitize("".join(err.readlines()).rstrip()) + "\n")
 
 if(test_in != ""):
 	outf.write("".join(test_code[2:]))
