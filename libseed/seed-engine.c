@@ -280,28 +280,12 @@ seed_gobject_method_invoked(JSContextRef ctx,
     }
     else
     {
-        const gchar *domain = g_quark_to_string(error->domain);
-        GString *string = g_string_new(domain);
-        int w;
+	seed_make_exception_from_gerror(exception, error);
 
-        *(string->str) = g_unichar_toupper(*(string->str));
-        for (w = 0; w < string->len; w++)
-        {
-            if (*(string->str + w) == '-')
-            {
-                *(string->str + w + 1) =
-                    g_unichar_toupper(*(string->str + w + 1));
-                g_string_erase(string, w, 1);
-            }
-            else if (!strcmp(string->str + w - 1, "Quark"))
-                g_string_truncate(string, w - 1);
 
-        }
-        seed_make_exception(exception, string->str, error->message);
-
-        g_string_free(string, TRUE);
         g_free(in_args);
         g_free(out_args);
+	g_error_free(error);
 
         return JSValueMakeNull(eng->context);
     }
@@ -658,6 +642,7 @@ seed_gi_import_namespace(JSContextRef ctx,
                          const JSValueRef arguments[], JSValueRef * exception)
 {
     GIBaseInfo *info;
+    GError * e = 0;
     const gchar *namespace;
     const gchar *extension;
     const gchar *version = 0;
@@ -681,7 +666,7 @@ seed_gi_import_namespace(JSContextRef ctx,
     }
 
     if (!g_irepository_require(g_irepository_get_default(), namespace,
-                               version, 0, NULL))
+                               version, 0, &e))
     {
         gchar *mes;
         if (!version)

@@ -55,6 +55,32 @@ seed_make_exception(JSValueRef * exception,
     JSStringRelease(js_message);
 }
 
+void seed_make_exception_from_gerror(JSValueRef * exception,
+				     GError * error)
+{
+    const gchar * domain = g_quark_to_string(error->domain);
+    GString *string = g_string_new(domain);
+    int i;
+    
+
+    *(string->str) = g_unichar_toupper(*(string->str));
+    for (i = 0; i < string->len; i++)
+    {
+	if (*(string->str + i) == '-')
+	{
+	    *(string->str + i + 1) =
+		g_unichar_toupper(*(string->str + i + 1));
+	    g_string_erase(string, i, 1);
+	}
+	else if (!strcmp(string->str + i - 1, "Quark"))
+	    g_string_truncate(string, i - 1);
+	
+    }
+    seed_make_exception(exception, string->str, error->message);
+    
+    g_string_free(string, TRUE);
+}
+
 gchar *seed_exception_get_name(JSValueRef e)
 {
     SeedValue name;
