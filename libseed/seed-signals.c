@@ -111,6 +111,7 @@ seed_signal_marshal_func(GClosure * closure,
 {
     SeedClosure *seed_closure = (SeedClosure *) closure;
     JSValueRef *args, exception = 0;
+    JSValueRef ret = 0;
     gint i;
 
     args = g_newa(JSValueRef, n_param_values + 1);
@@ -131,10 +132,16 @@ seed_signal_marshal_func(GClosure * closure,
     else
 	args[i] = JSValueMakeNull(eng->context);
 
-    JSObjectCallAsFunction(eng->context, seed_closure->function,
+    ret = JSObjectCallAsFunction(eng->context, seed_closure->function,
 			   seed_closure->this,
 			   n_param_values + 1, args, &exception);
 
+    if (ret)
+    {
+	seed_gvalue_from_seed_value(ret, seed_closure->return_type,
+				    return_value, &exception);
+
+    }
     if (exception)
     {
 	gchar *mes = seed_exception_to_string(exception);
@@ -145,6 +152,61 @@ seed_signal_marshal_func(GClosure * closure,
 }
 
 static JSValueRef
+seed_gobject_signal_emit(JSContextRef ctx,
+			    JSObjectRef function,
+			    JSObjectRef thisObject,
+			    size_t argumentCount,
+			    const JSValueRef arguments[],
+			    JSValueRef * exception)
+{
+    JSValueRef ret;
+    GValue * params;
+    GValue ret_value = {0};
+    GSignalQuery query;
+
+    signal_privates * privates;
+    guint i;
+
+    privates = JSObjectGetPrivate(thisObject);
+
+    g_signal_query(privates->signal_id,
+		   &query);
+    
+    if (argumentCount != query.n_params)
+    {
+	gchar * mes = g_strdup_printf("Signal: %s for type %s expected %d "
+				      "arguments, got %d",
+				      query.signal_name,
+				      g_type_name(query.itype),
+				      query.n_params,
+				      argumentCount);
+	seed_make_exception(exception, "ArgumentError", mes);
+	g_free(mes);
+	return JSValueMakeNull(eng->context);
+    }
+
+       
+    params = g_new0(GValue, argumentCount+1);
+   
+    g_value_init(&params[0], G_TYPE_OBJECT);
+    g_value_set_object(&params[0], privates->object);
+    for (i = 0; i < argumentCount; i++)
+	seed_gvalue_from_seed_value(arguments[i], 
+				    query.param_types[i],
+				    &params[i+1], exception);
+    
+    g_signal_emitv(params, privates->signal_id, 0, &ret_value);
+    
+    for (i = 0; i < argumentCount; i++)
+	g_value_unset(&params[i]);
+    g_free(params);
+    
+    ret = seed_value_from_gvalue(&ret_value, exception);
+    
+    return ret;    
+}
+
+static JSValueRef
 seed_gobject_signal_connect(JSContextRef ctx,
 			    JSObjectRef function,
 			    JSObjectRef thisObject,
@@ -152,6 +214,7 @@ seed_gobject_signal_connect(JSContextRef ctx,
 			    const JSValueRef arguments[],
 			    JSValueRef * exception)
 {
+    GSignalQuery query;
     signal_privates *privates;
     GClosure *closure;
 
@@ -170,6 +233,8 @@ seed_gobject_signal_connect(JSContextRef ctx,
 	g_free(mes);
 	return JSValueMakeNull(eng->context);
     }
+    
+    g_signal_query(privates->signal_id, &query);
 
     closure = g_closure_new_simple(sizeof(SeedClosure), 0);
     g_closure_set_marshal(closure, seed_signal_marshal_func);
@@ -177,6 +242,7 @@ seed_gobject_signal_connect(JSContextRef ctx,
     ((SeedClosure *) closure)->function = (JSObjectRef) arguments[0];
     ((SeedClosure *) closure)->object =
 	g_object_get_data(privates->object, "js-ref");
+    ((SeedClosure *) closure)->return_type = query.return_type;
     if (argumentCount >= 2 && !JSValueIsNull(eng->context, arguments[1]))
     {
 	JSValueProtect(eng->context, (JSObjectRef) arguments[1]);
@@ -199,9 +265,9 @@ seed_gobject_signal_connect(JSContextRef ctx,
 }
 
 JSStaticFunction signal_static_functions[] =
-    { {"connect", seed_gobject_signal_connect, 0}
-,
-{0, 0, 0}
+{ {"connect", seed_gobject_signal_connect, 0},
+  {"emit", seed_gobject_signal_emit, 0},
+  {0, 0, 0}
 };
 
 JSClassDefinition gobject_signal_def = {

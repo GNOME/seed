@@ -24,6 +24,292 @@
 
 JSClassRef seed_gtype_class;
 
+/* From pygobject */
+static ffi_type *
+g_value_to_ffi_type (const GValue *gvalue, gpointer *value)
+{
+    ffi_type *rettype = NULL;
+    GType type = g_type_fundamental (G_VALUE_TYPE (gvalue));
+    g_assert (type != G_TYPE_INVALID);
+
+    switch (type) {
+    case G_TYPE_BOOLEAN:
+    case G_TYPE_CHAR:
+    case G_TYPE_INT:
+	rettype = &ffi_type_sint;
+	*value = (gpointer)&(gvalue->data[0].v_int);
+	break;
+    case G_TYPE_UCHAR:
+    case G_TYPE_UINT:
+	rettype = &ffi_type_uint;
+	*value = (gpointer)&(gvalue->data[0].v_uint);
+	break;
+    case G_TYPE_STRING:
+    case G_TYPE_OBJECT:
+    case G_TYPE_BOXED:
+    case G_TYPE_POINTER:
+	rettype = &ffi_type_pointer;
+	*value = (gpointer)&(gvalue->data[0].v_pointer);
+	break;
+    case G_TYPE_FLOAT:
+	rettype = &ffi_type_float;
+	*value = (gpointer)&(gvalue->data[0].v_float);
+	break;
+    case G_TYPE_DOUBLE:
+	rettype = &ffi_type_double;
+	*value = (gpointer)&(gvalue->data[0].v_double);
+	break;
+    case G_TYPE_LONG:
+	rettype = &ffi_type_slong;
+	*value = (gpointer)&(gvalue->data[0].v_long);
+	break;
+    case G_TYPE_ULONG:
+	rettype = &ffi_type_ulong;
+	*value = (gpointer)&(gvalue->data[0].v_ulong);
+	break;
+    case G_TYPE_INT64:
+	rettype = &ffi_type_sint64;
+	*value = (gpointer)&(gvalue->data[0].v_int64);
+	break;
+    case G_TYPE_UINT64:
+	rettype = &ffi_type_uint64;
+	*value = (gpointer)&(gvalue->data[0].v_uint64);
+	break;
+    default:
+	rettype = &ffi_type_pointer;
+	*value = NULL;
+	g_warning ("Unsupported fundamental type: %s", g_type_name (type));
+	break;
+    }
+    return rettype;
+}
+
+/* From pygobject */
+static void
+g_value_from_ffi_type (GValue *gvalue, gpointer *value)
+{
+    switch (g_type_fundamental (G_VALUE_TYPE (gvalue))) {
+    case G_TYPE_INT:
+	g_value_set_int (gvalue, *(gint*)value);
+	break;
+    case G_TYPE_FLOAT:
+	g_value_set_float (gvalue, *(gfloat*)value);
+	break;
+    case G_TYPE_DOUBLE:
+	g_value_set_double (gvalue, *(gdouble*)value);
+	break;
+    case G_TYPE_BOOLEAN:
+	g_value_set_boolean (gvalue, *(gboolean*)value);
+	break;
+    case G_TYPE_STRING:
+	g_value_set_string (gvalue, *(gchar**)value);
+	break;
+    case G_TYPE_CHAR:
+	g_value_set_char (gvalue, *(gchar*)value);
+	break;
+    case G_TYPE_UCHAR:
+	g_value_set_uchar (gvalue, *(guchar*)value);
+	break;
+    case G_TYPE_UINT:
+	g_value_set_uint (gvalue, *(guint*)value);
+	break;
+    case G_TYPE_POINTER:
+	g_value_set_pointer (gvalue, *(gpointer*)value);
+	break;
+    case G_TYPE_LONG:
+	g_value_set_long (gvalue, *(glong*)value);
+	break;
+    case G_TYPE_ULONG:
+	g_value_set_ulong (gvalue, *(gulong*)value);
+	break;
+    case G_TYPE_INT64:
+	g_value_set_int64 (gvalue, *(gint64*)value);
+	break;
+    case G_TYPE_UINT64:
+	g_value_set_uint64 (gvalue, *(guint64*)value);
+	break;
+    case G_TYPE_BOXED:
+	g_value_set_boxed (gvalue, *(gpointer*)value);
+	break;
+    default:
+	g_warning ("Unsupported fundamental type: %s",
+		   g_type_name (g_type_fundamental (G_VALUE_TYPE (gvalue))));
+    }
+
+}
+
+/* from pygobject */
+void
+g_cclosure_marshal_generic_ffi (GClosure *closure,
+				GValue *return_gvalue,
+				guint n_param_values,
+				const GValue *param_values,
+				gpointer invocation_hint,
+				gpointer marshal_data)
+{
+    ffi_type *rtype;
+    void *rvalue;
+    int n_args;
+    ffi_type **atypes;
+    void **args;
+    int i;
+    ffi_cif cif;
+    GCClosure *cc = (GCClosure*) closure;
+
+    if (return_gvalue && G_VALUE_TYPE (return_gvalue)) 
+    {
+	rtype = g_value_to_ffi_type (return_gvalue, &rvalue);
+    }
+    else 
+    {
+	rtype = &ffi_type_void;
+    }
+
+    rvalue = g_alloca (MAX (rtype->size, sizeof (ffi_arg)));
+  
+    n_args = n_param_values + 1;
+    atypes = g_alloca (sizeof (ffi_type *) * n_args);
+    args =  g_alloca (sizeof (gpointer) * n_args);
+
+    if (G_CCLOSURE_SWAP_DATA (closure))
+    {
+	atypes[n_args-1] = g_value_to_ffi_type (param_values + 0,  
+						&args[n_args-1]);
+	atypes[0] = &ffi_type_pointer;
+	args[0] = &closure->data;
+    }
+    else
+    {
+	atypes[0] = g_value_to_ffi_type (param_values + 0, &args[0]);
+	atypes[n_args-1] = &ffi_type_pointer;
+	args[n_args-1] = &closure->data;
+    }
+
+    for (i = 1; i < n_args - 1; i++)
+	atypes[i] = g_value_to_ffi_type (param_values + i, &args[i]);
+
+    if (ffi_prep_cif (&cif, FFI_DEFAULT_ABI, n_args, rtype, atypes) != FFI_OK)
+	return;
+
+    ffi_call (&cif, marshal_data ? marshal_data : cc->callback, rvalue, args);
+
+    if (return_gvalue && G_VALUE_TYPE (return_gvalue))
+	g_value_from_ffi_type (return_gvalue, rvalue);
+}
+
+static JSValueRef
+seed_gsignal_method_invoked(JSContextRef ctx,
+			    JSObjectRef function,
+			    JSObjectRef thisObject,
+			    size_t argumentCount,
+			    const JSValueRef arguments[],
+			    JSValueRef * exception)
+{
+    // TODO: class_closure, and accumlator. Not useful until we have structs.
+    JSValueRef jsname, jstype, jsflags, jsreturn_type, jsparams, ret;
+    GType itype, return_type;
+    guint n_params = 0;
+    GType * param_types = 0;
+    gchar * name;
+    guint signal_id;
+    GSignalFlags flags;
+
+    /* Sanity check */
+    if (argumentCount != 1)
+    {
+	gchar * mes = g_strdup_printf("Signal constructor expected 1 argument",
+				      " got %d \n", argumentCount);
+	seed_make_exception(exception, "ArgumentError", mes);
+	g_free(mes);
+	return (JSObjectRef)JSValueMakeNull(eng->context);
+    }
+    if (JSValueIsNull(eng->context, arguments[0]) || 
+	!JSValueIsObject(eng->context, arguments[0]))
+    {
+	seed_make_exception(exception, "ArgumentError",
+			    "Signal constructor expected object"
+			    " as first argument");
+ 	return (JSObjectRef)JSValueMakeNull(eng->context);
+    }
+
+
+    /* Signal name */
+    jsname = seed_value_get_property((JSObjectRef)arguments[0], "name");
+    /* seed_value_to_string can handle non strings, however the kind
+     * of strings we want as a signal name are rather small, so make sure
+     * we have an actual string */
+    if (JSValueIsNull(eng->context, jsname) || 
+	!JSValueIsString(eng->context, jsname))
+    {
+	seed_make_exception(exception, "ArgumentError",
+			    "Signal definition needs name property");
+	return (JSObjectRef)JSValueMakeNull(eng->context);
+    }
+    name = seed_value_to_string(jsname, exception);
+    
+    /* Type to install on. Comes from class. */
+    jstype = seed_value_get_property(thisObject, "type");
+    itype = seed_value_to_int(jstype, exception);
+    
+    /* Signal flags */
+    jsflags = seed_value_get_property((JSObjectRef)arguments[0], "flags");
+    if (JSValueIsNull(eng->context, jsflags) || 
+	!JSValueIsNumber(eng->context, jsflags))
+	flags = G_SIGNAL_RUN_FIRST;
+    else
+	flags = seed_value_to_long(jsflags, exception);
+    
+    
+    /* Return type */
+    jsreturn_type = seed_value_get_property((JSObjectRef)arguments[0],
+					    "return_type");
+    if (JSValueIsNull(eng->context, jsreturn_type) || 
+	!JSValueIsNumber(eng->context, jsreturn_type))
+	return_type = G_TYPE_NONE;
+    else
+	return_type = seed_value_to_int(jsreturn_type, exception);
+
+    /* Number of params and types */
+    jsparams = seed_value_get_property((JSObjectRef)arguments[0],
+				       "parameters");
+    if (!JSValueIsNull(eng->context, jsparams) &&
+	JSValueIsObject(eng->context, jsparams))
+    {
+	n_params = seed_value_to_int
+	    (seed_value_get_property(jsparams, "length"), exception);
+	if (n_params > 0)
+	{
+	    guint i;
+	    
+	    param_types = g_new0(GType, n_params);
+	    for (i = 0; i < n_params; i++)
+	    {
+		JSValueRef ptype = 
+		    JSObjectGetPropertyAtIndex(eng->context,
+					       (JSObjectRef)jsparams, 
+					       i,
+					       exception);
+		
+		param_types[i] = seed_value_to_int(ptype, exception);
+	    }
+	}
+    }   
+    
+    signal_id = g_signal_newv(name, itype,
+			      flags, 0, 0, 0, 
+			      g_cclosure_marshal_generic_ffi,
+			      return_type,
+			      n_params,
+			      param_types);
+    
+    g_free(name);
+    g_free(param_types);
+    
+    return (JSValueRef)seed_value_from_uint(signal_id, exception);
+}
+
+
+
 static void
 seed_handle_class_init_closure(ffi_cif * cif,
 			       void *result, void **args, void *userdata)
@@ -36,6 +322,14 @@ seed_handle_class_init_closure(ffi_cif * cif,
     type = (GType) JSObjectGetPrivate(*(JSObjectRef *) args[1]);
     jsargs[0] = seed_make_struct(*(gpointer *) args[0], 0);
     jsargs[1] = seed_gobject_get_prototype_for_gtype(type);
+
+    // TODO: 
+    // Should probably have a custom type for class, and have it auto convert.
+    seed_value_set_property((JSObjectRef)jsargs[0], 
+			    "type", seed_value_from_int(type, 0));
+    seed_create_function("install_signal",
+			 &seed_gsignal_method_invoked,
+			 (JSObjectRef)jsargs[0]);
 
     JSObjectCallAsFunction(eng->context, function, 0, 2, jsargs, 0);
     if (exception)
@@ -211,15 +505,14 @@ seed_gtype_constructor_invoked(JSContextRef ctx,
 
 void seed_gtype_init(void)
 {
-    JSClassDefinition def = kJSClassDefinitionEmpty;
+    JSClassDefinition gtype_def = kJSClassDefinitionEmpty;
     JSObjectRef gtype_constructor;
 
-    def.callAsConstructor = seed_gtype_constructor_invoked;
-    seed_gtype_class = JSClassCreate(&def);
+    gtype_def.callAsConstructor = seed_gtype_constructor_invoked;
+    seed_gtype_class = JSClassCreate(&gtype_def);
     JSClassRetain(seed_gtype_class);
 
     gtype_constructor = JSObjectMake(eng->context, seed_gtype_class, 0);
 
     seed_value_set_property(eng->global, "GType", gtype_constructor);
-
 }

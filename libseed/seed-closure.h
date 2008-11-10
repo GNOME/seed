@@ -30,6 +30,8 @@ typedef struct _SeedClosure {
     JSObjectRef this;
 
     JSValueRef user_data;
+    
+    GType return_type;
 } SeedClosure;
 
 typedef struct _SeedNativeClosure {

@@ -107,7 +107,7 @@ function mouse_click(actor, evt)
 	dy = evt.get_y() - actor.y;
 	
 	select_actor(actor);
-	
+
 	dragging = true;
 	
 	return true;
