@@ -1,7 +1,7 @@
 #!/usr/bin/env seed
 // Returns: 0
 // STDIN:
-// STDOUT:2 Weathermen
+// STDOUT:2 Weathermen\n\[object GtkWindow\]
 // STDERR:
 
 Seed.import_namespace("GObject");
@@ -15,7 +15,8 @@ HelloWindowType = {
     {
 	var HelloSignalDefinition = {name: "hello",
 				     parameters: [GObject.TYPE_INT,
-						  GObject.TYPE_STRING]};
+						  GObject.TYPE_STRING],
+				     return_type: GObject.TYPE_OBJECT};
 	
 	hello_signal_id = klass.install_signal(HelloSignalDefinition);
 
@@ -26,7 +27,8 @@ HelloWindow = new GType(HelloWindowType);
 w = new HelloWindow();
 
 w.signal.hello.connect(function(object, number, string)
-		       {Seed.print(number+ " " + string)});
+		       {Seed.print(number+ " " + string);
+			   return new Gtk.Window()});
 
-w.signal.hello.emit(2, "Weathermen");
+Seed.print(w.signal.hello.emit(2, "Weathermen"));
 	  
