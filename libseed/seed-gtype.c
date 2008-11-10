@@ -255,7 +255,7 @@ seed_gsignal_method_invoked(JSContextRef ctx,
     jsflags = seed_value_get_property((JSObjectRef)arguments[0], "flags");
     if (JSValueIsNull(eng->context, jsflags) || 
 	!JSValueIsNumber(eng->context, jsflags))
-	flags = G_SIGNAL_RUN_FIRST;
+	flags = G_SIGNAL_RUN_LAST;
     else
 	flags = seed_value_to_long(jsflags, exception);
     
