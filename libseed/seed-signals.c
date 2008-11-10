@@ -136,7 +136,7 @@ seed_signal_marshal_func(GClosure * closure,
 			   seed_closure->this,
 			   n_param_values + 1, args, &exception);
 
-    if (ret)
+    if (ret && !JSValueIsNull(eng->context, ret))
     {
 	seed_gvalue_from_seed_value(ret, seed_closure->return_type,
 				    return_value, &exception);
