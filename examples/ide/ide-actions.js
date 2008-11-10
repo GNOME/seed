@@ -26,7 +26,7 @@ function open_file()
 
 function save_file()
 {
-    current_tab().source_view.save();
+    return current_tab().source_view.save();
 }
 
 function undo()

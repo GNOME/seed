@@ -36,7 +36,8 @@ IDESourceViewType = {
             }
             catch(e)
             {
-            	var title = "Could not load the file <i>" + this.filename + "</i>.";
+            	var filename = this.filename.split("/").slice(-1);
+            	var title = "Could not load the file <i>" + filename + "</i>.";
             	this.tab.message_area.show_with_message(title,
             				e.message, Gtk.STOCK_DIALOG_ERROR, this.tab);
             }
@@ -75,7 +76,8 @@ IDESourceViewType = {
 				}
 				catch(e)
 				{
-					var title = "Could not save the file <i>" + this.filename + "</i>.";
+					var filename = this.filename.split("/").slice(-1);
+					var title = "Could not save the file <i>" + filename + "</i>.";
             		this.tab.message_area.show_with_message(title,
             				e.message, Gtk.STOCK_DIALOG_ERROR, this.tab);
 				}
@@ -87,6 +89,10 @@ IDESourceViewType = {
         prototype.query_save = function ()
         {
         	var filename = this.filename.split("/").slice(-1);
+        	
+        	if(filename == "")
+        		filename = "Untitled";
+        	
         	var ma = current_tab().message_area;
 			ma.tab = current_tab();
 			ma.set_icon(Gtk.STOCK_DIALOG_WARNING);
@@ -94,10 +100,10 @@ IDESourceViewType = {
 						   "Would you like to save it, or close, and lose changes?");
 			ma.set_buttons([{stock:Gtk.STOCK_CLOSE, callback:tab_view.force_close_current_tab},
 							{stock:Gtk.STOCK_CANCEL, callback:ma.hide_message},
-							{stock:Gtk.STOCK_SAVE, callback:function(){save_file();ma.hide_message();}}]);
+							{stock:Gtk.STOCK_SAVE, callback:function(){if(!save_file()) ma.hide_message();}}]);
 			ma.show_message();
     		
-    		return false; // false = we didn't save, so don't close; true = we saved, so it's OK
+    		return false;
         }
         
         prototype.exception_clear = function ()

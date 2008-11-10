@@ -48,6 +48,7 @@ IDEMessageAreaType = {
     	{
     		this.tab = tab;
     		
+			this.set_buttons([{stock:Gtk.STOCK_CLOSE,callback:this.hide_message}]);
     		this.set_message(msg, submsg);
     		this.set_icon(icon);
     		
@@ -56,7 +57,8 @@ IDEMessageAreaType = {
     	
     	prototype.set_buttons = function (buttons)
     	{
-    		this.button_hbox.destroy();
+    		if(this.button_hbox)
+    			this.button_hbox.destroy();
 			this.button_hbox = new Gtk.HBox({spacing: 6});
 			
     		for(but in buttons)
@@ -108,13 +110,7 @@ IDEMessageAreaType = {
 		this.text_vbox.pack_start(this.text, true, true, 4);
 		this.text_vbox.pack_start(this.detail, true, true, 4);
 		
-		this.close = Gtk.Button.new_from_stock(Gtk.STOCK_CLOSE);
-		this.close.signal.clicked.connect(this.hide_message, this);
-		this.button_hbox = new Gtk.HBox({spacing: 6});
-		this.button_hbox.pack_start(this.close);
-		
 		this.button_vbox = new Gtk.VBox({border_width: 6});
-		this.button_vbox.pack_start(this.button_hbox, false, true);
 		
 		this.inner_box.pack_start(this.icon);
 		this.inner_box.pack_start(this.text_vbox, true, true);
