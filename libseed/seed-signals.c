@@ -132,17 +132,16 @@ seed_signal_marshal_func(GClosure * closure,
 	args[i] = JSValueMakeNull(eng->context);
 
     JSObjectCallAsFunction(eng->context, seed_closure->function,
-			   seed_closure->this, 
-			   n_param_values + 1, 
-			   args, &exception);
-    
+			   seed_closure->this,
+			   n_param_values + 1, args, &exception);
+
     if (exception)
     {
-	gchar * mes = seed_exception_to_string(exception);
+	gchar *mes = seed_exception_to_string(exception);
 	g_warning("Exception in signal handler. %s \n", mes, 0);
 	g_free(mes);
     }
-    
+
 }
 
 static JSValueRef

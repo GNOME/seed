@@ -40,7 +40,7 @@ seed_handle_class_init_closure(ffi_cif * cif,
     JSObjectCallAsFunction(eng->context, function, 0, 2, jsargs, 0);
     if (exception)
     {
-	gchar * mes = seed_exception_to_string(exception);
+	gchar *mes = seed_exception_to_string(exception);
 	g_warning("Exception in class init closure. %s \n", mes, 0);
     }
 }
@@ -58,14 +58,14 @@ seed_handle_instance_init_closure(ffi_cif * cif,
     this_object =
 	(JSObjectRef) seed_value_from_object(*(GObject **) args[0], 0);
 
-    JSObjectCallAsFunction(eng->context, function, this_object, 1, &jsargs, &exception);
+    JSObjectCallAsFunction(eng->context, function, this_object, 1, &jsargs,
+			   &exception);
     if (exception)
     {
-	gchar * mes = seed_exception_to_string(exception);
+	gchar *mes = seed_exception_to_string(exception);
 	g_warning("Exception in instance init closure. %s \n", mes, 0);
     }
-    
-    
+
 }
 
 static ffi_closure *seed_make_class_init_closure(JSObjectRef function)

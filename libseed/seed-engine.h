@@ -47,5 +47,4 @@ seed_gobject_define_property_from_function_info(GIFunctionInfo * info,
 						gboolean instance);
 void seed_create_function(gchar * name, gpointer func, JSObjectRef obj);
 
-
 #endif
