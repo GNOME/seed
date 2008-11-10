@@ -21,11 +21,28 @@ IDETabViewType = {
         
         prototype.close_tab = function (button)
         {
-            if(this.source_view.edited)
-                Seed.print("oh noes!!");
-            // TODO: warn first!! return if they don't want to...
+        	var tab_closing = this;
+        	
+        	if(button == null)
+        		tab_closing = current_tab();
+        	
+            if(tab_closing.source_view.edited)
+            {
+            	tab_closing.source_view.query_save();
+               	return false;
+            }
+                     
+            tab_view.remove_page(tab_view.page_num(tab_closing));
             
-            tab_view.remove_page(tab_view.page_num(this));
+            if(tab_view.get_n_pages() == 0)
+                tab_view.create_tab("");
+            
+            return false;
+        }
+        
+        prototype.force_close_current_tab = function ()
+        {
+            tab_view.remove_page(tab_view.page_num(current_tab()));
             
             if(tab_view.get_n_pages() == 0)
                 tab_view.create_tab("");

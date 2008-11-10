@@ -24,6 +24,8 @@ function draw_box(widget, event)
 					   "tooltip",
 					   x, y,
 					   width, height);
+	
+	return false;
 }
 
 IDEMessageAreaType = {
@@ -31,15 +33,46 @@ IDEMessageAreaType = {
     name: "IDEMessageArea",
     class_init: function(klass, prototype)
     {
+    	prototype.set_message = function (msg, submsg)
+    	{
+    		this.text.label = "<b>"+msg+"</b>";
+    		this.detail.label = "<small>"+submsg+"</small>";
+    	}
+    	
+    	prototype.set_icon = function (icon)
+    	{
+    		this.icon.set_from_stock(icon, Gtk.IconSize.dialog);
+    	}
+    	
     	prototype.show_with_message = function (msg, submsg, icon, tab)
     	{
     		this.tab = tab;
-    		this.text.label = "<b>"+msg+"</b>";
-    		this.detail.label = "<small>"+submsg+"</small>";
-    		this.icon.set_from_stock(icon, Gtk.IconSize.dialog);
-    		this.show_all();
     		
+    		this.set_message(msg, submsg);
+    		this.set_icon(icon);
+    		
+    		this.show_message();
+    	}
+    	
+    	prototype.set_buttons = function (buttons)
+    	{
+    		this.button_hbox.destroy();
+			this.button_hbox = new Gtk.HBox({spacing: 6});
+			
+    		for(but in buttons)
+    		{
+    			var c_but = Gtk.Button.new_from_stock(buttons[but].stock);
+				c_but.signal.clicked.connect(buttons[but].callback, this);
+				this.button_hbox.pack_start(c_but, true, false);
+    		}
+    		
+    		this.button_vbox.pack_start(this.button_hbox);
+    	}
+    	
+    	prototype.show_message = function ()
+    	{
     		this.tab.disable();
+    		this.show_all();
     	}
     	
     	prototype.hide_message = function ()
@@ -77,8 +110,11 @@ IDEMessageAreaType = {
 		
 		this.close = Gtk.Button.new_from_stock(Gtk.STOCK_CLOSE);
 		this.close.signal.clicked.connect(this.hide_message, this);
-		this.button_vbox = new Gtk.VBox({border_width: 3});
-		this.button_vbox.pack_start(this.close, true, false);
+		this.button_hbox = new Gtk.HBox({spacing: 6});
+		this.button_hbox.pack_start(this.close);
+		
+		this.button_vbox = new Gtk.VBox({border_width: 6});
+		this.button_vbox.pack_start(this.button_hbox, false, true);
 		
 		this.inner_box.pack_start(this.icon);
 		this.inner_box.pack_start(this.text_vbox, true, true);

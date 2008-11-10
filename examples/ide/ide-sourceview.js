@@ -84,6 +84,22 @@ IDESourceViewType = {
 			return -1;
         }
         
+        prototype.query_save = function ()
+        {
+        	var filename = this.filename.split("/").slice(-1);
+        	var ma = current_tab().message_area;
+			ma.tab = current_tab();
+			ma.set_icon(Gtk.STOCK_DIALOG_WARNING);
+			ma.set_message("The file <i>"+filename+"</i> has been changed since it was last saved.",
+						   "Would you like to save it, or close, and lose changes?");
+			ma.set_buttons([{stock:Gtk.STOCK_CLOSE, callback:tab_view.force_close_current_tab},
+							{stock:Gtk.STOCK_CANCEL, callback:ma.hide_message},
+							{stock:Gtk.STOCK_SAVE, callback:function(){save_file();ma.hide_message();}}]);
+			ma.show_message();
+    		
+    		return false; // false = we didn't save, so don't close; true = we saved, so it's OK
+        }
+        
         prototype.exception_clear = function ()
         {
             var begin = Gtk.TextIter._new();
@@ -108,7 +124,7 @@ IDESourceViewType = {
             this.update_undo_state();
             this.update_edited(true);
             
-            var text = sbuf.text.replace(new RegExp("#!.*"), "");
+            var text = sbuf.text.replace(new RegExp("#\!.*"), "");
 
             try
             {

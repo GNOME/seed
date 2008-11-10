@@ -1,6 +1,6 @@
 function new_file()
 {
-    tab_view.create_tab("");
+	tab_view.create_tab("");
 }
 
 function open_file()
@@ -56,7 +56,7 @@ function execute()
 
 function close_tab()
 {
-    tab_view.close_tab();
+    tab_view.close_tab(null);
 }
 
 function fortune()
