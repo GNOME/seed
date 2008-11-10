@@ -1,5 +1,5 @@
 IDEToolbarType = {
-    parent: Gtk.Toolbar,
+    parent: Gtk.Toolbar.type,
     name: "IDEToolbar",
     class_init: function(klass, prototype)
     {

@@ -12,7 +12,7 @@ Seed.import_namespace("Gtk");
 Gtk.init(null, null);
 
 HelloWindowType = {       
-    parent: Gtk.Window,
+    parent: Gtk.Window.type,
     name: "HelloWindow",
     class_init: function(klass, prototype)
     {

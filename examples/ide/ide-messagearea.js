@@ -29,7 +29,7 @@ function draw_box(widget, event)
 }
 
 IDEMessageAreaType = {
-    parent: Gtk.HBox,
+    parent: Gtk.HBox.type,
     name: "IDEMessageArea",
     class_init: function(klass, prototype)
     {

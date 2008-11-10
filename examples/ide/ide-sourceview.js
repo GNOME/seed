@@ -1,5 +1,5 @@
 IDESourceViewType = {
-    parent: GtkSource.SourceView,
+    parent: GtkSource.SourceView.type,
     name: "IDESourceView",
     class_init: function(klass, prototype)
     {

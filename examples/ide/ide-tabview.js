@@ -1,5 +1,5 @@
 IDETabViewType = {
-    parent: Gtk.Notebook,
+    parent: Gtk.Notebook.type,
     name: "IDETabView",
     class_init: function(klass, prototype)
     {

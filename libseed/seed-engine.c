@@ -744,6 +744,10 @@ seed_gi_import_namespace(JSContextRef ctx,
 		constructor_ref =
 		    JSObjectMake(eng->context,
 				 gobject_constructor_class, (gpointer) type);
+		
+		seed_value_set_property(constructor_ref, 
+					"type", 
+					seed_value_from_int(type, exception));
 
 		n_methods = g_object_info_get_n_methods((GIObjectInfo *) info);
 		for (i = 0; i < n_methods; i++)

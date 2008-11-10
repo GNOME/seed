@@ -9,7 +9,7 @@ function create_scrollbox(child)
 }
 
 IDETabType = {
-    parent: Gtk.VBox,
+    parent: Gtk.VBox.type,
     name: "IDETab",
     class_init: function(klass, prototype)
     {

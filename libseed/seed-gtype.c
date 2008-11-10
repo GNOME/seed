@@ -460,12 +460,12 @@ seed_gtype_constructor_invoked(JSContextRef ctx,
     name = seed_value_get_property(arguments[0], "name");
 
     new_name = seed_value_to_string(name, exception);
-    if (!JSValueIsObjectOfClass(eng->context,
-				parent_ref, gobject_constructor_class))
+    if (!JSValueIsNumber(eng->context,
+			 parent_ref))
     {
 	seed_make_exception(exception, "TypeError",
 			    "GType constructor expected"
-			    " GObject type for parent");
+			    " Gype for parent");
     }
     if (!JSValueIsNull(eng->context, class_init) &&
 	JSValueIsObject(eng->context, class_init) &&
@@ -480,7 +480,7 @@ seed_gtype_constructor_invoked(JSContextRef ctx,
 	instance_init_closure =
 	    seed_make_instance_init_closure((JSObjectRef) instance_init);
     }
-    parent_type = (GType) JSObjectGetPrivate((JSObjectRef) parent_ref);
+    parent_type = (GType) seed_value_to_int(parent_ref, exception);
 
     g_type_query(parent_type, &query);
     type_info.class_size = query.class_size;

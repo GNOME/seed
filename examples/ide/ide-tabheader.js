@@ -1,5 +1,5 @@
 IDETabHeaderType = {
-    parent: Gtk.HBox,
+    parent: Gtk.HBox.type,
     name: "IDETabHeader",
     class_init: function(klass, prototype)
     {
