@@ -17,6 +17,7 @@ Seed.include("ide-tab.js");
 Seed.include("ide-tabheader.js");
 Seed.include("ide-tabview.js");
 Seed.include("ide-toolbar.js");
+Seed.include("ide-messagearea.js");
 
 // TODO: put this in a subclass of the window and give it a tab (read it out of the header)
 function update_window(new_filename)
@@ -48,8 +49,9 @@ tab_view.create_tab("../ls.js");
 var vbox = new Gtk.VBox();
 vbox.pack_start(toolbar);
 vbox.pack_start(tab_view, true, true);
+vbox.show();
 
 window.add(vbox);
-window.show_all();
+window.show();
 
 Gtk.main();

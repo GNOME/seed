@@ -12,7 +12,7 @@ IDETabHeaderType = {
     {
         this.close_button = new Gtk.Button();
         this.close_button.set_image(new Gtk.Image({stock: "gtk-close",
-                                    icon_size: Gtk.IconSize.menu}));
+                                    icon_size: Gtk.IconSize.menu})); // TODO: use the action!!
         this.close_button.set_relief(Gtk.ReliefStyle.none);
 
         this.label = new Gtk.Label();

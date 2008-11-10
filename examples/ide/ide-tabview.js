@@ -13,7 +13,6 @@ IDETabViewType = {
             
             this.append_page(tab, tab.header);
             this.set_tab_reorderable(tab, true);
-            this.show_all();
             
             this.page = this.get_n_pages() - 1;
             
@@ -37,11 +36,17 @@ IDETabViewType = {
             var my_page = notebook.get_nth_page(n);
             update_window(my_page.source_view.filename);
             my_page.source_view.update_undo_state(my_page.source_view);
+            
+            if(my_page.message_area.visible)
+            	my_page.disable();
+            else
+            	my_page.enable();
         }
     },
     instance_init: function(klass)
     {
         this.signal.switch_page.connect(this.update_page);
+        this.show();
     }};
 
 IDETabView = new GType(IDETabViewType);

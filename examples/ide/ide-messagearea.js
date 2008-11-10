@@ -1,9 +1,3 @@
-#!/usr/bin/env seed
-
-Seed.import_namespace("Gtk");
-
-Gtk.init(null, null);
-
 function style_set()
 {
 	var win = new Gtk.Window({type: Gtk.WindowType.popup});
@@ -28,8 +22,8 @@ function draw_box(widget, event)
 					   null,
 					   widget,
 					   "tooltip",
-					   x + 1, y + 1,
-					   width - 2, height - 2);
+					   x, y,
+					   width, height);
 }
 
 IDEMessageAreaType = {
@@ -37,6 +31,22 @@ IDEMessageAreaType = {
     name: "IDEMessageArea",
     class_init: function(klass, prototype)
     {
+    	prototype.show_with_message = function (msg, submsg, icon, tab)
+    	{
+    		this.tab = tab;
+    		this.text.label = "<b>"+msg+"</b>";
+    		this.detail.label = "<small>"+submsg+"</small>";
+    		this.icon.set_from_stock(icon, Gtk.IconSize.dialog);
+    		this.show_all();
+    		
+    		this.tab.disable();
+    	}
+    	
+    	prototype.hide_message = function ()
+    	{
+    		this.tab.enable();
+    		this.hide();
+    	}
     },
     instance_init: function(klass)
     {
@@ -45,7 +55,7 @@ IDEMessageAreaType = {
 		this.app_paintable = true;
 		this.border_width = 8;
 
-		this.inner_box = new Gtk.HBox();
+		this.inner_box = new Gtk.HBox({spacing:6});
 		this.pack_start(this.inner_box, true, true);
 		this.inner_box.signal.style_set.connect(style_set, this);
 		
@@ -61,11 +71,12 @@ IDEMessageAreaType = {
 		this.text.set_alignment(0, 0.5);
 		this.detail.set_alignment(0, 0.5);
 		
-		this.text_vbox = new Gtk.VBox({border_width: 3});
+		this.text_vbox = new Gtk.VBox();
 		this.text_vbox.pack_start(this.text, true, true, 4);
 		this.text_vbox.pack_start(this.detail, true, true, 4);
 		
 		this.close = Gtk.Button.new_from_stock(Gtk.STOCK_CLOSE);
+		this.close.signal.clicked.connect(this.hide_message, this);
 		this.button_vbox = new Gtk.VBox({border_width: 3});
 		this.button_vbox.pack_start(this.close, true, false);
 		
@@ -76,12 +87,3 @@ IDEMessageAreaType = {
 
 IDEMessageArea = new GType(IDEMessageAreaType);
 
-var window = new Gtk.Window();
-window.resize(600, 80);
-var ma = new IDEMessageArea();
-ma.text.label = "<b>Could not save the file <i>/home/hortont/tim.js</i>.</b>";
-ma.detail.label = "<small>You do not have the permissions necessary to save the file.\nPlease check that you typed the location correctly and try again.</small>";
-window.add(ma);
-window.show_all();
-
-Gtk.main();

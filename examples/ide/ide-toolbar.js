@@ -22,6 +22,8 @@ IDEToolbarType = {
         this.insert(this.redo_button, -1);
         this.insert(new Gtk.SeparatorToolItem(), -1);
         this.insert(this.execute_button, -1);
+        
+        this.show_all();
     }};
 
 IDEToolbar = new GType(IDEToolbarType);

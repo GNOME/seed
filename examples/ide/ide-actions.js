@@ -43,7 +43,7 @@ function redo()
 
 function execute()
 {
-    if(current_tab().source_view.save())
+    if(current_tab().source_view.edited && current_tab().source_view.save())
     	return;
     
     current_tab().terminal.reset(true, true);
@@ -57,6 +57,11 @@ function execute()
 function close_tab()
 {
     tab_view.close_tab();
+}
+
+function fortune()
+{
+	
 }
 
 function init_ide_actions()
@@ -110,4 +115,11 @@ function init_ide_actions()
     actions.add_action_with_accel(close_tab_action, "<Control>w");
     close_tab_action.connect_accelerator();
     close_tab_action.signal.activate.connect(close_tab);
+    
+    var fortune_action = new Gtk.Action({name:"fortune", label:"Fortune",
+                                          tooltip:"Fortune"});
+    fortune_action.set_accel_group(accels);
+    actions.add_action_with_accel(fortune_action, "<Control><Alt>f");
+    fortune_action.connect_accelerator();
+    fortune_action.signal.activate.connect(fortune);
 }

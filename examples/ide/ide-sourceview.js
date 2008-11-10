@@ -36,7 +36,9 @@ IDESourceViewType = {
             }
             catch(e)
             {
-                Seed.print(e.name + " " + e.message); //TODO: popup
+            	var title = "Could not load the file <i>" + this.filename + "</i>.";
+            	this.tab.message_area.show_with_message(title,
+            				e.message, Gtk.STOCK_DIALOG_ERROR, this.tab);
             }
             
             return -1;
@@ -73,7 +75,9 @@ IDESourceViewType = {
 				}
 				catch(e)
 				{
-					Seed.print("had a problem writing!!"); // TODO: popup
+					var title = "Could not save the file <i>" + this.filename + "</i>.";
+            		this.tab.message_area.show_with_message(title,
+            				e.message, Gtk.STOCK_DIALOG_ERROR, this.tab);
 				}
 			}
 			
