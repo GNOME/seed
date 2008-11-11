@@ -9,7 +9,7 @@ function flip_region (act, evt, light)
 	var x = light.light_x;
 	var y = light.light_y;
 	
-	var fadeline = new Clutter.Timeline({num_frames:30});
+	var fadeline = new Clutter.Timeline({num_frames: 20});
 	
 	light.flip(fadeline);
 	
@@ -34,6 +34,11 @@ BoardType = {
     name: "Board",
     class_init: function(klass, prototype)
     {
+    	prototype.destroy_board = function ()
+    	{
+			this.destroy();
+    	}
+    	
 		prototype.cleared = function ()
 		{
 			for(x in this.lights)
@@ -47,9 +52,8 @@ BoardType = {
 		{
 			in_setup = true;
 
-			//var count = Math.round(tiles*5* Math.random());
-			var count = -4;
-
+			var count = Math.round(tiles*5*Math.random());
+			count = -4;//////////////////////////////////////////////
 			var sym = Math.floor(3*Math.random());
 
 			for (q = 0; q < count + 5; ++q)
@@ -86,7 +90,8 @@ BoardType = {
 				this.lights[x][y] = new Light();
 				this.lights[x][y].light_x = x;
 				this.lights[x][y].light_y = y;
-				this.lights[x][y].set_position(x * 55 + 5, y * 55 + 5);
+				this.lights[x][y].set_position(x * tile_size + margin + tile_size/2,
+											   y * tile_size + margin + tile_size/2);
 				this.add_actor(this.lights[x][y]);
 			}
 		}
