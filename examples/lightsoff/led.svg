@@ -32,7 +32,7 @@
     <linearGradient
        id="linearGradient3169">
       <stop
-         style="stop-color:#ffffff;stop-opacity:0.25600001;"
+         style="stop-color:#ffffff;stop-opacity:0.104;"
          offset="0"
          id="stop3171" />
       <stop
@@ -164,6 +164,34 @@
          stdDeviation="2.0829568"
          id="feGaussianBlur4150" />
     </filter>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3169"
+       id="linearGradient2534"
+       gradientUnits="userSpaceOnUse"
+       x1="89.486572"
+       y1="427.74588"
+       x2="89.486572"
+       y2="329.31064" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3155"
+       id="linearGradient2538"
+       gradientUnits="userSpaceOnUse"
+       x1="656.46228"
+       y1="324.31064"
+       x2="656.46228"
+       y2="525.81189"
+       gradientTransform="translate(9.8466947e-6,7.6000104e-7)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3155"
+       id="linearGradient2542"
+       gradientUnits="userSpaceOnUse"
+       x1="656.46228"
+       y1="324.31064"
+       x2="656.46228"
+       y2="525.81189" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -176,7 +204,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.70551067"
-     inkscape:cx="425.04883"
+     inkscape:cx="169.91449"
      inkscape:cy="517.39837"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
@@ -829,8 +857,28 @@
        d="M 111.75668,331.31064 L 629.19217,331.31064 C 640.1758,331.31064 649.01821,340.23064 649.01821,351.31064 L 649.01821,409.74588 C 596.41837,448.0432 101.20177,468.03983 91.930644,409.74588 L 91.930644,351.31064 C 91.930644,340.23064 100.77306,331.31064 111.75668,331.31064 z"
        id="rect3165"
        sodipodi:nodetypes="ccccccc"
-       inkscape:export-filename="/home/hortont/seed/examples/lightsoff/bkg.png"
+       inkscape:export-filename="/home/hortont/seed/examples/lightsoff/bkg_top.png"
        inkscape:export-xdpi="37.209068"
        inkscape:export-ydpi="37.209068" />
+    <path
+       style="opacity:0.78000004;fill:url(#linearGradient2534);fill-opacity:1;stroke:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1"
+       d="M 794.42012,274.79781 L 1311.8557,274.79781 C 1322.8393,274.79781 1331.6817,283.71781 1331.6817,294.79781 L 1331.6817,353.23305 C 1279.0819,391.53037 783.86521,411.527 774.59408,353.23305 L 774.59408,294.79781 C 774.59408,283.71781 783.4365,274.79781 794.42012,274.79781 z"
+       id="path2532"
+       sodipodi:nodetypes="ccccccc"
+       inkscape:export-filename="/home/hortont/seed/examples/lightsoff/bkg_top.png"
+       inkscape:export-xdpi="48.143238"
+       inkscape:export-ydpi="48.143238" />
+    <rect
+       style="opacity:1;fill:url(#linearGradient2542);fill-opacity:1;stroke:#5d5d5d;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect2540"
+       width="561.97571"
+       height="191.50128"
+       x="-499.26947"
+       y="329.31091"
+       rx="20"
+       ry="19.999998"
+       inkscape:export-filename="/home/hortont/seed/examples/lightsoff/bkg.png"
+       inkscape:export-xdpi="47.906658"
+       inkscape:export-ydpi="47.906658" />
   </g>
 </svg>
