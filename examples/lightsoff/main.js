@@ -12,63 +12,54 @@ Clutter.init(null, null);
 Seed.include("light.js");
 Seed.include("board.js");
 
-flip_region = function (act, evt, light)
+function alpha_func(alpha)
 {
-	var x = light.light_x;
-	var y = light.light_y;
-	
-	light.flip();
-	
-	if(x + 1 < tiles)
-		light.get_parent().lights[x + 1][y].flip();
-	if(x - 1 >= 0)
-		light.get_parent().lights[x - 1][y].flip();
-	if(y + 1 < tiles)
-		light.get_parent().lights[x][y + 1].flip();
-	if(y - 1 >= 0)
-		light.get_parent().lights[x][y - 1].flip();
-	
-	if(board.cleared() && !in_setup)
-		Seed.print("Glorious victory!");
-	
-	return true;
+	timeline = alpha.get_timeline();
+	frame = timeline.get_current_frame();
+	n_frames = timeline.num_frames;
+	fps = timeline.fps;
+	duration = n_frames/fps;
+	time = frame/fps;
+
+	if ((time/=duration) < (1/2.75))
+		return Clutter.ALPHA_MAX_ALPHA*(7.5625*time*time);
+	else if (time < (2/2.75))
+		return Clutter.ALPHA_MAX_ALPHA*(7.5625 * (time-=(1.5/2.75))*time+.75);
+	else if (time < (2.5/2.75))
+		return Clutter.ALPHA_MAX_ALPHA*(7.5625 *(time-=(2.25/2.75))*time+.9375);
+	else
+		return Clutter.ALPHA_MAX_ALPHA*(7.5625 * (time-=(2.625/2.75))*time+.984375);
 }
 
-function random_clicks()
+function destroy_board()
 {
-	in_setup = true;
-	
-	//var count = Math.round(tiles*5* Math.random());
-	var count = -4;
-	
-	var sym = Math.floor(3*Math.random());
-
-	for (q = 0; q < count + 5; ++q)
-	{
-		i = Math.round((tiles-1) * Math.random());
-		j = Math.round((tiles-1) * Math.random());
-	    
-		flip_region(null, null, board.lights[i][j]);
-	    
-		if(sym == 0)
-			flip_region(null, null, board.lights[Math.abs(i-(tiles-1))][j]);
-		else if(sym == 1)
-			flip_region(null, null,
-						board.lights[Math.abs(i-(tiles-1))][Math.abs(j-(tiles-1))]);
-		else
-			flip_region(null, null, board.lights[i][Math.abs(j-(tiles-1))]);
-	}
-	
-	in_setup = false;
-	
-	// do it again if you won already
-	if(board.cleared())
-		random_clicks();
+	this.destroy();
 }
 
 function win_animation()
 {
+	var direction = Math.floor(2 * Math.random());
+	var sign = Math.floor(2 * Math.random()) ? 1 : -1;
+	var offscreen = 55 * tiles + 5;
+
+	var new_board = new Board();
+	new_board.set_position(sign * direction * offscreen, 
+						   sign * (!direction) * offscreen);
+	new_board.show();
+	stage.add_actor(new_board);
 	
+	var fadeline = new Clutter.Timeline({num_frames:80});
+	var effect = Clutter.EffectTemplate._new(fadeline, alpha_func);
+	
+	Clutter.effect_move(effect, new_board, 0, 0);
+	var remove_line = Clutter.effect_move(effect, board, 
+		-(sign)*(direction * offscreen), -(sign)*((!direction) * offscreen));
+
+	fadeline.start();
+	
+	remove_line.signal.completed.connect(destroy_board, board);
+	
+	board = new_board;
 }
 
 var on_svg = Clutter.Texture.new_from_file("./tim-on.svg");
@@ -85,8 +76,6 @@ board = new Board();
 
 stage.add_actor(board);
 stage.show_all();
-
-random_clicks();
 
 Clutter.main();
 
