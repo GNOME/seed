@@ -110,7 +110,7 @@ function init_ide_actions()
     execute_action.signal.activate.connect(execute);
     
     var close_tab_action = new Gtk.Action({name:"close", label:"Close",
-                                          tooltip:"Close Tab"});
+                                          tooltip:"Close Tab", stock_id:"gtk-close"});
     close_tab_action.set_accel_group(accels);
     actions.add_action_with_accel(close_tab_action, "<Control>w");
     close_tab_action.connect_accelerator();

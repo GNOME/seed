@@ -22,6 +22,7 @@ IDETabType = {
     		actions.get_action("redo").sensitive = false;
     		actions.get_action("execute").sensitive = false;
     		actions.get_action("close").sensitive = false;
+    		this.header.close_button.sensitive = false;
     	}
     	
     	prototype.enable = function ()
@@ -31,6 +32,7 @@ IDETabType = {
     		actions.get_action("save").sensitive = true;
     		actions.get_action("execute").sensitive = true;
     		actions.get_action("close").sensitive = true;
+    		this.header.close_button.sensitive = true;
     		
     		this.source_view.update_undo_state();
     	}

@@ -10,10 +10,14 @@ IDETabHeaderType = {
     },
     instance_init: function(klass)
     {
+    	//var gtkrc = new Gtk.RcStyle();
+    	//gtkrc.parse_string("xthickness = 0");
+    	
         this.close_button = new Gtk.Button();
         this.close_button.set_image(new Gtk.Image({stock: "gtk-close",
-                                    icon_size: Gtk.IconSize.menu})); // TODO: use the action!!
+                                    icon_size: Gtk.IconSize.menu}));
         this.close_button.set_relief(Gtk.ReliefStyle.none);
+        //this.close_button.modify_style(gtkrc);
 
         this.label = new Gtk.Label();
 
