@@ -138,10 +138,15 @@ seed_gobject_constructor_invoked(JSContextRef ctx,
 
     gobject = g_object_newv(type, nparams, params);
 
-    if (!gobject)
-	JSValueMakeNull(eng->context);
+    if (g_object_is_floating(gobject))
+	g_object_ref_sink(gobject);
 
-    ret = (JSObjectRef) seed_value_from_object(gobject, 0);
+    if (!gobject)
+	ret = (JSObjectRef)JSValueMakeNull(eng->context);
+
+    ret = (JSObjectRef)seed_value_from_object(gobject, exception);
+    
+    g_object_unref(gobject);
 
     g_type_class_unref(oclass);
 
@@ -175,6 +180,20 @@ seed_gobject_equals(JSContextRef ctx,
     if (this == that)
 	return seed_value_from_boolean(1, 0);
     return seed_value_from_boolean(0, 0);
+}
+
+static JSValueRef
+seed_gobject_ref_count(JSContextRef ctx,
+		    JSObjectRef function,
+		    JSObjectRef this_object,
+		    size_t argumentCount,
+		    const JSValueRef arguments[], JSValueRef * exception)
+{
+    GObject *this;
+
+    this = seed_value_to_object((JSValueRef) this_object, exception);
+
+    return seed_value_from_int(this->ref_count, exception);
 }
 
 static JSValueRef
@@ -834,7 +853,8 @@ seed_gi_import_namespace(JSContextRef ctx,
 }
 
 JSStaticFunction gobject_static_funcs[] = {
-    {"equals", seed_gobject_equals, 0}
+    {"equals", seed_gobject_equals, 0},
+    {"__debug_ref_count", seed_gobject_ref_count, 0}
     ,
     {0, 0, 0}
 };
