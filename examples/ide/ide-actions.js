@@ -1,6 +1,6 @@
 function new_file()
 {
-	tab_view.create_tab("");
+	window.tab_view.create_tab("");
 }
 
 function open_file()
@@ -18,7 +18,7 @@ function open_file()
         if(current_tab().source_view.filename == "" && !current_tab().source_view.edited)
             current_tab().source_view.load(file_chooser.get_filename());
         else
-            tab_view.create_tab(file_chooser.get_filename());
+            window.tab_view.create_tab(file_chooser.get_filename());
     }
     
     file_chooser.destroy();
@@ -56,7 +56,7 @@ function execute()
 
 function close_tab()
 {
-    tab_view.close_tab(null);
+    window.tab_view.close_tab(null);
 }
 
 function fortune()
@@ -64,12 +64,11 @@ function fortune()
 	
 }
 
-function init_ide_actions()
+function init_actions()
 {
     actions = new Gtk.ActionGroup({name:"toolbar"});
 
     accels = new Gtk.AccelGroup();
-    window.add_accel_group(accels);
 
     var new_action = new Gtk.Action({name:"new", label:"New",
                                       tooltip:"New File", stock_id:"gtk-new"});
@@ -122,4 +121,6 @@ function init_ide_actions()
     actions.add_action_with_accel(fortune_action, "<Control><Alt>f");
     fortune_action.connect_accelerator();
     fortune_action.signal.activate.connect(fortune);
+    
+    return accels;
 }

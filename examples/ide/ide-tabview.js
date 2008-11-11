@@ -8,15 +8,14 @@ IDETabViewType = {
             var tab = new IDETab();
             
             tab.header = new IDETabHeader();
-            tab.header.set_tab(tab);
-            tab.source_view.load(filename);
+            tab.header.close_button.signal.clicked.connect(this.close_tab, tab);
             
             this.append_page(tab, tab.header);
             this.set_tab_reorderable(tab, true);
             
-            this.page = this.get_n_pages() - 1;
+            tab.source_view.load(filename);
             
-            this.update_page(this, null, this.page);
+            this.page = this.get_n_pages() - 1;
         }
         
         prototype.close_tab = function (button)
@@ -25,6 +24,8 @@ IDETabViewType = {
         	
         	if(button == null)
         		tab_closing = current_tab();
+        		
+        	var tab_view = tab_closing.parent;
         	
             if(tab_closing.source_view.edited)
             {
@@ -42,27 +43,36 @@ IDETabViewType = {
         
         prototype.force_close_current_tab = function ()
         {
+        	var tab_view = current_tab().parent;
+        	// TODO: fold this and the above together, somehow
             tab_view.remove_page(tab_view.page_num(current_tab()));
             
             if(tab_view.get_n_pages() == 0)
                 tab_view.create_tab("");
         }
         
-        prototype.update_page = function (notebook, page, n)
+        prototype.update_page = function (tab_view, page, n)
         {
-            var my_page = notebook.get_nth_page(n);
-            update_window(my_page.source_view.filename);
-            my_page.source_view.update_undo_state(my_page.source_view);
+            var tab = tab_view.get_nth_page(n);
             
-            if(my_page.message_area.visible)
-            	my_page.disable();
+        	tab_view.get_toplevel().update_window_title(tab);
+           	
+            tab.source_view.update_undo_state(tab.source_view);
+            
+            if(tab.message_area.visible)
+            	tab.disable();
             else
-            	my_page.enable();
+            	tab.enable();
+        }
+        
+        prototype.connect_signals = function (tab_view)
+        {
+        	tab_view.signal.switch_page.connect(tab_view.update_page);
         }
     },
     instance_init: function(klass)
     {
-        this.signal.switch_page.connect(this.update_page);
+        this.signal.hierarchy_changed.connect(this.connect_signals)
         this.show();
     }};
 

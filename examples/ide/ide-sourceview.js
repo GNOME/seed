@@ -13,6 +13,8 @@ IDESourceViewType = {
                 tab.header.label.label = shortfilename;
             else
                 tab.header.label.label = "Untitled";
+            
+            this.get_toplevel().update_window_title(this.tab);
         }
         
         prototype.load = function(new_filename)
@@ -60,7 +62,6 @@ IDESourceViewType = {
 				if(file_chooser.run() == Gtk.ResponseType.accept)
 				{
 					this.update_filename(file_chooser.get_filename(), current_tab());
-					update_window(file_chooser.get_filename());
 				}
 
 				file_chooser.destroy();

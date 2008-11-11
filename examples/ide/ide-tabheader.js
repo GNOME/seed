@@ -3,10 +3,7 @@ IDETabHeaderType = {
     name: "IDETabHeader",
     class_init: function(klass, prototype)
     {
-        prototype.set_tab = function (tab)
-        {
-            this.close_button.signal.clicked.connect(tab_view.close_tab, tab);
-        }
+
     },
     instance_init: function(klass)
     {
