@@ -136,6 +136,15 @@ seed_signal_marshal_func(GClosure * closure,
 			   seed_closure->this,
 			   n_param_values + 1, args, &exception);
 
+    if (exception)
+    {
+	gchar *mes = seed_exception_to_string(exception);
+	g_warning("Exception in signal handler. %s \n", 
+		  mes, 0);
+	g_free(mes);
+	exception = 0;
+    }
+
     if (ret && !JSValueIsNull(eng->context, ret) 
 	&& (seed_closure->return_type != G_TYPE_NONE))
     {
@@ -143,13 +152,16 @@ seed_signal_marshal_func(GClosure * closure,
 				    return_value, &exception);
 
     }
+
     if (exception)
     {
 	gchar *mes = seed_exception_to_string(exception);
-	g_warning("Exception converting signal handler return value. %s \n", 
+	g_warning("Exception in signal handler return value. %s \n", 
 		  mes, 0);
 	g_free(mes);
     }
+
+
 
 }
 

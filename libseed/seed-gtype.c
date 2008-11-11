@@ -198,6 +198,55 @@ g_cclosure_marshal_generic_ffi (GClosure *closure,
 }
 
 static JSValueRef
+seed_property_method_invoked(JSContextRef ctx,
+			    JSObjectRef function,
+			    JSObjectRef thisObject,
+			    size_t argumentCount,
+			    const JSValueRef arguments[],
+			    JSValueRef * exception)
+{
+    GParamSpec * spec;
+    GObjectClass * class;
+    int property_count;
+    JSValueRef newcount, oldcount;
+
+    if (argumentCount != 1)
+    {
+	gchar * mes = g_strdup_printf("Property installation expected 1 argument",
+				      " got %d \n", argumentCount);
+	seed_make_exception(exception, "ArgumentError", mes);
+	g_free(mes);
+	
+	return JSValueMakeNull(eng->context);
+    }
+    
+    if (JSValueIsNull(eng->context, arguments[0]) || 
+	// Might need to check if JSValueIsObject? Who knows with WebKit.
+	!JSValueIsObjectOfClass(eng->context, arguments[0], seed_struct_class))
+    {
+	seed_make_exception(exception, "ArgumentError", "Property installation expected a "
+			    "GParamSpec as argument");
+	return JSValueMakeNull(eng->context);
+    }
+    
+    spec = (GParamSpec *)seed_struct_get_pointer(arguments[0]);
+    
+    oldcount = seed_object_get_property(thisObject, "property_count");
+    property_count = seed_value_to_int(oldcount, exception);
+    
+
+    class = seed_struct_get_pointer(thisObject);
+    g_object_class_install_property(class, property_count, spec);
+    
+    newcount = seed_value_from_int(property_count+1, exception);
+    seed_object_set_property(thisObject, 
+			     "property_count",
+			     newcount);
+    
+    return oldcount;
+}
+
+static JSValueRef
 seed_gsignal_method_invoked(JSContextRef ctx,
 			    JSObjectRef function,
 			    JSObjectRef thisObject,
@@ -328,8 +377,13 @@ seed_handle_class_init_closure(ffi_cif * cif,
     // Should probably have a custom type for class, and have it auto convert.
     seed_object_set_property((JSObjectRef)jsargs[0], 
 			    "type", seed_value_from_int(type, 0));
+    seed_object_set_property((JSObjectRef)jsargs[0],
+			     "property_count", seed_value_from_int(1, 0));
     seed_create_function("install_signal",
 			 &seed_gsignal_method_invoked,
+			 (JSObjectRef)jsargs[0]);
+    seed_create_function("install_property",
+			 &seed_property_method_invoked,
 			 (JSObjectRef)jsargs[0]);
 
     JSObjectCallAsFunction(eng->context, function, 0, 2, jsargs, 0);
@@ -354,6 +408,33 @@ seed_handle_instance_init_closure(ffi_cif * cif,
 	(JSObjectRef) seed_value_from_object(*(GObject **) args[0], 0);
 
     JSObjectCallAsFunction(eng->context, function, this_object, 1, &jsargs,
+			   &exception);
+    if (exception)
+    {
+	gchar *mes = seed_exception_to_string(exception);
+	g_warning("Exception in instance init closure. %s \n", mes, 0);
+    }
+
+}
+
+static void
+seed_handle_set_property_closure(ffi_cif * cif,
+				  void *result, void **args, void *userdata)
+{
+    JSObjectRef function = (JSObjectRef) userdata;
+    JSValueRef jsargs[2];
+    JSValueRef exception = 0;
+    JSObjectRef this_object;
+    GParamSpec * spec;
+
+    this_object =
+	(JSObjectRef) seed_value_from_object(*(GObject **) args[0], &exception);
+    spec = *(GParamSpec **)args[3];
+    
+    jsargs[0] = seed_value_from_string(spec->name, &exception);
+    jsargs[1] = seed_value_from_gvalue(*(GValue **) args[2], &exception);
+
+    JSObjectCallAsFunction(eng->context, function, this_object, 2, jsargs,
 			   &exception);
     if (exception)
     {
@@ -413,6 +494,33 @@ static ffi_closure *seed_make_instance_init_closure(JSObjectRef function)
     return closure;
 }
 
+static ffi_closure *seed_make_set_property_closure(JSObjectRef function)
+{
+    ffi_cif *cif;
+    ffi_closure *closure;
+    ffi_type **arg_types;;
+    ffi_arg result;
+    ffi_status status;
+
+    JSValueProtect(eng->context, function);
+
+    cif = g_new0(ffi_cif, 1);
+    arg_types = g_new0(ffi_type *, 5);
+
+    arg_types[0] = &ffi_type_pointer;
+    arg_types[1] = &ffi_type_uint;
+    arg_types[2] = &ffi_type_pointer;
+    arg_types[3] = &ffi_type_pointer;
+    arg_types[4] = 0;
+
+    closure = mmap(0, sizeof(ffi_closure), PROT_READ | PROT_WRITE |
+		   PROT_EXEC, MAP_ANON | MAP_PRIVATE, -1, 0);
+
+    ffi_prep_cif(cif, FFI_DEFAULT_ABI, 4, &ffi_type_void, arg_types);
+    ffi_prep_closure(closure, cif, seed_handle_set_property_closure, function);
+    return closure;
+}
+
 static JSObjectRef
 seed_gtype_constructor_invoked(JSContextRef ctx,
 			       JSObjectRef constructor,
@@ -420,7 +528,7 @@ seed_gtype_constructor_invoked(JSContextRef ctx,
 			       const JSValueRef arguments[],
 			       JSValueRef * exception)
 {
-    JSValueRef class_init, instance_init, name, parent_ref;
+    JSValueRef class_init, instance_init, name, parent_ref, set_property_ref;
     GType parent_type, new_type;
     gchar *new_name;
     GTypeInfo type_info = {
@@ -436,6 +544,7 @@ seed_gtype_constructor_invoked(JSContextRef ctx,
     };
     ffi_closure *init_closure = 0;
     ffi_closure *instance_init_closure = 0;
+
     GTypeQuery query;
     JSObjectRef constructor_ref;
 
@@ -489,6 +598,7 @@ seed_gtype_constructor_invoked(JSContextRef ctx,
 	instance_init_closure =
 	    seed_make_instance_init_closure((JSObjectRef) instance_init);
     }
+
     parent_type = (GType) seed_value_to_int(parent_ref, exception);
 
     g_type_query(parent_type, &query);
