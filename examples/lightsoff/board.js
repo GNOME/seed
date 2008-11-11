@@ -53,7 +53,6 @@ BoardType = {
 			in_setup = true;
 
 			var count = Math.round(tiles*5*Math.random());
-			count = -4;//////////////////////////////////////////////
 			var sym = Math.floor(3*Math.random());
 
 			for (q = 0; q < count + 5; ++q)
