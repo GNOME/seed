@@ -453,6 +453,8 @@ seed_gtype_constructor_invoked(JSContextRef ctx,
 	seed_make_exception(exception, "ArgumentError",
 			    "GType constructor expected a"
 			    "class definition object. Got a nonobject");
+
+	return (JSObjectRef)JSValueMakeNull(eng->context);
     }
     parent_ref = seed_value_get_property(arguments[0], "parent");
     class_init = seed_value_get_property(arguments[0], "class_init");
@@ -466,6 +468,8 @@ seed_gtype_constructor_invoked(JSContextRef ctx,
 	seed_make_exception(exception, "TypeError",
 			    "GType constructor expected"
 			    " Gype for parent");
+	
+	return (JSObjectRef)JSValueMakeNull(eng->context);
     }
     if (!JSValueIsNull(eng->context, class_init) &&
 	JSValueIsObject(eng->context, class_init) &&

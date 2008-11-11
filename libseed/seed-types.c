@@ -302,7 +302,7 @@ seed_gi_make_argument(SeedValue value,
 		    arg->v_pointer = NULL;
 		    break;
 		}
-		if (JSValueIsObjectOfClass(eng->context,
+		else if (JSValueIsObjectOfClass(eng->context,
 					   value, gobject_method_class))
 		{
 		    GIFunctionInfo *info =
