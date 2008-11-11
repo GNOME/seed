@@ -10,6 +10,7 @@ Seed.import_namespace("Clutter");
 
 Clutter.init(null, null);
 
+Seed.include("score.js");
 Seed.include("light.js");
 Seed.include("board.js");
 
@@ -42,6 +43,7 @@ function win_animation()
 						   sign * (!direction) * stage.height);
 	new_board.show();
 	stage.add_actor(new_board);
+	new_board.lower_bottom();
 	
 	var fadeline = new Clutter.Timeline({num_frames:80});
 	var effect = Clutter.EffectTemplate._new(fadeline, alpha_func);
@@ -72,11 +74,21 @@ Clutter.color_parse("Black", black);
 var stage = new Clutter.Stage({color: black});
 stage.signal.hide.connect(Clutter.main_quit);
 stage.set_size(tile_size * tiles + margin,
-			   tile_size * tiles + margin);
+			   tile_size * tiles + margin + 105);
 
 board = new Board();
+score = new Score();
+rect = new Clutter.Rectangle({color:black});
+
+rect.set_position(0, tile_size*tiles+margin);
+rect.set_size(stage.width, stage.height);
+
+score.set_position(12, tile_size * tiles + 2*margin);
+score.set_scale(0.85,0.85);
 
 stage.add_actor(board);
+stage.add_actor(rect);
+stage.add_actor(score);
 stage.show_all();
 
 Clutter.main();

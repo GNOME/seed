@@ -1,8 +1,7 @@
-#!/usr/bin/env seed
-
-Seed.import_namespace("Clutter");
-
-Clutter.init(null, null);
+function destroy_old()
+{
+	this.destroy();
+}
 
 ScoreType = {
     parent: Clutter.Group.type,
@@ -11,6 +10,13 @@ ScoreType = {
     {
 		prototype.set_value = function (val)
 		{
+			this.value = val;
+			
+			var old_set = this.current_set;
+			
+			this.current_set = new Clutter.Group();
+			this.current_set.opacity = 0;
+			
 			var val_s = Seed.sprintf("% 5d",val);
 		
 			for(var i = 0; i < val_s.length; i++)
@@ -23,15 +29,32 @@ ScoreType = {
 				var num = new Clutter.CloneTexture({parent_texture:texture});
 				num.set_position(56*i-10,3);
 				num.set_size(97,97);
-				this.add_actor(num);
-				num.show();
+				this.current_set.add_actor(num);
 			}
+			
+			this.add_actor(this.current_set);
+
+			var fadeline = new Clutter.Timeline({num_frames:30});
+			var effect = Clutter.EffectTemplate._new(fadeline, Clutter.sine_inc_func);
+			Clutter.effect_fade(effect, this.current_set, 255);
+
+			if(old_set)
+			{
+				var deleteline = Clutter.effect_fade(effect, old_set, 0);
+				Clutter.effect_scale(effect, old_set, 2, 2);
+				
+				deleteline.signal.completed.connect(destroy_old, old_set);
+			}
+			
+			fadeline.start();
 			
 			this.bkg_top.raise_top();
 		}
     },
     instance_init: function(klass)
     {
+    	this.current_set = null;
+    	
     	this.bkg_top = Clutter.Texture.new_from_file("./bkg_top.png");
 		var bkg = Clutter.Texture.new_from_file("./bkg.png");
 		var off_svg = Clutter.Texture.new_from_file("./off.svg");
@@ -62,21 +85,8 @@ ScoreType = {
 		this.bkg_top.set_position(1,1);
 		this.add_actor(this.bkg_top);
 		
-		this.set_value(5123);
+		this.set_value(0);
     }};
 
 Score = new GType(ScoreType);
-
-var black = Clutter.Color._new();
-Clutter.color_parse("Black", black);
-
-var stage = new Clutter.Stage({color: black});stage.signal.hide.connect(Clutter.main_quit);
-stage.set_size(400,400);
-
-board = new Score();
-board.set_position(20,20);
-stage.add_actor(board);
-stage.show_all();
-
-Clutter.main();
 
