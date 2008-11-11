@@ -297,6 +297,11 @@ seed_gi_make_argument(SeedValue value,
 	    }
 	    else if (interface_type == GI_INFO_TYPE_CALLBACK)
 	    {
+		if (JSValueIsNull(eng->context, value))
+		{
+		    arg->v_pointer = NULL;
+		    break;
+		}
 		if (JSValueIsObjectOfClass(eng->context,
 					   value, gobject_method_class))
 		{
