@@ -645,7 +645,9 @@ seed_gobject_set_property(JSContextRef context,
 
 	return FALSE;
     }
+    
     g_free(cproperty_name);
+    g_value_unset(&gval);
 
     return TRUE;
 }

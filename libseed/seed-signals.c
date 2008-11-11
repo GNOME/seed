@@ -31,6 +31,14 @@ typedef struct _signal_privates {
 JSClassRef signal_holder_class;
 
 static void
+seed_signal_finalize(JSObjectRef object)
+{
+    signal_privates * sig_priv = JSObjectGetPrivate(object);
+    g_free(sig_priv);
+}
+		    
+
+static void
 seed_add_signal_to_object(JSObjectRef object_ref,
 			  GObject * obj, GSignalQuery * signal)
 {
@@ -292,7 +300,7 @@ JSClassDefinition gobject_signal_def = {
     NULL,			/* Static Values */
     signal_static_functions,	/* Static Functions */
     NULL,
-    NULL,			/* Finalize */
+    seed_signal_finalize,       /* Finalize */
     NULL,			/* Has Property */
     NULL,			/* Get Property */
     NULL,			/* Set Property */

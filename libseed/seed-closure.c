@@ -212,6 +212,8 @@ seed_handle_closure(ffi_cif * cif, void *result, void **args, void *userdata)
 		    arg->v_pointer = *(gpointer *) args[i];
 		    break;
 		}
+		
+		g_base_info_unref(interface);
 	    }
 	case GI_TYPE_TAG_GLIST:
 	case GI_TYPE_TAG_GSLIST:
@@ -221,12 +223,17 @@ seed_handle_closure(ffi_cif * cif, void *result, void **args, void *userdata)
 	    arg->v_pointer = 0;
 	}
 	jsargs[i] = seed_gi_argument_make_js(arg, arg_type, 0);
+	g_base_info_unref((GIBaseInfo *)arg_info);
     }
+
+
 
     return_value = (JSValueRef)
 	JSObjectCallAsFunction(eng->context,
 			       (JSObjectRef) privates->function, 0,
 			       num_args, jsargs, 0);
+    
+    g_free(jsargs);
 
     seed_gi_make_argument((JSValueRef) return_value, return_type,
 			  return_arg, 0);
@@ -313,6 +320,8 @@ seed_handle_closure(ffi_cif * cif, void *result, void **args, void *userdata)
     default:
 	*(gpointer *) result = 0;
     }
+    
+    g_free(return_arg);
 }
 
 SeedNativeClosure *seed_make_native_closure(GICallableInfo * info,
