@@ -1,9 +1,14 @@
 lightsoffdir = $(datadir)/doc/seed/examples/lightsoff
 lightsoff_DATA = \
-	lightsoff.js \
+	board.js \
+	light.js \
+	main.js \
 	tim-off.svg \
 	tim-on.svg
 EXTRA_DIST = \
+	board.js \
+	light.js \
+	main.js \
 	lightsoff.js \
 	tim-off.svg \
 	tim-on.svg
