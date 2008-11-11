@@ -24,15 +24,15 @@
 
 #include "seed-private.h"
 
-SeedValue seed_value_from_gvalue(GValue * gval, JSValueRef * exception);
-SeedValue seed_value_get_property(SeedValue val, const gchar * name);
+JSValueRef seed_value_from_gvalue(GValue * gval, JSValueRef * exception);
+JSValueRef seed_object_get_property(JSObjectRef val, const gchar * name);
 
-gboolean seed_value_set_property(JSObjectRef object,
+gboolean seed_object_set_property(JSObjectRef object,
 				 const gchar * name, JSValueRef value);
-gboolean seed_gvalue_from_seed_value(SeedValue val, GType type,
+gboolean seed_gvalue_from_seed_value(JSValueRef val, GType type,
 				     GValue * gval, JSValueRef * exception);
 gboolean seed_gi_supports_type(GITypeInfo * type_info);
-gboolean seed_gi_make_argument(SeedValue value,
+gboolean seed_gi_make_argument(JSValueRef value,
 			       GITypeInfo * type_info,
 			       GArgument * arg, JSValueRef * exception);
 JSValueRef seed_gi_argument_make_js(GArgument * arg,

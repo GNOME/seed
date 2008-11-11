@@ -29,7 +29,7 @@ JSClassRef gobject_constructor_class;
 JSClassRef seed_callback_class;
 SeedEngine *eng;
 
-static gboolean seed_value_is_gobject(SeedValue value)
+static gboolean seed_value_is_gobject(JSValueRef value)
 {
     if (!JSValueIsObject(eng->context, value) ||
 	JSValueIsNull(eng->context, value))
@@ -56,10 +56,10 @@ void seed_toggle_ref(gpointer data, GObject * object, gboolean is_last_ref)
 
 }
 
-static SeedValue seed_wrap_object(GObject * object)
+static JSValueRef seed_wrap_object(GObject * object)
 {
-    SeedValue user_data;
-    SeedValue js_ref;
+    JSValueRef user_data;
+    JSValueRef js_ref;
     JSClassRef class;
     GType type, *interfaces;
     JSValueRef prototype;
@@ -67,7 +67,7 @@ static SeedValue seed_wrap_object(GObject * object)
 
     type = G_OBJECT_TYPE(object);
 
-    user_data = (SeedValue) g_object_get_data(object, "js-ref");
+    user_data = (JSValueRef) g_object_get_data(object, "js-ref");
 
     if (user_data)
 	return user_data;
@@ -173,7 +173,7 @@ GType seed_gi_type_to_gtype(GITypeInfo * type_info, GITypeTag tag)
 }
 
 gboolean
-seed_gi_make_argument(SeedValue value,
+seed_gi_make_argument(JSValueRef value,
 		      GITypeInfo * type_info, GArgument * arg,
 		      JSValueRef * exception)
 {
@@ -527,7 +527,7 @@ gboolean seed_gi_supports_type(GITypeInfo * type_info)
     return FALSE;
 }
 
-SeedValue seed_value_from_gvalue(GValue * gval, JSValueRef * exception)
+JSValueRef seed_value_from_gvalue(GValue * gval, JSValueRef * exception)
 {
     if (!G_IS_VALUE(gval))
     {
@@ -603,7 +603,7 @@ SeedValue seed_value_from_gvalue(GValue * gval, JSValueRef * exception)
 }
 
 gboolean
-seed_gvalue_from_seed_value(SeedValue val, GType type, GValue * ret,
+seed_gvalue_from_seed_value(JSValueRef val, GType type, GValue * ret,
 			    JSValueRef * exception)
 {
     switch (type)
@@ -764,7 +764,7 @@ seed_gvalue_from_seed_value(SeedValue val, GType type, GValue * ret,
     return FALSE;
 }
 
-SeedValue seed_value_get_property(SeedValue val, const gchar * name)
+JSValueRef seed_object_get_property(JSObjectRef val, const gchar * name)
 {
 
     JSStringRef jname = JSStringCreateWithUTF8CString(name);
@@ -778,7 +778,7 @@ SeedValue seed_value_get_property(SeedValue val, const gchar * name)
 }
 
 gboolean
-seed_value_set_property(JSObjectRef object,
+seed_object_set_property(JSObjectRef object,
 			const gchar * name, JSValueRef value)
 {
     JSStringRef jname = JSStringCreateWithUTF8CString(name);
@@ -1054,7 +1054,7 @@ gchar *seed_value_to_string(JSValueRef val, JSValueRef * exception)
 	if (!JSValueIsString(eng->context, val))	// In this case,
 	    // it's an object
 	{
-	    func = seed_value_get_property(val, "toString");
+	    func = seed_object_get_property((JSObjectRef)val, "toString");
 	    str =
 		JSObjectCallAsFunction(eng->context,
 				       (JSObjectRef) func,
@@ -1090,7 +1090,8 @@ GObject *seed_value_to_object(JSValueRef val, JSValueRef * exception)
 	JSValueRef object;
 	if (!JSValueIsObject(eng->context, val))
 	    return NULL;
-	object = seed_value_get_property(val, "gsuper");
+	object = seed_object_get_property((JSObjectRef)val, 
+					  "gsuper");
 	if (val && object && JSValueIsObject(eng->context, object)) ;
 	{
 	    JSValueRef ref_data = 0;

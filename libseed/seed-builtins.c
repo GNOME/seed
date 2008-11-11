@@ -225,12 +225,12 @@ seed_introspect(JSContextRef ctx,
     info = (GICallableInfo *) JSObjectGetPrivate((JSObjectRef) arguments[0]);
     data_obj = JSObjectMake(ctx, NULL, NULL);
 
-    seed_value_set_property(data_obj, "name", (JSValueRef)
+    seed_object_set_property(data_obj, "name", (JSValueRef)
 			    seed_value_from_string(g_base_info_get_name
 						   ((GIBaseInfo *) info),
 						   exception));
 
-    seed_value_set_property(data_obj, "return_type",
+    seed_object_set_property(data_obj, "return_type",
 			    seed_value_from_string
 			    (seed_g_type_name_to_string
 			     (g_callable_info_get_return_type(info)),
@@ -238,7 +238,7 @@ seed_introspect(JSContextRef ctx,
 
     args_obj = JSObjectMake(eng->context, NULL, NULL);
 
-    seed_value_set_property(data_obj, "args", args_obj);
+    seed_object_set_property(data_obj, "args", args_obj);
 
     for (i = 0; i < g_callable_info_get_n_args(info); ++i)
     {
@@ -248,7 +248,7 @@ seed_introspect(JSContextRef ctx,
 	    seed_g_type_name_to_string(g_arg_info_get_type
 				       (g_callable_info_get_arg(info, i)));
 
-	seed_value_set_property(argument, "type",
+	seed_object_set_property(argument, "type",
 				seed_value_from_string(arg_name, exception));
 
 	JSObjectSetPropertyAtIndex(ctx, args_obj, i, argument, NULL);
@@ -432,7 +432,7 @@ void seed_init_builtins(gint * argc, gchar *** argv)
     JSObjectRef arrayObj;
     JSValueRef argcref;
     JSObjectRef obj =
-	(JSObjectRef) seed_value_get_property(eng->global, "Seed");
+	(JSObjectRef) seed_object_get_property(eng->global, "Seed");
 
     seed_create_function("include", &seed_include, obj);
     seed_create_function("print", &seed_print, obj);
@@ -458,6 +458,6 @@ void seed_init_builtins(gint * argc, gchar *** argv)
 
     argcref = seed_value_from_int(*argc, 0);
 
-    seed_value_set_property(arrayObj, "length", argcref);
-    seed_value_set_property(obj, "argv", arrayObj);
+    seed_object_set_property(arrayObj, "length", argcref);
+    seed_object_set_property(obj, "argv", arrayObj);
 }

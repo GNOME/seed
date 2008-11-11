@@ -234,7 +234,7 @@ seed_gsignal_method_invoked(JSContextRef ctx,
 
 
     /* Signal name */
-    jsname = seed_value_get_property((JSObjectRef)arguments[0], "name");
+    jsname = seed_object_get_property((JSObjectRef)arguments[0], "name");
     /* seed_value_to_string can handle non strings, however the kind
      * of strings we want as a signal name are rather small, so make sure
      * we have an actual string */
@@ -248,11 +248,11 @@ seed_gsignal_method_invoked(JSContextRef ctx,
     name = seed_value_to_string(jsname, exception);
     
     /* Type to install on. Comes from class. */
-    jstype = seed_value_get_property(thisObject, "type");
+    jstype = seed_object_get_property(thisObject, "type");
     itype = seed_value_to_int(jstype, exception);
     
     /* Signal flags */
-    jsflags = seed_value_get_property((JSObjectRef)arguments[0], "flags");
+    jsflags = seed_object_get_property((JSObjectRef)arguments[0], "flags");
     if (JSValueIsNull(eng->context, jsflags) || 
 	!JSValueIsNumber(eng->context, jsflags))
 	flags = G_SIGNAL_RUN_LAST;
@@ -261,7 +261,7 @@ seed_gsignal_method_invoked(JSContextRef ctx,
     
     
     /* Return type */
-    jsreturn_type = seed_value_get_property((JSObjectRef)arguments[0],
+    jsreturn_type = seed_object_get_property((JSObjectRef)arguments[0],
 					    "return_type");
     if (JSValueIsNull(eng->context, jsreturn_type) || 
 	!JSValueIsNumber(eng->context, jsreturn_type))
@@ -270,13 +270,14 @@ seed_gsignal_method_invoked(JSContextRef ctx,
 	return_type = seed_value_to_int(jsreturn_type, exception);
 
     /* Number of params and types */
-    jsparams = seed_value_get_property((JSObjectRef)arguments[0],
+    jsparams = seed_object_get_property((JSObjectRef)arguments[0],
 				       "parameters");
     if (!JSValueIsNull(eng->context, jsparams) &&
 	JSValueIsObject(eng->context, jsparams))
     {
 	n_params = seed_value_to_int
-	    (seed_value_get_property(jsparams, "length"), exception);
+	    (seed_object_get_property((JSObjectRef)jsparams, "length"), 
+	     exception);
 	if (n_params > 0)
 	{
 	    guint i;
@@ -325,7 +326,7 @@ seed_handle_class_init_closure(ffi_cif * cif,
 
     // TODO: 
     // Should probably have a custom type for class, and have it auto convert.
-    seed_value_set_property((JSObjectRef)jsargs[0], 
+    seed_object_set_property((JSObjectRef)jsargs[0], 
 			    "type", seed_value_from_int(type, 0));
     seed_create_function("install_signal",
 			 &seed_gsignal_method_invoked,
@@ -456,10 +457,14 @@ seed_gtype_constructor_invoked(JSContextRef ctx,
 
 	return (JSObjectRef)JSValueMakeNull(eng->context);
     }
-    parent_ref = seed_value_get_property(arguments[0], "parent");
-    class_init = seed_value_get_property(arguments[0], "class_init");
-    instance_init = seed_value_get_property(arguments[0], "instance_init");
-    name = seed_value_get_property(arguments[0], "name");
+    parent_ref = seed_object_get_property((JSObjectRef)arguments[0], 
+					  "parent");
+    class_init = seed_object_get_property((JSObjectRef)arguments[0], 
+					  "class_init");
+    instance_init = seed_object_get_property((JSObjectRef)arguments[0], 
+					     "instance_init");
+    name = seed_object_get_property((JSObjectRef)arguments[0], 
+				    "name");
 
     new_name = seed_value_to_string(name, exception);
     if (!JSValueIsNumber(eng->context,
@@ -518,5 +523,5 @@ void seed_gtype_init(void)
 
     gtype_constructor = JSObjectMake(eng->context, seed_gtype_class, 0);
 
-    seed_value_set_property(eng->global, "GType", gtype_constructor);
+    seed_object_set_property(eng->global, "GType", gtype_constructor);
 }

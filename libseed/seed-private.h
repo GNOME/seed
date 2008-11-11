@@ -31,7 +31,6 @@
 #include <ffi.h>
 
 typedef struct _SeedEngine SeedEngine;
-typedef JSValueRef SeedValue;
 
 struct _SeedEngine {
     JSGlobalContextRef context;

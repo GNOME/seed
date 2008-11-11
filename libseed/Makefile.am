@@ -8,7 +8,7 @@ libseed_la_SOURCES = \
 	seed-builtins.c\
 	seed-builtins.h \
         seed-exceptions.c \
-	seed-exceptions.h \ 
+	seed-exceptions.h \
 	seed-engine.c \
 	seed-engine.h \
 	seed-private.h \
@@ -35,6 +35,8 @@ seedheadersdir = \
 
 EXTRA_DIST = \
 	$(seedheaders_HEADERS)
+
+LIBSEED_CFLAGS+=-Werror
 
 ## File created by the gnome-build tools
 

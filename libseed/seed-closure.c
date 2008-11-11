@@ -330,7 +330,7 @@ SeedNativeClosure *seed_make_native_closure(GICallableInfo * info,
     JSObjectRef cached;
 
     cached =
-	(JSObjectRef) seed_value_get_property(function,
+	(JSObjectRef) seed_object_get_property(function,
 					      "__seed_native_closure");
     if (cached
 	&& JSValueIsObjectOfClass(eng->context, cached,
@@ -365,7 +365,7 @@ SeedNativeClosure *seed_make_native_closure(GICallableInfo * info,
 		 get_ffi_type(return_type), arg_types);
     ffi_prep_closure(closure, cif, seed_handle_closure, privates);
 
-    seed_value_set_property((JSObjectRef) function,
+    seed_object_set_property((JSObjectRef) function,
 			    "__seed_native_closure",
 			    (JSValueRef) JSObjectMake(eng->context,
 						      seed_native_callback_class,

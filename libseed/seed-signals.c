@@ -51,7 +51,7 @@ seed_add_signal_to_object(JSObjectRef object_ref,
     priv->signal_id = signal->signal_id;
     priv->object = obj;
 
-    seed_value_set_property(object_ref, js_signal_name, signal_ref);
+    seed_object_set_property(object_ref, js_signal_name, signal_ref);
     g_free(js_signal_name);
 }
 
@@ -99,7 +99,7 @@ void seed_add_signals_to_object(JSObjectRef object_ref, GObject * obj)
 	g_free(interfaces);
     }
 
-    seed_value_set_property(object_ref, "signal", signals_ref);
+    seed_object_set_property(object_ref, "signal", signals_ref);
 }
 
 void

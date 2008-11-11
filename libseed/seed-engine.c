@@ -307,7 +307,7 @@ seed_gobject_method_invoked(JSContextRef ctx,
 	    if (!JSValueIsNull(eng->context, arguments[i]) &&
 		JSValueIsObject(eng->context, arguments[i]))
 	    {
-		seed_value_set_property((JSObjectRef) arguments[i],
+		seed_object_set_property((JSObjectRef) arguments[i],
 					"value", jsout_val);
 	    }
 
@@ -328,7 +328,7 @@ seed_gobject_define_property_from_function_info(GIFunctionInfo * info,
 						gboolean instance)
 {
     GIFunctionInfoFlags flags;
-    SeedValue method_ref;
+    JSValueRef method_ref;
     const gchar *name;
 
     // if (g_base_info_is_deprecated ((GIBaseInfo *) info))
@@ -347,7 +347,7 @@ seed_gobject_define_property_from_function_info(GIFunctionInfo * info,
     name = g_base_info_get_name((GIBaseInfo *) info);
     if (!strcmp(name, "new"))
 	name = "_new";
-    seed_value_set_property(object, name, method_ref);
+    seed_object_set_property(object, name, method_ref);
 
 }
 
@@ -523,7 +523,7 @@ seed_gobject_get_property(JSContextRef context,
     GValue gval = { 0 };
     char *cproperty_name;
     gint length;
-    SeedValue ret;
+    JSValueRef ret;
     gint i, len;
 
     b = seed_value_to_object((JSValueRef) object, exception);
@@ -673,7 +673,7 @@ seed_gi_import_namespace(JSContextRef ctx,
 
     namespace_ref = JSObjectMake(eng->context, NULL, NULL);
     JSValueProtect(eng->context, namespace_ref);
-    seed_value_set_property(eng->global, namespace, namespace_ref);
+    seed_object_set_property(eng->global, namespace, namespace_ref);
 
     for (i = 0; i < n; i++)
     {
@@ -694,7 +694,7 @@ seed_gi_import_namespace(JSContextRef ctx,
 	    JSObjectRef enum_class = JSObjectMake(eng->context,
 						  0, 0);
 	    JSValueProtect(eng->context, (JSValueRef) enum_class);
-	    seed_value_set_property(namespace_ref,
+	    seed_object_set_property(namespace_ref,
 				    g_base_info_get_name(info), enum_class);
 
 	    for (j = 0; j < num_vals; j++)
@@ -717,7 +717,7 @@ seed_gi_import_namespace(JSContextRef ctx,
 			name[j] = '_';
 		}
 
-		seed_value_set_property(enum_class, name, value_ref);
+		seed_object_set_property(enum_class, name, value_ref);
 
 		g_free(name);
 
@@ -745,7 +745,7 @@ seed_gi_import_namespace(JSContextRef ctx,
 		    JSObjectMake(eng->context,
 				 gobject_constructor_class, (gpointer) type);
 		
-		seed_value_set_property(constructor_ref, 
+		seed_object_set_property(constructor_ref, 
 					"type", 
 					seed_value_from_int(type, exception));
 
@@ -765,7 +765,7 @@ seed_gi_import_namespace(JSContextRef ctx,
 		    }
 		}
 
-		seed_value_set_property(namespace_ref,
+		seed_object_set_property(namespace_ref,
 					g_base_info_get_name
 					(info), constructor_ref);
 		JSValueProtect(eng->context, (JSValueRef) constructor_ref);
@@ -789,7 +789,7 @@ seed_gi_import_namespace(JSContextRef ctx,
 
 	    }
 
-	    seed_value_set_property(namespace_ref,
+	    seed_object_set_property(namespace_ref,
 				    g_base_info_get_name(info), struct_ref);
 
 	    JSValueProtect(eng->context, (JSValueRef) struct_ref);
@@ -799,7 +799,7 @@ seed_gi_import_namespace(JSContextRef ctx,
 	    JSObjectRef callback_ref = JSObjectMake(eng->context,
 						    seed_callback_class,
 						    info);
-	    seed_value_set_property(namespace_ref,
+	    seed_object_set_property(namespace_ref,
 				    g_base_info_get_name(info),
 				    (JSValueRef) callback_ref);
 	}
@@ -812,7 +812,7 @@ seed_gi_import_namespace(JSContextRef ctx,
 	    constant_value =
 		seed_gi_argument_make_js(&argument,
 					 g_constant_info_get_type((GIConstantInfo *) info), exception);
-	    seed_value_set_property(namespace_ref,
+	    seed_object_set_property(namespace_ref,
 				    g_base_info_get_name(info), constant_value);
 
 	}
@@ -925,7 +925,7 @@ void seed_create_function(gchar * name, gpointer func, JSObjectRef obj)
 
     oref = JSObjectMakeFunctionWithCallback(eng->context, NULL, func);
     JSValueProtect(eng->context, oref);
-    seed_value_set_property(obj, name, oref);
+    seed_object_set_property(obj, name, oref);
 }
 
 static void
@@ -965,7 +965,7 @@ gboolean seed_init(gint * argc, gchar *** argv)
     g_type_set_qdata(G_TYPE_OBJECT, qname, gobject_class);
 
     seed_obj_ref = JSObjectMake(eng->context, NULL, NULL);
-    seed_value_set_property(eng->global, "Seed", seed_obj_ref);
+    seed_object_set_property(eng->global, "Seed", seed_obj_ref);
     JSValueProtect(eng->context, seed_obj_ref);
 
     seed_create_function("import_namespace", &seed_gi_import_namespace,
@@ -1018,7 +1018,7 @@ JSValueRef seed_evaluate(SeedScript * js, JSObjectRef this)
     return ret;
 }
 
-SeedValue seed_script_exception(SeedScript * s)
+JSValueRef seed_script_exception(SeedScript * s)
 {
     return s->exception;
 }
