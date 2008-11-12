@@ -55,13 +55,16 @@ ScoreType = {
     {
     	this.current_set = null;
     	
-    	this.bkg_top = Clutter.Texture.new_from_file("./bkg_top.png");
-		var bkg = Clutter.Texture.new_from_file("./bkg.png");
+    	this.bkg_top = Clutter.Texture.new_from_file("./front.svg");
+		var bkg = Clutter.Texture.new_from_file("./back.svg");
 		var off_svg = Clutter.Texture.new_from_file("./off.svg");
 		
 		this.bkg_top.filter_quality = Clutter.TextureQuality.high;
 		bkg.filter_quality = Clutter.TextureQuality.high;
 		off_svg.filter_quality = Clutter.TextureQuality.high;
+		
+		bkg.set_scale(.53,.53);
+		this.bkg_top.set_scale(.535,.535);
 		
 		this.add_actor(bkg);
 		
@@ -81,7 +84,7 @@ ScoreType = {
 			this.num_textures[i].filter_quality = Clutter.TextureQuality.high;
 		}
 		
-		this.bkg_top.opacity = 150;
+		this.bkg_top.opacity = 200;
 		this.bkg_top.set_position(1,1);
 		this.add_actor(this.bkg_top);
 		
