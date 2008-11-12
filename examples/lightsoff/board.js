@@ -56,6 +56,8 @@ function win_animation()
 
 function check_won (timeline, light)
 {
+	in_fade = false;
+	
 	if(light.get_parent().cleared() && !in_setup)
 	{
 		score.increment_value(100);
@@ -65,6 +67,9 @@ function check_won (timeline, light)
 
 function flip_region (act, evt, light)
 {
+	if(!in_setup && in_fade)
+		return true;
+	
 	var x = light.light_x;
 	var y = light.light_y;
 	
@@ -82,6 +87,7 @@ function flip_region (act, evt, light)
 		light.get_parent().lights[x][y - 1].flip(fadeline);
 	
 	fadeline.start();
+	in_fade = true;
 	
 	fadeline.signal.completed.connect(check_won, null, light);
 	
@@ -133,6 +139,8 @@ BoardType = {
     },
     instance_init: function(klass)
     {
+    	in_fade = false;
+    	
 		this.lights = new Array();
 
 		for(var x = 0; x < tiles; x++)
