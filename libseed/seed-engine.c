@@ -140,6 +140,8 @@ seed_gobject_constructor_invoked(JSContextRef ctx,
 
     if (g_object_is_floating(gobject))
 	g_object_ref_sink(gobject);
+    else if (gobject->ref_count == 0)
+	g_object_ref(gobject);
 
     if (!gobject)
 	ret = (JSObjectRef)JSValueMakeNull(eng->context);
