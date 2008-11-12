@@ -31,7 +31,6 @@ EXTRA_DIST = \
     signal.js \
     syntax-test.js \
     type-conversion.js \
-    gsuper.js \
     native-closure.js \
     make-test.py
 

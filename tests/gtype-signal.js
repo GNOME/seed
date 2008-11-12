@@ -19,7 +19,7 @@ HelloWindowType = {
 	hello_signal_id = klass.install_signal(HelloSignalDefinition);
 	goodbye_signal_id = klass.install_signal(GoodbyeSignalDefinition);
     },
-    instance_init: function(klass)
+    instance_init: function(instance)
     {
     }};
 

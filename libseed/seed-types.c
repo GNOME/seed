@@ -430,8 +430,12 @@ seed_gi_argument_make_js(GArgument * arg, GITypeInfo * type_info,
 	    }
 	    else if (interface_type == GI_INFO_TYPE_STRUCT)
 	    {
+		JSValueRef strukt;
+
+		strukt = seed_make_struct(arg->v_pointer, interface);
 		g_base_info_unref(interface);
-		return seed_make_struct(arg->v_pointer, interface);
+		
+		return strukt;
 	    }
 	}
     case GI_TYPE_TAG_GLIST:
