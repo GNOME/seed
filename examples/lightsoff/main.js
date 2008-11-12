@@ -14,6 +14,9 @@ Seed.include("score.js");
 Seed.include("light.js");
 Seed.include("board.js");
 
+var last_direction = 0;
+var last_sign = 0;
+
 function alpha_func(alpha)
 {
 	timeline = alpha.get_timeline();
@@ -35,12 +38,21 @@ function alpha_func(alpha)
 
 function win_animation()
 {
-	var direction = Math.floor(2 * Math.random());
-	var sign = Math.floor(2 * Math.random()) ? 1 : -1;
+	var direction, sign;
+	
+	do
+	{
+		direction = Math.floor(2 * Math.random());
+		sign = Math.floor(2 * Math.random()) ? 1 : -1;
+	}
+	while(last_direction == direction && last_sign != sign);
+	
+	last_direction = direction;
+	last_sign = sign;
 
 	var new_board = new Board();
-	new_board.set_position(sign * direction * stage.width, 
-						   sign * (!direction) * stage.height);
+	new_board.set_position(sign * direction * board_size, 
+						   sign * (!direction) * board_size);
 	new_board.show();
 	stage.add_actor(new_board);
 	new_board.lower_bottom();
@@ -50,8 +62,8 @@ function win_animation()
 	
 	Clutter.effect_move(effect, new_board, 0, 0);
 	Clutter.effect_move(effect, board, 
-						-(sign)*(direction * stage.width),
-						-(sign)*((!direction) * stage.height));
+						-(sign)*(direction * board_size),
+						-(sign)*((!direction) * board_size));
 		
 	fadeline.start();
 	
@@ -65,14 +77,14 @@ on_svg.filter_quality = Clutter.TextureQuality.high;
 off_svg.filter_quality = Clutter.TextureQuality.high;
 
 var tile_size = on_svg.width + margin;
+var board_size = tile_size * tiles + margin;
 
 var black = Clutter.Color._new();
 Clutter.color_parse("Black", black);
 
 var stage = new Clutter.Stage({color: black});
 stage.signal.hide.connect(Clutter.main_quit);
-stage.set_size(tile_size * tiles + margin,
-			   tile_size * tiles + margin + 105);
+stage.set_size(board_size, board_size + 105);
 
 board = new Board();
 score = new Score();
