@@ -9,8 +9,8 @@
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="563.97571"
-   height="193.50128"
+   width="251.11343"
+   height="85.04348"
    id="svg3307"
    sodipodi:version="0.32"
    inkscape:version="0.46"
@@ -19,6 +19,17 @@
    inkscape:output_extension="org.inkscape.output.svg.inkscape">
   <defs
      id="defs3309">
+    <linearGradient
+       id="linearGradient3169">
+      <stop
+         style="stop-color:#ffffff;stop-opacity:0.024;"
+         offset="0"
+         id="stop3171" />
+      <stop
+         style="stop-color:#ffffff;stop-opacity:0.42399999;"
+         offset="1"
+         id="stop3173" />
+    </linearGradient>
     <linearGradient
        id="linearGradient3155">
       <stop
@@ -34,16 +45,6 @@
          offset="1"
          id="stop3159" />
     </linearGradient>
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient3155"
-       id="linearGradient2542"
-       gradientUnits="userSpaceOnUse"
-       x1="563.97571"
-       y1="193.50128"
-       x2="563.97571"
-       y2="-5.4687498e-06"
-       gradientTransform="translate(60.869289,572.7544)" />
     <inkscape:perspective
        sodipodi:type="inkscape:persp3d"
        inkscape:vp_x="0 : 526.18109 : 1"
@@ -51,6 +52,26 @@
        inkscape:vp_z="744.09448 : 526.18109 : 1"
        inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
        id="perspective3315" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3169"
+       id="linearGradient2412"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(60.312567,681.79066)"
+       x1="248.37836"
+       y1="159.71176"
+       x2="248.37836"
+       y2="110.72863" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3155"
+       id="linearGradient2415"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(60.31257,681.79067)"
+       x1="251.11343"
+       y1="85.043472"
+       x2="251.11343"
+       y2="-9.9403951e-06" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -62,9 +83,9 @@
      objecttolerance="10"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.41970601"
-     inkscape:cx="644.81282"
-     inkscape:cy="10.147356"
+     inkscape:zoom="1.3330629"
+     inkscape:cx="125"
+     inkscape:cy="41.943272"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -87,18 +108,10 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-60.869289,-572.75439)">
-    <rect
-       style="opacity:1;fill:url(#linearGradient2542);fill-opacity:1;stroke:#5d5d5d;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="rect2540"
-       width="561.97571"
-       height="191.50128"
-       x="61.869289"
-       y="573.75439"
-       rx="20"
-       ry="19.999998"
-       inkscape:export-filename="/home/hortont/seed/examples/lightsoff/bkg.png"
-       inkscape:export-xdpi="47.906658"
-       inkscape:export-ydpi="47.906658" />
+     transform="translate(-60.31257,-681.79066)">
+    <path
+       style="fill:url(#linearGradient2415);fill-opacity:1;stroke:#5d5d5d;stroke-width:1.99999988000000006;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1"
+       d="M 70.1782,682.79066 L 301.56038,682.79066 C 306.47194,682.79066 310.42601,686.65876 310.42601,691.46355 L 310.42601,757.16125 C 310.42601,761.96603 306.47194,765.83414 301.56038,765.83414 L 70.1782,765.83414 C 65.266641,765.83414 61.31257,761.96603 61.31257,757.16125 L 61.31257,691.46355 C 61.31257,686.65876 65.266641,682.79066 70.1782,682.79066 z"
+       id="rect2540" />
   </g>
 </svg>

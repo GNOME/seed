@@ -1,3 +1,14 @@
+var tile_svg_size = 200;
+
+var on_pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size("./tim-on.svg", tile_svg_size, tile_svg_size);
+var off_pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size("./tim-off.svg", tile_svg_size, tile_svg_size);
+
+var on_svg = GtkClutter.texture_new_from_pixbuf(on_pixbuf);
+var off_svg = GtkClutter.texture_new_from_pixbuf(off_pixbuf);
+
+on_svg.filter_quality = Clutter.TextureQuality.high;
+off_svg.filter_quality = Clutter.TextureQuality.high;
+
 LightType = {
     parent: Clutter.Group.type,
     name: "Light",
@@ -37,7 +48,10 @@ LightType = {
 											reactive: true});
 		this.off = new Clutter.CloneTexture({parent_texture: off_svg, 
 											 reactive: true});
-							
+		
+		this.on.set_size(tile_size, tile_size);
+		this.off.set_size(tile_size, tile_size);
+		
 		this.on.opacity = 0.0;
 		
 		this.set_anchor_point(tile_size / 2, tile_size / 2);

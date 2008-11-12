@@ -1,3 +1,59 @@
+var last_direction = 0;
+var last_sign = 0;
+
+function alpha_func(alpha)
+{
+	timeline = alpha.get_timeline();
+	frame = timeline.get_current_frame();
+	n_frames = timeline.num_frames;
+	fps = timeline.fps;
+	duration = n_frames/fps;
+	time = frame/fps;
+
+	if ((time/=duration) < (1/2.75))
+		return Clutter.ALPHA_MAX_ALPHA*(7.5625*time*time);
+	else if (time < (2/2.75))
+		return Clutter.ALPHA_MAX_ALPHA*(7.5625 * (time-=(1.5/2.75))*time+.75);
+	else if (time < (2.5/2.75))
+		return Clutter.ALPHA_MAX_ALPHA*(7.5625 *(time-=(2.25/2.75))*time+.9375);
+	else
+		return Clutter.ALPHA_MAX_ALPHA*(7.5625 * (time-=(2.625/2.75))*time+.984375);
+}
+
+function win_animation()
+{
+	var direction, sign;
+	
+	do
+	{
+		direction = Math.floor(2 * Math.random());
+		sign = Math.floor(2 * Math.random()) ? 1 : -1;
+	}
+	while(last_direction == direction && last_sign != sign);
+	
+	last_direction = direction;
+	last_sign = sign;
+
+	var new_board = new Board();
+	new_board.set_position(sign * direction * board_size, 
+						   sign * (!direction) * board_size);
+	new_board.show();
+	stage.add_actor(new_board);
+	new_board.lower_bottom();
+	
+	var fadeline = new Clutter.Timeline({num_frames:80});
+	var effect = Clutter.EffectTemplate._new(fadeline, alpha_func);
+	
+	Clutter.effect_move(effect, new_board, 0, 0);
+	Clutter.effect_move(effect, board, 
+						-(sign)*(direction * board_size),
+						-(sign)*((!direction) * board_size));
+		
+	fadeline.start();
+	
+	board = new_board;
+}
+
 function check_won (timeline, light)
 {
 	if(light.get_parent().cleared() && !in_setup)
@@ -87,8 +143,8 @@ BoardType = {
 				this.lights[x][y] = new Light();
 				this.lights[x][y].light_x = x;
 				this.lights[x][y].light_y = y;
-				this.lights[x][y].set_position(x * tile_size + margin + tile_size/2,
-											   y * tile_size + margin + tile_size/2);
+				this.lights[x][y].set_position(x * (tile_size+margin) + margin + tile_size/2,
+											   y * (tile_size+margin) + margin + tile_size/2);
 				this.add_actor(this.lights[x][y]);
 			}
 		}

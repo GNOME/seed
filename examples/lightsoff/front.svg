@@ -9,8 +9,8 @@
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="557.08765"
-   height="115.03713"
+   width="250.37199"
+   height="48.383003"
    id="svg3343"
    sodipodi:version="0.32"
    inkscape:version="0.46"
@@ -19,6 +19,16 @@
    inkscape:output_extension="org.inkscape.output.svg.inkscape">
   <defs
      id="defs3345">
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3169"
+       id="linearGradient2412"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(112.31402,469.99832)"
+       x1="245.37199"
+       y1="48.383003"
+       x2="245.37199"
+       y2="-5.6843419e-14" />
     <linearGradient
        id="linearGradient3169">
       <stop
@@ -58,9 +68,9 @@
      objecttolerance="10"
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
-     inkscape:zoom="2.4035715"
+     inkscape:zoom="1.2017858"
      inkscape:cx="203.23922"
-     inkscape:cy="57.518566"
+     inkscape:cy="51.468405"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -90,10 +100,10 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-96.45619,-474.84362)">
+     transform="translate(-112.31402,-469.99832)">
     <path
-       style="opacity:1;fill:url(#linearGradient2534);fill-opacity:1;stroke:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1"
-       d="M 116.28223,474.84362 L 633.71781,474.84362 C 644.70141,474.84362 653.54381,483.60232 653.54381,494.48196 L 653.54381,551.8605 C 600.94401,589.46528 105.72732,609.10031 96.45619,551.8605 L 96.45619,494.48196 C 96.45619,483.60232 105.29861,474.84362 116.28223,474.84362 z"
+       style="fill:url(#linearGradient2412);fill-opacity:1;stroke:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1"
+       d="M 121.22444,469.99832 L 353.77562,469.99832 C 358.71201,469.99832 362.68602,473.74996 362.68602,478.41002 L 362.68602,502.98709 C 339.04606,519.09441 116.48074,527.50468 112.31402,502.98709 L 112.31402,478.41002 C 112.31402,473.74996 116.28808,469.99832 121.22444,469.99832 z"
        id="path2532"
        sodipodi:nodetypes="ccccccc"
        inkscape:export-filename="/home/hortont/seed/examples/lightsoff/bkg_top.png"
