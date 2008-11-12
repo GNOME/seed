@@ -56,6 +56,12 @@ void seed_toggle_ref(gpointer data, GObject * object, gboolean is_last_ref)
 
 }
 
+static void seed_gobject_destroyed(gpointer object)
+{
+    JSValueUnprotect(eng->context, (JSValueRef)object);
+    JSObjectSetPrivate((JSObjectRef)object, 0);
+}
+
 static JSValueRef seed_wrap_object(GObject * object)
 {
     JSValueRef user_data;
@@ -88,7 +94,8 @@ static JSValueRef seed_wrap_object(GObject * object)
 	g_assert_not_reached();
     }
 
-    g_object_set_data(object, "js-ref", (gpointer) js_ref);
+    g_object_set_data_full(object, "js-ref", (gpointer) js_ref, 
+			   seed_gobject_destroyed);
 
     JSValueProtect(eng->context, js_ref);
     g_object_add_toggle_ref(object, seed_toggle_ref, (gpointer) js_ref);

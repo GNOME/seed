@@ -138,15 +138,12 @@ seed_gobject_constructor_invoked(JSContextRef ctx,
 
     gobject = g_object_newv(type, nparams, params);
 
-    if (g_object_is_floating(gobject))
-	g_object_ref_sink(gobject);
-    else if (gobject->ref_count == 0)
-	g_object_ref(gobject);
+    g_object_ref_sink (gobject);
 
     if (!gobject)
 	ret = (JSObjectRef)JSValueMakeNull(eng->context);
-
-    ret = (JSObjectRef)seed_value_from_object(gobject, exception);
+    else
+	ret = (JSObjectRef)seed_value_from_object(gobject, exception);
     
     g_object_unref(gobject);
 
@@ -509,6 +506,8 @@ static void seed_gobject_finalize(JSObjectRef object)
     gobject = seed_value_to_object((JSValueRef) object, 0);
     if (!gobject)
 	return;
+    
+    g_object_set_data_full (gobject, "js-ref", NULL, NULL);
 
     g_object_remove_toggle_ref(gobject, seed_toggle_ref, 0);
     g_object_unref(gobject);
