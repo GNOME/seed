@@ -7,7 +7,9 @@ ide_DATA = \
 	ide-tabheader.js \
 	ide-tab.js \
 	ide-tabview.js \
-	ide-toolbar.js
+	ide-toolbar.js \
+	ide-messagearea.js \
+	ide-window.js
 EXTRA_DIST = \
 	exception.svg \
 	main.js \
@@ -16,8 +18,9 @@ EXTRA_DIST = \
 	ide-tabheader.js \
 	ide-tab.js \
 	ide-tabview.js \
-	ide-toolbar.js
-
+	ide-toolbar.js \
+	ide-messagearea.js \
+	ide-window.js
 
 ## File created by the gnome-build tools
 
