@@ -49,13 +49,11 @@ function win_animation()
 	var effect = Clutter.EffectTemplate._new(fadeline, alpha_func);
 	
 	Clutter.effect_move(effect, new_board, 0, 0);
-	var remove_line = Clutter.effect_move(effect, board, 
-									-(sign)*(direction * stage.width),
-									-(sign)*((!direction) * stage.height));
+	Clutter.effect_move(effect, board, 
+						-(sign)*(direction * stage.width),
+						-(sign)*((!direction) * stage.height));
 		
 	fadeline.start();
-	
-	remove_line.signal.completed.connect(board.destroy_board, board);
 	
 	board = new_board;
 }

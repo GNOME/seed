@@ -1,7 +1,10 @@
 function check_won (timeline, light)
 {
 	if(light.get_parent().cleared() && !in_setup)
+	{
+		score.increment_value(100);
 		win_animation();
+	}
 }
 
 function flip_region (act, evt, light)
@@ -34,11 +37,6 @@ BoardType = {
     name: "Board",
     class_init: function(klass, prototype)
     {
-    	prototype.destroy_board = function ()
-    	{
-			this.destroy();
-    	}
-    	
 		prototype.cleared = function ()
 		{
 			for(x in this.lights)
