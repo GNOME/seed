@@ -39,6 +39,14 @@ JSValueRef seed_gi_argument_make_js(GArgument * arg,
 				    GITypeInfo * type_info,
 				    JSValueRef * exception);
 
+gboolean seed_gi_release_arg(GITransfer transfer,
+				GITypeInfo * type_info,
+			     GArgument * arg);
+
+gboolean seed_gi_release_in_arg(GITransfer transfer,
+				GITypeInfo * type_info,
+				GArgument * arg);
+
 GType seed_gi_type_to_gtype(GITypeInfo * type_info, GITypeTag tag);
 
 gboolean seed_value_to_boolean(JSValueRef val, JSValueRef * exception);

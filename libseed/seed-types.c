@@ -177,6 +177,90 @@ GType seed_gi_type_to_gtype(GITypeInfo * type_info, GITypeTag tag)
     return 0;
 }
 
+static gboolean seed_release_arg(GITransfer transfer,
+				 GITypeInfo * type_info,
+				 GITypeTag type_tag,
+				 GArgument * arg)
+{
+    GType gtype;
+
+    switch (type_tag)
+    {
+    case GI_TYPE_TAG_UTF8:
+	g_free(arg->v_string);
+	break;
+    case GI_TYPE_TAG_INTERFACE:
+    {
+	if (arg->v_pointer)
+	{
+	    GIBaseInfo * interface_info;
+	    GType interface_type;
+	    
+	    interface_info = g_type_info_get_interface(type_info);
+	    
+	    gtype = 
+		g_registered_type_info_get_g_type(
+		    (GIRegisteredTypeInfo*)interface_info);
+	    
+// TODO: Need to fix a broken reference somewhere for this not to break things.
+// Possibly related to subclassing and the two phase destruction process.
+//	    if (g_type_is_a(gtype, G_TYPE_OBJECT) 
+//		|| g_type_is_a(gtype, G_TYPE_INTERFACE))
+//		g_object_unref(G_OBJECT(arg->v_pointer));
+	    
+	    g_base_info_unref(interface_info);
+	}
+	break;
+    }
+    default:
+	break;
+
+    }
+    
+    return TRUE;
+}
+
+gboolean seed_gi_release_arg(GITransfer transfer,
+		    GITypeInfo *type_info,
+		    GArgument * arg)
+{
+    GITypeTag type_tag;
+    
+    if (transfer == GI_TRANSFER_NOTHING)
+	return TRUE;
+    
+    type_tag = g_type_info_get_tag ((GITypeInfo *) type_info);
+    
+    return seed_release_arg(transfer, 
+			    type_info,
+			    type_tag,
+			    arg);
+}
+
+gboolean seed_gi_release_in_arg(GITransfer transfer,
+				GITypeInfo * type_info,
+				GArgument * arg)
+{
+    GITypeTag type_tag;
+    
+    if (transfer == GI_TRANSFER_EVERYTHING)
+	return;
+    
+    type_tag = g_type_info_get_tag ((GITypeInfo *) type_info);
+    
+    switch (type_tag)
+    {
+    case GI_TYPE_TAG_UTF8:
+	return seed_release_arg(GI_TRANSFER_EVERYTHING,
+			 type_info,
+			 type_tag,
+			 arg);
+    }
+    
+    return TRUE;
+}
+
+
 gboolean
 seed_gi_make_argument(JSValueRef value,
 		      GITypeInfo * type_info, GArgument * arg,
@@ -1054,7 +1138,7 @@ gchar *seed_value_to_string(JSValueRef val, JSValueRef * exception)
 {
     JSStringRef jsstr = 0;
     JSValueRef func, str;
-    gchar *buf;
+    gchar *buf = 0;
     gint length;
 
     if (val == NULL)
@@ -1084,8 +1168,11 @@ gchar *seed_value_to_string(JSValueRef val, JSValueRef * exception)
 
 	jsstr = JSValueToStringCopy(eng->context, val, NULL);
 	length = JSStringGetMaximumUTF8CStringSize(jsstr);
-	buf = g_malloc(length * sizeof(gchar));
-	JSStringGetUTF8CString(jsstr, buf, length);
+	if (length > 0)
+	{
+	    buf = g_malloc(length * sizeof(gchar));
+	    JSStringGetUTF8CString(jsstr, buf, length);
+	}
 	if (jsstr)
 	    JSStringRelease(jsstr);
     }

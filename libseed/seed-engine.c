@@ -292,8 +292,15 @@ seed_gobject_method_invoked(JSContextRef ctx,
 	if (g_type_info_get_tag(type_info) == GI_TYPE_TAG_VOID)
 	    retval_ref = JSValueMakeNull(eng->context);
 	else
+	{
 	    retval_ref =
 		seed_gi_argument_make_js(&retval, type_info, exception);
+	    
+	    seed_gi_release_arg(g_callable_info_get_caller_owns(
+				    (GICallableInfo *)info),
+							     type_info,
+							     &retval);
+	}
 	g_base_info_unref((GIBaseInfo *) type_info);
     }
     else
@@ -306,33 +313,37 @@ seed_gobject_method_invoked(JSContextRef ctx,
 
 	return JSValueMakeNull(eng->context);
     }
-
-    if (n_out_args != 0)
+    for (i = 0;	 (i < n_args);	 i++)
     {
-	for (i = 0; (i < n_args); i++)
+	JSValueRef jsout_val;
+	arg_info = g_callable_info_get_arg((GICallableInfo *) info, i);
+	dir = g_arg_info_get_direction(arg_info);
+	type_info = g_arg_info_get_type(arg_info);
+	
+	if (dir == GI_DIRECTION_IN)
 	{
-	    JSValueRef jsout_val;
-	    arg_info = g_callable_info_get_arg((GICallableInfo *) info, i);
-	    dir = g_arg_info_get_direction(arg_info);
-	    if (dir == GI_DIRECTION_IN)
-	    {
-		g_base_info_unref((GIBaseInfo *) arg_info);
-		continue;
-	    }
-	    type_info = g_arg_info_get_type(arg_info);
-	    jsout_val = seed_gi_argument_make_js(&out_values[i],
-						 type_info, exception);
-	    if (!JSValueIsNull(eng->context, arguments[i]) &&
-		JSValueIsObject(eng->context, arguments[i]))
-	    {
-		seed_object_set_property((JSObjectRef) arguments[i],
-					"value", jsout_val);
-	    }
-
-	    g_base_info_unref((GIBaseInfo *) arg_info);
+	    seed_gi_release_in_arg(
+		g_arg_info_get_ownership_transfer(arg_info),
+		type_info,
+	        &in_args[i+(instance_method ? 1 : 0)]);
+	    
 	    g_base_info_unref((GIBaseInfo *) type_info);
+	    g_base_info_unref((GIBaseInfo *) arg_info);
+	    continue;
 	}
+	jsout_val = seed_gi_argument_make_js(&out_values[i],
+					     type_info, exception);
+	if (!JSValueIsNull(eng->context, arguments[i]) &&
+	    JSValueIsObject(eng->context, arguments[i]))
+	{
+	    seed_object_set_property((JSObjectRef) arguments[i],
+				     "value", jsout_val);
+	}
+	
+	g_base_info_unref((GIBaseInfo *) arg_info);
+	g_base_info_unref((GIBaseInfo *) type_info);
     }
+
 
     g_free(in_args);
     g_free(out_args);
@@ -510,7 +521,7 @@ static void seed_gobject_finalize(JSObjectRef object)
     g_object_set_data_full (gobject, "js-ref", NULL, NULL);
 
     g_object_remove_toggle_ref(gobject, seed_toggle_ref, 0);
-    g_object_unref(gobject);
+    g_object_run_dispose(gobject);
 }
 
 static void seed_gobject_initialize(JSContextRef ctx, JSObjectRef object)
