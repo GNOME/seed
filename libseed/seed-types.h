@@ -31,7 +31,6 @@ gboolean seed_object_set_property(JSObjectRef object,
 				 const gchar * name, JSValueRef value);
 gboolean seed_gvalue_from_seed_value(JSValueRef val, GType type,
 				     GValue * gval, JSValueRef * exception);
-gboolean seed_gi_supports_type(GITypeInfo * type_info);
 gboolean seed_gi_make_argument(JSValueRef value,
 			       GITypeInfo * type_info,
 			       GArgument * arg, JSValueRef * exception);
@@ -46,8 +45,6 @@ gboolean seed_gi_release_arg(GITransfer transfer,
 gboolean seed_gi_release_in_arg(GITransfer transfer,
 				GITypeInfo * type_info,
 				GArgument * arg);
-
-GType seed_gi_type_to_gtype(GITypeInfo * type_info, GITypeTag tag);
 
 gboolean seed_value_to_boolean(JSValueRef val, JSValueRef * exception);
 JSValueRef seed_value_from_boolean(gboolean val, JSValueRef * exception);

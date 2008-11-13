@@ -439,7 +439,7 @@ seed_handle_set_property_closure(ffi_cif * cif,
     if (exception)
     {
 	gchar *mes = seed_exception_to_string(exception);
-	g_warning("Exception in instance init closure. %s \n", mes, 0);
+	g_warning("Exception in set property closure. %s \n", mes, 0);
     }
 
 }

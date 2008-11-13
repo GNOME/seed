@@ -33,7 +33,6 @@ static gboolean seed_value_is_gobject(JSValueRef value)
 {
     if (!JSValueIsObject(eng->context, value) ||
 	JSValueIsNull(eng->context, value))
-
 	return FALSE;
 
     return JSValueIsObjectOfClass(eng->context, value, gobject_class);
@@ -101,80 +100,6 @@ static JSValueRef seed_wrap_object(GObject * object)
     g_object_add_toggle_ref(object, seed_toggle_ref, (gpointer) js_ref);
 
     return js_ref;
-}
-
-GType seed_gi_type_to_gtype(GITypeInfo * type_info, GITypeTag tag)
-{
-    switch (tag)
-    {
-    case GI_TYPE_TAG_VOID:
-	return G_TYPE_NONE;
-    case GI_TYPE_TAG_BOOLEAN:
-	return G_TYPE_BOOLEAN;
-    case GI_TYPE_TAG_INT8:
-	return G_TYPE_CHAR;
-    case GI_TYPE_TAG_UINT8:
-	return G_TYPE_UCHAR;
-    case GI_TYPE_TAG_INT16:
-	return G_TYPE_INT;
-    case GI_TYPE_TAG_UINT16:
-	return G_TYPE_UINT;
-    case GI_TYPE_TAG_INT32:
-	return G_TYPE_INT;
-    case GI_TYPE_TAG_UINT32:
-	return G_TYPE_UINT;
-    case GI_TYPE_TAG_INT64:
-	return G_TYPE_INT64;
-    case GI_TYPE_TAG_UINT64:
-	return G_TYPE_UINT64;
-    case GI_TYPE_TAG_INT:
-	return G_TYPE_INT;
-    case GI_TYPE_TAG_UINT:
-	return G_TYPE_UINT;
-    case GI_TYPE_TAG_LONG:
-	return G_TYPE_LONG;
-    case GI_TYPE_TAG_ULONG:
-	return G_TYPE_ULONG;
-    case GI_TYPE_TAG_SSIZE:
-	return G_TYPE_INT;
-    case GI_TYPE_TAG_SIZE:
-	return G_TYPE_INT;
-    case GI_TYPE_TAG_FLOAT:
-	return G_TYPE_FLOAT;
-    case GI_TYPE_TAG_DOUBLE:
-	return G_TYPE_DOUBLE;
-    case GI_TYPE_TAG_UTF8:
-    case GI_TYPE_TAG_FILENAME:
-	return G_TYPE_STRING;
-    case GI_TYPE_TAG_ARRAY:
-    case GI_TYPE_TAG_GLIST:
-    case GI_TYPE_TAG_GSLIST:
-    case GI_TYPE_TAG_GHASH:
-    case GI_TYPE_TAG_ERROR:
-    case GI_TYPE_TAG_TIME_T:
-    case GI_TYPE_TAG_GTYPE:
-	return G_TYPE_INVALID;
-    case GI_TYPE_TAG_INTERFACE:
-	{
-	    GIBaseInfo *interface;
-	    GIInfoType interface_type;
-
-	    interface = g_type_info_get_interface(type_info);
-	    interface_type = g_base_info_get_type(interface);
-	    if (interface_type == GI_INFO_TYPE_OBJECT ||
-		interface_type == GI_INFO_TYPE_INTERFACE)
-		return G_TYPE_OBJECT;
-	    else if (interface_type == GI_INFO_TYPE_ENUM)
-		return G_TYPE_LONG;
-	    else if (interface_type == GI_INFO_TYPE_FLAGS)
-		return G_TYPE_LONG;
-	    else if (interface_type == GI_INFO_TYPE_STRUCT)
-		return G_TYPE_POINTER;
-	    
-	    g_base_info_unref(interface);
-	}
-    }
-    return 0;
 }
 
 static gboolean seed_release_arg(GITransfer transfer,
@@ -268,6 +193,8 @@ seed_gi_make_argument(JSValueRef value,
 {
     GITypeTag gi_tag = g_type_info_get_tag(type_info);
 
+    // FIXME: Some types are not "nullable", also need to check if argument
+    // can be null before doing this.
     if (!value || JSValueIsNull(eng->context, value))
     {
 	arg->v_pointer = 0;
@@ -345,6 +272,11 @@ seed_gi_make_argument(JSValueRef value,
 		required_gtype =
 		    g_registered_type_info_get_g_type((GIRegisteredTypeInfo *)
 						      interface);
+		
+		// FIXME: Not clear if the g_type_is_a check is desired here.
+		// Possibly 'breaks things' when we don't have introspection
+		// data for some things in an interface hierarchy. Hasn't
+		// provided any problems so far.
 		if (!gobject
 		    || !g_type_is_a(G_OBJECT_TYPE(gobject), required_gtype))
 		{
@@ -359,7 +291,7 @@ seed_gi_make_argument(JSValueRef value,
 	    else if (interface_type == GI_INFO_TYPE_ENUM ||
 		     interface_type == GI_INFO_TYPE_FLAGS)
 	    {
-		arg->v_long = JSValueToNumber(eng->context, value, NULL);
+		arg->v_long = seed_value_to_long(value, exception);
 		g_base_info_unref(interface);
 		break;
 	    }
@@ -378,6 +310,8 @@ seed_gi_make_argument(JSValueRef value,
 			g_base_info_unref(interface);
 			return FALSE;
 		    }
+		    // Automatically convert between functions and 
+		    // GClosures where expected.
 		    else if (g_type_is_a(type, G_TYPE_CLOSURE))
 		    {
 			if (JSObjectIsFunction
@@ -399,6 +333,11 @@ seed_gi_make_argument(JSValueRef value,
 		    g_base_info_unref(interface);
 		    break;
 		}
+		// Someone passes in a wrapper around a method where a 
+		// callback is expected, i.e Clutter.sine_inc_func, as an alpha
+		// Have to dlsym the symbol to be able to do this.
+		// NOTE: Some cases where dlsym(NULL, symbol) doesn't work depending
+		// On how libseed is loaded.
 		else if (JSValueIsObjectOfClass(eng->context,
 					   value, gobject_method_class))
 		{
@@ -421,6 +360,8 @@ seed_gi_make_argument(JSValueRef value,
 			break;
 		    }
 		}
+		// Somewhat deprecated from when it was necessary to manually
+		// create closure objects...
 		else if (JSValueIsObjectOfClass(eng->context,
 						value,
 						seed_native_callback_class))
@@ -432,6 +373,8 @@ seed_gi_make_argument(JSValueRef value,
 		    g_base_info_unref(interface);
 		    break;
 		}
+		// Automagically create closure around function passed in as 
+		// callback. 
 		else if (JSObjectIsFunction(eng->context, (JSObjectRef) value))
 		{
 		    SeedNativeClosure *privates =
@@ -586,51 +529,6 @@ seed_gi_argument_make_js(GArgument * arg, GITypeInfo * type_info,
     return 0;
 }
 
-gboolean seed_gi_supports_type(GITypeInfo * type_info)
-{
-    GITypeTag type_tag;
-
-    type_tag = g_type_info_get_tag(type_info);
-
-    switch (type_tag)
-    {
-    case GI_TYPE_TAG_VOID:
-    case GI_TYPE_TAG_BOOLEAN:
-    case GI_TYPE_TAG_INT8:
-    case GI_TYPE_TAG_UINT8:
-    case GI_TYPE_TAG_INT16:
-    case GI_TYPE_TAG_UINT16:
-    case GI_TYPE_TAG_INT32:
-    case GI_TYPE_TAG_UINT32:
-    case GI_TYPE_TAG_INT64:
-    case GI_TYPE_TAG_UINT64:
-    case GI_TYPE_TAG_INT:
-    case GI_TYPE_TAG_UINT:
-    case GI_TYPE_TAG_LONG:
-    case GI_TYPE_TAG_ULONG:
-    case GI_TYPE_TAG_SSIZE:
-    case GI_TYPE_TAG_SIZE:
-    case GI_TYPE_TAG_FLOAT:
-    case GI_TYPE_TAG_DOUBLE:
-    case GI_TYPE_TAG_UTF8:
-    case GI_TYPE_TAG_INTERFACE:
-	return TRUE;
-
-    case GI_TYPE_TAG_FILENAME:
-    case GI_TYPE_TAG_ARRAY:
-    case GI_TYPE_TAG_GLIST:
-    case GI_TYPE_TAG_GSLIST:
-    case GI_TYPE_TAG_GHASH:
-    case GI_TYPE_TAG_ERROR:
-	// We should support time_t easily.
-    case GI_TYPE_TAG_TIME_T:
-    case GI_TYPE_TAG_GTYPE:
-	return FALSE;
-
-    }
-    return FALSE;
-}
-
 JSValueRef seed_value_from_gvalue(GValue * gval, JSValueRef * exception)
 {
     if (!G_IS_VALUE(gval))
@@ -675,12 +573,12 @@ JSValueRef seed_value_from_gvalue(GValue * gval, JSValueRef * exception)
 	return seed_value_from_long(gval->data[0].v_long, exception);
     else if (g_type_is_a(G_VALUE_TYPE(gval), G_TYPE_OBJECT))
     {
-	// TODO: check for leaks
 	GObject * obj = g_value_get_object(gval);
 	return seed_value_from_object(obj, exception);
     }
     else
     {
+	// This is very broken right now, struct rework coming soon...
 	GIBaseInfo *info;
 	GIInfoType type;
 
@@ -699,7 +597,7 @@ JSValueRef seed_value_from_gvalue(GValue * gval, JSValueRef * exception)
 	}
 	else if (type == GI_INFO_TYPE_BOXED)
 	{
-	    printf("Trying to marshal boxed type \n");
+	    // TODO
 	}
 
     }
@@ -715,13 +613,6 @@ seed_gvalue_from_seed_value(JSValueRef val, GType type, GValue * ret,
     {
     case G_TYPE_BOOLEAN:
 	{
-	    /*
-	     * This is fail. Need to call seed_gvalue_from_seed_value with 
-	     * no type, and then try gobject cast. 
-	     */
-	    // if(!JSValueIsBoolean(eng->context, val))
-	    // goto bad_type;
-
 	    g_value_init(ret, G_TYPE_BOOLEAN);
 	    g_value_set_boolean(ret, seed_value_to_boolean(val, exception));
 	    return TRUE;
@@ -850,11 +741,14 @@ seed_gvalue_from_seed_value(JSValueRef val, GType type, GValue * ret,
 	{
 	    g_value_init(ret, G_TYPE_OBJECT);
 	    g_value_set_object(ret, o);
+
+	    /* Is this unref right? */
+	    if (o)
+		g_object_unref(o);
 	    return TRUE;
 	}
-
-	g_object_unref(o);
     }
+    /* Boxed handling is broken. Will be fixed in struct overhall. */
     else if (g_type_is_a(type, G_TYPE_BOXED))
     {
 	gpointer p = seed_struct_get_pointer(val);
@@ -899,6 +793,8 @@ seed_object_set_property(JSObjectRef object,
     return TRUE;
 }
 
+/* TODO: Make some macros or something for making exceptions, code is littered
+   with annoyingness right now */
 gboolean seed_value_to_boolean(JSValueRef val, JSValueRef * exception)
 {
     if (!JSValueIsBoolean(eng->context, val))
@@ -1192,24 +1088,17 @@ JSValueRef seed_value_from_string(const gchar * val, JSValueRef * exception)
 GObject *seed_value_to_object(JSValueRef val, JSValueRef * exception)
 {
     GObject *gobject;
-
+    
+    /* Worth investigating if this is the best way to handle null. Some of 
+      the existing code depends on null Objects not throwing an exception however.
+      needs testing at higher level if value can be null (through GI) */
+    if (JSValueIsNull(eng->context, val))
+	return 0;
     if (!seed_value_is_gobject(val))
     {
-	JSValueRef object;
-	if (!JSValueIsObject(eng->context, val))
-	    return NULL;
-	object = seed_object_get_property((JSObjectRef)val, 
-					  "gsuper");
-	if (val && object && JSValueIsObject(eng->context, object)) ;
-	{
-	    JSValueRef ref_data = 0;
-	    gobject = seed_value_to_object(object, exception);
-	    if (gobject)
-	    {
-		g_object_set_data(gobject, "js-ref", (gpointer) val);
-	    }
-	    return gobject;
-	}
+	seed_make_exception(exception, "ConversionError", "Attempt to convert from"
+			    " non GObject to GObject");
+	return NULL;
     }
 
     gobject = (GObject *) JSObjectGetPrivate((JSObjectRef) val);
