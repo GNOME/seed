@@ -742,9 +742,6 @@ seed_gvalue_from_seed_value(JSValueRef val, GType type, GValue * ret,
 	    g_value_init(ret, G_TYPE_OBJECT);
 	    g_value_set_object(ret, o);
 
-	    /* Is this unref right? */
-	    if (o)
-		g_object_unref(o);
 	    return TRUE;
 	}
     }
