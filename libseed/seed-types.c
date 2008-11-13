@@ -93,11 +93,13 @@ static JSValueRef seed_wrap_object(GObject * object)
 	g_assert_not_reached();
     }
 
+    g_object_ref_sink(object);
     g_object_set_data_full(object, "js-ref", (gpointer) js_ref, 
 			   seed_gobject_destroyed);
 
     JSValueProtect(eng->context, js_ref);
     g_object_add_toggle_ref(object, seed_toggle_ref, (gpointer) js_ref);
+    g_object_unref(object);
 
     return js_ref;
 }

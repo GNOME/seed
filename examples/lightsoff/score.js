@@ -51,7 +51,10 @@ ScoreType = {
     	this.bkg_top = Clutter.Texture.new_from_file("./front.svg");
 		var bkg = Clutter.Texture.new_from_file("./back.svg");
 		var off_svg = Clutter.Texture.new_from_file("./off.svg");
-		
+	Seed.print(bkg.__debug_ref_count());
+	Seed.print(this.bkg_top.__debug_ref_count());
+	Seed.print(off_svg.__debug_ref_count());
+
 		this.bkg_top.filter_quality = Clutter.TextureQuality.high;
 		bkg.filter_quality = Clutter.TextureQuality.high;
 		off_svg.filter_quality = Clutter.TextureQuality.high;
@@ -80,8 +83,13 @@ ScoreType = {
 		
 		this.bkg_top.set_position(1, 1);
 		this.add_actor(this.bkg_top);
+
+		this.animate_value(0);	Seed.print(bkg.__debug_ref_count());
+	Seed.print(this.bkg_top.__debug_ref_count());
+	Seed.print(off_svg.__debug_ref_count());
+
 		
-		this.animate_value(0);
+
     }};
 
 Score = new GType(ScoreType);
