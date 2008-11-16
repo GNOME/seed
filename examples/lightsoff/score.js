@@ -31,8 +31,8 @@ ScoreType = {
 					texture = null;
 			
 				var num = new Clutter.CloneTexture({parent_texture:texture});
-				num.set_position(this.num_offset * i - 3,5);
-				num.set_size(this.num_size,this.num_size);
+				num.set_position(this.num_margin + this.num_offset * i,5);
+				num.set_size(this.num_width,this.num_height);
 				this.current_set.add_actor(num);
 			}
 			
@@ -59,17 +59,18 @@ ScoreType = {
 		bkg.filter_quality = Clutter.TextureQuality.high;
 		off_svg.filter_quality = Clutter.TextureQuality.high;
 		
-		this.num_margin = 10;
-		this.num_size = bkg.height * 0.9;
-		this.num_offset = (bkg.width - 2*this.num_margin) / 5;
-		
+		this.num_margin = 7;
+		this.num_width = bkg.height * 0.9 * 0.625;
+		this.num_height = bkg.height * 0.9;
+		this.num_offset = this.num_width;
+			
 		this.add_actor(bkg);
 		
 		for(var i = 0; i < 5; i++)
 		{
 			var off_i = new Clutter.CloneTexture({parent_texture:off_svg});
-			off_i.set_position(this.num_offset * i - 3,5);
-			off_i.set_size(this.num_size,this.num_size);
+			off_i.set_position(this.num_margin + this.num_offset * i,5);
+			off_i.set_size(this.num_width,this.num_height);
 			this.add_actor(off_i);
 		}
 		

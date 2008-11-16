@@ -20,6 +20,11 @@ function alpha_func(alpha)
 		return Clutter.ALPHA_MAX_ALPHA*(7.5625 * (time-=(2.625/2.75))*time+.984375);
 }
 
+function delete_board(timeline, board)
+{
+	board.destroy();
+}
+
 function win_animation()
 {
 	var direction, sign;
@@ -45,10 +50,35 @@ function win_animation()
 	var effect = Clutter.EffectTemplate._new(fadeline, alpha_func);
 	
 	Clutter.effect_move(effect, new_board, 0, 0);
-	Clutter.effect_move(effect, board, 
+	var remove_timeline = Clutter.effect_move(effect, board, 
 						-(sign)*(direction * board_size),
 						-(sign)*((!direction) * board_size));
-		
+	
+	remove_timeline.signal.completed.connect(delete_board, null, board);
+	fadeline.start();
+	
+	board = new_board;
+}
+
+function swap_animation(direction)
+{
+	var new_board = new Board();
+	new_board.show();
+	stage.add_actor(new_board);
+	new_board.lower_bottom();
+	
+	new_board.set_opacity(0);
+	new_board.set_depth(direction * -250);
+	
+	var fadeline = new Clutter.Timeline({num_frames:40});
+	var effect = Clutter.EffectTemplate._new(fadeline, Clutter.sine_inc_func);
+	
+	Clutter.effect_depth(effect, new_board, 0);
+	var remove_timeline = Clutter.effect_depth(effect, board, direction * 250);
+	Clutter.effect_fade(effect, new_board, 255);
+	Clutter.effect_fade(effect, board, 0);
+	
+	remove_timeline.signal.completed.connect(delete_board, null, board);	
 	fadeline.start();
 	
 	board = new_board;

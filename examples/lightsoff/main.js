@@ -52,7 +52,7 @@ rect.set_size(stage.width, stage.height);
 back.set_position(score.x - back.width - 2*margin, score.y + (.5 * score.height) - (.5 * back.height));
 
 forward.set_arrow_flipped();
-forward.set_position(score.x + score.width, score.y + (.5 * score.height) - (.5 * forward.height));
+forward.set_position(score.x + score.width + 2*margin, score.y + (.5 * score.height) - (.5 * forward.height));
 
 stage.add_actor(board);
 stage.add_actor(rect); // TODO: gradient at top of rect

@@ -8,7 +8,7 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="200"
+   width="125"
    height="200"
    id="svg4591"
    sodipodi:version="0.32"
@@ -121,15 +121,15 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="2.47"
-     inkscape:cx="100"
+     inkscape:cx="49.190283"
      inkscape:cy="100"
      inkscape:document-units="px"
      inkscape:current-layer="g4250"
      showgrid="false"
-     inkscape:window-width="645"
-     inkscape:window-height="723"
-     inkscape:window-x="738"
-     inkscape:window-y="37" />
+     inkscape:window-width="1440"
+     inkscape:window-height="817"
+     inkscape:window-x="0"
+     inkscape:window-y="33" />
   <metadata
      id="metadata4596">
     <rdf:RDF>
@@ -148,7 +148,7 @@
      transform="translate(-53.63662,-54.14749)">
     <g
        id="g4250"
-       transform="translate(-16.633725,-270.90296)"
+       transform="translate(-54.133725,-270.90296)"
        inkscape:export-filename="/home/hortont/seed/examples/lightsoff/8.png"
        inkscape:export-xdpi="302.10001"
        inkscape:export-ydpi="302.10001">
