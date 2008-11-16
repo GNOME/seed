@@ -3,8 +3,8 @@ lightsoff_DATA = \
 	board.js \
 	light.js \
 	main.js \
-	tim-off.svg \
-	tim-on.svg \
+	light-off.svg \
+	light-on.svg \
 	0.svg \
 	1.svg \
 	2.svg \
@@ -15,11 +15,10 @@ lightsoff_DATA = \
 	7.svg \
 	8.svg \
 	9.svg \
-	back.svg \
-	front.svg \
-	led.svg \
+	lcd-back.svg \
+	lcd-front.svg \
 	score.js \
-	off.svg \
+	lcd-off.svg \
 	menu.js \
 	lightsoff.schemas \
 	arrow-l.svg \
@@ -28,8 +27,8 @@ EXTRA_DIST = \
 	board.js \
 	light.js \
 	main.js \
-	tim-off.svg \
-	tim-on.svg \
+	light-off.svg \
+	light-on.svg \
 	0.svg \
 	1.svg \
 	2.svg \
@@ -40,11 +39,10 @@ EXTRA_DIST = \
 	7.svg \
 	8.svg \
 	9.svg \
-	back.svg \
-	front.svg \
-	led.svg \
+	lcd-back.svg \
+	lcd-front.svg \
 	score.js \
-	off.svg \
+	lcd-off.svg \
 	menu.js \
 	lightsoff.schemas \
 	arrow-l.svg \
