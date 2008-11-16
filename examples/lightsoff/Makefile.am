@@ -20,7 +20,10 @@ lightsoff_DATA = \
 	led.svg \
 	score.js \
 	off.svg \
-	menu.js
+	menu.js \
+	lightsoff.schemas \
+	arrow-l.svg \
+	arrow-r.svg
 EXTRA_DIST = \
 	board.js \
 	light.js \
@@ -42,7 +45,14 @@ EXTRA_DIST = \
 	led.svg \
 	score.js \
 	off.svg \
-	menu.js
-
+	menu.js \
+	lightsoff.schemas \
+	arrow-l.svg \
+	arrow-r.svg
 ## File created by the gnome-build tools
 
+schemadir   = @GCONF_SCHEMA_FILE_DIR@
+schema_DATA = lightsoff.schemas
+
+install-data-local:
+	GCONF_CONFIG_SOURCE="" gconftool-2 --makefile-install-rule $(schema_DATA)

@@ -7,7 +7,7 @@ ScoreType = {
     	{
     		var current_val = this.value;
     		var max_val = this.value + val;
-    		for(var i = this.value; i <= max_val; i += 5)
+    		for(var i = this.value; i <= max_val; i += 1)
     		{
 				Seed.setTimeout("score.animate_value("+i+");",5*(i - current_val) + 100);
 			}
@@ -84,7 +84,8 @@ ScoreType = {
 		this.bkg_top.set_position(1, 1);
 		this.add_actor(this.bkg_top);
 
-		this.animate_value(0);	Seed.print(bkg.__debug_ref_count());
+		this.animate_value(gconf_client.get_int("/apps/lightsoff/score"));
+	Seed.print(bkg.__debug_ref_count());
 	Seed.print(this.bkg_top.__debug_ref_count());
 	Seed.print(off_svg.__debug_ref_count());
 

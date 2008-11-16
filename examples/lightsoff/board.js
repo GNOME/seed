@@ -60,7 +60,8 @@ function check_won (timeline, light)
 	
 	if(light.get_parent().cleared() && !in_setup)
 	{
-		score.increment_value(100);
+		score.animate_value(score.value+1);
+		gconf_client.set_int("/apps/lightsoff/score", score.value);
 		win_animation();
 	}
 }
@@ -111,14 +112,16 @@ BoardType = {
 		prototype.randomize = function ()
 		{
 			in_setup = true;
+			
+			GLib.random_set_seed(score.value);
 
-			var count = -4;
-			var sym = Math.floor(3*Math.random());
+			var count = Math.log(score.value*score.value) + 1;
+			var sym = Math.floor(3*GLib.random_double());
 
-			for (q = 0; q < count + 5; ++q)
+			for (q = 0; q < count; ++q)
 			{
-				i = Math.round((tiles-1) * Math.random());
-				j = Math.round((tiles-1) * Math.random());
+				i = Math.round((tiles-1) * GLib.random_double());
+				j = Math.round((tiles-1) * GLib.random_double());
 
 				flip_region(null, null, this.lights[i][j]);
 
