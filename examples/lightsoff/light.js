@@ -1,7 +1,7 @@
 var tile_svg_size = 200;
 
-var on_pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size("./tim-on.svg", tile_svg_size, tile_svg_size);
-var off_pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size("./tim-off.svg", tile_svg_size, tile_svg_size);
+var on_pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size("./light-on.svg", tile_svg_size, tile_svg_size);
+var off_pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size("./light-off.svg", tile_svg_size, tile_svg_size);
 
 var on_svg = GtkClutter.texture_new_from_pixbuf(on_pixbuf);
 var off_svg = GtkClutter.texture_new_from_pixbuf(off_pixbuf);

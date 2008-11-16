@@ -3,17 +3,7 @@ ScoreType = {
     name: "Score",
     class_init: function(klass, prototype)
     {
-    	prototype.increment_value = function (val)
-    	{
-    		var current_val = this.value;
-    		var max_val = this.value + val;
-    		for(var i = this.value; i <= max_val; i += 1)
-    		{
-				Seed.setTimeout("score.animate_value("+i+");",5*(i - current_val) + 100);
-			}
-    	}
-    	
-    	prototype.animate_value = function (val)
+	   	prototype.set_value = function (val)
 		{
 			this.value = val;
 			
@@ -48,9 +38,9 @@ ScoreType = {
     {
     	this.current_set = null;
     	
-    	this.bkg_top = Clutter.Texture.new_from_file("./front.svg");
-		var bkg = Clutter.Texture.new_from_file("./back.svg");
-		var off_svg = Clutter.Texture.new_from_file("./off.svg");
+    	this.bkg_top = Clutter.Texture.new_from_file("./lcd-front.svg");
+		var bkg = Clutter.Texture.new_from_file("./lcd-back.svg");
+		var off_svg = Clutter.Texture.new_from_file("./lcd-off.svg");
 	Seed.print(bkg.__debug_ref_count());
 	Seed.print(this.bkg_top.__debug_ref_count());
 	Seed.print(off_svg.__debug_ref_count());
@@ -85,7 +75,7 @@ ScoreType = {
 		this.bkg_top.set_position(1, 1);
 		this.add_actor(this.bkg_top);
 
-		this.animate_value(gconf_client.get_int("/apps/lightsoff/score"));
+		this.set_value(gconf_client.get_int("/apps/lightsoff/score"));
 	Seed.print(bkg.__debug_ref_count());
 	Seed.print(this.bkg_top.__debug_ref_count());
 	Seed.print(off_svg.__debug_ref_count());

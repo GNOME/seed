@@ -90,7 +90,7 @@ function check_won (timeline, light)
 	
 	if(light.get_parent().cleared() && !in_setup)
 	{
-		score.animate_value(score.value+1);
+		score.set_value(score.value+1);
 		gconf_client.set_int("/apps/lightsoff/score", score.value);
 		win_animation();
 	}
@@ -144,28 +144,29 @@ BoardType = {
 			in_setup = true;
 			
 			GLib.random_set_seed(score.value);
-
-			var count = Math.log(score.value*score.value) + 1;
-			var sym = Math.floor(3*GLib.random_double());
-
-			for (q = 0; q < count; ++q)
+			
+			do
 			{
-				i = Math.round((tiles-1) * GLib.random_double());
-				j = Math.round((tiles-1) * GLib.random_double());
+				var count = Math.floor(Math.log(score.value*score.value) + 1);
+				var sym = Math.floor(3*GLib.random_double());
 
-				flip_region(null, null, this.lights[i][j]);
+				for (q = 0; q < count; ++q)
+				{
+					i = Math.round((tiles-1) * GLib.random_double());
+					j = Math.round((tiles-1) * GLib.random_double());
 
-				if(sym == 0)
-					flip_region(null, null, this.lights[Math.abs(i-(tiles-1))][j]);
-				else if(sym == 1)
-					flip_region(null, null,
-						this.lights[Math.abs(i-(tiles-1))][Math.abs(j-(tiles-1))]);
-				else
-					flip_region(null, null, this.lights[i][Math.abs(j-(tiles-1))]);
+					flip_region(null, null, this.lights[i][j]);
+
+					if(sym == 0)
+						flip_region(null, null, this.lights[Math.abs(i-(tiles-1))][j]);
+					else if(sym == 1)
+						flip_region(null, null,
+							this.lights[Math.abs(i-(tiles-1))][Math.abs(j-(tiles-1))]);
+					else
+						flip_region(null, null, this.lights[i][Math.abs(j-(tiles-1))]);
+				}
 			}
-
-			if(this.cleared())
-				this.randomize();
+			while(this.cleared());
 
 			in_setup = false;
 		}

@@ -1,8 +1,13 @@
 function pushed_arrow()
 {
 	// TODO: Need to check that click count is 1
-	score.animate_value(score.value + (this.flipped ? 1 : -1));
-	swap_animation((this.flipped ? 1 : -1));
+	var direction = (this.flipped ? 1 : -1);
+	
+	if(score.value + direction < 1)
+		return true;
+	
+	score.set_value(score.value + direction);
+	swap_animation(direction);
 	gconf_client.set_int("/apps/lightsoff/score", score.value);
 	
 	return true;
