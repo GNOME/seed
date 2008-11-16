@@ -22,7 +22,8 @@ lightsoff_DATA = \
 	menu.js \
 	lightsoff.schemas \
 	arrow-l.svg \
-	arrow-r.svg
+	arrow-r.svg \
+	arrow.js
 EXTRA_DIST = \
 	board.js \
 	light.js \
@@ -46,7 +47,8 @@ EXTRA_DIST = \
 	menu.js \
 	lightsoff.schemas \
 	arrow-l.svg \
-	arrow-r.svg
+	arrow-r.svg \
+	arrow.js
 ## File created by the gnome-build tools
 
 schemadir   = @GCONF_SCHEMA_FILE_DIR@
