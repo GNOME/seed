@@ -1077,10 +1077,6 @@ gboolean seed_init(gint * argc, gchar *** argv)
         SEED_NOTE(MISC, "failed to parse arguments.");
         return false;
     }
-    
-    
-	SEED_NOTE(MISC, "== mark ==");
-
 
     qname = g_quark_from_static_string("js-type");
     qprototype = g_quark_from_static_string("js-prototype");
