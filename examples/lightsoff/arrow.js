@@ -1,5 +1,8 @@
 function pushed_arrow()
 {
+	if(animating_board)
+		return true;
+		
 	// TODO: Need to check that click count is 1
 	var direction = (this.flipped ? 1 : -1);
 	

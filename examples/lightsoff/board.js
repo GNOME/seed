@@ -23,6 +23,10 @@ function alpha_func(alpha)
 function delete_board(timeline, board)
 {
 	board.destroy();
+	
+	animating_board = false;
+	
+	return true;
 }
 
 function win_animation()
@@ -55,6 +59,7 @@ function win_animation()
 						-(sign)*((!direction) * board_size));
 	
 	remove_timeline.signal.completed.connect(delete_board, null, board);
+	animating_board = true;
 	fadeline.start();
 	
 	board = new_board;
@@ -79,6 +84,7 @@ function swap_animation(direction)
 	Clutter.effect_fade(effect, board, 0);
 	
 	remove_timeline.signal.completed.connect(delete_board, null, board);	
+	animating_board = true;
 	fadeline.start();
 	
 	board = new_board;
@@ -86,6 +92,9 @@ function swap_animation(direction)
 
 function check_won (timeline, light)
 {
+	if(animating_board)
+		return true;
+		
 	in_fade = false;
 	
 	if(light.get_parent().cleared() && !in_setup)
@@ -173,6 +182,7 @@ BoardType = {
     },
     instance_init: function(klass)
     {
+    	animating_board = false;
     	in_fade = false;
     	
 		this.lights = new Array();
