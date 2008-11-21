@@ -121,6 +121,10 @@ seed_handle_closure(ffi_cif * cif, void *result, void **args, void *userdata)
     GITypeInfo *return_type;
     GArgument rarg;
     GArgument *return_arg = g_new0(GArgument, 1);
+    
+    
+    SEED_NOTE(INVOCATION, "Invoking closure of type: %s \n",
+	      g_base_info_get_name((GIBaseInfo *)privates->info));
 
     num_args = g_callable_info_get_n_args(privates->info);
     return_type = g_callable_info_get_return_type(privates->info);
