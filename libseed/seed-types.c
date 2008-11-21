@@ -52,7 +52,6 @@ void seed_toggle_ref(gpointer data, GObject * object, gboolean is_last_ref)
     {
 	JSValueProtect(eng->context, wrapper);
     }
-
 }
 
 static void seed_gobject_destroyed(gpointer object)

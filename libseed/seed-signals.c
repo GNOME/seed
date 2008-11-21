@@ -136,10 +136,10 @@ seed_signal_marshal_func(GClosure * closure,
     }
 
     if (seed_closure->user_data)
-	args[i] = seed_closure->user_data;
+		args[i] = seed_closure->user_data;
     else
-	args[i] = JSValueMakeNull(eng->context);
-
+		args[i] = JSValueMakeNull(eng->context);
+	
     ret = JSObjectCallAsFunction(eng->context, seed_closure->function,
 			   seed_closure->this,
 			   n_param_values + 1, args, &exception);

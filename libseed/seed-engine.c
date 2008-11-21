@@ -527,7 +527,16 @@ static void seed_gobject_finalize(JSObjectRef object)
 
     gobject = seed_value_to_object((JSValueRef) object, 0);
     if (!gobject)
-	return;
+    {
+        SEED_NOTE(FINALIZATION,
+            "Attempting to finalize already destroyed object.");
+	    return;
+	}
+	
+    SEED_NOTE(FINALIZATION, "%s at %p (%d refs)", 
+        g_type_name(G_OBJECT_TYPE(gobject)),
+        gobject,
+        gobject->ref_count);
     
     g_object_set_data_full (gobject, "js-ref", NULL, NULL);
 
@@ -542,17 +551,16 @@ static void seed_gobject_initialize(JSContextRef ctx, JSObjectRef object)
 
     gobject = seed_value_to_object((JSValueRef) object, 0);
     if (!gobject)
-	return;
+        return;
 
     base = g_irepository_find_by_gtype(g_irepository_get_default(),
 				       G_OBJECT_TYPE(gobject));
 
     seed_add_signals_to_object(object, gobject);
     if (!base)
-	return;
+	    return;
 
     g_assert(g_base_info_get_type(base) == GI_INFO_TYPE_OBJECT);
-
 }
 
 static JSValueRef
