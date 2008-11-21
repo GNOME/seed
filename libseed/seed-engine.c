@@ -97,6 +97,8 @@ seed_gobject_constructor_invoked(JSContextRef ctx,
     i = 0;
 
     params = g_new0(GParameter, nparams + 1);
+    SEED_NOTE(INITIALIZATION, "Constructing object of type %s",
+	      g_type_name(type));
 
     while (i < nparams)
     {
