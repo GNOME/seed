@@ -76,6 +76,10 @@ ScoreType = {
 		this.add_actor(this.bkg_top);
 
 		this.set_value(gconf_client.get_int("/apps/lightsoff/score"));
+		
+		if(this.value == 0)
+			this.set_value(1);
+		
 	Seed.print(bkg.__debug_ref_count());
 	Seed.print(this.bkg_top.__debug_ref_count());
 	Seed.print(off_svg.__debug_ref_count());

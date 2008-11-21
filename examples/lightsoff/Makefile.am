@@ -20,7 +20,6 @@ lightsoff_DATA = \
 	score.js \
 	lcd-off.svg \
 	menu.js \
-	lightsoff.schemas \
 	arrow-l.svg \
 	arrow-r.svg \
 	arrow.js
@@ -45,14 +44,8 @@ EXTRA_DIST = \
 	score.js \
 	lcd-off.svg \
 	menu.js \
-	lightsoff.schemas \
 	arrow-l.svg \
 	arrow-r.svg \
 	arrow.js
 ## File created by the gnome-build tools
 
-schemadir   = @GCONF_SCHEMA_FILE_DIR@
-schema_DATA = lightsoff.schemas
-
-install-data-local:
-	gconftool-2 --install-schema-file=$(schema_DATA)
