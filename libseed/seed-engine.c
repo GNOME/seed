@@ -39,7 +39,8 @@ static const GDebugKey seed_debug_keys[] = {
   { "misc", SEED_DEBUG_MISC },
   { "finalization", SEED_DEBUG_FINALIZATION },
   { "initialization", SEED_DEBUG_INITIALIZATION },
-  { "signal", SEED_DEBUG_SIGNAL }
+  { "signal", SEED_DEBUG_SIGNAL },
+  { "invocation", SEED_DEBUG_INVOCATION }
 };
 #endif /* SEED_ENABLE_DEBUG */
 
@@ -294,16 +295,52 @@ seed_gobject_method_invoked(JSContextRef ctx,
 	g_base_info_unref((GIBaseInfo *) type_info);
 	g_base_info_unref((GIBaseInfo *) arg_info);
     }
+    SEED_NOTE(INVOCATION, "Invoking method: %s with %d in arguments"
+	      " and %d out arguments",
+	      g_base_info_get_name(info),
+	      n_in_args,
+	      n_out_args);
     if (g_function_info_invoke((GIFunctionInfo *) info,
 			       in_args,
 			       n_in_args,
 			       out_args, n_out_args, &retval, &error))
     {
+	GITypeTag tag;
+
 	type_info = g_callable_info_get_return_type((GICallableInfo *) info);
-	if (g_type_info_get_tag(type_info) == GI_TYPE_TAG_VOID)
+	tag = g_type_info_get_tag(type_info);
+	if (tag == GI_TYPE_TAG_VOID)
 	    retval_ref = JSValueMakeNull(eng->context);
 	else
 	{
+	    GIBaseInfo * interface;
+	    GIInfoType type;
+
+	    if (tag == GI_TYPE_TAG_INTERFACE)
+	    {
+		GIFunctionInfoFlags flags = 
+		    g_function_info_get_flags((GIFunctionInfo *) info);
+		
+		if (flags & GI_FUNCTION_IS_CONSTRUCTOR)
+		{
+		    GIBaseInfo * interface;
+		    GIInfoType interface_type;
+		    
+		    interface = g_type_info_get_interface(type_info);
+		    interface_type = g_base_info_get_type(interface);
+		    g_base_info_unref(interface);
+		    
+		    if (interface_type == GI_INFO_TYPE_OBJECT ||
+			interface_type == GI_INFO_TYPE_INTERFACE)
+		    {
+			if (G_IS_OBJECT(retval.v_pointer))
+			    g_object_ref_sink(G_OBJECT(retval.v_pointer));
+		    }
+
+		}
+	    }
+
+	    
 	    retval_ref =
 		seed_gi_argument_make_js(&retval, type_info, exception);
 	    

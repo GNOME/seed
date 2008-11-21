@@ -126,11 +126,16 @@ static gboolean seed_release_arg(GITransfer transfer,
 		g_registered_type_info_get_g_type(
 		    (GIRegisteredTypeInfo*)interface_info);
 	    
-// TODO: Need to fix a broken reference somewhere for this not to break things.
-// Possibly related to subclassing and the two phase destruction process.
-//	    if (g_type_is_a(gtype, G_TYPE_OBJECT) 
-//		|| g_type_is_a(gtype, G_TYPE_INTERFACE))
-//		g_object_unref(G_OBJECT(arg->v_pointer));
+	    if (g_type_is_a(gtype, G_TYPE_OBJECT) 
+		|| g_type_is_a(gtype, G_TYPE_INTERFACE))
+	    {
+		SEED_NOTE(MISC,
+			  "Unreffing object of type: %s in"
+			  "argument release. Reference count: %d\n",
+			  g_type_name(G_OBJECT_TYPE(G_OBJECT(arg->v_pointer))),
+			  G_OBJECT(arg->v_pointer)->ref_count);
+		g_object_unref(G_OBJECT(arg->v_pointer));
+	    }
 	    
 	    g_base_info_unref(interface_info);
 	}
