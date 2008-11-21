@@ -37,6 +37,7 @@ struct _SeedEngine {
     JSObjectRef global;
 };
 
+#include "seed-debug.h"
 #include "seed-engine.h"
 #include "seed-types.h"
 #include "seed-signals.h"

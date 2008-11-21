@@ -32,6 +32,17 @@ GParamSpec **global_prop_cache;
 
 gchar *glib_message = 0;
 
+guint seed_debug_flags = 0;  /* global seed debug flag */
+
+#ifdef SEED_ENABLE_DEBUG
+static const GDebugKey seed_debug_keys[] = {
+  { "misc", SEED_DEBUG_MISC },
+  { "finalization", SEED_DEBUG_FINALIZATION },
+  { "initialization", SEED_DEBUG_INITIALIZATION },
+  { "signal", SEED_DEBUG_SIGNAL }
+};
+#endif /* SEED_ENABLE_DEBUG */
+
 static JSObjectRef
 seed_gobject_constructor_invoked(JSContextRef ctx,
 				 JSObjectRef constructor,
@@ -970,6 +981,89 @@ seed_log_handler(const gchar * domain,
     glib_message = g_strdup(message);
 }
 
+#ifdef SEED_ENABLE_DEBUG
+static gboolean
+seed_arg_debug_cb (const char *key,
+                   const char *value,
+                   gpointer    user_data)
+{
+    seed_debug_flags |=
+        g_parse_debug_string (value,
+                              seed_debug_keys,
+                              G_N_ELEMENTS (seed_debug_keys));
+    return TRUE;
+}
+
+static gboolean
+seed_arg_no_debug_cb (const char *key,
+                      const char *value,
+                      gpointer    user_data)
+{
+    seed_debug_flags &=
+        ~g_parse_debug_string (value,
+                               seed_debug_keys,
+                               G_N_ELEMENTS (seed_debug_keys));
+    return TRUE;
+}
+#endif /* SEED_ENABLE_DEBUG */
+
+static GOptionEntry seed_args[] = {
+#ifdef SEED_ENABLE_DEBUG
+  { "seed-debug", 0, 0, G_OPTION_ARG_CALLBACK, seed_arg_debug_cb,
+    "Seed debugging flags to set", "FLAGS" },
+  { "seed-no-debug", 0, 0, G_OPTION_ARG_CALLBACK, seed_arg_no_debug_cb,
+    "Seed debugging flags to unset", "FLAGS" },
+#endif /* SEED_ENABLE_DEBUG */
+  { NULL, },
+};
+
+GOptionGroup * seed_get_option_group (void)
+{
+    GOptionGroup *group;
+
+    group = g_option_group_new ("seed",
+                              "Seed Options",
+                              "Show Seed Options",
+                              NULL,
+                              NULL);
+
+    g_option_group_add_entries (group, seed_args);
+
+    return group;
+}
+
+static gboolean seed_parse_args(int * argc, char *** argv)
+{
+    GOptionContext *option_context;
+    GOptionGroup   *seed_group;
+    GError         *error = NULL;
+    gboolean        ret = TRUE;
+
+    option_context = g_option_context_new (NULL);
+    g_option_context_set_ignore_unknown_options (option_context, TRUE);
+    g_option_context_set_help_enabled (option_context, FALSE);
+
+    /* Initiate any command line options from the backend */
+
+    seed_group = seed_get_option_group ();
+    g_option_context_set_main_group (option_context, seed_group);
+
+    if (!g_option_context_parse (option_context, argc, argv, &error))
+    {
+        if (error)
+        {
+            g_warning ("%s", error->message);
+            g_error_free (error);
+        }
+
+        ret = FALSE;
+    }
+
+    g_option_context_free (option_context);
+
+    return ret;
+}
+
 gboolean seed_init(gint * argc, gchar *** argv)
 {
     JSObjectRef seed_obj_ref;
@@ -977,6 +1071,16 @@ gboolean seed_init(gint * argc, gchar *** argv)
 
     g_type_init();
     g_log_set_handler("GLib-GObject", G_LOG_LEVEL_WARNING, seed_log_handler, 0);
+
+    if (seed_parse_args (argc, argv) == FALSE)
+    {
+        SEED_NOTE(MISC, "failed to parse arguments.");
+        return false;
+    }
+    
+    
+	SEED_NOTE(MISC, "== mark ==");
+
 
     qname = g_quark_from_static_string("js-type");
     qprototype = g_quark_from_static_string("js-prototype");
@@ -1018,7 +1122,6 @@ gboolean seed_init(gint * argc, gchar *** argv)
     JSStringRelease(defaults_script);
 
     return TRUE;
-
 }
 
 SeedScript *seed_make_script(const gchar * js, const gchar * source_url,
@@ -1030,7 +1133,7 @@ SeedScript *seed_make_script(const gchar * js, const gchar * source_url,
 
     if (source_url)
     {
-	ret->source_url = JSStringCreateWithUTF8CString(source_url);
+	    ret->source_url = JSStringCreateWithUTF8CString(source_url);
     }
     ret->line_number = line_number;
 

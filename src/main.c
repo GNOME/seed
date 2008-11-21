@@ -22,6 +22,7 @@
 #include <glib-object.h>
 #include <stdio.h>
 #include "../libseed/seed.h"
+#include "../libseed/seed-debug.h"
 #include <readline/readline.h>
 #include <stdlib.h>
 #include <girepository.h>
@@ -45,8 +46,13 @@ void seed_exec(gint argc, gchar ** argv)
 	SeedException e;
 	gchar * buffer;
 
-	g_file_get_contents(argv[1], 
-	&buffer, 0, 0);
+	g_file_get_contents(argv[1], &buffer, 0, 0);
+
+	if(!buffer)
+	{
+		g_critical("File %s not found!", argv[1]);
+		exit(1);
+	}
 
 	if (*buffer == '#')
 	{
@@ -55,7 +61,7 @@ void seed_exec(gint argc, gchar ** argv)
 		buffer++;
 	}
 	script = seed_make_script(buffer, argv[1], 1);
-	if (e =seed_script_exception(script))
+	if (e = seed_script_exception(script))
 	{
 		g_critical("%s. %s in %s at line %d",
 			   seed_exception_get_name(e),

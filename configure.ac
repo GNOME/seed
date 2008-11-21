@@ -66,6 +66,25 @@ AC_CHECK_LIB(readline, readline,
     AC_DEFINE(HAVE_LIBREADLINE, 1, [have readline]),
     AC_MSG_ERROR([readline not found]))
 
+m4_define([debug_default], "yes")
+
+AC_ARG_ENABLE(debug,
+              AC_HELP_STRING([--enable-debug=@<:@no/yes@:>@],
+                             [build debugging code. This does not actually enable debugging, it only builds the code in. Pass --seed-debug=(misc/finalization/initialization/signal/all) to enable debugging. @<:@default=debug_default@:>@]),
+,
+              enable_debug=debug_default)
+
+if test "x$enable_debug" = "xyes"; then
+  test "$cflags_set" = set || CFLAGS="$CFLAGS -g"
+  SEED_DEBUG_CFLAGS="-DSEED_ENABLE_DEBUG"
+else
+  if test "x$enable_debug" = "xno"; then
+    SEED_DEBUG_CFLAGS="-DG_DISABLE_ASSERT -DG_DISABLE_CHECKS -DG_DISABLE_CAST_CHECKS"
+  fi
+fi
+
+AC_SUBST(SEED_DEBUG_CFLAGS)
+
 PKG_CHECK_MODULES(SEED, gobject-introspection-1.0 webkit-1.0)
 PKG_CHECK_MODULES(LIBSEED, gobject-introspection-1.0 webkit-1.0)
 

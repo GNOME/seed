@@ -36,7 +36,7 @@ seedheadersdir = \
 EXTRA_DIST = \
 	$(seedheaders_HEADERS)
 
-LIBSEED_CFLAGS+=-Werror
+LIBSEED_CFLAGS+=-Werror $(SEED_DEBUG_CFLAGS)
 
 ## File created by the gnome-build tools
 
