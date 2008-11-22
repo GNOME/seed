@@ -22,6 +22,7 @@
 #include "seed-private.h"
 #include <string.h>
 JSClassRef seed_struct_class = 0;
+JSClassRef seed_union_class = 0;
 JSClassRef seed_pointer_class = 0;
 JSClassRef seed_boxed_class = 0;
 
@@ -53,6 +54,91 @@ static void seed_boxed_finalize(JSObjectRef object)
     g_boxed_free(type, priv->pointer);
     
 }
+
+static JSValueRef
+seed_union_get_property(JSContextRef context,
+			 JSObjectRef object,
+			 JSStringRef property_name,
+			 JSValueRef * exception)
+{
+    gpointer pointer;
+    gchar * cproperty_name;
+    int i, n;
+    int length;
+    seed_struct_privates * priv = JSObjectGetPrivate(object);
+    GIFieldInfo * field = 0;
+    GITypeInfo * field_type = 0;
+    GArgument field_value;
+    JSValueRef ret;
+
+    length = JSStringGetMaximumUTF8CStringSize(property_name);
+    cproperty_name = g_malloc(length * sizeof(gchar));
+    JSStringGetUTF8CString(property_name, cproperty_name, length);
+    
+    n = g_union_info_get_n_fields((GIUnionInfo *)priv->info);
+    for (i = 0; i < n; i++)
+    {
+	const gchar * name;
+	field = g_union_info_get_field((GIUnionInfo *)priv->info, i);
+	
+	name = g_base_info_get_name((GIBaseInfo *) field);
+	if (!strcmp(name, cproperty_name))
+	    break;
+	else
+	{
+	    g_base_info_unref((GIBaseInfo *) field);
+	    field = 0;
+	}
+    }
+    if (!field)
+    {
+	g_free(cproperty_name);
+	return 0;
+    }
+    
+    field_type = g_field_info_get_type(field);
+    if (!g_field_info_get_field(field, priv->pointer,
+				&field_value))
+    {
+	GITypeTag tag;
+
+	tag = g_type_info_get_tag(field_type);
+	if (tag == GI_TYPE_TAG_INTERFACE)
+	{
+	    GIBaseInfo * interface;
+
+	    interface = g_type_info_get_interface(field_type);
+	    gint offset = g_field_info_get_offset(field);
+	    switch (g_base_info_get_type(interface))
+	    {
+	    case GI_INFO_TYPE_STRUCT:
+		ret = seed_make_struct((priv->pointer + offset),
+				       interface);
+		goto found;
+	    case GI_INFO_TYPE_UNION:
+	    case GI_INFO_TYPE_BOXED:
+	    default:
+		g_base_info_unref(interface);
+	    }
+	}
+	
+	g_free(cproperty_name);
+	return JSValueMakeNull(eng->context);
+    }
+    
+    ret = seed_gi_argument_make_js(&field_value,
+				   field_type, exception);
+
+found:
+
+    g_base_info_unref((GIBaseInfo *) field);
+    if (field_type)
+	g_base_info_unref((GIBaseInfo *) field_type);
+    g_free(cproperty_name);    
+    
+    return ret;
+}
+
 
 static JSValueRef
 seed_struct_get_property(JSContextRef context,
@@ -154,6 +240,26 @@ JSClassDefinition seed_struct_def = {
     NULL			/* Convert To Type */
 };
 
+JSClassDefinition seed_union_def = {
+    0,				/* Version, always 0 */
+    0,
+    "seed_union",		/* Class Name */
+    NULL,			/* Parent Class */
+    NULL,			/* Static Values */
+    NULL,			/* Static Functions */
+    NULL,
+    NULL, 
+    NULL,			/* Has Property */
+    seed_union_get_property,
+    NULL,			/* Set Property */
+    NULL,			/* Delete Property */
+    NULL,			/* Get Property Names */
+    NULL,			/* Call As Function */
+    NULL,			/* Call As Constructor */
+    NULL,			/* Has Instance */
+    NULL			/* Convert To Type */
+};
+
 JSClassDefinition seed_boxed_def = {
     0,				/* Version, always 0 */
     0,
@@ -204,7 +310,7 @@ JSObjectRef seed_make_union(gpointer younion, GIBaseInfo * info)
     priv->pointer = younion;
     priv->info = info;
 
-    object = JSObjectMake(eng->context, seed_struct_class, priv);
+    object = JSObjectMake(eng->context, seed_union_class, priv);
 
     if (info)
     {
@@ -274,6 +380,8 @@ void seed_structs_init(void)
     seed_pointer_class = JSClassCreate(&seed_pointer_def);
     seed_struct_def.parentClass = seed_pointer_class;
     seed_struct_class = JSClassCreate(&seed_struct_def);
+    seed_union_def.parentClass = seed_union_class;
+    seed_union_class = JSClassCreate(&seed_union_def);
     seed_boxed_def.parentClass = seed_struct_class;
     seed_boxed_class = JSClassCreate(&seed_boxed_def);
 }
