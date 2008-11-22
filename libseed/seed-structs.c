@@ -191,12 +191,41 @@ seed_struct_get_property(JSContextRef context,
     if (!g_field_info_get_field(field, priv->pointer,
 				&field_value))
     {
+	GITypeTag tag;
+
+	tag = g_type_info_get_tag(field_type);
+	if (tag == GI_TYPE_TAG_INTERFACE)
+	{
+	    GIBaseInfo * interface;
+
+	    interface = g_type_info_get_interface(field_type);
+	    gint offset = g_field_info_get_offset(field);
+	    switch (g_base_info_get_type(interface))
+	    {
+	    case GI_INFO_TYPE_STRUCT:
+		ret = seed_make_struct((priv->pointer + offset),
+				       interface);
+		goto found;
+	    case GI_INFO_TYPE_UNION:
+		ret = seed_make_union((priv->pointer + offset),
+				      interface);
+		goto found;
+	    case GI_INFO_TYPE_BOXED:
+		ret = seed_make_boxed((priv->pointer + offset),
+				      interface);
+		goto found;
+	    default:
+		g_base_info_unref(interface);
+	    }
+	}
+	
 	g_free(cproperty_name);
 	return JSValueMakeNull(eng->context);
     }
     
     ret = seed_gi_argument_make_js(&field_value,
 				   field_type, exception);
+found:
     
     g_base_info_unref((GIBaseInfo *) field);
     if (field_type)
