@@ -3,6 +3,7 @@ EXTRA_DIST = \
     compare.js \
     constructor-args.js \
     signal-this.js \
+    struct-offsets.js \
     gtype-typerror.js \
     gtype-signal.js \
     signal-userdata.js \

@@ -105,7 +105,6 @@ seed_struct_get_property(JSContextRef context,
     if (!g_field_info_get_field(field, priv->pointer,
 				&field_value))
     {
-	// EXCEPTION
 	g_free(cproperty_name);
 	return JSValueMakeNull(eng->context);
     }
