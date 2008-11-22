@@ -5,13 +5,12 @@
 
 #include <glib.h>
 
-typedef enum
-{
+typedef enum {
 	SEED_DEBUG_ALL = 1 << 0,
 	SEED_DEBUG_MISC = 1 << 1,
 	SEED_DEBUG_FINALIZATION = 1 << 2,
 	SEED_DEBUG_INITIALIZATION = 1 << 3,
-	SEED_DEBUG_INVOCATION = 1<< 4,
+	SEED_DEBUG_INVOCATION = 1 << 4,
 	SEED_DEBUG_SIGNAL = 1 << 5
 } SeedDebugFlag;
 
@@ -30,13 +29,13 @@ typedef enum
 #define SEED_MARK()      SEED_NOTE(MISC, "== mark ==")
 #define SEED_DBG(x) { a }
 
-#else /* !SEED_ENABLE_DEBUG */
+#else							/* !SEED_ENABLE_DEBUG */
 
 #define SEED_NOTE(type,...)
 #define SEED_MARK()
 #define SEED_DBG(x)
 
-#endif /* SEED_ENABLE_DEBUG */
+#endif							/* SEED_ENABLE_DEBUG */
 
 extern guint seed_debug_flags;
 

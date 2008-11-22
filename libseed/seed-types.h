@@ -28,23 +28,21 @@ JSValueRef seed_value_from_gvalue(GValue * gval, JSValueRef * exception);
 JSValueRef seed_object_get_property(JSObjectRef val, const gchar * name);
 
 gboolean seed_object_set_property(JSObjectRef object,
-				 const gchar * name, JSValueRef value);
+								  const gchar * name, JSValueRef value);
 gboolean seed_gvalue_from_seed_value(JSValueRef val, GType type,
-				     GValue * gval, JSValueRef * exception);
+									 GValue * gval, JSValueRef * exception);
 gboolean seed_gi_make_argument(JSValueRef value,
-			       GITypeInfo * type_info,
-			       GArgument * arg, JSValueRef * exception);
+							   GITypeInfo * type_info,
+							   GArgument * arg, JSValueRef * exception);
 JSValueRef seed_gi_argument_make_js(GArgument * arg,
-				    GITypeInfo * type_info,
-				    JSValueRef * exception);
+									GITypeInfo * type_info,
+									JSValueRef * exception);
 
 gboolean seed_gi_release_arg(GITransfer transfer,
-				GITypeInfo * type_info,
-			     GArgument * arg);
+							 GITypeInfo * type_info, GArgument * arg);
 
 gboolean seed_gi_release_in_arg(GITransfer transfer,
-				GITypeInfo * type_info,
-				GArgument * arg);
+								GITypeInfo * type_info, GArgument * arg);
 
 gboolean seed_value_to_boolean(JSValueRef val, JSValueRef * exception);
 JSValueRef seed_value_from_boolean(gboolean val, JSValueRef * exception);

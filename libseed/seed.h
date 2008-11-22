@@ -37,7 +37,7 @@ typedef struct _SeedScript SeedScript;
 gboolean seed_init(gint * argc, gchar *** argv);
 
 SeedScript *seed_make_script(const gchar * s, const gchar * source_url,
-			     gint line_number);
+							 gint line_number);
 SeedException seed_script_exception(SeedScript * s);
 SeedException seed_make_exception(gchar * name, gchar * message);
 gchar *seed_exception_get_name(SeedException e);
@@ -92,13 +92,13 @@ GObject *seed_value_to_object(SeedValue val, SeedException * exception);
 SeedValue seed_value_from_object(GObject * val, SeedException * exception);
 
 typedef void (*SeedFunctionCallback) (SeedContextRef ctx,
-				      SeedObject function,
-				      SeedObject this_object,
-				      size_t argument_count,
-				      const SeedValue arguments[],
-				      SeedException * exception);
+									  SeedObject function,
+									  SeedObject this_object,
+									  size_t argument_count,
+									  const SeedValue arguments[],
+									  SeedException * exception);
 
 void seed_create_function(gchar * name, SeedFunctionCallback,
-			  SeedObject object);
+						  SeedObject object);
 
 #endif

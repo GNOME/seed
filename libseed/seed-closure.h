@@ -24,28 +24,28 @@
 #include "seed-private.h"
 
 typedef struct _SeedClosure {
-    GClosure closure;
-    JSObjectRef function;
-    JSObjectRef object;
-    JSObjectRef this;
+	GClosure closure;
+	JSObjectRef function;
+	JSObjectRef object;
+	JSObjectRef this;
 
-    JSValueRef user_data;
-    
-    GType return_type;
+	JSValueRef user_data;
+
+	GType return_type;
 } SeedClosure;
 
 typedef struct _SeedNativeClosure {
-    GICallableInfo *info;
-    JSValueRef function;
+	GICallableInfo *info;
+	JSValueRef function;
 
-    ffi_closure *closure;
-    ffi_cif *cif;
+	ffi_closure *closure;
+	ffi_cif *cif;
 } SeedNativeClosure;
 
 extern JSClassRef seed_native_callback_class;
 
 SeedNativeClosure *seed_make_native_closure(GICallableInfo * info,
-					    JSValueRef function);
+											JSValueRef function);
 SeedClosure *seed_make_gclosure(JSObjectRef function, JSObjectRef this);
 
 void seed_closures_init();

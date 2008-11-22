@@ -33,8 +33,8 @@
 typedef struct _SeedEngine SeedEngine;
 
 struct _SeedEngine {
-    JSGlobalContextRef context;
-    JSObjectRef global;
+	JSGlobalContextRef context;
+	JSObjectRef global;
 };
 
 #include "seed-debug.h"

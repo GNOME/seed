@@ -27,7 +27,6 @@ JSObjectRef seed_make_union(gpointer younion, GIBaseInfo * info);
 JSObjectRef seed_make_struct(gpointer strukt, GIBaseInfo * info);
 JSObjectRef seed_make_boxed(gpointer boxed, GIBaseInfo * info);
 
-
 JSObjectRef seed_make_pointer(gpointer pointer);
 
 gpointer seed_pointer_get_pointer(JSValueRef strukt);
