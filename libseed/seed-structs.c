@@ -33,7 +33,6 @@ typedef struct _seed_struct_privates
 
 static void seed_pointer_finalize(JSObjectRef object)
 {
-    
     seed_struct_privates * priv =
     	(seed_struct_privates *) JSObjectGetPrivate(object);
     
@@ -53,6 +52,73 @@ static void seed_boxed_finalize(JSObjectRef object)
 
     g_boxed_free(type, priv->pointer);
     
+}
+
+static JSValueRef
+seed_struct_get_property(JSContextRef context,
+			 JSObjectRef object,
+			 JSStringRef property_name,
+			 JSValueRef * exception)
+{
+    gpointer pointer;
+    gchar * cproperty_name;
+    int i, n;
+    int length;
+    seed_struct_privates * priv = JSObjectGetPrivate(object);
+    GIFieldInfo * field = 0;
+    GITypeInfo * field_type = 0;
+    GArgument field_value;
+    JSValueRef ret;
+
+    length = JSStringGetMaximumUTF8CStringSize(property_name);
+    cproperty_name = g_malloc(length * sizeof(gchar));
+    JSStringGetUTF8CString(property_name, cproperty_name, length);
+    
+    for (i = 0; i < strlen(cproperty_name); i++)
+    {
+	if (cproperty_name[i] == '_')
+	    cproperty_name[i] = '-';
+    }
+    
+    n = g_struct_info_get_n_fields((GIStructInfo *)priv->info);
+    for (i = 0; i < n; i++)
+    {
+	const gchar * name;
+	field = g_struct_info_get_field((GIStructInfo *)priv->info, i);
+	
+	name = g_base_info_get_name((GIBaseInfo *) field);
+	if (!strcmp(name, cproperty_name))
+	    break;
+	else
+	{
+	    g_base_info_unref((GIBaseInfo *) field);
+	    field = 0;
+	}
+    }
+    if (!field)
+    {
+	g_free(cproperty_name);
+	return 0;
+    }
+    
+    field_type = g_field_info_get_type(field);
+    if (!g_field_info_get_field(field, priv->pointer,
+				&field_value))
+    {
+	// EXCEPTION
+	g_free(cproperty_name);
+	return JSValueMakeNull(eng->context);
+    }
+    
+    ret = seed_gi_argument_make_js(&field_value,
+				   field_type, exception);
+    
+    g_base_info_unref((GIBaseInfo *) field);
+    if (field_type)
+	g_base_info_unref((GIBaseInfo *) field_type);
+    g_free(cproperty_name);    
+    
+    return ret;
 }
 
 JSClassDefinition seed_pointer_def = {
@@ -85,7 +151,7 @@ JSClassDefinition seed_struct_def = {
     NULL,
     NULL, 
     NULL,			/* Has Property */
-    0,
+    seed_struct_get_property,
     NULL,			/* Set Property */
     NULL,			/* Delete Property */
     NULL,			/* Get Property Names */
