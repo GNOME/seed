@@ -1,7 +1,7 @@
 #!/usr/local/bin/seed
 // Returns: 0
 // STDIN:
-// STDOUT:GType constructor expected Gype for parent
+// STDOUT:GType constructor expected GType for parent
 // STDERR:
 Seed.import_namespace("Gtk");
 
