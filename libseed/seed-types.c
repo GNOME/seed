@@ -567,7 +567,7 @@ JSValueRef seed_value_from_gvalue(GValue * gval, JSValueRef * exception)
 	return seed_value_from_string((gchar *)
 				      g_value_get_string(gval), exception);
     case G_TYPE_POINTER:
-	return seed_make_struct(g_value_get_pointer(gval), 0);
+	return seed_make_pointer(g_value_get_pointer(gval));
     }
 
     if (g_type_is_a(G_VALUE_TYPE(gval), G_TYPE_ENUM) ||
@@ -601,7 +601,7 @@ JSValueRef seed_value_from_gvalue(GValue * gval, JSValueRef * exception)
 	}
 	else if (type == GI_INFO_TYPE_BOXED)
 	{
-	    // TODO
+	    return seed_make_boxed(g_value_dup_boxed(gval), info);
 	}
 
     }

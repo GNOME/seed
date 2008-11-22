@@ -25,6 +25,21 @@ JSClassRef seed_struct_class = 0;
 JSClassRef seed_pointer_class = 0;
 JSClassRef seed_boxed_class = 0;
 
+typedef struct _seed_struct_privates
+{
+    gpointer pointer;
+    GIBaseInfo * info;
+} seed_struct_privates;
+
+static void seed_pointer_finalize(JSObjectRef object)
+{
+    seed_struct_privates * priv =
+	(seed_struct_privates *) JSObjectGetPrivate(object);
+    
+    g_free(priv);
+}
+
+
 JSClassDefinition seed_pointer_def = {
     0,				/* Version, always 0 */
     0,
@@ -33,7 +48,7 @@ JSClassDefinition seed_pointer_def = {
     NULL,			/* Static Values */
     NULL,			/* Static Functions */
     NULL,
-    NULL,
+    seed_pointer_finalize,
     NULL,			/* Has Property */
     0,
     NULL,			/* Set Property */
@@ -85,24 +100,36 @@ JSClassDefinition seed_boxed_def = {
     NULL			/* Convert To Type */
 };
 
-gpointer seed_pointer_get_pointer(JSValueRef strukt)
+gpointer seed_pointer_get_pointer(JSValueRef pointer)
 {
-    if (JSValueIsObjectOfClass(eng->context, strukt, seed_pointer_class))
-	return JSObjectGetPrivate((JSObjectRef) strukt);
+    if (JSValueIsObjectOfClass(eng->context, pointer, seed_pointer_class))
+    {
+	seed_struct_privates * priv = 
+	    JSObjectGetPrivate((JSObjectRef)pointer);
+	return priv->pointer;
+    }
     return 0;
 }
 
 JSObjectRef seed_make_pointer(gpointer pointer)
 {
-    return JSObjectMake(eng->context, seed_pointer_class, pointer);
+    seed_struct_privates * priv =
+	g_new0(seed_struct_privates, 1);
+    priv->pointer = pointer;
+
+    return JSObjectMake(eng->context, seed_pointer_class, priv);
 }
 
 JSObjectRef seed_make_union(gpointer younion, GIBaseInfo * info)
 {
     JSObjectRef object;
     gint i, n_methods;
+    seed_struct_privates * priv = g_new0(seed_struct_privates, 1);
+    
+    priv->pointer = younion;
+    priv->info = info;
 
-    object = JSObjectMake(eng->context, seed_struct_class, younion);
+    object = JSObjectMake(eng->context, seed_struct_class, priv);
 
     if (info)
     {
@@ -126,8 +153,12 @@ JSObjectRef seed_make_struct(gpointer strukt, GIBaseInfo * info)
 {
     JSObjectRef object;
     gint i, n_methods;
+    seed_struct_privates * priv = g_new0(seed_struct_privates, 1);
+    
+    priv->info = info;
+    priv->pointer = strukt;
 
-    object = JSObjectMake(eng->context, seed_struct_class, strukt);
+    object = JSObjectMake(eng->context, seed_struct_class, priv);
 
     if (info)
     {
