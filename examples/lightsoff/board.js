@@ -92,10 +92,10 @@ function swap_animation(direction)
 
 function check_won (timeline, light)
 {
+	in_fade = false;
+	
 	if(animating_board)
 		return true;
-		
-	in_fade = false;
 	
 	if(light.get_parent().cleared() && !in_setup)
 	{
