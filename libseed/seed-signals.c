@@ -26,6 +26,7 @@
 typedef struct _signal_privates {
 	guint signal_id;
 	GObject *object;
+	const gchar * signal_name;
 } signal_privates;
 
 JSClassRef signal_holder_class;
@@ -57,6 +58,7 @@ seed_add_signal_to_object(JSObjectRef object_ref,
 
 	priv->signal_id = signal->signal_id;
 	priv->object = obj;
+	priv->signal_name = signal->signal_name;
 
 	seed_object_set_property(object_ref, js_signal_name, signal_ref);
 	g_free(js_signal_name);
@@ -80,7 +82,7 @@ seed_add_signals_for_type(JSObjectRef object_ref, GObject * obj, GType type)
 	g_free(signal_ids);
 }
 
-static void seed_gobject_signal_connect(int signal_id,
+static void seed_gobject_signal_connect(const gchar * signal_name,
 										GObject * on_obj,
 										JSObjectRef func,
 										JSObjectRef this_obj,
@@ -89,7 +91,7 @@ static void seed_gobject_signal_connect(int signal_id,
 	GSignalQuery query;
 	GClosure * closure;
 	
-	g_signal_query(signal_id, &query);
+	g_signal_query(g_signal_lookup(signal_name, G_OBJECT_TYPE(on_obj)), &query);
 
 	closure = g_closure_new_simple(sizeof(SeedClosure), 0);
 	g_closure_set_marshal(closure, seed_signal_marshal_func);
@@ -116,7 +118,7 @@ static void seed_gobject_signal_connect(int signal_id,
 
 	JSValueProtect(eng->context, (JSObjectRef) func);
 	
-	g_signal_connect_closure_by_id(on_obj, signal_id, 0, closure, FALSE);
+	g_signal_connect_closure(on_obj, signal_name, closure, FALSE);
 }
 
 static JSValueRef
@@ -128,7 +130,6 @@ seed_gobject_signal_connect_by_name(JSContextRef ctx,
 									JSValueRef * exception)
 {
 	GType obj_type;
-	gint signal_id;
 	JSObjectRef user_data = NULL;
 	gchar * signal_name;
 	GObject * obj;
@@ -151,23 +152,10 @@ seed_gobject_signal_connect_by_name(JSContextRef ctx,
 	
 	signal_name = seed_value_to_string(arguments[0], NULL);
 	obj_type = G_OBJECT_TYPE(seed_value_to_object(thisObject, NULL));
-	signal_id = g_signal_lookup(signal_name, obj_type);
-	
-	if(signal_id == 0)
-	{
-		// TODO: what kind of exception should this be??
-		
-		gchar *mes = g_strdup_printf("No signal '%s' found.", signal_name);
-		seed_make_exception(exception, "ArgumentError", mes);
-
-		g_free(mes);
-		
-		return JSValueMakeNull(eng->context);
-	}
 	
 	obj = seed_value_to_object(thisObject, NULL);
 	
-	seed_gobject_signal_connect(signal_id, obj, 
+	seed_gobject_signal_connect(signal_name, obj, 
 								(JSObjectRef) arguments[1],
 								NULL, user_data);
 	
@@ -347,18 +335,18 @@ seed_gobject_signal_connect_on_property(JSContextRef ctx,
 	}
 	
 	if (argumentCount == 1)
-		seed_gobject_signal_connect(privates->signal_id,
+		seed_gobject_signal_connect(privates->signal_name,
 									privates->object,
 									(JSObjectRef) arguments[0], NULL, NULL);
 	
 	if (argumentCount == 2)
-		seed_gobject_signal_connect(privates->signal_id,
+		seed_gobject_signal_connect(privates->signal_name,
 									privates->object,
 									(JSObjectRef) arguments[0],
 									(JSObjectRef) arguments[1], NULL);
 
 	if (argumentCount == 3)
-		seed_gobject_signal_connect(privates->signal_id,
+		seed_gobject_signal_connect(privates->signal_name,
 									privates->object,
 									(JSObjectRef) arguments[0],
 									(JSObjectRef) arguments[1],
