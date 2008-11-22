@@ -22,8 +22,29 @@
 #include "seed-private.h"
 #include <string.h>
 JSClassRef seed_struct_class = 0;
+JSClassRef seed_pointer_class = 0;
 
-JSClassDefinition gobject_struct_def = {
+JSClassDefinition seed_pointer_def = {
+    0,				/* Version, always 0 */
+    0,
+    "seed_pointer",		/* Class Name */
+    NULL,			/* Parent Class */
+    NULL,			/* Static Values */
+    NULL,			/* Static Functions */
+    NULL,
+    NULL,
+    NULL,			/* Has Property */
+    0,
+    NULL,			/* Set Property */
+    NULL,			/* Delete Property */
+    NULL,			/* Get Property Names */
+    NULL,			/* Call As Function */
+    NULL,			/* Call As Constructor */
+    NULL,			/* Has Instance */
+    NULL			/* Convert To Type */
+};
+
+JSClassDefinition seed_struct_def = {
     0,				/* Version, always 0 */
     0,
     "seed_struct",		/* Class Name */
@@ -45,7 +66,7 @@ JSClassDefinition gobject_struct_def = {
 
 gpointer seed_struct_get_pointer(JSValueRef strukt)
 {
-    if (JSValueIsObjectOfClass(eng->context, strukt, seed_struct_class))
+    if (JSValueIsObjectOfClass(eng->context, strukt, seed_pointer_class))
 	return JSObjectGetPrivate((JSObjectRef) strukt);
     return 0;
 }
@@ -54,9 +75,6 @@ JSObjectRef seed_make_union(gpointer younion, GIBaseInfo * info)
 {
     JSObjectRef object;
     gint i, n_methods;
-
-    if (!seed_struct_class)
-	seed_struct_class = JSClassCreate(&gobject_struct_def);
 
     object = JSObjectMake(eng->context, seed_struct_class, younion);
 
@@ -83,9 +101,6 @@ JSObjectRef seed_make_struct(gpointer strukt, GIBaseInfo * info)
     JSObjectRef object;
     gint i, n_methods;
 
-    if (!seed_struct_class)
-	seed_struct_class = JSClassCreate(&gobject_struct_def);
-
     object = JSObjectMake(eng->context, seed_struct_class, strukt);
 
     if (info)
@@ -104,4 +119,11 @@ JSObjectRef seed_make_struct(gpointer strukt, GIBaseInfo * info)
     }
 
     return object;
+}
+
+void seed_structs_init(void)
+{
+    seed_pointer_class = JSClassCreate(&seed_pointer_def);
+    seed_struct_def.parentClass = seed_pointer_class;
+    seed_struct_class = JSClassCreate(&seed_struct_def);
 }

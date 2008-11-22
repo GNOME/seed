@@ -1153,6 +1153,7 @@ gboolean seed_init(gint * argc, gchar *** argv)
 			 seed_obj_ref);
     seed_init_builtins(argc, argv);
     seed_closures_init();
+    seed_structs_init();
 
     seed_gtype_init();
 

@@ -25,6 +25,8 @@ extern JSClassRef seed_struct_class;
 
 JSObjectRef seed_make_union(gpointer younion, GIBaseInfo * info);
 JSObjectRef seed_make_struct(gpointer strukt, GIBaseInfo * info);
+
 gpointer seed_struct_get_pointer(JSValueRef strukt);
+void seed_structs_init();
 
 #endif
