@@ -235,7 +235,7 @@ seed_property_method_invoked(JSContextRef ctx,
     property_count = seed_value_to_int(oldcount, exception);
     
 
-    class = seed_struct_get_pointer(thisObject);
+    class = seed_pointer_get_pointer(thisObject);
     g_object_class_install_property(class, property_count, spec);
     
     newcount = seed_value_from_int(property_count+1, exception);

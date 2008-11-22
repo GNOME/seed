@@ -85,7 +85,7 @@ JSClassDefinition seed_boxed_def = {
     NULL			/* Convert To Type */
 };
 
-gpointer seed_struct_get_pointer(JSValueRef strukt)
+gpointer seed_pointer_get_pointer(JSValueRef strukt)
 {
     if (JSValueIsObjectOfClass(eng->context, strukt, seed_pointer_class))
 	return JSObjectGetPrivate((JSObjectRef) strukt);

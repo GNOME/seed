@@ -28,7 +28,7 @@ JSObjectRef seed_make_struct(gpointer strukt, GIBaseInfo * info);
 
 JSObjectRef seed_make_pointer(gpointer pointer);
 
-gpointer seed_struct_get_pointer(JSValueRef strukt);
+gpointer seed_pointer_get_pointer(JSValueRef strukt);
 void seed_structs_init();
 
 #endif

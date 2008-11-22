@@ -237,7 +237,7 @@ seed_gobject_method_invoked(JSContextRef ctx,
     // get it.
     if (!
 	((object = seed_value_to_object(this_object, 0)) ||
-	 (object = seed_struct_get_pointer(this_object))))
+	 (object = seed_pointer_get_pointer(this_object))))
 	instance_method = FALSE;
 
     n_args = g_callable_info_get_n_args((GICallableInfo *) info);

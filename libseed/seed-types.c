@@ -303,7 +303,7 @@ seed_gi_make_argument(JSValueRef value,
 	    {
 		if (JSValueIsObjectOfClass(eng->context,
 					   value, seed_struct_class))
-		    arg->v_pointer = seed_struct_get_pointer(value);
+		    arg->v_pointer = seed_pointer_get_pointer(value);
 		else
 		{
 		    GType type =
@@ -752,7 +752,7 @@ seed_gvalue_from_seed_value(JSValueRef val, GType type, GValue * ret,
     /* Boxed handling is broken. Will be fixed in struct overhall. */
     else if (g_type_is_a(type, G_TYPE_BOXED))
     {
-	gpointer p = seed_struct_get_pointer(val);
+	gpointer p = seed_pointer_get_pointer(val);
 	if (p)
 	{
 	    g_value_init(ret, type);
