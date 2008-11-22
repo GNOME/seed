@@ -107,10 +107,10 @@ seed_print(JSContextRef ctx,
 
 JSValueRef
 seed_readline(JSContextRef ctx,
-	      JSObjectRef function,
-	      JSObjectRef this_object,
-	      size_t argumentCount,
-	      const JSValueRef arguments[], JSValueRef * exception)
+			  JSObjectRef function,
+			  JSObjectRef this_object,
+			  size_t argumentCount,
+			  const JSValueRef arguments[], JSValueRef * exception)
 {
     // TODO: Should add an interface to rl_bind_key
     // Perhaps Seed.readline_bind('a', function)
@@ -122,12 +122,12 @@ seed_readline(JSContextRef ctx,
 
     if (argumentCount != 1)
     {
-	gchar *mes =
-	    g_strdup_printf("Seed.readline Expected 1 argument, "
-			    "got %d", argumentCount);
-	seed_make_exception(exception, "ArgumentError", mes);
-	g_free(mes);
-	return JSValueMakeNull(ctx);
+		gchar *mes =
+			g_strdup_printf("Seed.readline Expected 1 argument, "
+					"got %d", argumentCount);
+		seed_make_exception(exception, "ArgumentError", mes);
+		g_free(mes);
+		return JSValueMakeNull(ctx);
     }
 
     buf = seed_value_to_string(arguments[0], exception);
@@ -135,15 +135,15 @@ seed_readline(JSContextRef ctx,
     str = readline(buf);
     if (str && *str)
     {
-	add_history(str);
-	valstr = seed_value_from_string(str, exception);
-	g_free(str);
+		add_history(str);
+		valstr = seed_value_from_string(str, exception);
+		g_free(str);
     }
 
     g_free(buf);
 
     if (valstr == 0)
-	valstr = JSValueMakeNull(ctx);
+		valstr = JSValueMakeNull(ctx);
 
     return valstr;
 }

@@ -249,8 +249,10 @@ catch(e)
 <p>
 JavaScript being a prototypal language, rather than a class based language, has no strict inheritance model. A plethora of documentation can be found on the internet for implementing various inheritance models inside your program. However, a clear and common use case is to subclass GObjects, and Seed provides an interface to define and implement new GTypes.
 </p>
-<b>Type Objects</b>
+<p><b>Type Objects</b></p>
+<p>
 To implement a new GType, an object describing the type is required.
+</p>
 <pre>
   NewType = {
      parent: ParentTypeConstructor,
@@ -290,6 +292,8 @@ box.pack_start(label);
 label.show();
 label.say_goodbye();
 </pre>
+<p>
 The label inherits all the methods, signals, and properties of the Gtk.Label class and it's parents, and internally has it's own GType.
+</p>
 </body>
 </html>
