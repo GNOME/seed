@@ -34,6 +34,7 @@ static void
 seed_signal_finalize(JSObjectRef object)
 {
     signal_privates * sig_priv = JSObjectGetPrivate(object);
+
     g_free(sig_priv);
 }
 		    

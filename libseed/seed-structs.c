@@ -33,10 +33,11 @@ typedef struct _seed_struct_privates
 
 static void seed_pointer_finalize(JSObjectRef object)
 {
-    seed_struct_privates * priv =
-	(seed_struct_privates *) JSObjectGetPrivate(object);
     
-    g_free(priv);
+    seed_struct_privates * priv =
+    	(seed_struct_privates *) JSObjectGetPrivate(object);
+    
+      g_free(priv);
 }
 
 static void seed_boxed_finalize(JSObjectRef object)
@@ -51,8 +52,6 @@ static void seed_boxed_finalize(JSObjectRef object)
     g_base_info_unref((GIBaseInfo *) info);
 
     g_boxed_free(type, priv->pointer);
-    
-    g_free(priv);
     
 }
 
@@ -84,7 +83,7 @@ JSClassDefinition seed_struct_def = {
     NULL,			/* Static Values */
     NULL,			/* Static Functions */
     NULL,
-    seed_pointer_finalize,
+    NULL, 
     NULL,			/* Has Property */
     0,
     NULL,			/* Set Property */
@@ -130,8 +129,9 @@ gpointer seed_pointer_get_pointer(JSValueRef pointer)
 JSObjectRef seed_make_pointer(gpointer pointer)
 {
     seed_struct_privates * priv =
-	g_new0(seed_struct_privates, 1);
+	g_malloc(sizeof(seed_struct_privates));
     priv->pointer = pointer;
+    priv->info = 0;
 
     return JSObjectMake(eng->context, seed_pointer_class, priv);
 }
@@ -140,7 +140,7 @@ JSObjectRef seed_make_union(gpointer younion, GIBaseInfo * info)
 {
     JSObjectRef object;
     gint i, n_methods;
-    seed_struct_privates * priv = g_new0(seed_struct_privates, 1);
+    seed_struct_privates * priv = g_malloc(sizeof(seed_struct_privates));
     
     priv->pointer = younion;
     priv->info = info;
@@ -169,7 +169,7 @@ JSObjectRef seed_make_boxed(gpointer boxed, GIBaseInfo * info)
 {
     JSObjectRef object;
     gint i, n_methods;
-    seed_struct_privates * priv = g_new0(seed_struct_privates, 1);
+    seed_struct_privates * priv = g_malloc(sizeof(seed_struct_privates));
     
     priv->info = info;
     priv->pointer = boxed;
@@ -185,7 +185,7 @@ JSObjectRef seed_make_struct(gpointer strukt, GIBaseInfo * info)
 {
     JSObjectRef object;
     gint i, n_methods;
-    seed_struct_privates * priv = g_new0(seed_struct_privates, 1);
+    seed_struct_privates * priv = g_malloc(sizeof(seed_struct_privates));
     
     priv->info = info;
     priv->pointer = strukt;
