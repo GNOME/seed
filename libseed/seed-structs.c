@@ -74,12 +74,6 @@ seed_struct_get_property(JSContextRef context,
     cproperty_name = g_malloc(length * sizeof(gchar));
     JSStringGetUTF8CString(property_name, cproperty_name, length);
     
-    for (i = 0; i < strlen(cproperty_name); i++)
-    {
-	if (cproperty_name[i] == '_')
-	    cproperty_name[i] = '-';
-    }
-    
     n = g_struct_info_get_n_fields((GIStructInfo *)priv->info);
     for (i = 0; i < n; i++)
     {
