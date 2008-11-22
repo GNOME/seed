@@ -568,7 +568,7 @@ seed_gtype_constructor_invoked(JSContextRef ctx,
 	if (!JSValueIsNumber(eng->context, parent_ref))
 	{
 		seed_make_exception(exception, "TypeError",
-							"GType constructor expected" " Gype for parent");
+							"GType constructor expected" " GType for parent");
 
 		return (JSObjectRef) JSValueMakeNull(eng->context);
 	}
