@@ -80,12 +80,106 @@ seed_add_signals_for_type(JSObjectRef object_ref, GObject * obj, GType type)
 	g_free(signal_ids);
 }
 
+static void seed_gobject_signal_connect(int signal_id,
+										GObject * on_obj,
+										JSObjectRef func,
+										JSObjectRef this_obj,
+										JSObjectRef user_data)
+{
+	GSignalQuery query;
+	GClosure * closure;
+	
+	g_signal_query(signal_id, &query);
+
+	closure = g_closure_new_simple(sizeof(SeedClosure), 0);
+	g_closure_set_marshal(closure, seed_signal_marshal_func);
+
+	((SeedClosure *) closure)->function = func;
+	//((SeedClosure *) closure)->object = on_obj;
+	((SeedClosure *) closure)->return_type = query.return_type;
+	
+	if (this_obj && !JSValueIsNull(eng->context, this_obj))
+	{
+		JSValueProtect(eng->context, this_obj);
+		((SeedClosure *) closure)->this = this_obj;
+	}
+	else
+	{
+		((SeedClosure *) closure)->this = 0;
+	}
+	
+	if (user_data && !JSValueIsNull(eng->context, user_data))
+	{
+		((SeedClosure *) closure)->user_data = user_data;
+		JSValueProtect(eng->context, user_data);
+	}
+
+	JSValueProtect(eng->context, (JSObjectRef) func);
+	
+	g_signal_connect_closure_by_id(on_obj, signal_id, 0, closure, FALSE);
+}
+
+static JSValueRef
+seed_gobject_signal_connect_by_name(JSContextRef ctx,
+									JSObjectRef function,
+									JSObjectRef thisObject,
+									size_t argumentCount,
+									const JSValueRef arguments[],
+									JSValueRef * exception)
+{
+	GType obj_type;
+	gint signal_id;
+	JSObjectRef user_data = NULL;
+	gchar * signal_name;
+	GObject * obj;
+	
+	if(argumentCount < 2 || argumentCount > 3)
+	{
+		gchar *mes = g_strdup_printf("Signal connection expected"
+									 " 2 or 3 arguments. Got "
+									 "%d", argumentCount);
+		seed_make_exception(exception, "ArgumentError", mes);
+
+		g_free(mes);
+		return JSValueMakeNull(eng->context);
+	}
+	
+	if(argumentCount == 3)
+	{
+		user_data = (JSObjectRef)arguments[2];
+	}
+	
+	signal_name = seed_value_to_string(arguments[0], NULL);
+	obj_type = G_OBJECT_TYPE(seed_value_to_object(thisObject, NULL));
+	signal_id = g_signal_lookup(signal_name, obj_type);
+	
+	if(signal_id == 0)
+	{
+		// TODO: what kind of exception should this be??
+		
+		gchar *mes = g_strdup_printf("No signal '%s' found.", signal_name);
+		seed_make_exception(exception, "ArgumentError", mes);
+
+		g_free(mes);
+		
+		return JSValueMakeNull(eng->context);
+	}
+	
+	obj = seed_value_to_object(thisObject, NULL);
+	
+	seed_gobject_signal_connect(signal_id, obj, 
+								(JSObjectRef) arguments[1],
+								NULL, user_data);
+	
+	g_free(signal_name);
+}
+
 void seed_add_signals_to_object(JSObjectRef object_ref, GObject * obj)
 {
 	GType type;
 	GType *interfaces;
 	guint n, i;
-	JSObjectRef signals_ref;
+	JSObjectRef signals_ref, connect_func;
 
 	g_assert(obj);
 
@@ -107,6 +201,12 @@ void seed_add_signals_to_object(JSObjectRef object_ref, GObject * obj)
 	}
 
 	seed_object_set_property(object_ref, "signal", signals_ref);
+
+	connect_func =
+		JSObjectMakeFunctionWithCallback(eng->context, NULL,
+										 &seed_gobject_signal_connect_by_name);
+	JSValueProtect(eng->context, connect_func);	
+	seed_object_set_property(object_ref, "connect", connect_func);
 }
 
 void
@@ -156,7 +256,6 @@ seed_signal_marshal_func(GClosure * closure,
 	{
 		seed_gvalue_from_seed_value(ret, seed_closure->return_type,
 									return_value, &exception);
-
 	}
 
 	if (exception)
@@ -221,17 +320,16 @@ seed_gobject_signal_emit(JSContextRef ctx,
 }
 
 static JSValueRef
-seed_gobject_signal_connect(JSContextRef ctx,
-							JSObjectRef function,
-							JSObjectRef thisObject,
-							size_t argumentCount,
-							const JSValueRef arguments[],
-							JSValueRef * exception)
+seed_gobject_signal_connect_on_property(JSContextRef ctx,
+										JSObjectRef function,
+										JSObjectRef thisObject,
+										size_t argumentCount,
+										const JSValueRef arguments[],
+										JSValueRef * exception)
 {
-	GSignalQuery query;
 	signal_privates *privates;
 	GClosure *closure;
-
+	
 	privates = (signal_privates *) JSObjectGetPrivate(thisObject);
 	if (!privates)
 		g_error("Signal constructed with invalid parameters"
@@ -247,44 +345,32 @@ seed_gobject_signal_connect(JSContextRef ctx,
 		g_free(mes);
 		return JSValueMakeNull(eng->context);
 	}
-
-	g_signal_query(privates->signal_id, &query);
-
-	closure = g_closure_new_simple(sizeof(SeedClosure), 0);
-	g_closure_set_marshal(closure, seed_signal_marshal_func);
-
-	((SeedClosure *) closure)->function = (JSObjectRef) arguments[0];
-	((SeedClosure *) closure)->object =
-		g_object_get_data(privates->object, "js-ref");
-	((SeedClosure *) closure)->return_type = query.return_type;
-	if (argumentCount >= 2 && !JSValueIsNull(eng->context, arguments[1]))
-	{
-		JSValueProtect(eng->context, (JSObjectRef) arguments[1]);
-		((SeedClosure *) closure)->this = (JSObjectRef) arguments[1];
-	}
-	else
-		((SeedClosure *) closure)->this = 0;
+	
+	if (argumentCount == 1)
+		seed_gobject_signal_connect(privates->signal_id,
+									privates->object,
+									(JSObjectRef) arguments[0], NULL, NULL);
+	
+	if (argumentCount == 2)
+		seed_gobject_signal_connect(privates->signal_id,
+									privates->object,
+									(JSObjectRef) arguments[0],
+									(JSObjectRef) arguments[1], NULL);
 
 	if (argumentCount == 3)
-	{
-		((SeedClosure *) closure)->user_data = arguments[2];
-		JSValueProtect(eng->context, arguments[2]);
-	}
-
-	JSValueProtect(eng->context, (JSObjectRef) arguments[0]);
-
-	g_signal_connect_closure_by_id(privates->object,
-								   privates->signal_id, 0, closure, FALSE);
+		seed_gobject_signal_connect(privates->signal_id,
+									privates->object,
+									(JSObjectRef) arguments[0],
+									(JSObjectRef) arguments[1],
+									(JSObjectRef) arguments[2]);
+	
 	return 0;
 }
 
 JSStaticFunction signal_static_functions[] =
-	{ {"connect", seed_gobject_signal_connect, 0}
-,
-{"emit", seed_gobject_signal_emit, 0}
-,
-{0, 0, 0}
-};
+	{ {"connect", seed_gobject_signal_connect_on_property, 0},
+	  {"emit", seed_gobject_signal_emit, 0},
+	  {0, 0, 0} };
 
 JSClassDefinition gobject_signal_def = {
 	0,							/* Version, always 0 */
