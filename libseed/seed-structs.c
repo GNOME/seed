@@ -116,7 +116,13 @@ seed_union_get_property(JSContextRef context,
 				       interface);
 		goto found;
 	    case GI_INFO_TYPE_UNION:
+		ret = seed_make_union((priv->pointer + offset),
+				      interface);
+		goto found;
 	    case GI_INFO_TYPE_BOXED:
+		ret = seed_make_boxed((priv->pointer + offset),
+				      interface);
+		goto found;
 	    default:
 		g_base_info_unref(interface);
 	    }
