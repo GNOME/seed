@@ -68,7 +68,7 @@ JSClassDefinition seed_struct_def = {
     NULL,			/* Static Values */
     NULL,			/* Static Functions */
     NULL,
-    NULL,
+    seed_pointer_finalize,
     NULL,			/* Has Property */
     0,
     NULL,			/* Set Property */
@@ -88,7 +88,7 @@ JSClassDefinition seed_boxed_def = {
     NULL,			/* Static Values */
     NULL,			/* Static Functions */
     NULL,
-    NULL,
+    seed_pointer_finalize,
     NULL,			/* Has Property */
     0,
     NULL,			/* Set Property */
@@ -145,6 +145,22 @@ JSObjectRef seed_make_union(gpointer younion, GIBaseInfo * info)
 							    TRUE);
 	}
     }
+
+    return object;
+}
+
+JSObjectRef seed_make_boxed(gpointer boxed, GIBaseInfo * info)
+{
+    JSObjectRef object;
+    gint i, n_methods;
+    seed_struct_privates * priv = g_new0(seed_struct_privates, 1);
+    
+    priv->info = info;
+    priv->pointer = boxed;
+
+    object = JSObjectMake(eng->context, seed_boxed_class, priv);
+
+    // FIXME: Instance methods?
 
     return object;
 }

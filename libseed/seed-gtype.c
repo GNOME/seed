@@ -229,7 +229,7 @@ seed_property_method_invoked(JSContextRef ctx,
 	return JSValueMakeNull(eng->context);
     }
     
-    spec = (GParamSpec *)seed_struct_get_pointer(arguments[0]);
+    spec = (GParamSpec *)seed_pointer_get_pointer(arguments[0]);
     
     oldcount = seed_object_get_property(thisObject, "property_count");
     property_count = seed_value_to_int(oldcount, exception);
