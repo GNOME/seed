@@ -39,6 +39,22 @@ static void seed_pointer_finalize(JSObjectRef object)
     g_free(priv);
 }
 
+static void seed_boxed_finalize(JSObjectRef object)
+{
+    seed_struct_privates * priv =
+	(seed_struct_privates *) JSObjectGetPrivate(object);
+    GType type;
+    GIRegisteredTypeInfo * info = 
+	(GIRegisteredTypeInfo *)g_base_info_get_type(priv->info);
+    
+    type = g_registered_type_info_get_g_type(info);
+    g_base_info_unref((GIBaseInfo *) info);
+
+    g_boxed_free(type, priv->pointer);
+    
+    g_free(priv);
+    
+}
 
 JSClassDefinition seed_pointer_def = {
     0,				/* Version, always 0 */
@@ -88,7 +104,7 @@ JSClassDefinition seed_boxed_def = {
     NULL,			/* Static Values */
     NULL,			/* Static Functions */
     NULL,
-    seed_pointer_finalize,
+    seed_boxed_finalize,
     NULL,			/* Has Property */
     0,
     NULL,			/* Set Property */
