@@ -55,6 +55,50 @@ static void seed_boxed_finalize(JSObjectRef object)
     
 }
 
+static GIFieldInfo * seed_union_find_field(GIUnionInfo * info,
+					   gchar * field_name)
+{
+    int n, i;
+    GIFieldInfo * field;
+    
+    n = g_union_info_get_n_fields(info);
+    for (i = 0; i < n; i++)
+    {
+	const gchar * name;
+	
+	field = g_union_info_get_field(info, i);
+	name = g_base_info_get_name((GIBaseInfo *) field);
+	if (!strcmp(name, field_name))
+	    return field;
+	else
+	    g_base_info_unref((GIBaseInfo *)field);
+    }
+    
+    return 0;
+}
+
+static GIFieldInfo * seed_struct_find_field(GIStructInfo * info,
+					   gchar * field_name)
+{
+    int n, i;
+    GIFieldInfo * field;
+    
+    n = g_struct_info_get_n_fields(info);
+    for (i = 0; i < n; i++)
+    {
+	const gchar * name;
+	
+	field = g_struct_info_get_field(info, i);
+	name = g_base_info_get_name((GIBaseInfo *) field);
+	if (!strcmp(name, field_name))
+	    return field;
+	else
+	    g_base_info_unref((GIBaseInfo *)field);
+    }
+    
+    return 0;
+}
+
 static JSValueRef
 seed_union_get_property(JSContextRef context,
 			 JSObjectRef object,
@@ -63,7 +107,7 @@ seed_union_get_property(JSContextRef context,
 {
     gpointer pointer;
     gchar * cproperty_name;
-    int i, n;
+    int i;
     int length;
     seed_struct_privates * priv = JSObjectGetPrivate(object);
     GIFieldInfo * field = 0;
@@ -75,21 +119,8 @@ seed_union_get_property(JSContextRef context,
     cproperty_name = g_malloc(length * sizeof(gchar));
     JSStringGetUTF8CString(property_name, cproperty_name, length);
     
-    n = g_union_info_get_n_fields((GIUnionInfo *)priv->info);
-    for (i = 0; i < n; i++)
-    {
-	const gchar * name;
-	field = g_union_info_get_field((GIUnionInfo *)priv->info, i);
-	
-	name = g_base_info_get_name((GIBaseInfo *) field);
-	if (!strcmp(name, cproperty_name))
-	    break;
-	else
-	{
-	    g_base_info_unref((GIBaseInfo *) field);
-	    field = 0;
-	}
-    }
+    field = seed_union_find_field((GIUnionInfo *)priv->info,
+				  cproperty_name);
     if (!field)
     {
 	g_free(cproperty_name);
@@ -165,22 +196,10 @@ seed_struct_get_property(JSContextRef context,
     length = JSStringGetMaximumUTF8CStringSize(property_name);
     cproperty_name = g_malloc(length * sizeof(gchar));
     JSStringGetUTF8CString(property_name, cproperty_name, length);
+
+    field = seed_struct_find_field((GIStructInfo *)priv->info,
+				   cproperty_name);
     
-    n = g_struct_info_get_n_fields((GIStructInfo *)priv->info);
-    for (i = 0; i < n; i++)
-    {
-	const gchar * name;
-	field = g_struct_info_get_field((GIStructInfo *)priv->info, i);
-	
-	name = g_base_info_get_name((GIBaseInfo *) field);
-	if (!strcmp(name, cproperty_name))
-	    break;
-	else
-	{
-	    g_base_info_unref((GIBaseInfo *) field);
-	    field = 0;
-	}
-    }
     if (!field)
     {
 	g_free(cproperty_name);

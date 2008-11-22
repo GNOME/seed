@@ -1,7 +1,7 @@
 #!/usr/local/bin/seed
 // Returns: 0
 // STDIN:
-// STDOUT:255\.000000
+// STDOUT:255\.000000\n0\.000000
 // STDERR:
 // Returns: 0
 // STDIN:
@@ -13,3 +13,4 @@ c = Clutter.Color._new();
 Clutter.color_parse("red", c);
 
 Seed.print(c.red);
+Seed.print(c.blue);
