@@ -227,6 +227,10 @@ seed_handle_closure(ffi_cif * cif, void *result, void **args, void *userdata)
 	    arg->v_pointer = 0;
 	}
 	jsargs[i] = seed_gi_argument_make_js(arg, arg_type, 0);
+	seed_gi_release_in_arg(
+	    g_arg_info_get_ownership_transfer(arg_info),
+	    arg_type,
+	    arg);
 	g_base_info_unref((GIBaseInfo *)arg_info);
     }
 

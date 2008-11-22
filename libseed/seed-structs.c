@@ -163,6 +163,7 @@ seed_union_get_property(JSContextRef context,
 	return JSValueMakeNull(eng->context);
     }
     
+    // Maybe need to release argument.
     ret = seed_gi_argument_make_js(&field_value,
 				   field_type, exception);
 
@@ -244,6 +245,7 @@ seed_struct_get_property(JSContextRef context,
     
     ret = seed_gi_argument_make_js(&field_value,
 				   field_type, exception);
+    // Maybe need to release argument
 found:
     
     g_base_info_unref((GIBaseInfo *) field);
