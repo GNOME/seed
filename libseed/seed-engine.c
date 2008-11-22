@@ -627,6 +627,7 @@ seed_gobject_get_property(JSContextRef context,
 
     if (!spec)
     {
+							    
 	len = strlen(cproperty_name);
 	for (i = 0; i < len - 1; i++)
 	{
@@ -635,9 +636,66 @@ seed_gobject_get_property(JSContextRef context,
 	}
 	spec = g_object_class_find_property(G_OBJECT_GET_CLASS(b),
 					    cproperty_name);
+	if (spec)
+	    goto found;
+	else
+	{
+	    GIFieldInfo * field;
+	    GIBaseInfo * info = (GIBaseInfo *)
+		g_irepository_find_by_gtype(0, G_OBJECT_TYPE(b));
+	    gint n;
+	    const gchar * name;
+
+	    for (i = 0; i < len - 1; i++)
+	    {
+		if (cproperty_name[i] == '-')
+		    cproperty_name[i] = '_';
+	    }
+	    
+	    if (!info)
+	    {
+		g_free(cproperty_name);
+		return 0;
+	    }
+	    
+	    n = g_object_info_get_n_fields((GIObjectInfo *)info);
+	    for (i = 0; i < n; i++)
+	    {
+		field = g_object_info_get_field((GIObjectInfo *)info, i);
+		name = g_base_info_get_name((GIBaseInfo *) field);
+
+		if (!strcmp(name, cproperty_name))
+		    goto found_field;
+		else
+		{
+		    g_base_info_unref((GIBaseInfo *) field);
+		    field = 0;
+		}
+	    }
+	found_field:
+	    if (field)
+	    {
+		GArgument field_value;
+		GITypeInfo * field_type = g_field_info_get_type(field);
+		if (g_field_info_get_field(field, b,
+					   &field_value))
+		{
+		    ret = seed_gi_argument_make_js(&field_value,
+					     field_type,
+					     exception);
+		    
+		    g_base_info_unref((GIBaseInfo *) info);
+		    
+		    g_free(cproperty_name);
+		    return ret;
+		}
+	    }
+	    g_base_info_unref((GIBaseInfo*)info);
+	}
 	g_free(cproperty_name);
 	return 0;
     }
+found:
 
     g_value_init(&gval, spec->value_type);
     g_object_get_property(b, cproperty_name, &gval);
