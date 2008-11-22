@@ -32,6 +32,7 @@ EXTRA_DIST = \
     syntax-test.js \
     type-conversion.js \
     native-closure.js \
+    gdk-event.js \
     make-test.py
 
 
