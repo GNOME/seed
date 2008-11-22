@@ -370,7 +370,7 @@ seed_handle_class_init_closure(ffi_cif * cif,
     JSValueRef exception = 0;
 
     type = (GType) JSObjectGetPrivate(*(JSObjectRef *) args[1]);
-    jsargs[0] = seed_make_struct(*(gpointer *) args[0], 0);
+    jsargs[0] = seed_make_pointer(*(gpointer *) args[0]);
     jsargs[1] = seed_gobject_get_prototype_for_gtype(type);
 
     // TODO: 
@@ -403,7 +403,7 @@ seed_handle_instance_init_closure(ffi_cif * cif,
     JSValueRef exception = 0;
     JSObjectRef this_object;
 
-    jsargs = seed_make_struct(*(gpointer *) args[1], 0);
+    jsargs = seed_make_pointer(*(gpointer *) args[1]);
     this_object =
 	(JSObjectRef) seed_value_from_object(*(GObject **) args[0], 0);
 
