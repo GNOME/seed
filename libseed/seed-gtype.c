@@ -217,17 +217,17 @@ seed_property_method_invoked(JSContextRef ctx,
 		seed_make_exception(exception, "ArgumentError", mes);
 		g_free(mes);
 
-		return JSValueMakeNull(eng->context);
+		return JSValueMakeNull(ctx);
 	}
 
-	if (JSValueIsNull(eng->context, arguments[0]) ||
+	if (JSValueIsNull(ctx, arguments[0]) ||
 		// Might need to check if JSValueIsObject? Who knows with WebKit.
-		!JSValueIsObjectOfClass(eng->context, arguments[0], seed_struct_class))
+		!JSValueIsObjectOfClass(ctx, arguments[0], seed_struct_class))
 	{
 		seed_make_exception(exception, "ArgumentError",
 							"Property installation expected a "
 							"GParamSpec as argument");
-		return JSValueMakeNull(eng->context);
+		return JSValueMakeNull(ctx);
 	}
 
 	spec = (GParamSpec *) seed_pointer_get_pointer(arguments[0]);
@@ -268,15 +268,15 @@ seed_gsignal_method_invoked(JSContextRef ctx,
 									 " got %d \n", argumentCount);
 		seed_make_exception(exception, "ArgumentError", mes);
 		g_free(mes);
-		return (JSObjectRef) JSValueMakeNull(eng->context);
+		return (JSObjectRef) JSValueMakeNull(ctx);
 	}
-	if (JSValueIsNull(eng->context, arguments[0]) ||
-		!JSValueIsObject(eng->context, arguments[0]))
+	if (JSValueIsNull(ctx, arguments[0]) ||
+		!JSValueIsObject(ctx, arguments[0]))
 	{
 		seed_make_exception(exception, "ArgumentError",
 							"Signal constructor expected object"
 							" as first argument");
-		return (JSObjectRef) JSValueMakeNull(eng->context);
+		return (JSObjectRef) JSValueMakeNull(ctx);
 	}
 
 	/* Signal name */
@@ -284,12 +284,12 @@ seed_gsignal_method_invoked(JSContextRef ctx,
 	/* seed_value_to_string can handle non strings, however the kind
 	 * of strings we want as a signal name are rather small, so make sure
 	 * we have an actual string */
-	if (JSValueIsNull(eng->context, jsname) ||
-		!JSValueIsString(eng->context, jsname))
+	if (JSValueIsNull(ctx, jsname) ||
+		!JSValueIsString(ctx, jsname))
 	{
 		seed_make_exception(exception, "ArgumentError",
 							"Signal definition needs name property");
-		return (JSObjectRef) JSValueMakeNull(eng->context);
+		return (JSObjectRef) JSValueMakeNull(ctx);
 	}
 	name = seed_value_to_string(jsname, exception);
 
@@ -299,8 +299,8 @@ seed_gsignal_method_invoked(JSContextRef ctx,
 
 	/* Signal flags */
 	jsflags = seed_object_get_property((JSObjectRef) arguments[0], "flags");
-	if (JSValueIsNull(eng->context, jsflags) ||
-		!JSValueIsNumber(eng->context, jsflags))
+	if (JSValueIsNull(ctx, jsflags) ||
+		!JSValueIsNumber(ctx, jsflags))
 		flags = G_SIGNAL_RUN_LAST;
 	else
 		flags = seed_value_to_long(jsflags, exception);
@@ -308,8 +308,8 @@ seed_gsignal_method_invoked(JSContextRef ctx,
 	/* Return type */
 	jsreturn_type = seed_object_get_property((JSObjectRef) arguments[0],
 											 "return_type");
-	if (JSValueIsNull(eng->context, jsreturn_type) ||
-		!JSValueIsNumber(eng->context, jsreturn_type))
+	if (JSValueIsNull(ctx, jsreturn_type) ||
+		!JSValueIsNumber(ctx, jsreturn_type))
 		return_type = G_TYPE_NONE;
 	else
 		return_type = seed_value_to_int(jsreturn_type, exception);
@@ -317,8 +317,8 @@ seed_gsignal_method_invoked(JSContextRef ctx,
 	/* Number of params and types */
 	jsparams = seed_object_get_property((JSObjectRef) arguments[0],
 										"parameters");
-	if (!JSValueIsNull(eng->context, jsparams) &&
-		JSValueIsObject(eng->context, jsparams))
+	if (!JSValueIsNull(ctx, jsparams) &&
+		JSValueIsObject(ctx, jsparams))
 	{
 		n_params = seed_value_to_int
 			(seed_object_get_property((JSObjectRef) jsparams, "length"),
@@ -330,7 +330,7 @@ seed_gsignal_method_invoked(JSContextRef ctx,
 			param_types = g_new0(GType, n_params);
 			for (i = 0; i < n_params; i++)
 			{
-				JSValueRef ptype = JSObjectGetPropertyAtIndex(eng->context,
+				JSValueRef ptype = JSObjectGetPropertyAtIndex(ctx,
 															  (JSObjectRef)
 															  jsparams,
 															  i,
@@ -546,15 +546,15 @@ seed_gtype_constructor_invoked(JSContextRef ctx,
 							argumentCount);
 		seed_make_exception(exception, "ArgumentError", mes);
 		g_free(mes);
-		return (JSObjectRef) JSValueMakeNull(eng->context);
+		return (JSObjectRef) JSValueMakeNull(ctx);
 	}
-	if (!JSValueIsObject(eng->context, arguments[0]))
+	if (!JSValueIsObject(ctx, arguments[0]))
 	{
 		seed_make_exception(exception, "ArgumentError",
 							"GType constructor expected a"
 							"class definition object. Got a nonobject");
 
-		return (JSObjectRef) JSValueMakeNull(eng->context);
+		return (JSObjectRef) JSValueMakeNull(ctx);
 	}
 	parent_ref = seed_object_get_property((JSObjectRef) arguments[0], "parent");
 	class_init = seed_object_get_property((JSObjectRef) arguments[0],
@@ -564,22 +564,22 @@ seed_gtype_constructor_invoked(JSContextRef ctx,
 	name = seed_object_get_property((JSObjectRef) arguments[0], "name");
 
 	new_name = seed_value_to_string(name, exception);
-	if (!JSValueIsNumber(eng->context, parent_ref))
+	if (!JSValueIsNumber(ctx, parent_ref))
 	{
 		seed_make_exception(exception, "TypeError",
 							"GType constructor expected" " GType for parent");
 
-		return (JSObjectRef) JSValueMakeNull(eng->context);
+		return (JSObjectRef) JSValueMakeNull(ctx);
 	}
-	if (!JSValueIsNull(eng->context, class_init) &&
-		JSValueIsObject(eng->context, class_init) &&
-		JSObjectIsFunction(eng->context, (JSObjectRef) class_init))
+	if (!JSValueIsNull(ctx, class_init) &&
+		JSValueIsObject(ctx, class_init) &&
+		JSObjectIsFunction(ctx, (JSObjectRef) class_init))
 	{
 		init_closure = seed_make_class_init_closure((JSObjectRef) class_init);
 	}
-	if (!JSValueIsNull(eng->context, instance_init) &&
-		JSValueIsObject(eng->context, instance_init) &&
-		JSObjectIsFunction(eng->context, (JSObjectRef) instance_init))
+	if (!JSValueIsNull(ctx, instance_init) &&
+		JSValueIsObject(ctx, instance_init) &&
+		JSObjectIsFunction(ctx, (JSObjectRef) instance_init))
 	{
 		instance_init_closure =
 			seed_make_instance_init_closure((JSObjectRef) instance_init);
@@ -593,9 +593,9 @@ seed_gtype_constructor_invoked(JSContextRef ctx,
 	type_info.class_init = (GClassInitFunc) init_closure;
 	type_info.instance_init = (GInstanceInitFunc) instance_init_closure;
 
-	constructor_ref = JSObjectMake(eng->context, gobject_constructor_class,
+	constructor_ref = JSObjectMake(ctx, gobject_constructor_class,
 								   (gpointer) new_type);
-	JSValueProtect(eng->context, constructor_ref);
+	JSValueProtect(ctx, constructor_ref);
 
 	type_info.class_data = constructor_ref;
 
@@ -604,7 +604,7 @@ seed_gtype_constructor_invoked(JSContextRef ctx,
 	JSObjectSetPrivate(constructor_ref, (gpointer) new_type);
 
 	g_free(new_name);
-	return JSObjectMake(eng->context, gobject_constructor_class,
+	return JSObjectMake(ctx, gobject_constructor_class,
 						(gpointer) new_type);
 }
 

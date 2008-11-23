@@ -164,10 +164,10 @@ seed_prototype(JSContextRef ctx,
 							"got %d", argumentCount);
 		seed_make_exception(exception, "ArgumentError", mes);
 		g_free(mes);
-		return JSValueMakeNull(eng->context);
+		return JSValueMakeNull(ctx);
 	}
-	if (!JSValueIsObject(eng->context, arguments[0]))
-		return JSValueMakeNull(eng->context);
+	if (!JSValueIsObject(ctx, arguments[0]))
+		return JSValueMakeNull(ctx);
 
 	type = (GType) JSObjectGetPrivate((JSObjectRef) arguments[0]);
 
@@ -236,7 +236,7 @@ seed_introspect(JSContextRef ctx,
 							  (g_callable_info_get_return_type(info)),
 							  exception));
 
-	args_obj = JSObjectMake(eng->context, NULL, NULL);
+	args_obj = JSObjectMake(ctx, NULL, NULL);
 
 	seed_object_set_property(data_obj, "args", args_obj);
 
@@ -398,7 +398,7 @@ seed_closure_native(JSContextRef ctx,
 		seed_make_exception(exception, "ArgumentError", mes);
 		g_free(mes);
 
-		return JSValueMakeNull(eng->context);
+		return JSValueMakeNull(ctx);
 	}
 
 	info = (GICallableInfo *) JSObjectGetPrivate((JSObjectRef) arguments[1]);
