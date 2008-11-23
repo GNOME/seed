@@ -560,6 +560,9 @@ JSValueRef seed_value_from_gvalue(GValue * gval, JSValueRef * exception)
 									  g_value_get_string(gval), exception);
 	case G_TYPE_POINTER:
 		return seed_make_pointer(g_value_get_pointer(gval));
+	case G_TYPE_PARAM:
+		// Might need to dup and make a boxed.
+		return seed_make_pointer(g_value_get_param(gval));
 	}
 
 	if (g_type_is_a(G_VALUE_TYPE(gval), G_TYPE_ENUM) ||

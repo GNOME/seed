@@ -225,7 +225,7 @@ seed_struct_get_property(JSContextRef context,
 		}
 
 		g_free(cproperty_name);
-		return JSValueMakeNull(eng->context);
+		return JSValueMakeNull(context);
 	}
 
 	ret = seed_gi_argument_make_js(&field_value, field_type, exception);
