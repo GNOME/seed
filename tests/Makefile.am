@@ -33,6 +33,7 @@ EXTRA_DIST = \
     type-conversion.js \
     native-closure.js \
     gdk-event.js \
+    signal-connect.js \
     make-test.py
 
 
