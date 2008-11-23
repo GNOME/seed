@@ -535,7 +535,6 @@ seed_gtype_constructor_invoked(JSContextRef ctx,
 	};
 	ffi_closure *init_closure = 0;
 	ffi_closure *instance_init_closure = 0;
-
 	GTypeQuery query;
 	JSObjectRef constructor_ref;
 

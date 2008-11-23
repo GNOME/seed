@@ -98,7 +98,7 @@ typedef void (*SeedFunctionCallback) (SeedContextRef ctx,
 									  const SeedValue arguments[],
 									  SeedException * exception);
 
-void seed_create_function(gchar * name, SeedFunctionCallback,
+void seed_create_function(gchar * name, SeedFunctionCallback callback,
 						  SeedObject object);
 
 #endif
