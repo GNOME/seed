@@ -66,7 +66,7 @@ static void seed_boxed_finalize(JSObjectRef object)
 
 }
 
-static GIFieldInfo *seed_union_find_field(GIUnionInfo * info,
+GIFieldInfo *seed_union_find_field(GIUnionInfo * info,
 										  gchar * field_name)
 {
 	int n, i;
@@ -88,7 +88,7 @@ static GIFieldInfo *seed_union_find_field(GIUnionInfo * info,
 	return 0;
 }
 
-static GIFieldInfo *seed_struct_find_field(GIStructInfo * info,
+GIFieldInfo *seed_struct_find_field(GIStructInfo * info,
 										   gchar * field_name)
 {
 	int n, i;

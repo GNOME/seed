@@ -60,6 +60,13 @@ seed_struct_constructor_invoked(JSContextRef ctx,
 	gpointer object;
 	GIInfoType type = g_base_info_get_type(info);
 	JSObjectRef ret;
+	gint nparams, i, length;
+	GIFieldInfo * field = 0;
+	JSPropertyNameArrayRef jsprops;
+	JSStringRef jsprop_name;
+	JSValueRef jsprop_value;
+	GArgument field_value;
+	gchar * prop_name;
 	
 	if (type == GI_INFO_TYPE_STRUCT)
 	{
@@ -78,6 +85,62 @@ seed_struct_constructor_invoked(JSContextRef ctx,
 		ret = seed_make_union(object, info);
 
 	seed_pointer_set_free(ret, TRUE);
+
+	if (argumentCount == 1)
+	{
+		if (!JSValueIsObject(ctx, arguments[0]))
+		{
+			seed_make_exception(exception, "ArgmuentError",
+								"Constructor expects object as argument");
+			return (JSObjectRef) JSValueMakeNull(ctx);			
+		}
+		
+		jsprops = JSObjectCopyPropertyNames(ctx,
+											(JSObjectRef)arguments[0]);
+		nparams = JSPropertyNameArrayGetCount(jsprops);
+
+		while (i < nparams)
+		{
+			GITypeInfo * field_type;
+			jsprop_name = JSPropertyNameArrayGetNameAtIndex(jsprops, i);
+			
+			length = JSStringGetMaximumUTF8CStringSize(jsprop_name);
+			prop_name = g_malloc(length * sizeof(gchar));
+			JSStringGetUTF8CString(jsprop_name, prop_name, length);
+			
+			if (type == GI_INFO_TYPE_STRUCT)
+				field = seed_struct_find_field((GIStructInfo *) info,
+											   prop_name);
+			else
+				field = seed_union_find_field((GIUnionInfo *) info,
+											   prop_name);
+			if (!field)
+			{
+				gchar *mes =
+				g_strdup_printf("Invalid property for construction: %s",
+								prop_name);
+				seed_make_exception(exception, "PropertyError", mes);
+				
+				g_free(mes);
+
+				return (JSObjectRef) JSValueMakeNull(ctx);
+			}
+			field_type = g_field_info_get_type(field);
+			
+			jsprop_value = JSObjectGetProperty(ctx,
+											   (JSObjectRef)arguments[0],
+											   jsprop_name, NULL);
+			
+			seed_gi_make_argument(jsprop_value, field_type, &field_value, exception);
+			g_field_info_set_field(field, object, &field_value);
+			
+			g_base_info_unref((GIBaseInfo *) field_type);
+			g_base_info_unref((GIBaseInfo *) field);
+			
+			i++;
+		}
+	}
+
 	return ret;
 }
 
