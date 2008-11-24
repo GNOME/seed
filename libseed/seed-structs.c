@@ -99,6 +99,54 @@ static GIFieldInfo *seed_struct_find_field(GIStructInfo * info,
 }
 
 static JSValueRef
+seed_field_get_value(gpointer object,
+					 GIFieldInfo * field,
+	                 JSValueRef * exception)
+{
+	GITypeInfo *field_type;
+	GArgument field_value;
+	JSValueRef ret;
+
+	field_type = g_field_info_get_type(field);
+	if (!g_field_info_get_field(field, object, &field_value))
+	{
+		GITypeTag tag;
+
+		tag = g_type_info_get_tag(field_type);
+		if (tag == GI_TYPE_TAG_INTERFACE)
+		{
+			GIBaseInfo *interface;
+
+			interface = g_type_info_get_interface(field_type);
+			gint offset = g_field_info_get_offset(field);
+			switch (g_base_info_get_type(interface))
+			{
+			case GI_INFO_TYPE_STRUCT:
+				return seed_make_struct((object + offset), interface);
+
+			case GI_INFO_TYPE_UNION:
+				return seed_make_union((object + offset), interface);
+
+			case GI_INFO_TYPE_BOXED:
+				return seed_make_boxed((object + offset), interface);
+
+			default:
+				g_base_info_unref(interface);
+			}
+		}
+
+		return JSValueMakeNull(eng->context);
+	}
+
+	// Maybe need to release argument.
+	ret = seed_gi_argument_make_js(&field_value, field_type, exception);
+	if (field_type)
+		g_base_info_unref((GIBaseInfo *) field_type);
+	return ret;
+}
+
+
+static JSValueRef
 seed_union_get_property(JSContextRef context,
 						JSObjectRef object,
 						JSStringRef property_name, JSValueRef * exception)
@@ -124,46 +172,10 @@ seed_union_get_property(JSContextRef context,
 		return 0;
 	}
 
-	field_type = g_field_info_get_type(field);
-	if (!g_field_info_get_field(field, priv->pointer, &field_value))
-	{
-		GITypeTag tag;
-
-		tag = g_type_info_get_tag(field_type);
-		if (tag == GI_TYPE_TAG_INTERFACE)
-		{
-			GIBaseInfo *interface;
-
-			interface = g_type_info_get_interface(field_type);
-			gint offset = g_field_info_get_offset(field);
-			switch (g_base_info_get_type(interface))
-			{
-			case GI_INFO_TYPE_STRUCT:
-				ret = seed_make_struct((priv->pointer + offset), interface);
-				goto found;
-			case GI_INFO_TYPE_UNION:
-				ret = seed_make_union((priv->pointer + offset), interface);
-				goto found;
-			case GI_INFO_TYPE_BOXED:
-				ret = seed_make_boxed((priv->pointer + offset), interface);
-				goto found;
-			default:
-				g_base_info_unref(interface);
-			}
-		}
-
-		g_free(cproperty_name);
-		return JSValueMakeNull(eng->context);
-	}
-
-	// Maybe need to release argument.
-	ret = seed_gi_argument_make_js(&field_value, field_type, exception);
-
- found:
+	ret = seed_field_get_value(priv->pointer, field, exception);
 
 	g_base_info_unref((GIBaseInfo *) field);
-	if (field_type)
-		g_base_info_unref((GIBaseInfo *) field_type);
+
 	g_free(cproperty_name);
 
 	return ret;
@@ -196,45 +208,9 @@ seed_struct_get_property(JSContextRef context,
 		return 0;
 	}
 
-	field_type = g_field_info_get_type(field);
-	if (!g_field_info_get_field(field, priv->pointer, &field_value))
-	{
-		GITypeTag tag;
-
-		tag = g_type_info_get_tag(field_type);
-		if (tag == GI_TYPE_TAG_INTERFACE)
-		{
-			GIBaseInfo *interface;
-
-			interface = g_type_info_get_interface(field_type);
-			gint offset = g_field_info_get_offset(field);
-			switch (g_base_info_get_type(interface))
-			{
-			case GI_INFO_TYPE_STRUCT:
-				ret = seed_make_struct((priv->pointer + offset), interface);
-				goto found;
-			case GI_INFO_TYPE_UNION:
-				ret = seed_make_union((priv->pointer + offset), interface);
-				goto found;
-			case GI_INFO_TYPE_BOXED:
-				ret = seed_make_boxed((priv->pointer + offset), interface);
-				goto found;
-			default:
-				g_base_info_unref(interface);
-			}
-		}
-
-		g_free(cproperty_name);
-		return JSValueMakeNull(context);
-	}
-
-	ret = seed_gi_argument_make_js(&field_value, field_type, exception);
-	// Maybe need to release argument
- found:
+	ret = seed_field_get_value(priv->pointer, field, exception);
 
 	g_base_info_unref((GIBaseInfo *) field);
-	if (field_type)
-		g_base_info_unref((GIBaseInfo *) field_type);
 	g_free(cproperty_name);
 
 	return ret;
