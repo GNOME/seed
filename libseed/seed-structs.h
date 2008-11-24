@@ -35,6 +35,8 @@ seed_field_get_value(gpointer object,
 	                 JSValueRef * exception);
 
 gpointer seed_pointer_get_pointer(JSValueRef strukt);
+void seed_pointer_set_free(JSValueRef pointer, gboolean free_pointer);
+
 void seed_structs_init();
 
 #endif

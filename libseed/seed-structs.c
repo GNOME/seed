@@ -29,12 +29,17 @@ JSClassRef seed_boxed_class = 0;
 typedef struct _seed_struct_privates {
 	gpointer pointer;
 	GIBaseInfo *info;
+	
+	gboolean free_pointer;
 } seed_struct_privates;
 
 static void seed_pointer_finalize(JSObjectRef object)
 {
 	seed_struct_privates *priv =
 		(seed_struct_privates *) JSObjectGetPrivate(object);
+
+	if (priv->free_pointer)
+		g_free(priv->pointer);
 
 	g_free(priv);
 }
@@ -320,9 +325,9 @@ JSClassDefinition seed_boxed_def = {
 	NULL,						/* Static Values */
 	NULL,						/* Static Functions */
 	NULL,
-	seed_boxed_finalize,
+	seed_boxed_finalize, 
 	NULL,						/* Has Property */
-	0,
+	NULL,
 	NULL,						/* Set Property */
 	NULL,						/* Delete Property */
 	NULL,						/* Get Property Names */
@@ -342,6 +347,15 @@ gpointer seed_pointer_get_pointer(JSValueRef pointer)
 	return 0;
 }
 
+void seed_pointer_set_free(JSValueRef pointer, gboolean free_pointer)
+{
+	if (JSValueIsObjectOfClass(eng->context, pointer, seed_pointer_class))
+	{
+		seed_struct_privates *priv = JSObjectGetPrivate((JSObjectRef) pointer);
+		priv->free_pointer = free_pointer;
+	}
+}
+
 JSObjectRef seed_make_pointer(gpointer pointer)
 {
 	seed_struct_privates *priv = g_malloc(sizeof(seed_struct_privates));
@@ -359,6 +373,7 @@ JSObjectRef seed_make_union(gpointer younion, GIBaseInfo * info)
 
 	priv->pointer = younion;
 	priv->info = info;
+	priv->free_pointer = FALSE;
 
 	object = JSObjectMake(eng->context, seed_union_class, priv);
 
@@ -388,6 +403,8 @@ JSObjectRef seed_make_boxed(gpointer boxed, GIBaseInfo * info)
 
 	priv->info = info;
 	priv->pointer = boxed;
+	// Boxed finalize handler handles freeing.
+	priv->free_pointer = FALSE;
 
 	object = JSObjectMake(eng->context, seed_boxed_class, priv);
 
@@ -404,6 +421,7 @@ JSObjectRef seed_make_struct(gpointer strukt, GIBaseInfo * info)
 
 	priv->info = info;
 	priv->pointer = strukt;
+	priv->free_pointer = FALSE;
 
 	object = JSObjectMake(eng->context, seed_struct_class, priv);
 
