@@ -317,6 +317,13 @@ seed_gi_make_argument(JSValueRef value,
 								seed_make_gclosure((JSObjectRef) value, 0);
 						}
 					}
+					else
+					{
+						JSObjectRef strukt = 
+							seed_construct_struct_type_with_parameters(
+								interface, (JSObjectRef)value, exception);
+						arg->v_pointer = seed_pointer_get_pointer(strukt);
+					}
 				}
 				g_base_info_unref(interface);
 				break;
