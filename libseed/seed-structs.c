@@ -503,7 +503,7 @@ seed_construct_struct_type_with_parameters(GIBaseInfo * info,
 		size = g_union_info_get_size((GIUnionInfo *) info);
 	}
 	g_assert(size);
-	object = g_slice_alloc(size);
+	object = g_slice_alloc0(size);
 	
 	if (type == GI_INFO_TYPE_STRUCT)
 		ret = seed_make_struct(object, info);

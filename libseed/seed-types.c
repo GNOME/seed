@@ -761,6 +761,29 @@ seed_gvalue_from_seed_value(JSValueRef val, GType type, GValue * ret,
 			g_value_set_boxed(ret, p);
 			return TRUE;
 		}
+		else
+		{
+			if (JSValueIsObject(eng->context, val))
+			{
+				GIBaseInfo * info = g_irepository_find_by_gtype(0, type);
+				JSObjectRef new_struct;
+				if (!info)
+					return FALSE;
+
+				new_struct	= seed_construct_struct_type_with_parameters(info,
+															 (JSObjectRef)val,
+															       exception);
+				p = seed_pointer_get_pointer(new_struct);
+				if (p)
+				{
+					g_value_init(ret, type);
+					g_value_set_boxed(ret, p);
+					g_base_info_unref(info);
+					return TRUE;
+				}
+				g_base_info_unref(info);
+			}
+		}
 	}
 
 	return FALSE;
