@@ -25,6 +25,7 @@ libseed_la_LIBADD = \
 	$(LIBSEED_LIBS)
 
 AM_CPPFLAGS = \
+        -lgmodule-2.0 \
 	$(LIBSEED_CFLAGS)
 
 seedheaders_HEADERS = \

@@ -769,6 +769,30 @@ seed_gobject_set_property(JSContextRef context,
 	return TRUE;
 }
 
+static GModule * seed_try_load_extension(gchar * name)
+{
+	GModule * module;
+	gchar * path;
+	gchar * lowername;
+
+	lowername = g_utf8_strdown(name, -1);
+
+	path = g_module_build_path("/usr/local/lib", lowername);
+	
+	module = g_module_open(path, G_MODULE_BIND_LAZY);
+
+	if (!module)
+	{
+		g_free(path);
+		path = g_module_build_path("/usr/lib", lowername);
+		
+		module = g_module_open(path, G_MODULE_BIND_LAZY);
+	}
+	g_free(path);
+	g_free(lowername);
+	return module;	
+}
+
 static JSValueRef
 seed_gi_import_namespace(JSContextRef ctx,
 						 JSObjectRef function,
@@ -778,12 +802,13 @@ seed_gi_import_namespace(JSContextRef ctx,
 {
 	GIBaseInfo *info;
 	GError *e = 0;
-	const gchar *namespace;
-	const gchar *extension;
+	gchar *namespace;
 	const gchar *version = 0;
+	gchar * jsextension;
 	JSObjectRef namespace_ref;
 	JSStringRef extension_script;
 	gint n, i;
+	GModule * extension;
 
 	if (argumentCount == 0)
 	{
@@ -798,6 +823,21 @@ seed_gi_import_namespace(JSContextRef ctx,
 	if (argumentCount == 2)
 	{
 		version = seed_value_to_string(arguments[1], exception);
+	}
+	
+	extension = seed_try_load_extension(namespace);
+	if (extension)
+	{
+		SeedModuleInitCallback * init;
+		
+		g_module_symbol(extension,
+						"seed_module_init",
+						(gpointer *)&init);
+
+		(*init)(eng);
+		
+		g_free(namespace);
+
 	}
 
 	if (!g_irepository_require(g_irepository_get_default(), namespace,
@@ -958,12 +998,12 @@ seed_gi_import_namespace(JSContextRef ctx,
 
 	}
 
-	extension =
+	jsextension =
 		g_strdup_printf("try{Seed.include(\"/usr/share/seed/%s.js\");}"
 						"catch(e){}"
 						"Seed.include(\"/usr/local/share/seed/%s.js\");",
 						namespace, namespace);
-	extension_script = JSStringCreateWithUTF8CString(extension);
+	extension_script = JSStringCreateWithUTF8CString(jsextension);
 	JSEvaluateScript(ctx, extension_script, NULL, NULL, 0, NULL);
 	JSStringRelease(extension_script);
 

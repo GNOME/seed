@@ -31,6 +31,11 @@ typedef gpointer SeedContextRef;
 
 typedef struct _SeedScript SeedScript;
 
+typedef struct _SeedEngine {
+	SeedContextRef context;
+	SeedValue global;
+} SeedEngine;
+
 /*
  * seed-engine.c 
  */
@@ -100,5 +105,8 @@ typedef void (*SeedFunctionCallback) (SeedContextRef ctx,
 
 void seed_create_function(gchar * name, SeedFunctionCallback callback,
 						  SeedObject object);
+
+
+typedef void (*SeedModuleInitCallback) (SeedEngine * eng);
 
 #endif
