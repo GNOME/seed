@@ -667,6 +667,9 @@ seed_gobject_get_property(JSContextRef context,
 			if (field)
 			{
 				ret = seed_field_get_value(b, field, exception);
+				g_base_info_unref((GIBaseInfo *) info);
+				g_free(cproperty_name);
+				return ret;		
 			}
 			g_base_info_unref((GIBaseInfo *) info);
 		}
