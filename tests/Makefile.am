@@ -1,6 +1,7 @@
 EXTRA_DIST = \
 	argv.js \
     compare.js \
+    struct-nested-set.js \
     constructor-args.js \
     signal-this.js \
     struct-set-member.js \
