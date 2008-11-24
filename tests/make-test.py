@@ -13,6 +13,7 @@ if(test_code[1].find("// STDIN") >= 0):
 else:
     test_in = ""
 
+os.system("chmod +x " + sys.argv[1])
 (n,out,err) = os.popen3("./" + sys.argv[1])
 		
 if(test_in != ""):
