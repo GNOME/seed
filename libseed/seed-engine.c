@@ -666,18 +666,7 @@ seed_gobject_get_property(JSContextRef context,
  found_field:
 			if (field)
 			{
-				GArgument field_value;
-				GITypeInfo *field_type = g_field_info_get_type(field);
-				if (g_field_info_get_field(field, b, &field_value))
-				{
-					ret = seed_gi_argument_make_js(&field_value,
-												   field_type, exception);
-
-					g_base_info_unref((GIBaseInfo *) info);
-
-					g_free(cproperty_name);
-					return ret;
-				}
+				ret = seed_field_get_value(b, field, exception);
 			}
 			g_base_info_unref((GIBaseInfo *) info);
 		}

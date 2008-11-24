@@ -98,7 +98,7 @@ static GIFieldInfo *seed_struct_find_field(GIStructInfo * info,
 	return 0;
 }
 
-static JSValueRef
+JSValueRef
 seed_field_get_value(gpointer object,
 					 GIFieldInfo * field,
 	                 JSValueRef * exception)
