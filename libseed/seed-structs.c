@@ -37,6 +37,9 @@ static void seed_pointer_finalize(JSObjectRef object)
 {
 	seed_struct_privates *priv =
 		(seed_struct_privates *) JSObjectGetPrivate(object);
+	
+	SEED_NOTE(STRUCTS, "Finalizing seed_pointer object. with "
+			  "priv->free_pointer = %d \n", priv->free_pointer);
 
 	if (priv->free_pointer)
 		g_free(priv->pointer);
@@ -51,6 +54,10 @@ static void seed_boxed_finalize(JSObjectRef object)
 	GType type;
 	GIRegisteredTypeInfo *info =
 		(GIRegisteredTypeInfo *) g_base_info_get_type(priv->info);
+	
+	SEED_NOTE(STRUCTS, "Finalizing boxed object of type %s \n",
+			  g_base_info_get_name(priv->info));
+			
 
 	type = g_registered_type_info_get_g_type(info);
 	g_base_info_unref((GIBaseInfo *) info);
@@ -170,6 +177,11 @@ seed_union_get_property(JSContextRef context,
 	cproperty_name = g_malloc(length * sizeof(gchar));
 	JSStringGetUTF8CString(property_name, cproperty_name, length);
 
+	SEED_NOTE(STRUCTS, "Getting property on union of type: %s  "
+			  "with name %s \n",
+			  g_base_info_get_name(priv->info),
+			  cproperty_name);
+	
 	field = seed_union_find_field((GIUnionInfo *) priv->info, cproperty_name);
 	if (!field)
 	{
@@ -203,6 +215,11 @@ seed_struct_set_property(JSContextRef context,
 	length = JSStringGetMaximumUTF8CStringSize(property_name);
 	cproperty_name = g_malloc(length * sizeof(gchar));
 	JSStringGetUTF8CString(property_name, cproperty_name, length);
+
+	SEED_NOTE(STRUCTS, "Setting property on struct of type: %s  "
+			  "with name %s \n",
+			  g_base_info_get_name(priv->info),
+			  cproperty_name);
 
 	field = seed_struct_find_field((GIStructInfo *) priv->info, cproperty_name);
 
@@ -240,6 +257,11 @@ seed_struct_get_property(JSContextRef context,
 	length = JSStringGetMaximumUTF8CStringSize(property_name);
 	cproperty_name = g_malloc(length * sizeof(gchar));
 	JSStringGetUTF8CString(property_name, cproperty_name, length);
+
+	SEED_NOTE(STRUCTS, "Getting property on struct of type: %s  "
+			  "with name %s \n",
+			  g_base_info_get_name(priv->info),
+			  cproperty_name);
 
 	field = seed_struct_find_field((GIStructInfo *) priv->info, cproperty_name);
 

@@ -41,7 +41,8 @@ static const GDebugKey seed_debug_keys[] = {
 	{"finalization", SEED_DEBUG_FINALIZATION},
 	{"initialization", SEED_DEBUG_INITIALIZATION},
 	{"signal", SEED_DEBUG_SIGNAL},
-	{"invocation", SEED_DEBUG_INVOCATION}
+	{"invocation", SEED_DEBUG_INVOCATION},
+	{"structs", SEED_DEBUG_STRUCTS}
 };
 #endif							/* SEED_ENABLE_DEBUG */
 
