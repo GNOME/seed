@@ -584,7 +584,6 @@ JSValueRef seed_value_from_gvalue(GValue * gval, JSValueRef * exception)
 	}
 	else
 	{
-		// This is very broken right now, struct rework coming soon...
 		GIBaseInfo *info;
 		GIInfoType type;
 

@@ -43,6 +43,8 @@ static void seed_pointer_finalize(JSObjectRef object)
 
 	if (priv->free_pointer)
 		g_free(priv->pointer);
+	if (priv->info)
+		g_base_info_unref(priv->info);
 
 	g_free(priv);
 }
