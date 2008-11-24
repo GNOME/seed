@@ -42,6 +42,12 @@ GIFieldInfo *seed_struct_find_field(GIStructInfo * info,
 GIFieldInfo *seed_union_find_field(GIUnionInfo * info,
 								   gchar * field_name);
 
+JSObjectRef 
+seed_construct_struct_type_with_parameters(GIBaseInfo * info,
+										   JSObjectRef parameters,
+										   JSValueRef * exception);
+
+
 void seed_structs_init();
 
 #endif
