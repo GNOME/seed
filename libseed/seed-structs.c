@@ -361,6 +361,7 @@ JSObjectRef seed_make_pointer(gpointer pointer)
 	seed_struct_privates *priv = g_malloc(sizeof(seed_struct_privates));
 	priv->pointer = pointer;
 	priv->info = 0;
+	priv->free_pointer = FALSE;
 
 	return JSObjectMake(eng->context, seed_pointer_class, priv);
 }
