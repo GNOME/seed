@@ -8,6 +8,7 @@ SUBDIRS = po \
 	gir \
 	doc\
 	examples\
+        modules \
 	tests
 	
 

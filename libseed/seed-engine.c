@@ -777,14 +777,14 @@ static GModule * seed_try_load_extension(gchar * name)
 
 	lowername = g_utf8_strdown(name, -1);
 
-	path = g_module_build_path("/usr/local/lib", lowername);
+	path = g_module_build_path("/usr/local/lib/seed", lowername);
 	
 	module = g_module_open(path, G_MODULE_BIND_LAZY);
 
 	if (!module)
 	{
 		g_free(path);
-		path = g_module_build_path("/usr/lib", lowername);
+		path = g_module_build_path("/usr/lib/seed", lowername);
 		
 		module = g_module_open(path, G_MODULE_BIND_LAZY);
 	}
@@ -828,7 +828,7 @@ seed_gi_import_namespace(JSContextRef ctx,
 	extension = seed_try_load_extension(namespace);
 	if (extension)
 	{
-		SeedModuleInitCallback * init;
+		SeedModuleInitCallback init;
 		
 		g_module_symbol(extension,
 						"seed_module_init",
@@ -837,7 +837,7 @@ seed_gi_import_namespace(JSContextRef ctx,
 		(*init)(eng);
 		
 		g_free(namespace);
-
+		return JSValueMakeNull(eng->context);
 	}
 
 	if (!g_irepository_require(g_irepository_get_default(), namespace,
