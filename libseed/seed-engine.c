@@ -27,6 +27,7 @@ GQuark qname = 0;
 GQuark qprototype = 0;
 
 JSClassRef gobject_signal_class;
+JSClassRef seed_struct_constructor_class;
 
 GParamSpec **global_prop_cache;
 
@@ -43,6 +44,41 @@ static const GDebugKey seed_debug_keys[] = {
 	{"invocation", SEED_DEBUG_INVOCATION}
 };
 #endif							/* SEED_ENABLE_DEBUG */
+
+
+// TODO: JSON field initialization.
+static JSObjectRef
+seed_struct_constructor_invoked(JSContextRef ctx,
+								 JSObjectRef constructor,
+								 size_t argumentCount,
+								 const JSValueRef arguments[],
+								 JSValueRef * exception)
+{
+	GIBaseInfo * info = JSObjectGetPrivate(constructor);
+	gsize size = 0;
+	gpointer object;
+	GIInfoType type = g_base_info_get_type(info);
+	JSObjectRef ret;
+	
+	if (type == GI_INFO_TYPE_STRUCT)
+	{
+		size = g_struct_info_get_size((GIStructInfo *)info);
+	}
+	else
+	{
+		size = g_union_info_get_size((GIUnionInfo *) info);
+	}
+	g_assert(size);
+	object = g_slice_alloc(size);
+	
+	if (type == GI_INFO_TYPE_STRUCT)
+		ret = seed_make_struct(object, info);
+	else
+		ret = seed_make_union(object, info);
+
+	seed_pointer_set_free(ret, TRUE);
+	return ret;
+}
 
 static JSObjectRef
 seed_gobject_constructor_invoked(JSContextRef ctx,
@@ -947,13 +983,40 @@ seed_gi_import_namespace(JSContextRef ctx,
 			gint i, n_methods;
 			GIFunctionInfo *finfo;
 
-			struct_ref = JSObjectMake(ctx, 0, 0);
+			struct_ref = JSObjectMake(ctx, 
+									  seed_struct_constructor_class, 
+									  info);
 
 			n_methods = g_struct_info_get_n_methods((GIStructInfo *) info);
 
 			for (i = 0; i < n_methods; i++)
 			{
 				finfo = g_struct_info_get_method((GIStructInfo *) info, i);
+				seed_gobject_define_property_from_function_info
+					(finfo, struct_ref, FALSE);
+
+			}
+
+			seed_object_set_property(namespace_ref,
+									 g_base_info_get_name(info), struct_ref);
+
+			JSValueProtect(ctx, (JSValueRef) struct_ref);
+		}
+		else if (info && (g_base_info_get_type(info) == GI_INFO_TYPE_UNION))
+		{
+			JSObjectRef struct_ref;
+			gint i, n_methods;
+			GIFunctionInfo *finfo;
+
+			struct_ref = JSObjectMake(ctx, 
+									  seed_struct_constructor_class, 
+									  info);
+
+			n_methods = g_union_info_get_n_methods((GIUnionInfo *) info);
+
+			for (i = 0; i < n_methods; i++)
+			{
+				finfo = g_union_info_get_method((GIUnionInfo *) info, i);
 				seed_gobject_define_property_from_function_info
 					(finfo, struct_ref, FALSE);
 
@@ -1092,6 +1155,26 @@ JSClassDefinition gobject_constructor_def = {
 	NULL						/* Convert To Type */
 };
 
+JSClassDefinition struct_constructor_def = {
+	0,							/* Version, always 0 */
+	0,
+	"struct_constructor",		/* Class Name */
+	NULL,						/* Parent Class */
+	NULL,						/* Static Values */
+	NULL,						/* Static Functions */
+	NULL,
+	NULL,						/* Finalize */
+	NULL,						/* Has Property */
+	NULL,						/* Get Property */
+	NULL,						/* Set Property */
+	NULL,						/* Delete Property */
+	NULL,						/* Get Property Names */
+	NULL,						/* Call As Function */
+	seed_struct_constructor_invoked,	/* Call As Constructor */
+	NULL,						/* Has Instance */
+	NULL						/* Convert To Type */
+};
+
 void seed_create_function(gchar * name, gpointer func, JSObjectRef obj)
 {
 	JSObjectRef oref;
@@ -1214,6 +1297,8 @@ gboolean seed_init(gint * argc, gchar *** argv)
 	JSClassRetain(gobject_signal_class);
 	seed_callback_class = JSClassCreate(&seed_callback_def);
 	JSClassRetain(seed_callback_class);
+	seed_struct_constructor_class = JSClassCreate(&struct_constructor_def);
+	JSClassRetain(seed_struct_constructor_class);
 
 	g_type_set_qdata(G_TYPE_OBJECT, qname, gobject_class);
 
