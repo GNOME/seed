@@ -181,6 +181,42 @@ seed_union_get_property(JSContextRef context,
 	return ret;
 }
 
+static bool
+seed_struct_set_property(JSContextRef context,
+						  JSObjectRef object,
+						  JSStringRef property_name,
+						  JSValueRef value, JSValueRef * exception)
+{
+	gint length, i, n;
+	GArgument field_value;
+	GIFieldInfo * field;
+	GITypeInfo * field_type;
+	gchar * cproperty_name;
+	seed_struct_privates *priv = (seed_struct_privates *)JSObjectGetPrivate(object);
+	gboolean ret;
+
+	length = JSStringGetMaximumUTF8CStringSize(property_name);
+	cproperty_name = g_malloc(length * sizeof(gchar));
+	JSStringGetUTF8CString(property_name, cproperty_name, length);
+
+	field = seed_struct_find_field((GIStructInfo *) priv->info, cproperty_name);
+
+	if (!field)
+	{
+		g_free(cproperty_name);
+		return 0;
+	}
+	
+	field_type = g_field_info_get_type(field);
+
+	seed_gi_make_argument(value, field_type, &field_value, exception);
+	ret = g_field_info_set_field(field, priv->pointer, &field_value);
+	
+	g_free(cproperty_name);
+	g_base_info_unref((GIBaseInfo *) field_type);
+	g_base_info_unref((GIBaseInfo *) field);
+}
+
 static JSValueRef
 seed_struct_get_property(JSContextRef context,
 						 JSObjectRef object,
@@ -247,7 +283,7 @@ JSClassDefinition seed_struct_def = {
 	NULL,
 	NULL,						/* Has Property */
 	seed_struct_get_property,
-	NULL,						/* Set Property */
+	seed_struct_set_property,						/* Set Property */
 	NULL,						/* Delete Property */
 	NULL,						/* Get Property Names */
 	NULL,						/* Call As Function */
