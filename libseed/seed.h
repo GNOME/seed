@@ -31,6 +31,7 @@ typedef gpointer SeedObject;
 typedef gpointer SeedClass;
 typedef gpointer SeedException;
 typedef gpointer SeedFunction;
+
 typedef gpointer SeedContextRef;
 
 typedef struct _SeedScript SeedScript;
@@ -58,8 +59,19 @@ gchar *seed_exception_to_string(SeedException e);
 SeedValue seed_evaluate(SeedScript * s, SeedObject this);
 
 /*
+ * seed-api.c
+ */
+
+SeedObject seed_make_object(SeedClass class, gpointer private);
+
+/*
  * seed-types.c 
  */
+gboolean seed_object_set_property(SeedObject object,
+								  const gchar * name,
+								  SeedValue value);
+SeedValue seed_object_get_property(SeedObject object, 
+								   const gchar * name);
 
 gboolean seed_value_to_boolean(SeedValue val, SeedException * exception);
 SeedValue seed_value_from_boolean(gboolean val, SeedException * exception);

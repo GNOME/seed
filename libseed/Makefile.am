@@ -4,6 +4,7 @@ lib_LTLIBRARIES = \
 
 libseed_la_SOURCES = \
 	seed-closure.c \
+        seed-api.c \
 	seed-closure.h \
 	seed-builtins.c\
 	seed-builtins.h \
