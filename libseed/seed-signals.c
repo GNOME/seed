@@ -39,7 +39,7 @@ static void seed_signal_finalize(JSObjectRef object)
 }
 
 static void
-seed_add_signal_to_object(JSObjectRef object_ref,
+seed_add_signal_to_object(JSContextRef ctx, JSObjectRef object_ref,
 						  GObject * obj, GSignalQuery * signal)
 {
 	guint k;
@@ -54,7 +54,7 @@ seed_add_signal_to_object(JSObjectRef object_ref,
 			js_signal_name[k] = '_';
 	}
 
-	signal_ref = JSObjectMake(eng->context, gobject_signal_class, priv);
+	signal_ref = JSObjectMake(ctx, gobject_signal_class, priv);
 
 	priv->signal_id = signal->signal_id;
 	priv->object = obj;
@@ -65,7 +65,9 @@ seed_add_signal_to_object(JSObjectRef object_ref,
 }
 
 static void
-seed_add_signals_for_type(JSObjectRef object_ref, GObject * obj, GType type)
+seed_add_signals_for_type(JSContextRef ctx, 
+						  JSObjectRef object_ref, 
+						  GObject * obj, GType type)
 {
 	guint n, i;
 	guint *signal_ids;
@@ -76,7 +78,7 @@ seed_add_signals_for_type(JSObjectRef object_ref, GObject * obj, GType type)
 		g_signal_query(signal_ids[i], &query);
 		if (query.signal_id != 0)
 		{
-			seed_add_signal_to_object(object_ref, obj, &query);
+			seed_add_signal_to_object(ctx, object_ref, obj, &query);
 		}
 	}
 	g_free(signal_ids);
@@ -161,7 +163,9 @@ seed_gobject_signal_connect_by_name(JSContextRef ctx,
 	g_free(signal_name);
 }
 
-void seed_add_signals_to_object(JSObjectRef object_ref, GObject * obj)
+void seed_add_signals_to_object(JSContextRef ctx, 
+								JSObjectRef object_ref, 
+								GObject * obj)
 {
 	GType type;
 	GType *interfaces;
@@ -176,11 +180,11 @@ void seed_add_signals_to_object(JSObjectRef object_ref, GObject * obj)
 
 	while (type != 0)
 	{
-		seed_add_signals_for_type(signals_ref, obj, type);
+		seed_add_signals_for_type(ctx, signals_ref, obj, type);
 
 		interfaces = g_type_interfaces(type, &n);
 		for (i = 0; i < n; i++)
-			seed_add_signals_for_type(signals_ref, obj, interfaces[i]);
+			seed_add_signals_for_type(ctx, signals_ref, obj, interfaces[i]);
 
 		type = g_type_parent(type);
 
@@ -284,7 +288,7 @@ seed_gobject_signal_emit(JSContextRef ctx,
 									 argumentCount);
 		seed_make_exception(exception, "ArgumentError", mes);
 		g_free(mes);
-		return JSValueMakeNull(eng->context);
+		return JSValueMakeNull(ctx);
 	}
 
 	params = g_new0(GValue, argumentCount + 1);
@@ -331,7 +335,7 @@ seed_gobject_signal_connect_on_property(JSContextRef ctx,
 		seed_make_exception(exception, "ArgumentError", mes);
 
 		g_free(mes);
-		return JSValueMakeNull(eng->context);
+		return JSValueMakeNull(ctx);
 	}
 	
 	if (argumentCount == 1)
