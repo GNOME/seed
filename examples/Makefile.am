@@ -22,7 +22,6 @@ examples_DATA = \
 	repl.js \
 	soup.js \
 	vte-test.js \
-	cairo.js \
 	HACKING
 EXTRA_DIST = \
 	actions.js \
