@@ -63,7 +63,7 @@ seed_struct_constructor_invoked(JSContextRef ctx,
 	{
 		if (!JSValueIsObject(ctx, arguments[0]))
 		{
-			seed_make_exception(exception, "ArgmuentError",
+			seed_make_exception(ctx, exception, "ArgmuentError",
 								"Constructor expects object as argument");
 			return (JSObjectRef) JSValueMakeNull(ctx);		
 		}
@@ -105,7 +105,7 @@ seed_gobject_constructor_invoked(JSContextRef ctx,
 	{
 		gchar *mes = g_strdup_printf("Constructor expects"
 									 " 1 argument, got %d", argumentCount);
-		seed_make_exception(exception, "ArgumentError", mes);
+		seed_make_exception(ctx, exception, "ArgumentError", mes);
 		g_free(mes);
 
 		return (JSObjectRef) JSValueMakeNull(ctx);
@@ -115,7 +115,7 @@ seed_gobject_constructor_invoked(JSContextRef ctx,
 	{
 		if (!JSValueIsObject(ctx, arguments[0]))
 		{
-			seed_make_exception(exception, "ArgmuentError",
+			seed_make_exception(ctx, exception, "ArgmuentError",
 								"Constructor expects object as argument");
 			g_type_class_unref(oclass);
 			return (JSObjectRef) JSValueMakeNull(ctx);
@@ -146,7 +146,7 @@ seed_gobject_constructor_invoked(JSContextRef ctx,
 			gchar *mes =
 				g_strdup_printf("Invalid property for construction: %s",
 								prop_name);
-			seed_make_exception(exception, "PropertyError", mes);
+			seed_make_exception(ctx, exception, "PropertyError", mes);
 
 			g_free(mes);
 			g_free(params);
@@ -212,7 +212,7 @@ seed_gobject_equals(JSContextRef ctx,
 	{
 		gchar *mes = g_strdup_printf("GObject equals comparison expected"
 									 " 1 argument, got %d", argumentCount);
-		seed_make_exception(exception, "ArgumentError", mes);
+		seed_make_exception(ctx, exception, "ArgumentError", mes);
 		g_free(mes);
 
 		return JSValueMakeNull(ctx);
@@ -302,7 +302,7 @@ seed_gobject_method_invoked(JSContextRef ctx,
 					("Unable to make argument %d for" " function: %s. \n",
 					 i + 1,
 					 g_base_info_get_name((GIBaseInfo *) info));
-				seed_make_exception(exception, "ArgumentError", mes);
+				seed_make_exception(ctx, exception, "ArgumentError", mes);
 
 				g_free(mes);
 				g_base_info_unref((GIBaseInfo *) type_info);
@@ -781,7 +781,7 @@ seed_gobject_set_property(JSContextRef context,
 	g_object_set_property(obj, cproperty_name, &gval);
 	if (glib_message != 0)
 	{
-		seed_make_exception(exception, "PropertyError", glib_message);
+		seed_make_exception(context, exception, "PropertyError", glib_message);
 
 		return FALSE;
 	}
@@ -835,7 +835,7 @@ seed_gi_import_namespace(JSContextRef ctx,
 
 	if (argumentCount == 0)
 	{
-		seed_make_exception(exception,
+		seed_make_exception(ctx, exception,
 							"ArgumentError",
 							"Seed.import_namespace"
 							" expected 1 or 2 arguments, got 0");

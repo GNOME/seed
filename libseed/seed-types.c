@@ -826,7 +826,7 @@ gboolean seed_value_to_boolean(JSValueRef val, JSValueRef * exception)
 	{
 		if (!JSValueIsNull(eng->context, val))
 		{
-			seed_make_exception(exception, "ConversionError",
+			seed_make_exception(eng->context, exception, "ConversionError",
 								"Can not convert Javascript value to boolean");
 			return 0;
 		}
@@ -848,7 +848,7 @@ guint seed_value_to_uint(JSValueRef val, JSValueRef * exception)
 	{
 		if (!JSValueIsNull(eng->context, val))
 		{
-			seed_make_exception(exception, "ConversionError",
+			seed_make_exception(eng->context, exception, "ConversionError",
 								"Can not convert Javascript value to"
 								" boolean");
 		}
@@ -868,7 +868,7 @@ gint seed_value_to_int(JSValueRef val, JSValueRef * exception)
 	if (!JSValueIsNumber(eng->context, val))
 	{
 		if (!JSValueIsNull(eng->context, val))
-			seed_make_exception(exception, "ConversionError",
+			seed_make_exception(eng->context, exception, "ConversionError",
 								"Can not convert Javascript value to" " int");
 		return 0;
 	}
@@ -888,7 +888,7 @@ gchar seed_value_to_char(JSValueRef val, JSValueRef * exception)
 	if (!JSValueIsNumber(eng->context, val))
 	{
 		if (!JSValueIsNull(eng->context, val))
-			seed_make_exception(exception, "ConversionError",
+			seed_make_exception(eng->context, exception, "ConversionError",
 								"Can not convert Javascript value to" " gchar");
 		return 0;
 	}
@@ -897,7 +897,7 @@ gchar seed_value_to_char(JSValueRef val, JSValueRef * exception)
 
 	if (cv < G_MININT8 || cv > G_MAXINT8)
 	{
-		seed_make_exception(exception, "ConversionError",
+		seed_make_exception(eng->context, exception, "ConversionError",
 							"Javascript number out of range of gchar");
 		return 0;
 	}
@@ -917,7 +917,7 @@ guchar seed_value_to_uchar(JSValueRef val, JSValueRef * exception)
 	if (!JSValueIsNumber(eng->context, val))
 	{
 		if (!JSValueIsNull(eng->context, val))
-			seed_make_exception(exception, "ConversionError",
+			seed_make_exception(eng->context, exception, "ConversionError",
 								"Can not convert Javascript value to"
 								" guchar");
 		return 0;
@@ -927,7 +927,7 @@ guchar seed_value_to_uchar(JSValueRef val, JSValueRef * exception)
 
 	if (cv > G_MAXUINT8)
 	{
-		seed_make_exception(exception, "ConversionError",
+		seed_make_exception(eng->context, exception, "ConversionError",
 							"Javascript number out of range of guchar");
 		return 0;
 	}
@@ -945,7 +945,7 @@ glong seed_value_to_long(JSValueRef val, JSValueRef * exception)
 	if (!JSValueIsNumber(eng->context, val))
 	{
 		if (!JSValueIsNull(eng->context, val))
-			seed_make_exception(exception, "ConversionError",
+			seed_make_exception(eng->context, exception, "ConversionError",
 								"Can not convert Javascript value to" " long");
 		return 0;
 	}
@@ -963,7 +963,7 @@ gulong seed_value_to_ulong(JSValueRef val, JSValueRef * exception)
 	if (!JSValueIsNumber(eng->context, val))
 	{
 		if (!JSValueIsNull(eng->context, val))
-			seed_make_exception(exception, "ConversionError",
+			seed_make_exception(eng->context, exception, "ConversionError",
 								"Can not convert Javascript value to" " ulong");
 
 		return 0;
@@ -982,7 +982,7 @@ gint64 seed_value_to_int64(JSValueRef val, JSValueRef * exception)
 	if (!JSValueIsNumber(eng->context, val))
 	{
 		if (!JSValueIsNull(eng->context, val))
-			seed_make_exception(exception, "ConversionError",
+			seed_make_exception(eng->context, exception, "ConversionError",
 								"Can not convert Javascript value to"
 								" gint64");
 
@@ -1002,7 +1002,7 @@ guint64 seed_value_to_uint64(JSValueRef val, JSValueRef * exception)
 	if (!JSValueIsNumber(eng->context, val))
 	{
 		if (!JSValueIsNull(eng->context, val))
-			seed_make_exception(exception, "ConversionError",
+			seed_make_exception(eng->context, exception, "ConversionError",
 								"Can not convert Javascript value to"
 								" guint64");
 
@@ -1022,7 +1022,7 @@ gfloat seed_value_to_float(JSValueRef val, JSValueRef * exception)
 	if (!JSValueIsNumber(eng->context, val))
 	{
 		if (!JSValueIsNull(eng->context, val))
-			seed_make_exception(exception, "ConversionError",
+			seed_make_exception(eng->context, exception, "ConversionError",
 								"Can not convert Javascript value to"
 								" gfloat");
 		return 0;
@@ -1041,7 +1041,7 @@ gdouble seed_value_to_double(JSValueRef val, JSValueRef * exception)
 	if (!JSValueIsNumber(eng->context, val))
 	{
 		if (!JSValueIsNull(eng->context, val))
-			seed_make_exception(exception, "ConversionError",
+			seed_make_exception(eng->context, exception, "ConversionError",
 								"Can not convert Javascript value to"
 								" double");
 		return 0;
@@ -1121,7 +1121,7 @@ GObject *seed_value_to_object(JSValueRef val, JSValueRef * exception)
 		return 0;
 	if (!seed_value_is_gobject(val))
 	{
-		seed_make_exception(exception, "ConversionError",
+		seed_make_exception(eng->context, exception, "ConversionError",
 							"Attempt to convert from"
 							" non GObject to GObject");
 		return NULL;

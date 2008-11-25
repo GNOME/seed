@@ -214,7 +214,7 @@ seed_property_method_invoked(JSContextRef ctx,
 		gchar *mes =
 			g_strdup_printf("Property installation expected 1 argument",
 							" got %d \n", argumentCount);
-		seed_make_exception(exception, "ArgumentError", mes);
+		seed_make_exception(ctx, exception, "ArgumentError", mes);
 		g_free(mes);
 
 		return JSValueMakeNull(ctx);
@@ -224,7 +224,7 @@ seed_property_method_invoked(JSContextRef ctx,
 		// Might need to check if JSValueIsObject? Who knows with WebKit.
 		!JSValueIsObjectOfClass(ctx, arguments[0], seed_struct_class))
 	{
-		seed_make_exception(exception, "ArgumentError",
+		seed_make_exception(ctx, exception, "ArgumentError",
 							"Property installation expected a "
 							"GParamSpec as argument");
 		return JSValueMakeNull(ctx);
@@ -266,14 +266,14 @@ seed_gsignal_method_invoked(JSContextRef ctx,
 	{
 		gchar *mes = g_strdup_printf("Signal constructor expected 1 argument",
 									 " got %d \n", argumentCount);
-		seed_make_exception(exception, "ArgumentError", mes);
+		seed_make_exception(ctx, exception, "ArgumentError", mes);
 		g_free(mes);
 		return (JSObjectRef) JSValueMakeNull(ctx);
 	}
 	if (JSValueIsNull(ctx, arguments[0]) ||
 		!JSValueIsObject(ctx, arguments[0]))
 	{
-		seed_make_exception(exception, "ArgumentError",
+		seed_make_exception(ctx, exception, "ArgumentError",
 							"Signal constructor expected object"
 							" as first argument");
 		return (JSObjectRef) JSValueMakeNull(ctx);
@@ -287,7 +287,7 @@ seed_gsignal_method_invoked(JSContextRef ctx,
 	if (JSValueIsNull(ctx, jsname) ||
 		!JSValueIsString(ctx, jsname))
 	{
-		seed_make_exception(exception, "ArgumentError",
+		seed_make_exception(ctx, exception, "ArgumentError",
 							"Signal definition needs name property");
 		return (JSObjectRef) JSValueMakeNull(ctx);
 	}
@@ -544,13 +544,13 @@ seed_gtype_constructor_invoked(JSContextRef ctx,
 			g_strdup_printf("GType constructor expected 1 "
 							"argument, got %d \n",
 							argumentCount);
-		seed_make_exception(exception, "ArgumentError", mes);
+		seed_make_exception(ctx, exception, "ArgumentError", mes);
 		g_free(mes);
 		return (JSObjectRef) JSValueMakeNull(ctx);
 	}
 	if (!JSValueIsObject(ctx, arguments[0]))
 	{
-		seed_make_exception(exception, "ArgumentError",
+		seed_make_exception(ctx, exception, "ArgumentError",
 							"GType constructor expected a"
 							"class definition object. Got a nonobject");
 
@@ -566,7 +566,7 @@ seed_gtype_constructor_invoked(JSContextRef ctx,
 	new_name = seed_value_to_string(name, exception);
 	if (!JSValueIsNumber(ctx, parent_ref))
 	{
-		seed_make_exception(exception, "TypeError",
+		seed_make_exception(ctx, exception, "TypeError",
 							"GType constructor expected" " GType for parent");
 
 		return (JSObjectRef) JSValueMakeNull(ctx);

@@ -541,7 +541,7 @@ seed_construct_struct_type_with_parameters(GIBaseInfo * info,
 			gchar *mes =
 				g_strdup_printf("Invalid property for construction: %s",
 								prop_name);
-			seed_make_exception(exception, "PropertyError", mes);
+			seed_make_exception(eng->context, exception, "PropertyError", mes);
 			
 			g_free(mes);
 			

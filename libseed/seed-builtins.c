@@ -48,7 +48,7 @@ seed_include(JSContextRef ctx,
 		gchar *mes =
 			g_strdup_printf("Seed.include expected 1 argument, "
 							"got %d", argumentCount);
-		seed_make_exception(exception, "ArgumentError", mes);
+		seed_make_exception(ctx, exception, "ArgumentError", mes);
 		g_free(mes);
 		return JSValueMakeNull(ctx);
 	}
@@ -59,7 +59,7 @@ seed_include(JSContextRef ctx,
 	if (!buffer)
 	{
 		gchar *mes = g_strdup_printf("File not found: %s.\n", import_file);
-		seed_make_exception(exception, "FileNotFound", mes);
+		seed_make_exception(ctx, exception, "FileNotFound", mes);
 		g_free(mes);
 		return JSValueMakeNull(ctx);
 	}
@@ -98,7 +98,7 @@ seed_print(JSContextRef ctx,
 		gchar *mes =
 			g_strdup_printf("Seed.print Expected 1 argument," " got %d",
 							argumentCount);
-		seed_make_exception(exception, "ArgumentError", mes);
+		seed_make_exception(ctx, exception, "ArgumentError", mes);
 		g_free(mes);
 		return JSValueMakeNull(ctx);
 	}
@@ -130,7 +130,7 @@ seed_readline(JSContextRef ctx,
 		gchar *mes =
 			g_strdup_printf("Seed.readline Expected 1 argument, "
 							"got %d", argumentCount);
-		seed_make_exception(exception, "ArgumentError", mes);
+		seed_make_exception(ctx, exception, "ArgumentError", mes);
 		g_free(mes);
 		return JSValueMakeNull(ctx);
 	}
@@ -167,7 +167,7 @@ seed_prototype(JSContextRef ctx,
 		gchar *mes =
 			g_strdup_printf("Seed.prototype Expected 1 argument, "
 							"got %d", argumentCount);
-		seed_make_exception(exception, "ArgumentError", mes);
+		seed_make_exception(ctx, exception, "ArgumentError", mes);
 		g_free(mes);
 		return JSValueMakeNull(ctx);
 	}
@@ -217,7 +217,7 @@ seed_introspect(JSContextRef ctx,
 		gchar *mes =
 			g_strdup_printf("Seed.introspection Expected 1 argument, "
 							"got %d", argumentCount);
-		seed_make_exception(exception, "ArgumentError", mes);
+		seed_make_exception(ctx, exception, "ArgumentError", mes);
 		g_free(mes);
 		return JSValueMakeNull(ctx);
 	}
@@ -283,7 +283,7 @@ seed_check_syntax(JSContextRef ctx,
 		gchar *mes = g_strdup_printf("Seed.check_syntax expected"
 									 "0 argument, got %d",
 									 argumentCount);
-		seed_make_exception(exception, "ArgumentError", mes);
+		seed_make_exception(ctx, exception, "ArgumentError", mes);
 		g_free(mes);
 	}
 	return JSValueMakeNull(ctx);
@@ -326,7 +326,7 @@ seed_set_timeout(JSContextRef ctx,
 		gchar *mes =
 			g_strdup_printf("Seed.setTimeout expected 2 arguments, "
 							"got %d", argumentCount);
-		seed_make_exception(exception, "ArgumentError", mes);
+		seed_make_exception(ctx, exception, "ArgumentError", mes);
 		g_free(mes);
 		return JSValueMakeBoolean(ctx, 0);
 	}
@@ -360,7 +360,7 @@ seed_closure(JSContextRef ctx,
 		gchar *mes =
 			g_strdup_printf("Seed.closure expected 1 or 2" "arguments, got %d",
 							argumentCount);
-		seed_make_exception(exception, "ArgumentError", mes);
+		seed_make_exception(ctx, exception, "ArgumentError", mes);
 		g_free(mes);
 		return JSValueMakeNull(ctx);
 	}
@@ -400,7 +400,7 @@ seed_closure_native(JSContextRef ctx,
 							" 2 arguments, got %d",
 							argumentCount);
 
-		seed_make_exception(exception, "ArgumentError", mes);
+		seed_make_exception(ctx, exception, "ArgumentError", mes);
 		g_free(mes);
 
 		return JSValueMakeNull(ctx);

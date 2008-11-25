@@ -55,7 +55,8 @@ gboolean seed_init(gint * argc, gchar *** argv);
 SeedScript *seed_make_script(const gchar * s, const gchar * source_url,
 							 gint line_number);
 SeedException seed_script_exception(SeedScript * s);
-SeedException seed_make_exception(gchar * name, gchar * message);
+void seed_make_exception(SeedContext ctx, SeedException e, 
+						 gchar * name, gchar * message);
 gchar *seed_exception_get_name(SeedException e);
 gchar *seed_exception_get_message(SeedException e);
 guint seed_exception_get_line(SeedException e);

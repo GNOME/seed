@@ -22,8 +22,10 @@
 #include "seed-private.h"
 
 void
-seed_make_exception(JSValueRef * exception,
-					const gchar * name, const gchar * message)
+seed_make_exception(JSContextRef ctx,
+					JSValueRef * exception,
+					const gchar * name, 
+					const gchar * message)
 {
 	JSStringRef js_name = 0;
 	JSStringRef js_message = 0;
@@ -36,15 +38,15 @@ seed_make_exception(JSValueRef * exception,
 	if (name)
 	{
 		js_name = JSStringCreateWithUTF8CString(name);
-		js_name_ref = JSValueMakeString(eng->context, js_name);
+		js_name_ref = JSValueMakeString(ctx, js_name);
 	}
 	if (message)
 	{
 		js_message = JSStringCreateWithUTF8CString(message);
-		js_message_ref = JSValueMakeString(eng->context, js_message);
+		js_message_ref = JSValueMakeString(ctx, js_message);
 	}
 
-	exception_obj = JSObjectMake(eng->context, 0, NULL);
+	exception_obj = JSObjectMake(ctx, 0, NULL);
 	seed_object_set_property(exception_obj, "message", js_message_ref);
 	seed_object_set_property(exception_obj, "name", js_name_ref);
 
@@ -72,7 +74,10 @@ void seed_make_exception_from_gerror(JSValueRef * exception, GError * error)
 			g_string_truncate(string, i - 1);
 
 	}
-	seed_make_exception(exception, string->str, error->message);
+	seed_make_exception(eng->context, 
+						exception,
+						string->str,
+						error->message);
 
 	g_string_free(string, TRUE);
 }

@@ -23,7 +23,7 @@
 
 #include "seed-private.h"
 
-void seed_make_exception(JSValueRef * exception,
+void seed_make_exception(JSContextRef ctx, JSValueRef * exception,
 						 const gchar * name, const gchar * message);
 
 void seed_make_exception_from_gerror(JSValueRef * exception, GError * e);
