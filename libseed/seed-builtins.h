@@ -24,36 +24,6 @@
 
 #include "seed-private.h"
 
-// TODO: someday, maybe, move import_namespace here!
-
-JSValueRef
-seed_include(JSContextRef ctx,
-			 JSObjectRef function,
-			 JSObjectRef this_object,
-			 size_t argumentCount,
-			 const JSValueRef arguments[], JSValueRef * exception);
-
-JSValueRef
-seed_print(JSContextRef ctx,
-		   JSObjectRef function,
-		   JSObjectRef this_object,
-		   size_t argumentCount,
-		   const JSValueRef arguments[], JSValueRef * exception);
-
-JSValueRef
-seed_readline(JSContextRef ctx,
-			  JSObjectRef function,
-			  JSObjectRef this_object,
-			  size_t argumentCount,
-			  const JSValueRef arguments[], JSValueRef * exception);
-
-JSValueRef
-seed_introspect(JSContextRef ctx,
-				JSObjectRef function,
-				JSObjectRef this_object,
-				size_t argumentCount,
-				const JSValueRef arguments[], JSValueRef * exception);
-
-void seed_init_builtins();
+void seed_init_builtins(SeedEngine * local_eng, gint * argc, gchar *** argv);
 
 #endif

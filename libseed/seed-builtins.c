@@ -27,7 +27,12 @@
 
 JSClassRef seed_native_callback_class;
 
-JSValueRef
+typedef struct _timeout_privates {
+	JSStringRef script;
+	JSContextRef context;
+} timeout_privates;
+
+static JSValueRef
 seed_include(JSContextRef ctx,
 			 JSObjectRef function,
 			 JSObjectRef this_object,
@@ -81,7 +86,7 @@ seed_include(JSContextRef ctx,
 	return JSValueMakeNull(ctx);
 }
 
-JSValueRef
+static JSValueRef
 seed_print(JSContextRef ctx,
 		   JSObjectRef function,
 		   JSObjectRef this_object,
@@ -105,7 +110,7 @@ seed_print(JSContextRef ctx,
 	return JSValueMakeNull(ctx);
 }
 
-JSValueRef
+static JSValueRef
 seed_readline(JSContextRef ctx,
 			  JSObjectRef function,
 			  JSObjectRef this_object,
@@ -148,7 +153,7 @@ seed_readline(JSContextRef ctx,
 	return valstr;
 }
 
-JSValueRef
+static JSValueRef
 seed_prototype(JSContextRef ctx,
 			   JSObjectRef function,
 			   JSObjectRef this_object,
@@ -194,7 +199,7 @@ const gchar *seed_g_type_name_to_string(GITypeInfo * type)
 	return type_name;
 }
 
-JSValueRef
+static JSValueRef
 seed_introspect(JSContextRef ctx,
 				JSObjectRef function,
 				JSObjectRef this_object,
@@ -257,7 +262,7 @@ seed_introspect(JSContextRef ctx,
 	return data_obj;
 }
 
-JSValueRef
+static JSValueRef
 seed_check_syntax(JSContextRef ctx,
 				  JSObjectRef function,
 				  JSObjectRef this_object,
@@ -284,7 +289,7 @@ seed_check_syntax(JSContextRef ctx,
 	return JSValueMakeNull(ctx);
 }
 
-JSValueRef
+static JSValueRef
 seed_fork(JSContextRef ctx,
 		  JSObjectRef function,
 		  JSObjectRef this_object,
@@ -301,30 +306,25 @@ static gboolean seed_timeout_function(gpointer user_data)
 {
 	// Evaluate timeout script
 
-	const JSStringRef script = (const JSStringRef)user_data;
-	JSEvaluateScript(eng->context, script, NULL, NULL, 0, NULL);
-	JSStringRelease(script);
+	timeout_privates * priv = (timeout_privates *)user_data;
+	JSEvaluateScript(priv->context, priv->script, NULL, NULL, 0, NULL);
+	JSStringRelease(priv->script);
+	g_slice_free1(sizeof(timeout_privates), priv);
 
 	return FALSE;				// remove timeout from main loop
 }
 
-JSValueRef
+static JSValueRef
 seed_set_timeout(JSContextRef ctx,
 				 JSObjectRef function,
 				 JSObjectRef this_object,
 				 size_t argumentCount,
 				 const JSValueRef arguments[], JSValueRef * exception)
 {
-	// TODO: check if a main loop is running. if not, return failure.
-
-	// GMainLoop* loop = g_main_loop_new(NULL,FALSE);
-	// if (!g_main_loop_is_running(loop))
-	// return JSValueMakeBoolean(ctx, 0);
-
 	if (argumentCount != 2)
 	{
 		gchar *mes =
-			g_strdup_printf("Seed.set_timeout expected 2 arguments, "
+			g_strdup_printf("Seed.setTimeout expected 2 arguments, "
 							"got %d", argumentCount);
 		seed_make_exception(exception, "ArgumentError", mes);
 		g_free(mes);
@@ -336,12 +336,17 @@ seed_set_timeout(JSContextRef ctx,
 											exception);
 
 	guint interval = seed_value_to_uint(arguments[1], exception);
-	g_timeout_add(interval, &seed_timeout_function, jsstr);
+	
+	timeout_privates * priv = g_slice_alloc0(sizeof(timeout_privates));
+	priv->context = ctx;
+	priv->script = jsstr;
+	
+	g_timeout_add(interval, &seed_timeout_function, priv);
 
 	return JSValueMakeBoolean(ctx, 1);
 }
 
-JSValueRef
+static JSValueRef
 seed_closure(JSContextRef ctx,
 			 JSObjectRef function,
 			 JSObjectRef this_object,
@@ -370,7 +375,7 @@ seed_closure(JSContextRef ctx,
 	return (JSValueRef) seed_make_struct(closure, 0);
 }
 
-JSValueRef
+static JSValueRef
 seed_closure_native(JSContextRef ctx,
 					JSObjectRef function,
 					JSObjectRef this_object,
@@ -405,10 +410,10 @@ seed_closure_native(JSContextRef ctx,
 
 	privates = seed_make_native_closure(info, arguments[0]);
 
-	return JSObjectMake(eng->context, seed_native_callback_class, privates);
+	return JSObjectMake(ctx, seed_native_callback_class, privates);
 }
 
-JSValueRef
+static JSValueRef
 seed_quit(JSContextRef ctx,
 		  JSObjectRef function,
 		  JSObjectRef this_object,
@@ -426,13 +431,13 @@ seed_quit(JSContextRef ctx,
 	exit(EXIT_SUCCESS);
 }
 
-void seed_init_builtins(gint * argc, gchar *** argv)
+void seed_init_builtins(SeedEngine * local_eng, gint * argc, gchar *** argv)
 {
 	guint i;
 	JSObjectRef arrayObj;
 	JSValueRef argcref;
 	JSObjectRef obj =
-		(JSObjectRef) seed_object_get_property(eng->global, "Seed");
+		(JSObjectRef) seed_object_get_property(local_eng->global, "Seed");
 
 	seed_create_function("include", &seed_include, obj);
 	seed_create_function("print", &seed_print, obj);
@@ -446,13 +451,13 @@ void seed_init_builtins(gint * argc, gchar *** argv)
 	seed_create_function("closure_native", &seed_closure_native, obj);
 	seed_create_function("quit", &seed_quit, obj);
 
-	arrayObj = JSObjectMake(eng->context, NULL, NULL);
+	arrayObj = JSObjectMake(local_eng->context, NULL, NULL);
 
 	for (i = 0; i < *argc; ++i)
 	{
 		// TODO: exceptions!
 
-		JSObjectSetPropertyAtIndex(eng->context, arrayObj, i,
+		JSObjectSetPropertyAtIndex(local_eng->context, arrayObj, i,
 								   seed_value_from_string((*argv)[i], 0), NULL);
 	}
 
