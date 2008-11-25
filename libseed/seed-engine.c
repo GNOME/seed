@@ -381,7 +381,7 @@ seed_gobject_method_invoked(JSContextRef ctx,
 	}
 	else
 	{
-		seed_make_exception_from_gerror(exception, error);
+		seed_make_exception_from_gerror(ctx, exception, error);
 
 		g_free(in_args);
 		g_free(out_args);
@@ -866,7 +866,7 @@ seed_gi_import_namespace(JSContextRef ctx,
 	if (!g_irepository_require(g_irepository_get_default(), namespace,
 							   version, 0, &e))
 	{
-		seed_make_exception_from_gerror(exception, e);
+		seed_make_exception_from_gerror(ctx, exception, e);
 		return JSValueMakeNull(ctx);
 	}
 

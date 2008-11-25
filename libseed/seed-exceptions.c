@@ -56,7 +56,9 @@ seed_make_exception(JSContextRef ctx,
 	JSStringRelease(js_message);
 }
 
-void seed_make_exception_from_gerror(JSValueRef * exception, GError * error)
+void seed_make_exception_from_gerror(JSContextRef ctx, 
+									 JSValueRef * exception, 
+									 GError * error)
 {
 	const gchar *domain = g_quark_to_string(error->domain);
 	GString *string = g_string_new(domain);
@@ -74,7 +76,7 @@ void seed_make_exception_from_gerror(JSValueRef * exception, GError * error)
 			g_string_truncate(string, i - 1);
 
 	}
-	seed_make_exception(eng->context, 
+	seed_make_exception(ctx, 
 						exception,
 						string->str,
 						error->message);
