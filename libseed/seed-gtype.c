@@ -230,12 +230,12 @@ seed_property_method_invoked(JSContextRef ctx,
 		return JSValueMakeNull(ctx);
 	}
 
-	spec = (GParamSpec *) seed_pointer_get_pointer(arguments[0]);
+	spec = (GParamSpec *) seed_pointer_get_pointer(ctx, arguments[0]);
 
 	oldcount = seed_object_get_property(thisObject, "property_count");
 	property_count = seed_value_to_int(oldcount, exception);
 
-	class = seed_pointer_get_pointer(thisObject);
+	class = seed_pointer_get_pointer(ctx, thisObject);
 	g_object_class_install_property(class, property_count, spec);
 
 	newcount = seed_value_from_int(property_count + 1, exception);
@@ -362,7 +362,7 @@ seed_handle_class_init_closure(ffi_cif * cif,
 	JSValueRef exception = 0;
 
 	type = (GType) JSObjectGetPrivate(*(JSObjectRef *) args[1]);
-	jsargs[0] = seed_make_pointer(*(gpointer *) args[0]);
+	jsargs[0] = seed_make_pointer(eng->context, *(gpointer *) args[0]);
 	jsargs[1] = seed_gobject_get_prototype_for_gtype(type);
 
 	// TODO: 
@@ -395,7 +395,7 @@ seed_handle_instance_init_closure(ffi_cif * cif,
 	JSValueRef exception = 0;
 	JSObjectRef this_object;
 
-	jsargs = seed_make_pointer(*(gpointer *) args[1]);
+	jsargs = seed_make_pointer(eng->context, *(gpointer *) args[1]);
 	this_object =
 		(JSObjectRef) seed_value_from_object(*(GObject **) args[0], 0);
 

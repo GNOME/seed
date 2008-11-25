@@ -113,7 +113,8 @@ GIFieldInfo *seed_struct_find_field(GIStructInfo * info,
 }
 
 JSValueRef
-seed_field_get_value(gpointer object,
+seed_field_get_value(JSContextRef ctx,
+					 gpointer object,
 					 GIFieldInfo * field,
 	                 JSValueRef * exception)
 {
@@ -136,20 +137,20 @@ seed_field_get_value(gpointer object,
 			switch (g_base_info_get_type(interface))
 			{
 			case GI_INFO_TYPE_STRUCT:
-				return seed_make_struct((object + offset), interface);
+				return seed_make_struct(ctx, (object + offset), interface);
 
 			case GI_INFO_TYPE_UNION:
-				return seed_make_union((object + offset), interface);
+				return seed_make_union(ctx, (object + offset), interface);
 
 			case GI_INFO_TYPE_BOXED:
-				return seed_make_boxed((object + offset), interface);
+				return seed_make_boxed(ctx, (object + offset), interface);
 
 			default:
 				g_base_info_unref(interface);
 			}
 		}
 
-		return JSValueMakeNull(eng->context);
+		return JSValueMakeNull(ctx);
 	}
 
 	// Maybe need to release argument.
@@ -191,7 +192,8 @@ seed_union_get_property(JSContextRef context,
 		return 0;
 	}
 
-	ret = seed_field_get_value(priv->pointer, field, exception);
+	ret = seed_field_get_value(context,
+							   priv->pointer, field, exception);
 
 	g_base_info_unref((GIBaseInfo *) field);
 
@@ -273,7 +275,8 @@ seed_struct_get_property(JSContextRef context,
 		return 0;
 	}
 
-	ret = seed_field_get_value(priv->pointer, field, exception);
+	ret = seed_field_get_value(context, 
+							   priv->pointer, field, exception);
 
 	g_base_info_unref((GIBaseInfo *) field);
 	g_free(cproperty_name);
@@ -361,9 +364,9 @@ JSClassDefinition seed_boxed_def = {
 	NULL						/* Convert To Type */
 };
 
-gpointer seed_pointer_get_pointer(JSValueRef pointer)
+gpointer seed_pointer_get_pointer(JSContextRef ctx, JSValueRef pointer)
 {
-	if (JSValueIsObjectOfClass(eng->context, pointer, seed_pointer_class))
+	if (JSValueIsObjectOfClass(ctx, pointer, seed_pointer_class))
 	{
 		seed_struct_privates *priv = JSObjectGetPrivate((JSObjectRef) pointer);
 		return priv->pointer;
@@ -371,7 +374,9 @@ gpointer seed_pointer_get_pointer(JSValueRef pointer)
 	return 0;
 }
 
-void seed_pointer_set_free(JSValueRef pointer, gboolean free_pointer)
+void seed_pointer_set_free(JSContextRef ctx,
+						   JSValueRef pointer, 
+						   gboolean free_pointer)
 {
 	if (JSValueIsObjectOfClass(eng->context, pointer, seed_pointer_class))
 	{
@@ -380,17 +385,18 @@ void seed_pointer_set_free(JSValueRef pointer, gboolean free_pointer)
 	}
 }
 
-JSObjectRef seed_make_pointer(gpointer pointer)
+JSObjectRef seed_make_pointer(JSContextRef ctx, gpointer pointer)
 {
 	seed_struct_privates *priv = g_malloc(sizeof(seed_struct_privates));
 	priv->pointer = pointer;
 	priv->info = 0;
 	priv->free_pointer = FALSE;
 
-	return JSObjectMake(eng->context, seed_pointer_class, priv);
+	return JSObjectMake(ctx, seed_pointer_class, priv);
 }
 
-JSObjectRef seed_make_union(gpointer younion, GIBaseInfo * info)
+JSObjectRef seed_make_union(JSContextRef ctx, gpointer younion, 
+							GIBaseInfo * info)
 {
 	JSObjectRef object;
 	gint i, n_methods;
@@ -400,7 +406,7 @@ JSObjectRef seed_make_union(gpointer younion, GIBaseInfo * info)
 	priv->info = info;
 	priv->free_pointer = FALSE;
 
-	object = JSObjectMake(eng->context, seed_union_class, priv);
+	object = JSObjectMake(ctx, seed_union_class, priv);
 
 	if (info)
 	{
@@ -420,7 +426,9 @@ JSObjectRef seed_make_union(gpointer younion, GIBaseInfo * info)
 	return object;
 }
 
-JSObjectRef seed_make_boxed(gpointer boxed, GIBaseInfo * info)
+JSObjectRef seed_make_boxed(JSContextRef ctx, 
+							gpointer boxed, 
+							GIBaseInfo * info)
 {
 	JSObjectRef object;
 	gint i, n_methods;
@@ -431,14 +439,16 @@ JSObjectRef seed_make_boxed(gpointer boxed, GIBaseInfo * info)
 	// Boxed finalize handler handles freeing.
 	priv->free_pointer = FALSE;
 
-	object = JSObjectMake(eng->context, seed_boxed_class, priv);
+	object = JSObjectMake(ctx, seed_boxed_class, priv);
 
 	// FIXME: Instance methods?
 
 	return object;
 }
 
-JSObjectRef seed_make_struct(gpointer strukt, GIBaseInfo * info)
+JSObjectRef seed_make_struct(JSContextRef ctx,
+							 gpointer strukt, 
+							 GIBaseInfo * info)
 {
 	JSObjectRef object;
 	gint i, n_methods;
@@ -448,7 +458,7 @@ JSObjectRef seed_make_struct(gpointer strukt, GIBaseInfo * info)
 	priv->pointer = strukt;
 	priv->free_pointer = FALSE;
 
-	object = JSObjectMake(eng->context, seed_struct_class, priv);
+	object = JSObjectMake(ctx, seed_struct_class, priv);
 
 	if (info)
 	{
@@ -508,11 +518,11 @@ seed_construct_struct_type_with_parameters(GIBaseInfo * info,
 	object = g_slice_alloc0(size);
 	
 	if (type == GI_INFO_TYPE_STRUCT)
-		ret = seed_make_struct(object, info);
+		ret = seed_make_struct(eng->context, object, info);
 	else
-		ret = seed_make_union(object, info);
+		ret = seed_make_union(eng->context, object, info);
 
-	seed_pointer_set_free(ret, TRUE);
+	seed_pointer_set_free(eng->context, ret, TRUE);
 	
 	if (!parameters)
 		return ret;

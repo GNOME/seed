@@ -268,7 +268,7 @@ seed_gobject_method_invoked(JSContextRef ctx,
 	// get it.
 	if (!
 		((object = seed_value_to_object(this_object, 0)) ||
-		 (object = seed_pointer_get_pointer(this_object))))
+		 (object = seed_pointer_get_pointer(ctx, this_object))))
 		instance_method = FALSE;
 
 	n_args = g_callable_info_get_n_args((GICallableInfo *) info);
@@ -697,7 +697,8 @@ seed_gobject_get_property(JSContextRef context,
  found_field:
 			if (field)
 			{
-				ret = seed_field_get_value(b, field, exception);
+				ret = seed_field_get_value(context, b, 
+										   field, exception);
 				g_base_info_unref((GIBaseInfo *) info);
 				g_free(cproperty_name);
 				return ret;		

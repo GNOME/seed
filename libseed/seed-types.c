@@ -295,7 +295,8 @@ seed_gi_make_argument(JSValueRef value,
 			{
 				if (JSValueIsObjectOfClass(eng->context,
 										   value, seed_struct_class))
-					arg->v_pointer = seed_pointer_get_pointer(value);
+					arg->v_pointer = seed_pointer_get_pointer(eng->context, 
+															  value);
 				else
 				{
 					GType type =
@@ -323,7 +324,8 @@ seed_gi_make_argument(JSValueRef value,
 						JSObjectRef strukt = 
 							seed_construct_struct_type_with_parameters(
 								interface, (JSObjectRef)value, exception);
-						arg->v_pointer = seed_pointer_get_pointer(strukt);
+						arg->v_pointer = seed_pointer_get_pointer(eng->context, 
+																  strukt);
 					}
 				}
 				g_base_info_unref(interface);
@@ -471,7 +473,8 @@ seed_gi_argument_make_js(GArgument * arg, GITypeInfo * type_info,
 			{
 				JSValueRef strukt;
 
-				strukt = seed_make_struct(arg->v_pointer, interface);
+				strukt = seed_make_struct(eng->context, 
+										  arg->v_pointer, interface);
 				g_base_info_unref(interface);
 
 				return strukt;
@@ -568,10 +571,12 @@ JSValueRef seed_value_from_gvalue(GValue * gval, JSValueRef * exception)
 		return seed_value_from_string((gchar *)
 									  g_value_get_string(gval), exception);
 	case G_TYPE_POINTER:
-		return seed_make_pointer(g_value_get_pointer(gval));
+		return seed_make_pointer(eng->context, 
+								 g_value_get_pointer(gval));
 	case G_TYPE_PARAM:
 		// Might need to dup and make a boxed.
-		return seed_make_pointer(g_value_get_param(gval));
+		return seed_make_pointer(eng->context, 
+								 g_value_get_param(gval));
 	}
 
 	if (g_type_is_a(G_VALUE_TYPE(gval), G_TYPE_ENUM) ||
@@ -596,15 +601,18 @@ JSValueRef seed_value_from_gvalue(GValue * gval, JSValueRef * exception)
 
 		if (type == GI_INFO_TYPE_UNION)
 		{
-			return seed_make_union(g_value_peek_pointer(gval), info);
+			return seed_make_union(eng->context, 
+								   g_value_peek_pointer(gval), info);
 		}
 		else if (type == GI_INFO_TYPE_STRUCT)
 		{
-			return seed_make_struct(g_value_peek_pointer(gval), info);
+			return seed_make_struct(eng->context, 
+									g_value_peek_pointer(gval), info);
 		}
 		else if (type == GI_INFO_TYPE_BOXED)
 		{
-			return seed_make_boxed(g_value_dup_boxed(gval), info);
+			return seed_make_boxed(eng->context, 
+								   g_value_dup_boxed(gval), info);
 		}
 
 	}
@@ -755,7 +763,7 @@ seed_gvalue_from_seed_value(JSValueRef val, GType type, GValue * ret,
 	/* Boxed handling is broken. Will be fixed in struct overhall. */
 	else if (g_type_is_a(type, G_TYPE_BOXED))
 	{
-		gpointer p = seed_pointer_get_pointer(val);
+		gpointer p = seed_pointer_get_pointer(eng->context, val);
 		if (p)
 		{
 			g_value_init(ret, type);
@@ -774,7 +782,7 @@ seed_gvalue_from_seed_value(JSValueRef val, GType type, GValue * ret,
 				new_struct	= seed_construct_struct_type_with_parameters(info,
 															 (JSObjectRef)val,
 															       exception);
-				p = seed_pointer_get_pointer(new_struct);
+				p = seed_pointer_get_pointer(eng->context, new_struct);
 				if (p)
 				{
 					g_value_init(ret, type);

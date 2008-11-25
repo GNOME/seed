@@ -23,19 +23,25 @@
 #define _SEED_STRUCT_H
 extern JSClassRef seed_struct_class;
 
-JSObjectRef seed_make_union(gpointer younion, GIBaseInfo * info);
-JSObjectRef seed_make_struct(gpointer strukt, GIBaseInfo * info);
-JSObjectRef seed_make_boxed(gpointer boxed, GIBaseInfo * info);
+JSObjectRef seed_make_union(JSContextRef ctx, gpointer younion, 
+							GIBaseInfo * info);
+JSObjectRef seed_make_struct(JSContextRef ctx, gpointer strukt,
+							 GIBaseInfo * info);
+JSObjectRef seed_make_boxed(JSContextRef ctx, 
+							gpointer boxed, GIBaseInfo * info);
 
-JSObjectRef seed_make_pointer(gpointer pointer);
+JSObjectRef seed_make_pointer(JSContextRef ctx, gpointer pointer);
 
 JSValueRef
-seed_field_get_value(gpointer object,
+seed_field_get_value(JSContextRef ctx,
+					 gpointer object,
 					 GIFieldInfo * field,
 	                 JSValueRef * exception);
 
-gpointer seed_pointer_get_pointer(JSValueRef strukt);
-void seed_pointer_set_free(JSValueRef pointer, gboolean free_pointer);
+gpointer seed_pointer_get_pointer(JSContextRef ctx, JSValueRef strukt);
+void seed_pointer_set_free(JSContextRef ctx,
+						   JSValueRef pointer, 
+						   gboolean free_pointer);
 
 GIFieldInfo *seed_struct_find_field(GIStructInfo * info,
 									gchar * field_name);

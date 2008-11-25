@@ -372,7 +372,7 @@ seed_closure(JSContextRef ctx,
 	else
 		closure = seed_make_gclosure(ctx, (JSObjectRef) arguments[0], 0);
 
-	return (JSValueRef) seed_make_struct(closure, 0);
+	return (JSValueRef) seed_make_struct(ctx, closure, 0);
 }
 
 static JSValueRef
