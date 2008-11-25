@@ -41,9 +41,6 @@ ScoreType = {
     	this.bkg_top = Clutter.Texture.new_from_file("./lcd-front.svg");
 		var bkg = Clutter.Texture.new_from_file("./lcd-back.svg");
 		var off_svg = Clutter.Texture.new_from_file("./lcd-off.svg");
-	Seed.print(bkg.__debug_ref_count());
-	Seed.print(this.bkg_top.__debug_ref_count());
-	Seed.print(off_svg.__debug_ref_count());
 
 		this.bkg_top.filter_quality = Clutter.TextureQuality.high;
 		bkg.filter_quality = Clutter.TextureQuality.high;
@@ -79,13 +76,6 @@ ScoreType = {
 		
 		if(this.value == 0)
 			this.set_value(1);
-		
-	Seed.print(bkg.__debug_ref_count());
-	Seed.print(this.bkg_top.__debug_ref_count());
-	Seed.print(off_svg.__debug_ref_count());
-
-		
-
     }};
 
 Score = new GType(ScoreType);
