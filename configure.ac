@@ -107,4 +107,5 @@ examples/clutter-shader/Makefile
 gir/Makefile
 modules/Makefile
 modules/example/Makefile
+modules/sqlite/Makefile
 ])

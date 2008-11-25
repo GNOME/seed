@@ -1,6 +1,7 @@
 #include <seed.h>
+#include <sqlite3.h>
 
 void seed_module_init(SeedEngine * eng)
 {
-	g_printf("Hello Seed Module World \n");
+	printf("Hello Seed SQLite world");
 }
