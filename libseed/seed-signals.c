@@ -142,7 +142,7 @@ seed_gobject_signal_connect_by_name(JSContextRef ctx,
 		seed_make_exception(exception, "ArgumentError", mes);
 
 		g_free(mes);
-		return JSValueMakeNull(eng->context);
+		return JSValueMakeNull(ctx);
 	}
 	
 	if(argumentCount == 3)
@@ -151,9 +151,8 @@ seed_gobject_signal_connect_by_name(JSContextRef ctx,
 	}
 	
 	signal_name = seed_value_to_string(arguments[0], NULL);
-	obj_type = G_OBJECT_TYPE(seed_value_to_object(thisObject, NULL));
-	
-	obj = seed_value_to_object(thisObject, NULL);
+	obj = (GObject *)JSObjectGetPrivate(thisObject);
+	obj_type = G_OBJECT_TYPE(obj);
 	
 	seed_gobject_signal_connect(signal_name, obj, 
 								(JSObjectRef) arguments[1],
@@ -173,7 +172,7 @@ void seed_add_signals_to_object(JSObjectRef object_ref, GObject * obj)
 
 	type = G_OBJECT_TYPE(obj);
 
-	signals_ref = JSObjectMake(eng->context, signal_holder_class, 0);
+	signals_ref = JSObjectMake(eng->context, signal_holder_class, obj);
 
 	while (type != 0)
 	{
@@ -194,7 +193,8 @@ void seed_add_signals_to_object(JSObjectRef object_ref, GObject * obj)
 		JSObjectMakeFunctionWithCallback(eng->context, NULL,
 										 &seed_gobject_signal_connect_by_name);
 	JSValueProtect(eng->context, connect_func);	
-	seed_object_set_property(object_ref, "connect", connect_func);
+
+	seed_object_set_property(signals_ref, "connect", connect_func);
 }
 
 void

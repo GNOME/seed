@@ -16,6 +16,6 @@ function handle_opacity_change(obj, gobject, user_data)
 
 win = new Gtk.Window();
 button = new Gtk.Button();
-win.connect("notify::opacity", handle_opacity_change, button);
+win.signal.connect("notify::opacity", handle_opacity_change, button);
 win.opacity = 0.5;
 
