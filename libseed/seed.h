@@ -52,7 +52,8 @@ typedef enum {
  */
 SeedEngine * seed_init(gint * argc, gchar *** argv);
 
-SeedScript *seed_make_script(const gchar * s, const gchar * source_url,
+SeedScript *seed_make_script(SeedContext ctx,
+							 const gchar * s, const gchar * source_url,
 							 gint line_number);
 SeedException seed_script_exception(SeedScript * s);
 void seed_make_exception(SeedContext ctx, SeedException e, 
@@ -63,13 +64,15 @@ guint seed_exception_get_line(SeedContext ctx, SeedException e);
 gchar *seed_exception_get_file(SeedContext ctx, SeedException e);
 gchar *seed_exception_to_string(SeedContext ctx, SeedException e);
 
-SeedValue seed_evaluate(SeedScript * s, SeedObject this);
+SeedValue seed_evaluate(SeedContext ctx, 
+						SeedScript * s, SeedObject this);
 
 /*
  * seed-api.c
  */
 
-SeedObject seed_make_object(SeedClass class, gpointer private);
+SeedObject seed_make_object(SeedContext ctx,
+							SeedClass class, gpointer private);
 
 /*
  * seed-types.c 

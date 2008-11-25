@@ -1,11 +1,15 @@
 #include "seed-private.h"
 
-JSObjectRef seed_make_object(JSClassRef class, gpointer private)
+JSObjectRef seed_make_object(JSContextRef ctx, 
+							 JSClassRef class,
+							 gpointer private)
 {
-	return JSObjectMake(eng->context, class, private);
+	return JSObjectMake(ctx, class, private);
 }
 
-SeedScript *seed_make_script(const gchar * js, const gchar * source_url,
+SeedScript *seed_make_script(JSContextRef ctx,
+							 const gchar * js,
+							 const gchar * source_url,
 							 gint line_number)
 {
 	SeedScript *ret = g_new0(SeedScript, 1);
@@ -24,7 +28,9 @@ SeedScript *seed_make_script(const gchar * js, const gchar * source_url,
 	return ret;
 }
 
-JSValueRef seed_evaluate(SeedScript * js, JSObjectRef this)
+JSValueRef seed_evaluate(JSContextRef ctx,
+						 SeedScript * js, 
+						 JSObjectRef this)
 {
 	JSValueRef ret;
 

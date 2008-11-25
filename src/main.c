@@ -33,11 +33,11 @@ void seed_repl(int argc, char ** argv)
 {
 	SeedScript  * script;
 
-	script = seed_make_script("while(1) { try { Seed.print(eval("
+	script = seed_make_script(eng->context, "while(1) { try { Seed.print(eval("
 							  "Seed.readline(\"> \"))); } catch(e) {"
 							  "Seed.print(e.name + \" \" + e.message);}}",
 							  NULL, 0);
-	seed_evaluate(script, 0);
+	seed_evaluate(eng->context, script, 0);
 	
 	g_free(script);
 }
@@ -62,7 +62,7 @@ void seed_exec(gint argc, gchar ** argv)
 			buffer++;
 		buffer++;
 	}
-	script = seed_make_script(buffer, argv[1], 1);
+	script = seed_make_script(eng->context, buffer, argv[1], 1);
 	if (e = seed_script_exception(script))
 	{
 		g_critical("%s. %s in %s at line %d",
@@ -72,7 +72,7 @@ void seed_exec(gint argc, gchar ** argv)
 				   seed_exception_get_line(eng->context, e));
 		exit(1);
 	}
-	seed_evaluate(script, 0);
+	seed_evaluate(eng->context, script, 0);
 	if (e = seed_script_exception(script))
 		g_critical("%s. %s in %s at line %d",
 				   seed_exception_get_name(eng->context, e),

@@ -7,7 +7,7 @@
 
 void seed_module_init(SeedEngine * eng)
 {
-	SeedObject namespace_ref = seed_make_object(0, 0);
+	SeedObject namespace_ref = seed_make_object(eng->context, 0, 0);
 	
 	seed_object_set_property(eng->global, "sqlite", namespace_ref);
 	
