@@ -84,57 +84,57 @@ void seed_make_exception_from_gerror(JSContextRef ctx,
 	g_string_free(string, TRUE);
 }
 
-gchar *seed_exception_get_name(JSValueRef e)
+gchar *seed_exception_get_name(JSContextRef ctx, JSValueRef e)
 {
 	JSValueRef name;
 	g_assert((e));
-	if (!JSValueIsObject(eng->context, e))
+	if (!JSValueIsObject(ctx, e))
 		return 0;
 
 	name = seed_object_get_property((JSObjectRef) e, "name");
 	return seed_value_to_string(name, 0);
 }
 
-gchar *seed_exception_get_message(JSValueRef e)
+gchar *seed_exception_get_message(JSContextRef ctx, JSValueRef e)
 {
 	JSValueRef name;
 	g_assert((e));
-	if (!JSValueIsObject(eng->context, e))
+	if (!JSValueIsObject(ctx, e))
 		return 0;
 
 	name = seed_object_get_property((JSObjectRef) e, "message");
 	return seed_value_to_string(name, 0);
 }
 
-guint seed_exception_get_line(JSValueRef e)
+guint seed_exception_get_line(JSContextRef ctx, JSValueRef e)
 {
 	JSValueRef line;
 	g_assert((e));
-	if (!JSValueIsObject(eng->context, e))
+	if (!JSValueIsObject(ctx, e))
 		return 0;
 	line = seed_object_get_property((JSObjectRef) e, "line");
 	return seed_value_to_uint(line, 0);
 }
 
-gchar *seed_exception_get_file(JSValueRef e)
+gchar *seed_exception_get_file(JSContextRef ctx, JSValueRef e)
 {
 	JSValueRef line;
 	g_assert((e));
-	if (!JSValueIsObject(eng->context, e))
+	if (!JSValueIsObject(ctx, e))
 		return 0;
 	line = seed_object_get_property((JSObjectRef) e, "sourceURL");
 	return seed_value_to_string(line, 0);
 }
 
-gchar *seed_exception_to_string(JSValueRef e)
+gchar *seed_exception_to_string(JSContextRef ctx, JSValueRef e)
 {
 	guint line;
 	gchar *mes, *name, *file, *ret;
 
-	line = seed_exception_get_line(e);
-	mes = seed_exception_get_message(e);
-	file = seed_exception_get_file(e);
-	name = seed_exception_get_name(e);
+	line = seed_exception_get_line(ctx,e);
+	mes = seed_exception_get_message(ctx,e);
+	file = seed_exception_get_file(ctx,e);
+	name = seed_exception_get_name(ctx,e);
 
 	ret = g_strdup_printf("Line %d in %s: %s %s", line, file, name, mes);
 

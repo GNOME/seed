@@ -1261,7 +1261,7 @@ static gboolean seed_parse_args(int *argc, char ***argv)
 	return ret;
 }
 
-gboolean seed_init(gint * argc, gchar *** argv)
+SeedEngine * seed_init(gint * argc, gchar *** argv)
 {
 	JSObjectRef seed_obj_ref;
 	JSStringRef defaults_script;
@@ -1317,6 +1317,6 @@ gboolean seed_init(gint * argc, gchar *** argv)
 	JSEvaluateScript(eng->context, defaults_script, NULL, NULL, 0, NULL);
 	JSStringRelease(defaults_script);
 
-	return TRUE;
+	return eng;
 }
 

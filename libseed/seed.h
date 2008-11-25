@@ -50,18 +50,18 @@ typedef enum {
 /*
  * seed-engine.c 
  */
-gboolean seed_init(gint * argc, gchar *** argv);
+SeedEngine * seed_init(gint * argc, gchar *** argv);
 
 SeedScript *seed_make_script(const gchar * s, const gchar * source_url,
 							 gint line_number);
 SeedException seed_script_exception(SeedScript * s);
 void seed_make_exception(SeedContext ctx, SeedException e, 
 						 gchar * name, gchar * message);
-gchar *seed_exception_get_name(SeedException e);
-gchar *seed_exception_get_message(SeedException e);
-guint seed_exception_get_line(SeedException e);
-gchar *seed_exception_get_file(SeedException e);
-gchar *seed_exception_to_string(SeedException e);
+gchar *seed_exception_get_name(SeedContext ctx, SeedException e);
+gchar *seed_exception_get_message(SeedContext ctx, SeedException e);
+guint seed_exception_get_line(SeedContext ctx, SeedException e);
+gchar *seed_exception_get_file(SeedContext ctx, SeedException e);
+gchar *seed_exception_to_string(SeedContext ctx, SeedException e);
 
 SeedValue seed_evaluate(SeedScript * s, SeedObject this);
 

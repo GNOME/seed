@@ -238,7 +238,8 @@ seed_signal_marshal_func(GClosure * closure,
 
 	if (exception)
 	{
-		gchar *mes = seed_exception_to_string(exception);
+		gchar *mes = seed_exception_to_string(eng->context, 
+											  exception);
 		g_warning("Exception in signal handler. %s \n", mes, 0);
 		g_free(mes);
 		exception = 0;
@@ -253,7 +254,7 @@ seed_signal_marshal_func(GClosure * closure,
 
 	if (exception)
 	{
-		gchar *mes = seed_exception_to_string(exception);
+		gchar *mes = seed_exception_to_string(eng->context, exception);
 		g_warning("Exception in signal handler return value. %s \n", mes, 0);
 		g_free(mes);
 	}

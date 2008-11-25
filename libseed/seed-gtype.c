@@ -380,7 +380,8 @@ seed_handle_class_init_closure(ffi_cif * cif,
 	JSObjectCallAsFunction(eng->context, function, 0, 2, jsargs, 0);
 	if (exception)
 	{
-		gchar *mes = seed_exception_to_string(exception);
+		gchar *mes = seed_exception_to_string(eng->context, 
+											  exception);
 		g_warning("Exception in class init closure. %s \n", mes, 0);
 	}
 }
@@ -402,35 +403,9 @@ seed_handle_instance_init_closure(ffi_cif * cif,
 						   &exception);
 	if (exception)
 	{
-		gchar *mes = seed_exception_to_string(exception);
+		gchar *mes = seed_exception_to_string(eng->context, 
+											  exception);
 		g_warning("Exception in instance init closure. %s \n", mes, 0);
-	}
-
-}
-
-static void
-seed_handle_set_property_closure(ffi_cif * cif,
-								 void *result, void **args, void *userdata)
-{
-	JSObjectRef function = (JSObjectRef) userdata;
-	JSValueRef jsargs[2];
-	JSValueRef exception = 0;
-	JSObjectRef this_object;
-	GParamSpec *spec;
-
-	this_object =
-		(JSObjectRef) seed_value_from_object(*(GObject **) args[0], &exception);
-	spec = *(GParamSpec **) args[3];
-
-	jsargs[0] = seed_value_from_string(spec->name, &exception);
-	jsargs[1] = seed_value_from_gvalue(*(GValue **) args[2], &exception);
-
-	JSObjectCallAsFunction(eng->context, function, this_object, 2, jsargs,
-						   &exception);
-	if (exception)
-	{
-		gchar *mes = seed_exception_to_string(exception);
-		g_warning("Exception in set property closure. %s \n", mes, 0);
 	}
 
 }
@@ -482,33 +457,6 @@ static ffi_closure *seed_make_instance_init_closure(JSObjectRef function)
 
 	ffi_prep_cif(cif, FFI_DEFAULT_ABI, 2, &ffi_type_void, arg_types);
 	ffi_prep_closure(closure, cif, seed_handle_instance_init_closure, function);
-	return closure;
-}
-
-static ffi_closure *seed_make_set_property_closure(JSObjectRef function)
-{
-	ffi_cif *cif;
-	ffi_closure *closure;
-	ffi_type **arg_types;;
-	ffi_arg result;
-	ffi_status status;
-
-	JSValueProtect(eng->context, function);
-
-	cif = g_new0(ffi_cif, 1);
-	arg_types = g_new0(ffi_type *, 5);
-
-	arg_types[0] = &ffi_type_pointer;
-	arg_types[1] = &ffi_type_uint;
-	arg_types[2] = &ffi_type_pointer;
-	arg_types[3] = &ffi_type_pointer;
-	arg_types[4] = 0;
-
-	closure = mmap(0, sizeof(ffi_closure), PROT_READ | PROT_WRITE |
-				   PROT_EXEC, MAP_ANON | MAP_PRIVATE, -1, 0);
-
-	ffi_prep_cif(cif, FFI_DEFAULT_ABI, 4, &ffi_type_void, arg_types);
-	ffi_prep_closure(closure, cif, seed_handle_set_property_closure, function);
 	return closure;
 }
 

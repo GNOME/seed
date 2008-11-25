@@ -27,6 +27,8 @@
 #include <stdlib.h>
 #include <girepository.h>
 
+SeedEngine * eng;
+
 void seed_repl(int argc, char ** argv)
 {
 	SeedScript  * script;
@@ -64,19 +66,19 @@ void seed_exec(gint argc, gchar ** argv)
 	if (e = seed_script_exception(script))
 	{
 		g_critical("%s. %s in %s at line %d",
-			   seed_exception_get_name(e),
-			   seed_exception_get_message(e),
-				seed_exception_get_file(e),
-				seed_exception_get_line(e));
+				   seed_exception_get_name(eng->context, e),
+				   seed_exception_get_message(eng->context, e),
+				   seed_exception_get_file(eng->context, e),
+				   seed_exception_get_line(eng->context, e));
 		exit(1);
 	}
 	seed_evaluate(script, 0);
 	if (e = seed_script_exception(script))
 		g_critical("%s. %s in %s at line %d",
-			   seed_exception_get_name(e),
-			   seed_exception_get_message(e),
-				seed_exception_get_file(e),
-				seed_exception_get_line(e));
+				   seed_exception_get_name(eng->context, e),
+				   seed_exception_get_message(eng->context, e),
+				   seed_exception_get_file(eng->context, e),
+				   seed_exception_get_line(eng->context, e));
 	
 	g_free(script);
 }
@@ -85,7 +87,7 @@ int main(gint argc, gchar ** argv)
 {	
 	g_set_prgname("seed");
 	g_thread_init(0);
-	seed_init(&argc, &argv);
+	eng = seed_init(&argc, &argv);
 
 	if (!g_irepository_require(g_irepository_get_default(), 
 							   "GObject", 0, 0, 0))
