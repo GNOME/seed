@@ -32,14 +32,20 @@ typedef gpointer SeedClass;
 typedef gpointer SeedException;
 typedef gpointer SeedFunction;
 
-typedef gpointer SeedContextRef;
+typedef gpointer SeedContext;
 
 typedef struct _SeedScript SeedScript;
 
 typedef struct _SeedEngine {
-	SeedContextRef context;
+	SeedContext context;
 	SeedValue global;
 } SeedEngine;
+
+typedef enum {
+	SEED_CLASS_ATTRIBUTE_NONE = 0,
+	SEED_CLASS_ATTRIBUTE_NO_SHARED_PROTOTYPE = 1 << 1
+} SeedClassAttributes;
+
 
 /*
  * seed-engine.c 
@@ -112,7 +118,7 @@ SeedValue seed_value_from_string(gchar * val, SeedException * exception);
 GObject *seed_value_to_object(SeedValue val, SeedException * exception);
 SeedValue seed_value_from_object(GObject * val, SeedException * exception);
 
-typedef void (*SeedFunctionCallback) (SeedContextRef ctx,
+typedef void (*SeedFunctionCallback) (SeedContext ctx,
 									  SeedObject function,
 									  SeedObject this_object,
 									  size_t argument_count,
