@@ -84,7 +84,8 @@ seed_add_signals_for_type(JSContextRef ctx,
 	g_free(signal_ids);
 }
 
-static void seed_gobject_signal_connect(const gchar * signal_name,
+static void seed_gobject_signal_connect(JSContextRef ctx,
+										const gchar * signal_name,
 										GObject * on_obj,
 										JSObjectRef func,
 										JSObjectRef this_obj,
@@ -102,9 +103,9 @@ static void seed_gobject_signal_connect(const gchar * signal_name,
 	//((SeedClosure *) closure)->object = on_obj;
 	((SeedClosure *) closure)->return_type = query.return_type;
 	
-	if (this_obj && !JSValueIsNull(eng->context, this_obj))
+	if (this_obj && !JSValueIsNull(ctx, this_obj))
 	{
-		JSValueProtect(eng->context, this_obj);
+		JSValueProtect(ctx, this_obj);
 		((SeedClosure *) closure)->this = this_obj;
 	}
 	else
@@ -112,13 +113,13 @@ static void seed_gobject_signal_connect(const gchar * signal_name,
 		((SeedClosure *) closure)->this = 0;
 	}
 	
-	if (user_data && !JSValueIsNull(eng->context, user_data))
+	if (user_data && !JSValueIsNull(ctx, user_data))
 	{
 		((SeedClosure *) closure)->user_data = user_data;
-		JSValueProtect(eng->context, user_data);
+		JSValueProtect(ctx, user_data);
 	}
 
-	JSValueProtect(eng->context, (JSObjectRef) func);
+	JSValueProtect(ctx, (JSObjectRef) func);
 	
 	g_signal_connect_closure(on_obj, signal_name, closure, FALSE);
 }
@@ -156,7 +157,7 @@ seed_gobject_signal_connect_by_name(JSContextRef ctx,
 	obj = (GObject *)JSObjectGetPrivate(thisObject);
 	obj_type = G_OBJECT_TYPE(obj);
 	
-	seed_gobject_signal_connect(signal_name, obj, 
+	seed_gobject_signal_connect(ctx, signal_name, obj, 
 								(JSObjectRef) arguments[1],
 								NULL, user_data);
 	
@@ -176,7 +177,7 @@ void seed_add_signals_to_object(JSContextRef ctx,
 
 	type = G_OBJECT_TYPE(obj);
 
-	signals_ref = JSObjectMake(eng->context, signal_holder_class, obj);
+	signals_ref = JSObjectMake(ctx, signal_holder_class, obj);
 
 	while (type != 0)
 	{
@@ -194,9 +195,9 @@ void seed_add_signals_to_object(JSContextRef ctx,
 	seed_object_set_property(object_ref, "signal", signals_ref);
 
 	connect_func =
-		JSObjectMakeFunctionWithCallback(eng->context, NULL,
+		JSObjectMakeFunctionWithCallback(ctx, NULL,
 										 &seed_gobject_signal_connect_by_name);
-	JSValueProtect(eng->context, connect_func);	
+	JSValueProtect(ctx, connect_func);	
 
 	seed_object_set_property(signals_ref, "connect", connect_func);
 }
@@ -339,18 +340,18 @@ seed_gobject_signal_connect_on_property(JSContextRef ctx,
 	}
 	
 	if (argumentCount == 1)
-		seed_gobject_signal_connect(privates->signal_name,
+		seed_gobject_signal_connect(ctx, privates->signal_name,
 									privates->object,
 									(JSObjectRef) arguments[0], NULL, NULL);
 	
 	if (argumentCount == 2)
-		seed_gobject_signal_connect(privates->signal_name,
+		seed_gobject_signal_connect(ctx, privates->signal_name,
 									privates->object,
 									(JSObjectRef) arguments[0],
 									(JSObjectRef) arguments[1], NULL);
 
 	if (argumentCount == 3)
-		seed_gobject_signal_connect(privates->signal_name,
+		seed_gobject_signal_connect(ctx, privates->signal_name,
 									privates->object,
 									(JSObjectRef) arguments[0],
 									(JSObjectRef) arguments[1],
