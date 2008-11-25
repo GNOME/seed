@@ -4,11 +4,12 @@ lib_LTLIBRARIES = \
 
 libseed_la_SOURCES = \
 	seed-closure.c \
-        seed-api.c \
+	seed-api.c \
 	seed-closure.h \
-	seed-builtins.c\
+	seed-builtins.c \
 	seed-builtins.h \
-        seed-exceptions.c \
+	seed-debug.h \
+	seed-exceptions.c \
 	seed-exceptions.h \
 	seed-engine.c \
 	seed-engine.h \
