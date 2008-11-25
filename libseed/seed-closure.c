@@ -105,7 +105,6 @@ static void seed_closure_finalize(JSObjectRef object)
 
 	g_free(privates->cif->arg_types);
 	g_free(privates->cif);
-	JSValueUnprotect(eng->context, privates->function);
 	munmap(privates->closure, sizeof(ffi_closure));
 }
 
@@ -360,7 +359,6 @@ SeedNativeClosure *seed_make_native_closure(GICallableInfo * info,
 	privates->info = info;
 	privates->function = function;
 	privates->cif = cif;
-	JSValueProtect(eng->context, privates->function);
 
 	for (i = 0; i < num_args; i++)
 	{
