@@ -49,7 +49,8 @@ GIFieldInfo *seed_union_find_field(GIUnionInfo * info,
 								   gchar * field_name);
 
 JSObjectRef 
-seed_construct_struct_type_with_parameters(GIBaseInfo * info,
+seed_construct_struct_type_with_parameters(JSContextRef ctx,
+										   GIBaseInfo * info,
 										   JSObjectRef parameters,
 										   JSValueRef * exception);
 

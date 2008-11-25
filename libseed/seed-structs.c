@@ -490,7 +490,8 @@ void seed_structs_init(void)
 }
 
 JSObjectRef 
-seed_construct_struct_type_with_parameters(GIBaseInfo * info,
+seed_construct_struct_type_with_parameters(JSContextRef ctx,
+										   GIBaseInfo * info,
 										   JSObjectRef parameters,
 										   JSValueRef * exception)
 {
@@ -518,16 +519,16 @@ seed_construct_struct_type_with_parameters(GIBaseInfo * info,
 	object = g_slice_alloc0(size);
 	
 	if (type == GI_INFO_TYPE_STRUCT)
-		ret = seed_make_struct(eng->context, object, info);
+		ret = seed_make_struct(ctx, object, info);
 	else
-		ret = seed_make_union(eng->context, object, info);
+		ret = seed_make_union(ctx, object, info);
 
-	seed_pointer_set_free(eng->context, ret, TRUE);
+	seed_pointer_set_free(ctx, ret, TRUE);
 	
 	if (!parameters)
 		return ret;
 
-	jsprops = JSObjectCopyPropertyNames(eng->context,
+	jsprops = JSObjectCopyPropertyNames(ctx,
 										(JSObjectRef)parameters);
 	nparams = JSPropertyNameArrayGetCount(jsprops);
 	
@@ -551,15 +552,15 @@ seed_construct_struct_type_with_parameters(GIBaseInfo * info,
 			gchar *mes =
 				g_strdup_printf("Invalid property for construction: %s",
 								prop_name);
-			seed_make_exception(eng->context, exception, "PropertyError", mes);
+			seed_make_exception(ctx, exception, "PropertyError", mes);
 			
 			g_free(mes);
 			
-			return (JSObjectRef) JSValueMakeNull(eng->context);
+			return (JSObjectRef) JSValueMakeNull(ctx);
 		}
 		field_type = g_field_info_get_type(field);
 		
-		jsprop_value = JSObjectGetProperty(eng->context,
+		jsprop_value = JSObjectGetProperty(ctx,
 										   (JSObjectRef)parameters,
 										   jsprop_name, NULL);
 		

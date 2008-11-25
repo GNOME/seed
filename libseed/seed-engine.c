@@ -69,7 +69,7 @@ seed_struct_constructor_invoked(JSContextRef ctx,
 		}
 		parameters = (JSObjectRef)arguments[0];
 	}
-	ret = seed_construct_struct_type_with_parameters(info,
+	ret = seed_construct_struct_type_with_parameters(ctx, info,
 													 parameters,
 													 exception);
 		

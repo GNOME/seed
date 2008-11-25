@@ -323,6 +323,7 @@ seed_gi_make_argument(JSValueRef value,
 					{
 						JSObjectRef strukt = 
 							seed_construct_struct_type_with_parameters(
+								eng->context, 
 								interface, (JSObjectRef)value, exception);
 						arg->v_pointer = seed_pointer_get_pointer(eng->context, 
 																  strukt);
@@ -779,7 +780,9 @@ seed_gvalue_from_seed_value(JSValueRef val, GType type, GValue * ret,
 				if (!info)
 					return FALSE;
 
-				new_struct	= seed_construct_struct_type_with_parameters(info,
+				new_struct	= 
+					seed_construct_struct_type_with_parameters(eng->context, 
+																		 info,
 															 (JSObjectRef)val,
 															       exception);
 				p = seed_pointer_get_pointer(eng->context, new_struct);
