@@ -42,7 +42,6 @@ EXTRA_DIST = \
 	repl.js \
 	soup.js \
 	vte-test.js \
-	cairo.js \
 	HACKING
 
 ## File created by the gnome-build tools
