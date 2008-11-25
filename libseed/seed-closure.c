@@ -231,7 +231,7 @@ seed_handle_closure(ffi_cif * cif, void *result, void **args, void *userdata)
 	}
 
 	return_value = (JSValueRef)
-		JSObjectCallAsFunction(eng->context,
+		JSObjectCallAsFunction(privates->ctx,
 							   (JSObjectRef) privates->function, 0,
 							   num_args, jsargs, 0);
 
@@ -326,7 +326,8 @@ seed_handle_closure(ffi_cif * cif, void *result, void **args, void *userdata)
 	g_free(return_arg);
 }
 
-SeedNativeClosure *seed_make_native_closure(GICallableInfo * info,
+SeedNativeClosure *seed_make_native_closure(JSContextRef ctx,
+											GICallableInfo * info,
 											JSValueRef function)
 {
 	ffi_cif *cif;
@@ -344,7 +345,7 @@ SeedNativeClosure *seed_make_native_closure(GICallableInfo * info,
 		(JSObjectRef) seed_object_get_property((JSObjectRef) function,
 											   "__seed_native_closure");
 	if (cached
-		&& JSValueIsObjectOfClass(eng->context, cached,
+		&& JSValueIsObjectOfClass(ctx, cached,
 								  seed_native_callback_class))
 	{
 		return (SeedNativeClosure *) JSObjectGetPrivate(cached);
@@ -359,6 +360,7 @@ SeedNativeClosure *seed_make_native_closure(GICallableInfo * info,
 	privates->info = info;
 	privates->function = function;
 	privates->cif = cif;
+	privates->ctx = ctx;
 
 	for (i = 0; i < num_args; i++)
 	{
@@ -377,14 +379,16 @@ SeedNativeClosure *seed_make_native_closure(GICallableInfo * info,
 
 	seed_object_set_property((JSObjectRef) function,
 							 "__seed_native_closure",
-							 (JSValueRef) JSObjectMake(eng->context,
+							 (JSValueRef) JSObjectMake(ctx,
 													   seed_native_callback_class,
 													   privates));
 
 	return privates;
 }
 
-SeedClosure *seed_make_gclosure(JSObjectRef function, JSObjectRef this)
+SeedClosure *seed_make_gclosure(JSContextRef ctx,
+								JSObjectRef function, 
+								JSObjectRef this)
 {
 	GClosure *closure;
 
@@ -393,15 +397,15 @@ SeedClosure *seed_make_gclosure(JSObjectRef function, JSObjectRef this)
 
 	((SeedClosure *) closure)->function = function;
 	((SeedClosure *) closure)->object = 0;
-	if (this && !JSValueIsNull(eng->context, this))
+	if (this && !JSValueIsNull(ctx, this))
 	{
-		JSValueProtect(eng->context, this);
+		JSValueProtect(ctx, this);
 		((SeedClosure *) closure)->this = this;
 	}
 	else
 		((SeedClosure *) closure)->this = 0;
 
-	JSValueProtect(eng->context, function);
+	JSValueProtect(ctx, function);
 
 	return (SeedClosure *) closure;
 }

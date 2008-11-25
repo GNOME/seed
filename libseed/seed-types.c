@@ -314,7 +314,8 @@ seed_gi_make_argument(JSValueRef value,
 							(eng->context, (JSObjectRef) value))
 						{
 							arg->v_pointer =
-								seed_make_gclosure((JSObjectRef) value, 0);
+								seed_make_gclosure(eng->context,
+												   (JSObjectRef) value, 0);
 						}
 					}
 					else
@@ -381,7 +382,8 @@ seed_gi_make_argument(JSValueRef value,
 				else if (JSObjectIsFunction(eng->context, (JSObjectRef) value))
 				{
 					SeedNativeClosure *privates =
-						seed_make_native_closure((GICallableInfo *) interface,
+						seed_make_native_closure(eng->context,
+												 (GICallableInfo *) interface,
 												 value);
 					arg->v_pointer = privates->closure;
 					break;

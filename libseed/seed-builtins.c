@@ -367,10 +367,10 @@ seed_closure(JSContextRef ctx,
 
 	if (argumentCount == 2)
 		closure =
-			seed_make_gclosure((JSObjectRef) arguments[0],
+			seed_make_gclosure(ctx, (JSObjectRef) arguments[0],
 							   (JSObjectRef) arguments[1]);
 	else
-		closure = seed_make_gclosure((JSObjectRef) arguments[0], 0);
+		closure = seed_make_gclosure(ctx, (JSObjectRef) arguments[0], 0);
 
 	return (JSValueRef) seed_make_struct(closure, 0);
 }
@@ -408,7 +408,7 @@ seed_closure_native(JSContextRef ctx,
 
 	info = (GICallableInfo *) JSObjectGetPrivate((JSObjectRef) arguments[1]);
 
-	privates = seed_make_native_closure(info, arguments[0]);
+	privates = seed_make_native_closure(ctx, info, arguments[0]);
 
 	return JSObjectMake(ctx, seed_native_callback_class, privates);
 }
