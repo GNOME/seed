@@ -232,14 +232,14 @@ seed_property_method_invoked(JSContextRef ctx,
 
 	spec = (GParamSpec *) seed_pointer_get_pointer(ctx, arguments[0]);
 
-	oldcount = seed_object_get_property(thisObject, "property_count");
+	oldcount = seed_object_get_property(ctx, thisObject, "property_count");
 	property_count = seed_value_to_int(oldcount, exception);
 
 	class = seed_pointer_get_pointer(ctx, thisObject);
 	g_object_class_install_property(class, property_count, spec);
 
 	newcount = seed_value_from_int(property_count + 1, exception);
-	seed_object_set_property(thisObject, "property_count", newcount);
+	seed_object_set_property(ctx, thisObject, "property_count", newcount);
 
 	return oldcount;
 }
@@ -280,7 +280,7 @@ seed_gsignal_method_invoked(JSContextRef ctx,
 	}
 
 	/* Signal name */
-	jsname = seed_object_get_property((JSObjectRef) arguments[0], "name");
+	jsname = seed_object_get_property(ctx, (JSObjectRef) arguments[0], "name");
 	/* seed_value_to_string can handle non strings, however the kind
 	 * of strings we want as a signal name are rather small, so make sure
 	 * we have an actual string */
@@ -291,14 +291,15 @@ seed_gsignal_method_invoked(JSContextRef ctx,
 							"Signal definition needs name property");
 		return (JSObjectRef) JSValueMakeNull(ctx);
 	}
-	name = seed_value_to_string(jsname, exception);
+	name = seed_value_to_string(ctx, jsname, exception);
 
 	/* Type to install on. Comes from class. */
-	jstype = seed_object_get_property(thisObject, "type");
+	jstype = seed_object_get_property(ctx, thisObject, "type");
 	itype = seed_value_to_int(jstype, exception);
 
 	/* Signal flags */
-	jsflags = seed_object_get_property((JSObjectRef) arguments[0], "flags");
+	jsflags = seed_object_get_property(ctx, 
+									   (JSObjectRef) arguments[0], "flags");
 	if (JSValueIsNull(ctx, jsflags) ||
 		!JSValueIsNumber(ctx, jsflags))
 		flags = G_SIGNAL_RUN_LAST;
@@ -306,7 +307,7 @@ seed_gsignal_method_invoked(JSContextRef ctx,
 		flags = seed_value_to_long(jsflags, exception);
 
 	/* Return type */
-	jsreturn_type = seed_object_get_property((JSObjectRef) arguments[0],
+	jsreturn_type = seed_object_get_property(ctx, (JSObjectRef) arguments[0],
 											 "return_type");
 	if (JSValueIsNull(ctx, jsreturn_type) ||
 		!JSValueIsNumber(ctx, jsreturn_type))
@@ -315,13 +316,13 @@ seed_gsignal_method_invoked(JSContextRef ctx,
 		return_type = seed_value_to_int(jsreturn_type, exception);
 
 	/* Number of params and types */
-	jsparams = seed_object_get_property((JSObjectRef) arguments[0],
+	jsparams = seed_object_get_property(ctx, (JSObjectRef) arguments[0],
 										"parameters");
 	if (!JSValueIsNull(ctx, jsparams) &&
 		JSValueIsObject(ctx, jsparams))
 	{
 		n_params = seed_value_to_int
-			(seed_object_get_property((JSObjectRef) jsparams, "length"),
+			(seed_object_get_property(ctx, (JSObjectRef) jsparams, "length"),
 			 exception);
 		if (n_params > 0)
 		{
@@ -360,30 +361,34 @@ seed_handle_class_init_closure(ffi_cif * cif,
 	JSValueRef jsargs[2];
 	GType type;
 	JSValueRef exception = 0;
+	JSContextRef ctx = JSGlobalContextCreateInGroup(context_group,
+													0);
 
 	type = (GType) JSObjectGetPrivate(*(JSObjectRef *) args[1]);
-	jsargs[0] = seed_make_pointer(eng->context, *(gpointer *) args[0]);
+	jsargs[0] = seed_make_pointer(ctx, *(gpointer *) args[0]);
 	jsargs[1] = seed_gobject_get_prototype_for_gtype(type);
 
 	// TODO: 
 	// Should probably have a custom type for class, and have it auto convert.
-	seed_object_set_property((JSObjectRef) jsargs[0],
+	seed_object_set_property(ctx, (JSObjectRef) jsargs[0],
 							 "type", seed_value_from_int(type, 0));
-	seed_object_set_property((JSObjectRef) jsargs[0],
+	seed_object_set_property(ctx, (JSObjectRef) jsargs[0],
 							 "property_count", seed_value_from_int(1, 0));
-	seed_create_function("install_signal",
+	seed_create_function(ctx, "install_signal",
 						 &seed_gsignal_method_invoked, (JSObjectRef) jsargs[0]);
-	seed_create_function("install_property",
+	seed_create_function(ctx, "install_property",
 						 &seed_property_method_invoked,
 						 (JSObjectRef) jsargs[0]);
 
-	JSObjectCallAsFunction(eng->context, function, 0, 2, jsargs, 0);
+	JSObjectCallAsFunction(ctx, function, 0, 2, jsargs, 0);
 	if (exception)
 	{
-		gchar *mes = seed_exception_to_string(eng->context, 
+		gchar *mes = seed_exception_to_string(ctx, 
 											  exception);
 		g_warning("Exception in class init closure. %s \n", mes, 0);
 	}
+	
+	JSGlobalContextRelease((JSGlobalContextRef)ctx);
 }
 
 static void
@@ -395,18 +400,24 @@ seed_handle_instance_init_closure(ffi_cif * cif,
 	JSValueRef exception = 0;
 	JSObjectRef this_object;
 
-	jsargs = seed_make_pointer(eng->context, *(gpointer *) args[1]);
+	JSContextRef ctx = JSGlobalContextCreateInGroup(context_group,
+													0);
+
+
+	jsargs = seed_make_pointer(ctx, *(gpointer *) args[1]);
 	this_object =
 		(JSObjectRef) seed_value_from_object(*(GObject **) args[0], 0);
 
-	JSObjectCallAsFunction(eng->context, function, this_object, 1, &jsargs,
+	JSObjectCallAsFunction(ctx, function, this_object, 1, &jsargs,
 						   &exception);
 	if (exception)
 	{
-		gchar *mes = seed_exception_to_string(eng->context, 
+		gchar *mes = seed_exception_to_string(ctx, 
 											  exception);
 		g_warning("Exception in instance init closure. %s \n", mes, 0);
 	}
+
+	JSGlobalContextRelease((JSGlobalContextRef)ctx);
 
 }
 
@@ -418,7 +429,7 @@ static ffi_closure *seed_make_class_init_closure(JSObjectRef function)
 	ffi_arg result;
 	ffi_status status;
 
-	JSValueProtect(eng->context, function);
+// Might need to protect function.
 
 	cif = g_new0(ffi_cif, 1);
 	arg_types = g_new0(ffi_type *, 3);
@@ -443,7 +454,7 @@ static ffi_closure *seed_make_instance_init_closure(JSObjectRef function)
 	ffi_arg result;
 	ffi_status status;
 
-	JSValueProtect(eng->context, function);
+// Might need to protect function.
 
 	cif = g_new0(ffi_cif, 1);
 	arg_types = g_new0(ffi_type *, 3);
@@ -504,14 +515,16 @@ seed_gtype_constructor_invoked(JSContextRef ctx,
 
 		return (JSObjectRef) JSValueMakeNull(ctx);
 	}
-	parent_ref = seed_object_get_property((JSObjectRef) arguments[0], "parent");
-	class_init = seed_object_get_property((JSObjectRef) arguments[0],
+	parent_ref = seed_object_get_property(ctx, 
+										  (JSObjectRef) arguments[0], "parent");
+	class_init = seed_object_get_property(ctx,
+										  (JSObjectRef) arguments[0],
 										  "class_init");
-	instance_init = seed_object_get_property((JSObjectRef) arguments[0],
+	instance_init = seed_object_get_property(ctx, (JSObjectRef) arguments[0],
 											 "instance_init");
-	name = seed_object_get_property((JSObjectRef) arguments[0], "name");
+	name = seed_object_get_property(ctx, (JSObjectRef) arguments[0], "name");
 
-	new_name = seed_value_to_string(name, exception);
+	new_name = seed_value_to_string(ctx, name, exception);
 	if (!JSValueIsNumber(ctx, parent_ref))
 	{
 		seed_make_exception(ctx, exception, "TypeError",
@@ -548,7 +561,7 @@ seed_gtype_constructor_invoked(JSContextRef ctx,
 	type_info.class_data = constructor_ref;
 
 	new_type = g_type_register_static(parent_type, new_name, &type_info, 0);
-	seed_gobject_get_class_for_gtype(new_type);
+	seed_gobject_get_class_for_gtype(ctx, new_type);
 	JSObjectSetPrivate(constructor_ref, (gpointer) new_type);
 
 	g_free(new_name);
@@ -556,7 +569,7 @@ seed_gtype_constructor_invoked(JSContextRef ctx,
 						(gpointer) new_type);
 }
 
-void seed_gtype_init(void)
+void seed_gtype_init(SeedEngine * local_eng)
 {
 	JSClassDefinition gtype_def = kJSClassDefinitionEmpty;
 	JSObjectRef gtype_constructor;
@@ -565,7 +578,8 @@ void seed_gtype_init(void)
 	seed_gtype_class = JSClassCreate(&gtype_def);
 	JSClassRetain(seed_gtype_class);
 
-	gtype_constructor = JSObjectMake(eng->context, seed_gtype_class, 0);
+	gtype_constructor = JSObjectMake(local_eng->context, seed_gtype_class, 0);
 
-	seed_object_set_property(eng->global, "GType", gtype_constructor);
+	seed_object_set_property(local_eng->context, 
+							 local_eng->global, "GType", gtype_constructor);
 }

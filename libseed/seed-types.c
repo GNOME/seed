@@ -76,11 +76,11 @@ static JSValueRef seed_wrap_object(GObject * object)
 	if (user_data)
 		return user_data;
 
-	class = seed_gobject_get_class_for_gtype(type);
+	class = seed_gobject_get_class_for_gtype(eng->context, type);
 
 	while (!class && (type = g_type_parent(type)))
 	{
-		class = seed_gobject_get_class_for_gtype(type);
+		class = seed_gobject_get_class_for_gtype(eng->context, type);
 	}
 
 	prototype = seed_gobject_get_prototype_for_gtype(type);
@@ -183,7 +183,8 @@ gboolean seed_gi_release_in_arg(GITransfer transfer,
 }
 
 gboolean
-seed_gi_make_argument(JSValueRef value,
+seed_gi_make_argument(JSContextRef ctx,
+					  JSValueRef value,
 					  GITypeInfo * type_info, GArgument * arg,
 					  JSValueRef * exception)
 {
@@ -191,7 +192,7 @@ seed_gi_make_argument(JSValueRef value,
 
 	// FIXME: Some types are not "nullable", also need to check if argument
 	// can be null before doing this.
-	if (!value || JSValueIsNull(eng->context, value))
+	if (!value || JSValueIsNull(ctx, value))
 	{
 		arg->v_pointer = 0;
 		return 1;
@@ -247,7 +248,7 @@ seed_gi_make_argument(JSValueRef value,
 		arg->v_double = seed_value_to_double(value, exception);
 		break;
 	case GI_TYPE_TAG_UTF8:
-		arg->v_string = seed_value_to_string(value, exception);
+		arg->v_string = seed_value_to_string(ctx, value, exception);
 		break;
 	case GI_TYPE_TAG_INTERFACE:
 		{
@@ -293,9 +294,9 @@ seed_gi_make_argument(JSValueRef value,
 			}
 			else if (interface_type == GI_INFO_TYPE_STRUCT)
 			{
-				if (JSValueIsObjectOfClass(eng->context,
+				if (JSValueIsObjectOfClass(ctx,
 										   value, seed_struct_class))
-					arg->v_pointer = seed_pointer_get_pointer(eng->context, 
+					arg->v_pointer = seed_pointer_get_pointer(ctx, 
 															  value);
 				else
 				{
@@ -312,10 +313,10 @@ seed_gi_make_argument(JSValueRef value,
 					else if (g_type_is_a(type, G_TYPE_CLOSURE))
 					{
 						if (JSObjectIsFunction
-							(eng->context, (JSObjectRef) value))
+							(ctx, (JSObjectRef) value))
 						{
 							arg->v_pointer =
-								seed_make_gclosure(eng->context,
+								seed_make_gclosure(ctx,
 												   (JSObjectRef) value, 0);
 						}
 					}
@@ -323,9 +324,9 @@ seed_gi_make_argument(JSValueRef value,
 					{
 						JSObjectRef strukt = 
 							seed_construct_struct_type_with_parameters(
-								eng->context, 
+								ctx, 
 								interface, (JSObjectRef)value, exception);
-						arg->v_pointer = seed_pointer_get_pointer(eng->context, 
+						arg->v_pointer = seed_pointer_get_pointer(ctx, 
 																  strukt);
 					}
 				}
@@ -334,7 +335,7 @@ seed_gi_make_argument(JSValueRef value,
 			}
 			else if (interface_type == GI_INFO_TYPE_CALLBACK)
 			{
-				if (JSValueIsNull(eng->context, value))
+				if (JSValueIsNull(ctx, value))
 				{
 					arg->v_pointer = NULL;
 					g_base_info_unref(interface);
@@ -345,7 +346,7 @@ seed_gi_make_argument(JSValueRef value,
 				// Have to dlsym the symbol to be able to do this.
 				// NOTE: Some cases where dlsym(NULL, symbol) doesn't work depending
 				// On how libseed is loaded.
-				else if (JSValueIsObjectOfClass(eng->context,
+				else if (JSValueIsObjectOfClass(ctx,
 												value, gobject_method_class))
 				{
 					GIFunctionInfo *info =
@@ -369,7 +370,7 @@ seed_gi_make_argument(JSValueRef value,
 				}
 				// Somewhat deprecated from when it was necessary to manually
 				// create closure objects...
-				else if (JSValueIsObjectOfClass(eng->context,
+				else if (JSValueIsObjectOfClass(ctx,
 												value,
 												seed_native_callback_class))
 				{
@@ -382,10 +383,10 @@ seed_gi_make_argument(JSValueRef value,
 				}
 				// Automagically create closure around function passed in as 
 				// callback. 
-				else if (JSObjectIsFunction(eng->context, (JSObjectRef) value))
+				else if (JSObjectIsFunction(ctx, (JSObjectRef) value))
 				{
 					SeedNativeClosure *privates =
-						seed_make_native_closure(eng->context,
+						seed_make_native_closure(ctx,
 												 (GICallableInfo *) interface,
 												 value);
 					arg->v_pointer = privates->closure;
@@ -404,7 +405,8 @@ seed_gi_make_argument(JSValueRef value,
 }
 
 JSValueRef
-seed_gi_argument_make_js(GArgument * arg, GITypeInfo * type_info,
+seed_gi_argument_make_js(JSContextRef ctx,
+						 GArgument * arg, GITypeInfo * type_info,
 						 JSValueRef * exception)
 {
 	GITypeTag gi_tag = g_type_info_get_tag(type_info);
@@ -444,7 +446,7 @@ seed_gi_argument_make_js(GArgument * arg, GITypeInfo * type_info,
 	case GI_TYPE_TAG_DOUBLE:
 		return seed_value_from_double(arg->v_double, exception);
 	case GI_TYPE_TAG_UTF8:
-		return seed_value_from_string(arg->v_string, exception);
+		return seed_value_from_string(ctx, arg->v_string, exception);
 	case GI_TYPE_TAG_INTERFACE:
 		{
 			GIBaseInfo *interface;
@@ -459,7 +461,7 @@ seed_gi_argument_make_js(GArgument * arg, GITypeInfo * type_info,
 				if (arg->v_pointer == 0)
 				{
 					g_base_info_unref(interface);
-					return JSValueMakeNull(eng->context);
+					return JSValueMakeNull(ctx);
 				}
 				g_base_info_unref(interface);
 				return seed_value_from_object(arg->v_pointer, exception);
@@ -474,7 +476,7 @@ seed_gi_argument_make_js(GArgument * arg, GITypeInfo * type_info,
 			{
 				JSValueRef strukt;
 
-				strukt = seed_make_struct(eng->context, 
+				strukt = seed_make_struct(ctx, 
 										  arg->v_pointer, interface);
 				g_base_info_unref(interface);
 
@@ -489,7 +491,7 @@ seed_gi_argument_make_js(GArgument * arg, GITypeInfo * type_info,
 			gint i = 0;
 			GList *list = arg->v_pointer;
 
-			ret = JSObjectMake(eng->context, NULL, NULL);
+			ret = JSObjectMake(ctx, NULL, NULL);
 			list_type = g_type_info_get_param_type(type_info, 0);
 
 			for (; list != NULL; list = list->next)
@@ -498,9 +500,9 @@ seed_gi_argument_make_js(GArgument * arg, GITypeInfo * type_info,
 
 				larg.v_pointer = list->data;
 				ival =
-					(JSValueRef) seed_gi_argument_make_js(&larg,
+					(JSValueRef) seed_gi_argument_make_js(ctx, &larg,
 														  list_type, exception);
-				JSObjectSetPropertyAtIndex(eng->context, ret, i, ival, NULL);
+				JSObjectSetPropertyAtIndex(ctx, ret, i, ival, NULL);
 				i++;
 			}
 			return ret;
@@ -514,7 +516,7 @@ seed_gi_argument_make_js(GArgument * arg, GITypeInfo * type_info,
 			gint i = 0;
 			GSList *list = arg->v_pointer;
 
-			ret = JSObjectMake(eng->context, NULL, NULL);
+			ret = JSObjectMake(ctx, NULL, NULL);
 			list_type = g_type_info_get_param_type(type_info, 0);
 
 			for (; list != NULL; list = list->next)
@@ -523,9 +525,9 @@ seed_gi_argument_make_js(GArgument * arg, GITypeInfo * type_info,
 
 				larg.v_pointer = list->data;
 				ival =
-					(JSValueRef) seed_gi_argument_make_js(&larg,
+					(JSValueRef) seed_gi_argument_make_js(ctx, &larg,
 														  list_type, exception);
-				JSObjectSetPropertyAtIndex(eng->context, ret, i, ival, NULL);
+				JSObjectSetPropertyAtIndex(ctx, ret, i, ival, NULL);
 				i++;
 			}
 			return ret;
@@ -538,7 +540,9 @@ seed_gi_argument_make_js(GArgument * arg, GITypeInfo * type_info,
 	return 0;
 }
 
-JSValueRef seed_value_from_gvalue(GValue * gval, JSValueRef * exception)
+JSValueRef seed_value_from_gvalue(JSContextRef ctx,
+								  GValue * gval, 
+								  JSValueRef * exception)
 {
 	if (!G_IS_VALUE(gval))
 	{
@@ -569,14 +573,14 @@ JSValueRef seed_value_from_gvalue(GValue * gval, JSValueRef * exception)
 	case G_TYPE_DOUBLE:
 		return seed_value_from_double(g_value_get_double(gval), exception);
 	case G_TYPE_STRING:
-		return seed_value_from_string((gchar *)
+		return seed_value_from_string(ctx, (gchar *)
 									  g_value_get_string(gval), exception);
 	case G_TYPE_POINTER:
-		return seed_make_pointer(eng->context, 
+		return seed_make_pointer(ctx, 
 								 g_value_get_pointer(gval));
 	case G_TYPE_PARAM:
 		// Might need to dup and make a boxed.
-		return seed_make_pointer(eng->context, 
+		return seed_make_pointer(ctx, 
 								 g_value_get_param(gval));
 	}
 
@@ -602,17 +606,17 @@ JSValueRef seed_value_from_gvalue(GValue * gval, JSValueRef * exception)
 
 		if (type == GI_INFO_TYPE_UNION)
 		{
-			return seed_make_union(eng->context, 
+			return seed_make_union(ctx, 
 								   g_value_peek_pointer(gval), info);
 		}
 		else if (type == GI_INFO_TYPE_STRUCT)
 		{
-			return seed_make_struct(eng->context, 
+			return seed_make_struct(ctx, 
 									g_value_peek_pointer(gval), info);
 		}
 		else if (type == GI_INFO_TYPE_BOXED)
 		{
-			return seed_make_boxed(eng->context, 
+			return seed_make_boxed(ctx, 
 								   g_value_dup_boxed(gval), info);
 		}
 
@@ -622,7 +626,9 @@ JSValueRef seed_value_from_gvalue(GValue * gval, JSValueRef * exception)
 }
 
 gboolean
-seed_gvalue_from_seed_value(JSValueRef val, GType type, GValue * ret,
+seed_gvalue_from_seed_value(JSContextRef ctx,
+							JSValueRef val, 
+							GType type, GValue * ret,
 							JSValueRef * exception)
 {
 	switch (type)
@@ -693,7 +699,7 @@ seed_gvalue_from_seed_value(JSValueRef val, GType type, GValue * ret,
 		}
 	case G_TYPE_STRING:
 		{
-			gchar *cval = seed_value_to_string(val, exception);
+			gchar *cval = seed_value_to_string(ctx, val, exception);
 
 			g_value_init(ret, G_TYPE_STRING);
 			g_value_take_string(ret, cval);
@@ -702,7 +708,7 @@ seed_gvalue_from_seed_value(JSValueRef val, GType type, GValue * ret,
 		}
 	default:
 		{
-			switch (JSValueGetType(eng->context, val))
+			switch (JSValueGetType(ctx, val))
 			{
 			case kJSTypeBoolean:
 				{
@@ -720,7 +726,7 @@ seed_gvalue_from_seed_value(JSValueRef val, GType type, GValue * ret,
 				}
 			case kJSTypeString:
 				{
-					gchar *cv = seed_value_to_string(val,
+					gchar *cv = seed_value_to_string(ctx, val,
 													 exception);
 
 					g_value_init(ret, G_TYPE_STRING);
@@ -734,21 +740,21 @@ seed_gvalue_from_seed_value(JSValueRef val, GType type, GValue * ret,
 		}
 	}
 
-	if (g_type_is_a(type, G_TYPE_ENUM) && JSValueIsNumber(eng->context, val))
+	if (g_type_is_a(type, G_TYPE_ENUM) && JSValueIsNumber(ctx, val))
 	{
 		g_value_init(ret, type);
 		ret->data[0].v_long = seed_value_to_long(val, exception);
 		return TRUE;
 	}
 	else if (g_type_is_a(type, G_TYPE_FLAGS)
-			 && JSValueIsNumber(eng->context, val))
+			 && JSValueIsNumber(ctx, val))
 	{
 		g_value_init(ret, type);
 		ret->data[0].v_long = seed_value_to_long(val, exception);
 		return TRUE;
 	}
 	else if (g_type_is_a(type, G_TYPE_OBJECT)
-			 && (JSValueIsNull(eng->context, val)
+			 && (JSValueIsNull(ctx, val)
 				 || seed_value_is_gobject(val)))
 	{
 		GObject *o = seed_value_to_object(val, exception);
@@ -764,7 +770,7 @@ seed_gvalue_from_seed_value(JSValueRef val, GType type, GValue * ret,
 	/* Boxed handling is broken. Will be fixed in struct overhall. */
 	else if (g_type_is_a(type, G_TYPE_BOXED))
 	{
-		gpointer p = seed_pointer_get_pointer(eng->context, val);
+		gpointer p = seed_pointer_get_pointer(ctx, val);
 		if (p)
 		{
 			g_value_init(ret, type);
@@ -773,7 +779,7 @@ seed_gvalue_from_seed_value(JSValueRef val, GType type, GValue * ret,
 		}
 		else
 		{
-			if (JSValueIsObject(eng->context, val))
+			if (JSValueIsObject(ctx, val))
 			{
 				GIBaseInfo * info = g_irepository_find_by_gtype(0, type);
 				JSObjectRef new_struct;
@@ -781,11 +787,11 @@ seed_gvalue_from_seed_value(JSValueRef val, GType type, GValue * ret,
 					return FALSE;
 
 				new_struct	= 
-					seed_construct_struct_type_with_parameters(eng->context, 
+					seed_construct_struct_type_with_parameters(ctx, 
 																		 info,
 															 (JSObjectRef)val,
 															       exception);
-				p = seed_pointer_get_pointer(eng->context, new_struct);
+				p = seed_pointer_get_pointer(ctx, new_struct);
 				if (p)
 				{
 					g_value_init(ret, type);
@@ -801,7 +807,8 @@ seed_gvalue_from_seed_value(JSValueRef val, GType type, GValue * ret,
 	return FALSE;
 }
 
-JSValueRef seed_object_get_property(JSObjectRef val, const gchar * name)
+JSValueRef seed_object_get_property(JSContextRef ctx,
+									JSObjectRef val, const gchar * name)
 {
 
 	JSStringRef jname = JSStringCreateWithUTF8CString(name);
@@ -815,14 +822,14 @@ JSValueRef seed_object_get_property(JSObjectRef val, const gchar * name)
 }
 
 gboolean
-seed_object_set_property(JSObjectRef object,
+seed_object_set_property(JSContextRef ctx, JSObjectRef object,
 						 const gchar * name, JSValueRef value)
 {
 	JSStringRef jname = JSStringCreateWithUTF8CString(name);
 
 	if (value)
 	{
-		JSObjectSetProperty(eng->context, (JSObjectRef) object,
+		JSObjectSetProperty(ctx, (JSObjectRef) object,
 							jname, value, 0, 0);
 	}
 
@@ -1068,7 +1075,8 @@ JSValueRef seed_value_from_double(gdouble val, JSValueRef * exception)
 	return JSValueMakeNumber(eng->context, (gdouble) val);
 }
 
-gchar *seed_value_to_string(JSValueRef val, JSValueRef * exception)
+gchar *seed_value_to_string(JSContextRef ctx,
+							JSValueRef val, JSValueRef * exception)
 {
 	JSStringRef jsstr = 0;
 	JSValueRef func, str;
@@ -1078,29 +1086,30 @@ gchar *seed_value_to_string(JSValueRef val, JSValueRef * exception)
 	if (val == NULL)
 		return NULL;
 
-	if (JSValueIsBoolean(eng->context, val)
-		|| JSValueIsNumber(eng->context, val))
+	if (JSValueIsBoolean(ctx, val)
+		|| JSValueIsNumber(ctx, val))
 	{
-		buf = g_strdup_printf("%f", JSValueToNumber(eng->context, val, NULL));
+		buf = g_strdup_printf("%f", JSValueToNumber(ctx, val, NULL));
 	}
-	else if (JSValueIsNull(eng->context, val)
-			 || JSValueIsUndefined(eng->context, val))
+	else if (JSValueIsNull(ctx, val)
+			 || JSValueIsUndefined(ctx, val))
 	{
 		buf = strdup("[null]");
 	}
 	else
 	{
-		if (!JSValueIsString(eng->context, val))	// In this case,
+		if (!JSValueIsString(ctx, val))	// In this case,
 			// it's an object
 		{
-			func = seed_object_get_property((JSObjectRef) val, "toString");
+			func = seed_object_get_property(ctx,
+											(JSObjectRef) val, "toString");
 			str =
-				JSObjectCallAsFunction(eng->context,
+				JSObjectCallAsFunction(ctx,
 									   (JSObjectRef) func,
 									   (JSObjectRef) val, 0, NULL, NULL);
 		}
 
-		jsstr = JSValueToStringCopy(eng->context, val, NULL);
+		jsstr = JSValueToStringCopy(ctx, val, NULL);
 		length = JSStringGetMaximumUTF8CStringSize(jsstr);
 		if (length > 0)
 		{
@@ -1114,10 +1123,11 @@ gchar *seed_value_to_string(JSValueRef val, JSValueRef * exception)
 	return buf;
 }
 
-JSValueRef seed_value_from_string(const gchar * val, JSValueRef * exception)
+JSValueRef seed_value_from_string(JSContextRef ctx, 
+								  const gchar * val, JSValueRef * exception)
 {
 	JSStringRef jsstr = JSStringCreateWithUTF8CString(val);
-	JSValueRef valstr = JSValueMakeString(eng->context, jsstr);
+	JSValueRef valstr = JSValueMakeString(ctx, jsstr);
 	JSStringRelease(jsstr);
 
 	return valstr;

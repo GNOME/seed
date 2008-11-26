@@ -60,7 +60,7 @@ seed_add_signal_to_object(JSContextRef ctx, JSObjectRef object_ref,
 	priv->object = obj;
 	priv->signal_name = signal->signal_name;
 
-	seed_object_set_property(object_ref, js_signal_name, signal_ref);
+	seed_object_set_property(ctx, object_ref, js_signal_name, signal_ref);
 	g_free(js_signal_name);
 }
 
@@ -153,7 +153,7 @@ seed_gobject_signal_connect_by_name(JSContextRef ctx,
 		user_data = (JSObjectRef)arguments[2];
 	}
 	
-	signal_name = seed_value_to_string(arguments[0], NULL);
+	signal_name = seed_value_to_string(ctx, arguments[0], NULL);
 	obj = (GObject *)JSObjectGetPrivate(thisObject);
 	obj_type = G_OBJECT_TYPE(obj);
 	
@@ -192,14 +192,14 @@ void seed_add_signals_to_object(JSContextRef ctx,
 		g_free(interfaces);
 	}
 
-	seed_object_set_property(object_ref, "signal", signals_ref);
+	seed_object_set_property(ctx, object_ref, "signal", signals_ref);
 
 	connect_func =
 		JSObjectMakeFunctionWithCallback(ctx, NULL,
 										 &seed_gobject_signal_connect_by_name);
 	JSValueProtect(ctx, connect_func);	
 
-	seed_object_set_property(signals_ref, "connect", connect_func);
+	seed_object_set_property(ctx, signals_ref, "connect", connect_func);
 }
 
 void
@@ -213,12 +213,17 @@ seed_signal_marshal_func(GClosure * closure,
 	JSValueRef *args, exception = 0;
 	JSValueRef ret = 0;
 	gint i;
+	
+	JSContextRef ctx = JSGlobalContextCreateInGroup(context_group,
+													0);
 
 	args = g_newa(JSValueRef, n_param_values + 1);
 
 	for (i = 0; i < n_param_values; i++)
 	{
-		args[i] = seed_value_from_gvalue((GValue *) & param_values[i], 0);
+		args[i] = seed_value_from_gvalue(ctx,
+										 (GValue *) & param_values[i],
+										 0);
 
 		if (!args[i])
 			g_error("Error in signal marshal. "
@@ -230,34 +235,36 @@ seed_signal_marshal_func(GClosure * closure,
 	if (seed_closure->user_data)
 		args[i] = seed_closure->user_data;
 	else
-		args[i] = JSValueMakeNull(eng->context);
+		args[i] = JSValueMakeNull(ctx);
 
-	ret = JSObjectCallAsFunction(eng->context, seed_closure->function,
+	ret = JSObjectCallAsFunction(ctx, seed_closure->function,
 								 seed_closure->this,
 								 n_param_values + 1, args, &exception);
 
 	if (exception)
 	{
-		gchar *mes = seed_exception_to_string(eng->context, 
+		gchar *mes = seed_exception_to_string(ctx, 
 											  exception);
 		g_warning("Exception in signal handler. %s \n", mes, 0);
 		g_free(mes);
 		exception = 0;
 	}
 
-	if (ret && !JSValueIsNull(eng->context, ret)
+	if (ret && !JSValueIsNull(ctx, ret)
 		&& (seed_closure->return_type != G_TYPE_NONE))
 	{
-		seed_gvalue_from_seed_value(ret, seed_closure->return_type,
+		seed_gvalue_from_seed_value(ctx, ret, seed_closure->return_type,
 									return_value, &exception);
 	}
 
 	if (exception)
 	{
-		gchar *mes = seed_exception_to_string(eng->context, exception);
+		gchar *mes = seed_exception_to_string(ctx, exception);
 		g_warning("Exception in signal handler return value. %s \n", mes, 0);
 		g_free(mes);
 	}
+	
+	JSGlobalContextRelease((JSGlobalContextRef)ctx);
 
 }
 
@@ -298,7 +305,7 @@ seed_gobject_signal_emit(JSContextRef ctx,
 	g_value_init(&params[0], G_TYPE_OBJECT);
 	g_value_set_object(&params[0], privates->object);
 	for (i = 0; i < argumentCount; i++)
-		seed_gvalue_from_seed_value(arguments[i],
+		seed_gvalue_from_seed_value(ctx, arguments[i],
 									query.param_types[i],
 									&params[i + 1], exception);
 
@@ -308,7 +315,7 @@ seed_gobject_signal_emit(JSContextRef ctx,
 		g_value_unset(&params[i]);
 	g_free(params);
 
-	ret = seed_value_from_gvalue(&ret_value, exception);
+	ret = seed_value_from_gvalue(ctx, &ret_value, exception);
 
 	return ret;
 }

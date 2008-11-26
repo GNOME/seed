@@ -38,8 +38,11 @@ static void seed_pointer_finalize(JSObjectRef object)
 	seed_struct_privates *priv =
 		(seed_struct_privates *) JSObjectGetPrivate(object);
 	
-	SEED_NOTE(STRUCTS, "Finalizing seed_pointer object. with "
-			  "priv->free_pointer = %d \n", priv->free_pointer);
+	SEED_NOTE(STRUCTS, "Finalizing seed_pointer object %p. with "
+			  "priv->free_pointer = %d with type: %s\n", 
+			  priv->pointer,
+			  priv->free_pointer,
+			  priv->info ? g_base_info_get_name(priv->info) : "[generic]");
 
 	if (priv->free_pointer)
 		g_free(priv->pointer);
@@ -154,7 +157,7 @@ seed_field_get_value(JSContextRef ctx,
 	}
 
 	// Maybe need to release argument.
-	ret = seed_gi_argument_make_js(&field_value, field_type, exception);
+	ret = seed_gi_argument_make_js(ctx, &field_value, field_type, exception);
 	if (field_type)
 		g_base_info_unref((GIBaseInfo *) field_type);
 	return ret;
@@ -235,7 +238,9 @@ seed_struct_set_property(JSContextRef context,
 	
 	field_type = g_field_info_get_type(field);
 
-	seed_gi_make_argument(value, field_type, &field_value, exception);
+	seed_gi_make_argument(context, 
+						  value, 
+						  field_type, &field_value, exception);
 	ret = g_field_info_set_field(field, priv->pointer, &field_value);
 	
 	g_free(cproperty_name);
@@ -378,7 +383,7 @@ void seed_pointer_set_free(JSContextRef ctx,
 						   JSValueRef pointer, 
 						   gboolean free_pointer)
 {
-	if (JSValueIsObjectOfClass(eng->context, pointer, seed_pointer_class))
+	if (JSValueIsObjectOfClass(ctx, pointer, seed_pointer_class))
 	{
 		seed_struct_privates *priv = JSObjectGetPrivate((JSObjectRef) pointer);
 		priv->free_pointer = free_pointer;
@@ -417,7 +422,8 @@ JSObjectRef seed_make_union(JSContextRef ctx, gpointer younion,
 
 			finfo = g_union_info_get_method((GIUnionInfo *) info, i);
 
-			seed_gobject_define_property_from_function_info((GIFunctionInfo *)
+			seed_gobject_define_property_from_function_info(ctx, 
+															(GIFunctionInfo *)
 															finfo, object,
 															TRUE);
 		}
@@ -469,7 +475,8 @@ JSObjectRef seed_make_struct(JSContextRef ctx,
 
 			finfo = g_struct_info_get_method((GIStructInfo *) info, i);
 
-			seed_gobject_define_property_from_function_info((GIFunctionInfo *)
+			seed_gobject_define_property_from_function_info(ctx, 
+															(GIFunctionInfo *)
 															finfo, object,
 															TRUE);
 		}
@@ -516,15 +523,15 @@ seed_construct_struct_type_with_parameters(JSContextRef ctx,
 		size = g_union_info_get_size((GIUnionInfo *) info);
 	}
 	g_assert(size);
-	object = g_slice_alloc0(size);
+	object = g_malloc0(size);
 	
 	if (type == GI_INFO_TYPE_STRUCT)
 		ret = seed_make_struct(ctx, object, info);
 	else
 		ret = seed_make_union(ctx, object, info);
-
-	seed_pointer_set_free(ctx, ret, TRUE);
 	
+	seed_pointer_set_free(ctx, ret, TRUE);
+
 	if (!parameters)
 		return ret;
 
@@ -564,7 +571,7 @@ seed_construct_struct_type_with_parameters(JSContextRef ctx,
 										   (JSObjectRef)parameters,
 										   jsprop_name, NULL);
 		
-		seed_gi_make_argument(jsprop_value, field_type,
+		seed_gi_make_argument(ctx, jsprop_value, field_type,
 							  &field_value, exception);
 		g_field_info_set_field(field, object, &field_value);
 		
@@ -573,7 +580,8 @@ seed_construct_struct_type_with_parameters(JSContextRef ctx,
 		
 		i++;
 	}
+	JSPropertyNameArrayRelease(jsprops);
 
 
-return ret;
+	return ret;
 }

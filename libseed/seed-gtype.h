@@ -24,6 +24,6 @@
 
 #include "seed-private.h"
 
-void seed_gtype_init(void);
+void seed_gtype_init(SeedEngine * eng);
 
 #endif

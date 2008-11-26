@@ -52,7 +52,7 @@ seed_include(JSContextRef ctx,
 		g_free(mes);
 		return JSValueMakeNull(ctx);
 	}
-	import_file = seed_value_to_string(arguments[0], exception);
+	import_file = seed_value_to_string(ctx, arguments[0], exception);
 
 	g_file_get_contents(import_file, &buffer, 0, 0);
 
@@ -103,7 +103,7 @@ seed_print(JSContextRef ctx,
 		return JSValueMakeNull(ctx);
 	}
 
-	gchar *buf = seed_value_to_string(arguments[0], exception);
+	gchar *buf = seed_value_to_string(ctx, arguments[0], exception);
 	printf("%s\n", buf);
 	g_free(buf);
 
@@ -135,13 +135,13 @@ seed_readline(JSContextRef ctx,
 		return JSValueMakeNull(ctx);
 	}
 
-	buf = seed_value_to_string(arguments[0], exception);
+	buf = seed_value_to_string(ctx, arguments[0], exception);
 
 	str = readline(buf);
 	if (str && *str)
 	{
 		add_history(str);
-		valstr = seed_value_from_string(str, exception);
+		valstr = seed_value_from_string(ctx, str, exception);
 		g_free(str);
 	}
 
@@ -230,20 +230,20 @@ seed_introspect(JSContextRef ctx,
 	info = (GICallableInfo *) JSObjectGetPrivate((JSObjectRef) arguments[0]);
 	data_obj = JSObjectMake(ctx, NULL, NULL);
 
-	seed_object_set_property(data_obj, "name", (JSValueRef)
-							 seed_value_from_string(g_base_info_get_name
+	seed_object_set_property(ctx, data_obj, "name", (JSValueRef)
+							 seed_value_from_string(ctx, g_base_info_get_name
 													((GIBaseInfo *) info),
 													exception));
 
-	seed_object_set_property(data_obj, "return_type",
+	seed_object_set_property(ctx, data_obj, "return_type",
 							 seed_value_from_string
-							 (seed_g_type_name_to_string
+							 (ctx, seed_g_type_name_to_string
 							  (g_callable_info_get_return_type(info)),
 							  exception));
 
 	args_obj = JSObjectMake(ctx, NULL, NULL);
 
-	seed_object_set_property(data_obj, "args", args_obj);
+	seed_object_set_property(ctx, data_obj, "args", args_obj);
 
 	for (i = 0; i < g_callable_info_get_n_args(info); ++i)
 	{
@@ -253,8 +253,9 @@ seed_introspect(JSContextRef ctx,
 			seed_g_type_name_to_string(g_arg_info_get_type
 									   (g_callable_info_get_arg(info, i)));
 
-		seed_object_set_property(argument, "type",
-								 seed_value_from_string(arg_name, exception));
+		seed_object_set_property(ctx, argument, "type",
+								 seed_value_from_string(ctx, 
+														arg_name, exception));
 
 		JSObjectSetPropertyAtIndex(ctx, args_obj, i, argument, NULL);
 	}
@@ -437,19 +438,31 @@ void seed_init_builtins(SeedEngine * local_eng, gint * argc, gchar *** argv)
 	JSObjectRef arrayObj;
 	JSValueRef argcref;
 	JSObjectRef obj =
-		(JSObjectRef) seed_object_get_property(local_eng->global, "Seed");
+		(JSObjectRef) seed_object_get_property(local_eng->context, 
+											   local_eng->global, "Seed");
 
-	seed_create_function("include", &seed_include, obj);
-	seed_create_function("print", &seed_print, obj);
-	seed_create_function("readline", &seed_readline, obj);
-	seed_create_function("prototype", &seed_prototype, obj);
-	seed_create_function("check_syntax", &seed_check_syntax, obj);
-	seed_create_function("introspect", &seed_introspect, obj);
-	seed_create_function("fork", &seed_fork, obj);
-	seed_create_function("closure", &seed_closure, obj);
-	seed_create_function("setTimeout", &seed_set_timeout, obj);
-	seed_create_function("closure_native", &seed_closure_native, obj);
-	seed_create_function("quit", &seed_quit, obj);
+	seed_create_function(local_eng->context, 
+						 "include", &seed_include, obj);
+	seed_create_function(local_eng->context, 
+						 "print", &seed_print, obj);
+	seed_create_function(local_eng->context, 
+						 "readline", &seed_readline, obj);
+	seed_create_function(local_eng->context, 
+						 "prototype", &seed_prototype, obj);
+	seed_create_function(local_eng->context, 
+						 "check_syntax", &seed_check_syntax, obj);
+	seed_create_function(local_eng->context, 
+						 "introspect", &seed_introspect, obj);
+	seed_create_function(local_eng->context, 
+						 "fork", &seed_fork, obj);
+	seed_create_function(local_eng->context, 
+						 "closure", &seed_closure, obj);
+	seed_create_function(local_eng->context, 
+						 "setTimeout", &seed_set_timeout, obj);
+	seed_create_function(local_eng->context, 
+						 "closure_native", &seed_closure_native, obj);
+	seed_create_function(local_eng->context, 
+						 "quit", &seed_quit, obj);
 
 	arrayObj = JSObjectMake(local_eng->context, NULL, NULL);
 
@@ -458,11 +471,12 @@ void seed_init_builtins(SeedEngine * local_eng, gint * argc, gchar *** argv)
 		// TODO: exceptions!
 
 		JSObjectSetPropertyAtIndex(local_eng->context, arrayObj, i,
-								   seed_value_from_string((*argv)[i], 0), NULL);
+								   seed_value_from_string(local_eng->context, 
+														  (*argv)[i], 0), NULL);
 	}
 
 	argcref = seed_value_from_int(*argc, 0);
 
-	seed_object_set_property(arrayObj, "length", argcref);
-	seed_object_set_property(obj, "argv", arrayObj);
+	seed_object_set_property(local_eng->context, arrayObj, "length", argcref);
+	seed_object_set_property(local_eng->context, obj, "argv", arrayObj);
 }

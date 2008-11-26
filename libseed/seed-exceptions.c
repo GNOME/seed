@@ -47,8 +47,8 @@ seed_make_exception(JSContextRef ctx,
 	}
 
 	exception_obj = JSObjectMake(ctx, 0, NULL);
-	seed_object_set_property(exception_obj, "message", js_message_ref);
-	seed_object_set_property(exception_obj, "name", js_name_ref);
+	seed_object_set_property(ctx, exception_obj, "message", js_message_ref);
+	seed_object_set_property(ctx, exception_obj, "name", js_name_ref);
 
 	*exception = exception_obj;
 
@@ -91,8 +91,8 @@ gchar *seed_exception_get_name(JSContextRef ctx, JSValueRef e)
 	if (!JSValueIsObject(ctx, e))
 		return 0;
 
-	name = seed_object_get_property((JSObjectRef) e, "name");
-	return seed_value_to_string(name, 0);
+	name = seed_object_get_property(ctx, (JSObjectRef) e, "name");
+	return seed_value_to_string(ctx, name, 0);
 }
 
 gchar *seed_exception_get_message(JSContextRef ctx, JSValueRef e)
@@ -102,8 +102,8 @@ gchar *seed_exception_get_message(JSContextRef ctx, JSValueRef e)
 	if (!JSValueIsObject(ctx, e))
 		return 0;
 
-	name = seed_object_get_property((JSObjectRef) e, "message");
-	return seed_value_to_string(name, 0);
+	name = seed_object_get_property(ctx, (JSObjectRef) e, "message");
+	return seed_value_to_string(ctx, name, 0);
 }
 
 guint seed_exception_get_line(JSContextRef ctx, JSValueRef e)
@@ -112,7 +112,7 @@ guint seed_exception_get_line(JSContextRef ctx, JSValueRef e)
 	g_assert((e));
 	if (!JSValueIsObject(ctx, e))
 		return 0;
-	line = seed_object_get_property((JSObjectRef) e, "line");
+	line = seed_object_get_property(ctx, (JSObjectRef) e, "line");
 	return seed_value_to_uint(line, 0);
 }
 
@@ -122,8 +122,8 @@ gchar *seed_exception_get_file(JSContextRef ctx, JSValueRef e)
 	g_assert((e));
 	if (!JSValueIsObject(ctx, e))
 		return 0;
-	line = seed_object_get_property((JSObjectRef) e, "sourceURL");
-	return seed_value_to_string(line, 0);
+	line = seed_object_get_property(ctx, (JSObjectRef) e, "sourceURL");
+	return seed_value_to_string(ctx, line, 0);
 }
 
 gchar *seed_exception_to_string(JSContextRef ctx, JSValueRef e)

@@ -116,8 +116,10 @@ SeedValue seed_value_from_float(gfloat val, SeedException * exception);
 gdouble seed_value_to_double(SeedValue val, SeedException * exception);
 SeedValue seed_value_from_double(gdouble val, SeedException * exception);
 
-gchar *seed_value_to_string(SeedValue val, SeedException * exception);
-SeedValue seed_value_from_string(gchar * val, SeedException * exception);
+gchar *seed_value_to_string(SeedContext ctx,
+							SeedValue val, SeedException * exception);
+SeedValue seed_value_from_string(SeedContext ctx,
+								 gchar * val, SeedException * exception);
 
 GObject *seed_value_to_object(SeedValue val, SeedException * exception);
 SeedValue seed_value_from_object(GObject * val, SeedException * exception);
@@ -129,7 +131,8 @@ typedef void (*SeedFunctionCallback) (SeedContext ctx,
 									  const SeedValue arguments[],
 									  SeedException * exception);
 
-void seed_create_function(gchar * name, SeedFunctionCallback callback,
+void seed_create_function(SeedContext ctx,
+						  gchar * name, SeedFunctionCallback callback,
 						  SeedObject object);
 
 

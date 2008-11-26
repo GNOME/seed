@@ -22,7 +22,7 @@ SeedScript *seed_make_script(JSContextRef ctx,
 	}
 	ret->line_number = line_number;
 
-	JSCheckScriptSyntax(eng->context, ret->script,
+	JSCheckScriptSyntax(ctx, ret->script,
 						ret->source_url, ret->line_number, &ret->exception);
 
 	return ret;
@@ -35,7 +35,7 @@ JSValueRef seed_evaluate(JSContextRef ctx,
 	JSValueRef ret;
 
 	js->exception = 0;
-	ret = JSEvaluateScript(eng->context,
+	ret = JSEvaluateScript(ctx,
 						   js->script, this, js->source_url,
 						   js->line_number, &js->exception);
 

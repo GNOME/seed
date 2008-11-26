@@ -24,17 +24,25 @@
 
 #include "seed-private.h"
 
-JSValueRef seed_value_from_gvalue(GValue * gval, JSValueRef * exception);
-JSValueRef seed_object_get_property(JSObjectRef val, const gchar * name);
+JSValueRef seed_value_from_gvalue(JSContextRef ctx,
+								  GValue * gval, 
+								  JSValueRef * exception);
 
-gboolean seed_object_set_property(JSObjectRef object,
+JSValueRef seed_object_get_property(JSContextRef ctx,
+									JSObjectRef val, const gchar * name);
+
+gboolean seed_object_set_property(JSContextRef ctx, JSObjectRef object,
 								  const gchar * name, JSValueRef value);
-gboolean seed_gvalue_from_seed_value(JSValueRef val, GType type,
+gboolean seed_gvalue_from_seed_value(JSContextRef ctx,
+									 JSValueRef val, GType type,
 									 GValue * gval, JSValueRef * exception);
-gboolean seed_gi_make_argument(JSValueRef value,
+
+gboolean seed_gi_make_argument(JSContextRef ctx,
+							   JSValueRef value,
 							   GITypeInfo * type_info,
 							   GArgument * arg, JSValueRef * exception);
-JSValueRef seed_gi_argument_make_js(GArgument * arg,
+JSValueRef seed_gi_argument_make_js(JSContextRef ctx,
+									GArgument * arg,
 									GITypeInfo * type_info,
 									JSValueRef * exception);
 
@@ -77,8 +85,10 @@ JSValueRef seed_value_from_float(gfloat val, JSValueRef * exception);
 gdouble seed_value_to_double(JSValueRef val, JSValueRef * exception);
 JSValueRef seed_value_from_double(gdouble val, JSValueRef * exception);
 
-gchar *seed_value_to_string(JSValueRef val, JSValueRef * exception);
-JSValueRef seed_value_from_string(const gchar * val, JSValueRef * exception);
+gchar *seed_value_to_string(JSContextRef ctx, 
+							JSValueRef val, JSValueRef * exception);
+JSValueRef seed_value_from_string(JSContextRef ctx, 
+								  const gchar * val, JSValueRef * exception);
 
 GObject *seed_value_to_object(JSValueRef val, JSValueRef * exception);
 JSValueRef seed_value_from_object(GObject * val, JSValueRef * exception);

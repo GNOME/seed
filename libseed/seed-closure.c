@@ -120,6 +120,9 @@ seed_handle_closure(ffi_cif * cif, void *result, void **args, void *userdata)
 	GITypeInfo *return_type;
 	GArgument rarg;
 	GArgument *return_arg = g_new0(GArgument, 1);
+	JSContextRef ctx = 
+		JSGlobalContextCreateInGroup(context_group, 0);
+													
 
 	SEED_NOTE(INVOCATION, "Invoking closure of type: %s \n",
 			  g_base_info_get_name((GIBaseInfo *) privates->info));
@@ -224,20 +227,20 @@ seed_handle_closure(ffi_cif * cif, void *result, void **args, void *userdata)
 		default:
 			arg->v_pointer = 0;
 		}
-		jsargs[i] = seed_gi_argument_make_js(arg, arg_type, 0);
+		jsargs[i] = seed_gi_argument_make_js(ctx, arg, arg_type, 0);
 		seed_gi_release_in_arg(g_arg_info_get_ownership_transfer(arg_info),
 							   arg_type, arg);
 		g_base_info_unref((GIBaseInfo *) arg_info);
 	}
 
 	return_value = (JSValueRef)
-		JSObjectCallAsFunction(privates->ctx,
+		JSObjectCallAsFunction(ctx,
 							   (JSObjectRef) privates->function, 0,
 							   num_args, jsargs, 0);
 
 	g_free(jsargs);
 
-	seed_gi_make_argument((JSValueRef) return_value, return_type,
+	seed_gi_make_argument(ctx, (JSValueRef) return_value, return_type,
 						  return_arg, 0);
 	switch (return_tag)
 	{
@@ -323,6 +326,7 @@ seed_handle_closure(ffi_cif * cif, void *result, void **args, void *userdata)
 		*(gpointer *) result = 0;
 	}
 
+	JSGlobalContextRelease((JSGlobalContextRef)ctx);
 	g_free(return_arg);
 }
 
@@ -342,7 +346,7 @@ SeedNativeClosure *seed_make_native_closure(JSContextRef ctx,
 	JSObjectRef cached;
 
 	cached =
-		(JSObjectRef) seed_object_get_property((JSObjectRef) function,
+		(JSObjectRef) seed_object_get_property(ctx, (JSObjectRef) function,
 											   "__seed_native_closure");
 	if (cached
 		&& JSValueIsObjectOfClass(ctx, cached,
@@ -360,7 +364,6 @@ SeedNativeClosure *seed_make_native_closure(JSContextRef ctx,
 	privates->info = info;
 	privates->function = function;
 	privates->cif = cif;
-	privates->ctx = ctx;
 
 	for (i = 0; i < num_args; i++)
 	{
@@ -377,11 +380,11 @@ SeedNativeClosure *seed_make_native_closure(JSContextRef ctx,
 				 get_ffi_type(return_type), arg_types);
 	ffi_prep_closure(closure, cif, seed_handle_closure, privates);
 
-	seed_object_set_property((JSObjectRef) function,
+	seed_object_set_property(ctx, (JSObjectRef) function,
 							 "__seed_native_closure",
 							 (JSValueRef) JSObjectMake(ctx,
-													   seed_native_callback_class,
-													   privates));
+								seed_native_callback_class,
+								   			   privates));
 
 	return privates;
 }
