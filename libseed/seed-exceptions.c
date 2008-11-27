@@ -113,7 +113,7 @@ guint seed_exception_get_line(JSContextRef ctx, JSValueRef e)
 	if (!JSValueIsObject(ctx, e))
 		return 0;
 	line = seed_object_get_property(ctx, (JSObjectRef) e, "line");
-	return seed_value_to_uint(line, 0);
+	return seed_value_to_uint(ctx, line, 0);
 }
 
 gchar *seed_exception_get_file(JSContextRef ctx, JSValueRef e)

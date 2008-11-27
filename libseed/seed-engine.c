@@ -190,7 +190,7 @@ seed_gobject_constructor_invoked(JSContextRef ctx,
 	if (!gobject)
 		ret = (JSObjectRef) JSValueMakeNull(ctx);
 	else
-		ret = (JSObjectRef) seed_value_from_object(gobject, exception);
+		ret = (JSObjectRef) seed_value_from_object(ctx, gobject, exception);
 
 	g_object_unref(gobject);
 
@@ -220,12 +220,12 @@ seed_gobject_equals(JSContextRef ctx,
 		return JSValueMakeNull(ctx);
 	}
 
-	this = seed_value_to_object((JSValueRef) this_object, exception);
-	that = seed_value_to_object(arguments[0], exception);
+	this = seed_value_to_object(ctx, (JSValueRef) this_object, exception);
+	that = seed_value_to_object(ctx, arguments[0], exception);
 
 	if (this == that)
-		return seed_value_from_boolean(1, 0);
-	return seed_value_from_boolean(0, 0);
+		return seed_value_from_boolean(ctx, 1, 0);
+	return seed_value_from_boolean(ctx, 0, 0);
 }
 
 static JSValueRef
@@ -237,9 +237,9 @@ seed_gobject_ref_count(JSContextRef ctx,
 {
 	GObject *this;
 
-	this = seed_value_to_object((JSValueRef) this_object, exception);
+	this = seed_value_to_object(ctx, (JSValueRef) this_object, exception);
 
-	return seed_value_from_int(this->ref_count, exception);
+	return seed_value_from_int(ctx, this->ref_count, exception);
 }
 
 static JSValueRef
@@ -269,7 +269,7 @@ seed_gobject_method_invoked(JSContextRef ctx,
 	// exception if we don't
 	// get it.
 	if (!
-		((object = seed_value_to_object(this_object, 0)) ||
+		((object = seed_value_to_object(ctx, this_object, 0)) ||
 		 (object = seed_pointer_get_pointer(ctx, this_object))))
 		instance_method = FALSE;
 
@@ -595,7 +595,7 @@ static void seed_gobject_finalize(JSObjectRef object)
 {
 	GObject *gobject;
 
-	gobject = seed_value_to_object((JSValueRef) object, 0);
+	gobject = (GObject *)JSObjectGetPrivate((JSObjectRef)object);
 	if (!gobject)
 	{
 		SEED_NOTE(FINALIZATION,
@@ -617,7 +617,7 @@ static void seed_gobject_initialize(JSContextRef ctx, JSObjectRef object)
 	GObject *gobject;
 	GIBaseInfo *base;
 
-	gobject = seed_value_to_object((JSValueRef) object, 0);
+	gobject = seed_value_to_object(ctx, (JSValueRef) object, 0);
 	if (!gobject)
 		return;
 
@@ -644,7 +644,7 @@ seed_gobject_get_property(JSContextRef context,
 	JSValueRef ret;
 	gint i, len;
 
-	b = seed_value_to_object((JSValueRef) object, exception);
+	b = seed_value_to_object(context, (JSValueRef) object, exception);
 	if (!b)
 		return 0;
 
@@ -742,7 +742,7 @@ seed_gobject_set_property(JSContextRef context,
 	if (JSValueIsNull(context, value))
 		return 0;
 
-	obj = seed_value_to_object(object, 0);
+	obj = seed_value_to_object(context, object, 0);
 
 	length = JSStringGetMaximumUTF8CStringSize(property_name);
 	cproperty_name = g_malloc(length * sizeof(gchar));
@@ -958,7 +958,8 @@ seed_gi_import_namespace(JSContextRef ctx,
 
 				seed_object_set_property(ctx, constructor_ref,
 										 "type",
-										 seed_value_from_int(type, exception));
+										 seed_value_from_int(ctx, type, 
+															 exception));
 
 				n_methods = g_object_info_get_n_methods((GIObjectInfo *) info);
 				for (i = 0; i < n_methods; i++)

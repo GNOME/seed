@@ -52,46 +52,99 @@ gboolean seed_gi_release_arg(GITransfer transfer,
 gboolean seed_gi_release_in_arg(GITransfer transfer,
 								GITypeInfo * type_info, GArgument * arg);
 
-gboolean seed_value_to_boolean(JSValueRef val, JSValueRef * exception);
-JSValueRef seed_value_from_boolean(gboolean val, JSValueRef * exception);
+gboolean seed_value_to_boolean(JSContextRef ctx,
+							   JSValueRef val,
+							   JSValueRef * exception);
 
-guint seed_value_to_uint(JSValueRef val, JSValueRef * exception);
-JSValueRef seed_value_from_uint(guint val, JSValueRef * exception);
+JSValueRef seed_value_from_boolean(JSContextRef ctx,
+								   gboolean val,
+								   JSValueRef * exception);
 
-gint seed_value_to_int(JSValueRef val, JSValueRef * exception);
-JSValueRef seed_value_from_int(gint val, JSValueRef * exception);
+guint seed_value_to_uint(JSContextRef ctx,
+						 JSValueRef val,
+						 JSValueRef * exception);
 
-gchar seed_value_to_char(JSValueRef val, JSValueRef * exception);
-JSValueRef seed_value_from_char(gchar val, JSValueRef * exception);
+JSValueRef seed_value_from_uint(JSContextRef ctx,
+								guint val,
+								JSValueRef * exception);
 
-guchar seed_value_to_uchar(JSValueRef val, JSValueRef * exception);
-JSValueRef seed_value_from_uchar(guchar val, JSValueRef * exception);
+gint seed_value_to_int(JSContextRef ctx,
+					   JSValueRef val,
+					   JSValueRef * exception);
 
-glong seed_value_to_long(JSValueRef val, JSValueRef * exception);
-JSValueRef seed_value_from_long(glong val, JSValueRef * exception);
+JSValueRef seed_value_from_int(JSContextRef ctx,
+							   gint val,
+							   JSValueRef * exception);
 
-gulong seed_value_to_ulong(JSValueRef val, JSValueRef * exception);
-JSValueRef seed_value_from_ulong(gulong val, JSValueRef * exception);
+gchar seed_value_to_char(JSContextRef ctx,
+						 JSValueRef val,
+						 JSValueRef * exception);
+JSValueRef seed_value_from_char(JSContextRef ctx,
+								gchar val,
+								JSValueRef * exception);
 
-gint64 seed_value_to_int64(JSValueRef val, JSValueRef * exception);
-JSValueRef seed_value_from_int64(gint64 val, JSValueRef * exception);
+guchar seed_value_to_uchar(JSContextRef ctx,
+						   JSValueRef val,
+						   JSValueRef * exception);
+JSValueRef seed_value_from_uchar(JSContextRef ctx,
+								 guchar val,
+								 JSValueRef * exception);
 
-guint64 seed_value_to_uint64(JSValueRef val, JSValueRef * exception);
-JSValueRef seed_value_from_uint64(guint64 val, JSValueRef * exception);
+glong seed_value_to_long(JSContextRef ctx,
+						 JSValueRef val,
+						 JSValueRef * exception);
+JSValueRef seed_value_from_long(JSContextRef ctx,
+								glong val,
+								JSValueRef * exception);
 
-gfloat seed_value_to_float(JSValueRef val, JSValueRef * exception);
-JSValueRef seed_value_from_float(gfloat val, JSValueRef * exception);
+gulong seed_value_to_ulong(JSContextRef ctx,
+						   JSValueRef val,
+						   JSValueRef * exception);
+JSValueRef seed_value_from_ulong(JSContextRef ctx,
+								 gulong val,
+								 JSValueRef * exception);
 
-gdouble seed_value_to_double(JSValueRef val, JSValueRef * exception);
-JSValueRef seed_value_from_double(gdouble val, JSValueRef * exception);
+gint64 seed_value_to_int64(JSContextRef ctx,
+						   JSValueRef val,
+						   JSValueRef * exception);
+JSValueRef seed_value_from_int64(JSContextRef ctx,
+								 gint64 val,
+								 JSValueRef * exception);
+
+guint64 seed_value_to_uint64(JSContextRef ctx,
+							 JSValueRef val,
+							 JSValueRef * exception);
+JSValueRef seed_value_from_uint64(JSContextRef ctx,
+								  guint64 val,
+								  JSValueRef * exception);
+
+gfloat seed_value_to_float(JSContextRef ctx,
+						   JSValueRef val,
+						   JSValueRef * exception);
+JSValueRef seed_value_from_float(JSContextRef ctx,
+								 gfloat val,
+								 JSValueRef * exception);
+
+gdouble seed_value_to_double(JSContextRef ctx,
+							 JSValueRef val,
+							 JSValueRef * exception);
+JSValueRef seed_value_from_double(JSContextRef ctx,
+								  gdouble val,
+								  JSValueRef * exception);
 
 gchar *seed_value_to_string(JSContextRef ctx, 
-							JSValueRef val, JSValueRef * exception);
+							JSValueRef val, 
+							JSValueRef * exception);
 JSValueRef seed_value_from_string(JSContextRef ctx, 
-								  const gchar * val, JSValueRef * exception);
+								  const gchar * val, 
+								  JSValueRef * exception);
 
-GObject *seed_value_to_object(JSValueRef val, JSValueRef * exception);
-JSValueRef seed_value_from_object(GObject * val, JSValueRef * exception);
+GObject *seed_value_to_object(JSContextRef ctx,
+							  JSValueRef val,
+							  JSValueRef * exception);
+JSValueRef seed_value_from_object(JSContextRef ctx,
+								  GObject * val,
+								  JSValueRef * exception);
 
 void seed_toggle_ref(gpointer data, GObject * object, gboolean is_last_ref);
 

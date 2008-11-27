@@ -3,7 +3,7 @@
 
 #define MAKE_ERROR_ENUM(name)											\
 	seed_object_set_property(namespace_ref, #name,						\
-							 seed_value_from_int(SQLITE_##name, 0))
+							 seed_value_from_int(eng->context, SQLITE_##name, 0))
 
 void seed_module_init(SeedEngine * eng)
 {

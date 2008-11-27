@@ -300,7 +300,7 @@ seed_fork(JSContextRef ctx,
 	pid_t child;
 
 	child = fork();
-	return seed_value_from_int(child, exception);
+	return seed_value_from_int(ctx, child, exception);
 }
 
 static gboolean seed_timeout_function(gpointer user_data)
@@ -336,7 +336,7 @@ seed_set_timeout(JSContextRef ctx,
 											arguments[0],
 											exception);
 
-	guint interval = seed_value_to_uint(arguments[1], exception);
+	guint interval = seed_value_to_uint(ctx, arguments[1], exception);
 	
 	timeout_privates * priv = g_slice_alloc0(sizeof(timeout_privates));
 	priv->context = ctx;
@@ -423,7 +423,7 @@ seed_quit(JSContextRef ctx,
 {
 	if (argumentCount != 0)
 	{
-		if (!seed_value_to_int(arguments[0], NULL))
+		if (!seed_value_to_int(ctx, arguments[0], NULL))
 			exit(EXIT_SUCCESS);
 		else
 			exit(EXIT_FAILURE);
@@ -475,7 +475,7 @@ void seed_init_builtins(SeedEngine * local_eng, gint * argc, gchar *** argv)
 														  (*argv)[i], 0), NULL);
 	}
 
-	argcref = seed_value_from_int(*argc, 0);
+	argcref = seed_value_from_int(local_eng->context, *argc, 0);
 
 	seed_object_set_property(local_eng->context, arrayObj, "length", argcref);
 	seed_object_set_property(local_eng->context, obj, "argv", arrayObj);
