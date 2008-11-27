@@ -1,4 +1,4 @@
-#include <seed.h>
+#include "../../libseed/seed.h"
 #include <sqlite3.h>
 
 #define MAKE_ERROR_ENUM(name)											\
