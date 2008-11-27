@@ -29,13 +29,14 @@ JSClassRef gobject_constructor_class;
 JSClassRef seed_callback_class;
 SeedEngine *eng;
 
-static gboolean seed_value_is_gobject(JSValueRef value)
+static gboolean seed_value_is_gobject(JSContextRef ctx,
+									  JSValueRef value)
 {
-	if (!JSValueIsObject(eng->context, value) ||
-		JSValueIsNull(eng->context, value))
+	if (!JSValueIsObject(ctx, value) ||
+		JSValueIsNull(ctx, value))
 		return FALSE;
 
-	return JSValueIsObjectOfClass(eng->context, value, gobject_class);
+	return JSValueIsObjectOfClass(ctx, value, gobject_class);
 }
 
 void seed_toggle_ref(gpointer data, GObject * object, gboolean is_last_ref)
@@ -771,7 +772,7 @@ seed_gvalue_from_seed_value(JSContextRef ctx,
 	}
 	else if (g_type_is_a(type, G_TYPE_OBJECT)
 			 && (JSValueIsNull(ctx, val)
-				 || seed_value_is_gobject(val)))
+				 || seed_value_is_gobject(ctx, val)))
 	{
 		GObject *o = seed_value_to_object(ctx,
 										  val, exception);
@@ -1207,7 +1208,7 @@ GObject *seed_value_to_object(JSContextRef ctx,
 	   needs testing at higher level if value can be null (through GI) */
 	if (JSValueIsNull(ctx, val))
 		return 0;
-	if (!seed_value_is_gobject(val))
+	if (!seed_value_is_gobject(ctx, val))
 	{
 		seed_make_exception(ctx, exception, "ConversionError",
 							"Attempt to convert from"
