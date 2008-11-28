@@ -31,8 +31,6 @@ JSClassRef seed_struct_constructor_class;
 
 JSContextGroupRef context_group;
 
-GParamSpec **global_prop_cache;
-
 gchar *glib_message = 0;
 
 guint seed_debug_flags = 0;		/* global seed debug flag */
@@ -356,6 +354,7 @@ seed_gobject_method_invoked(JSContextRef ctx,
 		{
 			GIBaseInfo *interface;
 			GIInfoType type;
+			gboolean sunk = TRUE;
 
 			if (tag == GI_TYPE_TAG_INTERFACE)
 			{
@@ -375,13 +374,20 @@ seed_gobject_method_invoked(JSContextRef ctx,
 						interface_type == GI_INFO_TYPE_INTERFACE)
 					{
 						if (G_IS_OBJECT(retval.v_pointer))
+						{
+							sunk =
+							g_object_is_floating(G_OBJECT(retval.v_pointer));
 							g_object_ref_sink(G_OBJECT(retval.v_pointer));
+						}
 					}
 
 				}
 			}
 			retval_ref =
 				seed_gi_argument_make_js(ctx, &retval, type_info, exception);
+
+			if (!sunk)
+				g_object_unref(G_OBJECT(retval.v_pointer));
 			
 			seed_gi_release_arg(
 				g_callable_info_get_caller_owns((GICallableInfo*) info),
