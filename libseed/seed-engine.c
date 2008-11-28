@@ -1069,6 +1069,7 @@ seed_gi_import_namespace(JSContextRef ctx,
 	JSStringRelease(extension_script);
 
 	g_free((gchar *) namespace);
+	g_free(jsextension);
 
 	return JSValueMakeNull(ctx);
 }
