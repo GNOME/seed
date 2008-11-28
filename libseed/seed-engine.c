@@ -242,6 +242,14 @@ seed_gobject_ref_count(JSContextRef ctx,
 	return seed_value_from_int(ctx, this->ref_count, exception);
 }
 
+static void
+seed_gobject_method_finalize(JSObjectRef method)
+{
+	GIBaseInfo * info = (GIBaseInfo *)JSObjectGetPrivate(method);
+	if (info)
+		g_base_info_unref(info);
+}
+
 static JSValueRef
 seed_gobject_method_invoked(JSContextRef ctx,
 							JSObjectRef function,
@@ -1110,7 +1118,7 @@ JSClassDefinition gobject_method_def = {
 	NULL,						/* Static Values */
 	NULL,						/* Static Functions */
 	NULL,
-	NULL,						/* Finalize */
+	seed_gobject_method_finalize,						/* Finalize */
 	NULL,						/* Has Property */
 	NULL,						/* Get Property */
 	NULL,						/* Set Property */
