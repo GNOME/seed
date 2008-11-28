@@ -95,7 +95,7 @@ function select_actor(actor)
     }
     
     properties.text.text = actor.text;
-    var pfd = Pango.font_description_from_string(actor.get_font_name());
+    var pfd = Pango.Font.description_from_string(actor.get_font_name());
 
     properties.size_entry.text = pfd.to_string().match(new RegExp("[0-9]+$"),"");
     properties.font_combo.set_active(font_list.indexOf(pfd.to_string().replace(new RegExp(" [0-9]+$"),"")));

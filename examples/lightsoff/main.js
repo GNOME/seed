@@ -23,7 +23,7 @@ Seed.include("board.js");
 Seed.include("menu.js");
 Seed.include("arrow.js");
 
-var gconf_client = GConf.client_get_default();
+var gconf_client = GConf.Client.get_default();
 
 var black = Clutter.Color._new();
 Clutter.color_parse("Black", black);

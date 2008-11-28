@@ -180,7 +180,7 @@ IDESourceViewType = {
         this.set_auto_indent(true);
         this.set_indent_width(4);
         
-        this.modify_font(Pango.font_description_from_string("monospace 10"));
+        this.modify_font(Pango.Font.description_from_string("monospace 10"));
         
         var epb = new Gtk.Image({"file": "./exception.svg"});
         this.set_mark_category_pixbuf("exception", epb.pixbuf);
@@ -193,8 +193,8 @@ IDESourceViewType = {
         this.set_buffer(buf);
         buf.signal.changed.connect(this.text_changed, this);
         
-        var gconf_client = GConf.client_get_default();
-        var source_style_mgr = GtkSource.style_scheme_manager_get_default();
+        var gconf_client = GConf.Client.get_default();
+        var source_style_mgr = GtkSource.SourceStyleSchemeManager.get_default();
         var gedit_style = gconf_client.get_string("/apps/gedit-2/preferences/editor/colors/scheme");
         var source_style = source_style_mgr.get_scheme(gedit_style);
         buf.style_scheme = source_style;

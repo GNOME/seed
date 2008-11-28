@@ -6,7 +6,7 @@
  * Copyright (C) Robert Carr 2008 <carrr@rpi.edu>
  *
  * libseed is free software: you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the
+ * under the terms of the GNU Gener1al Public License as published by the
  * Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
