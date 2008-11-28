@@ -966,15 +966,15 @@ seed_gi_import_namespace(JSContextRef ctx,
 				{
 					finfo = g_object_info_get_method((GIObjectInfo *) info, i);
 					flags = g_function_info_get_flags(finfo);
-//					if (flags & GI_FUNCTION_IS_CONSTRUCTOR)
-//					{
+					if (!(flags & GI_FUNCTION_IS_METHOD))
+					{
 						seed_gobject_define_property_from_function_info
 							(ctx, finfo, constructor_ref, FALSE);
-//					}
-//					else
-//					{
-//						g_base_info_unref((GIBaseInfo *) finfo);
-//					}
+					}
+					else
+					{
+						g_base_info_unref((GIBaseInfo *) finfo);
+					}
 				}
 
 				seed_object_set_property(ctx, namespace_ref,
