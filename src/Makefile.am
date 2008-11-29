@@ -10,7 +10,8 @@ AM_CPPFLAGS = \
 
 AM_CFLAGS =\
 	 -Wall\
-	 -g
+	 $(SEED_DEBUG_CFLAGS)\
+	 $(SEED_PROFILE_CFLAGS)
 
 bin_PROGRAMS = seed
 
@@ -18,7 +19,7 @@ seed_SOURCES = \
 	main.c
 
 seed_LDFLAGS = \
-	-L../libseed/.libs -lseed -lreadline
+	-L../libseed/.libs -lseed -lreadline $(SEED_PROFILE_LDFLAGS)
 
 seed_LDADD = \
 	$(SEED_LIBS) \

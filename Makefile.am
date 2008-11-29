@@ -7,7 +7,7 @@ SUBDIRS = po \
 	extensions\
 	doc\
 	examples\
-        modules \
+	modules \
 	tests
 	
 
@@ -24,7 +24,6 @@ seeddoc_DATA = \
 pkgconfig_DATA = seed.pc 
 
 pkgconfigdir = $(libdir)/pkgconfig
-	
 
 EXTRA_DIST = $(seeddoc_DATA) \
 	$(pkgconfig_DATA)
@@ -40,4 +39,11 @@ dist-hook:
 
 test:
 	cd tests ; ./run-tests.py
+
+profile-reset:
+	find -name '*.gcda' -delete
+
+profile: profile-reset test
+	cp libseed/*.c libseed/.libs/
+	cd libseed/.libs ; gcov *.c
 

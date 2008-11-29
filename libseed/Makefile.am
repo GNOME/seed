@@ -1,4 +1,3 @@
-
 lib_LTLIBRARIES = \
 	libseed.la
 
@@ -39,7 +38,8 @@ seedheadersdir = \
 EXTRA_DIST = \
 	$(seedheaders_HEADERS)
 
-LIBSEED_CFLAGS+=-Werror $(SEED_DEBUG_CFLAGS)
+LIBSEED_CFLAGS+=-Werror $(SEED_DEBUG_CFLAGS) $(SEED_PROFILE_CFLAGS)
+AM_LDFLAGS=$(SEED_PROFILE_LDFLAGS)
 
 ## File created by the gnome-build tools
 

@@ -1,6 +1,3 @@
-dnl Process this file with autoconf to produce a configure script.
-dnl Created by Anjuta application wizard.
-
 AC_INIT(seed, 0.1.2)
 
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
@@ -12,11 +9,7 @@ AC_PROG_CC
 AM_PROG_CC_STDC
 AC_HEADER_STDC
 
-AM_GCONF_SOURCE_2
-
-dnl ***************************************************************************
-dnl Internationalization
-dnl ***************************************************************************
+dnl =====================Internationalization==================================
 GETTEXT_PACKAGE=seed
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [GETTEXT package name])
@@ -25,7 +18,7 @@ IT_PROG_INTLTOOL([0.35.0])
 
 AM_PROG_LIBTOOL
 
-dnl libffi
+dnl ============================libffi=========================================
 PKG_CHECK_MODULES(libffi, libffi, have_ffi_pkgconfig=yes, have_ffi_pkgconfig=no)
 
 if test x"$have_ffi_pkgconfig" = xno ; then
@@ -61,36 +54,51 @@ if test x"$have_ffi_pkgconfig" = xno ; then
   AC_SUBST(FFI_CFLAGS)
 fi
 
-dnl readline
+dnl ==========================libreadline======================================
 AC_CHECK_LIB(readline, readline,
     AC_DEFINE(HAVE_LIBREADLINE, 1, [have readline]),
     AC_MSG_ERROR([readline not found]))
 
-m4_define([debug_default], "yes")
-
+dnl =============================Debug=========================================
+AC_MSG_CHECKING([whether to do a debug build])
 AC_ARG_ENABLE(debug,
-              AC_HELP_STRING([--enable-debug=@<:@no/yes@:>@],
-                             [build debugging code. This does not actually enable debugging, it only builds the code in. Pass --seed-debug=(misc/finalization/initialization/signal/all) to enable debugging. @<:@default=debug_default@:>@]),
-,
-              enable_debug=debug_default)
+              AC_HELP_STRING([--enable-debug],
+                             [build debugging code. This does not actually enable debugging, it only builds the code in. Pass --seed-debug=(misc/finalization/initialization/signal/all) to enable debugging. [default=no]]),
+              [enable_debug="yes"],[enable_debug="no"])
+AC_MSG_RESULT([$enable_debug])
 
 if test "x$enable_debug" = "xyes"; then
-  test "$cflags_set" = set || CFLAGS="$CFLAGS -g"
-  SEED_DEBUG_CFLAGS="-DSEED_ENABLE_DEBUG"
+  SEED_DEBUG_CFLAGS="-DSEED_ENABLE_DEBUG -g -O0"
 else
-  if test "x$enable_debug" = "xno"; then
-    SEED_DEBUG_CFLAGS="-DG_DISABLE_ASSERT -DG_DISABLE_CHECKS -DG_DISABLE_CAST_CHECKS"
-  fi
+  SEED_DEBUG_CFLAGS="-DG_DISABLE_ASSERT -DG_DISABLE_CHECKS -DG_DISABLE_CAST_CHECKS -g -O0"
 fi
 
 AC_SUBST(SEED_DEBUG_CFLAGS)
 
+dnl ===========================Profiling=======================================
+AC_MSG_CHECKING([whether to enable profiling])
+AC_ARG_ENABLE(profile,
+              AC_HELP_STRING([--enable-profile],
+                             [turn on profiling [default=no]]),
+              [enable_profile="yes"],[enable_profile="no"])
+AC_MSG_RESULT([$enable_profile])
+
+if test "x$enable_profile" = "xyes"; then
+  SEED_PROFILE_CFLAGS="-fprofile-arcs -ftest-coverage"
+  SEED_PROFILE_LDFLAGS="-lgcov"
+fi
+
+AC_SUBST(SEED_PROFILE_CFLAGS)
+AC_SUBST(SEED_PROFILE_LDFLAGS)
+
+dnl ===========================Packages========================================
 PKG_CHECK_MODULES(SEED, gobject-introspection-1.0 webkit-1.0)
 PKG_CHECK_MODULES(LIBSEED, gobject-introspection-1.0 webkit-1.0)
 
 AC_CONFIG_FILES([
 seed.pc])
 
+dnl =============================Output========================================
 AC_OUTPUT([
 Makefile
 libseed/Makefile
