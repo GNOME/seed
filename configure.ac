@@ -84,7 +84,7 @@ AC_ARG_ENABLE(profile,
 AC_MSG_RESULT([$enable_profile])
 
 if test "x$enable_profile" = "xyes"; then
-  SEED_PROFILE_CFLAGS="-fprofile-arcs -ftest-coverage"
+  SEED_PROFILE_CFLAGS="-fprofile-arcs -ftest-coverage -O0"
   SEED_PROFILE_LDFLAGS="-lgcov"
 fi
 

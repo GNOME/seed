@@ -45,5 +45,5 @@ profile-reset:
 
 profile: profile-reset test
 	cp libseed/*.c libseed/.libs/
-	cd libseed/.libs ; gcov *.c
+	cd libseed/.libs ; gcov -abfu *.c
 
