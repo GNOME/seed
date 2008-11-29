@@ -38,6 +38,7 @@ EXTRA_DIST = \
     native-closure.js \
     gdk-event.js \
     signal-connect.js \
+    struct-functions.js \
     make-test.py
 
 

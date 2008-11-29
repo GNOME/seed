@@ -40,16 +40,16 @@ function browse(url_entry)
 	this.open(url_entry.text);
 }
 
-// Being able to make new tabs is blocking on a GtkWebkit bug.
-// Yes this is why you've never been able to use open in new window in epiphany
-// webkit.
 function new_tab(browser_view, browser_frame, new_frame)
 {
-	//new_frame = new WebKit.WebView();
-	//Seed.print(browser_view);
-	//Seed.print(browser_frame);
-	//Seed.print(new_frame);
-	new_frame = this.create_tab("");
+	new_frame = new WebKit.WebView();
+	new_frame.signal.web_view_ready.connect(new_tab_ready, this);
+	return new_frame;
+}
+
+function new_tab_ready(browser_view)
+{
+	this.create_tab_with_webview(0, browser_view);	
 	return true;
 }
 
@@ -89,10 +89,15 @@ function create_toolbar(browser_view)
 
 function create_tab(loc)
 {
+	var browser_view = new WebKit.WebView();
+	return create_tab_with_webview(loc, browser_view);
+}
+
+function create_tab_with_webview(loc, browser_view)
+{
 	var tab = new Gtk.VBox();
 	
 	var browser_title = new Gtk.Label({label:"Untitled"});
-	var browser_view = new WebKit.WebView();
 	
 	var url_entry = new Gtk.Entry();
 	url_entry.signal.activate.connect(browse, browser_view);
@@ -100,8 +105,11 @@ function create_tab(loc)
 	browser_view.set_scroll_adjustments(null,null);
 	browser_view.signal.title_changed.connect(title_changed, browser_title);
 	browser_view.signal.load_committed.connect(url_changed, url_entry);
-	//browser_view.signal.create_web_view.connect(new_tab, this);
-	browser_view.open(loc);
+	browser_view.signal.create_web_view.connect(new_tab, this);
+	browser_view.signal.web_view_ready.connect(new_tab_ready, this);
+	
+	if(loc != 0)
+		browser_view.open(loc);
 	
 	var toolbar = create_toolbar(browser_view);
 	toolbar.pack_start(url_entry, true, true);
@@ -120,9 +128,11 @@ function create_tab(loc)
 	tab_header.pack_start(close_button);
 	tab_header.show_all();
 	
-	this.append_page(tab, tab_header);
-	this.set_tab_reorderable(tab, true);
-	this.show_all();
+	tabs.append_page(tab, tab_header);
+	tabs.set_tab_reorderable(tab, true);
+	tabs.show_all();
+	
+	return tabs;
 }
 
 function create_ui()
@@ -131,6 +141,7 @@ function create_ui()
 	
 	tabs = new Gtk.Notebook();
 	tabs.create_tab = create_tab;
+	tabs.create_tab_with_webview = create_tab_with_webview;
 	
 	tabs.create_tab("http://www.reddit.com/");
 	tabs.create_tab("http://www.google.com/");
