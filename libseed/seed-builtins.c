@@ -303,50 +303,6 @@ seed_fork(JSContextRef ctx,
 	return seed_value_from_int(ctx, child, exception);
 }
 
-static gboolean seed_timeout_function(gpointer user_data)
-{
-	// Evaluate timeout script
-
-	timeout_privates * priv = (timeout_privates *)user_data;
-	JSEvaluateScript(priv->context, priv->script, NULL, NULL, 0, NULL);
-	JSStringRelease(priv->script);
-	g_slice_free1(sizeof(timeout_privates), priv);
-
-	return FALSE;				// remove timeout from main loop
-}
-
-static JSValueRef
-seed_set_timeout(JSContextRef ctx,
-				 JSObjectRef function,
-				 JSObjectRef this_object,
-				 size_t argumentCount,
-				 const JSValueRef arguments[], JSValueRef * exception)
-{
-	if (argumentCount != 2)
-	{
-		gchar *mes =
-			g_strdup_printf("Seed.setTimeout expected 2 arguments, "
-							"got %d", argumentCount);
-		seed_make_exception(ctx, exception, "ArgumentError", mes);
-		g_free(mes);
-		return JSValueMakeBoolean(ctx, 0);
-	}
-
-	JSStringRef jsstr = JSValueToStringCopy(ctx,
-											arguments[0],
-											exception);
-
-	guint interval = seed_value_to_uint(ctx, arguments[1], exception);
-	
-	timeout_privates * priv = g_slice_alloc0(sizeof(timeout_privates));
-	priv->context = ctx;
-	priv->script = jsstr;
-	
-	g_timeout_add(interval, &seed_timeout_function, priv);
-
-	return JSValueMakeBoolean(ctx, 1);
-}
-
 static JSValueRef
 seed_closure(JSContextRef ctx,
 			 JSObjectRef function,
@@ -457,8 +413,6 @@ void seed_init_builtins(SeedEngine * local_eng, gint * argc, gchar *** argv)
 						 "fork", &seed_fork, obj);
 	seed_create_function(local_eng->context, 
 						 "closure", &seed_closure, obj);
-	seed_create_function(local_eng->context, 
-						 "setTimeout", &seed_set_timeout, obj);
 	seed_create_function(local_eng->context, 
 						 "closure_native", &seed_closure_native, obj);
 	seed_create_function(local_eng->context, 
