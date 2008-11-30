@@ -8,7 +8,9 @@ libexample_la_LDFLAGS = \
 	`pkg-config --libs seed`
 
 AM_CPPFLAGS = \
-	`pkg-config --cflags seed` -g
+	-I../../libseed/ \
+	`pkg-config --cflags seed` \
+	`pkg-config --cflags glib-2.0` -g
 
 libdir = ${exec_prefix}/lib/seed
 
