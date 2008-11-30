@@ -60,12 +60,10 @@ AC_CHECK_LIB(readline, readline,
     AC_MSG_ERROR([readline not found]))
 
 dnl =============================Debug=========================================
-AC_MSG_CHECKING([whether to do a debug build])
 AC_ARG_ENABLE(debug,
               AC_HELP_STRING([--enable-debug],
                              [build debugging code. This does not actually enable debugging, it only builds the code in. Pass --seed-debug=(misc/finalization/initialization/signal/all) to enable debugging. [default=no]]),
               [enable_debug="yes"],[enable_debug="no"])
-AC_MSG_RESULT([$enable_debug])
 
 if test "x$enable_debug" = "xyes"; then
   SEED_DEBUG_CFLAGS="-DSEED_ENABLE_DEBUG -g -O0"
@@ -76,12 +74,10 @@ fi
 AC_SUBST(SEED_DEBUG_CFLAGS)
 
 dnl ===========================Profiling=======================================
-AC_MSG_CHECKING([whether to enable profiling])
 AC_ARG_ENABLE(profile,
               AC_HELP_STRING([--enable-profile],
                              [turn on profiling [default=no]]),
               [enable_profile="yes"],[enable_profile="no"])
-AC_MSG_RESULT([$enable_profile])
 
 if test "x$enable_profile" = "xyes"; then
   SEED_PROFILE_CFLAGS="-fprofile-arcs -ftest-coverage -O0"
@@ -116,3 +112,9 @@ modules/Makefile
 modules/example/Makefile
 modules/sqlite/Makefile
 ])
+
+echo "
+Build Configuration:
+   Debug......................$enable_debug
+   Profiling/Coverage:........$enable_profile
+"
