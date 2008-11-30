@@ -39,6 +39,10 @@ EXTRA_DIST = \
     gdk-event.js \
     signal-connect.js \
     struct-functions.js \
+    check-syntax.js \
+    fork.js \
+    quit.js \
+    introspect.js \
     make-test.py
 
 

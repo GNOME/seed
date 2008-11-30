@@ -1,6 +1,7 @@
 SUBDIRS = ide \
           lightsoff \
-          clutter-shader
+          clutter-shader \
+          glib
           
 examplesdir=$(datadir)/doc/seed/examples
 examples_DATA = \

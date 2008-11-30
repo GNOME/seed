@@ -108,6 +108,7 @@ examples/Makefile
 examples/ide/Makefile
 examples/lightsoff/Makefile
 examples/clutter-shader/Makefile
+examples/glib/Makefile
 modules/Makefile
 modules/example/Makefile
 modules/sqlite/Makefile
