@@ -47,3 +47,7 @@ profile: profile-reset test
 	cp libseed/*.c libseed/.libs/
 	cd libseed/.libs ; gcov *.c
 
+profile-gui: profile
+	lcov --directory libseed/.libs --capture --output-file seed.info
+	cp seed.info /tmp/
+	cd /tmp ; genhtml seed.info ; gnome-open index.html

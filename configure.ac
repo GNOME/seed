@@ -116,5 +116,5 @@ modules/sqlite/Makefile
 echo "
 Build Configuration:
    Debug......................$enable_debug
-   Profiling/Coverage:........$enable_profile
+   Profiling/Coverage.........$enable_profile
 "
