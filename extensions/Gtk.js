@@ -21,6 +21,6 @@
 						       padding, position);
 			 }
 		 }
-	 Seed.prototype(Gtk.VBox).pack = pack;
-	 Seed.prototype(Gtk.HBox).pack = pack;
+	 Gtk.VBox.prototype.pack = pack;
+	 Gtk.HBox.prototype.pack = pack;
  }).apply();

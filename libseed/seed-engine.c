@@ -33,6 +33,8 @@ JSContextGroupRef context_group;
 
 gchar *glib_message = 0;
 
+GIBaseInfo * base_info_info = 0;
+
 guint seed_debug_flags = 0;		/* global seed debug flag */
 
 #ifdef SEED_ENABLE_DEBUG
@@ -42,7 +44,9 @@ static const GDebugKey seed_debug_keys[] = {
 	{"initialization", SEED_DEBUG_INITIALIZATION},
 	{"signal", SEED_DEBUG_SIGNAL},
 	{"invocation", SEED_DEBUG_INVOCATION},
-	{"structs", SEED_DEBUG_STRUCTS}
+	{"structs", SEED_DEBUG_STRUCTS},
+	{"construction", SEED_DEBUG_CONSTRUCTION},
+	{"gtype", SEED_DEBUG_GTYPE}
 };
 #endif							/* SEED_ENABLE_DEBUG */
 
@@ -150,7 +154,8 @@ seed_gobject_constructor_invoked(JSContextRef ctx,
 
 			g_free(mes);
 			g_free(params);
-
+			
+			JSPropertyNameArrayRelease(jsprops);
 			return (JSObjectRef) JSValueMakeNull(ctx);
 		}
 		// TODO: exception handling
@@ -171,6 +176,7 @@ seed_gobject_constructor_invoked(JSContextRef ctx,
 
 			g_free(prop_name);
 			g_free(params);
+			JSPropertyNameArrayRelease(jsprops);
 			return 0;
 		}
 		params[i].name = prop_name;
@@ -448,12 +454,13 @@ seed_gobject_define_property_from_function_info(JSContextRef ctx,
 												gboolean instance)
 {
 	GIFunctionInfoFlags flags;
-	JSValueRef method_ref;
+	JSObjectRef method_ref;
 	const gchar *name;
 
-	// if (g_base_info_is_deprecated ((GIBaseInfo *) info))
-	// g_printf("Not defining deprecated symbol: %s \n",
-	// g_base_info_get_name((GIBaseInfo *)info));
+	//if (g_base_info_is_deprecated ((GIBaseInfo *) info))
+	//g_printf("Not defining deprecated symbol: %s \n",
+	//g_base_info_get_name((GIBaseInfo *)info));
+	
 
 	flags = g_function_info_get_flags(info);
 
@@ -468,6 +475,8 @@ seed_gobject_define_property_from_function_info(JSContextRef ctx,
 	if (!strcmp(name, "new"))
 		name = "_new";
 	seed_object_set_property(ctx, object, name, method_ref);
+	seed_object_set_property(ctx, method_ref, "info", 
+	        	seed_make_struct(ctx, info, base_info_info));
 
 }
 
@@ -994,6 +1003,9 @@ seed_gi_import_namespace(JSContextRef ctx,
 				seed_object_set_property(ctx, namespace_ref,
 										 g_base_info_get_name
 										 (info), constructor_ref);
+				seed_object_set_property(ctx, constructor_ref,
+										 "prototype",
+          		    seed_gobject_get_prototype_for_gtype(type));
 				JSValueProtect(ctx, (JSValueRef) constructor_ref);
 			}
 		}
@@ -1341,12 +1353,17 @@ SeedEngine * seed_init(gint * argc, gchar *** argv)
 	seed_gtype_init(eng);
 
 	defaults_script =
-		JSStringCreateWithUTF8CString("try{Seed.include(\"/usr/share/"
+		JSStringCreateWithUTF8CString("Seed.import_namespace(\""
+									  "GIRepository\");"
+                                      "try{Seed.include(\"/usr/share/"
 									  "seed/Seed.js\");} catch(e){}"
 									  "Seed.include(\"/usr/local/share"
 									  "/seed/Seed.js\");");
 	JSEvaluateScript(eng->context, defaults_script, NULL, NULL, 0, NULL);
 	JSStringRelease(defaults_script);
+	
+	base_info_info = g_irepository_find_by_name(0, "GIRepository",
+												"IBaseInfo");
 
 	return eng;
 }

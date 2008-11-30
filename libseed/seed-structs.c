@@ -39,7 +39,7 @@ static void seed_pointer_finalize(JSObjectRef object)
 		(seed_struct_privates *) JSObjectGetPrivate(object);
 	
 	SEED_NOTE(STRUCTS, "Finalizing seed_pointer object %p. with "
-			  "priv->free_pointer = %d with type: %s\n", 
+			  "priv->free_pointer = %d with type: %s", 
 			  priv->pointer,
 			  priv->free_pointer,
 			  priv->info ? g_base_info_get_name(priv->info) : "[generic]");
@@ -216,7 +216,8 @@ seed_struct_set_property(JSContextRef context,
 	GIFieldInfo * field;
 	GITypeInfo * field_type;
 	gchar * cproperty_name;
-	seed_struct_privates *priv = (seed_struct_privates *)JSObjectGetPrivate(object);
+	seed_struct_privates *priv = 
+		(seed_struct_privates *)JSObjectGetPrivate(object);
 	gboolean ret;
 
 	length = JSStringGetMaximumUTF8CStringSize(property_name);
@@ -408,7 +409,7 @@ JSObjectRef seed_make_union(JSContextRef ctx, gpointer younion,
 	seed_struct_privates *priv = g_malloc(sizeof(seed_struct_privates));
 
 	priv->pointer = younion;
-	priv->info = info;
+	priv->info = info ? g_base_info_ref(info) : 0;
 	priv->free_pointer = FALSE;
 
 	object = JSObjectMake(ctx, seed_union_class, priv);
@@ -440,7 +441,7 @@ JSObjectRef seed_make_boxed(JSContextRef ctx,
 	gint i, n_methods;
 	seed_struct_privates *priv = g_malloc(sizeof(seed_struct_privates));
 
-	priv->info = info;
+	priv->info = info ? g_base_info_ref(info) : 0;
 	priv->pointer = boxed;
 	// Boxed finalize handler handles freeing.
 	priv->free_pointer = FALSE;
@@ -460,7 +461,7 @@ JSObjectRef seed_make_struct(JSContextRef ctx,
 	gint i, n_methods;
 	seed_struct_privates *priv = g_malloc(sizeof(seed_struct_privates));
 
-	priv->info = info;
+	priv->info = info ? g_base_info_ref(info) : 0;
 	priv->pointer = strukt;
 	priv->free_pointer = FALSE;
 
@@ -513,6 +514,9 @@ seed_construct_struct_type_with_parameters(JSContextRef ctx,
 	JSValueRef jsprop_value;
 	GArgument field_value;
 	gchar * prop_name;
+	
+	SEED_NOTE(CONSTRUCTION, "Constructing struct/union of type: %s \n",
+			  g_base_info_get_name(info));
 
 	if (type == GI_INFO_TYPE_STRUCT)
 	{
@@ -562,7 +566,7 @@ seed_construct_struct_type_with_parameters(JSContextRef ctx,
 			seed_make_exception(ctx, exception, "PropertyError", mes);
 			
 			g_free(mes);
-			
+			JSPropertyNameArrayRelease(jsprops);			
 			return (JSObjectRef) JSValueMakeNull(ctx);
 		}
 		field_type = g_field_info_get_type(field);

@@ -19,9 +19,9 @@ function oscillator(freq)
 	// No actual introspection data for audiotestsrc, so can not
 	// instantiate one with a constructor, have to use element_factory,
 	// likewise for the others.
-	this.audiosrc = Gst.element_factory_make("audiotestsrc", "audio");
-	this.audiosink = Gst.element_factory_make("alsasink", "sink");
-	this.volume = Gst.element_factory_make("volume", "vcontrol");
+	this.audiosrc = Gst.ElementFactory.make("audiotestsrc", "audio");
+	this.audiosink = Gst.ElementFactory.make("alsasink", "sink");
+	this.volume = Gst.ElementFactory.make("volume", "vcontrol");
 	this.audiosrc.freq = freq;
 	
 	this.pipeline.add(this.audiosrc);

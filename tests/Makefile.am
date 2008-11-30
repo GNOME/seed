@@ -1,12 +1,16 @@
 EXTRA_DIST = \
-	argv.js \
+    argv.js \
+    closure-finalization.js \
     compare.js \
     struct-nested-set.js \
     struct-constructor.js \
+    function-info.js \
+    object-info.js \
     constructor-args.js \
     signal-this.js \
     struct-set-member.js \
     c-module.js \
+    constructor-prototype.js \
     struct-offsets.js \
     gtype-typerror.js \
     gtype-signal.js \

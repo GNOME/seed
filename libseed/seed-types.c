@@ -251,6 +251,9 @@ seed_gi_make_argument(JSContextRef ctx,
 	case GI_TYPE_TAG_UTF8:
 		arg->v_string = seed_value_to_string(ctx, value, exception);
 		break;
+	case GI_TYPE_TAG_GTYPE:
+		arg->v_int = seed_value_to_int(ctx, value, exception);
+		break;
 	case GI_TYPE_TAG_INTERFACE:
 		{
 			GIBaseInfo *interface;
@@ -448,6 +451,8 @@ seed_gi_argument_make_js(JSContextRef ctx,
 		return seed_value_from_double(ctx, arg->v_double, exception);
 	case GI_TYPE_TAG_UTF8:
 		return seed_value_from_string(ctx, arg->v_string, exception);
+	case GI_TYPE_TAG_GTYPE:
+		return seed_value_from_int(ctx, arg->v_int, exception);
 	case GI_TYPE_TAG_INTERFACE:
 		{
 			GIBaseInfo *interface;

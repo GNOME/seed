@@ -278,7 +278,7 @@ seed_gsignal_method_invoked(JSContextRef ctx,
 							" as first argument");
 		return (JSObjectRef) JSValueMakeNull(ctx);
 	}
-
+	
 	/* Signal name */
 	jsname = seed_object_get_property(ctx, (JSObjectRef) arguments[0], "name");
 	/* seed_value_to_string can handle non strings, however the kind
@@ -296,6 +296,10 @@ seed_gsignal_method_invoked(JSContextRef ctx,
 	/* Type to install on. Comes from class. */
 	jstype = seed_object_get_property(ctx, thisObject, "type");
 	itype = seed_value_to_int(ctx, jstype, exception);
+	
+	SEED_NOTE(GTYPE, "Installing signal with name: %s on type: %s",
+			  name,
+			  g_type_name(itype));
 
 	/* Signal flags */
 	jsflags = seed_object_get_property(ctx, 
@@ -368,6 +372,9 @@ seed_handle_class_init_closure(ffi_cif * cif,
 	type = (GType) JSObjectGetPrivate(*(JSObjectRef *) args[1]);
 	jsargs[0] = seed_make_pointer(ctx, *(gpointer *) args[0]);
 	jsargs[1] = seed_gobject_get_prototype_for_gtype(type);
+	
+	SEED_NOTE(GTYPE, "Marshalling class init closure for type: %s",
+			  g_type_name(type));
 
 	// TODO: 
 	// Should probably have a custom type for class, and have it auto convert.
@@ -408,6 +415,10 @@ seed_handle_instance_init_closure(ffi_cif * cif,
 	jsargs = seed_make_pointer(ctx, *(gpointer *) args[1]);
 	this_object =
 		(JSObjectRef) seed_value_from_object(ctx, *(GObject **) args[0], 0);
+	
+	SEED_NOTE(GTYPE, "Handling instance init closure for: %p with type: %s",
+			  *(GObject **)args[0],
+			  g_type_name(G_OBJECT_TYPE(*(GObject **)args[0])));
 
 	JSObjectCallAsFunction(ctx, function, this_object, 1, &jsargs,
 						   &exception);
@@ -529,7 +540,7 @@ seed_gtype_constructor_invoked(JSContextRef ctx,
 	if (!JSValueIsNumber(ctx, parent_ref))
 	{
 		seed_make_exception(ctx, exception, "TypeError",
-							"GType constructor expected" " GType for parent");
+							"GType constructor expected GType for parent");
 
 		return (JSObjectRef) JSValueMakeNull(ctx);
 	}
@@ -548,6 +559,9 @@ seed_gtype_constructor_invoked(JSContextRef ctx,
 	}
 
 	parent_type = (GType) seed_value_to_int(ctx, parent_ref, exception);
+	
+	SEED_NOTE(GTYPE, "Registering new GType with name: %s as child of %s.",
+			  new_name, g_type_name(parent_type));
 
 	g_type_query(parent_type, &query);
 	type_info.class_size = query.class_size;

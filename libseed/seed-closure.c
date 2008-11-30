@@ -102,9 +102,14 @@ static void seed_closure_finalize(JSObjectRef object)
 {
 	SeedNativeClosure *privates =
 		(SeedNativeClosure *) JSObjectGetPrivate(object);
+	
+	SEED_NOTE(FINALIZATION, "Finalizing closure object %p with "
+			  "GIBaseInfo: %s \n", object,
+			  g_base_info_get_name((GIBaseInfo *)privates->info));
 
 	g_free(privates->cif->arg_types);
 	g_free(privates->cif);
+	g_base_info_unref((GIBaseInfo *)privates->info);
 	munmap(privates->closure, sizeof(ffi_closure));
 }
 

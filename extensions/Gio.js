@@ -1,6 +1,6 @@
 (function()
 {
-    var prototype = Seed.prototype(Gio.FileInputStream);
+    var prototype = Gio.FileInputStream.prototype;
 
     prototype.get_contents = function()
     {

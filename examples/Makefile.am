@@ -1,13 +1,14 @@
 SUBDIRS = ide \
           lightsoff \
           clutter-shader \
-          glib
+          glib 
           
 examplesdir=$(datadir)/doc/seed/examples
 examples_DATA = \
 	actions.js \
 	calculator.js \
 	gconf.js \
+	video.js \
 	accelgroup.js \
 	clutter.js \
 	introspect.js \
@@ -28,6 +29,7 @@ EXTRA_DIST = \
 	actions.js \
 	calculator.js \
 	gconf.js \
+	video.js \
 	accelgroup.js \
 	clutter.js \
 	introspect.js \
