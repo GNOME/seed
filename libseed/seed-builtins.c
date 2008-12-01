@@ -279,12 +279,17 @@ seed_quit(JSContextRef ctx,
 		  size_t argumentCount,
 		  const JSValueRef arguments[], JSValueRef * exception)
 {
-	if (argumentCount != 0)
+	if (argumentCount == 1)
 	{
-		if (!seed_value_to_int(ctx, arguments[0], NULL))
-			exit(EXIT_SUCCESS);
-		else
-			exit(EXIT_FAILURE);
+		exit(seed_value_to_int(ctx, arguments[0], NULL));
+	}
+	else if(argumentCount > 1)
+	{
+		gchar *mes = g_strdup_printf("Seed.quit expected "
+									 "1 argument, got %d",
+									 argumentCount);
+		seed_make_exception(ctx, exception, "ArgumentError", mes);
+		g_free(mes);
 	}
 
 	exit(EXIT_SUCCESS);
