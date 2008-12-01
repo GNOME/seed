@@ -91,7 +91,7 @@ seed_print(JSContextRef ctx,
 	if (argumentCount != 1)
 	{
 		gchar *mes =
-			g_strdup_printf("Seed.print Expected 1 argument," " got %d",
+			g_strdup_printf("Seed.print expected 1 argument," " got %d",
 							argumentCount);
 		seed_make_exception(ctx, exception, "ArgumentError", mes);
 		g_free(mes);
@@ -123,7 +123,7 @@ seed_readline(JSContextRef ctx,
 	if (argumentCount != 1)
 	{
 		gchar *mes =
-			g_strdup_printf("Seed.readline Expected 1 argument, "
+			g_strdup_printf("Seed.readline expected 1 argument, "
 							"got %d", argumentCount);
 		seed_make_exception(ctx, exception, "ArgumentError", mes);
 		g_free(mes);
@@ -160,7 +160,7 @@ seed_prototype(JSContextRef ctx,
 	if (argumentCount != 1)
 	{
 		gchar *mes =
-			g_strdup_printf("Seed.prototype Expected 1 argument, "
+			g_strdup_printf("Seed.prototype expected 1 argument, "
 							"got %d", argumentCount);
 		seed_make_exception(ctx, exception, "ArgumentError", mes);
 		g_free(mes);
@@ -210,7 +210,7 @@ seed_introspect(JSContextRef ctx,
 	if (argumentCount != 1)
 	{
 		gchar *mes =
-			g_strdup_printf("Seed.introspect Expected 1 argument, "
+			g_strdup_printf("Seed.introspect expected 1 argument, "
 							"got %d", argumentCount);
 		seed_make_exception(ctx, exception, "ArgumentError", mes);
 		g_free(mes);
@@ -276,7 +276,7 @@ seed_check_syntax(JSContextRef ctx,
 	}
 	else
 	{
-		gchar *mes = g_strdup_printf("Seed.check_syntax expected"
+		gchar *mes = g_strdup_printf("Seed.check_syntax expected "
 									 "1 argument, got %d",
 									 argumentCount);
 		seed_make_exception(ctx, exception, "ArgumentError", mes);
@@ -310,7 +310,7 @@ seed_closure(JSContextRef ctx,
 	if (argumentCount < 1 || argumentCount > 2)
 	{
 		gchar *mes =
-			g_strdup_printf("Seed.closure expected 1 or 2" "arguments, got %d",
+			g_strdup_printf("Seed.closure expected 1 or 2 arguments, got %d",
 							argumentCount);
 		seed_make_exception(ctx, exception, "ArgumentError", mes);
 		g_free(mes);
