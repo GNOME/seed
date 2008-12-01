@@ -210,7 +210,7 @@ seed_introspect(JSContextRef ctx,
 	if (argumentCount != 1)
 	{
 		gchar *mes =
-			g_strdup_printf("Seed.introspection Expected 1 argument, "
+			g_strdup_printf("Seed.introspect Expected 1 argument, "
 							"got %d", argumentCount);
 		seed_make_exception(ctx, exception, "ArgumentError", mes);
 		g_free(mes);
@@ -265,7 +265,7 @@ seed_check_syntax(JSContextRef ctx,
 				  size_t argumentCount,
 				  const JSValueRef arguments[], JSValueRef * exception)
 {
-	if (argumentCount != 0)
+	if (argumentCount == 1)
 	{
 		JSStringRef jsstr = JSValueToStringCopy(ctx,
 												arguments[0],
@@ -277,7 +277,7 @@ seed_check_syntax(JSContextRef ctx,
 	else
 	{
 		gchar *mes = g_strdup_printf("Seed.check_syntax expected"
-									 "0 argument, got %d",
+									 "1 argument, got %d",
 									 argumentCount);
 		seed_make_exception(ctx, exception, "ArgumentError", mes);
 		g_free(mes);
