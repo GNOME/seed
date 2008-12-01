@@ -53,3 +53,9 @@ Seed.check_syntax();
 try{
 Seed.check_syntax("5+5", "asdf");
 }catch(e){Seed.print(e.message)}
+
+try{
+Seed.quit(1,2);
+}catch(e){Seed.print(e.message)}
+
+Seed.quit();
