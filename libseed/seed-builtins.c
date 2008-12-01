@@ -27,11 +27,6 @@
 
 JSClassRef seed_native_callback_class;
 
-typedef struct _timeout_privates {
-	JSStringRef script;
-	JSContextRef context;
-} timeout_privates;
-
 static JSValueRef
 seed_include(JSContextRef ctx,
 			 JSObjectRef function,
