@@ -46,3 +46,35 @@ JSValueRef seed_script_exception(SeedScript * s)
 {
 	return s->exception;
 }
+
+gsize seed_string_get_maximum_size(JSStringRef string)
+{
+	return JSStringGetMaximumUTF8CStringSize(string);
+}
+
+gsize seed_string_to_utf8_buffer(JSStringRef string, gchar * buffer,
+							 size_t buffer_size)
+{
+	return JSStringGetUTF8CString(string, buffer, buffer_size);
+}
+
+gboolean seed_string_is_equal(JSStringRef a, JSStringRef b)
+{
+	return JSStringIsEqual(a, b);
+}
+
+gboolean seed_string_is_equal_utf8(JSStringRef a, const gchar * b)
+{
+	return JSStringIsEqualToUTF8CString(a, b);
+}
+
+JSStringRef seed_string_ref(JSStringRef string)
+{
+	JSStringRetain(string);
+}
+
+void seed_string_unref(JSStringRef string)
+{
+	JSStringRelease(string);
+}
+

@@ -26,6 +26,7 @@
 #ifndef _SEED_H
 #define _SEED_H
 
+typedef gpointer SeedString;
 typedef gpointer SeedValue;
 typedef gpointer SeedObject;
 typedef gpointer SeedClass;
@@ -73,6 +74,18 @@ SeedValue seed_evaluate(SeedContext ctx,
 
 SeedObject seed_make_object(SeedContext ctx,
 							SeedClass class, gpointer private);
+
+
+SeedString seed_string_ref(SeedString string);
+void seed_string_unref(SeedString string);
+
+gsize seed_string_get_maximum_size(SeedString string);
+gsize seed_string_to_utf8_buffer(SeedString string, gchar * buffer,
+							 size_t buffer_size);
+
+gboolean seed_string_is_equal(SeedString a, SeedString b);
+gboolean seed_string_is_equal_utf8(SeedString a, const gchar * b);
+
 
 /*
  * seed-types.c 
@@ -190,5 +203,17 @@ void seed_create_function(SeedContext ctx,
 
 
 typedef void (*SeedModuleInitCallback) (SeedEngine * eng);
+
+typedef void (*SeedObjectInitializeCallback) (SeedContext ctx,
+											  SeedObject object);
+
+/* Using any functions that require a context from 
+ *this callback has undefined results */
+typedef void (*SeedObjectFinalizeCallback) (SeedObject object);
+
+typedef gboolean (*SeedObjectHasPropertyCallback) (SeedContext ctx,
+												   SeedObject object,
+												   SeedString string);
+												 
 
 #endif
