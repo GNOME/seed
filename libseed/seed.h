@@ -35,17 +35,33 @@ typedef gpointer SeedFunction;
 
 typedef gpointer SeedContext;
 
+typedef enum {
+	SEED_TYPE_UNDEFINED,
+	SEED_TYPE_NULL,
+	SEED_TYPE_BOOLEAN,
+	SEED_TYPE_NUMBER,
+	SEED_TYPE_STRING,
+	SEED_TYPE_OBJECT
+} SeedType;
+
+typedef enum {
+	SEED_PROPERTY_ATTRIBUTE_NONE = 0,
+	SEED_PROPERTY_ATTRIBUTE_READ_ONLY = 1 << 1,
+	SEED_PROPERTY_ATTRIBUTE_DONT_ENUM = 1 << 2,
+	SEED_PROPERTY_ATTRIBUTE_DONT_DELETE = 1 << 3
+} SeedPropertyAttributes;
+
+typedef enum {
+	SEED_CLASS_ATTRIBUTE_NONE = 0,
+	SEED_CLASS_ATTRIBUTE_NO_SHARED_PROTOTYPE = 1 << 1
+} SeedClassAttributes;
+
 typedef struct _SeedScript SeedScript;
 
 typedef struct _SeedEngine {
 	SeedContext context;
 	SeedValue global;
 } SeedEngine;
-
-typedef enum {
-	SEED_CLASS_ATTRIBUTE_NONE = 0,
-	SEED_CLASS_ATTRIBUTE_NO_SHARED_PROTOTYPE = 1 << 1
-} SeedClassAttributes;
 
 
 /*
@@ -214,6 +230,87 @@ typedef void (*SeedObjectFinalizeCallback) (SeedObject object);
 typedef gboolean (*SeedObjectHasPropertyCallback) (SeedContext ctx,
 												   SeedObject object,
 												   SeedString string);
+typedef SeedValue (*SeedObjectGetPropertyCallback) (SeedContext ctx,
+													 SeedObject object,
+													 SeedString property_name,
+													 SeedException * e);
+typedef gboolean (*SeedObjectSetPropertyCallback) (SeedContext ctx,
+												   SeedObject object,
+												   SeedString property_name,
+												   SeedValue value,
+												   SeedException * e);
+typedef gboolean (*SeedObjectDeletePropertyCallback) (SeedContext ctx,
+													  SeedObject object,
+													  SeedString property_name,
+													  SeedValue value,
+													  SeedException * e);
+/* TODO: Have to decide on accumulator API
+//typedef void (*SeedObjectGetPropertyNamesCallback) (SeedContext ctx, */
+
+typedef void (*SeedObjectGetPropertyNamesCallback) (void);
+
+typedef SeedValue (*SeedObjectCallAsFunctionCallback) (SeedContext ctx,
+														SeedObject function,
+														SeedObject this_object,
+														size_t argument_count,
+   												  const SeedValue arguments[],
+													SeedException * exception);
+typedef SeedValue (*SeedObjectCallAsConstructorCallback) 
+                                                (SeedContext ctx,
+												 SeedObject constructor,
+												 size_t argument_count,
+												 const SeedValue arguments[],
+												 SeedException * exception);
+
+typedef gboolean (*SeedObjectHasInstanceCallback) (SeedContext ctx,
+												   SeedObject constructor,
+												   SeedObject instance_p,
+												   SeedException * exception);
+
+typedef SeedValue (*SeedObjectConvertToTypeCallback) (SeedContext ctx,
+													  SeedObject object,
+													  SeedType type,
+  												     SeedException * exception);
+
+typedef struct _seed_static_value {
+	const gchar * const name;
+	SeedObjectGetPropertyCallback get_property;
+	SeedObjectSetPropertyCallback set_property;
+	SeedPropertyAttributes attributes;
+} seed_static_value;
+
+typedef struct _seed_static_function {
+	const gchar * const name;
+	SeedObjectCallAsFunctionCallback callback;
+	SeedPropertyAttributes attributes;
+} seed_static_function;
+
+
+typedef struct _seed_class_definition 
+{
+	SeedClassAttributes attributes;
+
+	const gchar * class_name;
+	SeedClass parent_class;
+
+	const seed_static_value * static_values;
+	const seed_static_function * static_functions;
+
+	SeedObjectInitializeCallback initialize;
+	SeedObjectFinalizeCallback finalize;
+	SeedObjectHasPropertyCallback has_property;
+	SeedObjectGetPropertyCallback get_property;
+	SeedObjectSetPropertyCallback set_property;
+	SeedObjectDeletePropertyCallback delete_property;
+	SeedObjectGetPropertyNamesCallback get_property_names;
+	SeedObjectCallAsFunctionCallback call_as_function;
+	SeedObjectCallAsConstructorCallback call_as_constructor;
+	SeedObjectHasInstanceCallback has_instance;
+	SeedObjectConvertToTypeCallback convert_to_type;
+} seed_class_definition;
+
+														
+
 												 
 
 #endif
