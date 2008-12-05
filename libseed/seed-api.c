@@ -1,5 +1,21 @@
 #include "seed-private.h"
 
+JSGlobalContextRef seed_context_create(JSContextGroupRef group,
+									   JSClassRef global_class)
+{
+	return JSGlobalContextCreateInGroup(group, global_class);
+}
+
+JSGlobalContextRef seed_context_ref(JSGlobalContextRef ctx)
+{
+	return JSGlobalContextRetain(ctx); 
+}
+
+void seed_context_unref(JSGlobalContextRef ctx)
+{
+	JSGlobalContextRelease(ctx); 
+}
+
 JSValueRef seed_make_null(JSContextRef ctx)
 {
 	return JSValueMakeNull(ctx);

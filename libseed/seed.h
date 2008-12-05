@@ -33,6 +33,8 @@ typedef gpointer SeedClass;
 typedef gpointer SeedException;
 
 typedef gpointer SeedContext;
+typedef gpointer SeedGlobalContext;
+typedef gpointer SeedContextGroup;
 
 typedef enum {
 	SEED_TYPE_UNDEFINED,
@@ -58,8 +60,10 @@ typedef enum {
 typedef struct _SeedScript SeedScript;
 
 typedef struct _SeedEngine {
-	SeedContext context;
+	SeedGlobalContext context;
 	SeedValue global;
+	
+	SeedContextGroup group;
 } SeedEngine;
 
 
@@ -86,6 +90,11 @@ SeedValue seed_evaluate(SeedContext ctx,
 /*
  * seed-api.c
  */
+
+SeedGlobalContext seed_context_create(SeedContextGroup group, 
+								SeedClass global_class);
+SeedGlobalContext seed_context_ref(SeedGlobalContext ctx);
+void seed_context_unref(SeedGlobalContext ctx);
 
 SeedValue seed_make_null(SeedContext ctx);
 

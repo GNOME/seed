@@ -3,6 +3,7 @@
 
 SeedObject namespace_ref;
 SeedClass sqlite_class;
+SeedEngine * eng;
 
 #define MAKE_ERROR_ENUM(name)											\
 	seed_object_set_property(eng->context, namespace_ref, #name,			\
@@ -68,11 +69,88 @@ SeedObject sqlite_construct_database(SeedContext ctx,
 
 	rc = sqlite3_open(file, &db);
 	
+	g_free(file);
+	
 	ret = seed_make_object(ctx, sqlite_class, db);
 	seed_object_set_property(ctx, ret, "status",
 							 seed_value_from_int(ctx, rc, exception));
 
 	return ret;
+}
+
+static int seed_sqlite_exec_callback(SeedObject function,
+									 int argc,
+									 gchar ** argv,
+									 gchar ** azColName)
+{
+	SeedGlobalContext ctx;
+	SeedObject hash;
+	int i;
+	
+	if (!function)
+		return 0;
+
+	ctx = seed_context_create(eng->group, NULL);
+
+	hash = seed_make_object(ctx, 0, 0);
+	for (i = 0; i < argc; i++)
+	{
+		seed_object_set_property(ctx, hash,
+								azColName[i],
+			seed_value_from_string(ctx, argv[i], 0));
+	}
+	
+	seed_object_call(ctx, function, 0, 1, &hash, 0);
+	
+	seed_context_unref(ctx);
+	
+	return 0;
+}
+
+SeedValue seed_sqlite_exec  (SeedContext ctx,
+							  SeedObject function,
+							  SeedObject this_object,
+							  size_t argument_count,
+							  const SeedValue arguments[],
+							  SeedException * exception)
+{
+	gchar * statement;
+	gchar * sqlite_error = 0;
+	sqlite3 * db;
+	int rc;
+	
+	if (argument_count < 1)
+	{
+		seed_make_exception(ctx, exception, "ArgumentError",
+							"sqlite.Database.exec expected 1 or 2 arguments");
+		return seed_make_null(ctx);
+	}
+	
+	statement = seed_value_to_string(ctx, arguments[0], exception);
+	db = seed_object_get_private(this_object);
+
+	g_assert(db);
+
+	rc = sqlite3_exec(db, statement, 
+					  seed_sqlite_exec_callback, 
+					  argument_count == 2 ? arguments[1] : 0, &sqlite_error);
+	g_free(statement);
+	
+	if (rc != SQLITE_OK)
+	{
+		if (sqlite_error)
+		{
+			seed_make_exception(ctx, 
+								exception, 
+								"SqliteError", 
+								sqlite_error);
+			sqlite3_free(sqlite_error);
+		}
+		return seed_make_null(ctx);
+	}
+
+	return seed_value_from_int(ctx, rc, exception);
+	
 }
 
 SeedValue seed_sqlite_close  (SeedContext ctx,
@@ -89,13 +167,16 @@ SeedValue seed_sqlite_close  (SeedContext ctx,
 
 seed_static_function database_funcs[] = {
 	{"close", seed_sqlite_close, 0},
+	{"exec", seed_sqlite_exec, 0 },
 	{0, 0, 0}
 };
 
-void seed_module_init(SeedEngine * eng)
+void seed_module_init(SeedEngine * local_eng)
 {
 	SeedObject db_constructor;
 	seed_class_definition sqlite_class_def = seed_empty_class;
+	
+	eng = local_eng;
 
 	namespace_ref = seed_make_object(eng->context, 0, 0);
 	

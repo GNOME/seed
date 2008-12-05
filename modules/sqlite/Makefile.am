@@ -7,6 +7,8 @@ libsqlite_la_SOURCES = \
 libsqlite_la_LDFLAGS = \
 	`pkg-config --libs seed sqlite3`
 
+EXTRA_DIST = example.js
+
 AM_CPPFLAGS = \
 	-I../../libseed/ \
 	`pkg-config --cflags seed` \
