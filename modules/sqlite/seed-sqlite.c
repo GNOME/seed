@@ -96,8 +96,8 @@ static int seed_sqlite_exec_callback(SeedObject function,
 	for (i = 0; i < argc; i++)
 	{
 		seed_object_set_property(ctx, hash,
-								azColName[i],
-			seed_value_from_string(ctx, argv[i], 0));
+			 					 azColName[i],
+			                     seed_value_from_string(ctx, argv[i], 0));
 	}
 	
 	seed_object_call(ctx, function, 0, 1, &hash, 0);

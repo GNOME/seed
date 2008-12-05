@@ -112,6 +112,7 @@ examples/glib/Makefile
 modules/Makefile
 modules/example/Makefile
 modules/sqlite/Makefile
+modules/canvas/Makefile
 ])
 
 echo "

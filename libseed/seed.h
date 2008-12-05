@@ -122,7 +122,8 @@ SeedValue seed_object_call(SeedContext ctx,
 						   const SeedValue arguments[],
 						   SeedException * exception);
 
-
+void seed_value_unprotect(SeedContext ctx, SeedValue value);
+void seed_value_protect(SeedContext ctx, SeedValue value);
 /*
  * seed-types.c 
  */
@@ -227,6 +228,9 @@ GObject *seed_value_to_object(SeedContext ctx,
 SeedValue seed_value_from_object(SeedContext ctx,
 								 GObject * val,
 								 SeedException * exception);
+
+gpointer seed_pointer_get_pointer(SeedContext ctx,
+								  SeedValue pointer);
 
 typedef void (*SeedFunctionCallback) (SeedContext ctx,
 									  SeedObject function,

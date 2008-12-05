@@ -1,5 +1,15 @@
 #include "seed-private.h"
 
+void seed_value_protect(JSContextRef ctx, JSValueRef value)
+{
+	JSValueProtect(ctx, value);
+}
+
+void seed_value_unprotect(JSContextRef ctx, JSValueRef value)
+{
+	JSValueUnprotect(ctx, value);
+}
+
 JSGlobalContextRef seed_context_create(JSContextGroupRef group,
 									   JSClassRef global_class)
 {

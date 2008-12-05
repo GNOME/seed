@@ -1,1 +1,1 @@
-SUBDIRS = example sqlite 
+SUBDIRS = example sqlite canvas 
