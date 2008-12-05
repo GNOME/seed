@@ -12,6 +12,18 @@ JSObjectRef seed_make_object(JSContextRef ctx,
 	return JSObjectMake(ctx, class, private);
 }
 
+JSValueRef seed_object_call(JSContextRef ctx,
+							  JSObjectRef object,
+							  JSObjectRef this,
+							  size_t argument_count,
+							  const JSValueRef arguments[],
+							  JSValueRef * exception)
+{
+	return JSObjectCallAsFunction(ctx, object, this,
+								  argument_count, arguments, 
+								  exception);
+}
+
 SeedScript *seed_make_script(JSContextRef ctx,
 							 const gchar * js,
 							 const gchar * source_url,

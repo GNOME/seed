@@ -75,6 +75,23 @@ SeedObject sqlite_construct_database(SeedContext ctx,
 	return ret;
 }
 
+SeedValue seed_sqlite_close  (SeedContext ctx,
+							  SeedObject function,
+							  SeedObject this_object,
+							  size_t argument_count,
+							  const SeedValue arguments[],
+							  SeedException * exception)
+{
+	sqlite3 * db = seed_object_get_private(this_object);
+	sqlite3_close(db);
+	return seed_value_from_boolean(ctx, TRUE, exception);
+}
+
+seed_static_function database_funcs[] = {
+	{"close", seed_sqlite_close, 0},
+	{0, 0, 0}
+};
+
 void seed_module_init(SeedEngine * eng)
 {
 	SeedObject db_constructor;
@@ -87,6 +104,7 @@ void seed_module_init(SeedEngine * eng)
 	
 	sqlite_class_def.class_name = "Database";
 	sqlite_class_def.finalize = sqlite_database_finalize;
+	sqlite_class_def.static_functions = database_funcs;
 
 	sqlite_class = seed_create_class(&sqlite_class_def);
 	

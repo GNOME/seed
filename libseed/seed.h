@@ -31,7 +31,6 @@ typedef gpointer SeedValue;
 typedef gpointer SeedObject;
 typedef gpointer SeedClass;
 typedef gpointer SeedException;
-typedef gpointer SeedFunction;
 
 typedef gpointer SeedContext;
 
@@ -106,6 +105,13 @@ gsize seed_string_to_utf8_buffer(SeedString string, gchar * buffer,
 
 gboolean seed_string_is_equal(SeedString a, SeedString b);
 gboolean seed_string_is_equal_utf8(SeedString a, const gchar * b);
+
+SeedValue seed_object_call(SeedContext ctx, 
+						   SeedObject object,
+						   SeedObject this,
+						   gsize argument_count,
+						   const SeedValue arguments[],
+						   SeedException * exception);
 
 
 /*
@@ -216,7 +222,7 @@ SeedValue seed_value_from_object(SeedContext ctx,
 typedef void (*SeedFunctionCallback) (SeedContext ctx,
 									  SeedObject function,
 									  SeedObject this_object,
-									  size_t argument_count,
+									  gsize argument_count,
 									  const SeedValue arguments[],
 									  SeedException * exception);
 
@@ -259,13 +265,13 @@ typedef void (*SeedObjectGetPropertyNamesCallback) (void);
 typedef SeedValue (*SeedObjectCallAsFunctionCallback) (SeedContext ctx,
 														SeedObject function,
 														SeedObject this_object,
-														size_t argument_count,
+														gsize argument_count,
    												  const SeedValue arguments[],
 													SeedException * exception);
 typedef SeedValue (*SeedObjectCallAsConstructorCallback) 
                                                 (SeedContext ctx,
 												 SeedObject constructor,
-												 size_t argument_count,
+												 gsize argument_count,
 												 const SeedValue arguments[],
 												 SeedException * exception);
 
