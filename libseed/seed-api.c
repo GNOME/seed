@@ -1,5 +1,10 @@
 #include "seed-private.h"
 
+JSValueRef seed_make_null(JSContextRef ctx)
+{
+	return JSValueMakeNull(ctx);
+}
+
 JSObjectRef seed_make_object(JSContextRef ctx, 
 							 JSClassRef class,
 							 gpointer private)
@@ -76,5 +81,27 @@ JSStringRef seed_string_ref(JSStringRef string)
 void seed_string_unref(JSStringRef string)
 {
 	JSStringRelease(string);
+}
+
+JSClassRef seed_create_class(JSClassDefinition * def)
+{
+	return JSClassCreate(def);
+}
+
+JSObjectRef seed_make_constructor(JSContextRef ctx,
+								 JSClassRef class,
+					 JSObjectCallAsConstructorCallback constructor)
+{
+	return JSObjectMakeConstructor(ctx, class, constructor);
+}
+
+gpointer seed_object_get_private(JSObjectRef object)
+{
+	return (gpointer)JSObjectGetPrivate(object);
+}
+
+void seed_object_set_private(JSObjectRef object, gpointer value)
+{
+	JSObjectSetPrivate(object, value);
 }
 

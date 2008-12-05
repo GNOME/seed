@@ -88,8 +88,13 @@ SeedValue seed_evaluate(SeedContext ctx,
  * seed-api.c
  */
 
+SeedValue seed_make_null(SeedContext ctx);
+
 SeedObject seed_make_object(SeedContext ctx,
 							SeedClass class, gpointer private);
+
+gpointer seed_object_get_private(SeedObject object);
+void seed_object_set_private(SeedObject object, gpointer value);
 
 
 SeedString seed_string_ref(SeedString string);
@@ -106,10 +111,12 @@ gboolean seed_string_is_equal_utf8(SeedString a, const gchar * b);
 /*
  * seed-types.c 
  */
-gboolean seed_object_set_property(SeedObject object,
+gboolean seed_object_set_property(SeedContext ctx,
+								  SeedObject object,
 								  const gchar * name,
 								  SeedValue value);
-SeedValue seed_object_get_property(SeedObject object, 
+SeedValue seed_object_get_property(SeedContext ctx,
+								   SeedObject object, 
 								   const gchar * name);
 
 gboolean seed_value_to_boolean(SeedContext ctx,
@@ -288,6 +295,7 @@ typedef struct _seed_static_function {
 
 typedef struct _seed_class_definition 
 {
+	int version; /* Always 0 */
 	SeedClassAttributes attributes;
 
 	const gchar * class_name;
@@ -309,6 +317,32 @@ typedef struct _seed_class_definition
 	SeedObjectConvertToTypeCallback convert_to_type;
 } seed_class_definition;
 
+seed_class_definition seed_empty_class =
+{
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+	0,
+};
+
+SeedClass seed_create_class(seed_class_definition * def);
+
+SeedObject seed_make_constructor(SeedContext ctx,
+								 SeedClass class,
+					 SeedObjectCallAsConstructorCallback constructor);
 														
 
 												 
