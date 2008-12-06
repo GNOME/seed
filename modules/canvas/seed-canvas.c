@@ -426,6 +426,38 @@ SeedValue seed_canvas_arc  (SeedContext ctx,
 	return seed_make_null(ctx);
 }
 
+SeedValue seed_canvas_quadratic (SeedContext ctx,
+								 SeedObject function,
+								 SeedObject this_object,
+								 size_t argument_count,
+								 const SeedValue arguments[],
+								 SeedException * exception)
+{
+	GET_CR;
+	
+	gdouble p0x, p0y, cp1x, cp1y, cp2x, cp2y, cp3x, cp3y;
+	gdouble qp1x, qp1y, qp2x, qp2y;
+	
+	cairo_get_current_point(cr, &p0x, &p0y);
+	
+	qp1x = seed_value_to_double(ctx, arguments[0], exception);
+	qp1y = seed_value_to_double(ctx, arguments[1], exception);
+	qp2x = seed_value_to_double(ctx, arguments[2], exception);
+	qp2y = seed_value_to_double(ctx, arguments[3], exception);
+	
+	cp3x = qp2x;
+	cp3y = qp2y;
+	
+	cp1x = p0x + 2/3.0 * (qp1x-p0x);
+	cp1y = p0y + 2/3.0 * (qp1y-p0y);
+	
+	cp2x = cp1x + 1/3.0 * (qp2x-p0x);
+	cp2y = cp1y + 1/3.0 * (qp2y-p0y);
+	
+	cairo_curve_to(cr, cp1x, cp1y, cp2x, cp2y, cp3x, cp3y);
+	
+	return seed_make_null(ctx);	
+}
 
 static void canvas_finalize(SeedObject object)
 {
@@ -451,6 +483,7 @@ seed_static_function canvas_funcs[] = {
 	{"stroke", seed_canvas_stroke, 0},
 	{"clip", seed_canvas_clip, 0},
 	{"arc", seed_canvas_arc, 0},
+	{"quadraticCurveTo", seed_canvas_quadratic, 0},
 	{0, 0, 0}
 };
 
