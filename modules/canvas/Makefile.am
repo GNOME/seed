@@ -7,7 +7,7 @@ libcanvas_la_SOURCES = \
 libsqlite_la_LDFLAGS = \
 	`pkg-config --libs seed cairo`
 
-EXTRA_DIST=test1.js test2.js test3.js test4.js test5.js test6.js test7.js test8.js test9.js test10.js test11.js
+EXTRA_DIST=test1.js test2.js test3.js test4.js test5.js test6.js test7.js test8.js test9.js test10.js test11.js test12.js
 
 AM_CPPFLAGS = \
 	-I../../libseed/ \
