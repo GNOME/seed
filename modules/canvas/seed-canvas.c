@@ -16,6 +16,7 @@ SeedObject canvas_construct_canvas(SeedContext ctx,
 								   const SeedValue arguments[],
 								   SeedException * exception)
 {
+	SeedObject obj;
 	cairo_t * cr;
 	if (argument_count != 1)
 	{
@@ -26,10 +27,15 @@ SeedObject canvas_construct_canvas(SeedContext ctx,
 
 	cr = seed_pointer_get_pointer(ctx, arguments[0]);
 	
-	cairo_set_source_rgba(cr, 0, 0, 0, 1.0);
+	cairo_set_source_rgb(cr, 0, 0, 0);
 
-	return seed_make_object(ctx, canvas_class, 
+	obj = seed_make_object(ctx, canvas_class, 
 							cr);
+	
+	seed_object_set_property(ctx, obj, "globalAlpha",
+							 seed_value_from_double(ctx, 1.0, exception));
+	
+	return obj;
 }
 
 SeedValue seed_canvas_save  (SeedContext ctx,
@@ -183,15 +189,22 @@ SeedValue seed_canvas_clear_rect  (SeedContext ctx,
 	return seed_make_null(ctx);
 }
 
-void seed_canvas_parse_color(cairo_t * cr, gchar * spec)
+void seed_canvas_parse_color(cairo_t * cr, gchar * spec, gdouble global_alpha)
 {
 	if (*spec == '#')
 	{
-		guint r=0,g=0,b=0,a=0;
+		guint r=0,g=0,b=0,a=0, found;
 		// Might be libc dependent (the alpha behaviour);
-		sscanf(spec, "#%2x%2x%2x%2x", &r, &g, &b, &a);
-		if (strlen(spec) < 8)
-			a = 255;
+		if (strlen(spec) > 4)
+			found = sscanf(spec, "#%2x%2x%2x%2x", &r, &g, &b, &a);
+		else
+		{
+			found = sscanf(spec, "#%1x%1x%1x%1x", &r, &g, &b, &a);
+			r *= 17; g *= 17; b *= 17; a *= 17;
+		}
+		if (found < 4)
+			a = global_alpha*255;
+		printf("r: %d g:%d b:%d a:%d\n",r,g,b,a);
 		cairo_set_source_rgba(cr, r/255.0, g/255.0, b/255.0, a/255.0);
 		return;
 	}
@@ -213,10 +226,14 @@ void seed_canvas_parse_color(cairo_t * cr, gchar * spec)
 			gint r, g, b;
 
 			sscanf(spec, "rgb(%d,%d,%d)", &r, &g, &b);
-			cairo_set_source_rgb(cr, r/255.0, g/255.0, b/255.0);
+			cairo_set_source_rgba(cr, r/255.0, g/255.0, b/255.0, global_alpha);
 			return;
 		}
 		}
+	}
+	else if (*spec == '[')
+	{
+		cairo_set_source_rgb(cr, 0, 0, 0);
 	}
 }
 
@@ -234,8 +251,14 @@ SeedValue seed_canvas_stroke_rect  (SeedContext ctx,
 							 seed_object_get_property(ctx, this_object, 
 													  "strokeStyle"),
 							 exception);
+	gdouble global_alpha = 
+		seed_value_to_double(ctx, 
+							 seed_object_get_property(ctx, this_object, 
+													  "globalAlpha"),
+							 exception);
 	
-	seed_canvas_parse_color(cr, stroke_color);
+	
+	seed_canvas_parse_color(cr, stroke_color, global_alpha);
 	g_free(stroke_color);
 	
 	x = seed_value_to_double(ctx, arguments[0], exception);
@@ -262,8 +285,15 @@ SeedValue seed_canvas_fill_rect  (SeedContext ctx,
 							 seed_object_get_property(ctx, this_object, 
 													  "fillStyle"),
 							 exception);
+	gdouble global_alpha = 
+		seed_value_to_double(ctx, 
+							 seed_object_get_property(ctx, this_object, 
+													  "globalAlpha"),
+							 exception);
+
+
 	
-	seed_canvas_parse_color(cr, stroke_color);
+	seed_canvas_parse_color(cr, stroke_color, global_alpha);
 	g_free(stroke_color);
 	
 	x = seed_value_to_double(ctx, arguments[0], exception);
@@ -274,6 +304,7 @@ SeedValue seed_canvas_fill_rect  (SeedContext ctx,
 	cairo_rectangle(cr, x, y, width, height);
 	cairo_fill(cr);
 	
+
 	return seed_make_null(ctx);
 }
 
@@ -352,8 +383,13 @@ SeedValue seed_canvas_stroke (SeedContext ctx,
 							 seed_object_get_property(ctx, this_object, 
 													  "strokeStyle"),
 							 exception);
-	
-	seed_canvas_parse_color(cr, stroke_color);
+	gdouble global_alpha = 
+		seed_value_to_double(ctx, 
+							 seed_object_get_property(ctx, this_object, 
+													  "globalAlpha"),
+							 exception);
+
+	seed_canvas_parse_color(cr, stroke_color, global_alpha);
 	g_free(stroke_color);
 	
 
@@ -390,8 +426,13 @@ SeedValue seed_canvas_fill  (SeedContext ctx,
 							 seed_object_get_property(ctx, this_object, 
 													  "fillStyle"),
 							 exception);
+	gdouble global_alpha = 
+		seed_value_to_double(ctx, 
+							 seed_object_get_property(ctx, this_object, 
+													  "globalAlpha"),
+							 exception);
 	
-	seed_canvas_parse_color(cr, stroke_color);
+	seed_canvas_parse_color(cr, stroke_color, global_alpha);
 	g_free(stroke_color);
 	
 	
