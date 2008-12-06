@@ -1,5 +1,8 @@
 #include "../../libseed/seed.h"
 #include <cairo.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 
 SeedObject namespace_ref;
 SeedClass canvas_class;
@@ -13,14 +16,20 @@ SeedObject canvas_construct_canvas(SeedContext ctx,
 								   const SeedValue arguments[],
 								   SeedException * exception)
 {
+	cairo_t * cr;
 	if (argument_count != 1)
 	{
 		seed_make_exception(ctx, exception, "ArgumentError",
 							"Canvas.Canvas constructor expected 1 argument");
 		return (SeedObject)seed_make_null(ctx);
 	}
+
+	cr = seed_pointer_get_pointer(ctx, arguments[0]);
+	
+	cairo_set_source_rgba(cr, 0, 0, 0, 1.0);
+
 	return seed_make_object(ctx, canvas_class, 
-							seed_pointer_get_pointer(ctx, arguments[0]));
+							cr);
 }
 
 SeedValue seed_canvas_save  (SeedContext ctx,
@@ -157,22 +166,60 @@ SeedValue seed_canvas_clear_rect  (SeedContext ctx,
 	gdouble x, y, width, height;
 	
 	x = seed_value_to_double(ctx, arguments[0], exception);
-	y = seed_value_to_double(ctx, arguments[0], exception);
-    width = seed_value_to_double(ctx, arguments[0], exception);
-	height = seed_value_to_double(ctx, arguments[0], exception);
+	y = seed_value_to_double(ctx, arguments[1], exception);
+    width = seed_value_to_double(ctx, arguments[2], exception);
+	height = seed_value_to_double(ctx, arguments[3], exception);
 		
 	cairo_save(cr);
 		
-	cairo_set_operator(cr, CAIRO_OPERATOR_CLEAR);
+	cairo_set_source_rgb(cr, 1, 1, 1);
 	cairo_rectangle(cr, x, y, width, height);
-	cairo_clip(cr);
+	
 
-	cairo_paint(cr);
+	cairo_fill(cr);
 	
 	cairo_restore(cr);
 
 	return seed_make_null(ctx);
 }
+
+void seed_canvas_parse_color(cairo_t * cr, gchar * spec)
+{
+	if (*spec == '#')
+	{
+		guint r=0,g=0,b=0,a=0;
+		// Might be libc dependent (the alpha behaviour);
+		sscanf(spec, "#%2x%2x%2x%2x", &r, &g, &b, &a);
+		if (strlen(spec) < 8)
+			a = 255;
+		cairo_set_source_rgba(cr, r/255.0, g/255.0, b/255.0, a/255.0);
+		return;
+	}
+	else if (*spec == 'r')
+	{
+		switch(*(spec+3))
+		{
+		case 'a':
+		{
+			gint r, g, b;
+			gfloat a;
+			
+			sscanf(spec, "rgba(%d,%d,%d,%f)", &r, &g, &b, &a);
+			cairo_set_source_rgba(cr, r/255.0, g/255.0, b/255.0, a);
+			return;
+		}
+		case '(':
+		{
+			gint r, g, b;
+
+			sscanf(spec, "rgb(%d,%d,%d)", &r, &g, &b);
+			cairo_set_source_rgb(cr, r/255.0, g/255.0, b/255.0);
+			return;
+		}
+		}
+	}
+}
+
 SeedValue seed_canvas_stroke_rect  (SeedContext ctx,
 							  SeedObject function,
 							  SeedObject this_object,
@@ -182,11 +229,19 @@ SeedValue seed_canvas_stroke_rect  (SeedContext ctx,
 {
 	GET_CR;
 	gdouble x, y, width, height;
+	gchar * stroke_color = 
+		seed_value_to_string(ctx, 
+							 seed_object_get_property(ctx, this_object, 
+													  "strokeStyle"),
+							 exception);
+	
+	seed_canvas_parse_color(cr, stroke_color);
+	g_free(stroke_color);
 	
 	x = seed_value_to_double(ctx, arguments[0], exception);
-	y = seed_value_to_double(ctx, arguments[0], exception);
-    width = seed_value_to_double(ctx, arguments[0], exception);
-	height = seed_value_to_double(ctx, arguments[0], exception);
+	y = seed_value_to_double(ctx, arguments[1], exception);
+    width = seed_value_to_double(ctx, arguments[2], exception);
+	height = seed_value_to_double(ctx, arguments[3], exception);
 
 	cairo_rectangle(cr, x, y, width, height);
 	cairo_stroke(cr);
@@ -202,16 +257,179 @@ SeedValue seed_canvas_fill_rect  (SeedContext ctx,
 {
 	GET_CR;
 	gdouble x, y, width, height;
+	gchar * stroke_color = 
+		seed_value_to_string(ctx, 
+							 seed_object_get_property(ctx, this_object, 
+													  "fillStyle"),
+							 exception);
+	
+	seed_canvas_parse_color(cr, stroke_color);
+	g_free(stroke_color);
 	
 	x = seed_value_to_double(ctx, arguments[0], exception);
-	y = seed_value_to_double(ctx, arguments[0], exception);
-    width = seed_value_to_double(ctx, arguments[0], exception);
-	height = seed_value_to_double(ctx, arguments[0], exception);
-
+	y = seed_value_to_double(ctx, arguments[1], exception);
+    width = seed_value_to_double(ctx, arguments[2], exception);
+	height = seed_value_to_double(ctx, arguments[3], exception);
+	
 	cairo_rectangle(cr, x, y, width, height);
 	cairo_fill(cr);
 	
 	return seed_make_null(ctx);
+}
+
+SeedValue seed_canvas_end_path  (SeedContext ctx,
+							  SeedObject function,
+							  SeedObject this_object,
+							  size_t argument_count,
+							  const SeedValue arguments[],
+							  SeedException * exception)
+{
+	GET_CR;
+
+	cairo_close_path(cr);
+
+	return seed_make_null(ctx);
+}
+
+SeedValue seed_canvas_begin_path  (SeedContext ctx,
+							  SeedObject function,
+							  SeedObject this_object,
+							  size_t argument_count,
+							  const SeedValue arguments[],
+							  SeedException * exception)
+{
+	GET_CR;
+	
+	cairo_new_path(cr);
+
+	return seed_make_null(ctx);
+}
+
+SeedValue seed_canvas_move_to (SeedContext ctx,
+							  SeedObject function,
+							  SeedObject this_object,
+							  size_t argument_count,
+							  const SeedValue arguments[],
+							  SeedException * exception)
+{
+	GET_CR;
+	gdouble x, y;
+	
+	x = seed_value_to_double(ctx, arguments[0], exception);
+	y = seed_value_to_double(ctx, arguments[1], exception);
+
+	cairo_move_to(cr, x, y);
+
+	return seed_make_null(ctx);
+}
+
+SeedValue seed_canvas_line_to  (SeedContext ctx,
+							  SeedObject function,
+							  SeedObject this_object,
+							  size_t argument_count,
+							  const SeedValue arguments[],
+							  SeedException * exception)
+{
+	GET_CR;
+	gdouble x, y;
+	
+	x = seed_value_to_double(ctx, arguments[0], exception);
+	y = seed_value_to_double(ctx, arguments[1], exception);
+
+	cairo_line_to(cr, x, y);
+}
+
+SeedValue seed_canvas_stroke (SeedContext ctx,
+							  SeedObject function,
+							  SeedObject this_object,
+							  size_t argument_count,
+							  const SeedValue arguments[],
+							  SeedException * exception)
+{
+	GET_CR;
+	gchar * stroke_color = 
+		seed_value_to_string(ctx, 
+							 seed_object_get_property(ctx, this_object, 
+													  "strokeStyle"),
+							 exception);
+	
+	seed_canvas_parse_color(cr, stroke_color);
+	g_free(stroke_color);
+	
+
+	
+	cairo_stroke(cr);
+
+	return seed_make_null(ctx);
+}
+
+SeedValue seed_canvas_clip  (SeedContext ctx,
+							  SeedObject function,
+							  SeedObject this_object,
+							  size_t argument_count,
+							  const SeedValue arguments[],
+							  SeedException * exception)
+{
+	GET_CR;
+	
+	cairo_clip(cr);
+
+	return seed_make_null(ctx);
+}
+
+SeedValue seed_canvas_fill  (SeedContext ctx,
+							  SeedObject function,
+							  SeedObject this_object,
+							  size_t argument_count,
+							  const SeedValue arguments[],
+							  SeedException * exception)
+{
+	GET_CR;
+	gchar * stroke_color = 
+		seed_value_to_string(ctx, 
+							 seed_object_get_property(ctx, this_object, 
+													  "fillStyle"),
+							 exception);
+	
+	seed_canvas_parse_color(cr, stroke_color);
+	g_free(stroke_color);
+	
+	
+	cairo_fill(cr);
+
+	return seed_make_null(ctx);
+}
+
+SeedValue seed_canvas_arc  (SeedContext ctx,
+							  SeedObject function,
+							  SeedObject this_object,
+							  size_t argument_count,
+							  const SeedValue arguments[],
+							  SeedException * exception)
+{
+	GET_CR;
+	gdouble xc, yc, radius, start, end;
+	gboolean counter_clockwise;
+	
+	xc = seed_value_to_double(ctx, arguments[0], exception);
+	yc = seed_value_to_double(ctx, arguments[1], exception);
+	radius = seed_value_to_double(ctx, arguments[2], exception);
+	start = seed_value_to_double(ctx, arguments[3], exception);
+	end = seed_value_to_double(ctx, arguments[4], exception);
+	counter_clockwise = seed_value_to_boolean(ctx, arguments[5], exception);
+	
+	if (counter_clockwise)
+		cairo_arc_negative(cr, xc, yc, radius, end, start);
+	else
+		cairo_arc(cr, xc, yc, radius, start, end);
+
+	return seed_make_null(ctx);
+}
+
+
+static void canvas_finalize(SeedObject object)
+{
+	cairo_destroy((cairo_t *)seed_object_get_private(object));
 }
 
 seed_static_function canvas_funcs[] = {
@@ -225,6 +443,14 @@ seed_static_function canvas_funcs[] = {
 	{"clearRect", seed_canvas_clear_rect, 0},
 	{"fillRect", seed_canvas_fill_rect, 0},
 	{"strokeRect", seed_canvas_stroke_rect, 0},
+	{"beginPath", seed_canvas_begin_path, 0},
+	{"closePath", seed_canvas_end_path, 0},
+	{"moveTo", seed_canvas_move_to, 0},
+	{"lineTo", seed_canvas_line_to, 0},
+	{"fill", seed_canvas_fill, 0},
+	{"stroke", seed_canvas_stroke, 0},
+	{"clip", seed_canvas_clip, 0},
+	{"arc", seed_canvas_arc, 0},
 	{0, 0, 0}
 };
 
@@ -241,6 +467,8 @@ void seed_module_init(SeedEngine * local_eng)
 							 namespace_ref);
 	
 	canvas_class_def.class_name = "CairoCanvas";
+	canvas_class_def.static_functions = canvas_funcs;
+	canvas_class_def.finalize = canvas_finalize;
 	
 	canvas_class = seed_create_class(&canvas_class_def);
 	
