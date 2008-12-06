@@ -481,6 +481,24 @@ SeedValue seed_canvas_bezier (SeedContext ctx,
 	return seed_make_null(ctx);
 }
 
+SeedValue seed_canvas_rect (SeedContext ctx,
+								 SeedObject function,
+								 SeedObject this_object,
+								 size_t argument_count,
+								 const SeedValue arguments[],
+								 SeedException * exception)
+{
+	GET_CR;
+	gdouble x, y, width, height;
+
+	x = seed_value_to_double(ctx, arguments[0], exception);
+	y = seed_value_to_double(ctx, arguments[1], exception);
+	width = seed_value_to_double(ctx, arguments[2], exception);
+	height = seed_value_to_double(ctx, arguments[3], exception);
+	
+	cairo_rectangle(cr, x, y, width, height);
+}
+
 static void canvas_finalize(SeedObject object)
 {
 	cairo_destroy((cairo_t *)seed_object_get_private(object));
@@ -507,6 +525,7 @@ seed_static_function canvas_funcs[] = {
 	{"arc", seed_canvas_arc, 0},
 	{"quadraticCurveTo", seed_canvas_quadratic, 0},
 	{"bezierCurveTo", seed_canvas_bezier, 0},
+	{"rect", seed_canvas_rect, 0},
 	{0, 0, 0}
 };
 
