@@ -38,6 +38,84 @@ SeedObject canvas_construct_canvas(SeedContext ctx,
 	return obj;
 }
 
+void seed_canvas_parse_color(cairo_t * cr, gchar * spec, gdouble global_alpha)
+{
+	if (*spec == '#')
+	{
+		guint r=0,g=0,b=0,a=0, found;
+		// Might be libc dependent (the alpha behaviour);
+		if (strlen(spec) > 4)
+			found = sscanf(spec, "#%2x%2x%2x%2x", &r, &g, &b, &a);
+		else
+		{
+			found = sscanf(spec, "#%1x%1x%1x%1x", &r, &g, &b, &a);
+			r *= 17; g *= 17; b *= 17; a *= 17;
+		}
+		if (found < 4)
+			a = global_alpha*255;
+		printf("r: %d g:%d b:%d a:%d\n",r,g,b,a);
+		cairo_set_source_rgba(cr, r/255.0, g/255.0, b/255.0, a/255.0);
+		return;
+	}
+	else if (*spec == 'r')
+	{
+		switch(*(spec+3))
+		{
+		case 'a':
+		{
+			gint r, g, b;
+			gfloat a;
+			
+			sscanf(spec, "rgba(%d,%d,%d,%f)", &r, &g, &b, &a);
+			cairo_set_source_rgba(cr, r/255.0, g/255.0, b/255.0, a);
+			return;
+		}
+		case '(':
+		{
+			gint r, g, b;
+
+			sscanf(spec, "rgb(%d,%d,%d)", &r, &g, &b);
+			cairo_set_source_rgba(cr, r/255.0, g/255.0, b/255.0, global_alpha);
+			return;
+		}
+		}
+	}
+	else if (*spec == '[')
+	{
+		cairo_set_source_rgb(cr, 0, 0, 0);
+	}
+}
+
+
+
+void seed_canvas_stroke_setup(SeedContext ctx,
+							  SeedObject this_object,
+							  cairo_t * cr,
+							  SeedException * exception)
+{
+	gchar * stroke_color = 
+		seed_value_to_string(ctx, 
+							 seed_object_get_property(ctx, this_object, 
+													  "strokeStyle"),
+							 exception);
+	gdouble global_alpha = 
+		seed_value_to_double(ctx, 
+							 seed_object_get_property(ctx, this_object, 
+													  "globalAlpha"),
+							 exception);
+	gdouble line_width =
+		seed_value_to_double(ctx, 
+							 seed_object_get_property(ctx, this_object, 
+													  "lineWidth"),
+							 exception);
+	
+	seed_canvas_parse_color(cr, stroke_color, global_alpha);
+	cairo_set_line_width(cr, line_width);
+	g_free(stroke_color);
+}
+
+
+
 SeedValue seed_canvas_save  (SeedContext ctx,
 							  SeedObject function,
 							  SeedObject this_object,
@@ -189,54 +267,6 @@ SeedValue seed_canvas_clear_rect  (SeedContext ctx,
 	return seed_make_null(ctx);
 }
 
-void seed_canvas_parse_color(cairo_t * cr, gchar * spec, gdouble global_alpha)
-{
-	if (*spec == '#')
-	{
-		guint r=0,g=0,b=0,a=0, found;
-		// Might be libc dependent (the alpha behaviour);
-		if (strlen(spec) > 4)
-			found = sscanf(spec, "#%2x%2x%2x%2x", &r, &g, &b, &a);
-		else
-		{
-			found = sscanf(spec, "#%1x%1x%1x%1x", &r, &g, &b, &a);
-			r *= 17; g *= 17; b *= 17; a *= 17;
-		}
-		if (found < 4)
-			a = global_alpha*255;
-		printf("r: %d g:%d b:%d a:%d\n",r,g,b,a);
-		cairo_set_source_rgba(cr, r/255.0, g/255.0, b/255.0, a/255.0);
-		return;
-	}
-	else if (*spec == 'r')
-	{
-		switch(*(spec+3))
-		{
-		case 'a':
-		{
-			gint r, g, b;
-			gfloat a;
-			
-			sscanf(spec, "rgba(%d,%d,%d,%f)", &r, &g, &b, &a);
-			cairo_set_source_rgba(cr, r/255.0, g/255.0, b/255.0, a);
-			return;
-		}
-		case '(':
-		{
-			gint r, g, b;
-
-			sscanf(spec, "rgb(%d,%d,%d)", &r, &g, &b);
-			cairo_set_source_rgba(cr, r/255.0, g/255.0, b/255.0, global_alpha);
-			return;
-		}
-		}
-	}
-	else if (*spec == '[')
-	{
-		cairo_set_source_rgb(cr, 0, 0, 0);
-	}
-}
-
 SeedValue seed_canvas_stroke_rect  (SeedContext ctx,
 							  SeedObject function,
 							  SeedObject this_object,
@@ -246,20 +276,8 @@ SeedValue seed_canvas_stroke_rect  (SeedContext ctx,
 {
 	GET_CR;
 	gdouble x, y, width, height;
-	gchar * stroke_color = 
-		seed_value_to_string(ctx, 
-							 seed_object_get_property(ctx, this_object, 
-													  "strokeStyle"),
-							 exception);
-	gdouble global_alpha = 
-		seed_value_to_double(ctx, 
-							 seed_object_get_property(ctx, this_object, 
-													  "globalAlpha"),
-							 exception);
-	
-	
-	seed_canvas_parse_color(cr, stroke_color, global_alpha);
-	g_free(stroke_color);
+
+	seed_canvas_stroke_setup(ctx, this_object, cr, exception);
 	
 	x = seed_value_to_double(ctx, arguments[0], exception);
 	y = seed_value_to_double(ctx, arguments[1], exception);
@@ -378,22 +396,9 @@ SeedValue seed_canvas_stroke (SeedContext ctx,
 							  SeedException * exception)
 {
 	GET_CR;
-	gchar * stroke_color = 
-		seed_value_to_string(ctx, 
-							 seed_object_get_property(ctx, this_object, 
-													  "strokeStyle"),
-							 exception);
-	gdouble global_alpha = 
-		seed_value_to_double(ctx, 
-							 seed_object_get_property(ctx, this_object, 
-													  "globalAlpha"),
-							 exception);
-
-	seed_canvas_parse_color(cr, stroke_color, global_alpha);
-	g_free(stroke_color);
 	
+	seed_canvas_stroke_setup(ctx, this_object, cr, exception);
 
-	
 	cairo_stroke(cr);
 
 	return seed_make_null(ctx);
