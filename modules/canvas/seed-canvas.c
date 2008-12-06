@@ -34,6 +34,10 @@ SeedObject canvas_construct_canvas(SeedContext ctx,
 	
 	seed_object_set_property(ctx, obj, "globalAlpha",
 							 seed_value_from_double(ctx, 1.0, exception));
+	seed_object_set_property(ctx, obj, "lineWidth",
+							 seed_value_from_double(ctx, 1.0, exception));
+	seed_object_set_property(ctx, obj, "lineCap",
+							 seed_value_from_string(ctx, "butt", exception));
 	
 	return obj;
 }
@@ -93,6 +97,7 @@ void seed_canvas_stroke_setup(SeedContext ctx,
 							  cairo_t * cr,
 							  SeedException * exception)
 {
+	cairo_line_cap_t cap = CAIRO_LINE_CAP_BUTT;
 	gchar * stroke_color = 
 		seed_value_to_string(ctx, 
 							 seed_object_get_property(ctx, this_object, 
@@ -108,9 +113,24 @@ void seed_canvas_stroke_setup(SeedContext ctx,
 							 seed_object_get_property(ctx, this_object, 
 													  "lineWidth"),
 							 exception);
+	gchar * line_cap = 
+		seed_value_to_string(ctx,
+							 seed_object_get_property(ctx, this_object,
+													  "lineCap"), 
+			exception);
 	
+	if (!strcmp(line_cap, "round"))
+		cap = CAIRO_LINE_CAP_ROUND;
+	else if (!strcmp(line_cap, "square"))
+		cap = CAIRO_LINE_CAP_SQUARE;
+	
+	g_free(line_cap);
+	
+
 	seed_canvas_parse_color(cr, stroke_color, global_alpha);
 	cairo_set_line_width(cr, line_width);
+	cairo_set_line_cap(cr, cap);
+
 	g_free(stroke_color);
 }
 
