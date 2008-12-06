@@ -298,14 +298,16 @@ typedef SeedValue (*SeedObjectConvertToTypeCallback) (SeedContext ctx,
 													  SeedType type,
   												     SeedException * exception);
 
-typedef struct _seed_static_value {
+typedef struct _seed_static_value
+{
 	const gchar * const name;
 	SeedObjectGetPropertyCallback get_property;
 	SeedObjectSetPropertyCallback set_property;
 	SeedPropertyAttributes attributes;
 } seed_static_value;
 
-typedef struct _seed_static_function {
+typedef struct _seed_static_function
+{
 	const gchar * const name;
 	SeedObjectCallAsFunctionCallback callback;
 	SeedPropertyAttributes attributes;
@@ -362,8 +364,5 @@ SeedClass seed_create_class(seed_class_definition * def);
 SeedObject seed_make_constructor(SeedContext ctx,
 								 SeedClass class,
 					 SeedObjectCallAsConstructorCallback constructor);
-														
-
-												 
 
 #endif
