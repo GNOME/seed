@@ -124,6 +124,28 @@ gboolean seed_canvas_set_linecap (SeedContext ctx,
 	g_free(line_cap);
 	
 	cairo_set_line_cap(cr, cap);
+
+}
+
+gboolean seed_canvas_set_linejoin (SeedContext ctx,
+									SeedObject this_object,
+									SeedString property_name,
+									SeedValue value,
+									SeedException * e)
+{
+	GET_CR;
+	cairo_line_join_t join = CAIRO_LINE_JOIN_MITER;
+	gchar * line_join = 
+		seed_value_to_string(ctx, value, e);
+	
+	if (!strcmp(line_join, "round"))
+		join = CAIRO_LINE_JOIN_ROUND;
+	else if (!strcmp(line_join, "bevel"))
+		join = CAIRO_LINE_JOIN_BEVEL;
+	
+	g_free(line_join);
+	
+	cairo_set_line_join (cr, join);
 }
 
 
@@ -610,10 +632,11 @@ seed_static_function canvas_funcs[] = {
 	{0, 0, 0}
 };
 
+//TODO: Implement getters that use cairo for consistency...
 seed_static_value canvas_properties[] = {
 	{"lineWidth", 0, seed_canvas_set_linewidth, 0},
 	{"lineCap", 0, seed_canvas_set_linecap, 0},
-//	{"lineJoin", seed_canvas_set_linejoin, 0, 0}
+	{"lineJoin", 0, seed_canvas_set_linejoin, 0},
 	{0, 0, 0, 0}
 };
 
