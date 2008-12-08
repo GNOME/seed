@@ -1,5 +1,7 @@
 #include "../../libseed/seed.h"
 #include <cairo.h>
+#include <cairo-pdf.h>
+#include <cairo-svg.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -9,6 +11,95 @@ SeedClass canvas_class;
 SeedEngine * eng;
 
 #define GET_CR cairo_t * cr = seed_object_get_private(this_object)
+
+SeedObject canvas_construct_canvas_from_cairo(SeedContext ctx, cairo_t * cr,
+											  SeedException * exception)
+{
+	SeedObject obj;
+
+	cairo_set_source_rgb(cr, 0, 0, 0);
+	
+	obj = seed_make_object(ctx, canvas_class, cr);
+
+	seed_object_set_property(ctx, obj, "globalAlpha",
+							 seed_value_from_double(ctx, 1.0, exception));
+	seed_object_set_property(ctx, obj, "lineWidth",
+							 seed_value_from_double(ctx, 1.0, exception));
+	seed_object_set_property(ctx, obj, "lineCap",
+							 seed_value_from_string(ctx, "butt", exception));
+	seed_object_set_property(ctx, obj, "lineJoin",
+							 seed_value_from_string(ctx, "miter", exception));
+	
+	return obj;
+}
+
+SeedObject canvas_construct_pdf_canvas(SeedContext ctx,
+								   SeedObject constructor,
+								   size_t argument_count,
+								   const SeedValue arguments[],
+								   SeedException * exception)
+{
+	SeedObject obj;
+	cairo_surface_t * surface;
+	cairo_t * cr;
+	gchar * filename;
+	gdouble width, height;
+	
+	if (argument_count != 3)
+	{
+		seed_make_exception(ctx, exception, "ArgumentError",
+							"Canvas.PDFCanvas constructor expected"
+							"3 arguments");
+		return (SeedObject)seed_make_null(ctx);
+	}
+	
+	filename = seed_value_to_string(ctx, arguments[0], exception);
+
+	width = seed_value_to_double(ctx, arguments[1], exception);
+	height = seed_value_to_double(ctx, arguments[2], exception);
+	
+	surface = cairo_pdf_surface_create(filename, width, height);
+	cr = cairo_create(surface);
+	cairo_surface_destroy(surface);
+	
+	obj = canvas_construct_canvas_from_cairo(ctx, cr, exception);
+
+	return obj;
+}
+
+SeedObject canvas_construct_svg_canvas(SeedContext ctx,
+								   SeedObject constructor,
+								   size_t argument_count,
+								   const SeedValue arguments[],
+								   SeedException * exception)
+{
+	SeedObject obj;
+	cairo_surface_t * surface;
+	cairo_t * cr;
+	gchar * filename;
+	gdouble width, height;
+	
+	if (argument_count != 3)
+	{
+		seed_make_exception(ctx, exception, "ArgumentError",
+							"Canvas.PDFCanvas constructor expected"
+							"3 arguments");
+		return (SeedObject)seed_make_null(ctx);
+	}
+	
+	filename = seed_value_to_string(ctx, arguments[0], exception);
+
+	width = seed_value_to_double(ctx, arguments[1], exception);
+	height = seed_value_to_double(ctx, arguments[2], exception);
+	
+	surface = cairo_svg_surface_create(filename, width, height);
+	cr = cairo_create(surface);
+	cairo_surface_destroy(surface);
+	
+	obj = canvas_construct_canvas_from_cairo(ctx, cr, exception);
+
+	return obj;
+}
 
 SeedObject canvas_construct_canvas(SeedContext ctx,
 								   SeedObject constructor,
@@ -21,25 +112,14 @@ SeedObject canvas_construct_canvas(SeedContext ctx,
 	if (argument_count != 1)
 	{
 		seed_make_exception(ctx, exception, "ArgumentError",
-							"Canvas.Canvas constructor expected 1 argument");
+							"Canvas.CairoCanvas constructor"
+							"expected 1 argument");
 		return (SeedObject)seed_make_null(ctx);
 	}
 
 	cr = seed_pointer_get_pointer(ctx, arguments[0]);
 	
-	cairo_set_source_rgb(cr, 0, 0, 0);
-
-	obj = seed_make_object(ctx, canvas_class, 
-							cr);
-	
-	seed_object_set_property(ctx, obj, "globalAlpha",
-							 seed_value_from_double(ctx, 1.0, exception));
-	seed_object_set_property(ctx, obj, "lineWidth",
-							 seed_value_from_double(ctx, 1.0, exception));
-	seed_object_set_property(ctx, obj, "lineCap",
-							 seed_value_from_string(ctx, "butt", exception));
-	seed_object_set_property(ctx, obj, "lineJoin",
-							 seed_value_from_string(ctx, "miter", exception));
+	obj = canvas_construct_canvas_from_cairo(ctx, cr, exception);
 	
 	return obj;
 }
@@ -600,6 +680,51 @@ SeedValue seed_canvas_rect (SeedContext ctx,
 	height = seed_value_to_double(ctx, arguments[3], exception);
 	
 	cairo_rectangle(cr, x, y, width, height);
+
+	return seed_make_null(ctx);
+}
+
+SeedValue seed_canvas_flush (SeedContext ctx,
+								 SeedObject function,
+								 SeedObject this_object,
+								 size_t argument_count,
+								 const SeedValue arguments[],
+								 SeedException * exception)
+{
+	GET_CR;
+	cairo_surface_t * surface = cairo_get_target(cr);
+	
+	cairo_surface_flush(surface);
+	
+	return seed_make_null(ctx);
+}
+
+SeedValue seed_canvas_finish (SeedContext ctx,
+								 SeedObject function,
+								 SeedObject this_object,
+								 size_t argument_count,
+								 const SeedValue arguments[],
+								 SeedException * exception)
+{
+	GET_CR;
+	cairo_surface_t * surface = cairo_get_target(cr);
+	
+	cairo_surface_finish(surface);
+
+	return seed_make_null(ctx);
+}
+
+SeedValue seed_canvas_showpage (SeedContext ctx,
+								 SeedObject function,
+								 SeedObject this_object,
+								 size_t argument_count,
+								 const SeedValue arguments[],
+								 SeedException * exception)
+{
+	GET_CR;
+	cairo_show_page(cr);
+	
+	return seed_make_null(ctx);
 }
 
 static void canvas_finalize(SeedObject object)
@@ -629,6 +754,9 @@ seed_static_function canvas_funcs[] = {
 	{"quadraticCurveTo", seed_canvas_quadratic, 0},
 	{"bezierCurveTo", seed_canvas_bezier, 0},
 	{"rect", seed_canvas_rect, 0},
+	{"flush", seed_canvas_flush, 0},
+	{"finish", seed_canvas_finish, 0},
+	{"showPage", seed_canvas_showpage, 0},
 	{0, 0, 0}
 };
 
@@ -642,7 +770,7 @@ seed_static_value canvas_properties[] = {
 
 void seed_module_init(SeedEngine * local_eng)
 {
-	SeedObject canvas_constructor;
+	SeedObject canvas_constructor, pdf_constructor, svg_constructor;
 	seed_class_definition canvas_class_def = seed_empty_class;
 
 	eng = local_eng;
@@ -662,8 +790,20 @@ void seed_module_init(SeedEngine * local_eng)
 	canvas_constructor = seed_make_constructor(eng->context,
 											   canvas_class,
 											   canvas_construct_canvas);
+
+	pdf_constructor = seed_make_constructor(eng->context,
+											   canvas_class,
+											   canvas_construct_pdf_canvas);
+
+	svg_constructor = seed_make_constructor(eng->context,
+											   canvas_class,
+											   canvas_construct_svg_canvas);
 	
 	seed_object_set_property(eng->context, namespace_ref, "CairoCanvas",
 	canvas_constructor);
+	seed_object_set_property(eng->context, namespace_ref, "PDFCanvas",
+	pdf_constructor);
+	seed_object_set_property(eng->context, namespace_ref, "SVGCanvas",
+	svg_constructor);
 	  
 }
