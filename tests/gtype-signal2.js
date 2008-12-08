@@ -16,7 +16,7 @@ HelloWindowType = {
 	var HelloSignalDefinition = {name: "hello",
 				     parameters: [GObject.TYPE_INT,
 						  GObject.TYPE_STRING],
-				     return_type: GObject.TYPE_OBJECT};
+				     return_type: Gtk.Window.type};
 	
 	hello_signal_id = klass.install_signal(HelloSignalDefinition);
 
