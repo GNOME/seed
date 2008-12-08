@@ -1,10 +1,6 @@
 IDEToolbarType = {
     parent: Gtk.Toolbar.type,
     name: "IDEToolbar",
-    class_init: function(klass, prototype)
-    {
-
-    },
     instance_init: function(klass)
     {
         this.new_button = actions.get_action("new").create_tool_item();
