@@ -18,6 +18,7 @@ SeedObject canvas_construct_canvas_from_cairo(SeedContext ctx, cairo_t * cr,
 	SeedObject obj;
 
 	cairo_set_source_rgb(cr, 0, 0, 0);
+	cairo_set_miter_limit(cr, 10);
 	
 	obj = seed_make_object(ctx, canvas_class, cr);
 
@@ -25,6 +26,8 @@ SeedObject canvas_construct_canvas_from_cairo(SeedContext ctx, cairo_t * cr,
 							 seed_value_from_double(ctx, 1.0, exception));
 	seed_object_set_property(ctx, obj, "lineWidth",
 							 seed_value_from_double(ctx, 1.0, exception));
+	seed_object_set_property(ctx, obj, "miterLimit",
+							 seed_value_from_double(ctx, 10, exception));
 	seed_object_set_property(ctx, obj, "lineCap",
 							 seed_value_from_string(ctx, "butt", exception));
 	seed_object_set_property(ctx, obj, "lineJoin",
@@ -185,6 +188,18 @@ gboolean seed_canvas_set_linewidth (SeedContext ctx,
 	cairo_set_line_width(cr, line_width);
 	return TRUE;
 }
+
+gboolean seed_canvas_set_miterlimit (SeedContext ctx,
+									SeedObject this_object,
+									SeedString property_name,
+									SeedValue value,
+									SeedException * e)
+{
+	GET_CR;
+	
+	cairo_set_miter_limit(cr, seed_value_to_double(ctx, value, e));
+}
+
 gboolean seed_canvas_set_linecap (SeedContext ctx,
 									SeedObject this_object,
 									SeedString property_name,
@@ -765,6 +780,7 @@ seed_static_value canvas_properties[] = {
 	{"lineWidth", 0, seed_canvas_set_linewidth, 0},
 	{"lineCap", 0, seed_canvas_set_linecap, 0},
 	{"lineJoin", 0, seed_canvas_set_linejoin, 0},
+	{"miterLimit", 0, seed_canvas_set_miterlimit, 0},
 	{0, 0, 0, 0}
 };
 
