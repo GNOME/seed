@@ -43,6 +43,8 @@ function browse(url_entry)
 function new_tab(browser_view, browser_frame, new_frame)
 {
 	new_frame = new WebKit.WebView();
+
+
 	new_frame.signal.web_view_ready.connect(new_tab_ready, this);
 	return new_frame;
 }
@@ -90,6 +92,32 @@ function create_toolbar(browser_view)
 function create_tab(loc)
 {
 	var browser_view = new WebKit.WebView();
+
+	settings = new WebKit.WebSettings({enable_developer_extras: true});
+	browser_view.set_settings(settings);
+
+	var inspector = browser_view.get_inspector();
+
+	inspector.signal.inspect_web_view.connect(
+		function()
+		{
+			w = new Gtk.Window();
+			s = new Gtk.ScrolledWindow();
+			w.set_title("Inspector");
+			
+			w.set_default_size(400, 300);
+
+			view = new WebKit.WebView();
+			s.add(view);
+			w.add(s);
+			
+			w.show_all();
+			
+			return view;
+		}
+		);
+	
+	
 	return create_tab_with_webview(loc, browser_view);
 }
 
@@ -153,6 +181,7 @@ function create_ui()
 function browser_init()
 {
 	Gtk.init(null, null);
+
 	var window = new Gtk.Window({title: "Browser"});
 	window.signal.hide.connect(Gtk.main_quit);
 	window.resize(800,800);
