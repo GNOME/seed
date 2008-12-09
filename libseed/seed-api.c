@@ -38,6 +38,15 @@ JSObjectRef seed_make_object(JSContextRef ctx,
 	return JSObjectMake(ctx, class, private);
 }
 
+gboolean seed_object_set_property_at_index(JSContextRef ctx,
+										   JSObjectRef object,
+										   gint index,
+										   JSValueRef value,
+										   JSValueRef * exception)
+{
+	JSObjectSetPropertyAtIndex(ctx, object, index, value, exception);
+}
+
 JSValueRef seed_object_call(JSContextRef ctx,
 							  JSObjectRef object,
 							  JSObjectRef this,

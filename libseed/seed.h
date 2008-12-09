@@ -135,6 +135,12 @@ SeedValue seed_object_get_property(SeedContext ctx,
 								   SeedObject object, 
 								   const gchar * name);
 
+void seed_object_set_property_at_index(SeedContext ctx,
+										   SeedObject object,
+										   gint index,
+										   SeedValue value,
+										   SeedException * exception);
+
 gboolean seed_value_to_boolean(SeedContext ctx,
 							   SeedValue val,
 							   SeedException * exception);
