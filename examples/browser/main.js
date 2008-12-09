@@ -53,6 +53,18 @@ function initialize_actions()
 	close_tab_action.connect_accelerator();
 	close_tab_action.signal.activate.connect(close_tab);
 	
+	var focus_urlbar_action = new Gtk.Action({name:"url", label:"Focus URL Bar",
+		                        tooltip:"Focus URL Bar"});
+	focus_urlbar_action.set_accel_group(accels);
+	actions.add_action_with_accel(focus_urlbar_action, "<Control>l");
+	focus_urlbar_action.connect_accelerator();
+	focus_urlbar_action.signal.activate.connect(
+		function ()
+		{
+			current_tab().toolbar.urlBar.grab_focus();
+		}
+	);
+	
 	return accels;
 }
 
