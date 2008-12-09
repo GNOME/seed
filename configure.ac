@@ -114,6 +114,7 @@ modules/Makefile
 modules/example/Makefile
 modules/sqlite/Makefile
 modules/canvas/Makefile
+modules/Multiprocessing/Makefile
 ])
 
 echo "
