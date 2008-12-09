@@ -2,6 +2,20 @@
 
 Seed.import_namespace("Gtk");
 Seed.import_namespace("WebKit");
+Seed.import_namespace("Multiprocessing");
+
+var forker_pipes = new Multiprocessing.Pipe();
+var forker_pid = Seed.fork();
+if (forker_pid == 0)
+{
+	Seed.print("*** Initializing forker \n");
+	forker_pipes[0].add_watch(1,
+							  function(source, condition)
+							  {
+								  Seed.print(source.read());
+							  });
+	Gtk.main();
+}
 
 /* Todo (priority order):
 	* Ctrl-click-open-in-new-tab?
@@ -30,7 +44,12 @@ Seed.include("browser-toolbar.js");
 Seed.include("browser-tab.js");
 Seed.include("browser-main.js");
 
+
 Gtk.init(null, null);
+
+forker_pipes[1].write("Testing communication from main to forker,"+
+					  " received");
+
 
 var window = new Gtk.Window({title: "Browser"});
 window.signal.hide.connect(Gtk.main_quit);
