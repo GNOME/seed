@@ -131,7 +131,7 @@ SeedObject turtle_construct(SeedContext ctx,
 	
 	turtle_t * t = g_malloc0(sizeof(turtle_t));
 	
-	t->direction = .3;
+	t->direction = 0;
 	t->x = 50;
 	t->y = 50;
 	t->pen_state = 1;
@@ -149,7 +149,9 @@ void turtle_draw_line(turtle_t * t, float new_x, float new_y)
 	cairo_set_line_width(offscreen, t->width);
 	cairo_move_to(offscreen, t->x, t->y);
 	cairo_line_to(offscreen, new_x, new_y);
-	cairo_stroke(offscreen);
+	
+	if(t->pen_state)
+		cairo_stroke(offscreen);
 	
 	t->x = new_x;
 	t->y = new_y;
@@ -201,10 +203,54 @@ SeedValue turtle_turn_right(SeedContext ctx,
 	t->direction += (M_PI / 180.0) * angle;
 }
 
+SeedValue turtle_pen_color(SeedContext ctx,
+						   SeedObject function,
+						   SeedObject this_object,
+						   size_t argument_count,
+						   const SeedValue arguments[],
+						   SeedException * exception)
+{
+	turtle_t * t = seed_object_get_private(this_object);
+	
+	t->r = seed_value_to_float(ctx, arguments[0], NULL);
+	t->g = seed_value_to_float(ctx, arguments[1], NULL);
+	t->b = seed_value_to_float(ctx, arguments[2], NULL);
+
+	if(argument_count == 4)
+		t->a = seed_value_to_float(ctx, arguments[3], NULL);
+}
+
+SeedValue turtle_pen_up(SeedContext ctx,
+						SeedObject function,
+						SeedObject this_object,
+						size_t argument_count,
+						const SeedValue arguments[],
+						SeedException * exception)
+{
+	turtle_t * t = seed_object_get_private(this_object);
+	
+	t->pen_state = FALSE;
+}
+
+SeedValue turtle_pen_down(SeedContext ctx,
+						  SeedObject function,
+						  SeedObject this_object,
+						  size_t argument_count,
+						  const SeedValue arguments[],
+						  SeedException * exception)
+{
+	turtle_t * t = seed_object_get_private(this_object);
+	
+	t->pen_state = TRUE;
+}
+
 seed_static_function turtle_funcs[] = {
 	{"forward",		turtle_forward,		0},
 	{"turnleft",	turtle_turn_left,	0},
 	{"turnright",	turtle_turn_right,	0},
+	{"pencolor",	turtle_pen_color,	0},
+	{"penup",		turtle_pen_up,		0},
+	{"pendown",		turtle_pen_down,	0},
 	{0,				0,					0}
 };
 
