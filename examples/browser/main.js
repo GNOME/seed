@@ -37,9 +37,17 @@ window.signal.hide.connect(Gtk.main_quit);
 window.resize(800,800);
 window.add_accel_group(initialize_actions());
 
+
+var browserBox = new Gtk.VBox();
+
 var browser = new TabbedBrowser();
 browser.newTab().navigateTo(homePage);
-window.add(browser);
 
+var status = new Gtk.Statusbar();
+
+browserBox.pack_start(browser, true, true);
+browserBox.pack_start(status);
+
+window.add(browserBox);
 window.show_all();
 Gtk.main();

@@ -78,9 +78,11 @@ BrowserTabType = {
 			);
 			
 			
-			s = new Gtk.ScrolledWindow();
-			s.add(this.webView);
-			this.pack_start(s, true, true);
+			var scrollView = new Gtk.ScrolledWindow();
+			scrollView.add(this.webView);
+			scrollView.set_policy(Gtk.PolicyType.automatic,
+								  Gtk.PolicyType.automatic);
+			this.pack_start(scrollView, true, true);
 			this.show_all();
 		}
 	},
@@ -97,6 +99,8 @@ BrowserTabType = {
 				icon_size: Gtk.IconSize.menu}));
 		closeButton.signal.clicked.connect(close_tab, this);
 		closeButton.set_relief(Gtk.ReliefStyle.none);
+	
+		this.progress = new Gtk.ProgressBar({fraction: 0.5});
 	
 		this.title = new Gtk.HBox();
 		this.titleLabel = new Gtk.Label({label:"Untitled"})
