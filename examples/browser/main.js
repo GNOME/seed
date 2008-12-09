@@ -4,7 +4,7 @@ Seed.import_namespace("Gtk");
 Seed.import_namespace("WebKit");
 
 /* Todo (priority order):
-	* Key combos
+	* Key combos (new, close, Ctrl-L, etc)
 	* Ctrl-click-open-in-new-tab?
 	* Progress
 	* Bookmarks
