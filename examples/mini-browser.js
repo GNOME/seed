@@ -3,194 +3,226 @@
 Seed.import_namespace("Gtk");
 Seed.import_namespace("WebKit");
 
-var tabs;
+// Configuration
+var homePage = "http://www.google.com";
+var selectTabOnCreation = false;
+var webKitSettings = new WebKit.WebSettings({enable_developer_extras: true});
 
-function forward(button)
+function current_tab()
 {
-	this.go_forward();
+	return browser.get_nth_page(browser.page);
 }
 
-function back(button)
+function go_back()
 {
-	this.go_back();
+	current_tab().webView.go_back();
+	return false;
 }
 
-function refresh(button)
+function go_forward()
 {
-	this.reload();
+	current_tab().webView.go_forward();
+	return false;
 }
 
-function title_changed(view, title)
+function refresh_page()
 {
-	var tab_title = title.title;
-	
-	if(tab_title.length > 25)
-		tab_title = tab_title.slice(0,25) + "...";
-	
-   this.label = tab_title;
+	current_tab().webView.reload();
+	return false;
 }
 
-function browse(url_entry)
+function close_tab()
 {
-	if (url_entry.text.search("://") < 0)
+	browser.remove_page(browser.page_num(this));
+
+	if(!browser.get_n_pages())
 	{
-		url_entry.text = "http://" + url_entry.text;
+		browser.new_tab().navigateTo(homePage);
 	}
 	
-	this.open(url_entry.text);
+	return false;
 }
 
-function new_tab(browser_view, browser_frame, new_frame)
+function title_changed(webView, webFrame, title, tab)
 {
-	new_frame = new WebKit.WebView();
-
-
-	new_frame.signal.web_view_ready.connect(new_tab_ready, this);
-	return new_frame;
-}
-
-function new_tab_ready(browser_view)
-{
-	this.create_tab_with_webview(0, browser_view);	
-	return true;
-}
-
-function url_changed(browser_view, browser_frame)
-{
-	this.text = browser_frame.get_uri();
-	return true;
-}
-
-function close_tab(button)
-{
-    if(tabs.get_n_pages() > 1)
-    {
-        tabs.remove_page(tabs.page_num(this));
-    }
-}
-
-function create_toolbar(browser_view)
-{
-	var toolbar = new Gtk.HBox();
+	if(title.length > 25)
+		title = title.slice(0,25) + "...";
 	
-	var back_button = new Gtk.ToolButton({stock_id:"gtk-go-back"});
-	back_button.signal.clicked.connect(back, browser_view);
-	
-	var forward_button = new Gtk.ToolButton({stock_id:"gtk-go-forward"});
-	forward_button.signal.clicked.connect(forward, browser_view);
-	
-	var refresh_button = new Gtk.ToolButton({stock_id:"gtk-refresh"});
-	refresh_button.signal.clicked.connect(refresh, browser_view);
-	
-	toolbar.pack_start(back_button);
-	toolbar.pack_start(forward_button);
-	toolbar.pack_start(refresh_button);
-	
-	return toolbar;
+	tab.titleLabel.label = title;
+	return false;
 }
 
-function create_tab(loc)
+function url_changed(webView, webFrame, tab)
 {
-	var browser_view = new WebKit.WebView();
+	tab.toolbar.urlBar.text = webFrame.get_uri();
+	return false;
+}
 
-	settings = new WebKit.WebSettings({enable_developer_extras: true});
-	browser_view.set_settings(settings);
+function new_tab_requested(webView, webFrame, newWebView)
+{
+	newWebView = new WebKit.WebView();
+	newWebView.signal.web_view_ready.connect(new_tab_ready);
+	return newWebView;
+}
 
-	var inspector = browser_view.get_inspector();
+function new_tab_ready(webView)
+{
+	browser.new_tab().setWebView(webView);	
+	return false;
+}
 
-	inspector.signal.inspect_web_view.connect(
-		function()
+function browse(urlBar, tab)
+{
+	if (urlBar.text.search("://") < 0)
+	{
+		urlBar.text = "http://" + urlBar.text;
+	}
+	
+	tab.webView.open(urlBar.text);
+	
+	return false;
+}
+
+BrowserToolbarType = {
+	parent: Gtk.HBox.type,
+	name: "BrowserToolbar",
+	class_init: function(klass, prototype)
+	{
+	},
+	instance_init: function(klass)
+	{
+		this.urlBar = new Gtk.Entry();
+		
+		var back = new Gtk.ToolButton({stock_id:"gtk-go-back"});
+		var forward = new Gtk.ToolButton({stock_id:"gtk-go-forward"});
+		var refresh = new Gtk.ToolButton({stock_id:"gtk-refresh"});
+		
+		back.signal.clicked.connect(go_back);
+		forward.signal.clicked.connect(go_forward);
+		refresh.signal.clicked.connect(refresh_page);
+	
+		this.pack_start(back);
+		this.pack_start(forward);
+		this.pack_start(refresh);
+		this.pack_start(this.urlBar, true, true);
+	}};
+
+BrowserToolbar = new GType(BrowserToolbarType);
+
+BrowserTabType = {
+	parent: Gtk.VBox.type,
+	name: "BrowserTab",
+	class_init: function(klass, prototype)
+	{
+		prototype.navigateTo = function (location)
 		{
-			w = new Gtk.Window();
-			s = new Gtk.ScrolledWindow();
-			w.set_title("Inspector");
+			if(!this.webView)
+				this.setWebView(new WebKit.WebView());
 			
-			w.set_default_size(400, 300);
-
-			view = new WebKit.WebView();
-			s.add(view);
-			w.add(s);
-			
-			w.show_all();
-			
-			return view;
+			this.webView.open(location);
+			this.show_all();
 		}
-		);
-	
-	
-	return create_tab_with_webview(loc, browser_view);
-}
+		
+		prototype.setWebView = function (webView)
+		{
+			if(this.webView)
+				return;
+			
+			this.webView = webView;
+			
+			this.webView.set_scroll_adjustments(null, null);
+			this.webView.signal.title_changed.connect(title_changed, null, this);
+			this.webView.signal.load_committed.connect(url_changed, null, this);
+			this.webView.signal.create_web_view.connect(new_tab_requested, null, this);
+			this.webView.signal.web_view_ready.connect(new_tab_ready, null, this);
+			
+			this.toolbar.urlBar.signal.activate.connect(browse, null, this);
+			
+			webView.set_settings(webKitSettings);
+			var inspector = webView.get_inspector();
 
-function create_tab_with_webview(loc, browser_view)
-{
-	var tab = new Gtk.VBox();
-	
-	var browser_title = new Gtk.Label({label:"Untitled"});
-	
-	var url_entry = new Gtk.Entry();
-	url_entry.signal.activate.connect(browse, browser_view);
+			inspector.signal.inspect_web_view.connect(
+				function()
+				{
+					w = new Gtk.Window();
+					s = new Gtk.ScrolledWindow();
+					w.set_title("Inspector");
+			
+					w.set_default_size(400, 300);
 
-	browser_view.set_scroll_adjustments(null,null);
-	browser_view.signal.title_changed.connect(title_changed, browser_title);
-	browser_view.signal.load_committed.connect(url_changed, url_entry);
-	browser_view.signal.create_web_view.connect(new_tab, this);
-	browser_view.signal.web_view_ready.connect(new_tab_ready, this);
-	
-	if(loc != 0)
-		browser_view.open(loc);
-	
-	var toolbar = create_toolbar(browser_view);
-	toolbar.pack_start(url_entry, true, true);
-	
-	tab.pack_start(toolbar);
-	tab.pack_start(browser_view, true, true);
-	
-	var close_button = new Gtk.Button();
-	close_button.set_image(new Gtk.Image({stock: "gtk-close", 
-			icon_size: Gtk.IconSize.menu}));
-	close_button.signal.clicked.connect(close_tab, tab);
-	close_button.set_relief(Gtk.ReliefStyle.none);
-	
-	var tab_header = new Gtk.HBox();
-	tab_header.pack_start(browser_title);
-	tab_header.pack_start(close_button);
-	tab_header.show_all();
-	
-	tabs.append_page(tab, tab_header);
-	tabs.set_tab_reorderable(tab, true);
-	tabs.show_all();
-	
-	return tabs;
-}
+					view = new WebKit.WebView();
+					s.add(view);
+					w.add(s);
+			
+					w.show_all();
+			
+					return view;
+				}
+			);
+			
+			this.pack_start(this.webView, true, true);
+			this.show_all();
+		}
+	},
+	instance_init: function(klass)
+	{
+		this.webView = null;
+		
+		this.toolbar = new BrowserToolbar();
 
-function create_ui()
-{
-	var vbox = new Gtk.VBox();
+		this.pack_start(this.toolbar);
 	
-	tabs = new Gtk.Notebook();
-	tabs.create_tab = create_tab;
-	tabs.create_tab_with_webview = create_tab_with_webview;
+		var closeButton = new Gtk.Button();
+		closeButton.set_image(new Gtk.Image({stock: "gtk-close", 
+				icon_size: Gtk.IconSize.menu}));
+		closeButton.signal.clicked.connect(close_tab, this);
+		closeButton.set_relief(Gtk.ReliefStyle.none);
 	
-	tabs.create_tab("http://www.reddit.com/");
-	tabs.create_tab("http://www.google.com/");
-	vbox.pack_start(tabs, true, true);
-	
-	return vbox;
-}
+		this.title = new Gtk.HBox();
+		this.titleLabel = new Gtk.Label({label:"Untitled"})
+		this.title.pack_start(this.titleLabel);
+		this.title.pack_start(closeButton);
+		this.title.show_all();
+		
+		this.show_all();
+	}};
 
-function browser_init()
-{
-	Gtk.init(null, null);
+BrowserTab = new GType(BrowserTabType);
 
-	var window = new Gtk.Window({title: "Browser"});
-	window.signal.hide.connect(Gtk.main_quit);
-	window.resize(800,800);
-	
-	window.add(create_ui());
-	
-	window.show_all();
-	Gtk.main();
-}
+TabbedBrowserType = {
+	parent: Gtk.Notebook.type,
+	name: "TabbedBrowser",
+	class_init: function(klass, prototype)
+	{
+		prototype.new_tab = function ()
+		{
+			var tab = new BrowserTab();
+			
+			this.append_page(tab, tab.title);
+			this.set_tab_reorderable(tab, true);
+			
+			if(selectTabOnCreation)
+				this.page = this.get_n_pages() - 1;
+			
+			return tab;
+		}
+	},
+	instance_init: function(klass)
+	{
+		
+	}};
 
-browser_init();
+TabbedBrowser = new GType(TabbedBrowserType);
 
+Gtk.init(null, null);
+
+var window = new Gtk.Window({title: "Browser"});
+window.signal.hide.connect(Gtk.main_quit);
+window.resize(800,800);
+
+var browser = new TabbedBrowser();
+browser.new_tab().navigateTo(homePage);
+window.add(browser);
+
+window.show_all();
+Gtk.main();
