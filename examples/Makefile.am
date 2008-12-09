@@ -1,7 +1,8 @@
 SUBDIRS = ide \
           lightsoff \
           clutter-shader \
-          glib 
+          glib \
+          browser
           
 examplesdir=$(datadir)/doc/seed/examples
 examples_DATA = \
@@ -15,7 +16,6 @@ examples_DATA = \
 	poppler.js \
 	json-packing.js \
 	ls.js \
-	mini-browser.js \
 	n-oscillator.js \
 	notify-test.js \
 	pango-fontset.js \
@@ -36,7 +36,6 @@ EXTRA_DIST = \
 	poppler.js \
 	json-packing.js \
 	ls.js \
-	mini-browser.js \
 	n-oscillator.js \
 	notify-test.js \
 	pango-fontset.js \
