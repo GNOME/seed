@@ -47,6 +47,7 @@ EXTRA_DIST = \
     fork.js \
     quit.js \
     introspect.js \
+    builtin-argument-length.js \
     make-test.py
 
 
