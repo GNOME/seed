@@ -153,22 +153,6 @@ else
         Seed.print("From Child");
 }
 </pre>
-<div class="section"><b>Seed.setTimeout</b>(code, timeout)</div>
-<p>
-Evaluates a given segment of Javascript after <i>timeout</i> milliseconds. Keep in mind that this is evaluated in the global context, so local variables surrounding the call to setTimeout will not be available! Also, setTimeout will <b>only</b> work while a GLib main loop is running (after you've called Gtk.main(), etc.).
-</p>
-<div class="section"><b>Seed.prototype</b>(constructor)</div>
-<p>
-Returns the prototype for an object created with <i>constructor</i>. This can be used to add methods to all future objects of a particular class.
-</p>
-<pre>
-Seed.prototype(Gio.FileInputStream).get_contents = function()
-{
-	var stream = Gio.DataInputStream._new(this);
-	var line = stream.read_until("", 0);
-	return line;	
-}
-</pre>
 <div class="section"><b>Seed.introspect</b>(function)</div>
 <p>
 Returns an object containing information about the function, its arguments, etc. This will eventually support introspection of a wider variety of Javascript types.
@@ -195,11 +179,12 @@ Seed.print(Seed.stringify(method));
 <p>
 An array representing the arguments passed to the <code>seed</code> interpreter.
 </p>
-<div class="section"><b>Seed.quit(<i>exitcode</i>)</b></div>
+<div class="section"><b>Seed.quit</b>(<i>exitcode</i>)</div>
 <p>
 Terminates the execution of the Seed interpreter, returning <i>exitcode</i> as the exit value of the program.
 </p>
-<div class="section"><b><i>object</i>.signal.<i>signame</i>.connect</b>(function<i>, context, user_data </i>)</div>
+<div class="section"><b><i>object</i>.signal.<i>signame</i>.connect</b>(function<i>, context, user_data</i>)<br/>
+<b><i>object</i>.connect</b>(signame, function, <i>user_data</i>)</div>
 <p>
 Connects <i>function</i> to the signal, <i>signame</i>, on <i>object</i>. Any GObject signal will work. <i>context</i> is passed to the signal handler as the <code>this</code> object; if omitted, the global context is used. If present, user_data is passed as the last argument to the callback.
 </p>
@@ -211,6 +196,18 @@ function button_clicked()
 
 var button = new Gtk.Button();
 button.signal.clicked.connect(button_clicked);
+</pre>
+<p>
+The second form is useful if you want to connect to detailed signals; for example, <b>notify::</b> signals on an object's properties:
+</p>
+<pre>
+function handle_opacity_change(obj, gobject, user_data)
+{
+    Seed.print("Window " + obj + "'s opacity was changed!");
+}
+
+win = new Gtk.Window();
+win.signal.connect("notify::opacity", handle_opacity_change);
 </pre>
 <div class="section"><b>Exceptions</b></div>
 <p>
@@ -245,6 +242,20 @@ catch(e)
 <li><b>line</b> - the line on which the exception took place</li>
 <li><b>sourceURL</b> - the source file, if any, in which the exception took place</li>
 </ul>
+<p>
+Just as in Javascript, you can throw an exception manually with the <b>throw</b> function, passing it an object - either a new object, with the properties listed above (for consistency), or an arbitrary object:
+</p>
+<pre>
+try
+{
+    if(!http.connect("http://google.com"))
+        throw { name: "HTTPConnectionError", message: "404 File Not Found" }
+}
+catch(e)
+{
+    // e.message = "404 File Not Found"
+}
+</pre>
 <div class="section"><b>Inheritance</b></div>
 <p>
 JavaScript being a prototypal language, rather than a class based language, has no strict inheritance model. A plethora of documentation can be found on the internet for implementing various inheritance models inside your program. However, a clear and common use case is to subclass GObjects, and Seed provides an interface to define and implement new GTypes.

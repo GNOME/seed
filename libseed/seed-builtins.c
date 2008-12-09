@@ -23,9 +23,6 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <string.h>
-#include <sys/mman.h>
-
-JSClassRef seed_native_callback_class;
 
 static JSValueRef
 seed_include(JSContextRef ctx,
