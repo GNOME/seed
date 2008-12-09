@@ -3,10 +3,58 @@
 Seed.import_namespace("Gtk");
 Seed.import_namespace("WebKit");
 
+/* Todo (priority order):
+	* Key combos
+	* Ctrl-click-open-in-new-tab?
+	* Progress
+	* Bookmarks
+	* FIND IN PAGE
+	* History
+	* Search bar
+	* Zoom
+	* View source (or is web inspector enough? it's nicer than anything I can do)
+	* Save / open local files
+	* printinglol?
+	* cookies?? do they not happen magically?
+	* favicon
+	* Settings manager
+	* Status bar (hover, etc)
+*/
+
 // Configuration
 var homePage = "http://www.google.com";
 var selectTabOnCreation = false;
 var webKitSettings = new WebKit.WebSettings({enable_developer_extras: true});
+
+// Actions
+function initialize_actions()
+{
+	actions = new Gtk.ActionGroup({name:"toolbar"});
+
+	accels = new Gtk.AccelGroup();
+
+	var new_tab_action = new Gtk.Action({name:"new", label:"New Tab",
+		                                 tooltip:"New Tab", stock_id:"gtk-new"});
+	new_tab_action.set_accel_group(accels);
+	actions.add_action_with_accel(new_tab_action, "<Control>t");
+	new_tab_action.connect_accelerator();
+	new_tab_action.signal.activate.connect(
+		function ()
+		{
+			browser.newTab().navigateTo(homePage);
+			browser.page = browser.get_n_pages() - 1;
+		}
+	);
+
+	var close_tab_action = new Gtk.Action({name:"close", label:"Close",
+		                                   tooltip:"Close Tab", stock_id:"gtk-close"});
+	close_tab_action.set_accel_group(accels);
+	actions.add_action_with_accel(close_tab_action, "<Control>w");
+	close_tab_action.connect_accelerator();
+	close_tab_action.signal.activate.connect(close_tab);
+	
+	return accels;
+}
 
 function current_tab()
 {
@@ -33,11 +81,11 @@ function refresh_page()
 
 function close_tab()
 {
-	browser.remove_page(browser.page_num(this));
+	browser.remove_page(browser.page_num(current_tab()));
 
 	if(!browser.get_n_pages())
 	{
-		browser.new_tab().navigateTo(homePage);
+		browser.newTab().navigateTo(homePage);
 	}
 	
 	return false;
@@ -58,16 +106,16 @@ function url_changed(webView, webFrame, tab)
 	return false;
 }
 
-function new_tab_requested(webView, webFrame, newWebView)
+function newTab_requested(webView, webFrame, newWebView)
 {
 	newWebView = new WebKit.WebView();
-	newWebView.signal.web_view_ready.connect(new_tab_ready);
+	newWebView.signal.web_view_ready.connect(newTab_ready);
 	return newWebView;
 }
 
-function new_tab_ready(webView)
+function newTab_ready(webView)
 {
-	browser.new_tab().setWebView(webView);	
+	browser.newTab().setWebView(webView);	
 	return false;
 }
 
@@ -133,8 +181,8 @@ BrowserTabType = {
 			this.webView.set_scroll_adjustments(null, null);
 			this.webView.signal.title_changed.connect(title_changed, null, this);
 			this.webView.signal.load_committed.connect(url_changed, null, this);
-			this.webView.signal.create_web_view.connect(new_tab_requested, null, this);
-			this.webView.signal.web_view_ready.connect(new_tab_ready, null, this);
+			this.webView.signal.create_web_view.connect(newTab_requested, null, this);
+			this.webView.signal.web_view_ready.connect(newTab_ready, null, this);
 			
 			this.toolbar.urlBar.signal.activate.connect(browse, null, this);
 			
@@ -160,7 +208,10 @@ BrowserTabType = {
 				}
 			);
 			
-			this.pack_start(this.webView, true, true);
+			
+			s = new Gtk.ScrolledWindow();
+			s.add(this.webView);
+			this.pack_start(s, true, true);
 			this.show_all();
 		}
 	},
@@ -194,7 +245,7 @@ TabbedBrowserType = {
 	name: "TabbedBrowser",
 	class_init: function(klass, prototype)
 	{
-		prototype.new_tab = function ()
+		prototype.newTab = function ()
 		{
 			var tab = new BrowserTab();
 			
@@ -219,9 +270,10 @@ Gtk.init(null, null);
 var window = new Gtk.Window({title: "Browser"});
 window.signal.hide.connect(Gtk.main_quit);
 window.resize(800,800);
+window.add_accel_group(initialize_actions());
 
 var browser = new TabbedBrowser();
-browser.new_tab().navigateTo(homePage);
+browser.newTab().navigateTo(homePage);
 window.add(browser);
 
 window.show_all();
