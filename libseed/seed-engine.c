@@ -1305,6 +1305,8 @@ SeedEngine * seed_init(gint * argc, gchar *** argv)
 {
 	JSObjectRef seed_obj_ref;
 	JSStringRef defaults_script;
+	
+	signal(SIGCHLD, SIG_IGN);
 
 	g_type_init();
 	g_log_set_handler("GLib-GObject", G_LOG_LEVEL_WARNING, seed_log_handler, 0);
