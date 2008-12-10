@@ -6,28 +6,45 @@ SeedEngine * eng;
 SeedObject namespace_ref;
 SeedClass pipe_class;
 
+typedef struct _pipe_priv
+{
+	GIOChannel * read;
+	GIOChannel * write;
+} pipe_priv;
+
 SeedObject seed_construct_pipe(SeedContext ctx,
 							   SeedObject constructor,
 							   size_t argument_count,
 							   const SeedValue arguments[],
 							   SeedException * exception)
 {
-	GIOChannel *one, *two;
+	GIOChannel *oner, *onew, twor, twow;
 	SeedObject jsone, jstwo, jsret;
-	int fd[2];
+	int fd1[2], fd2[2];
+	pipe_priv * priv_one, * priv_two;
 	
-	if (pipe(fd) < 0)
+	if (pipe(fd1) < 0)
+	{
+		perror("Pipe failed. Make me a javascript exception");
+		return seed_make_null(ctx);
+	}
+	if (pipe(fd2) < 0)
 	{
 		perror("Pipe failed. Make me a javascript exception");
 		return seed_make_null(ctx);
 	}
 	
-	one = g_io_channel_unix_new(fd[0]);
-	two = g_io_channel_unix_new(fd[1]);
+	priv_one = g_new0(pipe_priv, 1);
+	priv_two = g_new0(pipe_priv, 1);
+	
+	priv_one->read = g_io_channel_unix_new(fd1[0]);
+	priv_one->write = g_io_channel_unix_new(fd2[1]);
+	priv_two->read = g_io_channel_unix_new(fd2[0]);
+	priv_two->write = g_io_channel_unix_new(fd1[1]);
 	
 	jsret = seed_make_object(ctx, 0, 0);
-	jsone = seed_make_object(ctx, pipe_class, one);
-	jstwo = seed_make_object(ctx, pipe_class, two);
+	jsone = seed_make_object(ctx, pipe_class, priv_one);
+	jstwo = seed_make_object(ctx, pipe_class, priv_two);
 	
 	seed_object_set_property_at_index(ctx, jsret, 0, jsone, exception);
 	seed_object_set_property_at_index(ctx, jsret, 1, jstwo, exception);
@@ -35,7 +52,7 @@ SeedObject seed_construct_pipe(SeedContext ctx,
 	return jsret;
 }
 
-#define GET_CHANNEL GIOChannel * channel =  \
+#define GET_CHANNEL pipe_priv * priv =  \
 		seed_object_get_private(this_object)
 
 
@@ -50,7 +67,7 @@ SeedValue seed_pipe_read (SeedContext ctx,
 	gchar * read;
 	GET_CHANNEL;
 
-	g_io_channel_read_line(channel, &read, 0, 0, 0);
+	g_io_channel_read_line(priv->read, &read, 0, 0, 0);
 	ret = seed_value_from_string(ctx, read, exception);
 	g_free(read);
 	
@@ -83,6 +100,9 @@ static gboolean gio_marshal_func(GIOChannel * source,
 	
 	bret = seed_value_to_boolean(ctx, ret, 0);
 	seed_context_unref(ctx);
+	
+	if (!bret)
+		g_free(priv);
 
 	return bret;
 }
@@ -100,9 +120,9 @@ SeedValue seed_pipe_write (SeedContext ctx,
 	GET_CHANNEL;
 	
 	data = seed_value_to_string(ctx, arguments[0], exception);
-	g_io_channel_write_chars(channel, data, -1, &written, 0);
-	g_io_channel_write_chars(channel, &eol, 1, 0, 0);
-	g_io_channel_flush(channel, 0);
+	g_io_channel_write_chars(priv->write, data, -1, &written, 0);
+	g_io_channel_write_chars(priv->write, &eol, 1, 0, 0);
+	g_io_channel_flush(priv->write, 0);
 
 	return seed_value_from_int(ctx, written, exception);
 }
@@ -115,14 +135,14 @@ SeedValue seed_pipe_add_watch (SeedContext ctx,
 								 SeedException * exception)
 {
 	GET_CHANNEL;
-	marshal_privates * priv = g_malloc0(sizeof(marshal_privates));
+	marshal_privates * mpriv = g_malloc0(sizeof(marshal_privates));
 	glong condition = seed_value_to_long(ctx, arguments[0], exception);
 	
-	priv->function = arguments[1];
-	priv->source = this_object;
-	priv->user_data = argument_count == 3 ? arguments[2] : seed_make_null(ctx);
+	mpriv->function = arguments[1];
+	mpriv->source = this_object;
+	mpriv->user_data = argument_count == 3 ? arguments[2] : seed_make_null(ctx);
 	
-	g_io_add_watch(channel, condition, gio_marshal_func, priv);
+	g_io_add_watch(priv->read, condition, gio_marshal_func, mpriv);
 	
 	return seed_value_from_boolean(ctx, TRUE, exception);
 }

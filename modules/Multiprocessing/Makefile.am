@@ -13,7 +13,7 @@ AM_CPPFLAGS = \
 	`pkg-config --cflags glib-2.0` -g \
 	`pkg-config --cflags gobject-introspection-1.0`
 
-EXTRA_DIST = fork.js
+EXTRA_DIST = fork.js bi.js
 
 libdir = ${exec_prefix}/lib/seed
 
