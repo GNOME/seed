@@ -12,6 +12,14 @@ typedef struct _pipe_priv
 	GIOChannel * write;
 } pipe_priv;
 
+void pipe_finalize(SeedObject pipeobj)
+{
+	pipe_priv * priv = seed_object_get_private(pipeobj);
+	g_io_channel_unref(priv->read);
+	g_io_channel_unref(priv->write);
+	g_free(priv);
+}
+
 SeedObject seed_construct_pipe(SeedContext ctx,
 							   SeedObject constructor,
 							   size_t argument_count,
@@ -41,6 +49,11 @@ SeedObject seed_construct_pipe(SeedContext ctx,
 	priv_one->write = g_io_channel_unix_new(fd2[1]);
 	priv_two->read = g_io_channel_unix_new(fd2[0]);
 	priv_two->write = g_io_channel_unix_new(fd1[1]);
+	
+	g_io_channel_set_close_on_unref(priv_one->read, TRUE);
+	g_io_channel_set_close_on_unref(priv_one->write, TRUE);
+	g_io_channel_set_close_on_unref(priv_two->read, TRUE);
+	g_io_channel_set_close_on_unref(priv_two->write, TRUE);
 	
 	jsret = seed_make_object(ctx, 0, 0);
 	jsone = seed_make_object(ctx, pipe_class, priv_one);
@@ -163,6 +176,7 @@ void seed_module_init(SeedEngine * local_eng)
 	
 	pipe_class_def.class_name = "Pipe";
 	pipe_class_def.static_functions = pipe_funcs;
+	pipe_class_def.finalize = pipe_finalize;
 
 	pipe_class = seed_create_class(&pipe_class_def);
 	
