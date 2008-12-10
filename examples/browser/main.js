@@ -9,11 +9,8 @@ var forker_pid = Seed.fork();
 if (forker_pid == 0)
 {
 	Seed.print("*** Initializing forker \n");
-	forker_pipes[0].add_watch(1,
-							  function(source, condition)
-							  {
-								  Seed.print(source.read());
-							  });
+	Seed.print(forker_pipes[0].read());
+	forker_pipes[0].write("And the other direction!");
 	Gtk.main();
 }
 
@@ -23,7 +20,7 @@ if (forker_pid == 0)
 	* Bookmarks
 	* FIND IN PAGE
 	* History
-	* Search bar
+	* Search  bar
 	* Zoom
 	* View source (or is web inspector enough? it's nicer than anything I can do)
 	* Save / open local files
@@ -49,7 +46,7 @@ Gtk.init(null, null);
 
 forker_pipes[1].write("Testing communication from main to forker,"+
 					  " received");
-
+Seed.print(forker_pipes[1].read());
 
 var window = new Gtk.Window({title: "Browser"});
 window.signal.hide.connect(Gtk.main_quit);
