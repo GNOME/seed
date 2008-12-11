@@ -4,7 +4,7 @@ Seed.import_namespace("Pango");
 Seed.import_namespace("PangoFT2");
 
 context = new Pango.Context();
-description = Pango.FontDescription._new();
+description = new Pango.FontDescription();
 description.set_family("");
 
 fontmap = new PangoFT2.FontMap();
