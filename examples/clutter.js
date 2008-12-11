@@ -55,16 +55,16 @@ var rheight = stage.height/(colors.length);
 var width = stage.width;
 var rectangles = new Array(colors.length);
 
-var black = Clutter.Color._new();
+var black = new Clutter.Color();
 Clutter.color_parse("Black", black);
-var white = Clutter.Color._new();
+var white = new Clutter.Color();
 Clutter.color_parse("White", white);
 
 stage.color = black;
 
 for (var i = 0; i < colors.length; i++)
 {
-	var c = Clutter.Color._new();
+	var c = new Clutter.Color();
 	Clutter.color_parse(colors[i],c);
 	
 	var r = new Clutter.Rectangle();
