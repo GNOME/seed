@@ -369,27 +369,24 @@ seed_gobject_method_invoked(JSContextRef ctx,
 				GIFunctionInfoFlags flags =
 					g_function_info_get_flags((GIFunctionInfo *) info);
 
-				if (flags & GI_FUNCTION_IS_CONSTRUCTOR)
+				GIBaseInfo *interface;
+				GIInfoType interface_type;
+				
+				interface = g_type_info_get_interface(type_info);
+				interface_type = g_base_info_get_type(interface);
+				g_base_info_unref(interface);
+				
+				if (interface_type == GI_INFO_TYPE_OBJECT ||
+					interface_type == GI_INFO_TYPE_INTERFACE)
 				{
-					GIBaseInfo *interface;
-					GIInfoType interface_type;
-
-					interface = g_type_info_get_interface(type_info);
-					interface_type = g_base_info_get_type(interface);
-					g_base_info_unref(interface);
-
-					if (interface_type == GI_INFO_TYPE_OBJECT ||
-						interface_type == GI_INFO_TYPE_INTERFACE)
+					if (G_IS_OBJECT(retval.v_pointer))
 					{
-						if (G_IS_OBJECT(retval.v_pointer))
-						{
-							sunk =
+						sunk =
 							g_object_is_floating(G_OBJECT(retval.v_pointer));
-							g_object_ref_sink(G_OBJECT(retval.v_pointer));
-						}
+						g_object_ref_sink(G_OBJECT(retval.v_pointer));
 					}
-
 				}
+				
 			}
 			retval_ref =
 				seed_gi_argument_make_js(ctx, &retval, type_info, exception);
