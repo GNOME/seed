@@ -468,14 +468,17 @@ seed_gobject_define_property_from_function_info(JSContextRef ctx,
 		return;
 	}
 
-	method_ref = JSObjectMake(ctx, gobject_method_class, info);
+	method_ref = JSObjectMake(ctx, gobject_method_class, 
+							  g_base_info_ref((GIBaseInfo *)info));
 
 	name = g_base_info_get_name((GIBaseInfo *) info);
 	if (!strcmp(name, "new"))
 		name = "_new";
 	seed_object_set_property(ctx, object, name, method_ref);
 	seed_object_set_property(ctx, method_ref, "info", 
-	        	seed_make_struct(ctx, info, base_info_info));
+							 seed_make_struct(ctx, 
+							  g_base_info_ref((GIBaseInfo *)info), 
+											  base_info_info));
 
 }
 
@@ -1081,7 +1084,7 @@ seed_gi_import_namespace(JSContextRef ctx,
 									 constant_value);
 
 		}
-
+		g_base_info_unref(info);
 	}
 
 	jsextension =
