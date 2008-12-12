@@ -32,7 +32,44 @@ SeedObject canvas_construct_canvas_from_cairo(SeedContext ctx, cairo_t * cr,
 							 seed_value_from_string(ctx, "butt", exception));
 	seed_object_set_property(ctx, obj, "lineJoin",
 							 seed_value_from_string(ctx, "miter", exception));
+	seed_object_set_property(ctx, obj, "cairo",
+							 seed_make_pointer(ctx, cr));
 	
+	return obj;
+}
+
+SeedObject seed_construct_image_canvas(SeedContext ctx,
+								   SeedObject constructor,
+								   size_t argument_count,
+								   const SeedValue arguments[],
+								   SeedException * exception)
+{
+	SeedObject obj;
+	cairo_surface_t * surface;
+	cairo_t * cr;
+	gchar * filename;
+	gdouble width, height;
+	
+	if (argument_count != 3)
+	{
+		seed_make_exception(ctx, exception, "ArgumentError",
+							"Canvas.PDFCanvas constructor expected"
+							"3 arguments");
+		return (SeedObject)seed_make_null(ctx);
+	}
+	
+	filename = seed_value_to_string(ctx, arguments[0], exception);
+
+	width = seed_value_to_double(ctx, arguments[1], exception);
+	height = seed_value_to_double(ctx, arguments[2], exception);
+	
+	surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,
+										 width, height);
+	cr = cairo_create(surface);
+	cairo_surface_destroy(surface);
+	
+	obj = canvas_construct_canvas_from_cairo(ctx, cr, exception);
+
 	return obj;
 }
 
@@ -786,7 +823,8 @@ seed_static_value canvas_properties[] = {
 
 void seed_module_init(SeedEngine * local_eng)
 {
-	SeedObject canvas_constructor, pdf_constructor, svg_constructor;
+	SeedObject canvas_constructor, pdf_constructor,
+		       svg_constructor, image_constructor;
 	seed_class_definition canvas_class_def = seed_empty_class;
 
 	eng = local_eng;
@@ -815,11 +853,17 @@ void seed_module_init(SeedEngine * local_eng)
 											   canvas_class,
 											   canvas_construct_svg_canvas);
 	
+	image_constructor = seed_make_constructor(eng->context,
+											  canvas_class,
+											  seed_construct_image_canvas);
+	
 	seed_object_set_property(eng->context, namespace_ref, "CairoCanvas",
 	canvas_constructor);
 	seed_object_set_property(eng->context, namespace_ref, "PDFCanvas",
 	pdf_constructor);
 	seed_object_set_property(eng->context, namespace_ref, "SVGCanvas",
+	svg_constructor);
+	seed_object_set_property(eng->context, namespace_ref, "ImageCanvas",
 	svg_constructor);
 	  
 }
