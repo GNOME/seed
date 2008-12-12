@@ -18,7 +18,7 @@ TabbedBrowserType = {
 	},
 	instance_init: function(klass)
 	{
-		
+		this.scrollable = true;
 	}};
 
 TabbedBrowser = new GType(TabbedBrowserType);

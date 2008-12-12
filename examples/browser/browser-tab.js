@@ -9,6 +9,8 @@ function title_changed(webView, webFrame, title, tab)
 
 function url_changed(webView, webFrame, tab)
 {
+	tab.toolbar.back.sensitive = webView.can_go_back();
+	tab.toolbar.forward.sensitive = webView.can_go_forward();
 	tab.toolbar.urlBar.text = webFrame.get_uri();
 	return false;
 }
@@ -53,7 +55,40 @@ BrowserTabType = {
 			this.webView.signal.create_web_view.connect(new_tab_requested, null, this);
 			this.webView.signal.web_view_ready.connect(new_tab_ready, null, this);
 			
+			this.webView.full_content_zoom = true;
+			
+			this.webView.signal.load_started.connect(
+				function()
+          		{
+					// At least on the Eee, the progress bar is bigger than the
+					// default status bar, so the status bar size changes when we hide/show 
+          			progressBar.show();
+					progressBar.fraction = 0;
+					// Questionable UI decision.
+					progressBar.pulse();
+           		});
+			this.webView.signal.load_progress_changed.connect(
+				function(view, progress)
+           		{
+					progressBar.fraction = progress/100;
+           		});
+           	this.webView.signal.load_finished.connect(
+           		function()
+           		{
+           			progressBar.hide();
+           		});
+					
+			this.webView.signal.hovering_over_link.connect(
+				function(view, link, uri)
+         		{
+					status.pop(hoverContextId);
+					status.push(hoverContextId, uri);
+           		});
+			
 			this.toolbar.urlBar.signal.activate.connect(browse, null, this);
+			this.toolbar.back.sensitive = this.webView.can_go_back();
+			this.toolbar.forward.sensitive = this.webView.can_go_forward();
+
 			
 			webView.set_settings(webKitSettings);
 			var inspector = webView.get_inspector();
@@ -97,7 +132,7 @@ BrowserTabType = {
 		var closeButton = new Gtk.Button();
 		closeButton.set_image(new Gtk.Image({stock: "gtk-close", 
 				icon_size: Gtk.IconSize.menu}));
-		closeButton.signal.clicked.connect(close_tab, this);
+		closeButton.signal.clicked.connect(close_tab, null, this);
 		closeButton.set_relief(Gtk.ReliefStyle.none);
 	
 		this.progress = new Gtk.ProgressBar({fraction: 0.5});
@@ -108,7 +143,13 @@ BrowserTabType = {
 		this.title.pack_start(closeButton);
 		this.title.show_all();
 		
+/*		forker_pipe.write("fork");
+		this.pid = parseInt(forker_pipe.read());
+		Seed.print("new pid: " + this.pid);*/
+		
+		
 		this.show_all();
+		this.toolbar.urlBar.grab_focus();
 	}};
 
 BrowserTab = new GType(BrowserTabType);
