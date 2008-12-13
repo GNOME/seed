@@ -19,7 +19,7 @@ ctx.fillRect (30, 30, 55, 50);
 c.width = c.height = 100;
 c.x = c.y = 100;
 
-ctx.destroy()SW;
+ctx.destroy();
 
 s = new Clutter.Stage();
 
