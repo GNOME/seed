@@ -7,6 +7,7 @@ SUBDIRS = ide \
 examplesdir=$(datadir)/doc/seed/examples
 examples_DATA = \
 	actions.js \
+	clutter-cairo.js \ 
 	calculator.js \
 	gconf.js \
 	video.js \
@@ -28,6 +29,7 @@ examples_DATA = \
 EXTRA_DIST = \
 	actions.js \
 	calculator.js \
+	clutter-cairo.js \
 	gconf.js \
 	video.js \
 	accelgroup.js \
