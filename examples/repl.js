@@ -1,13 +1,16 @@
 #!/usr/bin/env seed
 
-while(1)
+with (Seed)
 {
-	try
+	while(1)
 	{
-		Seed.print(eval(Seed.readline("> ")));
-	}
-	catch(e)
-	{
-		Seed.print(e.name + " " + e.message);
+		try
+		{
+			print(eval(readline("> ")));
+		}
+		catch(e)
+		{
+			print(e.name + " " + e.message);
+		}
 	}
 }
