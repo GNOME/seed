@@ -779,9 +779,24 @@ SeedValue seed_canvas_showpage (SeedContext ctx,
 	return seed_make_null(ctx);
 }
 
+SeedValue seed_canvas_destroy (SeedContext ctx,
+								 SeedObject function,
+								 SeedObject this_object,
+								 size_t argument_count,
+								 const SeedValue arguments[],
+								 SeedException * exception)
+{
+	GET_CR;
+	cairo_destroy(cr);
+	
+	return seed_make_null(ctx);
+}
+
 static void canvas_finalize(SeedObject object)
 {
-	cairo_destroy((cairo_t *)seed_object_get_private(object));
+	cairo_t * cr = seed_object_get_private(object);
+	if (cr)
+		cairo_destroy(cr);
 }
 
 seed_static_function canvas_funcs[] = {
@@ -809,6 +824,7 @@ seed_static_function canvas_funcs[] = {
 	{"flush", seed_canvas_flush, 0},
 	{"finish", seed_canvas_finish, 0},
 	{"showPage", seed_canvas_showpage, 0},
+	{"destroy", seed_canvas_destroy, 0},
 	{0, 0, 0}
 };
 
