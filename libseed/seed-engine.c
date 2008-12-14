@@ -189,7 +189,7 @@ seed_gobject_constructor_invoked(JSContextRef ctx,
 	if (jsprops)
 		JSPropertyNameArrayRelease(jsprops);
 
-	gobject = g_object_newv(type, nparams, params);
+	gobject = g_object_new(type, NULL);
 
 	g_object_ref_sink(gobject);
 
@@ -197,6 +197,11 @@ seed_gobject_constructor_invoked(JSContextRef ctx,
 		ret = (JSObjectRef) JSValueMakeNull(ctx);
 	else
 		ret = (JSObjectRef) seed_value_from_object(ctx, gobject, exception);
+	
+	for (i = 0; i < nparams; i++)
+	{
+		g_object_set_property(gobject, params[i].name, &params[i].value);
+	}
 
 	g_object_unref(gobject);
 
