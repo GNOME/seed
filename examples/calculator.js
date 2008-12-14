@@ -87,7 +87,7 @@ function pack_buttons(buttons, vbox)
 function create_button(str, func)
 {
 	var btn = new Gtk.Button({label:str});
-	btn.signal.clicked.connect(func, null, btn);
+	btn.signal.clicked.connect(func);
 	return btn;
 }
 
