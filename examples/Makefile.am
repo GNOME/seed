@@ -19,8 +19,6 @@ examples_DATA = \
 	ls.js \
 	n-oscillator.js \
 	notify-test.js \
-	pango-fontset.js \
-	pango.js \
 	quine.js \
 	repl.js \
 	soup.js \
@@ -40,8 +38,6 @@ EXTRA_DIST = \
 	ls.js \
 	n-oscillator.js \
 	notify-test.js \
-	pango-fontset.js \
-	pango.js \
 	quine.js \
 	repl.js \
 	soup.js \
