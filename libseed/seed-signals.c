@@ -353,17 +353,23 @@ seed_gobject_signal_connect_on_property(JSContextRef ctx,
 									(JSObjectRef) arguments[0], NULL, NULL);
 	
 	if (argumentCount == 2)
+	{
+		g_warning("Deprecated signal this usage");
 		seed_gobject_signal_connect(ctx, privates->signal_name,
 									privates->object,
 									(JSObjectRef) arguments[0],
 									(JSObjectRef) arguments[1], NULL);
+	}
 
 	if (argumentCount == 3)
+	{
+		g_warning("Deprecated signal this usage");
 		seed_gobject_signal_connect(ctx, privates->signal_name,
 									privates->object,
 									(JSObjectRef) arguments[0],
 									(JSObjectRef) arguments[1],
 									(JSObjectRef) arguments[2]);
+	}
 	
 	return 0;
 }
