@@ -388,7 +388,7 @@ seed_handle_class_init_closure(ffi_cif * cif,
 						 &seed_property_method_invoked,
 						 (JSObjectRef) jsargs[0]);
 
-	JSObjectCallAsFunction(ctx, function, 0, 2, jsargs, 0);
+	JSObjectCallAsFunction(ctx, function, 0, 2, jsargs, &exception);
 	if (exception)
 	{
 		gchar *mes = seed_exception_to_string(ctx, 
