@@ -15,8 +15,8 @@ with (Gtk)
 	vte.signal.window_title_changed.connect
 		(function(terminal)
 		 {
-			 this.set_title(terminal.get_window_title());
-		 }, window);
+			 window.set_title(terminal.get_window_title());
+		 });
 
 
 	scroll.add(vte);
