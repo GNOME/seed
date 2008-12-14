@@ -10,65 +10,65 @@ Gtk.init(null, null);
 function oscillator(freq)
 {
 	this.vbox = new Gtk.VBox();
-	this.hbox = new Gtk.HBox();
-	this.vscale = new Gtk.VScale();
-	this.volscale = new Gtk.VScale();
-	this.button = new Gtk.Button({label: "Toggle"});
+	var hbox = new Gtk.HBox();
+	var vscale = new Gtk.VScale();
+	var volscale = new Gtk.VScale();
+	var button = new Gtk.Button({label: "Toggle"});
 	
-	this.pipeline = new Gst.Pipeline({name: "test"});
+	var pipeline = new Gst.Pipeline({name: "test"});
 	// No actual introspection data for audiotestsrc, so can not
 	// instantiate one with a constructor, have to use element_factory,
 	// likewise for the others.
-	this.audiosrc = Gst.ElementFactory.make("audiotestsrc", "audio");
-	this.audiosink = Gst.ElementFactory.make("alsasink", "sink");
-	this.volume = Gst.ElementFactory.make("volume", "vcontrol");
-	this.audiosrc.freq = freq;
+	var audiosrc = Gst.ElementFactory.make("audiotestsrc", "audio");
+	var audiosink = Gst.ElementFactory.make("alsasink", "sink");
+	var volume = Gst.ElementFactory.make("volume", "vcontrol");
+	audiosrc.freq = freq;
 	
-	this.pipeline.add(this.audiosrc);
-	this.pipeline.add(this.audiosink);
-	this.pipeline.add(this.volume);
-	this.audiosrc.link(this.volume);
-	this.volume.link(this.audiosink);
+	pipeline.add(audiosrc);
+	pipeline.add(audiosink);
+	pipeline.add(volume);
+	audiosrc.link(volume);
+	volume.link(audiosink);
 	
-	this.playing = false;
+	var playing = false;
 	
-	var adjustment = this.vscale.get_adjustment();
+	var adjustment = vscale.adjustment;
 	adjustment.upper = 3000;
 	adjustment.value = freq;
 	
-	var adjustment = this.volscale.get_adjustment();
+	var adjustment = volscale.adjustment;
 	adjustment.upper = 10;
-	adjustment.value = this.volume.volume;
+	adjustment.value = volume.volume;
 	
-	this.hbox.pack_start(this.vscale, true, true, 10);
-	this.hbox.pack_start(this.volscale, true, true, 10);
-	this.vbox.pack_start(this.hbox, true, true, 10);
-	this.vbox.pack_start(this.button, false, false, 10);
+	hbox.pack_start(vscale, true, true, 10);
+	hbox.pack_start(volscale, true, true, 10);
+	this.vbox.pack_start(hbox, true, true, 10);
+	this.vbox.pack_start(button, false, false, 10);
 	
-	this.toggle = function(button, that) 
+	var toggle = function(button, that) 
 	{
-		if (that.playing == false)
+		if (playing == false)
 		{
-			that.pipeline.set_state(Gst.State.playing);
-			that.playing = true;
+			pipeline.set_state(Gst.State.playing);
+			playing = true;
 		}
 		else
 		{
-			that.pipeline.set_state(Gst.State.paused);
-			that.playing = false;
+			pipeline.set_state(Gst.State.paused);
+			playing = false;
 		}
 	}
-	this.update_freq = function(range, that)
+	var update_freq = function(range)
 	{
-		that.audiosrc.freq = range.get_value();
+		audiosrc.freq = range.get_value();
 	}
-	this.update_vol = function(range, that)
+	var update_vol = function(range)
 	{
-		that.volume.volume = range.get_value();
+		volume.volume = range.get_value();
 	}
-	this.button.signal.clicked.connect(this.toggle, null, this);
-	this.vscale.signal.value_changed.connect(this.update_freq, null, this);
-	this.volscale.signal.value_changed.connect(this.update_vol, null, this);
+	button.signal.clicked.connect(toggle);
+	vscale.signal.value_changed.connect(update_freq);
+	volscale.signal.value_changed.connect(update_vol);
 }
 
 function end_program()
