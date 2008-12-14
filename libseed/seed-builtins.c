@@ -70,7 +70,8 @@ seed_include(JSContextRef ctx,
 
 	file_contents = JSStringCreateWithUTF8CString(walk);
 	file_name = JSStringCreateWithUTF8CString(import_file);
-	JSEvaluateScript(ctx, file_contents, NULL, file_name, 0, NULL);
+	
+	JSEvaluateScript(ctx, file_contents, NULL, file_name, 0, exception);
 
 	JSStringRelease(file_contents);
 	JSStringRelease(file_name);
