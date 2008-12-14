@@ -363,7 +363,6 @@ seed_gobject_signal_connect_on_property(JSContextRef ctx,
 
 	if (argumentCount == 3)
 	{
-		g_warning("Deprecated signal this usage");
 		seed_gobject_signal_connect(ctx, privates->signal_name,
 									privates->object,
 									(JSObjectRef) arguments[0],
