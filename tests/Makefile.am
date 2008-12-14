@@ -1,6 +1,7 @@
 EXTRA_DIST = \
     argv.js \
     closure-finalization.js \
+    gtype-class-init-exception.js \
     compare.js \
     include-syntax.js \
     struct-nested-set.js \
