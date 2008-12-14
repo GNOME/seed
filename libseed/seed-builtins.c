@@ -125,6 +125,8 @@ seed_handle_rl_closure(ffi_cif * cif,
 	JSGlobalContextRelease((JSGlobalContextRef)ctx);
 }
 
+// "Leaky" in that it exists for lifetime of program,
+// kind of unavoidable though.
 static ffi_closure * seed_make_rl_closure(JSObjectRef function)
 {
 	ffi_cif * cif;
@@ -148,8 +150,21 @@ seed_readline_bind(JSContextRef ctx,
 			  size_t argumentCount,
 			  const JSValueRef arguments[], JSValueRef * exception)
 {
-	gchar * key = seed_value_to_string(ctx, arguments[0], exception);
-	ffi_closure * c = seed_make_rl_closure((JSObjectRef)arguments[1]);
+	gchar * key;
+	ffi_closure * c;
+
+	if (argumentCount != 2)
+	{
+		gchar *mes =
+			g_strdup_printf("Seed.readline_bind expected 2 arguments, "
+							"got %d", argumentCount);
+		seed_make_exception(ctx, exception, "ArgumentError", mes);
+		g_free(mes);
+		return JSValueMakeNull(ctx);
+	}
+
+	key = seed_value_to_string(ctx, arguments[0], exception);
+	c = seed_make_rl_closure((JSObjectRef)arguments[1]);
 	
 	rl_bind_key(*key, (Function*)c);
 	
