@@ -290,6 +290,51 @@ seed_struct_get_property(JSContextRef context,
 	return ret;
 }
 
+static void seed_enumerate_structlike_properties(JSContextRef ctx,
+												 JSObjectRef object,
+						 JSPropertyNameAccumulatorRef propertyNames)
+{
+	GIFieldInfo * field;
+	gint i, n;
+	guchar type;
+	seed_struct_privates * priv = 
+		(seed_struct_privates * )JSObjectGetPrivate(object);
+	GIBaseInfo * info = priv->info;
+	
+	if (!info)
+		return;
+
+	if (JSValueIsObjectOfClass(ctx, object, seed_struct_class))
+		type = 1;
+	else if (JSValueIsObjectOfClass(ctx, object, seed_union_class))
+		type = 2;
+	else
+		g_assert_not_reached();
+	
+	(type == 1) ?
+		(n = g_struct_info_get_n_fields((GIStructInfo *)info)) :
+		(n = g_union_info_get_n_fields((GIUnionInfo *)info));
+	
+	for (i = 0; i < n; i++)
+	{
+		const gchar * cname;
+		JSStringRef jname;
+
+		(type == 1) ? 
+			(field = g_struct_info_get_field((GIStructInfo *)info, i)) :
+			(field = g_union_info_get_field((GIUnionInfo *)info, i));
+		
+		jname = 
+			JSStringCreateWithUTF8CString(
+				g_base_info_get_name((GIBaseInfo *) field));
+
+		g_base_info_unref((GIBaseInfo *) field);
+		JSPropertyNameAccumulatorAddName(propertyNames, jname);
+		
+		JSStringRelease(jname);
+	}
+}
+
 JSClassDefinition seed_pointer_def = {
 	0,							/* Version, always 0 */
 	0,
@@ -303,7 +348,7 @@ JSClassDefinition seed_pointer_def = {
 	0,
 	NULL,						/* Set Property */
 	NULL,						/* Delete Property */
-	NULL,						/* Get Property Names */
+	NULL,
 	NULL,						/* Call As Function */
 	NULL,						/* Call As Constructor */
 	NULL,						/* Has Instance */
@@ -323,7 +368,7 @@ JSClassDefinition seed_struct_def = {
 	seed_struct_get_property,
 	seed_struct_set_property,						/* Set Property */
 	NULL,						/* Delete Property */
-	NULL,						/* Get Property Names */
+	seed_enumerate_structlike_properties,		/* Get Property Names */
 	NULL,						/* Call As Function */
 	NULL,						/* Call As Constructor */
 	NULL,						/* Has Instance */
@@ -343,7 +388,7 @@ JSClassDefinition seed_union_def = {
 	seed_union_get_property,
 	NULL,						/* Set Property */
 	NULL,						/* Delete Property */
-	NULL,						/* Get Property Names */
+	seed_enumerate_structlike_properties,		/* Get Property Names */
 	NULL,						/* Call As Function */
 	NULL,						/* Call As Constructor */
 	NULL,						/* Has Instance */
