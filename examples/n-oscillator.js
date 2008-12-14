@@ -45,30 +45,30 @@ function oscillator(freq)
 	this.vbox.pack_start(this.hbox, true, true, 10);
 	this.vbox.pack_start(this.button, false, false, 10);
 	
-	this.toggle = function(button) 
+	this.toggle = function(button, that) 
 	{
-		if (this.playing == false)
+		if (that.playing == false)
 		{
-			this.pipeline.set_state(Gst.State.playing);
-			this.playing = true;
+			that.pipeline.set_state(Gst.State.playing);
+			that.playing = true;
 		}
 		else
 		{
-			this.pipeline.set_state(Gst.State.paused);
-			this.playing = false;
+			that.pipeline.set_state(Gst.State.paused);
+			that.playing = false;
 		}
 	}
-	this.update_freq = function(range)
+	this.update_freq = function(range, that)
 	{
-		this.audiosrc.freq = range.get_value();
+		that.audiosrc.freq = range.get_value();
 	}
-	this.update_vol = function(range)
+	this.update_vol = function(range, that)
 	{
-		this.volume.volume = range.get_value();
+		that.volume.volume = range.get_value();
 	}
-	this.button.signal.clicked.connect(this.toggle, this);
-	this.vscale.signal.value_changed.connect(this.update_freq, this);
-	this.volscale.signal.value_changed.connect(this.update_vol, this);
+	this.button.signal.clicked.connect(this.toggle, null, this);
+	this.vscale.signal.value_changed.connect(this.update_freq, null, this);
+	this.volscale.signal.value_changed.connect(this.update_vol, null, this);
 }
 
 function end_program()
@@ -90,10 +90,10 @@ var os3 = new oscillator(783.99);
 function add_oscillator(button)
 {
 	var os = new oscillator(300);
-	this.pack_start(os.vbox, true, true, 10);
+	hbox.pack_start(os.vbox, true, true, 10);
 	os.vbox.show_all();
 }
-button.signal.clicked.connect(add_oscillator, hbox);
+button.signal.clicked.connect(add_oscillator);
 
 window.add(hbox);
 hbox.pack_start(button, true, true, 10);
