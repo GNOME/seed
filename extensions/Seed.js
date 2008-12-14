@@ -602,5 +602,27 @@ replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) {
     }
 })();
 
+Seed.repl = function()
+{
+	try
+	{
+		item = Seed.readline("> ");
+		if (item == "continue")
+			return false;
+		Seed.print(eval(item));
+	}
+	catch (e)
+	{
+		Seed.print(e.name + " " + e.message);
+	}
+	return true;
+}
+
+
+Seed.glib_repl = function()
+{
+	GLib.idle_add(Seed.repl, null);
+}
+
 Seed.printf = function () { Seed.print(Seed.sprintf.apply(this, arguments)) };
 

@@ -1,6 +1,7 @@
 #!/usr/bin/env seed
 Seed.import_namespace("Gtk")
 Seed.import_namespace("Gdk");
+Seed.import_namespace("GLib");
 
 with (Gtk)
 {
@@ -13,7 +14,7 @@ with (Gtk)
 				  0, 
 				  function()
 				  {
-					  main_quit()
+					Seed.quit();
 				  });
 	w.add_accel_group(group);
 	
