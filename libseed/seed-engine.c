@@ -201,6 +201,7 @@ seed_gobject_constructor_invoked(JSContextRef ctx,
 	for (i = 0; i < nparams; i++)
 	{
 		g_object_set_property(gobject, params[i].name, &params[i].value);
+		g_value_unset(&params[i].value);
 	}
 
 	g_object_unref(gobject);
