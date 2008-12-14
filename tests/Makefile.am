@@ -2,6 +2,7 @@ EXTRA_DIST = \
     argv.js \
     closure-finalization.js \
     compare.js \
+    include-syntax.js \
     struct-nested-set.js \
     struct-constructor.js \
     function-info.js \
