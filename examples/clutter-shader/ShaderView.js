@@ -28,18 +28,18 @@ function ShaderView(source_type, actor, reflection)
     this.actor = actor;
     this.reflection = reflection;
     
-    this.make_shader = function()
+    this.make_shader = function(button, that)
     {
 	shader.enabled = false;
-	if (this.source_type == "fragment_source")
+	if (that.source_type == "fragment_source")
 	    shader.fragment_source = source_buf.text;
 	else
 	    shader.vertex_source = source_buf.text;
 	shader.compile();
 	shader.enabled = true;
-	this.actor.set_shader(shader);
-	this.reflection.set_shader(shader);
+	that.actor.set_shader(shader);
+	that.reflection.set_shader(shader);
     }
 
-    compile.signal.clicked.connect(this.make_shader, this);
+    compile.signal.clicked.connect(this.make_shader, null, this);
 }
