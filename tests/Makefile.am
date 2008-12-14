@@ -9,7 +9,6 @@ EXTRA_DIST = \
     function-info.js \
     object-info.js \
     constructor-args.js \
-    signal-this.js \
     struct-set-member.js \
     c-module.js \
     constructor-prototype.js \
