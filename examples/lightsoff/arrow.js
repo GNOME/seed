@@ -1,10 +1,10 @@
-function pushed_arrow()
+function pushed_arrow(actor, event)
 {
 	if(animating_board)
 		return true;
 		
 	// TODO: Need to check that click count is 1
-	var direction = (this.flipped ? 1 : -1);
+	var direction = (actor.flipped ? 1 : -1);
 	
 	if(score.value + direction < 1)
 		return true;
@@ -39,7 +39,7 @@ ArrowType = {
 		bkg.filter_quality = Clutter.TextureQuality.high;
 		
 		this.reactive = true;
-		this.signal.button_press_event.connect(pushed_arrow, this);
+		this.signal.button_press_event.connect(pushed_arrow);
 		
 		this.add_actor(bkg);
     }};
