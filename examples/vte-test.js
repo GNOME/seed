@@ -11,7 +11,7 @@ with (Gtk)
 
 	var vte = new Vte.Terminal();
 	vte.fork_command("/bin/bash");
-	vte.signal.child_exited.connect(main_quit);
+	vte.signal.child_exited.connect(function(){main_quit()});
 	vte.signal.window_title_changed.connect
 		(function(terminal)
 		 {
