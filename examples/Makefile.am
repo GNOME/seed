@@ -1,5 +1,4 @@
-SUBDIRS = ide \
-          lightsoff \
+SUBDIRS = lightsoff \
           clutter-shader \
           glib \
           browser
