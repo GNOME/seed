@@ -328,6 +328,7 @@ seed_gobject_signal_connect_on_property(JSContextRef ctx,
 										const JSValueRef arguments[],
 										JSValueRef * exception)
 {
+	JSObjectRef this_obj;
 	signal_privates *privates;
 	GClosure *closure;
 	
@@ -335,6 +336,9 @@ seed_gobject_signal_connect_on_property(JSContextRef ctx,
 	if (!privates)
 		g_error("Signal constructed with invalid parameters"
 				"in namespace import \n");
+	
+	this_obj = 
+		(JSObjectRef) seed_value_from_object(ctx, privates->object, exception);
 
 	if ((argumentCount > 3) || (argumentCount == 0))
 	{
@@ -350,7 +354,7 @@ seed_gobject_signal_connect_on_property(JSContextRef ctx,
 	if (argumentCount == 1)
 		seed_gobject_signal_connect(ctx, privates->signal_name,
 									privates->object,
-									(JSObjectRef) arguments[0], NULL, NULL);
+									(JSObjectRef) arguments[0], this_obj, NULL);
 	
 	if (argumentCount == 2)
 	{
@@ -358,7 +362,7 @@ seed_gobject_signal_connect_on_property(JSContextRef ctx,
 		seed_gobject_signal_connect(ctx, privates->signal_name,
 									privates->object,
 									(JSObjectRef) arguments[0],
-									(JSObjectRef) arguments[1], NULL);
+									this_obj, NULL);
 	}
 
 	if (argumentCount == 3)
@@ -366,7 +370,7 @@ seed_gobject_signal_connect_on_property(JSContextRef ctx,
 		seed_gobject_signal_connect(ctx, privates->signal_name,
 									privates->object,
 									(JSObjectRef) arguments[0],
-									(JSObjectRef) arguments[1],
+									this_obj,
 									(JSObjectRef) arguments[2]);
 	}
 	
