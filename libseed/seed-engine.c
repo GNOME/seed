@@ -220,6 +220,10 @@ seed_gobject_constructor_invoked(JSContextRef ctx,
 		ret = (JSObjectRef) seed_value_from_object(ctx, gobject, exception);
 	
 
+	for (i = 0; i < nconstruct_params; i++)
+	{
+		g_value_unset(&construct_params[i].value);
+	}
 	for (i = 0; i < nafter_params; i++)
 	{
 		g_object_set_property(gobject, 
