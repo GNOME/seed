@@ -13,5 +13,5 @@ function userdata_test(widget, user_data)
 }
 
 w = new Gtk.Window();
-w.signal.map.connect(userdata_test, null, {Hello: "World"});
+w.signal.map.connect(userdata_test, {Hello: "World"});
 w.show();

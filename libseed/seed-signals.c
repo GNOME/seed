@@ -371,7 +371,7 @@ seed_gobject_signal_connect_on_property(JSContextRef ctx,
 							"Deprecated exception");
 	}
 
-	return JSValueMakeNull(ctx);;
+	return JSValueMakeNull(ctx);
 }
 
 JSStaticFunction signal_static_functions[] =
