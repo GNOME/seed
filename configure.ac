@@ -105,7 +105,6 @@ tests/Makefile
 doc/Makefile
 doc/tutorial-standalone/Makefile
 examples/Makefile
-examples/browser/Makefile
 examples/lightsoff/Makefile
 examples/clutter-shader/Makefile
 examples/glib/Makefile

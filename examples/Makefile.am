@@ -1,7 +1,6 @@
 SUBDIRS = lightsoff \
           clutter-shader \
           glib \
-          browser
           
 examplesdir=$(datadir)/doc/seed/examples
 examples_DATA = \
