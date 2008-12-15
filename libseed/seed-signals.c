@@ -340,10 +340,10 @@ seed_gobject_signal_connect_on_property(JSContextRef ctx,
 	this_obj = 
 		(JSObjectRef) seed_value_from_object(ctx, privates->object, exception);
 
-	if ((argumentCount > 3) || (argumentCount == 0))
+	if ((argumentCount > 2) || (argumentCount == 0))
 	{
 		gchar *mes = g_strdup_printf("Signal connection expected"
-									 " 1, 2, or 3 arguments. Got "
+									 " 1, or 2 arguments. Got "
 									 "%d", argumentCount);
 		seed_make_exception(ctx, exception, "ArgumentError", mes);
 
@@ -364,11 +364,6 @@ seed_gobject_signal_connect_on_property(JSContextRef ctx,
 									(JSObjectRef) arguments[0],
 									this_obj,
 									(JSObjectRef) arguments[1]);
-	}
-	if (argumentCount == 3)
-	{
-		seed_make_exception(ctx, exception, "ArgumentError",
-							"Deprecated exception");
 	}
 
 	return JSValueMakeNull(ctx);
