@@ -58,7 +58,7 @@ function win_animation()
 						-(sign)*(direction * board_size),
 						-(sign)*((!direction) * board_size));
 	
-	remove_timeline.signal.completed.connect(delete_board, null, board);
+	remove_timeline.signal.completed.connect(delete_board, board);
 	animating_board = true;
 	fadeline.start();
 	
@@ -83,7 +83,7 @@ function swap_animation(direction)
 	Clutter.effect_fade(effect, new_board, 255);
 	Clutter.effect_fade(effect, board, 0);
 	
-	remove_timeline.signal.completed.connect(delete_board, null, board);	
+	remove_timeline.signal.completed.connect(delete_board, board);	
 	animating_board = true;
 	fadeline.start();
 	
@@ -129,7 +129,7 @@ function flip_region (act, evt, light)
 	fadeline.start();
 	in_fade = true;
 	
-	fadeline.signal.completed.connect(check_won, null, light);
+	fadeline.signal.completed.connect(check_won, light);
 	
 	return true;
 }

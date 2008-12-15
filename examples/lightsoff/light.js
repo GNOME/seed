@@ -56,8 +56,8 @@ LightType = {
 		
 		this.set_anchor_point(tile_size / 2, tile_size / 2);
 
-		this.on.signal.button_press_event.connect(flip_region, null, this);
-		this.off.signal.button_press_event.connect(flip_region, null, this);
+		this.on.signal.button_press_event.connect(flip_region, this);
+		this.off.signal.button_press_event.connect(flip_region, this);
 		
 		this.add_actor(this.off);
 		this.add_actor(this.on);
