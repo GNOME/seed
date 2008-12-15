@@ -624,5 +624,12 @@ Seed.glib_repl = function()
 	GLib.idle_add(Seed.repl, null);
 }
 
+Seed.thread_repl = function()
+{
+	GLib.thread_create_full(function() { while(Seed.repl()){} }, 
+							null, 0, true);
+	
+}
+
 Seed.printf = function () { Seed.print(Seed.sprintf.apply(this, arguments)) };
 
