@@ -89,13 +89,13 @@ seed_gobject_constructor_invoked(JSContextRef ctx,
 								 JSValueRef * exception)
 {
 	GType type;
-	GParameter *construct_params, *after_params;
+	GParameter *params;
 	GObjectClass *oclass;
 	GObject *gobject;
 	// Do we free GParamSpecs...? It's not clear.
 	GParamSpec *param_spec;
 	gchar *prop_name;
-	gint i, nafter_params = 0, nconstruct_params = 0, nparams = 0, length;
+	gint i, nparams = 0, length;
 	JSObjectRef ret;
 	JSPropertyNameArrayRef jsprops = 0;
 	JSStringRef jsprop_name;
@@ -133,15 +133,13 @@ seed_gobject_constructor_invoked(JSContextRef ctx,
 	}
 	i = 0;
 
-	construct_params = g_new0(GParameter, nparams + 1);
-	after_params = g_new0(GParameter, nparams + 1);
+	params = g_new0(GParameter, nparams + 1);
 	SEED_NOTE(INITIALIZATION, "Constructing object of type %s",
 			  g_type_name(type));
 
 	while (i < nparams)
 	{
 		GType type;
-		gboolean construct;
 		jsprop_name = JSPropertyNameArrayGetNameAtIndex(jsprops, i);
 
 		length = JSStringGetMaximumUTF8CStringSize(jsprop_name);
@@ -157,14 +155,11 @@ seed_gobject_constructor_invoked(JSContextRef ctx,
 			seed_make_exception(ctx, exception, "PropertyError", mes);
 
 			g_free(mes);
-			g_free(construct_params);
-			g_free(after_params);
-			g_free(prop_name);
+			g_free(params);
 			
 			JSPropertyNameArrayRelease(jsprops);
 			return (JSObjectRef) JSValueMakeNull(ctx);
 		}
-		construct = param_spec->flags & G_PARAM_CONSTRUCT;
 		// TODO: exception handling
 		jsprop_value = JSObjectGetProperty(ctx,
 										   (JSObjectRef) arguments[0],
@@ -174,44 +169,27 @@ seed_gobject_constructor_invoked(JSContextRef ctx,
 			type = G_TYPE_INT;
 		else
 			type = param_spec->value_type;
-		
-		if (construct)
-			seed_gvalue_from_seed_value(ctx, jsprop_value,
-										type, &construct_params[i].value, 
-										exception);
-		else
-			seed_gvalue_from_seed_value(ctx, jsprop_value,
-										type, &after_params[i].value, 
-										exception);
 
-		
+		seed_gvalue_from_seed_value(ctx, jsprop_value,
+									type, &params[i].value, exception);
+
 		if (*exception)
 		{
+
 			g_free(prop_name);
-			g_free(construct_params);
-			g_free(after_params);
+			g_free(params);
 			JSPropertyNameArrayRelease(jsprops);
 			return 0;
 		}
-		
-		if (construct)
-			construct_params[i].name = prop_name;
-		else
-			after_params[i].name = prop_name;
-		
-		if (param_spec->flags & G_PARAM_CONSTRUCT)
-			nconstruct_params++;
-		else
-			nafter_params++;
-		
-		g_free(prop_name);
+		params[i].name = prop_name;
+
 		++i;
 	}
 
 	if (jsprops)
 		JSPropertyNameArrayRelease(jsprops);
 
-	gobject = g_object_newv(type, nconstruct_params, construct_params);
+	gobject = g_object_newv(type, nparams, params);
 
 	g_object_ref_sink(gobject);
 
@@ -220,24 +198,18 @@ seed_gobject_constructor_invoked(JSContextRef ctx,
 	else
 		ret = (JSObjectRef) seed_value_from_object(ctx, gobject, exception);
 	
-
-	for (i = 0; i < nconstruct_params; i++)
+/*
+	for (i = 0; i < nparams; i++)
 	{
-		g_value_unset(&construct_params[i].value);
+		g_object_set_property(gobject, params[i].name, &params[i].value);
+		g_value_unset(&params[i].value);
 	}
-	for (i = 0; i < nafter_params; i++)
-	{
-		g_object_set_property(gobject, 
-							  after_params[i].name, 
-							  &after_params[i].value);
-		g_value_unset(&after_params[i].value);
-	}
-
+*/
 	g_object_unref(gobject);
 
 	g_type_class_unref(oclass);
-	g_free(after_params);
-	g_free(construct_params);
+
+	g_free(params);
 
 	return ret;
 }
