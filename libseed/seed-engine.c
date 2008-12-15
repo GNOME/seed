@@ -159,6 +159,7 @@ seed_gobject_constructor_invoked(JSContextRef ctx,
 			g_free(mes);
 			g_free(construct_params);
 			g_free(after_params);
+			g_free(prop_name);
 			
 			JSPropertyNameArrayRelease(jsprops);
 			return (JSObjectRef) JSValueMakeNull(ctx);
@@ -186,7 +187,6 @@ seed_gobject_constructor_invoked(JSContextRef ctx,
 		
 		if (*exception)
 		{
-
 			g_free(prop_name);
 			g_free(construct_params);
 			g_free(after_params);
@@ -204,6 +204,7 @@ seed_gobject_constructor_invoked(JSContextRef ctx,
 		else
 			nafter_params++;
 		
+		g_free(prop_name);
 		++i;
 	}
 
