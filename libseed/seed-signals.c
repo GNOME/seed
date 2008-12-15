@@ -354,27 +354,24 @@ seed_gobject_signal_connect_on_property(JSContextRef ctx,
 	if (argumentCount == 1)
 		seed_gobject_signal_connect(ctx, privates->signal_name,
 									privates->object,
-									(JSObjectRef) arguments[0], this_obj, NULL);
+									(JSObjectRef) arguments[0], this_obj, 
+									NULL);
 	
 	if (argumentCount == 2)
-	{
-		g_warning("Deprecated signal this usage");
-		seed_gobject_signal_connect(ctx, privates->signal_name,
-									privates->object,
-									(JSObjectRef) arguments[0],
-									this_obj, NULL);
-	}
-
-	if (argumentCount == 3)
 	{
 		seed_gobject_signal_connect(ctx, privates->signal_name,
 									privates->object,
 									(JSObjectRef) arguments[0],
 									this_obj,
-									(JSObjectRef) arguments[2]);
+									(JSObjectRef) arguments[1]);
 	}
-	
-	return 0;
+	if (argumentCount == 3)
+	{
+		seed_make_exception(ctx, exception, "ArgumentError",
+							"Deprecated exception");
+	}
+
+	return JSValueMakeNull(ctx);;
 }
 
 JSStaticFunction signal_static_functions[] =
