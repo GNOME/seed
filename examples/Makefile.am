@@ -6,6 +6,7 @@ examplesdir=$(datadir)/doc/seed/examples
 examples_DATA = \
 	actions.js \
 	clutter-cairo.js \ 
+	threaded-repl.js \
 	calculator.js \
 	gconf.js \
 	video.js \
