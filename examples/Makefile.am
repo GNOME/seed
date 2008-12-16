@@ -6,6 +6,7 @@ examplesdir=$(datadir)/doc/seed/examples
 examples_DATA = \
 	actions.js \
 	Gnio.js \
+	Gnio-server.js \
 	clutter-cairo.js \ 
 	threaded-repl.js \
 	calculator.js \
@@ -32,6 +33,7 @@ EXTRA_DIST = \
 	video.js \
 	accelgroup.js \
 	Gnio.js \
+	Gnio-server.js \
 	clutter.js \
 	introspect.js \
 	poppler.js \
