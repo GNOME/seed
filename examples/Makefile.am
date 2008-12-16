@@ -5,6 +5,7 @@ SUBDIRS = lightsoff \
 examplesdir=$(datadir)/doc/seed/examples
 examples_DATA = \
 	actions.js \
+	Gnio.js \
 	clutter-cairo.js \ 
 	threaded-repl.js \
 	calculator.js \
@@ -30,6 +31,7 @@ EXTRA_DIST = \
 	gconf.js \
 	video.js \
 	accelgroup.js \
+	Gnio.js \
 	clutter.js \
 	introspect.js \
 	poppler.js \
