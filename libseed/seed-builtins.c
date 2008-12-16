@@ -341,6 +341,48 @@ seed_fork(JSContextRef ctx,
 }
 
 static JSValueRef
+seed_spawn(JSContextRef ctx,
+		  JSObjectRef function,
+		  JSObjectRef this_object,
+		  size_t argumentCount,
+		  const JSValueRef arguments[], JSValueRef * exception)
+{
+	gchar *line, *stdout, *stderr;
+	JSObjectRef ret;
+	GError *error = NULL;
+
+	if (argumentCount != 1)
+	{
+		// I am so lazy
+		seed_make_exception(ctx, exception, "ArgumentError", 
+							"Seed.spawn expected 1 argument");
+		return JSValueMakeNull(ctx);
+	}
+
+	line = seed_value_to_string(ctx, arguments[0], exception);
+	g_spawn_command_line_sync(line, &stdout, &stderr, NULL, &error);
+	if (error)
+	{
+		seed_make_exception_from_gerror(ctx, exception, error);
+
+		g_free(line);
+		g_error_free(error);
+		return JSValueMakeNull(ctx);
+	}
+	
+	ret = JSObjectMake(ctx, NULL, NULL);
+	seed_object_set_property(ctx, ret, "stdout",
+							 seed_value_from_string(ctx, stdout, exception));
+	seed_object_set_property(ctx, ret, "stderr",
+							 seed_value_from_string(ctx, stderr, exception));
+
+	g_free(stdout);
+	g_free(stderr);
+
+	return ret;	
+}
+
+static JSValueRef
 seed_quit(JSContextRef ctx,
 		  JSObjectRef function,
 		  JSObjectRef this_object,
@@ -384,6 +426,8 @@ void seed_init_builtins(SeedEngine * local_eng, gint * argc, gchar *** argv)
 						 "introspect", &seed_introspect, obj);
 	seed_create_function(local_eng->context, 
 						 "fork", &seed_fork, obj);
+	seed_create_function(local_eng->context, 
+						 "spawn", &seed_spawn, obj);
 	seed_create_function(local_eng->context, 
 						 "quit", &seed_quit, obj);
 	seed_create_function(local_eng->context, 

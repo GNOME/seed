@@ -5,7 +5,7 @@ Seed.import_namespace("Gio");
 // I don't think this is the right way of doing things.
 var r = new Gnio.Resolver();
 var sock = new Gnio.Socket({domain: Gnio.SocketDomain.inet,
-						type: Gnio.SocketType.stream});
+						    type: Gnio.SocketType.stream});
 
 
 var addr = r.lookup_name("localhost");
@@ -26,13 +26,14 @@ os.put_string("Seed echo server. Type quit to quit.\n");
 
 while(1)
 {
-	line = ds.read_line(null);
+	var line = ds.read_line(null);
+    var cowsay = Seed.spawn("cowsay " + line);
 	if (line.search("quit") > -1)
 	{
 		client.close();
 		Seed.quit();
 	}
-	os.put_string(line);
+	os.put_string(cowsay.stdout);
 	os.put_string("\n");
 }
 
