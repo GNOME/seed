@@ -34,16 +34,18 @@ static void run_turtle(GtkWidget * widget, gpointer data)
 {
 	GtkTextBuffer * buf = gtk_text_view_get_buffer(GTK_TEXT_VIEW(instructions));
 	
-	GtkTextIter start, end;
-	
+	GtkTextIter start, end;	
 	gtk_text_buffer_get_start_iter(buf, &start);
 	gtk_text_buffer_get_end_iter(buf, &end);
 	
 	gchar * instruction_str = gtk_text_buffer_get_text(buf, &start, &end, TRUE);
 	
+	// Clear the offscreen turtle buffer
 	cairo_set_source_rgba(offscreen, 1.0, 1.0, 1.0, 1.0);
 	cairo_paint(offscreen);
 	
+	// Create a SeedScript object, which can be evaluated
+	// multiple times, using the contents of the GtkTextView
 	SeedScript * instruction_script;
 	instruction_script = seed_make_script(eng->context, instruction_str, "", 0);
 	seed_evaluate(eng->context, instruction_script, NULL);
@@ -51,14 +53,12 @@ static void run_turtle(GtkWidget * widget, gpointer data)
 	gtk_widget_queue_draw(canvas);
 }
 
-static void step_turtle(GtkWidget * widget, gpointer data)
-{
-
-}
-
 static void draw_turtle(GtkWidget * widget, GdkEventExpose * event, gpointer data)
 {
 	cairo_t * cr = gdk_cairo_create(widget->window);
+
+	// We keep an offscreen buffer, offscreen. Every time the window is exposed,
+	// we redraw the offscreen buffer on top of the GtkDrawingArea
 	
 	cairo_set_source_surface(cr, offscreen_surface, 0, 0);
 	cairo_paint(cr);
@@ -88,8 +88,6 @@ GtkWidget * create_ui()
 	
 	button_bar = gtk_hbox_new(0,0);
 	run  = gtk_button_new_with_label("Run");
-	step = gtk_button_new_with_label("Step");
-	gtk_box_pack_start(GTK_BOX(button_bar), step, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(button_bar), run,  TRUE, TRUE, 0);
 	
 	gtk_box_pack_start(GTK_BOX(left), instructions, TRUE,  TRUE, 3);
@@ -109,7 +107,6 @@ GtkWidget * create_ui()
 	offscreen = cairo_create(offscreen_surface);
 	
 	g_signal_connect(G_OBJECT(run), "clicked", G_CALLBACK(run_turtle), NULL);
-	g_signal_connect(G_OBJECT(step), "clicked", G_CALLBACK(step_turtle), NULL);
 	g_signal_connect(G_OBJECT(canvas), "expose_event", G_CALLBACK(draw_turtle),
 					 NULL);
 	
@@ -244,6 +241,7 @@ SeedValue turtle_pen_down(SeedContext ctx,
 	t->pen_state = TRUE;
 }
 
+// Static functions declared on our custom class
 seed_static_function turtle_funcs[] = {
 	{"forward",		turtle_forward,		0},
 	{"turnleft",	turtle_turn_left,	0},
@@ -267,6 +265,9 @@ void turtle_init()
 	turtle_constructor = seed_make_constructor(eng->context, 
 											   turtle_class,
 											   turtle_construct);
+
+	// We set our custom class as a property on the global object,
+	// so it is available simply as 'Turtle', everywhere.
 	seed_object_set_property(eng->context,
 							 eng->global, "Turtle", turtle_constructor);
 }

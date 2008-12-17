@@ -1,13 +1,14 @@
 SUBDIRS = lightsoff \
           clutter-shader \
-          glib 
-          
+          glib \
+          turtle
+
 examplesdir=$(datadir)/doc/seed/examples
 examples_DATA = \
 	actions.js \
 	Gnio.js \
 	Gnio-server.js \
-	clutter-cairo.js \ 
+	clutter-cairo.js \
 	threaded-repl.js \
 	calculator.js \
 	gconf.js \
