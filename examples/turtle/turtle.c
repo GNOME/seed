@@ -68,17 +68,16 @@ static void draw_turtle(GtkWidget * widget, GdkEventExpose * event, gpointer dat
 
 GtkWidget * create_ui()
 {
-	GtkWidget		* main;				// HPaned
+    GtkWidget		* main_pane;        // HPaned
 	GtkWidget		* left;				// VBox
 	GtkWidget		* button_bar;		// HBox
-	GtkWidget		* run,				// Buttons
-					* step;
+	GtkWidget		* run;				// Button
 	GtkWidget		* canvas_frame;		// Frames
 	
 	char			* start_script = "var t = new Turtle();\nt.forward(50);\nt.turnleft(50);\nt.forward(10);\nt.turnright(50);\nt.forward(60);";
 	
-	main = gtk_hpaned_new();
-	gtk_paned_set_position(GTK_PANED(main), 200);
+	main_pane = gtk_hpaned_new();
+	gtk_paned_set_position(GTK_PANED(main_pane), 200);
 	
 	left = gtk_vbox_new(0, 0);
 	instructions = gtk_text_view_new();
@@ -99,8 +98,8 @@ GtkWidget * create_ui()
 	canvas_frame = gtk_frame_new(NULL);
 	gtk_container_add(GTK_CONTAINER(canvas_frame), canvas);
 	
-	gtk_paned_add1(GTK_PANED(main), left);
-	gtk_paned_add2(GTK_PANED(main), canvas_frame);
+	gtk_paned_add1(GTK_PANED(main_pane), left);
+	gtk_paned_add2(GTK_PANED(main_pane), canvas_frame);
 	
 	offscreen_surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,
 												   CANVAS_SIZE, CANVAS_SIZE);
@@ -110,7 +109,7 @@ GtkWidget * create_ui()
 	g_signal_connect(G_OBJECT(canvas), "expose_event", G_CALLBACK(draw_turtle),
 					 NULL);
 	
-	return main;
+	return main_pane;
 }
 
 SeedObject turtle_construct(SeedContext ctx,
@@ -170,6 +169,8 @@ SeedValue turtle_forward(SeedContext ctx,
 	new_y = t->y + sinf(t->direction) * distance;
 	
 	turtle_draw_line(t, new_x, new_y);
+
+	return seed_make_null(ctx);
 }
 
 SeedValue turtle_turn_left(SeedContext ctx,
@@ -184,6 +185,8 @@ SeedValue turtle_turn_left(SeedContext ctx,
 	turtle_t * t = seed_object_get_private(this_object);
 	
 	t->direction -= (M_PI / 180.0) * angle;
+
+	return seed_make_null(ctx);
 }
 
 SeedValue turtle_turn_right(SeedContext ctx,
@@ -198,6 +201,8 @@ SeedValue turtle_turn_right(SeedContext ctx,
 	turtle_t * t = seed_object_get_private(this_object);
 	
 	t->direction += (M_PI / 180.0) * angle;
+
+	return seed_make_null(ctx);
 }
 
 SeedValue turtle_pen_color(SeedContext ctx,
@@ -215,6 +220,8 @@ SeedValue turtle_pen_color(SeedContext ctx,
 
 	if(argument_count == 4)
 		t->a = seed_value_to_float(ctx, arguments[3], NULL);
+
+	return seed_make_null(ctx);
 }
 
 SeedValue turtle_pen_up(SeedContext ctx,
@@ -227,6 +234,8 @@ SeedValue turtle_pen_up(SeedContext ctx,
 	turtle_t * t = seed_object_get_private(this_object);
 	
 	t->pen_state = FALSE;
+
+	return seed_make_null(ctx);
 }
 
 SeedValue turtle_pen_down(SeedContext ctx,
@@ -239,6 +248,8 @@ SeedValue turtle_pen_down(SeedContext ctx,
 	turtle_t * t = seed_object_get_private(this_object);
 	
 	t->pen_state = TRUE;
+
+	return seed_make_null(ctx);
 }
 
 // Static functions declared on our custom class
