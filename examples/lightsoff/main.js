@@ -1,11 +1,8 @@
 #!/usr/bin/env seed
 
+// Configuration
 var tiles = 5;
-var margin = 5;
-var in_setup = false;
-
 var tile_size = 75;
-var board_size = (tile_size + margin) * tiles + margin;
 
 Seed.import_namespace("Gtk");
 Seed.import_namespace("Clutter");
@@ -14,13 +11,16 @@ Seed.import_namespace("GdkPixbuf");
 Seed.import_namespace("GConf");
 Seed.import_namespace("GLib");
 
-GtkClutter.init(null, null);
+Clutter.init(null, null);
 GConf.init(null, null);
+
+var margin = 5;
+var in_setup = false;
+var board_size = (tile_size + margin) * tiles + margin;
 
 Seed.include("score.js");
 Seed.include("light.js");
 Seed.include("board.js");
-Seed.include("menu.js");
 Seed.include("arrow.js");
 
 var gconf_client = GConf.Client.get_default();
@@ -28,14 +28,10 @@ var gconf_client = GConf.Client.get_default();
 var black = Clutter.Color._new();
 Clutter.color_parse("Black", black);
 
-var window = new Gtk.Window({title:"Lights Off"});
-window.signal.hide.connect(Gtk.main_quit);
-
-var clutter_embed = new GtkClutter.Embed();
-var stage = clutter_embed.get_stage();
+var stage = new Clutter.Stage();
+stage.signal.hide.connect(Clutter.main_quit);
 stage.color = black;
 
-menu = create_menu();
 score = new Score();
 board = new Board();
 rect = new Clutter.Rectangle({color:black});
@@ -44,7 +40,6 @@ back = new Arrow();
 
 score.set_position((board_size / 2) - (score.width / 2), board_size + margin);
 stage.set_size(board_size, board_size + score.height + margin * 3);
-window.resize(stage.width, stage.height);
 
 rect.set_position(0, board_size);
 rect.set_size(stage.width, stage.height);
@@ -61,8 +56,5 @@ stage.add_actor(forward);
 stage.add_actor(back);
 stage.show_all();
 
-window.add(clutter_embed);
-window.show_all();
-
-Gtk.main();
+Clutter.main();
 
