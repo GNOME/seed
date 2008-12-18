@@ -25,6 +25,7 @@ examples_DATA = \
 	repl.js \
 	soup.js \
 	vte-test.js \
+	threaded-repl.js \
 	HACKING
 EXTRA_DIST = \
 	actions.js \
@@ -46,6 +47,7 @@ EXTRA_DIST = \
 	repl.js \
 	soup.js \
 	vte-test.js \
+	threaded-repl.js \
 	HACKING
 
 ## File created by the gnome-build tools

@@ -2,9 +2,6 @@ The goal of this file is to tell you what each example serves as an example of, 
 
 == Large Examples ==
 
-browser/
-	- A WebKit browser. Uses SQLite extension, WebKit, lots of Gtk.
-
 ide/
     - A Seed IDE. Utilizes much of Gtk; GtkToolbar, GtkSourceView, GtkFileChooser, GtkNotebook, VTE, a practical use of GConf. Intelligently uses inheritance.
     
