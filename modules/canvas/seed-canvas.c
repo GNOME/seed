@@ -33,7 +33,7 @@ SeedObject canvas_construct_canvas_from_cairo(SeedContext ctx, cairo_t * cr,
 	seed_object_set_property(ctx, obj, "lineJoin",
 							 seed_value_from_string(ctx, "miter", exception));
 	seed_object_set_property(ctx, obj, "cairo",
-							 seed_make_pointer(ctx, cr));
+							 (SeedValue)seed_make_pointer(ctx, cr));
 	
 	return obj;
 }

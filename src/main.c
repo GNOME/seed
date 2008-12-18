@@ -63,7 +63,7 @@ void seed_exec(gint argc, gchar ** argv)
 		buffer++;
 	}
 	script = seed_make_script(eng->context, buffer, argv[1], 1);
-	if (e = seed_script_exception(script))
+	if ((e = seed_script_exception(script)))
 	{
 		g_critical("%s. %s in %s at line %d",
 				   seed_exception_get_name(eng->context, e),
@@ -73,7 +73,7 @@ void seed_exec(gint argc, gchar ** argv)
 		exit(1);
 	}
 	seed_evaluate(eng->context, script, 0);
-	if (e = seed_script_exception(script))
+	if ((e = seed_script_exception(script)))
 		g_critical("%s. %s in %s at line %d",
 				   seed_exception_get_name(eng->context, e),
 				   seed_exception_get_message(eng->context, e),
