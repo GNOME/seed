@@ -180,10 +180,6 @@ seed_readline(JSContextRef ctx,
 			  size_t argumentCount,
 			  const JSValueRef arguments[], JSValueRef * exception)
 {
-	// TODO: Should add an interface to rl_bind_key
-	// Perhaps Seed.readline_bind('a', function)
-	// Then automagically do function stuff and make it happen!
-
 	JSValueRef valstr = 0;
 	gchar *str = 0;
 	gchar *buf;

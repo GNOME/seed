@@ -121,6 +121,15 @@ Uses the GNU Readline library to display a prompt (using the <i>prompt</i> argum
 var input = Seed.readline("prompt> ");
 Seed.print(input);
 </pre>
+<div class="section"><b>Seed.readline_bind</b>(key, function)</div>
+<p>
+Binds <i>key</i>, any valid ASCII character, to <i>function</i>. If the given key is then pressed while at a <b>Seed.readline</b> prompt, the passed function will be called.
+</p>
+<pre>
+Seed.readline_bind("q", function () { Seed.quit() });
+var num = Seed.readline("Enter a number, or q to quit:");
+Seed.print(num);
+</pre>
 <div class="section"><b>Seed.check_syntax</b>(code)</div>
 <p>
 Examines a segment of Javascript, looking for syntax errors. If errors are found, an exception is thrown, which can be caught with a try/catch block.
