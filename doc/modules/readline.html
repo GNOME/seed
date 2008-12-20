@@ -1,0 +1,100 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+	<title>Seed readline Module Documentation</title>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<style type="text/css">
+body
+{
+	font-size: 10pt;
+	font-family: "sans-serif";
+	text-align: justify;
+}
+
+#header
+{
+	text-align: right;
+	font-size: 18pt;
+	width: 100%;
+	border-bottom: 1px solid #aaa;
+	
+}
+
+#subheader
+{
+	text-align: right;
+	font-size: 12pt;
+	width: 100%;
+}
+
+div.section
+{
+	font-size: 14pt;
+	width: 100%;
+	border-bottom: 1px solid #ccc;
+	margin-bottom: 10px;
+}
+
+p
+{
+	margin-left: 10px;
+	text-indent: 0em;
+}
+
+pre
+{
+	margin-left: 20px;
+	padding-left: 5px;
+	border-left: 2px solid #ddd;
+}
+
+div.filename
+{
+    margin-left: 25px;
+    font-weight: bold;
+    width: 70%;
+    border-bottom: 1px solid #ccc;
+}
+
+code
+{
+    font-weight: bold;
+}
+
+span.changed
+{
+    color: red;
+}
+	</style>
+</head>
+<body>
+<div id="header">Seed readline Module</div>
+<div id="subheader">v.0.1</div>
+<div class="section"><b>Usage</b></div>
+<p>
+In order to use functions from the readline module, you must first import it:
+</p>
+<pre>
+Seed.import_namespace("readline");
+</pre>
+<div class="section"><b>readline.readline</b>(prompt)</div>
+<p><i>Returns: user input</i></p>
+<p>
+Uses the GNU Readline library to display a prompt (using the <i>prompt</i> argument) and then wait for input from the user. The readline prompt provides history (using the up and down arrow keys) within a single Seed process.
+</p>
+<pre>
+var input = readline.readline("prompt> ");
+Seed.print(input);
+</pre>
+<div class="section"><b>readline.readline_bind</b>(key, function)</div>
+<p>
+Binds <i>key</i>, any valid ASCII character, to <i>function</i>. If the given key is then pressed while at a <b>readline.readline</b> prompt, the passed function will be called.
+</p>
+<pre>
+readline.readline_bind("q", function () { Seed.quit() });
+var num = readline.readline("Enter a number, or q to quit:");
+readline.print(num);
+</pre>
+</body>
+</html>
