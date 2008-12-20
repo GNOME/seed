@@ -218,10 +218,6 @@ function handle_opacity_change(obj, gobject, user_data)
 win = new Gtk.Window();
 win.signal.connect("notify::opacity", handle_opacity_change);
 </pre>
-<div class="section"><b>Signal Installation</b></div>
-<p>
-
-</p>
 <div class="section"><b>Exceptions</b></div>
 <p>
 Seed throws Javascript exceptions for errors in the GObject layer; our custom exception types are as follows:</p>
@@ -293,20 +289,20 @@ Indicates that the new type derives from ParentType, i.e. Gtk.Window, with name 
 </p>
 <pre>
 HelloLabelType = {
-     parent: Gtk.Label,
-     name: "HelloLabel",
-     class_init: function(klass, prototype)
-     {
-          prototype.say_goodbye = 
-                              function()
-                              {
-                                   this.label = "Goodbye";
-                              }
-     },
-     instance_init: function(klass)
-     {
-          this.label = "Hello"; // Hello Labels Always Say Hello.
-     }};
+    parent: Gtk.Label,
+    name: "HelloLabel",
+    class_init: function(klass, prototype)
+    {
+        prototype.say_goodbye = 
+                             function()
+                             {
+                                 this.label = "Goodbye";
+                             }
+    },
+    instance_init: function(klass)
+    {
+        this.label = "Hello"; // Hello Labels Always Say Hello.
+    }};
 </pre>
 <p> Now to create a constructor, and instance of the object: </p>
 <pre>
@@ -319,5 +315,56 @@ label.say_goodbye();
 <p>
 The label inherits all the methods, signals, and properties of the Gtk.Label class and it's parents, and internally has it's own GType.
 </p>
+<div class="section"><i>signal</i>.<b>emit</b>(<i>...</i>)</div>
+<p>
+<b>emit</b> provides the ability to arbitrarily emit any GObject signal, thus calling all of the functions which are connected to it. Any arguments passed to <b>emit</b> are passed on to the callback function.
+</p>
+<pre>
+win = new Gtk.Window();
+win.signal.close.connect(Gtk.main_quit);
+win.signal.close.emit();
+</pre>
+<div class="section"><i>class</i>.<b>install_signal</b>(signal_descriptor)</div>
+<p>
+When creating a new GObject type within Seed, <b>install_signal</b> provides the ability to install new signals, which you can later emit with <b>emit</b> and can be connected to in any of the usual ways.
+</p>
+<p>
+<i>signal_descriptor</i> is a Javascript object describing the signal. Important properties of <i>signal_descriptor</i> are:
+</p>
+<ul>
+<li><i>name</i> &mdash; the name of the signal</li>
+<li><i>parameters</i> &mdash; the types of any arguments the signal takes, as a Javascript array <i>(optional)</i></li>
+<li><i>return_type</i> &mdash; the expected return type of the signal handler <i>(optional)</i></li>
+</ul>
+<p>
+For example: 
+</p>
+<pre>
+HelloWindowType = {       
+    parent: Gtk.Window.type,
+    name: "HelloWindow",
+    class_init: function(klass, prototype)
+    {
+        var HelloSignalDefinition = {name: "hello",
+                                     parameters: [GObject.TYPE_INT,
+                                                  GObject.TYPE_STRING],
+                                     return_type: Gtk.Window.type};
+	
+        hello_signal_id = klass.install_signal(HelloSignalDefinition);
+    },
+}
+
+HelloWindow = new GType(HelloWindowType);
+w = new HelloWindow();
+
+w.signal.hello.connect(function(object, number, string)
+                       {
+                           Seed.print(number + " " + string);
+                           return new Gtk.Window()
+                       });
+
+Seed.print(w.signal.hello.emit(2, "Test"));
+
+</pre>
 </body>
 </html>
