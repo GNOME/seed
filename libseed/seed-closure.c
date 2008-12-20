@@ -237,6 +237,7 @@ seed_handle_closure(ffi_cif * cif, void *result, void **args, void *userdata)
 		seed_gi_release_in_arg(g_arg_info_get_ownership_transfer(arg_info),
 							   arg_type, arg);
 		g_base_info_unref((GIBaseInfo *) arg_info);
+		g_base_info_unref((GIBaseInfo *) arg_type);
 	}
 
 	return_value = (JSValueRef)
