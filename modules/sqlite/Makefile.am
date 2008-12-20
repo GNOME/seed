@@ -1,3 +1,5 @@
+if BUILD_SQLITE3_MODULE
+
 lib_LTLIBRARIES = \
 	libsqlite.la
 
@@ -7,13 +9,13 @@ libsqlite_la_SOURCES = \
 libsqlite_la_LDFLAGS = \
 	`pkg-config --libs seed sqlite3`
 
-EXTRA_DIST = example.js
-
 AM_CPPFLAGS = \
 	-I../../libseed/ \
 	`pkg-config --cflags seed` \
 	`pkg-config --cflags glib-2.0` -g \
 	`pkg-config --cflags gobject-introspection-1.0`
 
-libdir = ${exec_prefix}/lib/seed
+endif
 
+libdir = ${exec_prefix}/lib/seed
+EXTRA_DIST = example.js

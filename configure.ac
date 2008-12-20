@@ -61,6 +61,16 @@ AC_CHECK_LIB(readline, readline,
     AC_DEFINE(HAVE_LIBREADLINE, 1, [have readline]),
     AC_MSG_ERROR([readline not found]))
 
+dnl =========================canvas module=====================================
+AC_TRY_CPP([#include <cairo/cairo.h>], have_cairo_h=yes, have_cairo_h=no)
+AM_CONDITIONAL(BUILD_CANVAS_MODULE, test "x$have_cairo_h" = "xyes")
+AC_SUBST(BUILD_CANVAS_MODULE)
+
+dnl =========================sqlite module=====================================
+AC_TRY_CPP([#include <sqlite3.h>], have_sqlite3_h=yes, have_sqlite3_h=no)
+AM_CONDITIONAL(BUILD_SQLITE3_MODULE, test "x$have_sqlite3_h" = "xyes")
+AC_SUBST(BUILD_SQLITE3_MODULE)
+
 dnl =============================Debug=========================================
 AC_ARG_ENABLE(debug,
               AC_HELP_STRING([--enable-debug],
@@ -126,4 +136,8 @@ echo "
 Build Configuration:
    Debug......................$enable_debug
    Profiling/Coverage.........$enable_profile
+
+Modules:
+   SQLite.....................$have_sqlite3_h
+   Canvas.....................$have_cairo_h
 "

@@ -1,3 +1,5 @@
+if BUILD_CANVAS_MODULE
+
 lib_LTLIBRARIES = \
 	libcanvas.la
 
@@ -7,8 +9,6 @@ libcanvas_la_SOURCES = \
 libcanvas_la_LDFLAGS = \
 	`pkg-config --libs seed cairo`
 
-EXTRA_DIST=run-tests.js
-
 AM_CPPFLAGS = \
 	-I../../libseed/ \
 	`pkg-config --cflags seed` \
@@ -16,5 +16,7 @@ AM_CPPFLAGS = \
 	`pkg-config --cflags gobject-introspection-1.0` \
 	`pkg-config --cflags cairo`
 
-libdir = ${exec_prefix}/lib/seed
+endif
 
+libdir = ${exec_prefix}/lib/seed
+EXTRA_DIST=run-tests.js
