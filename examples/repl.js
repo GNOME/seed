@@ -1,5 +1,4 @@
 #!/usr/bin/env seed
-history = [];
 with (Seed)
 {
 	while(1)
@@ -7,7 +6,6 @@ with (Seed)
 		try
 		{
 			item = readline("> ");
-			history.push(item);
 			print(eval(item));
 		}
 		catch(e)
