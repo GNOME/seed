@@ -1,4 +1,4 @@
-#!/usr/local/bin/seed
+#!/usr/bin/env seed
 Seed.import_namespace("Canvas");
 Seed.import_namespace("Clutter");
 Seed.import_namespace("ClutterCairo");

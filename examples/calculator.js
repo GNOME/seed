@@ -134,7 +134,7 @@ function create_buttons()
 var window = new Gtk.Window({title: "Calculator", resizable: false});
 
 window.resize(250, 250);
-window.signal.hide.connect(Gtk.main_quit);
+window.signal.hide.connect(function () {Gtk.main_quit(0);});
 window.opacity = 0.95;
 
 var label = new Gtk.Label({label: ""});

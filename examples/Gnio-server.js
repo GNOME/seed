@@ -1,4 +1,4 @@
-#!/usr/local/bin/seed
+#!/usr/bin/env seed
 Seed.import_namespace("Gnio");
 Seed.import_namespace("Gio");
 
