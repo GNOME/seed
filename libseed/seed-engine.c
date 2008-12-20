@@ -802,7 +802,7 @@ seed_gobject_set_property(JSContextRef context,
 	}
 
 	if (g_type_is_a(spec->value_type, G_TYPE_ENUM))
-		type = G_TYPE_INT;
+		type = G_TYPE_LONG;
 	else
 		type = spec->value_type;
 
@@ -958,6 +958,8 @@ seed_gi_import_namespace(JSContextRef ctx,
 					if (name[j] == '-')
 						name[j] = '_';
 				}
+				
+				
 
 				seed_object_set_property(ctx, enum_class, name, value_ref);
 
