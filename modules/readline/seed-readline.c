@@ -125,15 +125,15 @@ void seed_module_init(SeedEngine * local_eng)
 
 	namespace_ref = seed_make_object(eng->context, 0, 0);
 
-	seed_create_function(eng->context, 
+	seed_create_function(eng->context,
 						 "readline",
-						 seed_readline,
-						 namespace_ref);
+						 (SeedFunctionCallback)seed_readline,
+						 (SeedObject)namespace_ref);
 
-	seed_create_function(eng->context, 
+	seed_create_function(eng->context,
 						 "bind",
-						 seed_readline_bind,
-						 namespace_ref);
+						 (SeedFunctionCallback)seed_readline_bind,
+						 (SeedObject)namespace_ref);
 	
 	seed_object_set_property(eng->context, 
 							 eng->global, "readline", namespace_ref);
