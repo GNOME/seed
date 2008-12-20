@@ -638,9 +638,12 @@ static void seed_gobject_finalize(JSObjectRef object)
 	SEED_NOTE(FINALIZATION, "%s at %p (%d refs)",
 			  g_type_name(G_OBJECT_TYPE(gobject)), gobject, gobject->ref_count);
 
-	g_object_set_data_full(gobject, "js-ref", NULL, NULL);
+	if (g_object_get_data(gobject, "js-ref"))
+	{
+		g_object_set_data_full(gobject, "js-ref", NULL, NULL);
 
-	g_object_remove_toggle_ref(gobject, seed_toggle_ref, 0);
+		g_object_remove_toggle_ref(gobject, seed_toggle_ref, 0);
+	}
 	g_object_run_dispose(gobject);
 }
 
