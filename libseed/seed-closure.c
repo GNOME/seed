@@ -120,6 +120,7 @@ seed_handle_closure(ffi_cif * cif, void *result, void **args, void *userdata)
 	gint num_args, i;
 	JSValueRef *jsargs;
 	JSValueRef return_value;
+	JSValueRef exception = 0;
 	GITypeTag return_tag;
 	GIArgInfo *arg_info;
 	GITypeInfo *return_type;
@@ -241,7 +242,16 @@ seed_handle_closure(ffi_cif * cif, void *result, void **args, void *userdata)
 	return_value = (JSValueRef)
 		JSObjectCallAsFunction(ctx,
 							   (JSObjectRef) privates->function, 0,
-							   num_args, jsargs, 0);
+							   num_args, jsargs, &exception);
+	
+	if (exception)
+	{
+		gchar *mes = seed_exception_to_string(ctx, 
+											  exception);
+		g_warning("Exception in closure marshal. %s \n", mes, 0);
+		g_free(mes);
+		exception = 0;
+	}
 
 	g_free(jsargs);
 
