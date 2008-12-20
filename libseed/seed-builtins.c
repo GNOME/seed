@@ -20,8 +20,6 @@
  */
 #include <stdio.h>
 #include "seed-private.h"
-#include <readline/readline.h>
-#include <readline/history.h>
 #include <string.h>
 #include <sys/mman.h>
 
@@ -102,114 +100,6 @@ seed_print(JSContextRef ctx,
 	g_free(buf);
 
 	return JSValueMakeNull(ctx);
-}
-
-static void
-seed_handle_rl_closure(ffi_cif * cif,
-					   void * result,
-					   void ** args,
-					   void * userdata)
-{
-	JSContextRef ctx = JSGlobalContextCreateInGroup(context_group,
-													0);
-	JSValueRef exception = 0;
-	JSObjectRef function = (JSObjectRef) userdata;
-
-	JSObjectCallAsFunction(ctx, function, 0, 0, 0, &exception);
-	if (exception)
-	{
-		gchar *mes = seed_exception_to_string(ctx, 
-											  exception);
-		g_warning("Exception in readline bind key closure. %s \n", mes, 0);
-	}
-	JSGlobalContextRelease((JSGlobalContextRef)ctx);
-}
-
-// "Leaky" in that it exists for lifetime of program,
-// kind of unavoidable though.
-static ffi_closure * seed_make_rl_closure(JSObjectRef function)
-{
-	ffi_cif * cif;
-	ffi_closure *closure;
-	ffi_arg result;
-	ffi_status status;
-	
-	cif = g_new0(ffi_cif, 1);
-	closure = mmap(0, sizeof(ffi_closure), PROT_READ | PROT_WRITE |
-				   PROT_EXEC, MAP_ANON | MAP_PRIVATE, -1, 0);
-	ffi_prep_cif(cif, FFI_DEFAULT_ABI, 0, &ffi_type_sint, 0);
-	ffi_prep_closure(closure, cif, seed_handle_rl_closure, function);
-	
-	return closure;
-}
-
-static JSValueRef
-seed_readline_bind(JSContextRef ctx,
-			  JSObjectRef function,
-			  JSObjectRef this_object,
-			  size_t argumentCount,
-			  const JSValueRef arguments[], JSValueRef * exception)
-{
-	gchar * key;
-	ffi_closure * c;
-
-	if (argumentCount != 2)
-	{
-		gchar *mes =
-			g_strdup_printf("Seed.readline_bind expected 2 arguments, "
-							"got %d", argumentCount);
-		seed_make_exception(ctx, exception, "ArgumentError", mes);
-		g_free(mes);
-		return JSValueMakeNull(ctx);
-	}
-
-	key = seed_value_to_string(ctx, arguments[0], exception);
-	c = seed_make_rl_closure((JSObjectRef)arguments[1]);
-	
-	rl_bind_key(*key, (Function*)c);
-	
-	g_free(key);
-	
-	return JSValueMakeNull(ctx);
-}
-
-static JSValueRef
-seed_readline(JSContextRef ctx,
-			  JSObjectRef function,
-			  JSObjectRef this_object,
-			  size_t argumentCount,
-			  const JSValueRef arguments[], JSValueRef * exception)
-{
-	JSValueRef valstr = 0;
-	gchar *str = 0;
-	gchar *buf;
-
-	if (argumentCount != 1)
-	{
-		gchar *mes =
-			g_strdup_printf("Seed.readline expected 1 argument, "
-							"got %d", argumentCount);
-		seed_make_exception(ctx, exception, "ArgumentError", mes);
-		g_free(mes);
-		return JSValueMakeNull(ctx);
-	}
-
-	buf = seed_value_to_string(ctx, arguments[0], exception);
-
-	str = readline(buf);
-	if (str && *str)
-	{
-		add_history(str);
-		valstr = seed_value_from_string(ctx, str, exception);
-		g_free(str);
-	}
-
-	g_free(buf);
-
-	if (valstr == 0)
-		valstr = JSValueMakeNull(ctx);
-
-	return valstr;
 }
 
 const gchar *seed_g_type_name_to_string(GITypeInfo * type)
@@ -415,8 +305,6 @@ void seed_init_builtins(SeedEngine * local_eng, gint * argc, gchar *** argv)
 	seed_create_function(local_eng->context, 
 						 "print", &seed_print, obj);
 	seed_create_function(local_eng->context, 
-						 "readline", &seed_readline, obj);
-	seed_create_function(local_eng->context, 
 						 "check_syntax", &seed_check_syntax, obj);
 	seed_create_function(local_eng->context, 
 						 "introspect", &seed_introspect, obj);
@@ -426,8 +314,6 @@ void seed_init_builtins(SeedEngine * local_eng, gint * argc, gchar *** argv)
 						 "spawn", &seed_spawn, obj);
 	seed_create_function(local_eng->context, 
 						 "quit", &seed_quit, obj);
-	seed_create_function(local_eng->context, 
-						 "readline_bind", &seed_readline_bind, obj);
 
 	arrayObj = JSObjectMake(local_eng->context, NULL, NULL);
 

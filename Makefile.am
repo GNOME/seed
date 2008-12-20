@@ -1,25 +1,22 @@
 ## Process this file with automake to produce Makefile.in
-## Created by Anjuta
 
 SUBDIRS = po \
-	libseed\
-	src\
-	extensions\
-	doc\
-	examples\
+	libseed \
+	src \
+	extensions \
+	doc \
+	examples \
 	modules \
 	tests
-	
 
 seeddocdir = ${prefix}/share/doc/seed
 seeddoc_DATA = \
-	README\
-	COPYING\
-	AUTHORS\
-	ChangeLog\
-	INSTALL\
+	README \
+	COPYING \
+	AUTHORS \
+	ChangeLog \
+	INSTALL \
 	NEWS
-
 
 pkgconfig_DATA = seed.pc 
 
@@ -29,7 +26,6 @@ EXTRA_DIST = $(seeddoc_DATA) \
 	$(pkgconfig_DATA)
 
 DISTCHEKC_CONFIGURE_FLAGS=--enable-gtk-doc
-
 
 # Copy all the spec files. Of cource, only one is actually used.
 dist-hook:

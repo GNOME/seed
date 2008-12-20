@@ -23,7 +23,6 @@
 #include <stdio.h>
 #include "../libseed/seed.h"
 #include "../libseed/seed-debug.h"
-#include <readline/readline.h>
 #include <stdlib.h>
 #include <girepository.h>
 
@@ -33,8 +32,9 @@ void seed_repl(int argc, char ** argv)
 {
 	SeedScript  * script;
 
-	script = seed_make_script(eng->context, "while(1) { try { Seed.print(eval("
-							  "Seed.readline(\"> \"))); } catch(e) {"
+	script = seed_make_script(eng->context, "Seed.import_namespace('readline');"
+							  "while(1) { try { Seed.print(eval("
+							  "readline.readline(\"> \"))); } catch(e) {"
 							  "Seed.print(e.name + \" \" + e.message);}}",
 							  NULL, 0);
 	seed_evaluate(eng->context, script, 0);

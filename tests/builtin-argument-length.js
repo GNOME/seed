@@ -1,7 +1,7 @@
 #!/usr/bin/env seed
 // Returns: 0
 // STDIN:
-// STDOUT:Seed\.include expected 1 argument, got 0\nFile not found: 1\.000000\.\n\nFile not found: \.\n\nSeed\.include expected 1 argument, got 2\nSeed\.include expected 1 argument, got 2\nSeed\.print expected 1 argument, got 0\nSeed\.print expected 1 argument, got 2\nSeed\.print expected 1 argument, got 2\nSeed\.print expected 1 argument, got 3\nSeed\.readline expected 1 argument, got 0\nSeed\.readline expected 1 argument, got 2\nSeed\.introspect expected 1 argument, got 0\nSeed\.introspect expected 1 argument, got 2\nSeed\.check_syntax expected 1 argument, got 0\nSeed\.check_syntax expected 1 argument, got 2
+// STDOUT:Seed\.include expected 1 argument, got 0\nFile not found: 1\.000000\.\n\nFile not found: \.\n\nSeed\.include expected 1 argument, got 2\nSeed\.include expected 1 argument, got 2\nSeed\.print expected 1 argument, got 0\nSeed\.print expected 1 argument, got 2\nSeed\.print expected 1 argument, got 2\nSeed\.print expected 1 argument, got 3\nSeed\.introspect expected 1 argument, got 0\nSeed\.introspect expected 1 argument, got 2\nSeed\.check_syntax expected 1 argument, got 0\nSeed\.check_syntax expected 1 argument, got 2
 // STDERR:
 
 try{
@@ -31,13 +31,6 @@ Seed.print("asdf", 2);
 }catch(e){Seed.print(e.message)}
 try{
 Seed.print(1, 2, 3);
-}catch(e){Seed.print(e.message)}
-
-try{
-Seed.readline();
-}catch(e){Seed.print(e.message)}
-try{
-Seed.readline("asdf>", "something");
 }catch(e){Seed.print(e.message)}
 
 try{

@@ -4,4 +4,5 @@
 // STDOUT:4.000000
 // STDERR:
 
-Seed.print(eval(Seed.readline("")));
+Seed.import_namespace("readline");
+Seed.print(eval(readline.readline("")));

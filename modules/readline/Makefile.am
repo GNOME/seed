@@ -1,4 +1,4 @@
-#if BUILD_SQLITE3_MODULE
+if BUILD_READLINE_MODULE
 
 lib_LTLIBRARIES = \
 	libreadline.la
@@ -15,6 +15,6 @@ AM_CPPFLAGS = \
 	`pkg-config --cflags glib-2.0` -g \
 	`pkg-config --cflags gobject-introspection-1.0`
 
-#endif
+endif
 
 libdir = ${exec_prefix}/lib/seed

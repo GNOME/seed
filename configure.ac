@@ -56,10 +56,12 @@ if test x"$have_ffi_pkgconfig" = xno ; then
   AC_SUBST(FFI_CFLAGS)
 fi
 
-dnl ==========================libreadline======================================
-AC_CHECK_LIB(readline, readline,
-    AC_DEFINE(HAVE_LIBREADLINE, 1, [have readline]),
-    AC_MSG_ERROR([readline not found]))
+dnl ========================readline module====================================
+AC_TRY_CPP([#include <readline/readline.h>],
+					 have_readline_h=yes,
+					 have_readline_h=no)
+AM_CONDITIONAL(BUILD_READLINE_MODULE, test "x$have_readline_h" = "xyes")
+AC_SUBST(BUILD_READLINE_MODULE)
 
 dnl =========================canvas module=====================================
 AC_TRY_CPP([#include <cairo/cairo.h>], have_cairo_h=yes, have_cairo_h=no)
@@ -142,4 +144,5 @@ Build Configuration:
 Modules:
    SQLite.....................$have_sqlite3_h
    Canvas.....................$have_cairo_h
+   readline...................$have_readline_h
 "

@@ -10,7 +10,7 @@ seed_turtle_SOURCES = \
 	turtle.c
 
 seed_turtle_LDFLAGS = \
-	-L../../libseed/.libs -lseed -lreadline
+	-L../../libseed/.libs -lseed
 
 seed_turtle_LDADD = \
 	$(SEED_LIBS) \
