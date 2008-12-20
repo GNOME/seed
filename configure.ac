@@ -120,6 +120,7 @@ src/Makefile
 extensions/Makefile
 tests/Makefile
 doc/Makefile
+doc/modules/Makefile
 doc/tutorial-standalone/Makefile
 doc/reference/Makefile
 examples/Makefile

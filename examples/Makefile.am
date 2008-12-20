@@ -41,7 +41,7 @@ EXTRA_DIST = \
 	introspect.js \
 	poppler.js \
 	json-packing.js \
-	gtkplug.js \ 
+	gtkplug.js \
 	ls.js \
 	n-oscillator.js \
 	notify-test.js \
