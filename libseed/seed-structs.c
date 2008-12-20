@@ -472,6 +472,8 @@ JSObjectRef seed_make_union(JSContextRef ctx, gpointer younion,
 															(GIFunctionInfo *)
 															finfo, object,
 															TRUE);
+			
+			g_base_info_unref((GIBaseInfo *) finfo);
 		}
 	}
 
@@ -525,6 +527,8 @@ JSObjectRef seed_make_struct(JSContextRef ctx,
 															(GIFunctionInfo *)
 															finfo, object,
 															TRUE);
+			
+			g_base_info_unref((GIBaseInfo *) finfo);
 		}
 	}
 
