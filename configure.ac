@@ -4,6 +4,8 @@ AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
 AC_CONFIG_HEADERS([config.h])
 AM_MAINTAINER_MODE
 
+AC_CONFIG_MACRO_DIR(m4)
+
 AC_ISC_POSIX
 AC_PROG_CC
 AM_PROG_CC_STDC
@@ -93,6 +95,9 @@ PKG_CHECK_MODULES(LIBSEED, gobject-introspection-1.0 webkit-1.0)
 
 AC_CONFIG_FILES([
 seed.pc])
+
+dnl ==========================gtk-doc=========================================
+GTK_DOC_CHECK(1.9)
 
 dnl =============================Output========================================
 AC_OUTPUT([
