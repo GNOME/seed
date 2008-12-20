@@ -29,7 +29,7 @@ var black = Clutter.Color._new();
 Clutter.color_parse("Black", black);
 
 var stage = new Clutter.Stage();
-stage.signal.hide.connect(Clutter.main_quit);
+stage.signal.hide.connect(function(){Clutter.main_quit()});
 stage.color = black;
 
 score = new Score();
