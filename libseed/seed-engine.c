@@ -959,6 +959,7 @@ seed_gi_import_namespace(JSContextRef ctx,
 						name[j] = '_';
 				}
 				
+				// Non ascii enums? :P
 				*name = g_ascii_toupper(*name);
 
 				seed_object_set_property(ctx, enum_class, name, value_ref);

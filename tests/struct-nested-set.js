@@ -8,7 +8,7 @@ Seed.import_namespace("Gdk");
 e = new Gdk.Event();
 Seed.print(e);
 
-e.expose.type = Gdk.EventType.expose;
+e.expose.type = Gdk.EventType.Expose;
 Seed.print(e.expose.type);
 
 r = new Gdk.Rectangle();
