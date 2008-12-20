@@ -1,5 +1,6 @@
 #include "../../libseed/seed.h"
 #include <ffi.h>
+#include <stdio.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <sys/mman.h>
@@ -126,12 +127,12 @@ void seed_module_init(SeedEngine * local_eng)
 
 	seed_create_function(eng->context, 
 						 "readline",
-						 &seed_readline,
+						 seed_readline,
 						 namespace_ref);
 
 	seed_create_function(eng->context, 
 						 "bind",
-						 &seed_readline_bind,
+						 seed_readline_bind,
 						 namespace_ref);
 	
 	seed_object_set_property(eng->context, 
