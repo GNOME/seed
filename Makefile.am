@@ -28,6 +28,8 @@ pkgconfigdir = $(libdir)/pkgconfig
 EXTRA_DIST = $(seeddoc_DATA) \
 	$(pkgconfig_DATA)
 
+DISTCHEKC_CONFIGURE_FLAGS=--enable-gtk-doc
+
 
 # Copy all the spec files. Of cource, only one is actually used.
 dist-hook:

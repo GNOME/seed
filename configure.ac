@@ -109,6 +109,7 @@ extensions/Makefile
 tests/Makefile
 doc/Makefile
 doc/tutorial-standalone/Makefile
+doc/reference/Makefile
 examples/Makefile
 examples/lightsoff/Makefile
 examples/clutter-shader/Makefile

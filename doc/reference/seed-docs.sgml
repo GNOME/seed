@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+               "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<book id="index" xmlns:xi="http://www.w3.org/2003/XInclude">
+  <bookinfo>
+    <title>seed Reference Manual</title>
+    <releaseinfo>
+      for seed [VERSION]
+      The latest version of this documentation can be found on-line at
+      <ulink role="online-location" url="http://[SERVER]/seed/index.html">http://[SERVER]/seed/</ulink>.
+    </releaseinfo>
+  </bookinfo>
+
+  <chapter>
+    <title>[Insert title here]</title>
+    <xi:include href="xml/seed-debug.xml"/>
+    <xi:include href="xml/seed-closure.xml"/>
+    <xi:include href="xml/seed-structs.xml"/>
+    <xi:include href="xml/seed-types.xml"/>
+    <xi:include href="xml/seed-gtype.xml"/>
+    <xi:include href="xml/seed-signals.xml"/>
+    <xi:include href="xml/seed-exceptions.xml"/>
+    <xi:include href="xml/seed.xml"/>
+    <xi:include href="xml/seed-engine.xml"/>
+    <xi:include href="xml/seed-builtins.xml"/>
+    <xi:include href="xml/seed-private.xml"/>
+  </chapter>
+</book>

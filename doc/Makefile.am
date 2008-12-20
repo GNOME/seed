@@ -1,4 +1,4 @@
-SUBDIRS = tutorial-standalone
+SUBDIRS = tutorial-standalone reference
 
 EXTRA_DIST = \
 	runtime.html
