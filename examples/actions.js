@@ -5,7 +5,7 @@ Gtk.init(null, null);
 with(Gtk)
 {
 	window = new Window();
-	window.signal.hide.connect(main_quit);
+	window.signal.hide.connect(function () { main_quit() });
 	toolbar = new Toolbar();
 	vbox = new VBox();
 	window.add(vbox);
