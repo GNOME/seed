@@ -1,1 +1,1 @@
-SUBDIRS = example sqlite canvas Multiprocessing 
+SUBDIRS = example sqlite canvas Multiprocessing readline

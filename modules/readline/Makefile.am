@@ -1,0 +1,20 @@
+#if BUILD_SQLITE3_MODULE
+
+lib_LTLIBRARIES = \
+	libreadline.la
+
+libreadline_la_SOURCES = \
+	seed-readline.c
+
+libreadline_la_LDFLAGS = \
+	`pkg-config --libs seed libffi` -lreadline
+
+AM_CPPFLAGS = \
+	-I../../libseed/ \
+	`pkg-config --cflags seed` \
+	`pkg-config --cflags glib-2.0` -g \
+	`pkg-config --cflags gobject-introspection-1.0`
+
+#endif
+
+libdir = ${exec_prefix}/lib/seed
