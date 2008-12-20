@@ -10,7 +10,7 @@ packing = [
 	{child: label,
 	 fill: false,
 	 padding: 10,
-	 position: Gtk.PackType.end},
+	 position: Gtk.PackType.End},
 	{child:button,
 	 fill: false,
 	 padding: 100,

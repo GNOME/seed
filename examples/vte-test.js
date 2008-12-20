@@ -20,8 +20,8 @@ with (Gtk)
 
 
 	scroll.add(vte);
-	scroll.set_policy(PolicyType.automatic,
-					  PolicyType.automatic);
+	scroll.set_policy(PolicyType.Automatic,
+					  PolicyType.Automatic);
 
 	window.add(scroll);
 	window.show_all();

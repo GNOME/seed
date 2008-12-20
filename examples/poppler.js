@@ -56,11 +56,11 @@ function open_file(sv)
     var file_filter = new Gtk.FileFilter();
     file_filter.add_mime_type("application/x-pdf");
     file_chooser.set_filter(file_filter);
-    file_chooser.add_button("Cancel", Gtk.ResponseType.cancel);
-    file_chooser.add_button("Open", Gtk.ResponseType.accept);
-    file_chooser.set_action(Gtk.FileChooserAction.open);
+    file_chooser.add_button("Cancel", Gtk.ResponseType.Cancel);
+    file_chooser.add_button("Open", Gtk.ResponseType.Accept);
+    file_chooser.set_action(Gtk.FileChooserAction.Ppen);
     
-    if(file_chooser.run() == Gtk.ResponseType.accept)
+    if(file_chooser.run() == Gtk.ResponseType.Accept)
     {
 	    // Poppler.Document will not take a uri as a construction property,
 	    // use this:

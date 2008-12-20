@@ -4,8 +4,8 @@ Seed.import_namespace("Gio");
 
 // I don't think this is the right way of doing things.
 var r = new Gnio.Resolver();
-var sock = new Gnio.Socket({domain: Gnio.SocketDomain.inet,
-						    type: Gnio.SocketType.stream});
+var sock = new Gnio.Socket({domain: Gnio.SocketDomain.Inet,
+						    type: Gnio.SocketType.Stream});
 
 
 var addr = r.lookup_name("localhost");
