@@ -42,9 +42,9 @@ ScoreType = {
 		var bkg = Clutter.Texture.new_from_file("./lcd-back.svg");
 		var off_svg = Clutter.Texture.new_from_file("./lcd-off.svg");
 
-		this.bkg_top.filter_quality = Clutter.TextureQuality.high;
-		bkg.filter_quality = Clutter.TextureQuality.high;
-		off_svg.filter_quality = Clutter.TextureQuality.high;
+		this.bkg_top.filter_quality = Clutter.TextureQuality.High;
+		bkg.filter_quality = Clutter.TextureQuality.High;
+		off_svg.filter_quality = Clutter.TextureQuality.High;
 		
 		this.num_margin = 7;
 		this.num_width = bkg.height * 0.9 * 0.625;
@@ -66,7 +66,7 @@ ScoreType = {
 		for(var i = 0; i <= 9; i++)
 		{
 			this.num_textures[i] = Clutter.Texture.new_from_file("./"+i+".svg");
-			this.num_textures[i].filter_quality = Clutter.TextureQuality.high;
+			this.num_textures[i].filter_quality = Clutter.TextureQuality.High;
 		}
 		
 		this.bkg_top.set_position(1, 1);

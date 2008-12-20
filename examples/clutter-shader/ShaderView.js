@@ -19,8 +19,8 @@
 	var compile = new Gtk.Button({label: "Compile"});
 
 	var scrolled_window = new Gtk.ScrolledWindow(
-												 {vscrollbar_policy: Gtk.PolicyType.automatic, 
-												  hscrollbar_policy: Gtk.PolicyType.automatic});
+												 {vscrollbar_policy: Gtk.PolicyType.Automatic, 
+												  hscrollbar_policy: Gtk.PolicyType.Automatic});
 	scrolled_window.add(source_view);
     
 	this.hbox.pack_start(scrolled_window, true, true);

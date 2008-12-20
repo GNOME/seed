@@ -6,8 +6,8 @@ var off_pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size("./light-off.svg", tile_
 var on_svg = GtkClutter.texture_new_from_pixbuf(on_pixbuf);
 var off_svg = GtkClutter.texture_new_from_pixbuf(off_pixbuf);
 
-on_svg.filter_quality = Clutter.TextureQuality.high;
-off_svg.filter_quality = Clutter.TextureQuality.high;
+on_svg.filter_quality = Clutter.TextureQuality.High;
+off_svg.filter_quality = Clutter.TextureQuality.High;
 
 LightType = {
     parent: Clutter.Group.type,

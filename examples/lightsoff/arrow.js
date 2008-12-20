@@ -27,7 +27,7 @@ ArrowType = {
     		this.remove_all();
     		
     		var bkg = Clutter.Texture.new_from_file("./arrow-r.svg");
-			bkg.filter_quality = Clutter.TextureQuality.high;
+			bkg.filter_quality = Clutter.TextureQuality.High;
 			
 			this.add_actor(bkg);
     	}
@@ -36,7 +36,7 @@ ArrowType = {
     {
     	this.flipped = 0;
     	var bkg = Clutter.Texture.new_from_file("./arrow-l.svg");
-		bkg.filter_quality = Clutter.TextureQuality.high;
+		bkg.filter_quality = Clutter.TextureQuality.High;
 		
 		this.reactive = true;
 		this.signal.button_press_event.connect(pushed_arrow);
