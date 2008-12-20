@@ -10,6 +10,7 @@ examples_DATA = \
 	Gnio-server.js \
 	clutter-cairo.js \
 	threaded-repl.js \
+	gtkplug.js \
 	calculator.js \
 	gconf.js \
 	video.js \
@@ -40,6 +41,7 @@ EXTRA_DIST = \
 	introspect.js \
 	poppler.js \
 	json-packing.js \
+	gtkplug.js \ 
 	ls.js \
 	n-oscillator.js \
 	notify-test.js \
