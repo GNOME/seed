@@ -340,6 +340,7 @@ seed_handle_closure(ffi_cif * cif, void *result, void **args, void *userdata)
 		*(gpointer *) result = 0;
 	}
 
+	g_base_info_unref((GIBaseInfo *) return_type);
 	JSGlobalContextRelease((JSGlobalContextRef)ctx);
 }
 
