@@ -136,6 +136,7 @@ echo "
 Build Configuration:
    Debug......................$enable_debug
    Profiling/Coverage.........$enable_profile
+   gtk-doc....................$enable_gtk_doc
 
 Modules:
    SQLite.....................$have_sqlite3_h
