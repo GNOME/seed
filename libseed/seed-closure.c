@@ -125,7 +125,7 @@ seed_handle_closure(ffi_cif * cif, void *result, void **args, void *userdata)
 	GIArgInfo *arg_info;
 	GITypeInfo *return_type;
 	GArgument rarg;
-	GArgument *return_arg = g_new0(GArgument, 1);
+	GArgument return_arg;
 	JSContextRef ctx = 
 		JSGlobalContextCreateInGroup(context_group, 0);
 													
@@ -136,7 +136,7 @@ seed_handle_closure(ffi_cif * cif, void *result, void **args, void *userdata)
 	num_args = g_callable_info_get_n_args(privates->info);
 	return_type = g_callable_info_get_return_type(privates->info);
 	return_tag = g_type_info_get_tag(return_type);
-	jsargs = (JSValueRef *) g_new0(JSValueRef, num_args);
+	jsargs = (JSValueRef *) g_newa(JSValueRef, num_args);
 
 	for (i = 0; i < num_args; i++)
 	{
@@ -253,58 +253,56 @@ seed_handle_closure(ffi_cif * cif, void *result, void **args, void *userdata)
 		exception = 0;
 	}
 
-	g_free(jsargs);
-
 	seed_gi_make_argument(ctx, (JSValueRef) return_value, return_type,
-						  return_arg, 0);
+						  &return_arg, 0);
 	switch (return_tag)
 	{
 
 	case GI_TYPE_TAG_BOOLEAN:
-		*(gboolean *) result = return_arg->v_boolean;
+		*(gboolean *) result = return_arg.v_boolean;
 		break;
 	case GI_TYPE_TAG_INT8:
-		*(gint8 *) result = return_arg->v_int8;
+		*(gint8 *) result = return_arg.v_int8;
 		break;
 	case GI_TYPE_TAG_UINT8:
-		*(guint8 *) result = return_arg->v_uint8;
+		*(guint8 *) result = return_arg.v_uint8;
 		break;
 	case GI_TYPE_TAG_INT16:
-		*(gint16 *) result = return_arg->v_int16;
+		*(gint16 *) result = return_arg.v_int16;
 		break;
 	case GI_TYPE_TAG_UINT16:
-		return_arg->v_uint16 = *(guint16 *) args[i];
+		return_arg.v_uint16 = *(guint16 *) args[i];
 		break;
 	case GI_TYPE_TAG_INT32:
-		*(gint32 *) result = return_arg->v_int32;
+		*(gint32 *) result = return_arg.v_int32;
 		break;
 	case GI_TYPE_TAG_UINT32:
-		*(guint32 *) result = return_arg->v_uint32;
+		*(guint32 *) result = return_arg.v_uint32;
 		break;
 	case GI_TYPE_TAG_LONG:
 	case GI_TYPE_TAG_INT64:
-		*(glong *) result = return_arg->v_int64;
+		*(glong *) result = return_arg.v_int64;
 		break;
 	case GI_TYPE_TAG_ULONG:
 	case GI_TYPE_TAG_UINT64:
-		*(glong *) result = return_arg->v_uint64;
+		*(glong *) result = return_arg.v_uint64;
 		break;
 	case GI_TYPE_TAG_INT:
 	case GI_TYPE_TAG_SSIZE:
 	case GI_TYPE_TAG_SIZE:
-		*(gint *) result = return_arg->v_int32;
+		*(gint *) result = return_arg.v_int32;
 		break;
 	case GI_TYPE_TAG_UINT:
-		*(guint *) result = return_arg->v_uint32;
+		*(guint *) result = return_arg.v_uint32;
 		break;
 	case GI_TYPE_TAG_FLOAT:
-		*(gfloat *) result = return_arg->v_float;
+		*(gfloat *) result = return_arg.v_float;
 		break;
 	case GI_TYPE_TAG_DOUBLE:
-		*(gdouble *) result = return_arg->v_double;
+		*(gdouble *) result = return_arg.v_double;
 		break;
 	case GI_TYPE_TAG_UTF8:
-		*(gchar **) result = return_arg->v_string;
+		*(gchar **) result = return_arg.v_string;
 		break;
 	case GI_TYPE_TAG_INTERFACE:
 		{
@@ -317,32 +315,31 @@ seed_handle_closure(ffi_cif * cif, void *result, void **args, void *userdata)
 			if (interface_type == GI_INFO_TYPE_OBJECT ||
 				interface_type == GI_INFO_TYPE_INTERFACE)
 			{
-				*(gpointer *) result = return_arg->v_pointer;
+				*(gpointer *) result = return_arg.v_pointer;
 				break;
 			}
 
 			else if (interface_type == GI_INFO_TYPE_ENUM ||
 					 interface_type == GI_INFO_TYPE_FLAGS)
 			{
-				*(double *)result = return_arg->v_double;
+				*(double *)result = return_arg.v_double;
 				break;
 			}
 			else if (interface_type == GI_INFO_TYPE_STRUCT)
 			{
-				*(gpointer *) result = return_arg->v_pointer;
+				*(gpointer *) result = return_arg.v_pointer;
 				break;
 			}
 		}
 	case GI_TYPE_TAG_GLIST:
 	case GI_TYPE_TAG_GSLIST:
-		*(gpointer *) result = return_arg->v_pointer;
+		*(gpointer *) result = return_arg.v_pointer;
 		break;
 	default:
 		*(gpointer *) result = 0;
 	}
 
 	JSGlobalContextRelease((JSGlobalContextRef)ctx);
-	g_free(return_arg);
 }
 
 SeedNativeClosure *seed_make_native_closure(JSContextRef ctx,
