@@ -1233,7 +1233,6 @@ void seed_create_function(JSContextRef ctx,
 	JSObjectRef oref;
 
 	oref = JSObjectMakeFunctionWithCallback(ctx, NULL, func);
-	JSValueProtect(ctx, oref);
 	seed_object_set_property(ctx, obj, name, oref);
 }
 
