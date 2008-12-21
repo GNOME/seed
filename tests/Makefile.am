@@ -1,4 +1,5 @@
 EXTRA_DIST = \
+    COPYING \
     argv.js \
     closure-finalization.js \
     native-closure-exception.js \

@@ -1,6 +1,7 @@
 SUBDIRS = lightsoff \
           clutter-shader \
           glib \
+          browser \
           turtle
 
 examplesdir=$(datadir)/doc/seed/examples
@@ -29,6 +30,7 @@ examples_DATA = \
 	threaded-repl.js \
 	HACKING
 EXTRA_DIST = \
+	COPYING \
 	actions.js \
 	calculator.js \
 	clutter-cairo.js \
