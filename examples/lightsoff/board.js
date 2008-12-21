@@ -105,6 +105,8 @@ function check_won (timeline, light)
 	}
 }
 
+Seed.import_namespace("GObject");
+
 function flip_region (act, evt, light)
 {
 	if(!in_setup && in_fade)
@@ -114,6 +116,7 @@ function flip_region (act, evt, light)
 	var y = light.light_y;
 	
 	var fadeline = new Clutter.Timeline({num_frames: 20});
+	Seed.print(fadeline.__debug_ref_count());
 	
 	light.flip(fadeline);
 	
