@@ -127,6 +127,7 @@ examples/Makefile
 examples/lightsoff/Makefile
 examples/clutter-shader/Makefile
 examples/glib/Makefile
+examples/browser/Makefile
 examples/turtle/Makefile
 modules/Makefile
 modules/example/Makefile
