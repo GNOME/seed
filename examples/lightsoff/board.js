@@ -116,7 +116,6 @@ function flip_region (act, evt, light)
 	var y = light.light_y;
 	
 	var fadeline = new Clutter.Timeline({num_frames: 20});
-	Seed.print(fadeline.__debug_ref_count());
 	
 	light.flip(fadeline);
 	

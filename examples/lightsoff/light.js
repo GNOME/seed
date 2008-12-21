@@ -33,9 +33,7 @@ LightType = {
 			
 			Clutter.effect_fade(effect, this.on, this.state * 255);
 			Clutter.effect_scale(effect, this, this.state?1:.9, this.state?1:.9);
-		
-		    this.opacity = this.state * 255;
-			
+
 			return true;
 		}
     },
