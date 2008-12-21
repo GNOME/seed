@@ -100,7 +100,8 @@ seed_gobject_constructor_invoked(JSContextRef ctx,
 	JSPropertyNameArrayRef jsprops = 0;
 	JSStringRef jsprop_name;
 	JSValueRef jsprop_value;
-
+	gboolean sunk = TRUE;
+	
 	type = (GType) JSObjectGetPrivate(constructor);
 	if (!type)
 		return 0;
@@ -191,7 +192,9 @@ seed_gobject_constructor_invoked(JSContextRef ctx,
 
 	gobject = g_object_newv(type, nparams, params);
 
-	g_object_ref_sink(gobject);
+	sunk = g_object_is_floating(gobject);
+	if (sunk)
+		g_object_ref_sink(gobject);
 
 	if (!gobject)
 		ret = (JSObjectRef) JSValueMakeNull(ctx);
@@ -204,6 +207,7 @@ seed_gobject_constructor_invoked(JSContextRef ctx,
 		g_free((gchar *)params[i].name);
 	}
 
+	// Give up ref
 	g_object_unref(gobject);
 
 	g_type_class_unref(oclass);

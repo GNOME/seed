@@ -105,7 +105,7 @@ static void seed_gobject_signal_connect(JSContextRef ctx,
 	
 	if (this_obj && !JSValueIsNull(ctx, this_obj))
 	{
-		JSValueProtect(ctx, this_obj);
+//		JSValueProtect(ctx, this_obj);
 		((SeedClosure *) closure)->this = this_obj;
 	}
 	else
@@ -116,7 +116,7 @@ static void seed_gobject_signal_connect(JSContextRef ctx,
 	if (user_data && !JSValueIsNull(ctx, user_data))
 	{
 		((SeedClosure *) closure)->user_data = user_data;
-		JSValueProtect(ctx, user_data);
+//		JSValueProtect(ctx, user_data);
 	}
 
 	JSValueProtect(ctx, (JSObjectRef) func);
