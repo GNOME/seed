@@ -93,10 +93,11 @@ Hello, world!
 <li>Add a number to a string <code>("Example" + (2 * 2))</code> turns into <code>"Example4"</code></li>
 </ul>
 <p>There is one exception: in order to convert a string of digits into a 'number', Javascript needs to be explicitly instructed to do so: <code>parseFloat("42.5")</code>.</p>
-<p>Seed also provides a very simple interface to the <a href="http://directory.fsf.org/project/readline/">GNU Readline</a> library, which allows programs to ask the user for input. The only argument <code>Seed.readline()</code> requires is the prompt for the user. Also, the current version of Seed ensures that everything typed is automatically saved in the prompt's history; if you press the up key while at a prompt, you can access and edit lines you've previously entered. Future versions of Seed will provide more control over the history and other parts of readline.</p>
+<p>Seed also provides a very simple interface to the <a href="http://directory.fsf.org/project/readline/">GNU Readline</a> library, which allows programs to ask the user for input. This interface is in the <b>readline</b> module, which <u>must</u> be imported before it can be used. The only argument <code>readline.readline()</code> requires is the prompt for the user. Also, the current version of Seed ensures that everything typed is automatically saved in the prompt's history; if you press the up key while at a prompt, you can access and edit lines you've previously entered. Future versions of Seed will provide more control over the history and other parts of readline.</p>
 <pre>
-var my_name = Seed.readline("Your name? ");
-var my_age = Seed.readline("Your age? ");
+Seed.import_namespace("readline");
+var my_name = readline.readline("Your name? ");
+var my_age = readline.readline("Your age? ");
 var old = 25;
 var old_age = old + parseFloat(my_age);
 Seed.print(my_name + " will be " + old_age + " in " + old + " years!");
@@ -142,11 +143,13 @@ catch(e)
 <pre>
 #!/usr/bin/env seed
 
+Seed.import_namespace("readline");
+
 while(1)
 {
     try
     {
-        Seed.print(eval(Seed.readline("> ")));
+        Seed.print(eval(readline.readline("> ")));
     }
     catch(e)
     {
