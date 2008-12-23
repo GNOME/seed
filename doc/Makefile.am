@@ -1,7 +1,9 @@
 SUBDIRS = tutorial-standalone reference modules
 
 EXTRA_DIST = \
-	runtime.html
+	runtime.html \
+	style.css
+
 docdir = $(datadir)/doc/seed/
 doc_DATA = runtime.html
 
