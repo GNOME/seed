@@ -3,40 +3,29 @@
 Seed.import_namespace("Gtk");
 Gtk.init(null, null);
 
-var window = new Gtk.Window({title: "Browser"});
+BrowserToolbarType = {
+    parent: Gtk.HBox.type,
+    name: "BrowserToolbar",
+    instance_init: function(klass)
+    {
+        this.urlBar = new Gtk.Entry();
 
-function quit()
-{
-    Gtk.main_quit();
-}
+        this.back = new Gtk.ToolButton({stock_id:"gtk-go-back"});
+        this.forward = new Gtk.ToolButton({stock_id:"gtk-go-forward"});
+        this.refresh = new Gtk.ToolButton({stock_id:"gtk-refresh"});
 
-window.signal.hide.connect(quit);
+        this.back.signal.clicked.connect(back);
+        this.forward.signal.clicked.connect(forward);
+        this.refresh.signal.clicked.connect(refresh);
+        this.urlBar.signal.activate.connect(browse);
 
-function create_ui()
-{
-    var main_ui = new Gtk.VBox();
-    var toolbar = new Gtk.HBox();
+        this.pack_start(this.back);
+        this.pack_start(this.forward);
+        this.pack_start(this.refresh);
 
-    var back_button = new Gtk.ToolButton({stock_id: "gtk-go-back"});
-    var forward_button = new Gtk.ToolButton({stock_id: "gtk-go-forward"});
-    var refresh_button = new Gtk.ToolButton({stock_id: "gtk-refresh"});
-
-    var url_entry = new Gtk.Entry();
-
-    back_button.signal.clicked.connect(back);
-    forward_button.signal.clicked.connect(forward);
-    refresh_button.signal.clicked.connect(refresh);
-
-    url_entry.signal.activate.connect(browse);
-
-    toolbar.pack_start(back_button);
-    toolbar.pack_start(forward_button);
-    toolbar.pack_start(refresh_button);
-    toolbar.pack_start(url_entry, true, true);
-
-    main_ui.pack_start(toolbar);
-    return main_ui;
-}
+        this.pack_start(this.urlBar, true, true);
+    }};
+BrowserToolbar = new GType(BrowserToolbarType);
 
 function forward(button)
 {
@@ -55,10 +44,12 @@ function refresh(button)
 
 function browse(button)
 {
-    Seed.print("browser");
+    Seed.print("browse");
 }
 
-window.add(create_ui());
+window = new Gtk.Window({title: "Browser"});
+window.signal.hide.connect(function () { Gtk.main_quit() });
+window.add(new BrowserToolbar());
 window.show_all();
 
 Gtk.main();
