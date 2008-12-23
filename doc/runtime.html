@@ -200,21 +200,22 @@ JavaScript, being a prototypal language, rather than a class based language, has
 To implement a new GType, an object describing the type is required.
 </p>
 <pre>
-  NewType = {
-     parent: ParentTypeConstructor,
-     name: "NewTypeName",
-     class_init: function(klass, prototype)
-     {
-     },
-     instance_init: function(klass)
-     {
-     }}
+NewType = {
+    parent: ParentTypeConstructor,
+    name: "NewTypeName",
+    class_init: function(klass, prototype)
+    {
+    },
+    instance_init: function(klass)
+    {
+    }
+}
 </pre>
 <p>
 Indicates that the new type derives from ParentType, i.e. Gtk.Window, with name "NewTypeName". The class_init function is called when the class comes in to existence, and allows you to add to the prototype of objects constructed by the type. The instance_init function is called on the creation of each instance, with the "this" variable set to the new instance. An example type:
 </p>
 <pre>
-HelloLabelType = {
+HelloLabel = new GType({
     parent: Gtk.Label,
     name: "HelloLabel",
     class_init: function(klass, prototype)
@@ -228,11 +229,11 @@ HelloLabelType = {
     instance_init: function(klass)
     {
         this.label = "Hello"; // Hello Labels Always Say Hello.
-    }};
+    }
+});
 </pre>
-<p> Now to create a constructor, and instance of the object: </p>
+<p> Now to create an instance of the object:</p>
 <pre>
-HelloLabel = new GType(HelloLabelType);
 label = new HelloLabel();
 box.pack_start(label);
 label.show();
@@ -266,7 +267,7 @@ When creating a new GObject type within Seed, <b>install_signal</b> provides the
 For example: 
 </p>
 <pre>
-HelloWindowType = {       
+HelloWindow = new GType({       
     parent: Gtk.Window.type,
     name: "HelloWindow",
     class_init: function(klass, prototype)
@@ -278,9 +279,8 @@ HelloWindowType = {
 
         hello_signal_id = klass.install_signal(HelloSignalDefinition);
     },
-}
+});
 
-HelloWindow = new GType(HelloWindowType);
 w = new HelloWindow();
 
 w.signal.hello.connect(function(object, number, string)

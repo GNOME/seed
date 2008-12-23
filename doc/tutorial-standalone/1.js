@@ -3,7 +3,7 @@
 Seed.import_namespace("Gtk");
 Gtk.init(null, null);
 
-BrowserToolbarType = {
+BrowserToolbar = new GType({
     parent: Gtk.HBox.type,
     name: "BrowserToolbar",
     instance_init: function(klass)
@@ -45,8 +45,7 @@ BrowserToolbarType = {
 
         this.pack_start(urlBar, true, true);
     }
-};
-BrowserToolbar = new GType(BrowserToolbarType);
+});
 
 window = new Gtk.Window({title: "Browser"});
 window.signal.hide.connect(function () { Gtk.main_quit() });
