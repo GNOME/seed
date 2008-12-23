@@ -118,8 +118,8 @@ An array representing the arguments passed to the <code>seed</code> interpreter.
 <p>
 Terminates the execution of the Seed interpreter, returning <i>exitcode</i> as the exit value of the program.
 </p>
-<div class="section"><b><i>object</i>.signal.<i>signame</i>.connect</b>(function<i>, user_data</i>)<br/>
-<b><i>object</i>.connect</b>(signame, function, <i>user_data</i>)</div>
+<div class="section">object.<b>signal.<i>signame</i>.connect</b>(function<i>, user_data</i>)<br/>
+object.<b>connect</b>(signame, function, <i>user_data</i>)</div>
 <p>
 Connects <i>function</i> to the signal, <i>signame</i>, on <i>object</i>. Any GObject signal will work. If present, user_data is passed as the last argument to the callback.
 </p>
@@ -193,7 +193,7 @@ catch(e)
 </pre>
 <div class="section"><b>Inheritance</b></div>
 <p>
-JavaScript being a prototypal language, rather than a class based language, has no strict inheritance model. A plethora of documentation can be found on the internet for implementing various inheritance models inside your program. However, a clear and common use case is to subclass GObjects, and Seed provides an interface to define and implement new GTypes.
+JavaScript, being a prototypal language, rather than a class based language, has no strict inheritance model. A plethora of documentation can be found on the internet for implementing various inheritance models inside your program. However, a clear and common use case is to subclass GObjects, and Seed provides an interface to define and implement new GTypes.
 </p>
 <p><b>Type Objects</b></p>
 <p>
@@ -241,7 +241,7 @@ label.say_goodbye();
 <p>
 The label inherits all the methods, signals, and properties of the Gtk.Label class and its parents, and internally has its own GType.
 </p>
-<div class="section"><i>signal</i>.<b>emit</b>(<i>...</i>)</div>
+<div class="section">signal.<b>emit</b>(<i>...</i>)</div>
 <p>
 <b>emit</b> provides the ability to arbitrarily emit any GObject signal, thus calling all of the functions which are connected to it. Any arguments passed to <b>emit</b> are passed on to the callback function.
 </p>
@@ -250,7 +250,7 @@ win = new Gtk.Window();
 win.signal.close.connect(Gtk.main_quit);
 win.signal.close.emit();
 </pre>
-<div class="section"><i>class</i>.<b>install_signal</b>(signal_descriptor)</div>
+<div class="section">class.<b>install_signal</b>(signal_descriptor)</div>
 <p>
 When creating a new GObject type within Seed, <b>install_signal</b> provides the ability to install new signals, which you can later emit with <b>emit</b> and can be connected to in any of the usual ways.
 </p>
