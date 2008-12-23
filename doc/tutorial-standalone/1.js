@@ -10,33 +10,38 @@ BrowserToolbarType = {
     {
         var urlBar = new Gtk.Entry();
 
-        var back = new Gtk.ToolButton({stock_id:"gtk-go-back"});
-        var forward = new Gtk.ToolButton({stock_id:"gtk-go-forward"});
-        var refresh = new Gtk.ToolButton({stock_id:"gtk-refresh"});
-
-        back.signal.clicked.connect(function ()
+        var backButton = new Gtk.ToolButton({stock_id:"gtk-go-back"});
+        var forwardButton = new Gtk.ToolButton({stock_id:"gtk-go-forward"});
+        var refreshButton = new Gtk.ToolButton({stock_id:"gtk-refresh"});
+        
+        var back = function ()
         {
             Seed.print("back");
-        });
+        }
         
-        forward.signal.clicked.connect(function ()
+        var forward = function ()
         {
             Seed.print("forward");
-        });
+        }
         
-        refresh.signal.clicked.connect(function ()
+        var refresh = function ()
         {
             Seed.print("refresh");
-        });
+        }
         
-        urlBar.signal.activate.connect(function ()
+        var browse = function ()
         {
             Seed.print("browse");
-        });
+        }
 
-        this.pack_start(back);
-        this.pack_start(forward);
-        this.pack_start(refresh);
+        backButton.signal.clicked.connect(back);
+        forwardButton.signal.clicked.connect(forward);
+        refreshButton.signal.clicked.connect(refresh);
+        urlBar.signal.activate.connect(browse);
+
+        this.pack_start(backButton);
+        this.pack_start(forwardButton);
+        this.pack_start(refreshButton);
 
         this.pack_start(urlBar, true, true);
     }
