@@ -9,10 +9,10 @@ FindBoxType = {
 		closeButton.set_image(new Gtk.Image({stock: "gtk-close", 
 				icon_size: Gtk.IconSize.Menu}));
 		closeButton.signal.clicked.connect(
-			function ()
+			function (button, findBox)
             {
-				this.entryBox.text = "";
-				this.hide();
+				findBox.entryBox.text = "";
+				findBox.hide();
             }, this);
 		closeButton.set_relief(Gtk.ReliefStyle.None);
 

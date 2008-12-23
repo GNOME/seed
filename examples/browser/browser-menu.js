@@ -56,8 +56,22 @@ BookmarksMenuType = {
 		this.append(this.addBookmarkItem);
 		this.append(new Gtk.SeparatorMenuItem());
 	}};
-
 BookmarksMenu = new GType(BookmarksMenuType);
+
+HistoryMenuType = {
+	parent: Gtk.Menu.type,
+	name: "HistoryMenu",
+	class_init: function(klass, prototype)
+	{
+	},
+	instance_init: function(klass)
+	{
+		//TODO: Add something meaningful to the history here
+		//this.aboutTabItem = about_action.create_menu_item();
+		//this.append(this.aboutTabItem);
+	}};
+
+HistoryMenu = new GType(HistoryMenuType);
 
 HelpMenuType = {
 	parent: Gtk.Menu.type,
@@ -104,6 +118,7 @@ BrowserMenuType = {
 		this.fileMenu = new FileMenu();
 		this.editMenu = new EditMenu();
 		this.bookmarksMenu = new BookmarksMenu();
+		this.historyMenu = new HistoryMenu();
 		this.helpMenu = new HelpMenu();
 		this.viewMenu = new ViewMenu();
 		
@@ -111,18 +126,21 @@ BrowserMenuType = {
 		this.editItem = new Gtk.MenuItem({"child": new Gtk.Label({"label": "Edit"})});
 		this.viewItem = new Gtk.MenuItem({"child": new Gtk.Label({"label": "View"})});
 		this.bookmarksItem = new Gtk.MenuItem({"child": new Gtk.Label({"label": "Bookmarks"})});
+		this.historyItem = new Gtk.MenuItem({"child": new Gtk.Label({"label": "History"})});
 		this.helpItem = new Gtk.MenuItem({"child": new Gtk.Label({"label": "Help"})});
 		
 		this.fileItem.submenu = this.fileMenu;
 		this.editItem.submenu = this.editMenu;
 		this.viewItem.submenu = this.viewMenu;
 		this.bookmarksItem.submenu = this.bookmarksMenu;
+		this.historyItem.submenu = this.historyMenu;
 		this.helpItem.submenu = this.helpMenu;
 		
 		this.append(this.fileItem);
 		this.append(this.editItem);
 		this.append(this.viewItem);
 		this.append(this.bookmarksItem);
+		this.append(this.historyItem);
 		this.append(this.helpItem);
 	}};
 

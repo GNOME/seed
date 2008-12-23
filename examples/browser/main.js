@@ -80,8 +80,15 @@ forker_pipe = forker_pipes[1];*/
 
 var window = new Gtk.Window({title: "Browser"});
 window.signal.hide.connect(shutdown);
-window.resize(800,500);
+window.resize(1024,768);
 window.add_accel_group(initialize_actions());
+
+//this keeping track of being fullscreen could probably be done better, maybe a BrowserWindow class or something
+//like this is kind of dumb, we set this to true since it will be toggled to false
+//when the event is generated from the window first appearing, since it's not exclusively
+//a fullscreen event.
+var window_is_fullscreen = true;
+window.signal.window_state_event.connect(function(){window_is_fullscreen = ! window_is_fullscreen; return false});
 
 var status = new Gtk.Statusbar();
 // Small race condition with progressBar of sorts.

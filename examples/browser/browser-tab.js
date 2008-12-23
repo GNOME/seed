@@ -48,6 +48,10 @@ BrowserTabType = {
 				return;
 			
 			this.webView = webView;
+
+			//not sure what the default on this is, so we'll do it live
+ 			//this.histList = WebKit.WebBackForwardList.new_with_web_view(this.webView);
+ 			this.webView.set_maintains_back_forward_list(true);
 			
 			this.webView.set_scroll_adjustments(null, null);
 			this.webView.signal.title_changed.connect(title_changed, this);

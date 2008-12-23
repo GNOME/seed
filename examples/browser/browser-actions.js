@@ -199,6 +199,17 @@ function initialize_actions()
 					  "gtk-reload", 
 					  "F5", 
 					 refresh_page);
+
+	select_all_location_bar_action = 
+		create_action("select-all-location-bar", 
+					  "Select All Text in the Location Bar", 
+					  null, 
+					  "F6", 
+					 function() {
+						var bar = current_tab().toolbar.urlBar;
+						bar.select_region(0,bar.get_text_length());
+					});
+	
 	
 	quit_action = 
 		create_action("quit",
@@ -306,6 +317,18 @@ function initialize_actions()
 					  "gtk-add",
 					  "<Ctrl>B",
 					  add_bookmark);
+
+	fullscreen_action = 
+		create_action("fullscreen",
+						"Fullscreen",
+						null,
+						"F11",
+						function(){
+							if (window_is_fullscreen)
+								window.unfullscreen();
+							else
+								window.fullscreen();
+						});
 	
 	// Someone needs to figure out how to use Tab in a key accel.
 	/*cycle_tabs_action = new Gtk.Action({name:"cycletabs", label:"Cycle Through Tabs",
