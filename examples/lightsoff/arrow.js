@@ -29,27 +29,30 @@ ArrowType = {
     name: "Arrow",
     class_init: function(klass, prototype)
     {
-    	prototype.set_arrow_flipped = function ()
+    	prototype.set_arrow_direction = function (dir)
     	{
-    		this.flipped = 1;
+    		this.flipped = dir;
     		this.remove_all();
-    		
-    		var bkg = Clutter.Texture.new_from_file("./arrow-r.svg");
-			bkg.filter_quality = Clutter.TextureQuality.High;
-			
+
+			if(dir)
+			{
+    		    var bkg = Clutter.Texture.new_from_file("./arrow-r.svg");
+			    bkg.filter_quality = Clutter.TextureQuality.High;
+			}
+			else
+			{
+				var bkg = Clutter.Texture.new_from_file("./arrow-l.svg");
+				bkg.filter_quality = Clutter.TextureQuality.High;
+			}
 			this.add_actor(bkg);
     	}
     },
     instance_init: function(klass)
     {
     	this.flipped = 0;
-    	var bkg = Clutter.Texture.new_from_file("./arrow-l.svg");
-		bkg.filter_quality = Clutter.TextureQuality.High;
-		
+    	
 		this.reactive = true;
 		this.signal.button_press_event.connect(pushed_arrow);
-		
-		this.add_actor(bkg);
     }};
 
 Arrow = new GType(ArrowType);

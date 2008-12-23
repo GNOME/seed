@@ -23,11 +23,12 @@ Seed.include("light.js");
 Seed.include("board.js");
 Seed.include("arrow.js");
 
-var gconf_client = GConf.Client.get_default();
-var initial_score = 1;
+var gconf_client;
+var initial_score;
 
 try
 {
+	gconf_client = GConf.Client.get_default();
 	initial_score = gconf_client.get_int("/apps/lightsoff/score")
 }
 catch(e)
@@ -55,9 +56,10 @@ stage.set_size(board_size, board_size + score.height + margin * 3);
 rect.set_position(0, board_size);
 rect.set_size(stage.width, stage.height);
 
+back.set_arrow_direction(0);
 back.set_position(score.x - back.width - 2*margin, score.y + (.5 * score.height) - (.5 * back.height));
 
-forward.set_arrow_flipped();
+forward.set_arrow_direction(1);
 forward.set_position(score.x + score.width + 2*margin, score.y + (.5 * score.height) - (.5 * forward.height));
 
 stage.add_actor(board);
