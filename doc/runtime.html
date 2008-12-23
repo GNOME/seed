@@ -48,17 +48,22 @@ Seed.printf("One third is approximately %.3f\n", 1/3);
 Seed.printf("%d %s %d\n", 2, " is not ", 5);
 
 var my_string = Seed.sprintf("%d + %d = %d", 2, 3, 2+3);
-var my_name = Seed.printf("[%s] is %d characters long!\n", my_string, my_string.length);
+var my_name = Seed.printf("[%s] is %d characters long!\n",
+                          my_string, my_string.length);
 </pre>
 <div class="section"><b>Seed.check_syntax</b>(code)</div>
 <p>
-Examines a segment of Javascript, looking for syntax errors. If errors are found, an exception is thrown, which can be caught with a try/catch block.
+Examines a segment of Javascript, looking for syntax errors. If errors are found, an exception is thrown, which can be caught with a try/catch block. You can examine the location of the syntax error with the <i>line</i> property of the returned exception.
 </p>
 <pre>
 try
-{ Seed.check_syntax("234[asdf"); }
+{
+    Seed.check_syntax("234[asdf");
+}
 catch(e)
-{ Seed.print("Something horrible happened!"); }
+{
+    Seed.print("Something horrible happened on line " + e.line + "!");
+}
 </pre>
 <div class="section"><b>Seed.fork</b>()</div>
 <p><i>Returns: pid of child (to parent); 0 (to child)</i></p>
@@ -269,7 +274,7 @@ HelloWindowType = {
                                      parameters: [GObject.TYPE_INT,
                                                   GObject.TYPE_STRING],
                                      return_type: Gtk.Window.type};
-	
+
         hello_signal_id = klass.install_signal(HelloSignalDefinition);
     },
 }
