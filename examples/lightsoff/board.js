@@ -100,7 +100,16 @@ function check_won (timeline, light)
 	if(light.get_parent().cleared() && !in_setup)
 	{
 		score.set_value(score.value+1);
-		gconf_client.set_int("/apps/lightsoff/score", score.value);
+
+		try
+		{
+			gconf_client.set_int("/apps/lightsoff/score", score.value);
+		}
+		catch(e)
+		{
+			Seed.print("Couldn't save score to GConf.");
+		}
+
 		win_animation();
 	}
 }

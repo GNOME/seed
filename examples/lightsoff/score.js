@@ -72,7 +72,7 @@ ScoreType = {
 		this.bkg_top.set_position(1, 1);
 		this.add_actor(this.bkg_top);
 
-		this.set_value(gconf_client.get_int("/apps/lightsoff/score"));
+		this.set_value(initial_score);
 		
 		if(this.value == 0)
 			this.set_value(1);

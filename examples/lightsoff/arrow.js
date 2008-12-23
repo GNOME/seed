@@ -11,7 +11,15 @@ function pushed_arrow(actor, event)
 	
 	score.set_value(score.value + direction);
 	swap_animation(direction);
-	gconf_client.set_int("/apps/lightsoff/score", score.value);
+
+	try
+	{
+		gconf_client.set_int("/apps/lightsoff/score", score.value);
+	}
+	catch(e)
+	{
+		Seed.print("Couldn't save score to GConf.");
+	}
 	
 	return true;
 }
