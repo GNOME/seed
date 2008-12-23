@@ -62,7 +62,7 @@ try
 }
 catch(e)
 {
-    Seed.print("Something horrible happened on line " + e.line + "!");
+    Seed.print("Something horrible happened on line " + e.line);
 }
 </pre>
 <div class="section"><b>Seed.fork</b>()</div>
@@ -83,6 +83,7 @@ if(pid)
 else
 {
     // Child
+
     while(1)
         Seed.print("From Child");
 }
@@ -238,7 +239,7 @@ label.show();
 label.say_goodbye();
 </pre>
 <p>
-The label inherits all the methods, signals, and properties of the Gtk.Label class and it's parents, and internally has it's own GType.
+The label inherits all the methods, signals, and properties of the Gtk.Label class and its parents, and internally has its own GType.
 </p>
 <div class="section"><i>signal</i>.<b>emit</b>(<i>...</i>)</div>
 <p>
