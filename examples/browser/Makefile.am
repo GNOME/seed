@@ -18,7 +18,7 @@ EXTRA_DIST = \
 	browser-tab.js \
 	browser-toolbar.js \
 	COPYING \
-	main.jsx
+	main.js
 
 ## File created by the gnome-build tools
 
