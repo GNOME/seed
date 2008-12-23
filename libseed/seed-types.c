@@ -115,6 +115,20 @@ static gboolean seed_release_arg(GITransfer transfer,
 	case GI_TYPE_TAG_UTF8:
 		g_free(arg->v_string);
 		break;
+	case GI_TYPE_TAG_ARRAY:
+		if (arg->v_pointer)
+		{
+			GITypeInfo *param_type;
+			
+			param_type = g_type_info_get_param_type(type_info, 0);
+			
+			if (g_type_info_get_tag (param_type) == GI_TYPE_TAG_UTF8)
+				g_strfreev (arg->v_pointer);
+			else
+				g_assert_not_reached();
+			
+			g_base_info_unref((GIBaseInfo *)param_type);
+		}
 	case GI_TYPE_TAG_INTERFACE:
 		{
 			if (arg->v_pointer)
@@ -182,6 +196,46 @@ gboolean seed_gi_release_in_arg(GITransfer transfer,
 								type_info, type_tag, arg);
 	}
 
+	return TRUE;
+}
+
+static gboolean
+seed_gi_make_array (JSContextRef ctx,
+					JSValueRef array,
+					guint length,
+					GITypeInfo *param_type,
+					void **array_p,
+					JSValueRef *exception)
+{
+	GITypeTag element_type;
+	
+	element_type = g_type_info_get_tag(param_type);
+	
+	if (element_type == GI_TYPE_TAG_UTF8)
+	{
+		char **result;
+		guint i;
+		
+		result = g_new0(char *, length+1);
+		
+		for (i = 0; i < length; i++)
+		{
+			JSValueRef elem = JSObjectGetPropertyAtIndex(ctx,
+														 (JSObjectRef)array,
+														 i,
+														 exception);
+			result[i] = seed_value_to_string(ctx, elem, exception);
+		}
+
+		*array_p = result;
+	}
+	else
+	{
+		seed_make_exception(ctx, exception, "ArgumentError",
+							"Unhandled array element type");
+		return FALSE;
+	}
+	
 	return TRUE;
 }
 
@@ -401,7 +455,43 @@ seed_gi_make_argument(JSContextRef ctx,
 
 			}
 		}
-
+	case GI_TYPE_TAG_ARRAY:
+	{
+		if (JSValueIsNull(ctx, value))
+		{
+			arg->v_pointer = NULL;
+			break;
+		}
+		else if (!JSValueIsObject(ctx, value))
+		{
+			// Is this right?
+			return FALSE;
+		}
+		else
+		{
+			GITypeInfo * param_type;
+			guint length = 
+				seed_value_to_int(ctx, seed_object_get_property(ctx,
+ 												 (JSObjectRef)value, 
+ 														 "length"), 
+								 exception);
+			if (!length)
+			{
+				arg->v_pointer = NULL;
+				break;
+			}
+			
+			param_type = g_type_info_get_param_type(type_info, 0);
+			if (!seed_gi_make_array(ctx, value, length, param_type,
+									&arg->v_pointer, exception))
+			{
+				g_base_info_unref((GIBaseInfo *) param_type);
+				return FALSE;
+			}
+			g_base_info_unref((GIBaseInfo *) param_type);
+			break;
+		}
+	}
 	default:
 		return FALSE;
 
@@ -1210,9 +1300,13 @@ GObject *seed_value_to_object(JSContextRef ctx,
 {
 	GObject *gobject;
 
-	/* Worth investigating if this is the best way to handle null. Some of 
-	   the existing code depends on null Objects not throwing an exception however.
-	   needs testing at higher level if value can be null (through GI) */
+	/* 
+	 * Worth investigating if this is the best way to handle null. Some of 
+	 * the existing code depends on null Objects not throwing an exception 
+	 * however, needs testing at higher level if value can be null 
+	 * (through GI) 
+	*/
+
 	if (JSValueIsNull(ctx, val))
 		return 0;
 	if (!seed_value_is_gobject(ctx, val))
