@@ -1,5 +1,5 @@
 #include <gtk/gtk.h>
-#include <seed.h>
+#include "../../libseed/seed.h"
 #include <math.h>
 #include <string.h>
 
