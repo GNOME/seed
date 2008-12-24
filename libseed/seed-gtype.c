@@ -548,6 +548,7 @@ seed_gtype_constructor_invoked(JSContextRef ctx,
 		JSObjectIsFunction(ctx, (JSObjectRef) class_init))
 	{
 		init_closure = seed_make_class_init_closure((JSObjectRef) class_init);
+		JSValueProtect(ctx, class_init);
 	}
 	if (!JSValueIsNull(ctx, instance_init) &&
 		JSValueIsObject(ctx, instance_init) &&
@@ -555,6 +556,7 @@ seed_gtype_constructor_invoked(JSContextRef ctx,
 	{
 		instance_init_closure =
 			seed_make_instance_init_closure((JSObjectRef) instance_init);
+		JSValueProtect(ctx, instance_init);
 	}
 
 	parent_type = (GType) seed_value_to_int(ctx, parent_ref, exception);
