@@ -13,26 +13,26 @@ BrowserToolbar = new GType({
         var back_button = new Gtk.ToolButton({stock_id:"gtk-go-back"});
         var forward_button = new Gtk.ToolButton({stock_id:"gtk-go-forward"});
         var refresh_button = new Gtk.ToolButton({stock_id:"gtk-refresh"});
-        
+
         var back = function ()
         {
             Seed.print("back");
-        }
-        
+        };
+
         var forward = function ()
         {
             Seed.print("forward");
-        }
-        
+        };
+
         var refresh = function ()
         {
             Seed.print("refresh");
-        }
-        
+        };
+
         var browse = function ()
         {
             Seed.print("browse");
-        }
+        };
 
         back_button.signal.clicked.connect(back);
         forward_button.signal.clicked.connect(forward);
@@ -48,7 +48,7 @@ BrowserToolbar = new GType({
 });
 
 window = new Gtk.Window({title: "Browser"});
-window.signal.hide.connect(function () { Gtk.main_quit() });
+window.signal.hide.connect(function () { Gtk.main_quit(); });
 window.add(new BrowserToolbar());
 window.show_all();
 
