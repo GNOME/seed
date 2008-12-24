@@ -10,10 +10,10 @@ BrowserTab = new GType({
     instance_init: function(klass)
     {
         var toolbar = new BrowserToolbar();
-        var webView = new BrowserView();
+        var web_view = new BrowserView();
         
         this.pack_start(toolbar);
-        this.pack_start(webView, true, true);
+        this.pack_start(web_view, true, true);
     }
 });
 
@@ -31,11 +31,11 @@ BrowserToolbar = new GType({
     name: "BrowserToolbar",
     instance_init: function(klass)
     {
-        var urlBar = new Gtk.Entry();
+        var url_bar = new Gtk.Entry();
 
-        var backButton = new Gtk.ToolButton({stock_id:"gtk-go-back"});
-        var forwardButton = new Gtk.ToolButton({stock_id:"gtk-go-forward"});
-        var refreshButton = new Gtk.ToolButton({stock_id:"gtk-refresh"});
+        var back_button = new Gtk.ToolButton({stock_id:"gtk-go-back"});
+        var forward_button = new Gtk.ToolButton({stock_id:"gtk-go-forward"});
+        var refresh_button = new Gtk.ToolButton({stock_id:"gtk-refresh"});
         
         var back = function ()
         {
@@ -57,16 +57,16 @@ BrowserToolbar = new GType({
             Seed.print("browse");
         }
 
-        backButton.signal.clicked.connect(back);
-        forwardButton.signal.clicked.connect(forward);
-        refreshButton.signal.clicked.connect(refresh);
-        urlBar.signal.activate.connect(browse);
+        back_button.signal.clicked.connect(back);
+        forward_button.signal.clicked.connect(forward);
+        refresh_button.signal.clicked.connect(refresh);
+        url_bar.signal.activate.connect(browse);
 
-        this.pack_start(backButton);
-        this.pack_start(forwardButton);
-        this.pack_start(refreshButton);
+        this.pack_start(back_button);
+        this.pack_start(forward_button);
+        this.pack_start(refresh_button);
 
-        this.pack_start(urlBar, true, true);
+        this.pack_start(url_bar, true, true);
     }
 });
 
