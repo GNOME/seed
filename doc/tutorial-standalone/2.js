@@ -72,7 +72,10 @@ BrowserToolbar = new GType({
 
 window = new Gtk.Window({title: "Browser"});
 window.signal.hide.connect(function () { Gtk.main_quit() });
-window.add(new BrowserTab());
+
+var tab = new BrowserTab();
+window.add(tab);
+
 window.show_all();
 
 Gtk.main();
