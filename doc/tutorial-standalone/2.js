@@ -4,6 +4,25 @@ Seed.import_namespace("Gtk");
 Seed.import_namespace("WebKit");
 Gtk.init(null, null);
 
+TabbedBrowser = new GType({
+    parent: Gtk.Notebook.type,
+    name: "TabbedBrowser",
+    instance_init: function(klass)
+    {
+	this.new_tab = function (url)
+	{
+	    this.append_page(new BrowserTab(), new Gtk.Label({label:"hello"}));
+	};
+
+	this.current_tab = function ()
+	{
+	    return this.get_nth_page(this.page);
+	};
+
+	this.new_tab("http://www.google.com");
+    }
+});
+
 BrowserTab = new GType({
     parent: Gtk.VBox.type,
     name: "BrowserTab",
@@ -12,13 +31,13 @@ BrowserTab = new GType({
 	var toolbar = new BrowserToolbar();
 	var web_view = new BrowserView();
 
+	this.pack_start(toolbar);
+	this.pack_start(web_view, true, true);
+
 	this.get_web_view = function()
 	{
 	    return web_view;
 	};
-
-	this.pack_start(toolbar);
-	this.pack_start(web_view, true, true);
     }
 });
 
@@ -50,23 +69,22 @@ BrowserToolbar = new GType({
 
 	var back = function ()
 	{
-	    tab.get_web_view().go_back();
+	    browser.current_tab().get_web_view().go_back();
 	};
 
 	var forward = function ()
 	{
-	    tab.get_web_view().go_forward();
+	    browser.current_tab().get_web_view().go_forward();
 	};
 
 	var refresh = function ()
 	{
-	    tab.get_web_view().reload();
+	    browser.current_tab().get_web_view().reload();
 	};
 
 	var browse = function (url)
 	{
-	    Seed.print(tab.get_web_view().browse_f);
-	    tab.get_web_view().browse(url.text);
+	    browser.current_tab().get_web_view().browse(url.text);
 	};
 
 	back_button.signal.clicked.connect(back);
@@ -85,9 +103,8 @@ BrowserToolbar = new GType({
 window = new Gtk.Window({title: "Browser"});
 window.signal.hide.connect(function () { Gtk.main_quit(); });
 
-var tab = new BrowserTab();
-window.add(tab);
-
+browser = new TabbedBrowser();
+window.add(browser);
 window.show_all();
 
 Gtk.main();
