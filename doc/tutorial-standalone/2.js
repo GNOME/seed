@@ -4,66 +4,75 @@ Seed.import_namespace("Gtk");
 Seed.import_namespace("WebKit");
 Gtk.init(null, null);
 
-var window = new Gtk.Window({title: "Browser"});
-window.resize(600,600);
+BrowserTab = new GType({
+    parent: Gtk.VBox.type,
+    name: "BrowserTab",
+    instance_init: function(klass)
+    {
+        var toolbar = new BrowserToolbar();
+        var webView = new BrowserView();
+        
+        this.pack_start(toolbar);
+        this.pack_start(webView, true, true);
+    }
+});
 
-function quit()
-{
-    Gtk.main_quit();
-}
+BrowserView = new GType({
+    parent: WebKit.WebView.type,
+    name: "BrowserView",
+    instance_init: function(klass)
+    {
+        
+    }
+});
 
-window.signal.hide.connect(quit);
+BrowserToolbar = new GType({
+    parent: Gtk.HBox.type,
+    name: "BrowserToolbar",
+    instance_init: function(klass)
+    {
+        var urlBar = new Gtk.Entry();
 
-function create_ui()
-{
-    var main_ui = new Gtk.VBox();
-    var toolbar = new Gtk.HBox();
-    
-    var browser = new WebKit.WebView();
+        var backButton = new Gtk.ToolButton({stock_id:"gtk-go-back"});
+        var forwardButton = new Gtk.ToolButton({stock_id:"gtk-go-forward"});
+        var refreshButton = new Gtk.ToolButton({stock_id:"gtk-refresh"});
+        
+        var back = function ()
+        {
+            Seed.print("back");
+        }
+        
+        var forward = function ()
+        {
+            Seed.print("forward");
+        }
+        
+        var refresh = function ()
+        {
+            Seed.print("refresh");
+        }
+        
+        var browse = function ()
+        {
+            Seed.print("browse");
+        }
 
-    var back_button = new Gtk.ToolButton({stock_id: "gtk-go-back"});
-    var forward_button = new Gtk.ToolButton({stock_id: "gtk-go-forward"});
-    var refresh_button = new Gtk.ToolButton({stock_id: "gtk-refresh"});
+        backButton.signal.clicked.connect(back);
+        forwardButton.signal.clicked.connect(forward);
+        refreshButton.signal.clicked.connect(refresh);
+        urlBar.signal.activate.connect(browse);
 
-    var url_entry = new Gtk.Entry();
+        this.pack_start(backButton);
+        this.pack_start(forwardButton);
+        this.pack_start(refreshButton);
 
-    back_button.signal.clicked.connect(back, browser);
-    forward_button.signal.clicked.connect(forward, browser);
-    refresh_button.signal.clicked.connect(refresh, browser);
+        this.pack_start(urlBar, true, true);
+    }
+});
 
-    url_entry.signal.activate.connect(browse, browser);
-
-    toolbar.pack_start(back_button);
-    toolbar.pack_start(forward_button);
-    toolbar.pack_start(refresh_button);
-    toolbar.pack_start(url_entry, true, true);
-
-    main_ui.pack_start(toolbar);
-    main_ui.pack_start(browser, true, true);
-    return main_ui;
-}
-
-function forward(button)
-{
-    Seed.print("forward");
-}
-
-function back(button)
-{
-    Seed.print("back");
-}
-
-function refresh(button)
-{
-    Seed.print("refresh");
-}
-
-function browse(button)
-{
-    Seed.print("browser");
-}
-
-window.add(create_ui());
+window = new Gtk.Window({title: "Browser"});
+window.signal.hide.connect(function () { Gtk.main_quit() });
+window.add(new BrowserTab());
 window.show_all();
 
 Gtk.main();
