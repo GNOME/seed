@@ -11,6 +11,11 @@ BrowserTab = new GType({
     {
         var toolbar = new BrowserToolbar();
         var web_view = new BrowserView();
+
+		this.get_web_view = function()
+		{
+			return web_view;
+		}
         
         this.pack_start(toolbar);
         this.pack_start(web_view, true, true);
@@ -39,22 +44,27 @@ BrowserToolbar = new GType({
         
         var back = function ()
         {
-            Seed.print("back");
+			tab.get_web_view().go_back();
         }
         
         var forward = function ()
         {
-            Seed.print("forward");
+            tab.get_web_view().go_forward();
         }
         
         var refresh = function ()
         {
-            Seed.print("refresh");
+            tab.get_web_view().reload();
         }
         
-        var browse = function ()
+        var browse = function (url)
         {
-            Seed.print("browse");
+			if(url.text.search("://") < 0)
+			{
+				url.text = "http://" + url.text;
+			}
+
+			tab.get_web_view().open(url.text);
         }
 
         back_button.signal.clicked.connect(back);
