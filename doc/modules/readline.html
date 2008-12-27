@@ -5,15 +5,18 @@
 	<title>Seed readline Module Documentation</title>
 	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 	<link rel="stylesheet" href="../style.css" type="text/css" charset="utf-8" />
+	<script type="text/javascript" src="../sh.js"></script>
+    <script type="text/javascript" src="../sh_js.js"></script>
+    <link type="text/css" rel="stylesheet" href="../sh.css" />
 </head>
-<body>
+<body onload="sh_highlightDocument();">
 <div id="header">Seed <i>readline</i> Module</div>
 <div id="subheader">v.0.3</div>
 <div class="section"><b>Usage</b></div>
 <p>
 In order to use functions from the readline module, you must first import it:
 </p>
-<pre>
+<pre class="sh_javascript">
 Seed.import_namespace("readline");
 </pre>
 <div class="section"><b>readline.readline</b>(prompt)</div>
@@ -21,7 +24,7 @@ Seed.import_namespace("readline");
 <p>
 Uses the GNU Readline library to display a prompt (using the <i>prompt</i> argument) and then wait for input from the user. The readline prompt provides history (using the up and down arrow keys) within a single Seed process.
 </p>
-<pre>
+<pre class="sh_javascript">
 var input = readline.readline("prompt> ");
 Seed.print(input);
 </pre>
@@ -29,7 +32,7 @@ Seed.print(input);
 <p>
 Binds <i>key</i>, any valid ASCII character, to <i>function</i>. If the given key is then pressed while at a <b>readline.readline</b> prompt, the passed function will be called.
 </p>
-<pre>
+<pre class="sh_javascript">
 readline.readline_bind("q", function () { Seed.quit() });
 var num = readline.readline("Enter a number, or q to quit:");
 readline.print(num);

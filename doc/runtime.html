@@ -5,29 +5,32 @@
 	<title>Seed Runtime Documentation</title>
 	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 	<link rel="stylesheet" href="style.css" type="text/css" charset="utf-8" />
+	<script type="text/javascript" src="sh.js"></script>
+    <script type="text/javascript" src="sh_js.js"></script>
+    <link type="text/css" rel="stylesheet" href="sh.css" />
 </head>
-<body>
+<body onload="sh_highlightDocument();">
 <div id="header">Seed Runtime</div>
 <div id="subheader">v.0.3</div>
 <div class="section"><b>Seed.import_namespace</b>(namespace, <i>version</i>)</div>
 <p>
 Imports functions and constructors from the given gobject-introspection <i>namespace</i>. The optional <i>version</i> parameter forces a particular version, and will throw an exception if the typelib for that version is not installed; if it is omitted, the latest version is loaded.
 </p>
-<pre>
+<pre class="sh_javascript">
 Seed.import_namespace("Gtk", "2.0");
 </pre>
 <div class="section"><b>Seed.include</b>(file)</div>
 <p>
 Evaluates a Javascript <i>file</i> as if it were included in the file at the point include is called.
 </p>
-<pre>
+<pre class="sh_javascript">
 Seed.include("tabview.js");
 </pre>
 <div class="section"><b>Seed.print</b>(value)</div>
 <p>
 Prints, to standard output, a representation of <i>value</i>. Number types are printed as floating-point values (with 6 decimal places); strings are printed as-is; objects are printed as <code>[object <i>type</i>]</code>.
 </p>
-<pre>
+<pre class="sh_javascript">
 Seed.print(5);
 Seed.print("This is a test!".replace(" is ", " was "));
 
@@ -42,7 +45,7 @@ Seed.print(win);
 <p>
 <code>sprintf</code> returns the string, instead of printing it.
 </p>
-<pre>
+<pre class="sh_javascript">
 Seed.printf("A number: %d\n", 5);
 Seed.printf("One third is approximately %.3f\n", 1/3);
 Seed.printf("%d %s %d\n", 2, " is not ", 5);
@@ -55,7 +58,7 @@ var my_name = Seed.printf("[%s] is %d characters long!\n",
 <p>
 Examines a segment of Javascript, looking for syntax errors. If errors are found, an exception is thrown, which can be caught with a try/catch block. You can examine the location of the syntax error with the <i>line</i> property of the returned exception.
 </p>
-<pre>
+<pre class="sh_javascript">
 try
 {
     Seed.check_syntax("234[asdf");
@@ -70,7 +73,7 @@ catch(e)
 <p>
 Creates a new process which is an exact copy of the current one, starting from the next instruction in both processes. It works just as <a href="http://www.opengroup.org/onlinepubs/000095399/functions/fork.html">POSIX fork</a> should.
 </p>
-<pre>
+<pre class="sh_javascript">
 var pid = Seed.fork();
 
 if(pid)
@@ -92,7 +95,7 @@ else
 <p>
 Returns an object containing information about the function, its arguments, etc. This will eventually support introspection of a wider variety of Javascript types.
 </p>
-<pre>
+<pre class="sh_javascript">
 proto = Seed.prototype(Gtk.Window);
 method = Seed.introspect(proto.translate_coordinates);
 
@@ -105,7 +108,7 @@ for(i in method.args)
 <p>
 Returns a string representing the entire contents of <i>object</i> in a pretty-printed fashion, like that of JSON.
 </p>
-<pre>
+<pre class="sh_javascript">
 proto = Seed.prototype(Gtk.Window);
 method = Seed.introspect(proto.translate_coordinates);
 Seed.print(Seed.stringify(method));
@@ -123,7 +126,7 @@ object.<b>connect</b>(signame, function, <i>user_data</i>)</div>
 <p>
 Connects <i>function</i> to the signal, <i>signame</i>, on <i>object</i>. Any GObject signal will work. If present, user_data is passed as the last argument to the callback.
 </p>
-<pre>
+<pre class="sh_javascript">
 function button_clicked()
 {
     Seed.print("You pushed me!!");
@@ -135,7 +138,7 @@ button.signal.clicked.connect(button_clicked);
 <p>
 The second form is useful if you want to connect to detailed signals; for example, <b>notify::</b> signals on an object's properties:
 </p>
-<pre>
+<pre class="sh_javascript">
 function handle_opacity_change(obj, gobject, user_data)
 {
     Seed.print("Window " + obj + "'s opacity was changed!");
@@ -158,7 +161,7 @@ Seed throws Javascript exceptions for errors in the GObject layer; our custom ex
 <li><b>ParseError</b> - a parsing error was thrown from JavaScriptCore (make sure you close all of your brackets!)</li>
 </ul>
 <p>Exceptions are caught with the <code>try/catch</code> construct:</p>
-<pre>
+<pre class="sh_javascript">
 try
 {
     var window = new Gtk.Window();
@@ -180,7 +183,7 @@ catch(e)
 <p>
 Just as in Javascript, you can throw an exception manually with the <b>throw</b> function, passing it an object - either a new object, with the properties listed above (for consistency), or an arbitrary object:
 </p>
-<pre>
+<pre class="sh_javascript">
 try
 {
     if(!http.connect("http://google.com"))
@@ -199,7 +202,7 @@ JavaScript, being a prototypal language, rather than a class based language, has
 <p>
 To implement a new GType, an object describing the type is required.
 </p>
-<pre>
+<pre class="sh_javascript">
 NewType = {
     parent: ParentTypeConstructor,
     name: "NewTypeName",
@@ -214,7 +217,7 @@ NewType = {
 <p>
 Indicates that the new type derives from ParentType, i.e. Gtk.Window, with name "NewTypeName". The class_init function is called when the class comes in to existence, and allows you to add to the prototype of objects constructed by the type. The instance_init function is called on the creation of each instance, with the "this" variable set to the new instance. An example type:
 </p>
-<pre>
+<pre class="sh_javascript">
 HelloLabel = new GType({
     parent: Gtk.Label,
     name: "HelloLabel",
@@ -233,7 +236,7 @@ HelloLabel = new GType({
 });
 </pre>
 <p> Now to create an instance of the object:</p>
-<pre>
+<pre class="sh_javascript">
 label = new HelloLabel();
 box.pack_start(label);
 label.show();
@@ -246,7 +249,7 @@ The label inherits all the methods, signals, and properties of the Gtk.Label cla
 <p>
 <b>emit</b> provides the ability to arbitrarily emit any GObject signal, thus calling all of the functions which are connected to it. Any arguments passed to <b>emit</b> are passed on to the callback function.
 </p>
-<pre>
+<pre class="sh_javascript">
 win = new Gtk.Window();
 win.signal.close.connect(Gtk.main_quit);
 win.signal.close.emit();
@@ -266,7 +269,7 @@ When creating a new GObject type within Seed, <b>install_signal</b> provides the
 <p>
 For example: 
 </p>
-<pre>
+<pre class="sh_javascript">
 HelloWindow = new GType({       
     parent: Gtk.Window.type,
     name: "HelloWindow",
