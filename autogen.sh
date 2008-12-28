@@ -6,7 +6,13 @@ test -z "$srcdir" && srcdir=.
 
 DIE=0
 
-gtkdocize || exit 1
+(gtkdocize) < /dev/null > /dev/null 2>&1 || {
+    echo
+    echo "**Error**: You must have \`gtk-doc-tools' installed."
+    echo "Download the appropriate package for your distribution,"
+    echo "or get the source tarball at ftp://ftp.gtk.org/pub/"
+    DIE=1
+}
 
 if [ -n "$GNOME2_DIR" ]; then
 	ACLOCAL_FLAGS="-I $GNOME2_DIR/share/aclocal $ACLOCAL_FLAGS"
