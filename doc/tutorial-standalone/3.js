@@ -213,6 +213,7 @@ BrowserToolbar = new GType({
 });
 
 window = new Gtk.Window({title: "Browser"});
+window.resize(800, 600);
 window.signal.hide.connect(function () { Gtk.main_quit(); });
 
 browser = new TabbedBrowser();
