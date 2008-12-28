@@ -6,64 +6,15 @@ Seed.import_namespace("Gtk");
 Seed.import_namespace("WebKit");
 Gtk.init(null, null);
 
-TabbedBrowser = new GType({
-    parent: Gtk.Notebook.type,
-    name: "TabbedBrowser",
-    instance_init: function (klass)
-    {
-        // Public
-        this.close_tab = function (tab)
-        {
-            browser.remove_page(browser.page_num(tab));
-            tab.destroy();
-            
-            if(!browser.get_n_pages())
-            {
-                browser.new_tab(home_page);
-            }
-        };
-        
-        this.new_tab = function (url)
-        {
-            var new_tab = new BrowserTab();
-            new_tab.get_web_view().browse(url);
-            
-            var tab_label = new Gtk.Label({label:"Untitled"});
-            var tab_button = new Gtk.Button({relief: Gtk.ReliefStyle.None});
-            tab_button.set_image(new Gtk.Image({stock: "gtk-close", 
-                                                icon_size: Gtk.IconSize.Menu}));
-            tab_button.signal.clicked.connect(this.close_tab, this);
-            
-            var tab_title = new Gtk.HBox();
-            tab_title.pack_start(tab_label);
-            tab_title.pack_start(tab_button);
-            tab_title.show_all();
-            
-            new_tab.set_tab_label(tab_label);
-            
-            this.append_page(new_tab, tab_title);
-        };
-
-        this.current_tab = function ()
-        {
-            return this.get_nth_page(this.page);
-        };
-
-        // Implementation
-        this.new_tab(home_page);
-    }
-});
-
-BrowserTab = new GType({
+Browser = new GType({
     parent: Gtk.VBox.type,
-    name: "BrowserTab",
+    name: "Browser",
     instance_init: function (klass)
     {
         // Private
         var toolbar = new BrowserToolbar();
         var web_view = new BrowserView();
         var scroll_view = new Gtk.ScrolledWindow();
-        var tab_label;
         
         // Public
         this.get_toolbar = function ()
@@ -76,19 +27,7 @@ BrowserTab = new GType({
             return web_view;
         };
         
-        this.set_tab_label = function (new_tab_label)
-        {
-            tab_label = new_tab_label;
-        };
-        
-        this.get_tab_label = function ()
-        {
-            return tab_label;
-        };
-        
         // Implementation
-        web_view.set_tab(this);
-        
         scroll_view.smooth_scroll = true;
         scroll_view.add(web_view);
         scroll_view.set_policy(Gtk.PolicyType.Automatic,
@@ -106,19 +45,9 @@ BrowserView = new GType({
     instance_init: function (klass)
     {
         // Private
-        var tab;
-        
-        var update_title = function (web_view, web_frame, title)
-        {
-            if(title.length > 25)
-                title = title.slice(0,25) + "...";
-            
-            tab.get_tab_label().label = title;
-        };
-        
         var update_url = function (web_view, web_frame)
         {
-            var toolbar = tab.get_toolbar();
+            var toolbar = browser.get_toolbar();
             
             toolbar.set_url(web_frame.get_uri());
             toolbar.set_can_go_back(web_view.can_go_back());
@@ -134,19 +63,8 @@ BrowserView = new GType({
             this.open(url);
         };
         
-        this.set_tab = function (new_tab)
-        {
-            tab = new_tab;
-        }
-        
-        this.get_tab = function ()
-        {
-            return tab;
-        };
-        
         // Implementation
         this.set_scroll_adjustments(null, null);
-        this.signal.title_changed.connect(update_title);
         this.signal.load_committed.connect(update_url);
     }
 });
@@ -165,22 +83,22 @@ BrowserToolbar = new GType({
 
         var back = function ()
         {
-            browser.current_tab().get_web_view().go_back();
+            browser.get_web_view().go_back();
         };
 
         var forward = function ()
         {
-            browser.current_tab().get_web_view().go_forward();
+            browser.get_web_view().go_forward();
         };
 
         var refresh = function ()
         {
-            browser.current_tab().get_web_view().reload();
+            browser.get_web_view().reload();
         };
 
         var browse = function (url)
         {
-            browser.current_tab().get_web_view().browse(url.text);
+            browser.get_web_view().browse(url.text);
         };
 
         // Public
@@ -215,7 +133,8 @@ BrowserToolbar = new GType({
 window = new Gtk.Window({title: "Browser"});
 window.signal.hide.connect(function () { Gtk.main_quit(); });
 
-browser = new TabbedBrowser();
+browser = new Browser();
+browser.get_web_view().browse(home_page);
 window.add(browser);
 window.show_all();
 
