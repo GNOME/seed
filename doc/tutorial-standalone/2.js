@@ -13,29 +13,30 @@ TabbedBrowser = new GType({
     {
         this.close_tab = function (tab)
         {
-            this.remove_page(this.page_num(tab));
+            browser.remove_page(browser.page_num(tab));
             tab.destroy();
             
             if(!browser.get_n_pages())
             {
-                this.new_tab(home_page);
+                browser.new_tab(home_page);
             }
         };
         
         this.new_tab = function (url)
         {
             var new_tab = new BrowserTab();
+            new_tab.get_web_view().browse(url);
             
             var tab_label = new Gtk.Label({label:"Untitled"});
-            var tab_button = new Gtk.Button();
+            var tab_button = new Gtk.Button({relief: Gtk.ReliefStyle.None});
             tab_button.set_image(new Gtk.Image({stock: "gtk-close", 
                                                 icon_size: Gtk.IconSize.Menu}));
             tab_button.signal.clicked.connect(this.close_tab, this);
-            tab_button.set_relief(Gtk.ReliefStyle.None);
             
             var tab_title = new Gtk.HBox();
             tab_title.pack_start(tab_label);
             tab_title.pack_start(tab_button);
+            tab_title.show_all();
             
             new_tab.set_tab_label(tab_label);
             
