@@ -37,9 +37,10 @@ p
 
 pre
 {
-	margin-left: 20px;
-	padding-left: 5px;
-	border-left: 2px solid #ddd;
+	margin-left: 30px;
+	padding: 7px;
+	border: 1px solid #ccc;
+	background-color: #eee;
 }
 
 div.filename
