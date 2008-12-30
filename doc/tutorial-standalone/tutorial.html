@@ -25,7 +25,7 @@
 <div id="header">Seed Tutorial : Standalone</div>
 <div id="subheader">v.0.3</div>
 <div class="section">Introduction</div>
-<p>Seed, first and foremost, provides an easily embeddable Javascript engine to developers looking for a straightforward way to create extensible applications. It also provides bindings between <a href="http://library.gnome.org/devel/gobject/stable/">GObject</a> and the <a href="http://www.webkit.org">WebKit</a> Javascript engine, giving new developers access to the power of the GNOME stack from a familiar and simple language, and allowing rapid prototyping of applications for hardened GNOME developers.</p>
+<p>Seed, first and foremost, provides an easily embeddable JavaScript engine to developers looking for a straightforward way to create extensible applications. It also provides bindings between <a href="http://library.gnome.org/devel/gobject/stable/">GObject</a> and the <a href="http://www.webkit.org">WebKit</a> JavaScript engine, giving new developers access to the power of the GNOME stack from a familiar and simple language, and allowing rapid prototyping of applications for hardened GNOME developers.</p>
 <p>This tutorial begins with a few brief examples, and then dives right in, following the development of a simple Seed program, from beginning to end. By the end of the tutorial, you'll have your very own tiny WebKit-based web browser, as well as a summary knowledge of the use of Seed to build GTK+ applications.</p>
 <div class="section">Beginning Seed</div>
 <p>It makes sense to start our exploration with a program you're probably quite familiar with:</p>
@@ -39,12 +39,12 @@ Seed.print("Hello, world!");
 Hello, world!
 </pre>
 <p>In order to make the file executable, include (<code>#!/usr/bin/env seed</code>) at the top of every Seed program you write. This is known as the <em>shebang line</em>, and tells your shell where to find the <code>seed</code> interpreter; I'm only going to include it when listing a whole file, from now on.</p>
-<p>Variables in Javascript are not given any <em>type</em>, and conversion between different kinds of values is automatic and painless. For example, you can:</p>
+<p>Variables in JavaScript are not given any <em>type</em>, and conversion between different kinds of values is automatic and painless. For example, you can:</p>
 <ul>
 <li>Add two strings <code>("Hello, " + "World!")</code> turns into <code>"Hello, World!"</code></li>
 <li>Add a number to a string <code>("Example" + (2 * 2))</code> turns into <code>"Example4"</code></li>
 </ul>
-<p>There is one exception: in order to convert a string of digits into a 'number', Javascript needs to be explicitly instructed to do so: <code>parseFloat("42.5")</code>.</p>
+<p>There is one exception: in order to convert a string of digits into a 'number', JavaScript needs to be explicitly instructed to do so: <code>parseFloat("42.5")</code>.</p>
 <p>Seed also provides a very simple interface to the <a href="http://directory.fsf.org/project/readline/">GNU Readline</a> library, which allows programs to ask the user for input. This interface is in the <b>readline</b> module, which <u>must</u> be imported before it can be used. The only argument <code>readline.readline()</code> requires is the prompt for the user. Also, the current version of Seed ensures that everything typed is automatically saved in the prompt's history; if you press the up key while at a prompt, you can access and edit lines you've previously entered. Future versions of Seed will provide more control over the history and other parts of readline.</p>
 <pre class="sh_javascript">
 Seed.import_namespace("readline");
@@ -54,9 +54,9 @@ var old = 25;
 var old_age = old + parseFloat(my_age);
 Seed.print(my_name + " will be " + old_age + " in " + old + " years!");
 </pre>
-<p>You've probably noticed that the word '<code>var</code>' precedes the first use of every variable in Javascript. This is important, because it ensures that the memory consumed by the variable is freed to be used elsewhere at the end of the current block of code, when the variable goes <em>out of scope</em>. If, instead, you want to create a variable which is <em>global</em> (available forever, after it is created), you can omit the '<code>var</code>'. Keep in mind that making many global variables is generally considered bad practice, and can be expensive in terms of memory use.</p>
-<div class="section">A Javascript Shell</div>
-<p>Javascript, being a scripting language, includes a construct, <code>eval()</code> which allows you to evaluate a <em>string</em> of Javascript. This allows, for example, a user to input Javascript with <code>readline</code>, and it to be executed as if it had been part of your source file. In addition, <code>eval()</code>'s return value is the return value of the snippet of code. For example:</p>
+<p>You've probably noticed that the word '<code>var</code>' precedes the first use of every variable in JavaScript. This is important, because it ensures that the memory consumed by the variable is freed to be used elsewhere at the end of the current block of code, when the variable goes <em>out of scope</em>. If, instead, you want to create a variable which is <em>global</em> (available forever, after it is created), you can omit the '<code>var</code>'. Keep in mind that making many global variables is generally considered bad practice, and can be expensive in terms of memory use.</p>
+<div class="section">A JavaScript Shell</div>
+<p>JavaScript, being a scripting language, includes a construct, <code>eval()</code> which allows you to evaluate a <em>string</em> of JavaScript. This allows, for example, a user to input JavaScript with <code>readline</code>, and it to be executed as if it had been part of your source file. In addition, <code>eval()</code>'s return value is the return value of the snippet of code. For example:</p>
 <pre class="sh_javascript">
 var output = eval("2+2");
 Seed.print(output);
@@ -65,7 +65,7 @@ Seed.print(output);
 <pre class="sh_javascript">
 4.000000
 </pre>
-<p>When something goes <em>wrong</em> in a piece of Javascript code, the program will exit, most likely leaving the user in a confused state. For example, if you try to access a variable that doesn't exist: <code>Seed.print(asdf);</code> Seed will exit with the message: <code>ReferenceError Can't find variable: asdf</code>. It is possible to catch this sort of error, or exception, inside of your Javascript program, ensuring that it doesn't terminate your program - or that if it does, it prints a useful error message. The <code>try/catch</code> construct provides a way to <em>try</em> to execute a segment of Javascript, and, if it fails, run a second segment, without exiting the program. The second segment could print a user-friendly error message, ignore the exception entirely, or try to work around the problem. A quick example of <code>try/catch</code>:</p>
+<p>When something goes <em>wrong</em> in a piece of JavaScript code, the program will exit, most likely leaving the user in a confused state. For example, if you try to access a variable that doesn't exist: <code>Seed.print(asdf);</code> Seed will exit with the message: <code>ReferenceError Can't find variable: asdf</code>. It is possible to catch this sort of error, or exception, inside of your JavaScript program, ensuring that it doesn't terminate your program - or that if it does, it prints a useful error message. The <code>try/catch</code> construct provides a way to <em>try</em> to execute a segment of JavaScript, and, if it fails, run a second segment, without exiting the program. The second segment could print a user-friendly error message, ignore the exception entirely, or try to work around the problem. A quick example of <code>try/catch</code>:</p>
 <pre class="sh_javascript">
 try
 {
@@ -111,7 +111,7 @@ while(1)
 </pre>
 <p>You can (and <em>should!</em>) use this shell in order to experiment with and learn to use Seed.</p>
 <div class="section">Getting GTK Going</div>
-<p>Thus far in this tutorial, we've been completely ignoring the most useful part of Seed: the ability to use external libraries from within Javascript. The single most useful of these libraries is GTK, the widget and windowing toolkit used by all GNOME applications, which will provide the ability to create and manipulate graphical windows, as well as just about any sort of widget you should require.</p>
+<p>Thus far in this tutorial, we've been completely ignoring the most useful part of Seed: the ability to use external libraries from within JavaScript. The single most useful of these libraries is GTK, the widget and windowing toolkit used by all GNOME applications, which will provide the ability to create and manipulate graphical windows, as well as just about any sort of widget you should require.</p>
 <p>In order to use GTK (or any other external library) in a Seed program, you first have to import the functions from said library. <code>Seed.import_namespace()</code>, taking as its only argument the name of the library to import, does this for us.</p>
 <p>Once the library has been imported, all of its functions are available on a global object with the same name as the library. For example, if we <code>Seed.import_namespace("GTK")</code>, all of the imported functions are available on the GTK object: <code><a href="http://library.gnome.org/devel/gtk/2.14/gtk-General.html#gtk-init">GTK.init()</a></code>, etc.</p>
 <p>Let's start off the development of our browser by getting GTK working. It takes very little to get a window displayed with Seed:</p>
@@ -126,7 +126,7 @@ window.show_all();
 
 Gtk.main();
 </pre>
-<p>If you've ever used GTK from C, you'll notice some similarities here. All of the GTK functions have been mapped into Javascript in a reasonable way, but it will certainly take a bit to get used to, for example, <code>new Gtk.Window()</code> instead of <code>gtk_window_new()</code>.</p>
+<p>If you've ever used GTK from C, you'll notice some similarities here. All of the GTK functions have been mapped into JavaScript in a reasonable way, but it will certainly take a bit to get used to, for example, <code>new Gtk.Window()</code> instead of <code>gtk_window_new()</code>.</p>
 <p>Executing the above script should give you a window that looks entirely empty and boring, something like the following:</p>
 <div style="text-align: center;"><img src="1.png" alt="Blank GTK Window"/></div>
 <div class="section">JSON Constructors</div>
@@ -141,7 +141,7 @@ window.set_title("Browser");
 </pre>
 <p>You can set any number of properties this way, by separating them by commas (<code>{"title": "Browser", "default-height": 500}</code>, etc.). This method should work for any GObject constructor.</p>
 <div class="section">Signals</div>
-<p>You'll notice that our program, as it stands, fails to quit when you click the 'Close' button. You can, of course, quit it with Ctrl-C, but this is certainly unacceptable behaviour. To fix it, we'll connect a Javascript closure to the signal that gets emitted when the 'Close' button is clicked:</p>
+<p>You'll notice that our program, as it stands, fails to quit when you click the 'Close' button. You can, of course, quit it with Ctrl-C, but this is certainly unacceptable behaviour. To fix it, we'll connect a JavaScript closure to the signal that gets emitted when the 'Close' button is clicked:</p>
 <pre class="sh_javascript">
 window.signal.hide.connect(function () { Gtk.main_quit(); });
 </pre>
@@ -159,7 +159,7 @@ BrowserToolbar = new GType({
 });
 </pre>
 <p>
-You'll notice that the GType takes a Javascript object. The three most important properties which we'll be using are <i>parent</i>, the type of the 'parent' class, from which our subclass should inherit its default behavior; <i>name</i>, the UpperCamelCase name of our new class; and <i>instance_init</i>, a Javascript function which is called each time a new instance of the class is made.
+You'll notice that the GType takes a JavaScript object. The three most important properties which we'll be using are <i>parent</i>, the type of the 'parent' class, from which our subclass should inherit its default behavior; <i>name</i>, the UpperCamelCase name of our new class; and <i>instance_init</i>, a JavaScript function which is called each time a new instance of the class is made.
 </p>
 <div class="section">Working with Widgets</div>
 <p>We'll start by making the BrowserToolbar's buttons. GTK provides a ToolButton widget, which is generally used for making such toolbars, as well as various different stock icons (to ensure consistency within all GTK applications). Browsing through <a href="http://library.gnome.org/devel/gtk/stable/gtk-Stock-Items.html">the GTK Stock Item documentation</a>, we find that we're looking for "<code>gtk-go-back</code>", "<code>gtk-go-forward</code>", and "<code>gtk-refresh</code>". A glance at the <a href="http://library.gnome.org/devel/gtk/stable/GtkToolButton.html">GtkToolButton documentation</a> shows us that we can choose a stock icon by setting the <code>stock-id</code> property - we'll use JSON constructors to keep things tidy. Do note that we use underscores instead of dashes, because the property name isn't quoted (thus, a dash would indicate subtraction, which isn't what we're looking for!):</p>
@@ -245,7 +245,9 @@ window.add(toolbar);
 <div style="text-align: center;"><img src="2.png" alt="GTK Window with buttons and text entry field" /></div>
 <p>If, for some reason, something doesn't work, compare your code to <a href="1.js">the tutorial version</a>.</p>
 <div class="section">Adding WebKit</div>
-<p>It's finally time to start displaying some web pages with our little browser! Let's create and pack a WebKit web view below our toolbar, first. We should make a WebView subclass to use, to initialize some settings and provide an encapsulated interface to our browser view. Here's an early version of our new <code>BrowserView</code> subclass:</p>
+<p>It's finally time to start displaying some web pages with our little browser! Let's create and pack a <code>WebKit.WebView</code> below our toolbar, first. We should make a WebView subclass to use, to initialize some settings and provide an encapsulated interface to our browser view.</p>
+<p>A quick note about WebKit: if you omit the protocol part of a URL (e.g., http://), WebKit won't even bother to try to figure it out - so make sure you specify it! We'll add a <code>browse</code> function to our subclass, as well as a callback when the WebView's URL changes, so we can update the URL bar. To get around this shortcoming, we'll use JavaScript's string search function to see if a protocol has been specified, and, if it hasn't, we'll assume it's "<code>http://</code>":</p>
+<p>Here's an early version of our new <code>BrowserView</code> subclass:</p>
 <pre class="sh_javascript">
 BrowserView = new GType({
     parent: WebKit.WebView.type,
@@ -265,7 +267,7 @@ BrowserView = new GType({
         // Public
         this.browse = function (url)
         {
-            if(url.search("://") < 0)
+            if(url.search("://") &lt; 0)
                 url = "http://" + url;
 
             this.open(url);
@@ -277,19 +279,21 @@ BrowserView = new GType({
     }
 });
 </pre>
-<p>Also, remember that we need to import a namespace before its functions are available to us! So, go back to the top of the file and import "WebKit", just after you import "GTK". One final thing, before you again try to run your browser: we haven't yet specified a 'recommended' size for our window - let's go ahead and do that (if we didn't do so, the WebKit view would have no space to fill!). Just after you create the GTK.Window(), add:</p>
+<p>You'll notice that we also turned off WebKit's automatic scrollbars, with the <code>set_scroll_adjustments</code> function. We do this in order to get smooth scrolling, by wrapping the WebView in a Gtk.ScrolledWindow, as you'll see shortly.</p>
+<p>Also, remember that we need to import a namespace before its functions are available to us! So, go back to the top of the file and import "WebKit", just after you import "Gtk". One final thing, before you again try to run your browser: we haven't yet specified a 'recommended' size for our window - let's go ahead and do that (if we didn't do so, the WebKit view would have no space to fill!). Just after you create the Gtk.Window(), add:</p>
 <pre class="sh_javascript">
 window.resize(600,600);
 </pre>
+<div class="section">Pulling bits together</div>
+<p>asdfasdf</p>
 <p>Now, fire up your browser! Hopefully, you'll see a nice blank WebKit view, like below. If you don't, take a peek at <a href="2.js">our version</a>.</p>
 <div style="text-align: center;"><img src="3.png" alt="GTK Window with toolbar and empty browser view" /></div>
 <p>That's really not a very interesting browser, at all - nothing works yet, and there's no way to navigate! Still, we're almost done.</p>
-<div class="section">Finishing our Browser</div>
+<div class="section">Tabbing our Browser</div>
 <p>Poking around in the <a href="http://svn.webkit.org/repository/webkit/trunk/WebKit/gtk/webkit/webkitwebview.h">WebKit documentation</a> (the WebKit team is a bit behind on documentation, so all we have to work with is header files), we find that the <code>open()</code> function on a WebView allows you to navigate to a particular page. Just after you create the WebView, have it navigate to your favorite page:</p>
 <pre class="sh_javascript">
 browser.open("http://www.gnome.org");
 </pre>
-<p>A quick note about WebKit: if you omit the protocol part of a URL (e.g., http://), WebKit won't even bother to try to figure it out - so make sure you specify it! This is also important for the browse() callback, which is called when you press enter in the URL field, which we'll implement now. To get around this shortcoming, we'll use Javascript's string search function to see if a protocol has been specified, and, if it hasn't, we'll assume it's '<code>http://</code>':</p>
 <pre class="sh_javascript">
 function browse(url)
 {
