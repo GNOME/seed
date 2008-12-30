@@ -13,6 +13,11 @@
     {
         font-weight: bold;
     }
+    
+    span.unchanged
+    {
+        opacity: 0.5;
+    }
     </style>
 
 </head>
@@ -113,7 +118,7 @@ while(1)
 <pre class="sh_javascript">
 #!/usr/bin/env seed
 
-Seed.import_namespace("GTK");
+Seed.import_namespace("Gtk");
 Gtk.init(null, null);
 
 var window = new Gtk.Window();
@@ -159,11 +164,11 @@ You'll notice that the GType takes a Javascript object. The three most important
 <div class="section">Working with Widgets</div>
 <p>We'll start by making the BrowserToolbar's buttons. GTK provides a ToolButton widget, which is generally used for making such toolbars, as well as various different stock icons (to ensure consistency within all GTK applications). Browsing through <a href="http://library.gnome.org/devel/gtk/stable/gtk-Stock-Items.html">the GTK Stock Item documentation</a>, we find that we're looking for "<code>gtk-go-back</code>", "<code>gtk-go-forward</code>", and "<code>gtk-refresh</code>". A glance at the <a href="http://library.gnome.org/devel/gtk/stable/GtkToolButton.html">GtkToolButton documentation</a> shows us that we can choose a stock icon by setting the <code>stock-id</code> property - we'll use JSON constructors to keep things tidy. Do note that we use underscores instead of dashes, because the property name isn't quoted (thus, a dash would indicate subtraction, which isn't what we're looking for!):</p>
 <pre class="sh_javascript">
-BrowserToolbar = new GType({
+<span class="unchanged">BrowserToolbar = new GType({
     parent: Gtk.HBox.type,
     name: "BrowserToolbar",
     instance_init: function (klass)
-    {
+    {</span>
         // Private
         var url_bar = new Gtk.Entry();
 
@@ -176,8 +181,8 @@ BrowserToolbar = new GType({
         this.pack_start(forward_button);
         this.pack_start(refresh_button);
         this.pack_start(url_bar, true, true);
-    }
-});
+    <span class="unchanged">}
+});</span>
 </pre>
 <p>There are a few things in the snippet above which you probably haven't seen before (unless you've used GTK in another language). Firstly, the Gtk.Entry widget is a simple text entry field, like you would expect in a browser's URL bar. Secondly, you'll notice the use of the Gtk.HBox widget's <code>pack_start()</code> function. This serves as the foundation of GUI layout in GTK: a window is subdivided into boxes, which 'pack' widgets in a particular direction (HBoxes pack horizontally, VBoxes pack vertically, as expected). We use a HBox, since we want our toolbar arranged horizontally. <code>pack_start()</code> adds a widget to a Box; widgets are packed in the order they're added. There are optional arguments, which are addressed in more depth in the <a href="http://library.gnome.org/devel/gtk/2.14/GtkBox.html">GtkBox documentation</a>, which allow you to force widgets to expand into the usable space (the second and third arguments used when packing <code>url_bar</code> above serve this purpose).</p>
 <p>To try and get a more visual feel of packing, let's take a look at the Box layout for our browser:</p>
@@ -185,6 +190,7 @@ BrowserToolbar = new GType({
 <div class="section">Callbacks Galore</div>
 <p>We also need a bunch of callbacks (for all three buttons, and for when you're done entering text in the URL bar). We'll make them just print the function they're supposed to perform, for now, since we don't have a WebKit view to operate on yet. Let's make them private members of the BrowserToolbar class, and connect them to the appropriate signals:</p>
 <pre class="sh_javascript">
+<span class="unchanged">
 BrowserToolbar = new GType({
     parent: Gtk.HBox.type,
     name: "BrowserToolbar",
@@ -196,7 +202,7 @@ BrowserToolbar = new GType({
         var back_button = new Gtk.ToolButton({stock_id:"gtk-go-back"});
         var forward_button = new Gtk.ToolButton({stock_id:"gtk-go-forward"});
         var refresh_button = new Gtk.ToolButton({stock_id:"gtk-refresh"});
-
+</span>
         var back = function ()
         {
             Seed.print("Go Back");
@@ -217,18 +223,18 @@ BrowserToolbar = new GType({
             Seed.print("Navigate to: " + url.text);
         };
 
-        // Implementation
+        <span class="unchanged">// Implementation</span>
         back_button.signal.clicked.connect(back);
         forward_button.signal.clicked.connect(forward);
         refresh_button.signal.clicked.connect(refresh);
         url_bar.signal.activate.connect(browse);
 
-        this.pack_start(back_button);
+        <span class="unchanged">this.pack_start(back_button);
         this.pack_start(forward_button);
         this.pack_start(refresh_button);
         this.pack_start(url_bar, true, true);
     }
-});
+});</span>
 </pre>
 <p>You'll notice that right now, nothing's creating a BrowserToolbar, so if you execute your application, you won't see the toolbar drawn. To remedy this, before <code>window.show_all()</code>, add lines to create and pack the toolbar:</p>
 <pre class="sh_javascript">
@@ -243,8 +249,8 @@ window.add(toolbar);
 <pre class="sh_javascript">
 function create_ui()
 {
-    var main_ui = new GTK.VBox();
-    var toolbar = new GTK.HBox();
+    var main_ui = new Gtk.VBox();
+    var toolbar = new Gtk.HBox();
 
     <span class="changed">var browser = new WebKit.WebView();</span>
 
