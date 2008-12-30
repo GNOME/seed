@@ -48,7 +48,7 @@ seed_gobject_define_property_from_function_info(JSContextRef ctx,
 												GIFunctionInfo * info,
 												JSObjectRef object,
 												gboolean instance);
-void seed_create_function(JSContextRef ctx, gchar * name, 
+void seed_create_function(JSContextRef ctx, gchar * name,
 						  gpointer func, JSObjectRef obj);
 
 typedef void (*SeedModuleInitCallback) (SeedEngine * eng);

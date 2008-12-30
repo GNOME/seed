@@ -24,8 +24,7 @@
 void
 seed_make_exception(JSContextRef ctx,
 					JSValueRef * exception,
-					const gchar * name, 
-					const gchar * message)
+					const gchar * name, const gchar * message)
 {
 	JSStringRef js_name = 0;
 	JSStringRef js_message = 0;
@@ -56,9 +55,8 @@ seed_make_exception(JSContextRef ctx,
 	JSStringRelease(js_message);
 }
 
-void seed_make_exception_from_gerror(JSContextRef ctx, 
-									 JSValueRef * exception, 
-									 GError * error)
+void seed_make_exception_from_gerror(JSContextRef ctx,
+									 JSValueRef * exception, GError * error)
 {
 	const gchar *domain = g_quark_to_string(error->domain);
 	GString *string = g_string_new(domain);
@@ -76,10 +74,7 @@ void seed_make_exception_from_gerror(JSContextRef ctx,
 			g_string_truncate(string, i - 1);
 
 	}
-	seed_make_exception(ctx, 
-						exception,
-						string->str,
-						error->message);
+	seed_make_exception(ctx, exception, string->str, error->message);
 
 	g_string_free(string, TRUE);
 }
@@ -131,10 +126,10 @@ gchar *seed_exception_to_string(JSContextRef ctx, JSValueRef e)
 	guint line;
 	gchar *mes, *name, *file, *ret;
 
-	line = seed_exception_get_line(ctx,e);
-	mes = seed_exception_get_message(ctx,e);
-	file = seed_exception_get_file(ctx,e);
-	name = seed_exception_get_name(ctx,e);
+	line = seed_exception_get_line(ctx, e);
+	mes = seed_exception_get_message(ctx, e);
+	file = seed_exception_get_file(ctx, e);
+	name = seed_exception_get_name(ctx, e);
 
 	ret = g_strdup_printf("Line %d in %s: %s %s", line, file, name, mes);
 

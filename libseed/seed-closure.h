@@ -25,7 +25,7 @@
 
 typedef struct _SeedClosure {
 	GClosure closure;
-	
+
 	JSObjectRef function;
 	JSObjectRef object;
 	JSObjectRef this;

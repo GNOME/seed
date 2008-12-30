@@ -36,7 +36,7 @@ typedef struct _SeedEngine SeedEngine;
 struct _SeedEngine {
 	JSGlobalContextRef context;
 	JSObjectRef global;
-	
+
 	JSContextGroupRef group;
 };
 

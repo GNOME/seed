@@ -17,7 +17,6 @@
 *     Copyright (C) Robert Carr 2008 <carrr@rpi.edu>
 */
 
-
 #include "seed-private.h"
 #include <string.h>
 JSClassRef seed_struct_class = 0;
@@ -28,7 +27,7 @@ JSClassRef seed_boxed_class = 0;
 typedef struct _seed_struct_privates {
 	gpointer pointer;
 	GIBaseInfo *info;
-	
+
 	gboolean free_pointer;
 } seed_struct_privates;
 
@@ -36,9 +35,9 @@ static void seed_pointer_finalize(JSObjectRef object)
 {
 	seed_struct_privates *priv =
 		(seed_struct_privates *) JSObjectGetPrivate(object);
-	
+
 	SEED_NOTE(STRUCTS, "Finalizing seed_pointer object %p. with "
-			  "priv->free_pointer = %d with type: %s", 
+			  "priv->free_pointer = %d with type: %s",
 			  priv->pointer,
 			  priv->free_pointer,
 			  priv->info ? g_base_info_get_name(priv->info) : "[generic]");
@@ -58,10 +57,9 @@ static void seed_boxed_finalize(JSObjectRef object)
 	GType type;
 	GIRegisteredTypeInfo *info =
 		(GIRegisteredTypeInfo *) g_base_info_get_type(priv->info);
-	
+
 	SEED_NOTE(STRUCTS, "Finalizing boxed object of type %s \n",
 			  g_base_info_get_name(priv->info));
-			
 
 	type = g_registered_type_info_get_g_type(info);
 	g_base_info_unref((GIBaseInfo *) info);
@@ -70,8 +68,7 @@ static void seed_boxed_finalize(JSObjectRef object)
 
 }
 
-GIFieldInfo *seed_union_find_field(GIUnionInfo * info,
-										  gchar * field_name)
+GIFieldInfo *seed_union_find_field(GIUnionInfo * info, gchar * field_name)
 {
 	int n, i;
 	GIFieldInfo *field;
@@ -92,8 +89,7 @@ GIFieldInfo *seed_union_find_field(GIUnionInfo * info,
 	return 0;
 }
 
-GIFieldInfo *seed_struct_find_field(GIStructInfo * info,
-										   gchar * field_name)
+GIFieldInfo *seed_struct_find_field(GIStructInfo * info, gchar * field_name)
 {
 	int n, i;
 	GIFieldInfo *field;
@@ -117,8 +113,7 @@ GIFieldInfo *seed_struct_find_field(GIStructInfo * info,
 JSValueRef
 seed_field_get_value(JSContextRef ctx,
 					 gpointer object,
-					 GIFieldInfo * field,
-	                 JSValueRef * exception)
+					 GIFieldInfo * field, JSValueRef * exception)
 {
 	GITypeInfo *field_type;
 	GArgument field_value;
@@ -162,7 +157,6 @@ seed_field_get_value(JSContextRef ctx,
 	return ret;
 }
 
-
 static JSValueRef
 seed_union_get_property(JSContextRef context,
 						JSObjectRef object,
@@ -184,9 +178,8 @@ seed_union_get_property(JSContextRef context,
 
 	SEED_NOTE(STRUCTS, "Getting property on union of type: %s  "
 			  "with name %s \n",
-			  g_base_info_get_name(priv->info),
-			  cproperty_name);
-	
+			  g_base_info_get_name(priv->info), cproperty_name);
+
 	field = seed_union_find_field((GIUnionInfo *) priv->info, cproperty_name);
 	if (!field)
 	{
@@ -194,8 +187,7 @@ seed_union_get_property(JSContextRef context,
 		return 0;
 	}
 
-	ret = seed_field_get_value(context,
-							   priv->pointer, field, exception);
+	ret = seed_field_get_value(context, priv->pointer, field, exception);
 
 	g_base_info_unref((GIBaseInfo *) field);
 
@@ -206,17 +198,17 @@ seed_union_get_property(JSContextRef context,
 
 static bool
 seed_struct_set_property(JSContextRef context,
-						  JSObjectRef object,
-						  JSStringRef property_name,
-						  JSValueRef value, JSValueRef * exception)
+						 JSObjectRef object,
+						 JSStringRef property_name,
+						 JSValueRef value, JSValueRef * exception)
 {
 	gint length, i, n;
 	GArgument field_value;
-	GIFieldInfo * field;
-	GITypeInfo * field_type;
-	gchar * cproperty_name;
-	seed_struct_privates *priv = 
-		(seed_struct_privates *)JSObjectGetPrivate(object);
+	GIFieldInfo *field;
+	GITypeInfo *field_type;
+	gchar *cproperty_name;
+	seed_struct_privates *priv =
+		(seed_struct_privates *) JSObjectGetPrivate(object);
 	gboolean ret;
 
 	length = JSStringGetMaximumUTF8CStringSize(property_name);
@@ -225,8 +217,7 @@ seed_struct_set_property(JSContextRef context,
 
 	SEED_NOTE(STRUCTS, "Setting property on struct of type: %s  "
 			  "with name %s \n",
-			  g_base_info_get_name(priv->info),
-			  cproperty_name);
+			  g_base_info_get_name(priv->info), cproperty_name);
 
 	field = seed_struct_find_field((GIStructInfo *) priv->info, cproperty_name);
 
@@ -235,14 +226,12 @@ seed_struct_set_property(JSContextRef context,
 		g_free(cproperty_name);
 		return 0;
 	}
-	
+
 	field_type = g_field_info_get_type(field);
 
-	seed_gi_make_argument(context, 
-						  value, 
-						  field_type, &field_value, exception);
+	seed_gi_make_argument(context, value, field_type, &field_value, exception);
 	ret = g_field_info_set_field(field, priv->pointer, &field_value);
-	
+
 	g_free(cproperty_name);
 	g_base_info_unref((GIBaseInfo *) field_type);
 	g_base_info_unref((GIBaseInfo *) field);
@@ -269,8 +258,7 @@ seed_struct_get_property(JSContextRef context,
 
 	SEED_NOTE(STRUCTS, "Getting property on struct of type: %s  "
 			  "with name %s \n",
-			  g_base_info_get_name(priv->info),
-			  cproperty_name);
+			  g_base_info_get_name(priv->info), cproperty_name);
 
 	field = seed_struct_find_field((GIStructInfo *) priv->info, cproperty_name);
 
@@ -280,8 +268,7 @@ seed_struct_get_property(JSContextRef context,
 		return 0;
 	}
 
-	ret = seed_field_get_value(context, 
-							   priv->pointer, field, exception);
+	ret = seed_field_get_value(context, priv->pointer, field, exception);
 
 	g_base_info_unref((GIBaseInfo *) field);
 	g_free(cproperty_name);
@@ -291,15 +278,16 @@ seed_struct_get_property(JSContextRef context,
 
 static void seed_enumerate_structlike_properties(JSContextRef ctx,
 												 JSObjectRef object,
-						 JSPropertyNameAccumulatorRef propertyNames)
+												 JSPropertyNameAccumulatorRef
+												 propertyNames)
 {
-	GIFieldInfo * field;
+	GIFieldInfo *field;
 	gint i, n;
 	guchar type;
-	seed_struct_privates * priv = 
-		(seed_struct_privates * )JSObjectGetPrivate(object);
-	GIBaseInfo * info = priv->info;
-	
+	seed_struct_privates *priv =
+		(seed_struct_privates *) JSObjectGetPrivate(object);
+	GIBaseInfo *info = priv->info;
+
 	if (!info)
 		return;
 
@@ -309,27 +297,27 @@ static void seed_enumerate_structlike_properties(JSContextRef ctx,
 		type = 2;
 	else
 		g_assert_not_reached();
-	
+
 	(type == 1) ?
-		(n = g_struct_info_get_n_fields((GIStructInfo *)info)) :
-		(n = g_union_info_get_n_fields((GIUnionInfo *)info));
-	
+		(n = g_struct_info_get_n_fields((GIStructInfo *) info)) :
+		(n = g_union_info_get_n_fields((GIUnionInfo *) info));
+
 	for (i = 0; i < n; i++)
 	{
-		const gchar * cname;
+		const gchar *cname;
 		JSStringRef jname;
 
-		(type == 1) ? 
-			(field = g_struct_info_get_field((GIStructInfo *)info, i)) :
-			(field = g_union_info_get_field((GIUnionInfo *)info, i));
-		
-		jname = 
-			JSStringCreateWithUTF8CString(
-				g_base_info_get_name((GIBaseInfo *) field));
+		(type == 1) ?
+			(field = g_struct_info_get_field((GIStructInfo *) info, i)) :
+			(field = g_union_info_get_field((GIUnionInfo *) info, i));
+
+		jname =
+			JSStringCreateWithUTF8CString(g_base_info_get_name
+										  ((GIBaseInfo *) field));
 
 		g_base_info_unref((GIBaseInfo *) field);
 		JSPropertyNameAccumulatorAddName(propertyNames, jname);
-		
+
 		JSStringRelease(jname);
 	}
 }
@@ -365,9 +353,9 @@ JSClassDefinition seed_struct_def = {
 	NULL,
 	NULL,						/* Has Property */
 	seed_struct_get_property,
-	seed_struct_set_property,						/* Set Property */
+	seed_struct_set_property,	/* Set Property */
 	NULL,						/* Delete Property */
-	seed_enumerate_structlike_properties,		/* Get Property Names */
+	seed_enumerate_structlike_properties,	/* Get Property Names */
 	NULL,						/* Call As Function */
 	NULL,						/* Call As Constructor */
 	NULL,						/* Has Instance */
@@ -387,7 +375,7 @@ JSClassDefinition seed_union_def = {
 	seed_union_get_property,
 	NULL,						/* Set Property */
 	NULL,						/* Delete Property */
-	seed_enumerate_structlike_properties,		/* Get Property Names */
+	seed_enumerate_structlike_properties,	/* Get Property Names */
 	NULL,						/* Call As Function */
 	NULL,						/* Call As Constructor */
 	NULL,						/* Has Instance */
@@ -402,7 +390,7 @@ JSClassDefinition seed_boxed_def = {
 	NULL,						/* Static Values */
 	NULL,						/* Static Functions */
 	NULL,
-	seed_boxed_finalize, 
+	seed_boxed_finalize,
 	NULL,						/* Has Property */
 	NULL,
 	NULL,						/* Set Property */
@@ -425,8 +413,7 @@ gpointer seed_pointer_get_pointer(JSContextRef ctx, JSValueRef pointer)
 }
 
 void seed_pointer_set_free(JSContextRef ctx,
-						   JSValueRef pointer, 
-						   gboolean free_pointer)
+						   JSValueRef pointer, gboolean free_pointer)
 {
 	if (JSValueIsObjectOfClass(ctx, pointer, seed_pointer_class))
 	{
@@ -445,7 +432,7 @@ JSObjectRef seed_make_pointer(JSContextRef ctx, gpointer pointer)
 	return JSObjectMake(ctx, seed_pointer_class, priv);
 }
 
-JSObjectRef seed_make_union(JSContextRef ctx, gpointer younion, 
+JSObjectRef seed_make_union(JSContextRef ctx, gpointer younion,
 							GIBaseInfo * info)
 {
 	JSObjectRef object;
@@ -467,11 +454,11 @@ JSObjectRef seed_make_union(JSContextRef ctx, gpointer younion,
 
 			finfo = g_union_info_get_method((GIUnionInfo *) info, i);
 
-			seed_gobject_define_property_from_function_info(ctx, 
+			seed_gobject_define_property_from_function_info(ctx,
 															(GIFunctionInfo *)
 															finfo, object,
 															TRUE);
-			
+
 			g_base_info_unref((GIBaseInfo *) finfo);
 		}
 	}
@@ -479,9 +466,7 @@ JSObjectRef seed_make_union(JSContextRef ctx, gpointer younion,
 	return object;
 }
 
-JSObjectRef seed_make_boxed(JSContextRef ctx, 
-							gpointer boxed, 
-							GIBaseInfo * info)
+JSObjectRef seed_make_boxed(JSContextRef ctx, gpointer boxed, GIBaseInfo * info)
 {
 	JSObjectRef object;
 	gint i, n_methods;
@@ -500,8 +485,7 @@ JSObjectRef seed_make_boxed(JSContextRef ctx,
 }
 
 JSObjectRef seed_make_struct(JSContextRef ctx,
-							 gpointer strukt, 
-							 GIBaseInfo * info)
+							 gpointer strukt, GIBaseInfo * info)
 {
 	JSObjectRef object;
 	gint i, n_methods;
@@ -522,11 +506,11 @@ JSObjectRef seed_make_struct(JSContextRef ctx,
 
 			finfo = g_struct_info_get_method((GIStructInfo *) info, i);
 
-			seed_gobject_define_property_from_function_info(ctx, 
+			seed_gobject_define_property_from_function_info(ctx,
 															(GIFunctionInfo *)
 															finfo, object,
 															TRUE);
-			
+
 			g_base_info_unref((GIBaseInfo *) finfo);
 		}
 	}
@@ -545,7 +529,7 @@ void seed_structs_init(void)
 	seed_boxed_class = JSClassCreate(&seed_boxed_def);
 }
 
-JSObjectRef 
+JSObjectRef
 seed_construct_struct_type_with_parameters(JSContextRef ctx,
 										   GIBaseInfo * info,
 										   JSObjectRef parameters,
@@ -556,19 +540,19 @@ seed_construct_struct_type_with_parameters(JSContextRef ctx,
 	GIInfoType type = g_base_info_get_type(info);
 	JSObjectRef ret;
 	gint nparams, i, length;
-	GIFieldInfo * field = 0;
+	GIFieldInfo *field = 0;
 	JSPropertyNameArrayRef jsprops;
 	JSStringRef jsprop_name;
 	JSValueRef jsprop_value;
 	GArgument field_value;
-	gchar * prop_name;
-	
+	gchar *prop_name;
+
 	SEED_NOTE(CONSTRUCTION, "Constructing struct/union of type: %s \n",
 			  g_base_info_get_name(info));
 
 	if (type == GI_INFO_TYPE_STRUCT)
 	{
-		size = g_struct_info_get_size((GIStructInfo *)info);
+		size = g_struct_info_get_size((GIStructInfo *) info);
 	}
 	else
 	{
@@ -576,64 +560,60 @@ seed_construct_struct_type_with_parameters(JSContextRef ctx,
 	}
 	g_assert(size);
 	object = g_malloc0(size);
-	
+
 	if (type == GI_INFO_TYPE_STRUCT)
 		ret = seed_make_struct(ctx, object, info);
 	else
 		ret = seed_make_union(ctx, object, info);
-	
+
 	seed_pointer_set_free(ctx, ret, TRUE);
 
 	if (!parameters)
 		return ret;
 
-	jsprops = JSObjectCopyPropertyNames(ctx,
-										(JSObjectRef)parameters);
+	jsprops = JSObjectCopyPropertyNames(ctx, (JSObjectRef) parameters);
 	nparams = JSPropertyNameArrayGetCount(jsprops);
-	
+
 	while (i < nparams)
 	{
-		GITypeInfo * field_type;
+		GITypeInfo *field_type;
 		jsprop_name = JSPropertyNameArrayGetNameAtIndex(jsprops, i);
-		
+
 		length = JSStringGetMaximumUTF8CStringSize(jsprop_name);
 		prop_name = g_malloc(length * sizeof(gchar));
 		JSStringGetUTF8CString(jsprop_name, prop_name, length);
-		
+
 		if (type == GI_INFO_TYPE_STRUCT)
-			field = seed_struct_find_field((GIStructInfo *) info,
-										   prop_name);
+			field = seed_struct_find_field((GIStructInfo *) info, prop_name);
 		else
-			field = seed_union_find_field((GIUnionInfo *) info,
-										  prop_name);
+			field = seed_union_find_field((GIUnionInfo *) info, prop_name);
 		if (!field)
 		{
 			gchar *mes =
 				g_strdup_printf("Invalid property for construction: %s",
 								prop_name);
 			seed_make_exception(ctx, exception, "PropertyError", mes);
-			
+
 			g_free(mes);
-			JSPropertyNameArrayRelease(jsprops);			
+			JSPropertyNameArrayRelease(jsprops);
 			return (JSObjectRef) JSValueMakeNull(ctx);
 		}
 		field_type = g_field_info_get_type(field);
-		
+
 		jsprop_value = JSObjectGetProperty(ctx,
-										   (JSObjectRef)parameters,
+										   (JSObjectRef) parameters,
 										   jsprop_name, NULL);
-		
+
 		seed_gi_make_argument(ctx, jsprop_value, field_type,
 							  &field_value, exception);
 		g_field_info_set_field(field, object, &field_value);
-		
+
 		g_base_info_unref((GIBaseInfo *) field_type);
 		g_base_info_unref((GIBaseInfo *) field);
-		
+
 		i++;
 	}
 	JSPropertyNameArrayRelease(jsprops);
-
 
 	return ret;
 }

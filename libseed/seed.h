@@ -60,21 +60,20 @@ typedef struct _SeedScript SeedScript;
 typedef struct _SeedEngine {
 	SeedGlobalContext context;
 	SeedValue global;
-	
+
 	SeedContextGroup group;
 } SeedEngine;
-
 
 /*
  * seed-engine.c 
  */
-SeedEngine * seed_init(gint * argc, gchar *** argv);
+SeedEngine *seed_init(gint * argc, gchar *** argv);
 
 SeedScript *seed_make_script(SeedContext ctx,
 							 const gchar * s, const gchar * source_url,
 							 gint line_number);
 SeedException seed_script_exception(SeedScript * s);
-void seed_make_exception(SeedContext ctx, SeedException e, 
+void seed_make_exception(SeedContext ctx, SeedException e,
 						 gchar * name, gchar * message);
 gchar *seed_exception_get_name(SeedContext ctx, SeedException e);
 gchar *seed_exception_get_message(SeedContext ctx, SeedException e);
@@ -82,38 +81,35 @@ guint seed_exception_get_line(SeedContext ctx, SeedException e);
 gchar *seed_exception_get_file(SeedContext ctx, SeedException e);
 gchar *seed_exception_to_string(SeedContext ctx, SeedException e);
 
-SeedValue seed_evaluate(SeedContext ctx, 
-						SeedScript * s, SeedObject this);
+SeedValue seed_evaluate(SeedContext ctx, SeedScript * s, SeedObject this);
 
 /*
  * seed-api.c
  */
 
-SeedGlobalContext seed_context_create(SeedContextGroup group, 
-								SeedClass global_class);
+SeedGlobalContext seed_context_create(SeedContextGroup group,
+									  SeedClass global_class);
 SeedGlobalContext seed_context_ref(SeedGlobalContext ctx);
 void seed_context_unref(SeedGlobalContext ctx);
 
 SeedValue seed_make_null(SeedContext ctx);
 
-SeedObject seed_make_object(SeedContext ctx,
-							SeedClass class, gpointer private);
+SeedObject seed_make_object(SeedContext ctx, SeedClass class, gpointer private);
 
 gpointer seed_object_get_private(SeedObject object);
 void seed_object_set_private(SeedObject object, gpointer value);
-
 
 SeedString seed_string_ref(SeedString string);
 void seed_string_unref(SeedString string);
 
 gsize seed_string_get_maximum_size(SeedString string);
 gsize seed_string_to_utf8_buffer(SeedString string, gchar * buffer,
-							 size_t buffer_size);
+								 size_t buffer_size);
 
 gboolean seed_string_is_equal(SeedString a, SeedString b);
 gboolean seed_string_is_equal_utf8(SeedString a, const gchar * b);
 
-SeedValue seed_object_call(SeedContext ctx, 
+SeedValue seed_object_call(SeedContext ctx,
 						   SeedObject object,
 						   SeedObject this,
 						   gsize argument_count,
@@ -127,114 +123,85 @@ void seed_value_protect(SeedContext ctx, SeedValue value);
  */
 gboolean seed_object_set_property(SeedContext ctx,
 								  SeedObject object,
-								  const gchar * name,
-								  SeedValue value);
+								  const gchar * name, SeedValue value);
 SeedValue seed_object_get_property(SeedContext ctx,
-								   SeedObject object, 
-								   const gchar * name);
+								   SeedObject object, const gchar * name);
 
 void seed_object_set_property_at_index(SeedContext ctx,
-										   SeedObject object,
-										   gint index,
-										   SeedValue value,
-										   SeedException * exception);
+									   SeedObject object,
+									   gint index,
+									   SeedValue value,
+									   SeedException * exception);
 
 gboolean seed_value_to_boolean(SeedContext ctx,
-							   SeedValue val,
-							   SeedException * exception);
+							   SeedValue val, SeedException * exception);
 
 SeedValue seed_value_from_boolean(SeedContext ctx,
-								  gboolean val, 
-								  SeedException * exception);
+								  gboolean val, SeedException * exception);
 
 guint seed_value_to_uint(SeedContext ctx,
-						 SeedValue val, 
-						 SeedException * exception);
+						 SeedValue val, SeedException * exception);
 
 SeedValue seed_value_from_uint(SeedContext ctx,
-							   guint val,
-							   SeedException * exception);
+							   guint val, SeedException * exception);
 
-gint seed_value_to_int(SeedContext ctx, 
-					   SeedValue val,
-					   SeedException * exception);
+gint seed_value_to_int(SeedContext ctx,
+					   SeedValue val, SeedException * exception);
 
 SeedValue seed_value_from_int(SeedContext ctx,
-							  gint val,
-							  SeedException * exception);
+							  gint val, SeedException * exception);
 
 gchar seed_value_to_char(SeedContext ctx,
-						 SeedValue val,
-						 SeedException * exception);
+						 SeedValue val, SeedException * exception);
 SeedValue seed_value_from_char(SeedContext ctx,
-							   gchar val,
-							   SeedException * exception);
+							   gchar val, SeedException * exception);
 
 guchar seed_value_to_uchar(SeedContext ctx,
-						   SeedValue val,
-						   SeedException * exception);
+						   SeedValue val, SeedException * exception);
 SeedValue seed_value_from_uchar(SeedContext ctx,
-								guchar val,
-								SeedException * exception);
+								guchar val, SeedException * exception);
 
 glong seed_value_to_long(SeedContext ctx,
-						 SeedValue val,
-						 SeedException * exception);
+						 SeedValue val, SeedException * exception);
 SeedValue seed_value_from_long(SeedContext ctx,
-							   glong val,
-							   SeedException * exception);
+							   glong val, SeedException * exception);
 
 gulong seed_value_to_ulong(SeedContext ctx,
-						   SeedValue val,
-						   SeedException * exception);
+						   SeedValue val, SeedException * exception);
 SeedValue seed_value_from_ulong(SeedContext ctx,
-								gulong val,
-								SeedException * exception);
+								gulong val, SeedException * exception);
 
 gint64 seed_value_to_int64(SeedContext ctx,
-						   SeedValue val,
-						   SeedException * exception);
+						   SeedValue val, SeedException * exception);
 SeedValue seed_value_from_int64(SeedContext ctx,
-								gint64 val,
-								SeedException * exception);
+								gint64 val, SeedException * exception);
 
 guint64 seed_value_to_uint64(SeedContext ctx,
-							 SeedValue val,
-							 SeedException * exception);
+							 SeedValue val, SeedException * exception);
 SeedValue seed_value_from_uint64(SeedContext ctx,
-								 guint64 val,
-								 SeedException * exception);
+								 guint64 val, SeedException * exception);
 
 gfloat seed_value_to_float(SeedContext ctx,
-						   SeedValue val,
-						   SeedException * exception);
+						   SeedValue val, SeedException * exception);
 SeedValue seed_value_from_float(SeedContext ctx,
-								gfloat val,
-								SeedException * exception);
+								gfloat val, SeedException * exception);
 
 gdouble seed_value_to_double(SeedContext ctx,
-							 SeedValue val,
-							 SeedException * exception);
+							 SeedValue val, SeedException * exception);
 SeedValue seed_value_from_double(SeedContext ctx,
-								 gdouble val,
-								 SeedException * exception);
+								 gdouble val, SeedException * exception);
 
 gchar *seed_value_to_string(SeedContext ctx,
-							SeedValue val,
-							SeedException * exception);
+							SeedValue val, SeedException * exception);
 SeedValue seed_value_from_string(SeedContext ctx,
-								 gchar * val, 
-								 SeedException * exception);
+								 gchar * val, SeedException * exception);
 
 GObject *seed_value_to_object(SeedContext ctx,
-							  SeedValue val,
-							  SeedException * exception);
+							  SeedValue val, SeedException * exception);
 SeedValue seed_value_from_object(SeedContext ctx,
-								 GObject * val,
-								 SeedException * exception);
+								 GObject * val, SeedException * exception);
 
-gpointer seed_pointer_get_pointer(SeedContext ctx,
-								  SeedValue pointer);
+gpointer seed_pointer_get_pointer(SeedContext ctx, SeedValue pointer);
 
 typedef void (*SeedFunctionCallback) (SeedContext ctx,
 									  SeedObject function,
@@ -247,7 +214,6 @@ void seed_create_function(SeedContext ctx,
 						  gchar * name, SeedFunctionCallback callback,
 						  SeedObject object);
 
-
 typedef void (*SeedModuleInitCallback) (SeedEngine * eng);
 
 typedef void (*SeedObjectInitializeCallback) (SeedContext ctx,
@@ -257,77 +223,76 @@ typedef void (*SeedObjectInitializeCallback) (SeedContext ctx,
  *this callback has undefined results */
 typedef void (*SeedObjectFinalizeCallback) (SeedObject object);
 
-typedef gboolean (*SeedObjectHasPropertyCallback) (SeedContext ctx,
-												   SeedObject object,
-												   SeedString string);
-typedef SeedValue (*SeedObjectGetPropertyCallback) (SeedContext ctx,
-													 SeedObject object,
-													 SeedString property_name,
-													 SeedException * e);
-typedef gboolean (*SeedObjectSetPropertyCallback) (SeedContext ctx,
+typedef gboolean(*SeedObjectHasPropertyCallback) (SeedContext ctx,
+												  SeedObject object,
+												  SeedString string);
+typedef SeedValue(*SeedObjectGetPropertyCallback) (SeedContext ctx,
 												   SeedObject object,
 												   SeedString property_name,
-												   SeedValue value,
 												   SeedException * e);
-typedef gboolean (*SeedObjectDeletePropertyCallback) (SeedContext ctx,
-													  SeedObject object,
-													  SeedString property_name,
-													  SeedValue value,
-													  SeedException * e);
+typedef gboolean(*SeedObjectSetPropertyCallback) (SeedContext ctx,
+												  SeedObject object,
+												  SeedString property_name,
+												  SeedValue value,
+												  SeedException * e);
+typedef gboolean(*SeedObjectDeletePropertyCallback) (SeedContext ctx,
+													 SeedObject object,
+													 SeedString property_name,
+													 SeedValue value,
+													 SeedException * e);
 /* TODO: Have to decide on accumulator API
 //typedef void (*SeedObjectGetPropertyNamesCallback) (SeedContext ctx, */
 
 typedef void (*SeedObjectGetPropertyNamesCallback) (void);
 
-typedef SeedValue (*SeedObjectCallAsFunctionCallback) (SeedContext ctx,
-														SeedObject function,
-														SeedObject this_object,
-														gsize argument_count,
-   												  const SeedValue arguments[],
-													SeedException * exception);
-typedef SeedValue (*SeedObjectCallAsConstructorCallback) 
-                                                (SeedContext ctx,
-												 SeedObject constructor,
-												 gsize argument_count,
-												 const SeedValue arguments[],
-												 SeedException * exception);
+typedef SeedValue(*SeedObjectCallAsFunctionCallback) (SeedContext ctx,
+													  SeedObject function,
+													  SeedObject this_object,
+													  gsize argument_count,
+													  const SeedValue
+													  arguments[],
+													  SeedException *
+													  exception);
+typedef SeedValue(*SeedObjectCallAsConstructorCallback) (SeedContext ctx,
+														 SeedObject constructor,
+														 gsize argument_count,
+														 const SeedValue
+														 arguments[],
+														 SeedException *
+														 exception);
 
-typedef gboolean (*SeedObjectHasInstanceCallback) (SeedContext ctx,
-												   SeedObject constructor,
-												   SeedObject instance_p,
-												   SeedException * exception);
+typedef gboolean(*SeedObjectHasInstanceCallback) (SeedContext ctx,
+												  SeedObject constructor,
+												  SeedObject instance_p,
+												  SeedException * exception);
 
-typedef SeedValue (*SeedObjectConvertToTypeCallback) (SeedContext ctx,
-													  SeedObject object,
-													  SeedType type,
-  												     SeedException * exception);
+typedef SeedValue(*SeedObjectConvertToTypeCallback) (SeedContext ctx,
+													 SeedObject object,
+													 SeedType type,
+													 SeedException * exception);
 
-typedef struct _seed_static_value
-{
-	const gchar * const name;
+typedef struct _seed_static_value {
+	const gchar *const name;
 	SeedObjectGetPropertyCallback get_property;
 	SeedObjectSetPropertyCallback set_property;
 	SeedPropertyAttributes attributes;
 } seed_static_value;
 
-typedef struct _seed_static_function
-{
-	const gchar * const name;
+typedef struct _seed_static_function {
+	const gchar *const name;
 	SeedObjectCallAsFunctionCallback callback;
 	SeedPropertyAttributes attributes;
 } seed_static_function;
 
-
-typedef struct _seed_class_definition 
-{
-	int version; /* Always 0 */
+typedef struct _seed_class_definition {
+	int version;				/* Always 0 */
 	SeedClassAttributes attributes;
 
-	const gchar * class_name;
+	const gchar *class_name;
 	SeedClass parent_class;
 
-	const seed_static_value * static_values;
-	const seed_static_function * static_functions;
+	const seed_static_value *static_values;
+	const seed_static_function *static_functions;
 
 	SeedObjectInitializeCallback initialize;
 	SeedObjectFinalizeCallback finalize;
@@ -342,8 +307,7 @@ typedef struct _seed_class_definition
 	SeedObjectConvertToTypeCallback convert_to_type;
 } seed_class_definition;
 
-seed_class_definition seed_empty_class =
-{
+seed_class_definition seed_empty_class = {
 	0,
 	0,
 	0,
@@ -367,6 +331,7 @@ SeedClass seed_create_class(seed_class_definition * def);
 
 SeedObject seed_make_constructor(SeedContext ctx,
 								 SeedClass class,
-					 SeedObjectCallAsConstructorCallback constructor);
+								 SeedObjectCallAsConstructorCallback
+								 constructor);
 
 #endif

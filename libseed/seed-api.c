@@ -14,7 +14,6 @@
 *     Copyright (C) Robert Carr 2008 <carrr@rpi.edu>
 */
 
-
 #include "seed-private.h"
 
 void seed_value_protect(JSContextRef ctx, JSValueRef value)
@@ -35,12 +34,12 @@ JSGlobalContextRef seed_context_create(JSContextGroupRef group,
 
 JSGlobalContextRef seed_context_ref(JSGlobalContextRef ctx)
 {
-	return JSGlobalContextRetain(ctx); 
+	return JSGlobalContextRetain(ctx);
 }
 
 void seed_context_unref(JSGlobalContextRef ctx)
 {
-	JSGlobalContextRelease(ctx); 
+	JSGlobalContextRelease(ctx);
 }
 
 JSValueRef seed_make_null(JSContextRef ctx)
@@ -48,9 +47,8 @@ JSValueRef seed_make_null(JSContextRef ctx)
 	return JSValueMakeNull(ctx);
 }
 
-JSObjectRef seed_make_object(JSContextRef ctx, 
-							 JSClassRef class,
-							 gpointer private)
+JSObjectRef seed_make_object(JSContextRef ctx,
+							 JSClassRef class, gpointer private)
 {
 	return JSObjectMake(ctx, class, private);
 }
@@ -65,21 +63,19 @@ gboolean seed_object_set_property_at_index(JSContextRef ctx,
 }
 
 JSValueRef seed_object_call(JSContextRef ctx,
-							  JSObjectRef object,
-							  JSObjectRef this,
-							  size_t argument_count,
-							  const JSValueRef arguments[],
-							  JSValueRef * exception)
+							JSObjectRef object,
+							JSObjectRef this,
+							size_t argument_count,
+							const JSValueRef arguments[],
+							JSValueRef * exception)
 {
 	return JSObjectCallAsFunction(ctx, object, this,
-								  argument_count, arguments, 
-								  exception);
+								  argument_count, arguments, exception);
 }
 
 SeedScript *seed_make_script(JSContextRef ctx,
 							 const gchar * js,
-							 const gchar * source_url,
-							 gint line_number)
+							 const gchar * source_url, gint line_number)
 {
 	SeedScript *ret = g_new0(SeedScript, 1);
 
@@ -97,9 +93,7 @@ SeedScript *seed_make_script(JSContextRef ctx,
 	return ret;
 }
 
-JSValueRef seed_evaluate(JSContextRef ctx,
-						 SeedScript * js, 
-						 JSObjectRef this)
+JSValueRef seed_evaluate(JSContextRef ctx, SeedScript * js, JSObjectRef this)
 {
 	JSValueRef ret;
 
@@ -122,7 +116,7 @@ gsize seed_string_get_maximum_size(JSStringRef string)
 }
 
 gsize seed_string_to_utf8_buffer(JSStringRef string, gchar * buffer,
-							 size_t buffer_size)
+								 size_t buffer_size)
 {
 	return JSStringGetUTF8CString(string, buffer, buffer_size);
 }
@@ -153,19 +147,18 @@ JSClassRef seed_create_class(JSClassDefinition * def)
 }
 
 JSObjectRef seed_make_constructor(JSContextRef ctx,
-								 JSClassRef class,
-					 JSObjectCallAsConstructorCallback constructor)
+								  JSClassRef class,
+								  JSObjectCallAsConstructorCallback constructor)
 {
 	return JSObjectMakeConstructor(ctx, class, constructor);
 }
 
 gpointer seed_object_get_private(JSObjectRef object)
 {
-	return (gpointer)JSObjectGetPrivate(object);
+	return (gpointer) JSObjectGetPrivate(object);
 }
 
 void seed_object_set_private(JSObjectRef object, gpointer value)
 {
 	JSObjectSetPrivate(object, value);
 }
-

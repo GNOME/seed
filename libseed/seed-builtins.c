@@ -19,7 +19,6 @@
 *     Copyright (C) Matthew Arsenault 2008 <arsenm2@rpi.edu>
 */
 
-
 #include <stdio.h>
 #include "seed-private.h"
 #include <string.h>
@@ -71,7 +70,7 @@ seed_include(JSContextRef ctx,
 
 	file_contents = JSStringCreateWithUTF8CString(walk);
 	file_name = JSStringCreateWithUTF8CString(import_file);
-	
+
 	JSEvaluateScript(ctx, file_contents, NULL, file_name, 0, exception);
 
 	JSStringRelease(file_contents);
@@ -179,7 +178,7 @@ seed_introspect(JSContextRef ctx,
 									   (g_callable_info_get_arg(info, i)));
 
 		seed_object_set_property(ctx, argument, "type",
-								 seed_value_from_string(ctx, 
+								 seed_value_from_string(ctx,
 														arg_name, exception));
 
 		JSObjectSetPropertyAtIndex(ctx, args_obj, i, argument, NULL);
@@ -230,10 +229,10 @@ seed_fork(JSContextRef ctx,
 
 static JSValueRef
 seed_spawn(JSContextRef ctx,
-		  JSObjectRef function,
-		  JSObjectRef this_object,
-		  size_t argumentCount,
-		  const JSValueRef arguments[], JSValueRef * exception)
+		   JSObjectRef function,
+		   JSObjectRef this_object,
+		   size_t argumentCount,
+		   const JSValueRef arguments[], JSValueRef * exception)
 {
 	gchar *line, *stdout, *stderr;
 	JSObjectRef ret;
@@ -242,7 +241,7 @@ seed_spawn(JSContextRef ctx,
 	if (argumentCount != 1)
 	{
 		// I am so lazy
-		seed_make_exception(ctx, exception, "ArgumentError", 
+		seed_make_exception(ctx, exception, "ArgumentError",
 							"Seed.spawn expected 1 argument");
 		return JSValueMakeNull(ctx);
 	}
@@ -257,7 +256,7 @@ seed_spawn(JSContextRef ctx,
 		g_error_free(error);
 		return JSValueMakeNull(ctx);
 	}
-	
+
 	ret = JSObjectMake(ctx, NULL, NULL);
 	seed_object_set_property(ctx, ret, "stdout",
 							 seed_value_from_string(ctx, stdout, exception));
@@ -267,7 +266,7 @@ seed_spawn(JSContextRef ctx,
 	g_free(stdout);
 	g_free(stderr);
 
-	return ret;	
+	return ret;
 }
 
 static JSValueRef
@@ -281,10 +280,9 @@ seed_quit(JSContextRef ctx,
 	{
 		exit(seed_value_to_int(ctx, arguments[0], NULL));
 	}
-	else if(argumentCount > 1)
+	else if (argumentCount > 1)
 	{
-		gchar *mes = g_strdup_printf("Seed.quit expected "
-									 "1 argument, got %d",
+		gchar *mes = g_strdup_printf("Seed.quit expected " "1 argument, got %d",
 									 argumentCount);
 		seed_make_exception(ctx, exception, "ArgumentError", mes);
 		g_free(mes);
@@ -298,24 +296,19 @@ void seed_init_builtins(SeedEngine * local_eng, gint * argc, gchar *** argv)
 	guint i;
 	JSObjectRef arrayObj;
 	JSValueRef argcref;
-	JSObjectRef obj =
-		(JSObjectRef) seed_object_get_property(local_eng->context, 
-											   local_eng->global, "Seed");
+	JSObjectRef obj = (JSObjectRef) seed_object_get_property(local_eng->context,
+															 local_eng->global,
+															 "Seed");
 
-	seed_create_function(local_eng->context, 
-						 "include", &seed_include, obj);
-	seed_create_function(local_eng->context, 
-						 "print", &seed_print, obj);
-	seed_create_function(local_eng->context, 
+	seed_create_function(local_eng->context, "include", &seed_include, obj);
+	seed_create_function(local_eng->context, "print", &seed_print, obj);
+	seed_create_function(local_eng->context,
 						 "check_syntax", &seed_check_syntax, obj);
-	seed_create_function(local_eng->context, 
+	seed_create_function(local_eng->context,
 						 "introspect", &seed_introspect, obj);
-	seed_create_function(local_eng->context, 
-						 "fork", &seed_fork, obj);
-	seed_create_function(local_eng->context, 
-						 "spawn", &seed_spawn, obj);
-	seed_create_function(local_eng->context, 
-						 "quit", &seed_quit, obj);
+	seed_create_function(local_eng->context, "fork", &seed_fork, obj);
+	seed_create_function(local_eng->context, "spawn", &seed_spawn, obj);
+	seed_create_function(local_eng->context, "quit", &seed_quit, obj);
 
 	arrayObj = JSObjectMake(local_eng->context, NULL, NULL);
 
@@ -324,7 +317,7 @@ void seed_init_builtins(SeedEngine * local_eng, gint * argc, gchar *** argv)
 		// TODO: exceptions!
 
 		JSObjectSetPropertyAtIndex(local_eng->context, arrayObj, i,
-								   seed_value_from_string(local_eng->context, 
+								   seed_value_from_string(local_eng->context,
 														  (*argv)[i], 0), NULL);
 	}
 

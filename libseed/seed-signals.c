@@ -17,7 +17,6 @@
 *     Copyright (C) Robert Carr 2008 <carrr@rpi.edu>
 */
 
-
 #include <string.h>
 
 #include "seed-private.h"
@@ -25,7 +24,7 @@
 typedef struct _signal_privates {
 	guint signal_id;
 	GObject *object;
-	const gchar * signal_name;
+	const gchar *signal_name;
 } signal_privates;
 
 JSClassRef signal_holder_class;
@@ -64,9 +63,8 @@ seed_add_signal_to_object(JSContextRef ctx, JSObjectRef object_ref,
 }
 
 static void
-seed_add_signals_for_type(JSContextRef ctx, 
-						  JSObjectRef object_ref, 
-						  GObject * obj, GType type)
+seed_add_signals_for_type(JSContextRef ctx,
+						  JSObjectRef object_ref, GObject * obj, GType type)
 {
 	guint n, i;
 	guint *signal_ids;
@@ -91,8 +89,8 @@ static void seed_gobject_signal_connect(JSContextRef ctx,
 										JSObjectRef user_data)
 {
 	GSignalQuery query;
-	GClosure * closure;
-	
+	GClosure *closure;
+
 	g_signal_query(g_signal_lookup(signal_name, G_OBJECT_TYPE(on_obj)), &query);
 
 	closure = g_closure_new_simple(sizeof(SeedClosure), 0);
@@ -101,25 +99,25 @@ static void seed_gobject_signal_connect(JSContextRef ctx,
 	((SeedClosure *) closure)->function = func;
 	//((SeedClosure *) closure)->object = on_obj;
 	((SeedClosure *) closure)->return_type = query.return_type;
-	
+
 	if (this_obj && !JSValueIsNull(ctx, this_obj))
 	{
-//		JSValueProtect(ctx, this_obj);
+//      JSValueProtect(ctx, this_obj);
 		((SeedClosure *) closure)->this = this_obj;
 	}
 	else
 	{
 		((SeedClosure *) closure)->this = 0;
 	}
-	
+
 	if (user_data && !JSValueIsNull(ctx, user_data))
 	{
 		((SeedClosure *) closure)->user_data = user_data;
-//		JSValueProtect(ctx, user_data);
+//      JSValueProtect(ctx, user_data);
 	}
 
 	JSValueProtect(ctx, (JSObjectRef) func);
-	
+
 	g_signal_connect_closure(on_obj, signal_name, closure, FALSE);
 }
 
@@ -133,10 +131,10 @@ seed_gobject_signal_connect_by_name(JSContextRef ctx,
 {
 	GType obj_type;
 	JSObjectRef user_data = NULL;
-	gchar * signal_name;
-	GObject * obj;
-	
-	if(argumentCount < 2 || argumentCount > 3)
+	gchar *signal_name;
+	GObject *obj;
+
+	if (argumentCount < 2 || argumentCount > 3)
 	{
 		gchar *mes = g_strdup_printf("Signal connection expected"
 									 " 2 or 3 arguments. Got "
@@ -146,26 +144,24 @@ seed_gobject_signal_connect_by_name(JSContextRef ctx,
 		g_free(mes);
 		return JSValueMakeNull(ctx);
 	}
-	
-	if(argumentCount == 3)
+
+	if (argumentCount == 3)
 	{
-		user_data = (JSObjectRef)arguments[2];
+		user_data = (JSObjectRef) arguments[2];
 	}
-	
+
 	signal_name = seed_value_to_string(ctx, arguments[0], NULL);
-	obj = (GObject *)JSObjectGetPrivate(thisObject);
+	obj = (GObject *) JSObjectGetPrivate(thisObject);
 	obj_type = G_OBJECT_TYPE(obj);
-	
-	seed_gobject_signal_connect(ctx, signal_name, obj, 
-								(JSObjectRef) arguments[1],
-								NULL, user_data);
-	
+
+	seed_gobject_signal_connect(ctx, signal_name, obj,
+								(JSObjectRef) arguments[1], NULL, user_data);
+
 	g_free(signal_name);
 }
 
-void seed_add_signals_to_object(JSContextRef ctx, 
-								JSObjectRef object_ref, 
-								GObject * obj)
+void seed_add_signals_to_object(JSContextRef ctx,
+								JSObjectRef object_ref, GObject * obj)
 {
 	GType type;
 	GType *interfaces;
@@ -196,7 +192,7 @@ void seed_add_signals_to_object(JSContextRef ctx,
 	connect_func =
 		JSObjectMakeFunctionWithCallback(ctx, NULL,
 										 &seed_gobject_signal_connect_by_name);
-	JSValueProtect(ctx, connect_func);	
+	JSValueProtect(ctx, connect_func);
 
 	seed_object_set_property(ctx, signals_ref, "connect", connect_func);
 }
@@ -212,7 +208,7 @@ seed_signal_marshal_func(GClosure * closure,
 	JSValueRef *args, exception = 0;
 	JSValueRef ret = 0;
 	gint i;
-	
+
 	JSContextRef ctx = JSGlobalContextCreateInGroup(context_group,
 													0);
 
@@ -220,9 +216,7 @@ seed_signal_marshal_func(GClosure * closure,
 
 	for (i = 0; i < n_param_values; i++)
 	{
-		args[i] = seed_value_from_gvalue(ctx,
-										 (GValue *) & param_values[i],
-										 0);
+		args[i] = seed_value_from_gvalue(ctx, (GValue *) & param_values[i], 0);
 
 		if (!args[i])
 			g_error("Error in signal marshal. "
@@ -242,7 +236,7 @@ seed_signal_marshal_func(GClosure * closure,
 
 	if (exception)
 	{
-		gchar *mes = seed_exception_to_string(ctx, 
+		gchar *mes = seed_exception_to_string(ctx,
 											  exception);
 		g_warning("Exception in signal handler. %s \n", mes, 0);
 		g_free(mes);
@@ -262,8 +256,8 @@ seed_signal_marshal_func(GClosure * closure,
 		g_warning("Exception in signal handler return value. %s \n", mes, 0);
 		g_free(mes);
 	}
-	
-	JSGlobalContextRelease((JSGlobalContextRef)ctx);
+
+	JSGlobalContextRelease((JSGlobalContextRef) ctx);
 
 }
 
@@ -330,13 +324,13 @@ seed_gobject_signal_connect_on_property(JSContextRef ctx,
 	JSObjectRef this_obj;
 	signal_privates *privates;
 	GClosure *closure;
-	
+
 	privates = (signal_privates *) JSObjectGetPrivate(thisObject);
 	if (!privates)
 		g_error("Signal constructed with invalid parameters"
 				"in namespace import \n");
-	
-	this_obj = 
+
+	this_obj =
 		(JSObjectRef) seed_value_from_object(ctx, privates->object, exception);
 
 	if ((argumentCount > 2) || (argumentCount == 0))
@@ -349,29 +343,30 @@ seed_gobject_signal_connect_on_property(JSContextRef ctx,
 		g_free(mes);
 		return JSValueMakeNull(ctx);
 	}
-	
+
 	if (argumentCount == 1)
 		seed_gobject_signal_connect(ctx, privates->signal_name,
 									privates->object,
-									(JSObjectRef) arguments[0], this_obj, 
-									NULL);
-	
+									(JSObjectRef) arguments[0], this_obj, NULL);
+
 	if (argumentCount == 2)
 	{
 		seed_gobject_signal_connect(ctx, privates->signal_name,
 									privates->object,
 									(JSObjectRef) arguments[0],
-									this_obj,
-									(JSObjectRef) arguments[1]);
+									this_obj, (JSObjectRef) arguments[1]);
 	}
 
 	return JSValueMakeNull(ctx);
 }
 
 JSStaticFunction signal_static_functions[] =
-	{ {"connect", seed_gobject_signal_connect_on_property, 0},
-	  {"emit", seed_gobject_signal_emit, 0},
-	  {0, 0, 0} };
+	{ {"connect", seed_gobject_signal_connect_on_property, 0}
+,
+{"emit", seed_gobject_signal_emit, 0}
+,
+{0, 0, 0}
+};
 
 JSClassDefinition gobject_signal_def = {
 	0,							/* Version, always 0 */

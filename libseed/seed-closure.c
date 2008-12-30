@@ -2,7 +2,6 @@
  * -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*- 
  */
 
-
 /*    This file is part of Seed.
 *     Seed is free software: you can redistribute it and/or modify 
 *     it under the terms of the GNU Lesser General Public License as
@@ -18,7 +17,6 @@
 *
 *     Copyright (C) Robert Carr 2008 <carrr@rpi.edu>
 */
-
 
 #include "seed-private.h"
 #include <sys/mman.h>
@@ -104,14 +102,14 @@ static void seed_closure_finalize(JSObjectRef object)
 {
 	SeedNativeClosure *privates =
 		(SeedNativeClosure *) JSObjectGetPrivate(object);
-	
+
 	SEED_NOTE(FINALIZATION, "Finalizing closure object %p with "
 			  "GIBaseInfo: %s \n", object,
-			  g_base_info_get_name((GIBaseInfo *)privates->info));
+			  g_base_info_get_name((GIBaseInfo *) privates->info));
 
 	g_free(privates->cif->arg_types);
 	g_free(privates->cif);
-	g_base_info_unref((GIBaseInfo *)privates->info);
+	g_base_info_unref((GIBaseInfo *) privates->info);
 	munmap(privates->closure, sizeof(ffi_closure));
 }
 
@@ -128,9 +126,7 @@ seed_handle_closure(ffi_cif * cif, void *result, void **args, void *userdata)
 	GITypeInfo *return_type;
 	GArgument rarg;
 	GArgument return_arg;
-	JSContextRef ctx = 
-		JSGlobalContextCreateInGroup(context_group, 0);
-													
+	JSContextRef ctx = JSGlobalContextCreateInGroup(context_group, 0);
 
 	SEED_NOTE(INVOCATION, "Invoking closure of type: %s \n",
 			  g_base_info_get_name((GIBaseInfo *) privates->info));
@@ -246,10 +242,10 @@ seed_handle_closure(ffi_cif * cif, void *result, void **args, void *userdata)
 		JSObjectCallAsFunction(ctx,
 							   (JSObjectRef) privates->function, 0,
 							   num_args, jsargs, &exception);
-	
+
 	if (exception)
 	{
-		gchar *mes = seed_exception_to_string(ctx, 
+		gchar *mes = seed_exception_to_string(ctx,
 											  exception);
 		g_warning("Exception in closure marshal. %s \n", mes, 0);
 		g_free(mes);
@@ -343,7 +339,7 @@ seed_handle_closure(ffi_cif * cif, void *result, void **args, void *userdata)
 	}
 
 	g_base_info_unref((GIBaseInfo *) return_type);
-	JSGlobalContextRelease((JSGlobalContextRef)ctx);
+	JSGlobalContextRelease((JSGlobalContextRef) ctx);
 }
 
 SeedNativeClosure *seed_make_native_closure(JSContextRef ctx,
@@ -365,8 +361,7 @@ SeedNativeClosure *seed_make_native_closure(JSContextRef ctx,
 		(JSObjectRef) seed_object_get_property(ctx, (JSObjectRef) function,
 											   "__seed_native_closure");
 	if (cached
-		&& JSValueIsObjectOfClass(ctx, cached,
-								  seed_native_callback_class))
+		&& JSValueIsObjectOfClass(ctx, cached, seed_native_callback_class))
 	{
 		return (SeedNativeClosure *) JSObjectGetPrivate(cached);
 	}
@@ -399,15 +394,14 @@ SeedNativeClosure *seed_make_native_closure(JSContextRef ctx,
 	seed_object_set_property(ctx, (JSObjectRef) function,
 							 "__seed_native_closure",
 							 (JSValueRef) JSObjectMake(ctx,
-								seed_native_callback_class,
-								   			   privates));
+													   seed_native_callback_class,
+													   privates));
 
 	return privates;
 }
 
 SeedClosure *seed_make_gclosure(JSContextRef ctx,
-								JSObjectRef function, 
-								JSObjectRef this)
+								JSObjectRef function, JSObjectRef this)
 {
 	GClosure *closure;
 
