@@ -285,7 +285,70 @@ BrowserView = new GType({
 window.resize(600,600);
 </pre>
 <div class="section">Pulling bits together</div>
-<p>asdfasdf</p>
+<p>As you can see in the last bit of code, we have a few more functions to add to our BrowserToolbar class. Functions to allow toggling the 'clickable' state of the back and forward buttons, and a function to update the URL bar when a link is clicked:</p>
+<pre class="sh_javascript">
+<span class="unchanged">
+BrowserToolbar = new GType({
+    parent: Gtk.HBox.type,
+    name: "BrowserToolbar",
+    instance_init: function (klass)
+    {
+        // Private
+        var url_bar = new Gtk.Entry();
+
+        var back_button = new Gtk.ToolButton({stock_id:"gtk-go-back"});
+        var forward_button = new Gtk.ToolButton({stock_id:"gtk-go-forward"});
+        var refresh_button = new Gtk.ToolButton({stock_id:"gtk-refresh"});
+
+        var back = function ()
+        {</span>
+            browser.get_web_view().go_back();
+        <span class="unchanged">};
+
+        var forward = function ()
+        {</span>
+            browser.get_web_view().go_forward();
+        <span class="unchanged">};
+
+        var refresh = function ()
+        {</span>
+            browser.get_web_view().reload();
+        <span class="unchanged">};
+
+        var browse = function (url)
+        {</span>
+            browser.get_web_view().browse(url.text);
+        <span class="unchanged">};
+
+        </span>// Public
+        this.set_url = function (url)
+        {
+            url_bar.text = url;
+        };
+
+        this.set_can_go_back = function (can_go_back)
+        {
+            back_button.sensitive = can_go_back;
+        };
+
+        this.set_can_go_forward = function (can_go_forward)
+        {
+            forward_button.sensitive = can_go_forward;
+        };
+
+        <span class="unchanged">// Implementation
+        back_button.signal.clicked.connect(back);
+        forward_button.signal.clicked.connect(forward);
+        refresh_button.signal.clicked.connect(refresh);
+        url_bar.signal.activate.connect(browse);
+
+        this.pack_start(back_button);
+        this.pack_start(forward_button);
+        this.pack_start(refresh_button);
+        this.pack_start(url_bar, true, true);</span>
+    }
+});
+</pre>
 <p>Now, fire up your browser! Hopefully, you'll see a nice blank WebKit view, like below. If you don't, take a peek at <a href="2.js">our version</a>.</p>
 <div style="text-align: center;"><img src="3.png" alt="GTK Window with toolbar and empty browser view" /></div>
 <p>That's really not a very interesting browser, at all - nothing works yet, and there's no way to navigate! Still, we're almost done.</p>
