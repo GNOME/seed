@@ -441,6 +441,7 @@ seed_gi_make_argument(JSContextRef ctx,
 																		   (GICallableInfo *) interface,
 																		   value);
 					arg->v_pointer = privates->closure;
+					g_base_info_unref(interface);
 					break;
 				}
 
