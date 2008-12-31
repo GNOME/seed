@@ -375,7 +375,7 @@ SeedNativeClosure *seed_make_native_closure(JSContextRef ctx,
 	cif = g_new0(ffi_cif, 1);
 
 	privates = g_new0(SeedNativeClosure, 1);
-	privates->info = info;
+	privates->info = (GICallableInfo *)g_base_info_ref((GIBaseInfo *)info);
 	privates->function = function;
 	privates->cif = cif;
 
