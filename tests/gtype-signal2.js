@@ -16,7 +16,7 @@ HelloWindowType = {
 	var HelloSignalDefinition = {name: "hello",
 				     parameters: [GObject.TYPE_INT,
 						  GObject.TYPE_STRING],
-				     return_type: Gtk.Window.type};
+				     return_type: GObject.TYPE_INT};
 	
 	hello_signal_id = klass.install_signal(HelloSignalDefinition);
 
@@ -28,7 +28,7 @@ w = new HelloWindow();
 
 w.signal.hello.connect(function(object, number, string)
 		       {Seed.print(number+ " " + string);
-			   return new Gtk.Window()});
+				   return 3;});
 
 Seed.print(w.signal.hello.emit(2, "Weathermen"));
 	  

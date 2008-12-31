@@ -50,7 +50,6 @@ static const GDebugKey seed_debug_keys[] = {
 };
 #endif							/* SEED_ENABLE_DEBUG */
 
-// TODO: JSON field initialization.
 static JSObjectRef
 seed_struct_constructor_invoked(JSContextRef ctx,
 								JSObjectRef constructor,
