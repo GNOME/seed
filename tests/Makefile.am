@@ -22,7 +22,6 @@ EXTRA_DIST = \
     signal-userdata.js \
     gtype-signal-exception.js \
     out-test.js \
-    gtype-signal2.js \
     signal-expects.js \
     gtype.js \
     json.js \
