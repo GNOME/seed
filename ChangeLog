@@ -1,4 +1,13 @@
-== Seed 0.3, The Freewheeling GObject (2008.12.31) ==
+== Seed 0.3, Wednesday Morning 3AM (2008.12.31) ==
+
+* Lots of memory changes. Memory usage isn't bad anymore, 
+  reference counting actually works (no big leaks or anything anymore
+  ...there are still a few very small ones you can trigger). 
+  Memory usage of most of the examples after they've loaded,
+  has about halved (or more in cases like the browser) since 0.1, 
+  and now compares very favorably to other
+  dynamic languages. Lots of g_slice_alloc, which comes off
+  quite nicely when creating bunches of small structs like ClutterColor.
 
 * Innumerable bug fixes.
 
@@ -9,7 +18,9 @@
 * GObject subclassing, which was rushed in to a 0.1 point release,
   is reliable now! signal installation too.
 
-* Character arrays
+* Multiple context support, rather than the silly global context.
+
+* Support for string array argument conversion.
 
 * C extension Modules
     * readline
@@ -44,12 +55,17 @@
 * Threading sort of works now. It's rather unpredictable,
   but async callbacks and stuff are fine.
 
-* Many more Seed examples. Ranging from Gnio Server, to threading.
+* Many more Seed examples. Ranging from Gnio Server, to threading. The
+  browser example is pretty neat now, and has sqlite bookmarks, WebInspector,
+  and a few other tidbits. lightsoff and browser are the two highlight examples
+  to play with.
 
 * Skeleton GTK-Doc for API 
 
 * New builtins: Seed.spawn, Seed.repl/glib_repl/thread_repl.
   Kind of useful for debugging. 
 
-* Removed builtins: Seed.prototype, Seed.closure,
-                    Seed.closure_native, Seed.readline
+* Removed builtins: Seed.prototype: Now use Gtk.Window.prototype 
+		    Seed.closure, Automatically handled now.
+                    Seed.closure_native, automagic.
+                    Seed.readline, moved in to module.
