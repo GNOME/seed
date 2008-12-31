@@ -19,7 +19,6 @@ lightsoff_DATA = \
 	lcd-front.svg \
 	score.js \
 	lcd-off.svg \
-	menu.js \
 	arrow-l.svg \
 	arrow-r.svg \
 	arrow.js
@@ -43,7 +42,6 @@ EXTRA_DIST = \
 	lcd-front.svg \
 	score.js \
 	lcd-off.svg \
-	menu.js \
 	arrow-l.svg \
 	arrow-r.svg \
 	arrow.js
