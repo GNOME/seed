@@ -15,15 +15,15 @@
     * readline
     * Multiprocessing -- Simple IPC pipes. Just an example, really.
     * sqlite
-    * canvas -- A little toy mostly functional but incomplete HTML Canvas
-                implementation. Maybe useful until we have cairo bindings.
+    * canvas -- A little, toy, mostly functional but incomplete HTML Canvas
+                implementation. May be useful until we have cairo bindings.
                 Supports SVG/PDF output.
 
 * Signals use userdata now. The 'this' argument was removed,
   as it really just lead to organizational issues.
 
 * object.signal.connect is defined for connecting by strings
-  (allows for connecting to notify signals or other details)
+  (allows for connecting to detailed signals, like property notifications)
 
 * 'out' arguments of methods work, granted in a rather poor fashion,
   not sure of the best way to do this yet.
