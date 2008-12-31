@@ -1262,9 +1262,8 @@ GOptionGroup *seed_get_option_group(void)
 {
 	GOptionGroup *group;
 
-	group = g_option_group_new("seed",
-							   "Seed Options", "Show Seed Options", NULL, NULL);
-
+	group = g_option_group_new("seed", "Seed Options",
+							   "Show Seed Options", NULL, NULL);
 	g_option_group_add_entries(group, seed_args);
 
 	return group;
@@ -1279,7 +1278,7 @@ static gboolean seed_parse_args(int *argc, char ***argv)
 
 	option_context = g_option_context_new(NULL);
 	g_option_context_set_ignore_unknown_options(option_context, TRUE);
-	g_option_context_set_help_enabled(option_context, FALSE);
+	g_option_context_set_help_enabled(option_context, TRUE);
 
 	/* Initiate any command line options from the backend */
 
