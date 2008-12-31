@@ -71,15 +71,10 @@ function oscillator(freq)
 	volscale.signal.value_changed.connect(update_vol);
 }
 
-function end_program()
-{
-	Gtk.main_quit();
-}
-
 var window = new Gtk.Window();
 var button = new Gtk.Button({label: "Add Oscillator"});
 
-window.signal.hide.connect(end_program);
+window.signal.hide.connect(function () { Gtk.main_quit(); });
 window.resize(600,300);
 var hbox = new Gtk.HBox();
 

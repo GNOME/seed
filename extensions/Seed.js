@@ -606,7 +606,27 @@ Seed.repl = function()
 {
 	try
 	{
-		item = Seed.readline("> ");
+		if(readline)
+		{
+			// readline is loaded
+		}
+	}
+	catch (e)
+	{
+		try
+		{
+			Seed.import_namespace("readline");
+		}
+		catch (e)
+		{
+			Seed.print(e.name + " " + e.message);
+			return true;
+		}
+	}
+	
+	try
+	{
+		item = readline.readline("> ");
 		if (item == "continue")
 			return false;
 		Seed.print(eval(item));
