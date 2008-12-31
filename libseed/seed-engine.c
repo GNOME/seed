@@ -364,7 +364,7 @@ seed_gobject_method_invoked(JSContextRef ctx,
 		{
 			GIBaseInfo *interface;
 			GIInfoType type;
-			gboolean sunk = TRUE;
+			gboolean sunk = FALSE;
 
 			if (tag == GI_TYPE_TAG_INTERFACE)
 			{
@@ -383,8 +383,9 @@ seed_gobject_method_invoked(JSContextRef ctx,
 				{
 					if (G_IS_OBJECT(retval.v_pointer))
 					{
-						sunk = g_object_is_floating(G_OBJECT(retval.v_pointer));
-						g_object_ref_sink(G_OBJECT(retval.v_pointer));
+						sunk = G_IS_INITIALLY_UNOWNED(G_OBJECT(retval.v_pointer));
+						if (sunk)
+							g_object_ref_sink(G_OBJECT(retval.v_pointer));
 					}
 				}
 
@@ -392,11 +393,12 @@ seed_gobject_method_invoked(JSContextRef ctx,
 			retval_ref =
 				seed_gi_argument_make_js(ctx, &retval, type_info, exception);
 
-			if (!sunk)
+			if (sunk)
 				g_object_unref(G_OBJECT(retval.v_pointer));
-
-			seed_gi_release_arg(g_callable_info_get_caller_owns
-								((GICallableInfo *) info), type_info, &retval);
+			else
+				seed_gi_release_arg(g_callable_info_get_caller_owns
+									((GICallableInfo *) info),
+									type_info, &retval);
 		}
 		g_base_info_unref((GIBaseInfo *) type_info);
 	}
