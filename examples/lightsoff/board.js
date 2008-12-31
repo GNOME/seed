@@ -114,8 +114,6 @@ function check_won (timeline, light)
 	}
 }
 
-Seed.import_namespace("GObject");
-
 function flip_region (act, evt, light)
 {
 	if(!in_setup && in_fade)
@@ -127,15 +125,17 @@ function flip_region (act, evt, light)
 	var fadeline = new Clutter.Timeline({num_frames: 20});
 	
 	light.flip(fadeline);
+	
+	var lights = light.get_parent().get_lights();
 
 	if(x + 1 < tiles)
-		light.get_parent().lights[x + 1][y].flip(fadeline);
+		lights[x + 1][y].flip(fadeline);
 	if(x - 1 >= 0)
-		light.get_parent().lights[x - 1][y].flip(fadeline);
+		lights[x - 1][y].flip(fadeline);
 	if(y + 1 < tiles)
-		light.get_parent().lights[x][y + 1].flip(fadeline);
+		lights[x][y + 1].flip(fadeline);
 	if(y - 1 >= 0)
-		light.get_parent().lights[x][y - 1].flip(fadeline);
+		lights[x][y - 1].flip(fadeline);
 	
 	fadeline.start();
 	in_fade = true;
@@ -145,21 +145,34 @@ function flip_region (act, evt, light)
 	return true;
 }
 
-BoardType = {
+Board = new GType({
 	parent: Clutter.Group.type,
 	name: "Board",
-	class_init: function(klass, prototype)
+	instance_init: function(klass)
 	{
-		prototype.cleared = function ()
+		// Global
+		animating_board = false;
+		in_fade = false;
+		
+		// Private
+		var lights = new Array();
+		
+		// Public
+		this.get_lights = function ()
 		{
-			for(x in this.lights)
-				for(y in this.lights[x])
-					if(this.lights[x][y].get_state())
+			return lights;
+		}
+		
+		this.cleared = function ()
+		{
+			for(x in lights)
+				for(y in lights[x])
+					if(lights[x][y].get_state())
 						return false;
 			return true;
 		}
 		
-		prototype.randomize = function ()
+		this.randomize = function ()
 		{
 			in_setup = true;
 			
@@ -167,52 +180,51 @@ BoardType = {
 			
 			do
 			{
-				var count = Math.floor(Math.log(score.get_value()*score.get_value()) + 1);
-				var sym = Math.floor(3*GLib.random_double());
+				var count = Math.floor(Math.log(score.get_value() *
+												score.get_value()) + 1);
+				var sym = Math.floor(3 * GLib.random_double());
 
 				for (q = 0; q < count; ++q)
 				{
-					i = Math.round((tiles-1) * GLib.random_double());
-					j = Math.round((tiles-1) * GLib.random_double());
+					i = Math.round((tiles - 1) * GLib.random_double());
+					j = Math.round((tiles - 1) * GLib.random_double());
 
-					flip_region(null, null, this.lights[i][j]);
+					flip_region(null, null, lights[i][j]);
+					
+					var x_sym_offset = Math.abs(i-(tiles-1));
+					var y_sym_offset = Math.abs(j-(tiles-1));
 
 					if(sym == 0)
-						flip_region(null, null, this.lights[Math.abs(i-(tiles-1))][j]);
+						flip_region(null, null, lights[x_sym_offset][j]);
 					else if(sym == 1)
 						flip_region(null, null,
-							this.lights[Math.abs(i-(tiles-1))][Math.abs(j-(tiles-1))]);
+									lights[x_sym_offset][y_sym_offset]);
 					else
-						flip_region(null, null, this.lights[i][Math.abs(j-(tiles-1))]);
+						flip_region(null, null, lights[i][y_sym_offset]);
 				}
 			}
 			while(this.cleared());
 
 			in_setup = false;
 		}
-	},
-	instance_init: function(klass)
-	{
-		animating_board = false;
-		in_fade = false;
-		
-		this.lights = new Array();
 
+		// Implementation
 		for(var x = 0; x < tiles; x++)
 		{
-			this.lights[x] = new Array();
+			lights[x] = new Array();
 			for(var y = 0; y < tiles; y++)
 			{
-				this.lights[x][y] = new Light();
-				this.lights[x][y].light_x = x;
-				this.lights[x][y].light_y = y;
-				this.lights[x][y].set_position(x * (tile_size+margin) + margin + tile_size/2,
-											   y * (tile_size+margin) + margin + tile_size/2);
-				this.add_actor(this.lights[x][y]);
+				var offset = margin + tile_size/2;
+				lights[x][y] = new Light();
+				lights[x][y].light_x = x;
+				lights[x][y].light_y = y;
+				lights[x][y].set_position(x * (tile_size+margin) + offset,
+										  y * (tile_size+margin) + offset);
+				this.add_actor(lights[x][y]);
 			}
 		}
 		
 		this.randomize();
-	}};
-
-Board = new GType(BoardType);
+	}
+});
+	

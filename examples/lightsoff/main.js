@@ -57,10 +57,12 @@ rect.set_position(0, board_size);
 rect.set_size(stage.width, stage.height);
 
 back.set_arrow_direction(0);
-back.set_position(score.x - back.width - 2*margin, score.y + (.5 * score.height) - (.5 * back.height));
+back.set_position(score.x - back.width - 2*margin,
+				  score.y + (.5 * score.height) - (.5 * back.height));
 
 forward.set_arrow_direction(1);
-forward.set_position(score.x + score.width + 2*margin, score.y + (.5 * score.height) - (.5 * forward.height));
+forward.set_position(score.x + score.width + 2*margin,
+					 score.y + (.5 * score.height) - (.5 * forward.height));
 
 stage.add_actor(board);
 stage.add_actor(rect);

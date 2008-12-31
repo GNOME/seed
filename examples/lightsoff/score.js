@@ -11,6 +11,7 @@ Score = new GType({
 	name: "Score",
 	instance_init: function(klass)
 	{
+		// Private
 		var value = 0;
 		var current_set = null;
 		
@@ -23,6 +24,7 @@ Score = new GType({
 		var off_svg = Clutter.Texture.new_from_file("./lcd-off.svg");
 		off_svg.filter_quality = Clutter.TextureQuality.High;
 		
+		// Public
 		this.get_value = function ()
 		{
 			return value;
@@ -59,6 +61,7 @@ Score = new GType({
 			bkg_top.raise_top();
 		};
 		
+		// Implementation
 		this.add_actor(bkg);
 		
 		for(var i = 0; i < 5; i++)
