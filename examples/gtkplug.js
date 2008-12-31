@@ -13,7 +13,7 @@ if (child_pid == 0)
 	
 	var pipe = pipes[0];
 
-	var id = parseInt(pipe.read());
+	var id = parseInt(pipe.read(), 10);
 
 	var l = new Gtk.Label({label: "Hello GtkPlug World"});
 	var s = Gtk.Plug._new(id);
@@ -24,7 +24,10 @@ if (child_pid == 0)
 }
 
 Gtk.init(null, null);
+
 var w = new Gtk.Window();
+w.signal.hide.connect(function () { Gtk.main_quit(); });
+
 var s = new Gtk.Socket();
 var pipe = pipes[1];
 

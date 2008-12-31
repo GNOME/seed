@@ -1,25 +1,33 @@
 #!/usr/bin/env seed
+
 Seed.import_namespace("Gtk");
+
 Gtk.init(null, null);
 
-label = new Gtk.Label({label: "Hi!"});
-button = new Gtk.Button({label: "Bye"});
-entry = new Gtk.Entry();
+var label = new Gtk.Label({label: "Hi!"});
+var button = new Gtk.Button({label: "Bye"});
+var entry = new Gtk.Entry();
 
-packing = [  
-	{child: label,
-	 fill: false,
-	 padding: 10,
-	 position: Gtk.PackType.End},
-	{child:button,
-	 fill: false,
-	 padding: 100,
-	 expand: true},
-	{child:entry}
+var packing = [
+	{
+		child: label,
+		fill: false,
+		padding: 10,
+		position: Gtk.PackType.End
+	},
+	{
+		child:button,
+		fill: false,
+		padding: 100,
+		expand: true
+	},
+	{
+		child:entry
+	}
 	];
 
 window = new Gtk.Window();
-window.signal.hide.connect(function () {Gtk.main_quit()});
+window.signal.hide.connect(function () { Gtk.main_quit(); });
 vbox = new Gtk.VBox();
 
 vbox.pack(packing);
