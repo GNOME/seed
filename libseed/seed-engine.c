@@ -1243,9 +1243,9 @@ seed_arg_no_debug_cb(const char *key, const char *value, gpointer user_data)
 static GOptionEntry seed_args[] = {
 #ifdef SEED_ENABLE_DEBUG
 	{"seed-debug", 0, 0, G_OPTION_ARG_CALLBACK, seed_arg_debug_cb,
-	 "Seed debugging flags to set", "FLAGS"},
+	 "Seed debugging messages to show. Comma separated list of: all, misc, finalization, initialization, construction, invocation, signal, structs, gtype.", "FLAGS"},
 	{"seed-no-debug", 0, 0, G_OPTION_ARG_CALLBACK, seed_arg_no_debug_cb,
-	 "Seed debugging flags to unset", "FLAGS"},
+	 "Disable Seed debugging", "FLAGS"},
 #endif							/* SEED_ENABLE_DEBUG */
 	{NULL,},
 };
