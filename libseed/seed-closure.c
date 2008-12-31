@@ -378,8 +378,13 @@ SeedNativeClosure *seed_make_native_closure(JSContextRef ctx,
 
 	for (i = 0; i < num_args; i++)
 	{
+		GITypeInfo * type;
+		
 		arg_info = g_callable_info_get_arg(info, i);
-		arg_types[i] = get_ffi_type(g_arg_info_get_type(arg_info));
+		type = g_arg_info_get_type(arg_info);
+		arg_types[i] = get_ffi_type(type);
+		g_base_info_unref((GIBaseInfo *)arg_info);
+		g_base_info_unref((GIBaseInfo *)type);
 	}
 	arg_types[num_args] = 0;
 
@@ -396,6 +401,8 @@ SeedNativeClosure *seed_make_native_closure(JSContextRef ctx,
 							 (JSValueRef) JSObjectMake(ctx,
 													   seed_native_callback_class,
 													   privates));
+	
+	g_base_info_unref((GIBaseInfo *)return_type);
 
 	return privates;
 }
