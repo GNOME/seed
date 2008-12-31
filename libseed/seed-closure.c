@@ -207,6 +207,7 @@ seed_handle_closure(ffi_cif * cif, void *result, void **args, void *userdata)
 					interface_type == GI_INFO_TYPE_INTERFACE)
 				{
 					arg->v_pointer = *(gpointer *) args[i];
+					g_base_info_unref(interface);
 					break;
 				}
 
@@ -214,11 +215,13 @@ seed_handle_closure(ffi_cif * cif, void *result, void **args, void *userdata)
 						 interface_type == GI_INFO_TYPE_FLAGS)
 				{
 					arg->v_double = *(double *)args[i];
+					g_base_info_unref(interface);
 					break;
 				}
 				else if (interface_type == GI_INFO_TYPE_STRUCT)
 				{
 					arg->v_pointer = *(gpointer *) args[i];
+					g_base_info_unref(interface);
 					break;
 				}
 

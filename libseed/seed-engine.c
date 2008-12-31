@@ -1225,6 +1225,8 @@ seed_log_handler(const gchar * domain,
 				 GLogLevelFlags log_level,
 				 const gchar * message, gpointer user_data)
 {
+	if (glib_message)
+		g_free(glib_message);
 	glib_message = g_strdup(message);
 }
 
