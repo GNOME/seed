@@ -48,12 +48,14 @@ Score = new GType({
 					texture = null;
 			
 				var num = new Clutter.CloneTexture({parent_texture:texture});
+				num.show();
 				num.set_position(num_margin + num_offset * i, 5);
 				num.set_size(num_width, num_height);
 				current_set.add_actor(num);
 			}
 			
 			this.add_actor(current_set);
+			current_set.show();
 			
 			if(old_set)
 				old_set.destroy();
@@ -63,6 +65,7 @@ Score = new GType({
 		
 		// Implementation
 		this.add_actor(bkg);
+		bkg.show();
 		
 		for(var i = 0; i < 5; i++)
 		{
@@ -70,6 +73,7 @@ Score = new GType({
 			off_i.set_position(num_margin + num_offset * i, 5);
 			off_i.set_size(num_width, num_height);
 			this.add_actor(off_i);
+			off_i.show();
 		}
 		
 		for(var i = 0; i <= 9; i++)
@@ -80,6 +84,7 @@ Score = new GType({
 		
 		bkg_top.set_position(1, 1);
 		this.add_actor(bkg_top);
+		bkg_top.show();
 
 		this.set_value(initial_score);
 		

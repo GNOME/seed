@@ -16,8 +16,8 @@ Arrow = new GType({
 				bkg = Clutter.Texture.new_from_file("./arrow-l.svg");
 			
 			bkg.filter_quality = Clutter.TextureQuality.High;
-			
 			this.add_actor(bkg);
+			bkg.show();
 		}
 		
 		var toggle_arrow = function (actor, event)
