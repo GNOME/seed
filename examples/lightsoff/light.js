@@ -15,16 +15,33 @@ on_svg.filter_quality = off_svg.filter_quality = Clutter.TextureQuality.High;
 Light = new GType({
 	parent: Clutter.Group.type,
 	name: "Light",
-	class_init: function(klass, prototype)
+	instance_init: function(klass)
 	{
-		prototype.flip = function (fadeline)
+		// Private
+		var state = false;
+		
+		// Public
+		this.scale_x = this.scale_y = .9;
+		
+		this.on = new Clutter.CloneTexture({parent_texture: on_svg,
+											reactive: true});
+		this.off = new Clutter.CloneTexture({parent_texture: off_svg, 
+											 reactive: true});
+		
+		this.get_state = function ()
 		{
-			this.state = !this.state;
-			var new_scale = this.state ? 1 : .9;
+			return state;
+		}
+		
+		this.flip = function (fadeline)
+		{
+			state = !state;
+			
+			var new_scale = state ? 1 : .9;
 			
 			if(in_setup)
 			{
-				this.on.opacity = this.state * 255;
+				this.on.opacity = state * 255;
 				this.scale_x = this.scale_y = new_scale;
 				
 				return true;
@@ -33,23 +50,13 @@ Light = new GType({
 			var effect = Clutter.EffectTemplate._new(fadeline,
 													 Clutter.sine_inc_func);
 			
-			Clutter.effect_fade(effect, this.on, this.state * 255);
+			Clutter.effect_fade(effect, this.on, state * 255);
 			Clutter.effect_scale(effect, this, new_scale, new_scale);
 
 			return true;
 		}
-	},
-	instance_init: function(klass)
-	{
-		this.state = false;
 		
-		this.scale_x = this.scale_y = .9;
-		
-		this.on = new Clutter.CloneTexture({parent_texture: on_svg,
-											reactive: true});
-		this.off = new Clutter.CloneTexture({parent_texture: off_svg, 
-											 reactive: true});
-		
+		// Implementation
 		this.on.set_size(tile_size, tile_size);
 		this.off.set_size(tile_size, tile_size);
 		

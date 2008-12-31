@@ -41,7 +41,7 @@ var black = Clutter.Color._new();
 Clutter.color_parse("Black", black);
 
 var stage = new Clutter.Stage();
-stage.signal.hide.connect(function(){Clutter.main_quit()});
+stage.signal.hide.connect(function () { Clutter.main_quit(); });
 stage.color = black;
 
 score = new Score();
@@ -63,7 +63,7 @@ forward.set_arrow_direction(1);
 forward.set_position(score.x + score.width + 2*margin, score.y + (.5 * score.height) - (.5 * forward.height));
 
 stage.add_actor(board);
-stage.add_actor(rect); // TODO: gradient at top of rect
+stage.add_actor(rect);
 stage.add_actor(score);
 stage.add_actor(forward);
 stage.add_actor(back);

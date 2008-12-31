@@ -27,15 +27,15 @@ Arrow = new GType({
 	
 			var direction = (flipped ? 1 : -1);
 	
-			if(score.value + direction < 1)
+			if(score.get_value() + direction < 1)
 				return true;
 	
-			score.set_value(score.value + direction);
+			score.set_value(score.get_value() + direction);
 			swap_animation(direction);
 
 			try
 			{
-				gconf_client.set_int("/apps/lightsoff/score", score.value);
+				gconf_client.set_int("/apps/lightsoff/score", score.get_value());
 			}
 			catch(e)
 			{

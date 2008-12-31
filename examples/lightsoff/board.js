@@ -99,11 +99,11 @@ function check_won (timeline, light)
 	
 	if(light.get_parent().cleared() && !in_setup)
 	{
-		score.set_value(score.value+1);
+		score.set_value(score.get_value()+1);
 
 		try
 		{
-			gconf_client.set_int("/apps/lightsoff/score", score.value);
+			gconf_client.set_int("/apps/lightsoff/score", score.get_value());
 		}
 		catch(e)
 		{
@@ -127,7 +127,7 @@ function flip_region (act, evt, light)
 	var fadeline = new Clutter.Timeline({num_frames: 20});
 	
 	light.flip(fadeline);
-	
+
 	if(x + 1 < tiles)
 		light.get_parent().lights[x + 1][y].flip(fadeline);
 	if(x - 1 >= 0)
@@ -154,7 +154,7 @@ BoardType = {
 		{
 			for(x in this.lights)
 				for(y in this.lights[x])
-					if(this.lights[x][y].state)
+					if(this.lights[x][y].get_state())
 						return false;
 			return true;
 		}
@@ -163,11 +163,11 @@ BoardType = {
 		{
 			in_setup = true;
 			
-			GLib.random_set_seed(score.value);
+			GLib.random_set_seed(score.get_value());
 			
 			do
 			{
-				var count = Math.floor(Math.log(score.value*score.value) + 1);
+				var count = Math.floor(Math.log(score.get_value()*score.get_value()) + 1);
 				var sym = Math.floor(3*GLib.random_double());
 
 				for (q = 0; q < count; ++q)
