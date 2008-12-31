@@ -96,7 +96,9 @@ static void seed_gobject_signal_connect(JSContextRef ctx,
 	closure = g_closure_new_simple(sizeof(SeedClosure), 0);
 	g_closure_set_marshal(closure, seed_signal_marshal_func);
 
+	JSValueProtect(ctx, func);
 	((SeedClosure *) closure)->function = func;
+
 	//((SeedClosure *) closure)->object = on_obj;
 	((SeedClosure *) closure)->return_type = query.return_type;
 
