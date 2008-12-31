@@ -33,7 +33,7 @@ static void seed_signal_finalize(JSObjectRef object)
 {
 	signal_privates *sig_priv = JSObjectGetPrivate(object);
 
-	g_free(sig_priv);
+	g_slice_free1(sizeof(signal_privates), sig_priv);
 }
 
 static void
@@ -42,7 +42,7 @@ seed_add_signal_to_object(JSContextRef ctx, JSObjectRef object_ref,
 {
 	guint k;
 	JSObjectRef signal_ref;
-	signal_privates *priv = g_malloc(sizeof(signal_privates));
+	signal_privates *priv = g_slice_alloc(sizeof(signal_privates));
 	gchar *js_signal_name = g_strdup(signal->signal_name);
 	g_assert(signal);
 

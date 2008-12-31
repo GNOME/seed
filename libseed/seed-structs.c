@@ -29,6 +29,8 @@ typedef struct _seed_struct_privates {
 	GIBaseInfo *info;
 
 	gboolean free_pointer;
+	gboolean slice_alloc;
+	gsize size;
 } seed_struct_privates;
 
 static void seed_pointer_finalize(JSObjectRef object)
@@ -43,11 +45,16 @@ static void seed_pointer_finalize(JSObjectRef object)
 			  priv->info ? g_base_info_get_name(priv->info) : "[generic]");
 
 	if (priv->free_pointer)
-		g_free(priv->pointer);
+	{
+		if (priv->slice_alloc)
+			g_slice_free1(priv->size, priv);
+		else
+			g_free(priv->pointer);
+	}
 	if (priv->info)
 		g_base_info_unref(priv->info);
 
-	g_free(priv);
+	g_slice_free1(sizeof(seed_struct_privates), priv);
 }
 
 static void seed_boxed_finalize(JSObjectRef object)
@@ -173,7 +180,7 @@ seed_union_get_property(JSContextRef context,
 	JSValueRef ret;
 
 	length = JSStringGetMaximumUTF8CStringSize(property_name);
-	cproperty_name = g_malloc(length * sizeof(gchar));
+	cproperty_name = g_alloca(length * sizeof(gchar));
 	JSStringGetUTF8CString(property_name, cproperty_name, length);
 
 	SEED_NOTE(STRUCTS, "Getting property on union of type: %s  "
@@ -183,15 +190,12 @@ seed_union_get_property(JSContextRef context,
 	field = seed_union_find_field((GIUnionInfo *) priv->info, cproperty_name);
 	if (!field)
 	{
-		g_free(cproperty_name);
 		return 0;
 	}
 
 	ret = seed_field_get_value(context, priv->pointer, field, exception);
 
 	g_base_info_unref((GIBaseInfo *) field);
-
-	g_free(cproperty_name);
 
 	return ret;
 }
@@ -212,7 +216,7 @@ seed_struct_set_property(JSContextRef context,
 	gboolean ret;
 
 	length = JSStringGetMaximumUTF8CStringSize(property_name);
-	cproperty_name = g_malloc(length * sizeof(gchar));
+	cproperty_name = g_alloca(length * sizeof(gchar));
 	JSStringGetUTF8CString(property_name, cproperty_name, length);
 
 	SEED_NOTE(STRUCTS, "Setting property on struct of type: %s  "
@@ -223,7 +227,6 @@ seed_struct_set_property(JSContextRef context,
 
 	if (!field)
 	{
-		g_free(cproperty_name);
 		return 0;
 	}
 
@@ -232,7 +235,6 @@ seed_struct_set_property(JSContextRef context,
 	seed_gi_make_argument(context, value, field_type, &field_value, exception);
 	ret = g_field_info_set_field(field, priv->pointer, &field_value);
 
-	g_free(cproperty_name);
 	g_base_info_unref((GIBaseInfo *) field_type);
 	g_base_info_unref((GIBaseInfo *) field);
 }
@@ -253,7 +255,7 @@ seed_struct_get_property(JSContextRef context,
 	JSValueRef ret;
 
 	length = JSStringGetMaximumUTF8CStringSize(property_name);
-	cproperty_name = g_malloc(length * sizeof(gchar));
+	cproperty_name = g_alloca(length * sizeof(gchar));
 	JSStringGetUTF8CString(property_name, cproperty_name, length);
 
 	SEED_NOTE(STRUCTS, "Getting property on struct of type: %s  "
@@ -264,14 +266,12 @@ seed_struct_get_property(JSContextRef context,
 
 	if (!field)
 	{
-		g_free(cproperty_name);
 		return 0;
 	}
 
 	ret = seed_field_get_value(context, priv->pointer, field, exception);
 
 	g_base_info_unref((GIBaseInfo *) field);
-	g_free(cproperty_name);
 
 	return ret;
 }
@@ -422,9 +422,16 @@ void seed_pointer_set_free(JSContextRef ctx,
 	}
 }
 
+static void seed_pointer_set_slice(JSContextRef ctx,
+						   JSValueRef pointer, gboolean free_pointer)
+{
+	seed_struct_privates *priv = JSObjectGetPrivate((JSObjectRef) pointer);
+	priv->slice_alloc = free_pointer;
+}
+
 JSObjectRef seed_make_pointer(JSContextRef ctx, gpointer pointer)
 {
-	seed_struct_privates *priv = g_malloc(sizeof(seed_struct_privates));
+	seed_struct_privates *priv = g_slice_alloc(sizeof(seed_struct_privates));
 	priv->pointer = pointer;
 	priv->info = 0;
 	priv->free_pointer = FALSE;
@@ -437,7 +444,7 @@ JSObjectRef seed_make_union(JSContextRef ctx, gpointer younion,
 {
 	JSObjectRef object;
 	gint i, n_methods;
-	seed_struct_privates *priv = g_malloc(sizeof(seed_struct_privates));
+	seed_struct_privates *priv = g_slice_alloc(sizeof(seed_struct_privates));
 
 	priv->pointer = younion;
 	priv->info = info ? g_base_info_ref(info) : 0;
@@ -470,7 +477,7 @@ JSObjectRef seed_make_boxed(JSContextRef ctx, gpointer boxed, GIBaseInfo * info)
 {
 	JSObjectRef object;
 	gint i, n_methods;
-	seed_struct_privates *priv = g_malloc(sizeof(seed_struct_privates));
+	seed_struct_privates *priv = g_slice_alloc(sizeof(seed_struct_privates));
 
 	priv->info = info ? g_base_info_ref(info) : 0;
 	priv->pointer = boxed;
@@ -489,7 +496,7 @@ JSObjectRef seed_make_struct(JSContextRef ctx,
 {
 	JSObjectRef object;
 	gint i, n_methods;
-	seed_struct_privates *priv = g_malloc(sizeof(seed_struct_privates));
+	seed_struct_privates *priv = g_slice_alloc(sizeof(seed_struct_privates));
 
 	priv->info = info ? g_base_info_ref(info) : 0;
 	priv->pointer = strukt;
@@ -559,14 +566,15 @@ seed_construct_struct_type_with_parameters(JSContextRef ctx,
 		size = g_union_info_get_size((GIUnionInfo *) info);
 	}
 	g_assert(size);
-	object = g_malloc0(size);
-
+	object = g_slice_alloc0(size);
+	
 	if (type == GI_INFO_TYPE_STRUCT)
 		ret = seed_make_struct(ctx, object, info);
 	else
 		ret = seed_make_union(ctx, object, info);
 
 	seed_pointer_set_free(ctx, ret, TRUE);
+	seed_pointer_set_slice(ctx, ret, TRUE);
 
 	if (!parameters)
 		return ret;
@@ -580,7 +588,7 @@ seed_construct_struct_type_with_parameters(JSContextRef ctx,
 		jsprop_name = JSPropertyNameArrayGetNameAtIndex(jsprops, i);
 
 		length = JSStringGetMaximumUTF8CStringSize(jsprop_name);
-		prop_name = g_malloc(length * sizeof(gchar));
+		prop_name = g_alloca(length * sizeof(gchar));
 		JSStringGetUTF8CString(jsprop_name, prop_name, length);
 
 		if (type == GI_INFO_TYPE_STRUCT)

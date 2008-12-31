@@ -138,7 +138,7 @@ seed_gobject_constructor_invoked(JSContextRef ctx,
 		jsprop_name = JSPropertyNameArrayGetNameAtIndex(jsprops, i);
 
 		length = JSStringGetMaximumUTF8CStringSize(jsprop_name);
-		prop_name = g_malloc(length * sizeof(gchar));
+		prop_name = g_alloca(length * sizeof(gchar));
 		JSStringGetUTF8CString(jsprop_name, prop_name, length);
 
 		param_spec = g_object_class_find_property(oclass, prop_name);
@@ -170,8 +170,6 @@ seed_gobject_constructor_invoked(JSContextRef ctx,
 
 		if (*exception)
 		{
-
-			g_free(prop_name);
 			g_free(params);
 			JSPropertyNameArrayRelease(jsprops);
 			return 0;
@@ -197,7 +195,6 @@ seed_gobject_constructor_invoked(JSContextRef ctx,
 	for (i = 0; i < nparams; i++)
 	{
 		g_value_unset(&params[i].value);
-		g_free((gchar *) params[i].name);
 	}
 
 	if (G_IS_INITIALLY_UNOWNED(gobject))
@@ -679,7 +676,7 @@ seed_gobject_get_property(JSContextRef context,
 		return 0;
 
 	length = JSStringGetMaximumUTF8CStringSize(property_name);
-	cproperty_name = g_malloc(length * sizeof(gchar));
+	cproperty_name = g_alloca(length * sizeof(gchar));
 	JSStringGetUTF8CString(property_name, cproperty_name, length);
 
 	spec = g_object_class_find_property(G_OBJECT_GET_CLASS(b), cproperty_name);
@@ -713,7 +710,6 @@ seed_gobject_get_property(JSContextRef context,
 
 			if (!info)
 			{
-				g_free(cproperty_name);
 				return 0;
 			}
 
@@ -736,12 +732,10 @@ seed_gobject_get_property(JSContextRef context,
 			{
 				ret = seed_field_get_value(context, b, field, exception);
 				g_base_info_unref((GIBaseInfo *) info);
-				g_free(cproperty_name);
 				return ret;
 			}
 			g_base_info_unref((GIBaseInfo *) info);
 		}
-		g_free(cproperty_name);
 		return 0;
 	}
  found:
@@ -751,7 +745,6 @@ seed_gobject_get_property(JSContextRef context,
 	ret = seed_value_from_gvalue(context, &gval, exception);
 	g_value_unset(&gval);
 
-	g_free(cproperty_name);
 	return (JSValueRef) ret;
 }
 
@@ -774,7 +767,7 @@ seed_gobject_set_property(JSContextRef context,
 	obj = seed_value_to_object(context, object, 0);
 
 	length = JSStringGetMaximumUTF8CStringSize(property_name);
-	cproperty_name = g_malloc(length * sizeof(gchar));
+	cproperty_name = g_alloca(length * sizeof(gchar));
 	JSStringGetUTF8CString(property_name, cproperty_name, length);
 
 	spec = g_object_class_find_property(G_OBJECT_GET_CLASS(obj),
@@ -793,7 +786,6 @@ seed_gobject_set_property(JSContextRef context,
 											cproperty_name);
 		if (!spec)
 		{
-			g_free(cproperty_name);
 			return 0;
 		}
 	}
@@ -806,7 +798,6 @@ seed_gobject_set_property(JSContextRef context,
 	seed_gvalue_from_seed_value(context, value, type, &gval, exception);
 	if (*exception)
 	{
-		g_free(cproperty_name);
 		return 0;
 	}
 
@@ -823,7 +814,6 @@ seed_gobject_set_property(JSContextRef context,
 		return FALSE;
 	}
 
-	g_free(cproperty_name);
 	g_value_unset(&gval);
 
 	return TRUE;
