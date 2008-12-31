@@ -3,47 +3,46 @@ Seed.import_namespace("Clutter");
 
 Clutter.init(null, null);
 
-colors = [ "blanched almond", 
-	   "OldLace", 
-	   "MistyRose", 
-	   "White", 
-	   "LavenderBlush",
-	   "CornflowerBlue",
-	   "chartreuse",
-	   "chocolate",
-	   "light coral",
-	   "medium violet red",
-	   "LemonChiffon2",
-	   "RosyBrown3"];
+colors = [	"blanched almond", 
+			"OldLace", 
+			"MistyRose", 
+			"White", 
+			"LavenderBlush",
+			"CornflowerBlue",
+			"chartreuse",
+			"chocolate",
+			"light coral",
+			"medium violet red",
+			"LemonChiffon2",
+			"RosyBrown3"];
 
 function alpha_func(alpha)
 {
-    try
-    {
-	    timeline = alpha.get_timeline();
-	    frame = timeline.get_current_frame();
-	    n_frames = timeline.num_frames;
-	    fps = timeline.fps;
-	    duration = n_frames/fps;
-	    time = frame/fps;
-	    
-	    if ((time/=duration) < (1/2.75))
-		return Clutter.ALPHA_MAX_ALPHA*(7.5625*time*time);
-	    else if (time < (2/2.75))
-		return Clutter.ALPHA_MAX_ALPHA*(7.5625 * 
-						(time-=(1.5/2.75))*time+.75);
-	    else if (time < (2.5/2.75))
-		return Clutter.ALPHA_MAX_ALPHA*(7.5625 *
-						(time-=(2.25/2.75))*time+.9375);
-	    else
-		return Clutter.ALPHA_MAX_ALPHA*(7.5625 * (time-=
-							  (2.625/2.75))*time+.984375);
-	    
-    }
-    catch (e)
-    {
-	    Seed.print(e.message);
-    }
+	try
+	{
+		var timeline = alpha.get_timeline();
+		var frame = timeline.get_current_frame();
+		var n_frames = timeline.num_frames;
+		var fps = timeline.fps;
+		var duration = n_frames/fps;
+		var time = frame/fps;
+	
+		if ((time/=duration) < (1/2.75))
+			return Clutter.ALPHA_MAX_ALPHA*(7.5625*time*time);
+		else if (time < (2/2.75))
+			return Clutter.ALPHA_MAX_ALPHA*(7.5625 * 
+							(time-=(1.5/2.75))*time+.75);
+		else if (time < (2.5/2.75))
+			return Clutter.ALPHA_MAX_ALPHA*(7.5625 *
+							(time-=(2.25/2.75))*time+.9375);
+		else
+			return Clutter.ALPHA_MAX_ALPHA*(7.5625 *
+							(time-=(2.625/2.75))*time+.984375);
+	}
+	catch (e)
+	{
+		Seed.print(e.message);
+	}
 }
 
 var stage = new Clutter.Stage();
@@ -85,7 +84,7 @@ timeline.signal.new_frame.connect(
 	{
 		for (var i = 0; i < colors.length; i++)
 		{
-			rectangles[i].x += width/600;
+			rectangles[i].x += width / 600;
 			rectangles[i].rotation_angle_z += 1;
 		}
 	});
@@ -94,34 +93,32 @@ timeline.signal.completed.connect(
 	{
 		
 		var text = new Clutter.Label({text:"Congratulations!",
-					  font_name:"Bitstream Vera Sans 40"});
+									  font_name:"Bitstream Vera Sans 40"});
 		var fadeline = new Clutter.Timeline({fps:60, num_frames:200});
-		var effect = Clutter.EffectTemplate._new(timeline,
-							 alpha_func);
+		var effect = Clutter.EffectTemplate._new(timeline, alpha_func);
 		
 		text.show();
 		stage.add_actor(text);
 		text.color = white;
 		
-		text.anchor_x = text.width/2;
-		text.anchor_y = text.height/2;
+		text.anchor_x = text.width / 2;
+		text.anchor_y = text.height / 2;
 		
-		text.x = stage.width/2;
+		text.x = stage.width / 2;
 
 		text.y = -text.height;
 		Clutter.effect_move(effect,
-				    text,
-				    text.x,
-				    stage.height/2);
+							text,
+							text.x,
+							stage.height / 2);
 		
 		for (i in rectangles)
 		{
-        	        Clutter.effect_fade(effect, rectangles[i],
-					0);
+			Clutter.effect_fade(effect, rectangles[i], 0);
 			Clutter.effect_move(effect, rectangles[i], 
-					    Math.random()*stage.width,
-					    Math.random()*stage.height/2 + 
-					    stage.height/2);
+								Math.random() * stage.width,
+								Math.random() * stage.height / 2 + 
+								stage.height / 2);
 		}
 	});
 
