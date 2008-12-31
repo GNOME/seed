@@ -81,6 +81,21 @@ seed_add_signals_for_type(JSContextRef ctx,
 	g_free(signal_ids);
 }
 
+static void closure_invalidated(gpointer data, GClosure * c)
+{
+	JSContextRef ctx = JSGlobalContextCreateInGroup(context_group,
+													0);
+	SeedClosure * closure = (SeedClosure *) c;
+	
+	SEED_NOTE(FINALIZATION, "Finalizing closure.");
+
+	JSValueUnprotect(ctx, closure->user_data);
+	JSValueUnprotect(ctx, closure->this);
+	JSValueUnprotect(ctx, closure->function);
+
+	JSGlobalContextRelease((JSGlobalContextRef)ctx);
+}
+
 static void seed_gobject_signal_connect(JSContextRef ctx,
 										const gchar * signal_name,
 										GObject * on_obj,
@@ -94,6 +109,7 @@ static void seed_gobject_signal_connect(JSContextRef ctx,
 	g_signal_query(g_signal_lookup(signal_name, G_OBJECT_TYPE(on_obj)), &query);
 
 	closure = g_closure_new_simple(sizeof(SeedClosure), 0);
+	g_closure_add_finalize_notifier(closure, 0, closure_invalidated);
 	g_closure_set_marshal(closure, seed_signal_marshal_func);
 
 	JSValueProtect(ctx, func);
@@ -104,7 +120,7 @@ static void seed_gobject_signal_connect(JSContextRef ctx,
 
 	if (this_obj && !JSValueIsNull(ctx, this_obj))
 	{
-//      JSValueProtect(ctx, this_obj);
+		JSValueProtect(ctx, this_obj);
 		((SeedClosure *) closure)->this = this_obj;
 	}
 	else
@@ -115,7 +131,7 @@ static void seed_gobject_signal_connect(JSContextRef ctx,
 	if (user_data && !JSValueIsNull(ctx, user_data))
 	{
 		((SeedClosure *) closure)->user_data = user_data;
-//      JSValueProtect(ctx, user_data);
+		JSValueProtect(ctx, user_data);
 	}
 
 	JSValueProtect(ctx, (JSObjectRef) func);
