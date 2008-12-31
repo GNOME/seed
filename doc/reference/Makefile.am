@@ -75,7 +75,7 @@ include $(top_srcdir)/gtk-doc.make
 
 # Other files to distribute
 # e.g. EXTRA_DIST += version.xml.in
-EXTRA_DIST +=
+EXTRA_DIST += seed-docs.sgml seed-sections.txt seed.types
 
 # Files not to distribute
 # for --rebuild-types in $(SCAN_OPTIONS), e.g. $(DOC_MODULE).types
@@ -84,4 +84,3 @@ EXTRA_DIST +=
 
 # Comment this out if you want your docs-status tested during 'make check'
 #TESTS = $(GTKDOC_CHECK)
-
