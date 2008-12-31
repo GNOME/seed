@@ -1,2 +1,55 @@
+== Seed 0.3, The Freewheeling GObject (2008.12.31) ==
 
+* Innumerable bug fixes.
 
+* Structs work now! Things like GdkRectangle, you can allocate them,
+  get at their members, all sorts of great things.
+    * Including struct "literals, i.e." stage.set_color({red: 255, alpha: 220}).
+
+* GObject subclassing, which was pushed in to a 0.1 point release,
+  is reliable now! signal installation too.
+
+* Character arrays
+
+* C extension Modules
+    * readline
+    * Multiprocessing -- Simple IPC pipes. Just an example, really.
+    * sqlite
+    * canvas -- A little toy mostly functional but incomplete HTML Canvas
+                implementation. Maybe useful until we have cairo bindings.
+                Supports SVG/PDF output.
+
+* Signals use userdata now. The 'this' argument was removed,
+  as it really just lead to organizational issues.
+
+* object.signal.connect is defined for connecting by strings
+  (allows for connecting to notify signals or other details)
+
+* 'out' arguments of methods work, granted in a rather poor fashion,
+  not sure of the best way to do this yet.
+
+* Enums use Gtk.WindowType.Normal instead of Gtk.WindowType.normal,
+  may break existing code in subtle ways (as Gtk.WindowType.normal
+  will now be JavaScript null).
+
+* Licensing update - libseed is LGPL. The trivial examples are BSD,
+  the more complete ones are GPL.
+
+* Lots of leaks fixed, and also some reference bugs that lead to crashing.
+
+* External API is pretty usable now.
+
+* External API example (Turtle Graphics)
+
+* Threading sort of works now. It's rather unpredictable,
+  but async callbacks and stuff are fine.
+
+* Many more Seed examples. Ranging from Gnio Server, to threading.
+
+* Skeleton GTK-Doc for API 
+
+* New builtins: Seed.spawn, Seed.repl/glib_repl/thread_repl.
+  Kind of useful for debugging. 
+
+* Removed builtins: Seed.prototype, Seed.closure,
+                    Seed.closure_native, Seed.readline
