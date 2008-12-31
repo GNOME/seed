@@ -8,9 +8,7 @@ Arrow = new GType({
 		this.set_arrow_direction = function (dir)
 		{
 			var bkg;
-			
 			flipped = dir;
-			this.remove_all();
 
 			if(dir)
 				bkg = Clutter.Texture.new_from_file("./arrow-r.svg");
