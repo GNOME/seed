@@ -2,11 +2,11 @@
 
 * Innumerable bug fixes.
 
-* Structs work now! Things like GdkRectangle, you can allocate them,
-  get at their members, all sorts of great things.
+* Structs work now! Things like GdkRectangle: you can allocate them,
+  get at their members, etc.
     * Including struct "literals, i.e." stage.set_color({red: 255, alpha: 220}).
 
-* GObject subclassing, which was pushed in to a 0.1 point release,
+* GObject subclassing, which was rushed in to a 0.1 point release,
   is reliable now! signal installation too.
 
 * Character arrays
