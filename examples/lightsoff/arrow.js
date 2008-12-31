@@ -1,59 +1,54 @@
-function pushed_arrow(actor, event)
-{
-	if(animating_board)
-		return true;
+Arrow = new GType({
+	parent: Clutter.Group.type,
+	name: "Arrow",
+	instance_init: function(klass)
+	{
+		var flipped = 0;
 		
-	// TODO: Need to check that click count is 1
-	var direction = (actor.flipped ? 1 : -1);
-	
-	if(score.value + direction < 1)
-		return true;
-	
-	score.set_value(score.value + direction);
-	swap_animation(direction);
-
-	try
-	{
-		gconf_client.set_int("/apps/lightsoff/score", score.value);
-	}
-	catch(e)
-	{
-		Seed.print("Couldn't save score to GConf.");
-	}
-	
-	return true;
-}
-
-ArrowType = {
-    parent: Clutter.Group.type,
-    name: "Arrow",
-    class_init: function(klass, prototype)
-    {
-    	prototype.set_arrow_direction = function (dir)
-    	{
-    		this.flipped = dir;
-    		this.remove_all();
+		this.set_arrow_direction = function (dir)
+		{
+			var bkg;
+			
+			flipped = dir;
+			this.remove_all();
 
 			if(dir)
-			{
-    		    var bkg = Clutter.Texture.new_from_file("./arrow-r.svg");
-			    bkg.filter_quality = Clutter.TextureQuality.High;
-			}
+				bkg = Clutter.Texture.new_from_file("./arrow-r.svg");
 			else
-			{
-				var bkg = Clutter.Texture.new_from_file("./arrow-l.svg");
-				bkg.filter_quality = Clutter.TextureQuality.High;
-			}
+				bkg = Clutter.Texture.new_from_file("./arrow-l.svg");
+			
+			bkg.filter_quality = Clutter.TextureQuality.High;
+			
 			this.add_actor(bkg);
-    	}
-    },
-    instance_init: function(klass)
-    {
-    	this.flipped = 0;
-    	
-		this.reactive = true;
-		this.signal.button_press_event.connect(pushed_arrow);
-    }};
+		}
+		
+		var toggle_arrow = function (actor, event)
+		{
+			if(animating_board)
+				return true;
+	
+			var direction = (flipped ? 1 : -1);
+	
+			if(score.value + direction < 1)
+				return true;
+	
+			score.set_value(score.value + direction);
+			swap_animation(direction);
 
-Arrow = new GType(ArrowType);
+			try
+			{
+				gconf_client.set_int("/apps/lightsoff/score", score.value);
+			}
+			catch(e)
+			{
+				Seed.print("Couldn't save score to GConf.");
+			}
+	
+			return true;
+		}
+
+		this.reactive = true;
+		this.signal.button_press_event.connect(toggle_arrow);
+	}
+});
 

@@ -10,10 +10,10 @@ on_svg.filter_quality = Clutter.TextureQuality.High;
 off_svg.filter_quality = Clutter.TextureQuality.High;
 
 LightType = {
-    parent: Clutter.Group.type,
-    name: "Light",
-    class_init: function(klass, prototype)
-    {
+	parent: Clutter.Group.type,
+	name: "Light",
+	class_init: function(klass, prototype)
+	{
 		prototype.flip = function (fadeline)
 		{
 			this.state = !this.state;
@@ -36,15 +36,15 @@ LightType = {
 
 			return true;
 		}
-    },
-    instance_init: function(klass)
-    {
-    	this.state = false;
-    	
-    	this.scale_x = .9;
+	},
+	instance_init: function(klass)
+	{
+		this.state = false;
+		
+		this.scale_x = .9;
 		this.scale_y = .9;
-    	
-    	this.on = new Clutter.CloneTexture({parent_texture: on_svg,
+		
+		this.on = new Clutter.CloneTexture({parent_texture: on_svg,
 											reactive: true});
 		this.off = new Clutter.CloneTexture({parent_texture: off_svg, 
 											 reactive: true});
@@ -62,6 +62,6 @@ LightType = {
 		this.add_actor(this.off);
 		this.add_actor(this.on);
 		
-    }};
+	}};
 
 Light = new GType(LightType);

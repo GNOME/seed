@@ -146,10 +146,10 @@ function flip_region (act, evt, light)
 }
 
 BoardType = {
-    parent: Clutter.Group.type,
-    name: "Board",
-    class_init: function(klass, prototype)
-    {
+	parent: Clutter.Group.type,
+	name: "Board",
+	class_init: function(klass, prototype)
+	{
 		prototype.cleared = function ()
 		{
 			for(x in this.lights)
@@ -190,12 +190,12 @@ BoardType = {
 
 			in_setup = false;
 		}
-    },
-    instance_init: function(klass)
-    {
-    	animating_board = false;
-    	in_fade = false;
-    	
+	},
+	instance_init: function(klass)
+	{
+		animating_board = false;
+		in_fade = false;
+		
 		this.lights = new Array();
 
 		for(var x = 0; x < tiles; x++)
@@ -213,6 +213,6 @@ BoardType = {
 		}
 		
 		this.randomize();
-    }};
+	}};
 
 Board = new GType(BoardType);

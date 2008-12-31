@@ -1,9 +1,9 @@
 ScoreType = {
-    parent: Clutter.Group.type,
-    name: "Score",
-    class_init: function(klass, prototype)
-    {
-	   	prototype.set_value = function (val)
+	parent: Clutter.Group.type,
+	name: "Score",
+	class_init: function(klass, prototype)
+	{
+		prototype.set_value = function (val)
 		{
 			this.value = val;
 			
@@ -33,12 +33,12 @@ ScoreType = {
 			
 			this.bkg_top.raise_top();
 		}
-    },
-    instance_init: function(klass)
-    {
-    	this.current_set = null;
-    	
-    	this.bkg_top = Clutter.Texture.new_from_file("./lcd-front.svg");
+	},
+	instance_init: function(klass)
+	{
+		this.current_set = null;
+		
+		this.bkg_top = Clutter.Texture.new_from_file("./lcd-front.svg");
 		var bkg = Clutter.Texture.new_from_file("./lcd-back.svg");
 		var off_svg = Clutter.Texture.new_from_file("./lcd-off.svg");
 
@@ -76,7 +76,7 @@ ScoreType = {
 		
 		if(this.value == 0)
 			this.set_value(1);
-    }};
+	}};
 
 Score = new GType(ScoreType);
 
