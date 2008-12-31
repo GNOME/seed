@@ -88,10 +88,14 @@ static void closure_invalidated(gpointer data, GClosure * c)
 	SeedClosure * closure = (SeedClosure *) c;
 	
 	SEED_NOTE(FINALIZATION, "Finalizing closure.");
-
-	JSValueUnprotect(ctx, closure->user_data);
-	JSValueUnprotect(ctx, closure->this);
-	JSValueUnprotect(ctx, closure->function);
+/*
+  WebKit bug?
+	if (!JSValueIsUndefined(ctx, closure->user_data))
+		JSValueUnprotect(ctx, closure->user_data);
+	if (!JSValueIsUndefined(ctx, closure->this))
+	JSValueUnprotect(ctx, closure->this);*/
+	if (!JSValueIsUndefined(ctx, closure->function))
+		JSValueUnprotect(ctx, closure->function);
 
 	JSGlobalContextRelease((JSGlobalContextRef)ctx);
 }
@@ -121,7 +125,7 @@ static void seed_gobject_signal_connect(JSContextRef ctx,
 	if (this_obj && !JSValueIsNull(ctx, this_obj))
 	{
 		JSValueProtect(ctx, this_obj);
-		((SeedClosure *) closure)->this = this_obj;
+//		((SeedClosure *) closure)->this = this_obj;
 	}
 	else
 	{
@@ -131,7 +135,7 @@ static void seed_gobject_signal_connect(JSContextRef ctx,
 	if (user_data && !JSValueIsNull(ctx, user_data))
 	{
 		((SeedClosure *) closure)->user_data = user_data;
-		JSValueProtect(ctx, user_data);
+		//	JSValueProtect(ctx, user_data);
 	}
 
 	JSValueProtect(ctx, (JSObjectRef) func);
