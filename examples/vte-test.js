@@ -7,6 +7,8 @@ with (Gtk)
 	init(null, null);
 
 	var window = new Window();
+	window.signal.hide.connect(function () { Gtk.main_quit(); } );
+	
 	var scroll = new ScrolledWindow();
 
 	var vte = new Vte.Terminal();
@@ -24,10 +26,8 @@ with (Gtk)
 					  PolicyType.Automatic);
 
 	window.add(scroll);
+	window.resize(600,400);
 	window.show_all();
-
-	window.width_request = 500;
-	window.height_request = 400;
 
 	main();
 
