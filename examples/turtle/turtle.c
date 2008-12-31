@@ -74,7 +74,8 @@ GtkWidget * create_ui()
 	GtkWidget		* run;				// Button
 	GtkWidget		* canvas_frame;		// Frames
 	
-	char			* start_script = "var t = new Turtle();\nt.forward(50);\nt.turnleft(50);\nt.forward(10);\nt.turnright(50);\nt.forward(60);";
+	char			* start_script = "var t = new Turtle();\nt.forward(50);"
+	   "\nt.turnleft(50);\nt.forward(10);\nt.turnright(50);\nt.forward(60);";
 	
 	main_pane = gtk_hpaned_new();
 	gtk_paned_set_position(GTK_PANED(main_pane), 200);

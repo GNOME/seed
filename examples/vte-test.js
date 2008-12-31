@@ -1,4 +1,5 @@
 #!/usr/bin/env seed
+
 Seed.import_namespace("Gtk","2.0");
 Seed.import_namespace("Vte");
 
