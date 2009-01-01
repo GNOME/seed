@@ -102,8 +102,8 @@ AC_SUBST(SEED_PROFILE_CFLAGS)
 AC_SUBST(SEED_PROFILE_LDFLAGS)
 
 dnl ===========================Packages========================================
-PKG_CHECK_MODULES(SEED, gobject-introspection-1.0 webkit-1.0 libffi)
-PKG_CHECK_MODULES(LIBSEED, gobject-introspection-1.0 webkit-1.0 libffi)
+PKG_CHECK_MODULES(SEED, gobject-introspection-1.0 webkit-1.0)
+PKG_CHECK_MODULES(LIBSEED, gobject-introspection-1.0 webkit-1.0)
 
 AC_CONFIG_FILES([
 seed.pc])
