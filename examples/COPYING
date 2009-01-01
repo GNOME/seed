@@ -1,6 +1,0 @@
-All examples in the toplevel directory (i.e. not including lightsoff or browser) are available under the MIT license.
-
-In addition the following subdirectories are under MIT license:
-	glib
-	clutter-shader
-	turtle
