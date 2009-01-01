@@ -113,7 +113,7 @@ while(1)
 <div class="section">Getting GTK Going</div>
 <p>Thus far in this tutorial, we've been completely ignoring the most useful part of Seed: the ability to use external libraries from within JavaScript. The single most useful of these libraries is GTK, the widget and windowing toolkit used by all GNOME applications, which will provide the ability to create and manipulate graphical windows, as well as just about any sort of widget you should require.</p>
 <p>In order to use GTK (or any other external library) in a Seed program, you first have to import the functions from said library. <code>Seed.import_namespace()</code>, taking as its only argument the name of the library to import, does this for us.</p>
-<p>Once the library has been imported, all of its functions are available on a global object with the same name as the library. For example, if we <code>Seed.import_namespace("GTK")</code>, all of the imported functions are available on the GTK object: <code><a href="http://library.gnome.org/devel/gtk/2.14/gtk-General.html#gtk-init">GTK.init()</a></code>, etc.</p>
+<p>Once the library has been imported, all of its functions are available on a global object with the same name as the library. For example, if we <code>Seed.import_namespace("Gtk")</code>, all of the imported functions are available on the GTK object: <code><a href="http://library.gnome.org/devel/gtk/2.14/gtk-General.html#gtk-init">GTK.init()</a></code>, etc.</p>
 <p>Let's start off the development of our browser by getting GTK working. It takes very little to get a window displayed with Seed:</p>
 <pre class="sh_javascript">
 #!/usr/bin/env seed
