@@ -140,7 +140,6 @@ seed_handle_closure(ffi_cif * cif, void *result, void **args, void *userdata)
 	{
 		GITypeInfo *arg_type;
 		GITypeTag tag;
-		GType type;
 		GArgument *arg = &rarg;
 
 		arg_info = g_callable_info_get_arg(privates->info, i);
@@ -250,7 +249,7 @@ seed_handle_closure(ffi_cif * cif, void *result, void **args, void *userdata)
 	{
 		gchar *mes = seed_exception_to_string(ctx,
 											  exception);
-		g_warning("Exception in closure marshal. %s \n", mes, 0);
+		g_warning("Exception in closure marshal. %s \n", mes);
 		g_free(mes);
 		exception = 0;
 	}
@@ -352,8 +351,6 @@ SeedNativeClosure *seed_make_native_closure(JSContextRef ctx,
 	ffi_cif *cif;
 	ffi_closure *closure;
 	ffi_type **arg_types;
-	ffi_arg result;
-	ffi_status status;
 	GITypeInfo *return_type;
 	GIArgInfo *arg_info;
 	gint num_args, i;
