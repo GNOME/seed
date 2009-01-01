@@ -39,7 +39,7 @@ seed_include(JSContextRef ctx,
 	{
 		gchar *mes =
 			g_strdup_printf("Seed.include expected 1 argument, "
-							"got %d", argumentCount);
+							"got %d", (unsigned int) argumentCount);
 		seed_make_exception(ctx, exception, "ArgumentError", mes);
 		g_free(mes);
 		return JSValueMakeNull(ctx);
@@ -90,7 +90,7 @@ seed_print(JSContextRef ctx,
 	{
 		gchar *mes =
 			g_strdup_printf("Seed.print expected 1 argument," " got %d",
-							argumentCount);
+							(unsigned int) argumentCount);
 		seed_make_exception(ctx, exception, "ArgumentError", mes);
 		g_free(mes);
 		return JSValueMakeNull(ctx);
@@ -140,7 +140,7 @@ seed_introspect(JSContextRef ctx,
 	{
 		gchar *mes =
 			g_strdup_printf("Seed.introspect expected 1 argument, "
-							"got %d", argumentCount);
+							"got %d", (unsigned int) argumentCount);
 		seed_make_exception(ctx, exception, "ArgumentError", mes);
 		g_free(mes);
 		return JSValueMakeNull(ctx);
@@ -207,7 +207,7 @@ seed_check_syntax(JSContextRef ctx,
 	{
 		gchar *mes = g_strdup_printf("Seed.check_syntax expected "
 									 "1 argument, got %d",
-									 argumentCount);
+									 (unsigned int) argumentCount);
 		seed_make_exception(ctx, exception, "ArgumentError", mes);
 		g_free(mes);
 	}
@@ -283,7 +283,7 @@ seed_quit(JSContextRef ctx,
 	else if (argumentCount > 1)
 	{
 		gchar *mes = g_strdup_printf("Seed.quit expected " "1 argument, got %d",
-									 argumentCount);
+									 (unsigned int) argumentCount);
 		seed_make_exception(ctx, exception, "ArgumentError", mes);
 		g_free(mes);
 	}
