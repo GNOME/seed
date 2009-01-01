@@ -106,7 +106,7 @@ seed_gobject_constructor_invoked(JSContextRef ctx,
 	if (argumentCount > 1)
 	{
 		gchar *mes = g_strdup_printf("Constructor expects"
-									 " 1 argument, got %d", argumentCount);
+									 " 1 argument, got %d", (unsigned int) argumentCount);
 		seed_make_exception(ctx, exception, "ArgumentError", mes);
 		g_free(mes);
 
@@ -219,7 +219,7 @@ seed_gobject_equals(JSContextRef ctx,
 	if (argumentCount != 1)
 	{
 		gchar *mes = g_strdup_printf("GObject equals comparison expected"
-									 " 1 argument, got %d", argumentCount);
+									 " 1 argument, got %d", (unsigned int) argumentCount);
 		seed_make_exception(ctx, exception, "ArgumentError", mes);
 		g_free(mes);
 
