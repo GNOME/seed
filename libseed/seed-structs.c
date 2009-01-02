@@ -423,10 +423,13 @@ void seed_pointer_set_free(JSContextRef ctx,
 }
 
 static void seed_pointer_set_slice(JSContextRef ctx,
-						   JSValueRef pointer, gboolean free_pointer)
+								   JSValueRef pointer, 
+								   gboolean free_pointer,
+	                               gsize size)
 {
 	seed_struct_privates *priv = JSObjectGetPrivate((JSObjectRef) pointer);
 	priv->slice_alloc = free_pointer;
+	priv->size = size;
 }
 
 JSObjectRef seed_make_pointer(JSContextRef ctx, gpointer pointer)
@@ -574,7 +577,7 @@ seed_construct_struct_type_with_parameters(JSContextRef ctx,
 		ret = seed_make_union(ctx, object, info);
 
 	seed_pointer_set_free(ctx, ret, TRUE);
-	seed_pointer_set_slice(ctx, ret, TRUE);
+	seed_pointer_set_slice(ctx, ret, TRUE, size);
 
 	if (!parameters)
 		return ret;

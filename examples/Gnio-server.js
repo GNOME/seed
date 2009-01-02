@@ -27,7 +27,7 @@ os.put_string("Seed echo server. Type quit to quit.\n");
 while(1)
 {
 	var line = ds.read_line(null);
-    var cowsay = Seed.spawn("cowsay " + line);
+        var cowsay = Seed.spawn("cowsay " + line);
 	if (line.search("quit") > -1)
 	{
 		client.close();
