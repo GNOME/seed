@@ -39,15 +39,16 @@ static void seed_pointer_finalize(JSObjectRef object)
 		(seed_struct_privates *) JSObjectGetPrivate(object);
 
 	SEED_NOTE(STRUCTS, "Finalizing seed_pointer object %p. with "
-			  "priv->free_pointer = %d with type: %s",
+			  "priv->free_pointer = %d with type: %s, size: %zu",
 			  priv->pointer,
 			  priv->free_pointer,
-			  priv->info ? g_base_info_get_name(priv->info) : "[generic]");
+			  priv->info ? g_base_info_get_name(priv->info) : "[generic]",
+		      priv->size);
 
 	if (priv->free_pointer)
 	{
 		if (priv->slice_alloc)
-			g_slice_free1(priv->size, priv);
+			g_slice_free1(priv->size, priv->pointer);
 		else
 			g_free(priv->pointer);
 	}
@@ -557,9 +558,6 @@ seed_construct_struct_type_with_parameters(JSContextRef ctx,
 	GArgument field_value;
 	gchar *prop_name;
 
-	SEED_NOTE(CONSTRUCTION, "Constructing struct/union of type: %s \n",
-			  g_base_info_get_name(info));
-
 	if (type == GI_INFO_TYPE_STRUCT)
 	{
 		size = g_struct_info_get_size((GIStructInfo *) info);
@@ -570,6 +568,10 @@ seed_construct_struct_type_with_parameters(JSContextRef ctx,
 	}
 	g_assert(size);
 	object = g_slice_alloc0(size);
+
+	SEED_NOTE(CONSTRUCTION, "Constructing struct/union of type: %s. Size: %zu \n",
+			  g_base_info_get_name(info), size);
+
 	
 	if (type == GI_INFO_TYPE_STRUCT)
 		ret = seed_make_struct(ctx, object, info);
