@@ -23,20 +23,6 @@ Seed.include("light.js");
 Seed.include("board.js");
 Seed.include("arrow.js");
 
-var gconf_client;
-var initial_score;
-
-try
-{
-	gconf_client = GConf.Client.get_default();
-	initial_score = gconf_client.get_int("/apps/lightsoff/score")
-}
-catch(e)
-{
-	initial_score = 1;
-	Seed.print("Couldn't load score from GConf.");
-}
-
 var black = Clutter.Color._new();
 Clutter.color_parse("Black", black);
 

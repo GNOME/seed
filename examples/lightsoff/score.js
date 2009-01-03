@@ -1,8 +1,7 @@
 var bkg_top = Clutter.Texture.new_from_file("./lcd-front.svg");
 var bkg = Clutter.Texture.new_from_file("./lcd-back.svg");
 
-bkg_top.filter_quality = Clutter.TextureQuality.High;
-bkg.filter_quality = Clutter.TextureQuality.High;
+bkg_top.filter_quality = bkg.filter_quality = Clutter.TextureQuality.High;
 
 var num_margin = 7;
 
@@ -32,7 +31,19 @@ Score = new GType({
 		
 		this.set_value = function (val)
 		{
+			if(val < 1)
+				return false;
+			
 			value = val;
+			
+			try
+			{
+				gconf_client.set_int("/apps/lightsoff/score", value);
+			}
+			catch(e)
+			{
+				Seed.print("Couldn't save score to GConf.");
+			}
 			
 			var old_set = current_set;
 			
@@ -61,11 +72,12 @@ Score = new GType({
 				old_set.destroy();
 			
 			bkg_top.raise_top();
+			
+			return true;
 		};
 		
 		// Implementation
 		this.add_actor(bkg);
-		bkg.show();
 		
 		for(var i = 0; i < 5; i++)
 		{
@@ -73,7 +85,6 @@ Score = new GType({
 			off_i.set_position(num_margin + num_offset * i, 5);
 			off_i.set_size(num_width, num_height);
 			this.add_actor(off_i);
-			off_i.show();
 		}
 		
 		for(var i = 0; i <= 9; i++)
@@ -84,12 +95,17 @@ Score = new GType({
 		
 		bkg_top.set_position(1, 1);
 		this.add_actor(bkg_top);
-		bkg_top.show();
-
-		this.set_value(initial_score);
 		
-		if(value == 0)
+		try
+		{
+			gconf_client = GConf.Client.get_default();
+			this.set_value(gconf_client.get_int("/apps/lightsoff/score"));
+		}
+		catch(e)
+		{
+			Seed.print("Couldn't load score from GConf.");
 			this.set_value(1);
+		}
 	}
 });
 

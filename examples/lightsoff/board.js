@@ -60,7 +60,6 @@ function win_animation()
 	
 	remove_timeline.signal.completed.connect(delete_board, board);
 	animating_board = true;
-	fadeline.start();
 	
 	board = new_board;
 }
@@ -79,13 +78,12 @@ function swap_animation(direction)
 	var effect = Clutter.EffectTemplate._new(fadeline, Clutter.sine_inc_func);
 	
 	Clutter.effect_depth(effect, new_board, 0);
-	var remove_timeline = Clutter.effect_depth(effect, board, direction * 250);
+	Clutter.effect_depth(effect, board, direction * 250);
 	Clutter.effect_fade(effect, new_board, 255);
-	Clutter.effect_fade(effect, board, 0);
+	var remove_timeline = Clutter.effect_fade(effect, board, 0);
 	
 	remove_timeline.signal.completed.connect(delete_board, board);	
 	animating_board = true;
-	fadeline.start();
 	
 	board = new_board;
 }
@@ -94,22 +92,9 @@ function check_won (timeline, light)
 {
 	in_fade = false;
 	
-	if(animating_board)
-		return true;
-	
-	if(light.get_parent().cleared() && !in_setup)
+	if(light.get_parent().cleared() && !in_setup && !animating_board)
 	{
-		score.set_value(score.get_value()+1);
-
-		try
-		{
-			gconf_client.set_int("/apps/lightsoff/score", score.get_value());
-		}
-		catch(e)
-		{
-			Seed.print("Couldn't save score to GConf.");
-		}
-
+		score.set_value(score.get_value() + 1);
 		win_animation();
 	}
 }
@@ -119,27 +104,34 @@ function flip_region (act, evt, light)
 	if(!in_setup && in_fade)
 		return true;
 	
-	var x = light.light_x;
-	var y = light.light_y;
+	var x = light.get_light_x();
+	var y = light.get_light_y();
 	
 	var fadeline = new Clutter.Timeline({num_frames: 20});
 	
-	light.flip(fadeline);
-	
-	var lights = light.get_parent().get_lights();
-
-	if(x + 1 < tiles)
-		lights[x + 1][y].flip(fadeline);
-	if(x - 1 >= 0)
-		lights[x - 1][y].flip(fadeline);
-	if(y + 1 < tiles)
-		lights[x][y + 1].flip(fadeline);
-	if(y - 1 >= 0)
-		lights[x][y - 1].flip(fadeline);
-	
-	fadeline.start();
 	in_fade = true;
 	
+	light.flip(fadeline);
+	
+	try
+	{
+		var lights = light.get_parent().get_lights();
+
+		if(x + 1 < tiles)
+			lights[x + 1][y].flip(fadeline);
+		if(x - 1 >= 0)
+			lights[x - 1][y].flip(fadeline);
+		if(y + 1 < tiles)
+			lights[x][y + 1].flip(fadeline);
+		if(y - 1 >= 0)
+			lights[x][y - 1].flip(fadeline);
+	}
+	catch(e)
+	{
+		// User clicked too fast!
+	}
+	
+	fadeline.start();
 	fadeline.signal.completed.connect(check_won, light);
 	
 	return true;
@@ -216,8 +208,10 @@ Board = new GType({
 			{
 				var offset = margin + tile_size/2;
 				lights[x][y] = new Light();
-				lights[x][y].light_x = x;
-				lights[x][y].light_y = y;
+				
+				lights[x][y].set_light_x(x);
+				lights[x][y].set_light_y(y);
+				
 				lights[x][y].set_position(x * (tile_size+margin) + offset,
 										  y * (tile_size+margin) + offset);
 				this.add_actor(lights[x][y]);

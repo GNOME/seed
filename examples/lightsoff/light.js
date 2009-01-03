@@ -1,4 +1,4 @@
-var tile_svg_size = 200;
+var tile_svg_size = 100;
 
 var on_pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size("./light-on.svg",
 													   tile_svg_size,
@@ -19,12 +19,14 @@ Light = new GType({
 	{
 		// Private
 		var state = false;
+		var light_x, light_y;
 		
 		// Public
 		this.scale_x = this.scale_y = .9;
 		
 		this.on = new Clutter.CloneTexture({parent_texture: on_svg,
-											reactive: true});
+											reactive: true,
+											opacity: 0});
 		this.off = new Clutter.CloneTexture({parent_texture: off_svg, 
 											 reactive: true});
 		
@@ -44,7 +46,7 @@ Light = new GType({
 				this.on.opacity = state * 255;
 				this.scale_x = this.scale_y = new_scale;
 				
-				return true;
+				return;
 			}
 			
 			var effect = Clutter.EffectTemplate._new(fadeline,
@@ -52,15 +54,31 @@ Light = new GType({
 			
 			Clutter.effect_fade(effect, this.on, state * 255);
 			Clutter.effect_scale(effect, this, new_scale, new_scale);
-
-			return true;
+		}
+		
+		this.set_light_x = function (new_x)
+		{
+			light_x = new_x;
+		}
+		
+		this.set_light_y = function (new_y)
+		{
+			light_y = new_y;
+		}
+		
+		this.get_light_x = function ()
+		{
+			return light_x;
+		}
+		
+		this.get_light_y = function ()
+		{
+			return light_y;
 		}
 		
 		// Implementation
 		this.on.set_size(tile_size, tile_size);
 		this.off.set_size(tile_size, tile_size);
-		
-		this.on.opacity = 0.0;
 		
 		this.set_anchor_point(tile_size / 2, tile_size / 2);
 
