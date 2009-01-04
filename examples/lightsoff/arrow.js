@@ -27,6 +27,7 @@ Arrow = new GType({
 			
 			bkg.filter_quality = Clutter.TextureQuality.High;
 			this.add_actor(bkg);
+			bkg.show();
 		}
 
 		// Implementation
