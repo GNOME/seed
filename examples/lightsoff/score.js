@@ -1,5 +1,5 @@
-var bkg_top = Clutter.Texture.new_from_file("./lcd-front.svg");
-var bkg = Clutter.Texture.new_from_file("./lcd-back.svg");
+var bkg_top = new Clutter.Texture.from_file("./lcd-front.svg");
+var bkg = new Clutter.Texture.from_file("./lcd-back.svg");
 
 bkg_top.filter_quality = bkg.filter_quality = Clutter.TextureQuality.High;
 
@@ -20,7 +20,7 @@ Score = new GType({
 		
 		var num_textures = new Array();
 		
-		var off_svg = Clutter.Texture.new_from_file("./lcd-off.svg");
+		var off_svg = new Clutter.Texture.from_file("./lcd-off.svg");
 		off_svg.filter_quality = Clutter.TextureQuality.High;
 		
 		// Public
@@ -89,7 +89,7 @@ Score = new GType({
 		
 		for(var i = 0; i <= 9; i++)
 		{
-			num_textures[i] = Clutter.Texture.new_from_file("./"+i+".svg");
+			num_textures[i] = new Clutter.Texture.from_file("./"+i+".svg");
 			num_textures[i].filter_quality = Clutter.TextureQuality.High;
 		}
 		

@@ -1,9 +1,9 @@
 var tile_svg_size = 100;
 
-var on_pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size("./light-on.svg",
+var on_pixbuf = new GdkPixbuf.Pixbuf.from_file_at_size("./light-on.svg",
 													   tile_svg_size,
 													   tile_svg_size);
-var off_pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size("./light-off.svg",
+var off_pixbuf = new GdkPixbuf.Pixbuf.from_file_at_size("./light-off.svg",
 														tile_svg_size,
 														tile_svg_size);
 
@@ -49,8 +49,9 @@ Light = new GType({
 				return;
 			}
 			
-			var effect = Clutter.EffectTemplate._new(fadeline,
-													 Clutter.sine_inc_func);
+			var effect = 
+  			     new Clutter.EffectTemplate.c_new(fadeline,
+												  Clutter.sine_inc_func);
 			
 			Clutter.effect_fade(effect, this.on, state * 255);
 			Clutter.effect_scale(effect, this, new_scale, new_scale);

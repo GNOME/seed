@@ -22,7 +22,7 @@ Arrow = new GType({
 		{
 			direction = dir ? 1 : -1;
 			
-			var bkg = Clutter.Texture.new_from_file("./arrow-" + 
+			var bkg = new Clutter.Texture.from_file("./arrow-" + 
 													(dir ? "r" : "l") + ".svg");
 			
 			bkg.filter_quality = Clutter.TextureQuality.High;

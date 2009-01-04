@@ -1006,6 +1006,8 @@ seed_gi_import_namespace(JSContextRef ctx,
 												 finfo);
 						if (strstr(fname, "new_") == fname)
 							fname += 4;
+						else if (!strcmp(fname, "new"))
+							fname ="c_new";
 						
 						seed_object_set_property(ctx,
 												 constructor_ref,

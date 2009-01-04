@@ -65,8 +65,8 @@ function open_file(sv)
 	{
 		// Poppler.Document will not take a uri as a construction property,
 		// use this:
-		current_document = 
-			Poppler.Document.new_from_file(file_chooser.get_uri());
+		current_document = new
+			Poppler.Document.from_file(file_chooser.get_uri());
 		num_pages = current_document.get_n_pages();
 		set_page(0);
 		

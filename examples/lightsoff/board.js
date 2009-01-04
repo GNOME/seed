@@ -51,7 +51,7 @@ function win_animation()
 	new_board.lower_bottom();
 	
 	var fadeline = new Clutter.Timeline({num_frames:80});
-	var effect = Clutter.EffectTemplate._new(fadeline, alpha_func);
+	var effect = new Clutter.EffectTemplate.c_new(fadeline, alpha_func);
 	
 	Clutter.effect_move(effect, new_board, 0, 0);
 	var remove_timeline = Clutter.effect_move(effect, board, 
@@ -75,7 +75,7 @@ function swap_animation(direction)
 	new_board.set_depth(direction * -250);
 	
 	var fadeline = new Clutter.Timeline({num_frames:40});
-	var effect = Clutter.EffectTemplate._new(fadeline, Clutter.sine_inc_func);
+	var effect = new Clutter.EffectTemplate.c_new(fadeline, Clutter.sine_inc_func);
 	
 	Clutter.effect_depth(effect, new_board, 0);
 	Clutter.effect_depth(effect, board, direction * 250);
