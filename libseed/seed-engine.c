@@ -27,6 +27,7 @@ GQuark qname = 0;
 GQuark qprototype = 0;
 
 JSClassRef gobject_signal_class;
+JSClassRef gobject_named_constructor_class;
 JSClassRef seed_struct_constructor_class;
 
 JSContextGroupRef context_group;
@@ -438,6 +439,19 @@ seed_gobject_method_invoked(JSContextRef ctx,
 	g_free(out_args);
 	g_free(out_values);
 	return retval_ref;
+}
+
+static JSObjectRef
+seed_gobject_named_constructor_invoked(JSContextRef ctx,
+								 JSObjectRef constructor,
+								 size_t argumentCount,
+								 const JSValueRef arguments[],
+								 JSValueRef * exception)
+{
+	return (JSObjectRef)seed_gobject_method_invoked(ctx, constructor, 
+									   NULL, argumentCount,
+									   arguments,
+									   exception);
 }
 
 void
@@ -1177,6 +1191,26 @@ JSClassDefinition gobject_constructor_def = {
 	NULL						/* Convert To Type */
 };
 
+JSClassDefinition gobject_named_constructor_def = {
+	0,							/* Version, always 0 */
+	0,
+	"gobject_named_constructor",		/* Class Name */
+	NULL,						/* Parent Class */
+	NULL,						/* Static Values */
+	NULL,						/* Static Functions */
+	NULL,
+	NULL,						/* Finalize */
+	NULL,						/* Has Property */
+	NULL,						/* Get Property */
+	NULL,						/* Set Property */
+	NULL,						/* Delete Property */
+	NULL,						/* Get Property Names */
+	NULL,						/* Call As Function */
+	seed_gobject_named_constructor_invoked,	/* Call As Constructor */
+	NULL,						/* Has Instance */
+	NULL						/* Convert To Type */
+};
+
 JSClassDefinition struct_constructor_def = {
 	0,							/* Version, always 0 */
 	0,
@@ -1322,6 +1356,8 @@ SeedEngine *seed_init(gint * argc, gchar *** argv)
 	JSClassRetain(gobject_method_class);
 	gobject_constructor_class = JSClassCreate(&gobject_constructor_def);
 	JSClassRetain(gobject_constructor_class);
+	gobject_named_constructor_class = JSClassCreate(&gobject_named_constructor_def);
+	JSClassRetain(gobject_named_constructor_class);
 	gobject_signal_class = JSClassCreate(seed_get_signal_class());
 	JSClassRetain(gobject_signal_class);
 	seed_callback_class = JSClassCreate(&seed_callback_def);
