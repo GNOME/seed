@@ -282,7 +282,7 @@ seed_gobject_method_invoked(JSContextRef ctx,
 	// We just want to check if there IS an object, not actually throw an
 	// exception if we don't
 	// get it.
-	if (!
+	if (!this_object || !
 		((object = seed_value_to_object(ctx, this_object, 0)) ||
 		 (object = seed_pointer_get_pointer(ctx, this_object))))
 		instance_method = FALSE;
@@ -995,7 +995,24 @@ seed_gi_import_namespace(JSContextRef ctx,
 				{
 					finfo = g_object_info_get_method((GIObjectInfo *) info, i);
 					flags = g_function_info_get_flags(finfo);
-					if (!(flags & GI_FUNCTION_IS_METHOD))
+					if (flags & GI_FUNCTION_IS_CONSTRUCTOR)
+					{
+						JSObjectRef constructor = 
+							JSObjectMake(ctx,
+										 gobject_named_constructor_class,
+										 finfo);
+						const gchar * fname =
+							g_base_info_get_name((GIBaseInfo *)
+												 finfo);
+						if (strstr(fname, "new_") == fname)
+							fname += 4;
+						
+						seed_object_set_property(ctx,
+												 constructor_ref,
+												 fname, 
+												 constructor);
+					}
+					else if (!(flags & GI_FUNCTION_IS_METHOD))
 					{
 						seed_gobject_define_property_from_function_info
 							(ctx, finfo, constructor_ref, FALSE);
