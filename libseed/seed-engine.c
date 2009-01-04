@@ -1048,9 +1048,16 @@ seed_gi_import_namespace(JSContextRef ctx,
 
 			for (i = 0; i < n_methods; i++)
 			{
+				GIFunctionInfoFlags flags;
 				finfo = g_struct_info_get_method((GIStructInfo *) info, i);
-				seed_gobject_define_property_from_function_info
-					(ctx, finfo, struct_ref, FALSE);
+
+				flags = g_function_info_get_flags(finfo);
+				
+				if (flags & GI_FUNCTION_IS_METHOD)
+					g_base_info_unref((GIBaseInfo *)finfo);
+				else
+					seed_gobject_define_property_from_function_info
+						(ctx, finfo, struct_ref, FALSE);
 
 			}
 			
@@ -1077,9 +1084,16 @@ seed_gi_import_namespace(JSContextRef ctx,
 
 			for (i = 0; i < n_methods; i++)
 			{
+				GIFunctionInfoFlags flags;
+
 				finfo = g_union_info_get_method((GIUnionInfo *) info, i);
-				seed_gobject_define_property_from_function_info
-					(ctx, finfo, struct_ref, FALSE);
+				flags = g_function_info_get_flags(finfo);
+				
+				if (flags & GI_FUNCTION_IS_METHOD)
+					g_base_info_unref((GIBaseInfo *)finfo);
+				else
+					seed_gobject_define_property_from_function_info
+						(ctx, finfo, struct_ref, FALSE);
 
 			}
 
