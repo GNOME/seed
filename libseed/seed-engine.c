@@ -1038,6 +1038,7 @@ seed_gi_import_namespace(JSContextRef ctx,
 		else if (info && (g_base_info_get_type(info) == GI_INFO_TYPE_STRUCT))
 		{
 			JSObjectRef struct_ref;
+			JSObjectRef proto;
 			gint i, n_methods;
 			GIFunctionInfo *finfo;
 
@@ -1052,6 +1053,11 @@ seed_gi_import_namespace(JSContextRef ctx,
 					(ctx, finfo, struct_ref, FALSE);
 
 			}
+			
+			proto = seed_struct_prototype(ctx,
+										  info);
+			seed_object_set_property(ctx, struct_ref,
+									 "prototype", proto);
 
 			seed_object_set_property(ctx, namespace_ref,
 									 g_base_info_get_name(info), struct_ref);
@@ -1061,6 +1067,7 @@ seed_gi_import_namespace(JSContextRef ctx,
 		else if (info && (g_base_info_get_type(info) == GI_INFO_TYPE_UNION))
 		{
 			JSObjectRef struct_ref;
+			JSObjectRef proto;
 			gint i, n_methods;
 			GIFunctionInfo *finfo;
 
@@ -1075,6 +1082,11 @@ seed_gi_import_namespace(JSContextRef ctx,
 					(ctx, finfo, struct_ref, FALSE);
 
 			}
+
+			proto = seed_union_prototype(ctx,
+										  info);
+			seed_object_set_property(ctx, struct_ref,
+									 "prototype", proto);
 
 			seed_object_set_property(ctx, namespace_ref,
 									 g_base_info_get_name(info), struct_ref);

@@ -50,6 +50,11 @@ seed_construct_struct_type_with_parameters(JSContextRef ctx,
 										   JSObjectRef parameters,
 										   JSValueRef * exception);
 
+JSObjectRef seed_union_prototype(JSContextRef ctx,
+								 GIBaseInfo *info);
+JSObjectRef seed_struct_prototype(JSContextRef ctx,
+								  GIBaseInfo *info);
+
 void seed_structs_init();
 
 #endif
