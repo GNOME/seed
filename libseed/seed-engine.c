@@ -265,7 +265,7 @@ seed_gobject_method_invoked(JSContextRef ctx,
 							JSValueRef * exception)
 {
 	GIBaseInfo *info;
-	GObject *object;
+	GObject *object = NULL;
 	gboolean instance_method = TRUE;
 	GArgument retval;
 	GArgument *in_args;
