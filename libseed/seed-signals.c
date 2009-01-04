@@ -171,8 +171,8 @@ seed_gobject_signal_connect_by_name(JSContextRef ctx,
 	{
 		user_data = (JSObjectRef) arguments[2];
 	}
-
-	signal_name = seed_value_to_string(ctx, arguments[0], NULL);
+	
+	signal_name = seed_value_to_string(ctx, arguments[0], exception);
 	obj = (GObject *) JSObjectGetPrivate(thisObject);
 	obj_type = G_OBJECT_TYPE(obj);
 
@@ -180,6 +180,8 @@ seed_gobject_signal_connect_by_name(JSContextRef ctx,
 								(JSObjectRef) arguments[1], NULL, user_data);
 
 	g_free(signal_name);
+
+	return seed_value_from_boolean(ctx, TRUE, exception);
 }
 
 void seed_add_signals_to_object(JSContextRef ctx,
@@ -260,7 +262,7 @@ seed_signal_marshal_func(GClosure * closure,
 	{
 		gchar *mes = seed_exception_to_string(ctx,
 											  exception);
-		g_warning("Exception in signal handler. %s \n", mes, 0);
+		g_warning("Exception in signal handler. %s \n", mes);
 		g_free(mes);
 		exception = 0;
 	}
@@ -275,7 +277,7 @@ seed_signal_marshal_func(GClosure * closure,
 	if (exception)
 	{
 		gchar *mes = seed_exception_to_string(ctx, exception);
-		g_warning("Exception in signal handler return value. %s \n", mes, 0);
+		g_warning("Exception in signal handler return value. %s \n", mes);
 		g_free(mes);
 	}
 
@@ -345,7 +347,6 @@ seed_gobject_signal_connect_on_property(JSContextRef ctx,
 {
 	JSObjectRef this_obj;
 	signal_privates *privates;
-	GClosure *closure;
 
 	privates = (signal_privates *) JSObjectGetPrivate(thisObject);
 	if (!privates)

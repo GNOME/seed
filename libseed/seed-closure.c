@@ -23,7 +23,7 @@
 
 static ffi_type *get_ffi_type(GITypeInfo * info)
 {
-	ffi_type *rettype;
+	ffi_type *rettype = NULL;
 
 	if (g_type_info_is_pointer(info))
 		rettype = &ffi_type_pointer;

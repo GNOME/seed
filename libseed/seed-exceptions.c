@@ -20,6 +20,7 @@
  */
 
 #include "seed-private.h"
+#include <string.h>
 
 void
 seed_make_exception(JSContextRef ctx,

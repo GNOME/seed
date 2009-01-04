@@ -53,11 +53,11 @@ JSObjectRef seed_make_object(JSContextRef ctx,
 	return JSObjectMake(ctx, class, private);
 }
 
-gboolean seed_object_set_property_at_index(JSContextRef ctx,
-										   JSObjectRef object,
-										   gint index,
-										   JSValueRef value,
-										   JSValueRef * exception)
+void seed_object_set_property_at_index(JSContextRef ctx,
+								  JSObjectRef object,
+								  gint index,
+								  JSValueRef value,
+								  JSValueRef * exception)
 {
 	JSObjectSetPropertyAtIndex(ctx, object, index, value, exception);
 }
@@ -133,7 +133,7 @@ gboolean seed_string_is_equal_utf8(JSStringRef a, const gchar * b)
 
 JSStringRef seed_string_ref(JSStringRef string)
 {
-	JSStringRetain(string);
+	return JSStringRetain(string);
 }
 
 void seed_string_unref(JSStringRef string)

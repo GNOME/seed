@@ -19,6 +19,7 @@
 *     Copyright (C) Matthew Arsenault 2008 <arsenm2@rpi.edu>
 */
 
+#include <unistd.h>
 #include <stdio.h>
 #include "seed-private.h"
 #include <string.h>

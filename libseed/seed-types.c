@@ -64,9 +64,8 @@ static JSValueRef seed_wrap_object(JSContextRef ctx, GObject * object)
 	JSValueRef user_data;
 	JSValueRef js_ref;
 	JSClassRef class;
-	GType type, *interfaces;
+	GType type;
 	JSValueRef prototype;
-	guint i, n;
 
 	type = G_OBJECT_TYPE(object);
 
@@ -130,7 +129,6 @@ static gboolean seed_release_arg(GITransfer transfer,
 			if (arg->v_pointer)
 			{
 				GIBaseInfo *interface_info;
-				GType interface_type;
 
 				interface_info = g_type_info_get_interface(type_info);
 
@@ -181,7 +179,7 @@ gboolean seed_gi_release_in_arg(GITransfer transfer,
 	GITypeTag type_tag;
 
 	if (transfer == GI_TRANSFER_EVERYTHING)
-		return;
+		return TRUE;
 
 	type_tag = g_type_info_get_tag((GITypeInfo *) type_info);
 
@@ -190,6 +188,8 @@ gboolean seed_gi_release_in_arg(GITransfer transfer,
 	case GI_TYPE_TAG_UTF8:
 		return seed_release_arg(GI_TRANSFER_EVERYTHING,
 								type_info, type_tag, arg);
+	default:
+		break;
 	}
 
 	return TRUE;
@@ -688,7 +688,7 @@ JSValueRef seed_value_from_gvalue(JSContextRef ctx,
 
 		info = g_irepository_find_by_gtype(0, G_VALUE_TYPE(gval));
 		if (!info)
-			return;
+			return FALSE;
 		type = g_base_info_get_type(info);
 
 		if (type == GI_INFO_TYPE_UNION)

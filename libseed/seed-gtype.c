@@ -210,7 +210,7 @@ seed_property_method_invoked(JSContextRef ctx,
 	if (argumentCount != 1)
 	{
 		gchar *mes =
-			g_strdup_printf("Property installation expected 1 argument",
+			g_strdup_printf("Property installation expected 1 argument"
 							" got %d \n", (unsigned int) argumentCount);
 		seed_make_exception(ctx, exception, "ArgumentError", mes);
 		g_free(mes);
@@ -251,7 +251,7 @@ seed_gsignal_method_invoked(JSContextRef ctx,
 							JSValueRef * exception)
 {
 	// TODO: class_closure, and accumlator. Not useful until we have structs.
-	JSValueRef jsname, jstype, jsflags, jsreturn_type, jsparams, ret;
+	JSValueRef jsname, jstype, jsflags, jsreturn_type, jsparams;
 	GType itype, return_type;
 	guint n_params = 0;
 	GType *param_types = 0;
@@ -262,7 +262,7 @@ seed_gsignal_method_invoked(JSContextRef ctx,
 	/* Sanity check */
 	if (argumentCount != 1)
 	{
-		gchar *mes = g_strdup_printf("Signal constructor expected 1 argument",
+		gchar *mes = g_strdup_printf("Signal constructor expected 1 argument"
 									 " got %d \n", (unsigned int) argumentCount);
 		seed_make_exception(ctx, exception, "ArgumentError", mes);
 		g_free(mes);
@@ -386,7 +386,7 @@ seed_handle_class_init_closure(ffi_cif * cif,
 	{
 		gchar *mes = seed_exception_to_string(ctx,
 											  exception);
-		g_warning("Exception in class init closure. %s \n", mes, 0);
+		g_warning("Exception in class init closure. %s \n", mes);
 	}
 
 	JSGlobalContextRelease((JSGlobalContextRef) ctx);
@@ -417,7 +417,7 @@ seed_handle_instance_init_closure(ffi_cif * cif,
 	{
 		gchar *mes = seed_exception_to_string(ctx,
 											  exception);
-		g_warning("Exception in instance init closure. %s \n", mes, 0);
+		g_warning("Exception in instance init closure. %s \n", mes);
 	}
 
 	JSGlobalContextRelease((JSGlobalContextRef) ctx);
@@ -429,8 +429,6 @@ static ffi_closure *seed_make_class_init_closure(JSObjectRef function)
 	ffi_cif *cif;
 	ffi_closure *closure;
 	ffi_type **arg_types;;
-	ffi_arg result;
-	ffi_status status;
 
 // Might need to protect function.
 
@@ -454,8 +452,6 @@ static ffi_closure *seed_make_instance_init_closure(JSObjectRef function)
 	ffi_cif *cif;
 	ffi_closure *closure;
 	ffi_type **arg_types;;
-	ffi_arg result;
-	ffi_status status;
 
 // Might need to protect function.
 
@@ -481,7 +477,7 @@ seed_gtype_constructor_invoked(JSContextRef ctx,
 							   const JSValueRef arguments[],
 							   JSValueRef * exception)
 {
-	JSValueRef class_init, instance_init, name, parent_ref, set_property_ref;
+	JSValueRef class_init, instance_init, name, parent_ref;
 	GType parent_type, new_type;
 	gchar *new_name;
 	GTypeInfo type_info = {
@@ -563,7 +559,7 @@ seed_gtype_constructor_invoked(JSContextRef ctx,
 	type_info.instance_init = (GInstanceInitFunc) instance_init_closure;
 
 	constructor_ref = JSObjectMake(ctx, gobject_constructor_class,
-								   (gpointer) new_type);
+								   (gpointer) 0);
 	JSValueProtect(ctx, constructor_ref);
 
 	type_info.class_data = constructor_ref;

@@ -170,14 +170,10 @@ seed_union_get_property(JSContextRef context,
 						JSObjectRef object,
 						JSStringRef property_name, JSValueRef * exception)
 {
-	gpointer pointer;
 	gchar *cproperty_name;
-	int i;
 	int length;
 	seed_struct_privates *priv = JSObjectGetPrivate(object);
 	GIFieldInfo *field = 0;
-	GITypeInfo *field_type = 0;
-	GArgument field_value;
 	JSValueRef ret;
 
 	length = JSStringGetMaximumUTF8CStringSize(property_name);
@@ -207,11 +203,11 @@ seed_struct_set_property(JSContextRef context,
 						 JSStringRef property_name,
 						 JSValueRef value, JSValueRef * exception)
 {
-	gint length, i, n;
+	gint length;
 	GArgument field_value;
 	GIFieldInfo *field;
+	gchar * cproperty_name;
 	GITypeInfo *field_type;
-	gchar *cproperty_name;
 	seed_struct_privates *priv =
 		(seed_struct_privates *) JSObjectGetPrivate(object);
 	gboolean ret;
@@ -238,6 +234,8 @@ seed_struct_set_property(JSContextRef context,
 
 	g_base_info_unref((GIBaseInfo *) field_type);
 	g_base_info_unref((GIBaseInfo *) field);
+	
+	return TRUE;
 }
 
 static JSValueRef
@@ -245,14 +243,10 @@ seed_struct_get_property(JSContextRef context,
 						 JSObjectRef object,
 						 JSStringRef property_name, JSValueRef * exception)
 {
-	gpointer pointer;
 	gchar *cproperty_name;
-	int i, n;
 	int length;
 	seed_struct_privates *priv = JSObjectGetPrivate(object);
 	GIFieldInfo *field = 0;
-	GITypeInfo *field_type = 0;
-	GArgument field_value;
 	JSValueRef ret;
 
 	length = JSStringGetMaximumUTF8CStringSize(property_name);
@@ -284,7 +278,7 @@ static void seed_enumerate_structlike_properties(JSContextRef ctx,
 {
 	GIFieldInfo *field;
 	gint i, n;
-	guchar type;
+	guchar type = 0;
 	seed_struct_privates *priv =
 		(seed_struct_privates *) JSObjectGetPrivate(object);
 	GIBaseInfo *info = priv->info;
@@ -305,7 +299,6 @@ static void seed_enumerate_structlike_properties(JSContextRef ctx,
 
 	for (i = 0; i < n; i++)
 	{
-		const gchar *cname;
 		JSStringRef jname;
 
 		(type == 1) ?
@@ -480,7 +473,6 @@ JSObjectRef seed_make_union(JSContextRef ctx, gpointer younion,
 JSObjectRef seed_make_boxed(JSContextRef ctx, gpointer boxed, GIBaseInfo * info)
 {
 	JSObjectRef object;
-	gint i, n_methods;
 	seed_struct_privates *priv = g_slice_alloc(sizeof(seed_struct_privates));
 
 	priv->info = info ? g_base_info_ref(info) : 0;
@@ -550,7 +542,7 @@ seed_construct_struct_type_with_parameters(JSContextRef ctx,
 	gpointer object;
 	GIInfoType type = g_base_info_get_type(info);
 	JSObjectRef ret;
-	gint nparams, i, length;
+	gint nparams, i = 0, length;
 	GIFieldInfo *field = 0;
 	JSPropertyNameArrayRef jsprops;
 	JSStringRef jsprop_name;

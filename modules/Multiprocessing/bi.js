@@ -10,12 +10,14 @@ if (child_pid == 0)
 	mine.add_watch(1, 
 				   function()
 				   {
-					   Seed.print("Child Got: " + mine.read());
-					   mine.write("Pong");
+					   var message = {type: "PING",
+									  data: "Hello!"};
+					   mine.write(JSON.stringify(message));
 					   return true;
 				   });
 	Gtk.main();									
 }
 mine = pipes[1];
 mine.write("Ping");
-Seed.print("Parent Got: " + mine.read());
+message = JSON.parse(mine.read());
+Seed.print("Parent Got: " + message.type + ": " + message.data);

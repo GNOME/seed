@@ -73,7 +73,8 @@ seed_struct_constructor_invoked(JSContextRef ctx,
 	}
 	ret = seed_construct_struct_type_with_parameters(ctx, info,
 													 parameters, exception);
-
+	
+	return (JSObjectRef) ret;
 }
 
 static JSObjectRef
@@ -95,7 +96,6 @@ seed_gobject_constructor_invoked(JSContextRef ctx,
 	JSPropertyNameArrayRef jsprops = 0;
 	JSStringRef jsprop_name;
 	JSValueRef jsprop_value;
-	gboolean sunk = TRUE;
 
 	type = (GType) JSObjectGetPrivate(constructor);
 	if (!type)
@@ -360,15 +360,10 @@ seed_gobject_method_invoked(JSContextRef ctx,
 		else
 		{
 			GIBaseInfo *interface;
-			GIInfoType type;
 			gboolean sunk = FALSE;
 
 			if (tag == GI_TYPE_TAG_INTERFACE)
 			{
-				GIFunctionInfoFlags flags =
-					g_function_info_get_flags((GIFunctionInfo *) info);
-
-				GIBaseInfo *interface;
 				GIInfoType interface_type;
 
 				interface = g_type_info_get_interface(type_info);
@@ -579,7 +574,8 @@ JSClassRef seed_gobject_get_class_for_gtype(JSContextRef ctx, GType type)
 		GType *interfaces;
 		GIFunctionInfo *function;
 		GIBaseInfo *interface;
-		gint n_functions, k, i, n;
+		gint n_functions, k, i;
+		guint n;
 
 		interfaces = g_type_interfaces(type, &n);
 		for (i = 0; i < n; i++)
