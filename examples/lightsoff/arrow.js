@@ -32,6 +32,7 @@ Arrow = new GType({
 		// Implementation
 		this.reactive = true;
 		this.signal.button_press_event.connect(toggle_arrow);
+		this.show();
 	}
 });
 
