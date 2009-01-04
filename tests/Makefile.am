@@ -5,6 +5,7 @@ EXTRA_DIST = \
     native-closure-exception.js \
     struct-enumerate.js \
     gtype-class-init-exception.js \
+    gtype-property.js        \
     struct-union-enumerate.js \
     compare.js \
     include-syntax.js \

@@ -351,6 +351,45 @@ seed_gsignal_method_invoked(JSContextRef ctx,
 	return (JSValueRef) seed_value_from_uint(ctx, signal_id, exception);
 }
 
+static void seed_gtype_set_property(GObject * object,
+									guint property_id,
+									const GValue *value,
+									GParamSpec *spec)
+{
+	JSContextRef ctx = JSGlobalContextCreateInGroup(context_group, 0);
+	gchar * name = g_strjoin(NULL, "_", spec->name, NULL);
+	JSObjectRef jsobj = (JSObjectRef)seed_value_from_object(ctx, object, 0);
+	
+	seed_object_set_property(ctx, 
+							 jsobj, 
+							 name, 
+							 seed_value_from_gvalue(ctx, 
+													(GValue *)value, 
+													0));
+	
+	g_free(name);
+	JSGlobalContextRelease((JSGlobalContextRef) ctx);
+}
+
+static void seed_gtype_get_property(GObject * object,
+									guint property_id,
+									GValue *value,
+									GParamSpec *spec)
+{
+	// TODO: Exceptions
+	JSContextRef ctx = JSGlobalContextCreateInGroup(context_group, 0);
+	gchar * name = g_strjoin(NULL, "_", spec->name, NULL);
+	JSObjectRef jsobj = (JSObjectRef) seed_value_from_object(ctx, object, 0);
+	JSValueRef jsval = seed_object_get_property(ctx, jsobj,
+												name);
+	
+	seed_gvalue_from_seed_value(ctx, jsval, spec->owner_type,
+								value, 0);
+	
+	g_free(name);
+	JSGlobalContextRelease((JSGlobalContextRef) ctx);
+}
+
 static void
 seed_handle_class_init_closure(ffi_cif * cif,
 							   void *result, void **args, void *userdata)
@@ -361,6 +400,10 @@ seed_handle_class_init_closure(ffi_cif * cif,
 	JSValueRef exception = 0;
 	JSContextRef ctx = JSGlobalContextCreateInGroup(context_group,
 													0);
+	GObjectClass * klass = *(GObjectClass **) args[0];
+	
+	klass->get_property = seed_gtype_get_property;
+	klass->set_property = seed_gtype_set_property;
 
 	type = (GType) JSObjectGetPrivate(*(JSObjectRef *) args[1]);
 	jsargs[0] = seed_make_pointer(ctx, *(gpointer *) args[0]);
