@@ -16,7 +16,7 @@ if (child_pid == 0)
 	var id = parseInt(pipe.read(), 10);
 
 	var l = new Gtk.Label({label: "Hello GtkPlug World"});
-	var s = Gtk.Plug._new(id);
+	var s = new Gtk.Plug.c_new(id);
 	
 	s.add(l);
 	s.show_all();

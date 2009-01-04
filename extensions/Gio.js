@@ -4,7 +4,7 @@
 
     prototype.get_contents = function()
     {
-	    var stream = Gio.DataInputStream._new(this);
+	    var stream = new Gio.DataInputStream.c_new(this);
 	    var line = stream.read_until("", 0);
 	    return line;	
     }
@@ -13,7 +13,7 @@
     {
 	    var file = Gio.file_new_for_path(file);
 	    var fstream = file.replace();
-	    var dstream = Gio.DataOutputStream._new(fstream);
+	    var dstream = new Gio.DataOutputStream.c_new(fstream);
 		    
 	    dstream.put_string(name);
 	    fstream.close();
@@ -24,7 +24,7 @@
 	    var file = Gio.file_new_for_path(name);
 
 	    var fstream = file.read();
-	    var dstream = Gio.DataInputStream._new(fstream);
+	    var dstream = new Gio.DataInputStream.c_new(fstream);
 	    var line = dstream.read_until("", 0);
 
 	    fstream.close();

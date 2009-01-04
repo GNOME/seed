@@ -95,7 +95,7 @@ timeline.signal.completed.connect(
 		var text = new Clutter.Label({text:"Congratulations!",
 									  font_name:"Bitstream Vera Sans 40"});
 		var fadeline = new Clutter.Timeline({fps:60, num_frames:200});
-		var effect = Clutter.EffectTemplate._new(timeline, alpha_func);
+		var effect = new Clutter.EffectTemplate.c_new(timeline, alpha_func);
 		
 		text.show();
 		stage.add_actor(text);

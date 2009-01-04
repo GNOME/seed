@@ -5,7 +5,7 @@ Seed.import_namespace("ClutterCairo");
 
 Clutter.init(null, null);
 
-c = ClutterCairo.ClutterCairo._new(100, 100);
+c = new ClutterCairo.ClutterCairo.c_new(100, 100);
 cr = c.create();
 
 ctx = new Canvas.CairoCanvas(cr);
