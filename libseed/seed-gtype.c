@@ -22,6 +22,10 @@
 
 JSClassRef seed_gtype_class;
 GIBaseInfo * objectclass_info = NULL;
+GIBaseInfo * paramspec_info = NULL;
+
+GQuark qgetter;
+GQuark qsetter;
 
 /* From pygobject */
 static ffi_type *g_value_to_ffi_type(const GValue * gvalue, gpointer * value)
@@ -352,7 +356,7 @@ seed_gsignal_method_invoked(JSContextRef ctx,
 	return (JSValueRef) seed_value_from_uint(ctx, signal_id, exception);
 }
 
-static void seed_gtype_set_property(GObject * object,
+static void seed_gtype_builtin_set_property(GObject * object,
 									guint property_id,
 									const GValue *value,
 									GParamSpec *spec)
@@ -372,7 +376,7 @@ static void seed_gtype_set_property(GObject * object,
 	JSGlobalContextRelease((JSGlobalContextRef) ctx);
 }
 
-static void seed_gtype_get_property(GObject * object,
+static void seed_gtype_builtin_get_property(GObject * object,
 									guint property_id,
 									GValue *value,
 									GParamSpec *spec)
@@ -389,6 +393,34 @@ static void seed_gtype_get_property(GObject * object,
 	
 	g_free(name);
 	JSGlobalContextRelease((JSGlobalContextRef) ctx);
+}
+
+static void seed_gtype_set_property(GObject * object,
+									guint property_id,
+									const GValue *value,
+									GParamSpec *spec)
+{
+	gpointer data = g_param_spec_get_qdata(spec, qsetter);
+
+	if (!data)
+	{
+		seed_gtype_builtin_set_property(object, property_id, value, spec);
+		return;
+	}
+}
+
+static void seed_gtype_get_property(GObject * object,
+									guint property_id,
+									GValue *value,
+									GParamSpec *spec)
+{
+	gpointer data = g_param_spec_get_qdata(spec, qgetter);
+
+	if (!data)
+	{
+		seed_gtype_builtin_get_property(object, property_id, value, spec);
+		return;
+	}
 }
 
 static void
@@ -611,6 +643,76 @@ seed_gtype_constructor_invoked(JSContextRef ctx,
 	return JSObjectMake(ctx, gobject_constructor_class, (gpointer) new_type);
 }
 
+static JSValueRef
+seed_param_getter_invoked(JSContextRef ctx,
+							 JSObjectRef function,
+							 JSObjectRef thisObject,
+							 size_t argumentCount,
+							 const JSValueRef arguments[],
+							 JSValueRef * exception)
+{
+	GParamSpec *pspec = seed_pointer_get_pointer(ctx, thisObject);
+
+	if (argumentCount != 1)
+	{
+		gchar * mes = g_strdup_printf("ParamSpec.get expected "
+									  "1 argument, got %d",
+									  argumentCount);
+		seed_make_exception(ctx, exception, "ArgumentError", mes);
+		g_free(mes);
+		
+		return JSValueMakeNull(ctx);
+	}
+	else if (JSValueIsNull(ctx, arguments[0]) ||
+			 !JSValueIsObject(ctx, arguments[0]) ||
+			 !JSObjectIsFunction(ctx, (JSObjectRef)arguments[0]))
+	{
+		// Maybe should  accept C functions
+		seed_make_exception(ctx, exception, "ArgumentError",
+							"ParamSpec.get expected a function");
+		return JSValueMakeNull(ctx);
+	}
+	
+	g_param_spec_set_qdata(pspec, qgetter, (gpointer)arguments[0]);
+	
+	return seed_value_from_boolean(ctx, TRUE, exception);
+}
+
+static JSValueRef
+seed_param_setter_invoked(JSContextRef ctx,
+							 JSObjectRef function,
+							 JSObjectRef thisObject,
+							 size_t argumentCount,
+							 const JSValueRef arguments[],
+							 JSValueRef * exception)
+{
+	GParamSpec *pspec = seed_pointer_get_pointer(ctx, thisObject);
+
+	if (argumentCount != 1)
+	{
+		gchar * mes = g_strdup_printf("ParamSpec.set expected "
+									  "1 argument, got %d",
+									  argumentCount);
+		seed_make_exception(ctx, exception, "ArgumentError", mes);
+		g_free(mes);
+		
+		return JSValueMakeNull(ctx);
+	}
+	else if (JSValueIsNull(ctx, arguments[0]) ||
+			 !JSValueIsObject(ctx, arguments[0]) ||
+			 !JSObjectIsFunction(ctx, (JSObjectRef)arguments[0]))
+	{
+		// Maybe should  accept C functions
+		seed_make_exception(ctx, exception, "ArgumentError",
+							"ParamSpec.set expected a function");
+		return JSValueMakeNull(ctx);
+	}
+	
+	g_param_spec_set_qdata(pspec, qsetter, (gpointer)arguments[0]);
+	
+	return seed_value_from_boolean(ctx, TRUE, exception);
+}
+
 void seed_define_gtype_functions(JSContextRef ctx)
 {
 	JSObjectRef proto;
@@ -626,6 +728,18 @@ void seed_define_gtype_functions(JSContextRef ctx)
 						 proto);	
 	seed_create_function(ctx, "install_signal",
 						 &seed_gsignal_method_invoked, proto);
+
+	paramspec_info = g_irepository_find_by_name(NULL,
+												"GObject",
+												"ParamSpec");
+	proto = seed_struct_prototype(ctx, paramspec_info);
+
+	seed_create_function(ctx, "get",
+						 &seed_param_getter_invoked,
+						 proto);
+	seed_create_function(ctx, "set",
+						 &seed_param_setter_invoked,
+						 proto);
 }
 
 void seed_gtype_init(SeedEngine * local_eng)
@@ -643,6 +757,9 @@ void seed_gtype_init(SeedEngine * local_eng)
 							 local_eng->global,
 							 "GType",
 							 gtype_constructor);
+
+	qgetter = g_quark_from_static_string("js-getter");
+	qsetter = g_quark_from_static_string("js-setter");
 	
 	seed_define_gtype_functions(local_eng->context);
 }
