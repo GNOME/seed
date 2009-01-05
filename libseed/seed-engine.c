@@ -960,6 +960,7 @@ seed_gi_import_namespace(JSContextRef ctx,
 				seed_object_set_property(ctx, enum_class, name, value_ref);
 
 				g_free(name);
+				g_base_info_unref((GIBaseInfo*)val);
 
 			}
 		}
