@@ -17,7 +17,7 @@ parent: Gtk.Window.type,
 name: "HelloWindow",
 class_init: function(klass, prototype)
 {
-	klass.install_property(GObject.param_spec_boolean("test",
+	klass.c_install_property(GObject.param_spec_boolean("test",
 													  "test property",
 													  "A test property!",
 													  false,

@@ -4,6 +4,7 @@
 // STDOUT:resize
 // STDERR:
 Seed.import_namespace("Gtk");
+Seed.import_namespace("GIRepository");
 
 f = Gtk.Window.prototype.resize.info
 

@@ -1418,6 +1418,12 @@ SeedEngine *seed_init(gint * argc, gchar *** argv)
 
 	seed_create_function(eng->context, "import_namespace",
 						 &seed_gi_import_namespace, seed_obj_ref);
+
+	g_irepository_require(g_irepository_get_default(), "GObject",
+						  NULL, 0, 0);
+	g_irepository_require(g_irepository_get_default(), "GIRepository",
+						  NULL, 0, 0);
+
 	seed_init_builtins(eng, argc, argv);
 	seed_closures_init();
 	seed_structs_init();
@@ -1426,7 +1432,7 @@ SeedEngine *seed_init(gint * argc, gchar *** argv)
 
 	defaults_script =
 		JSStringCreateWithUTF8CString("Seed.import_namespace(\""
-									  "GIRepository\");"
+									  "GObject\");"
 									  "try{Seed.include(\"/usr/share/"
 									  "seed/Seed.js\");} catch(e){}"
 									  "Seed.include(\"/usr/local/share"

@@ -21,6 +21,7 @@
 #include <sys/mman.h>
 
 JSClassRef seed_gtype_class;
+GIBaseInfo * objectclass_info = NULL;
 
 /* From pygobject */
 static ffi_type *g_value_to_ffi_type(const GValue * gvalue, gpointer * value)
@@ -406,7 +407,7 @@ seed_handle_class_init_closure(ffi_cif * cif,
 	klass->set_property = seed_gtype_set_property;
 
 	type = (GType) JSObjectGetPrivate(*(JSObjectRef *) args[1]);
-	jsargs[0] = seed_make_pointer(ctx, *(gpointer *) args[0]);
+	jsargs[0] = seed_make_struct(ctx, *(gpointer *) args[0], objectclass_info);
 	jsargs[1] = seed_gobject_get_prototype_for_gtype(type);
 
 	SEED_NOTE(GTYPE, "Marshalling class init closure for type: %s",
@@ -415,14 +416,9 @@ seed_handle_class_init_closure(ffi_cif * cif,
 	// TODO: 
 	// Should probably have a custom type for class, and have it auto convert.
 	seed_object_set_property(ctx, (JSObjectRef) jsargs[0],
-							 "type", seed_value_from_int(ctx, type, 0));
+  							 "type", seed_value_from_int(ctx, type, 0));
 	seed_object_set_property(ctx, (JSObjectRef) jsargs[0],
 							 "property_count", seed_value_from_int(ctx, 1, 0));
-	seed_create_function(ctx, "install_signal",
-						 &seed_gsignal_method_invoked, (JSObjectRef) jsargs[0]);
-	seed_create_function(ctx, "install_property",
-						 &seed_property_method_invoked,
-						 (JSObjectRef) jsargs[0]);
 
 	JSObjectCallAsFunction(ctx, function, 0, 2, jsargs, &exception);
 	if (exception)
@@ -615,6 +611,23 @@ seed_gtype_constructor_invoked(JSContextRef ctx,
 	return JSObjectMake(ctx, gobject_constructor_class, (gpointer) new_type);
 }
 
+void seed_define_gtype_functions(JSContextRef ctx)
+{
+	JSObjectRef proto;
+
+	objectclass_info = g_irepository_find_by_name(NULL,
+												   "GObject",
+												   "ObjectClass");
+
+	proto = seed_struct_prototype(ctx, objectclass_info);
+
+	seed_create_function(ctx, "c_install_property",
+						 &seed_property_method_invoked,
+						 proto);	
+	seed_create_function(ctx, "install_signal",
+						 &seed_gsignal_method_invoked, proto);
+}
+
 void seed_gtype_init(SeedEngine * local_eng)
 {
 	JSClassDefinition gtype_def = kJSClassDefinitionEmpty;
@@ -627,5 +640,9 @@ void seed_gtype_init(SeedEngine * local_eng)
 	gtype_constructor = JSObjectMake(local_eng->context, seed_gtype_class, 0);
 
 	seed_object_set_property(local_eng->context,
-							 local_eng->global, "GType", gtype_constructor);
+							 local_eng->global,
+							 "GType",
+							 gtype_constructor);
+	
+	seed_define_gtype_functions(local_eng->context);
 }
