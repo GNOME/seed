@@ -657,7 +657,7 @@ seed_param_getter_invoked(JSContextRef ctx,
 	{
 		gchar * mes = g_strdup_printf("ParamSpec.get expected "
 									  "1 argument, got %d",
-									  argumentCount);
+									  (unsigned int) argumentCount);
 		seed_make_exception(ctx, exception, "ArgumentError", mes);
 		g_free(mes);
 		
@@ -692,7 +692,7 @@ seed_param_setter_invoked(JSContextRef ctx,
 	{
 		gchar * mes = g_strdup_printf("ParamSpec.set expected "
 									  "1 argument, got %d",
-									  argumentCount);
+									  (unsigned int) argumentCount);
 		seed_make_exception(ctx, exception, "ArgumentError", mes);
 		g_free(mes);
 		
