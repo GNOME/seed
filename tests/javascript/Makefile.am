@@ -1,57 +1,61 @@
 EXTRA_DIST = \
     COPYING \
     argv.js \
+    builtin-argument-length.js \
+    check-syntax.js \
     closure-finalization.js \
-    native-closure-exception.js \
-    struct-enumerate.js \
-    gtype-class-init-exception.js \
-    gtype-property.js        \
-    struct-union-enumerate.js \
-    compare.js \
-    include-syntax.js \
-    struct-nested-set.js \
-    struct-constructor.js \
-    function-info.js \
-    object-info.js \
-    constructor-args.js \
-    struct-set-member.js \
     c-module.js \
+    compare.js \
+    constructor-args.js \
     constructor-prototype.js \
-    struct-offsets.js \
-    gtype-typerror.js \
-    gtype-signal.js \
-    signal-userdata.js \
-    gtype-signal-exception.js \
-    out-test.js \
-    signal-expects.js \
-    gtype.js \
-    json.js \
     enum.js \
-    signal-exception.js \
+    fork.js \
+    function-info.js \
+    gdk-event.js \
     gerror.js \
     gobject-scope.js \
+    gtype-class-init-exception.js \
+    gtype.js \
+    gtype-property.js \
+    gtype-signal-exception.js \
+    gtype-signal.js \
+    gtype-typerror.js \
     include.js \
-    printf.js \
+    include-syntax.js \
+    introspect.js \
     json-constructor.js \
+    json.js \
     list-test.js \
     namespace-exception-test.js \
+    native-closure-exception.js \
+    native-closure.js \
+    object-info.js \
+    out-test.js \
+    printf.js \
     print.js \
     printprint.js \
     property-benchmark.js \
     property-glib-exception.js \
-    readline.js \
-    signal.js \
-    syntax-test.js \
-    type-conversion.js \
-    native-closure.js \
-    gdk-event.js \
-    signal-connect.js \
-    struct-functions.js \
-    check-syntax.js \
-    fork.js \
+    quit2.js \
     quit.js \
-    introspect.js \
-    builtin-argument-length.js
+    readline_bind.js \
+    readline.js \
+    signal-connect.js \
+    signal-exception.js \
+    signal-expects.js \
+    signal.js \
+    signal-userdata.js \
+    spawn.js \
+    sqlite.js \
+    struct-constructor.js \
+    struct-enumerate.js \
+    struct-functions.js \
+    struct-nested-set.js \
+    struct-offsets.js \
+    struct-set-member.js \
+    struct-union-enumerate.js \
+    syntax-test.js \
+    type-conversion.js
 
 
 ## File created by the gnome-build tools
