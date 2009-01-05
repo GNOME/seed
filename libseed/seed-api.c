@@ -105,6 +105,17 @@ JSValueRef seed_evaluate(JSContextRef ctx, SeedScript * js, JSObjectRef this)
 	return ret;
 }
 
+JSValueRef seed_simple_evaluate(JSContextRef ctx, gchar * source)
+{
+	JSValueRef ret;
+	JSStringRef script = JSStringCreateWithUTF8CString(source);
+	
+	ret = JSEvaluateScript(ctx, script, NULL, NULL, 0, NULL);
+
+	JSStringRelease(script);
+	return ret;
+}
+
 JSValueRef seed_script_exception(SeedScript * s)
 {
 	return s->exception;

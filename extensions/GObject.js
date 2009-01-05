@@ -23,7 +23,6 @@
      
      for (var i = 0; i < types.length; i++)
 	 {
-
 	     GObject["TYPE_"+types[i].name] = types[i].fundamental << 2;
 	 }
 
