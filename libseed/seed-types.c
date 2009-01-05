@@ -876,7 +876,7 @@ seed_gvalue_from_seed_value(JSContextRef ctx,
 			}
 		}
 		switch (JSValueGetType(ctx, val))
-			{
+		{
 			case kJSTypeBoolean:
 				{
 					g_value_init(ret, G_TYPE_BOOLEAN);

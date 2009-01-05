@@ -8,6 +8,7 @@ examplesdir=$(datadir)/doc/seed/examples
 examples_DATA = \
 	actions.js \
 	Gnio.js \
+	gtktreeview.js \
 	Gnio-server.js \
 	clutter-cairo.js \
 	threaded-repl.js \
@@ -32,6 +33,7 @@ examples_DATA = \
 EXTRA_DIST = \
 	COPYING \
 	actions.js \
+	gtktreeview.js \
 	calculator.js \
 	clutter-cairo.js \
 	gconf.js \
