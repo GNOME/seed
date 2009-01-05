@@ -582,6 +582,7 @@ JSClassRef seed_gobject_get_class_for_gtype(JSContextRef ctx, GType type)
 										  (GIObjectInfo *) info, prototype_obj);
 		seed_gobject_add_methods_for_interfaces(ctx, (GIObjectInfo *) info,
 												prototype_obj);
+		g_base_info_unref(info);
 	}
 	else
 	{
