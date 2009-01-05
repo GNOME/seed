@@ -1,6 +1,18 @@
 #!/usr/bin/env seed
+// Returns: 0
+// STDIN:
+// STDOUT:\{"t1key":"1","data":"This is sample data","num":"3\.0","timeEnter":""\}\n\{"t1key":"2","data":"More sample data","num":"6\.0","timeEnter":""\}\n\{"t1key":"3","data":"And a little more","num":"9\.0","timeEnter":""\}
+// STDERR:
+
 Seed.import_namespace("sqlite");
-d = new sqlite.Database(Seed.argv[2]);
+Seed.import_namespace("Gio");
+
+try
+{
+	Gio.file_new_for_path("/tmp/.seed_test.db")["delete"]();
+} catch(e) { }
+
+d = new sqlite.Database("/tmp/.seed_test.db");
 
 d.exec("create table t1 (t1key INTEGER PRIMARY KEY,data TEXT,num double,timeEnter DATE);");
 d.exec("insert into t1 (data,num) values ('This is sample data',3);");

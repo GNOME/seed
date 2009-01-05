@@ -14,7 +14,10 @@ AM_CPPFLAGS = \
 	`pkg-config --cflags seed` \
 	`pkg-config --cflags glib-2.0` -g \
 	`pkg-config --cflags gobject-introspection-1.0` \
-	`pkg-config --cflags cairo`
+	`pkg-config --cflags cairo` \
+	$(SEED_DEBUG_CFLAGS) $(SEED_PROFILE_CFLAGS)
+
+AM_LDFLAGS = $(SEED_PROFILE_LDFLAGS)
 
 endif
 
