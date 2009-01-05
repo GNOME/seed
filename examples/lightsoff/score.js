@@ -72,12 +72,14 @@ Score = new GType({
 				old_set.destroy();
 			
 			bkg_top.raise_top();
+			bkg_top.show();
 			
 			return true;
 		};
 		
 		// Implementation
 		this.add_actor(bkg);
+		bkg.show();
 		
 		for(var i = 0; i < 5; i++)
 		{
