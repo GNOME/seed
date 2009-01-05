@@ -183,6 +183,8 @@ void seed_module_init(SeedEngine * local_eng)
 	seed_object_set_property(eng->context, 
 							 eng->global, "sqlite", namespace_ref);
 	
+	define_errors(eng);
+	
 	sqlite_class_def.class_name = "Database";
 	sqlite_class_def.finalize = sqlite_database_finalize;
 	sqlite_class_def.static_functions = database_funcs;
