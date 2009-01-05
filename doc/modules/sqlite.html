@@ -19,5 +19,27 @@ In order to use functions from the sqlite module, you must first import it:
 <pre class="sh_javascript">
 Seed.import_namespace("sqlite");
 </pre>
+<div class="section"><b>Enums</b></div>
+<p>
+The SQLite module provides a selection of status enums which are used as the return values of functions, and inform the calling function of the result of the operation.
+</p>
+<pre class="sh_javascript">
+sqlite.[OK, ERROR, INTERNAL, PERM ABORT, BUSY,
+        LOCKED, NOMEM, READONLY, INTERRUPT, CORRUPT,
+        NOTFOUND, FULL, CANTOPEN, PROTOCOL, EMPTY,
+        SCHEMA, TOOBIG, CONSTRAINT, MISMATCH, MISUSE,
+        NOLFS, AUTH, FORMAT, RANGE, NOTADB, ROW, DONE]
+</pre>
+<div class="section"><b>new sqlite.Database</b>(filename)</div>
+<p>
+Constructs a new sqlite.Database, opening the SQLite database in the given file (and creating the file if it doesn't exist). Returns an object; the <i>status</i> property on the returned object is one of the SQLite status enums.
+</p>
+<pre class="sh_javascript">
+var db = new sqlite.Database("people.db");
+</pre>
+<div class="section">database.<b>close</b>()</div>
+<p>
+Closes a SQLite database and syncs.
+</p>
 </body>
 </html>
