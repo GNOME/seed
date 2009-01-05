@@ -119,6 +119,8 @@ static gboolean seed_release_arg(GITransfer transfer,
 
 			if (g_type_info_get_tag(param_type) == GI_TYPE_TAG_UTF8)
 				g_strfreev(arg->v_pointer);
+			else if (g_type_info_get_tag(param_type) == GI_TYPE_TAG_GTYPE)
+				g_free(arg->v_pointer);
 			else
 				g_assert_not_reached();
 
@@ -146,6 +148,14 @@ static gboolean seed_release_arg(GITransfer transfer,
 										  (G_OBJECT(arg->v_pointer))),
 							  G_OBJECT(arg->v_pointer)->ref_count);
 					g_object_unref(G_OBJECT(arg->v_pointer));
+				}
+				else if (gtype == G_TYPE_VALUE)
+				{
+					GValue * gval = (GValue *)arg->v_pointer;
+					// Free/unref the GValue's contents.
+					g_value_unset(gval);
+					// Free the GValue.
+					g_slice_free1(sizeof(GValue), gval);
 				}
 
 				g_base_info_unref(interface_info);
@@ -220,6 +230,24 @@ seed_gi_make_array(JSContextRef ctx,
 														 i,
 														 exception);
 			result[i] = seed_value_to_string(ctx, elem, exception);
+		}
+
+		*array_p = result;
+	}
+	if (element_type == GI_TYPE_TAG_GTYPE)
+	{
+		GType *result;
+		guint i;
+
+		result = g_new0(GType, length + 1);
+
+		for (i = 0; i < length; i++)
+		{
+			JSValueRef elem = JSObjectGetPropertyAtIndex(ctx,
+														 (JSObjectRef) array,
+														 i,
+														 exception);
+			result[i] = seed_value_to_int(ctx, elem, exception);
 		}
 
 		*array_p = result;
@@ -361,6 +389,19 @@ seed_gi_make_argument(JSContextRef ctx,
 						g_base_info_unref(interface);
 						return FALSE;
 					}
+					else if (type == G_TYPE_VALUE)
+					{
+						GValue * gval = g_slice_alloc0(sizeof(GValue));
+						seed_gvalue_from_seed_value(ctx,
+													value,
+													(GType)NULL,
+													gval,
+													exception);
+						arg->v_pointer = gval;
+						
+						g_base_info_unref(interface);
+						break;
+					}
 					// Automatically convert between functions and 
 					// GClosures where expected.
 					else if (g_type_is_a(type, G_TYPE_CLOSURE))
@@ -462,6 +503,7 @@ seed_gi_make_argument(JSContextRef ctx,
 			else
 			{
 				GITypeInfo *param_type;
+				//TODO: FIXME: Better array test like the cool one on reddit.
 				guint length =
 					seed_value_to_int(ctx, seed_object_get_property(ctx,
 																	(JSObjectRef) value,
@@ -796,8 +838,44 @@ seed_gvalue_from_seed_value(JSContextRef ctx,
 			return TRUE;
 		}
 	default:
+	{
+		// TODO: FIXME: This whole undefined type area
+		// needs some heaaavy improvement.
+
+		// Support [GObject.TYPE_INT, 3]
+		// TODO: FIXME: Might crash.
+		if (type == 0 && JSValueIsObject(ctx, val))
 		{
-			switch (JSValueGetType(ctx, val))
+			// TODO: FIXME: Better array test like the cool one on reddit.
+			guint length = 
+				seed_value_to_int(ctx,
+								  seed_object_get_property(ctx,
+														   (JSObjectRef) val,
+														   "length"),
+								  exception);
+			
+			if (length)
+			{
+				type = seed_value_to_int(ctx,
+										 JSObjectGetPropertyAtIndex(ctx,
+														(JSObjectRef) val,
+														0, exception),
+										 exception);
+				val = JSObjectGetPropertyAtIndex(ctx,
+												 (JSObjectRef) val,
+												 1, exception);
+				if (type) // Prevents recursion.
+				{ 
+					return seed_gvalue_from_seed_value(ctx, val,
+													   type, ret,
+													   exception);
+				}
+				// TODO: FIXME: Handle better?
+				else
+					g_assert_not_reached();
+			}
+		}
+		switch (JSValueGetType(ctx, val))
 			{
 			case kJSTypeBoolean:
 				{
