@@ -37,9 +37,32 @@ Constructs a new sqlite.Database, opening the SQLite database in the given file 
 <pre class="sh_javascript">
 var db = new sqlite.Database("people.db");
 </pre>
+<div class="section">database.<b>exec</b>(command, <i>callback</i>)</div>
+<p>
+Executes the SQLite <i>command</i> on the given database. If <i>callback</i> is defined, it is called with each table entry returned from the given command, with a single argument. The callback argument has properties on it for each value in the returned table entry.
+</p>
+<p>
+Keep in mind that, just like in C, you have to sanitize user input in your SQL before passing it to the database, otherwise it's <i>very</i> easy to craft input that can wreak havoc on your database. We plan to have a sanitization function, as well as an API similar to the C one, where you can pass values into <b>exec</b> after the command string, and they are substituted into the command <i>by</i> SQLite, so as to avoid potential injection problems.
+</p>
+<pre class="sh_javascript">
+db.exec("create table people (key INTEGER PRIMARY KEY, name TEXT," +
+                             "age INTEGER, phone TEXT);");
+db.exec("insert into people(name, age, phone) " + 
+                    "values('John Smith', 24, '555-123-4567');");
+
+function cb_print_phone(results)
+{
+    Seed.print(results.phone);
+}
+
+db.exec("select from people where name='John Smith';", cb_print_phone);
+</pre>
 <div class="section">database.<b>close</b>()</div>
 <p>
 Closes a SQLite database and syncs.
 </p>
+<pre class="sh_javascript">
+db.close();
+</pre>
 </body>
 </html>

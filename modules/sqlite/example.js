@@ -8,3 +8,5 @@ d.exec("insert into t1 (data,num) values ('More sample data',6);");
 d.exec("insert into t1 (data,num) values ('And a little more',9);");
 
 d.exec("select * from t1", function(results){Seed.print(JSON.stringify(results))});
+
+d.close();
