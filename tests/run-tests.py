@@ -1,27 +1,8 @@
 #!/usr/bin/python
 
-#######################
-# Kram Test Framework #
-#   Seed Unit Tests   #
-#######################
-
-# So! Ideas...
-# We obviously need not just 'pass' tests, but also 'fail' tests, and to make
-# sure that they throw the correct exceptions. Something a bit more flexible
-# than a Bash script that just checks to make sure all the .jses exit properly.
-
-# I'm thinking of a comment directly after the shebang in the tests that gives
-# expected output (on one line) and expected exit value... scripts get run
-# by Python, which checks the comment and the exit value, runs the tests,
-# and records run information (rev #, uname, test times, etc.) in an
-# easily-emailed format (and append to a log file, for safekeeping).
-
-# Test script could also have an option to perform timing/memory-use tests, 
-# automatically running numerous times and averaging, etc... (find a way around
-# launching overhead... reimplement main.c here?), and recording to a running
-# log so we can keep track of performance/mem-use regressions, etc...
-
-# TODO: test return value
+################################
+#   Seed Unit Test Framework   #
+################################
 
 import os
 import re
@@ -31,16 +12,21 @@ import subprocess
 passed = []
 failed = []
 
-for f in os.listdir("."):
+mcwd = os.getcwd()
+
+for f in os.listdir("javascript"):
 	if f.endswith(".js") and not f.endswith("_.js"):
-		rfile = open(f, "r")
+		rfile = open(mcwd + "/javascript/"+f, "r")
 		test_code = rfile.readlines()
 		test_retval = int(test_code[1].replace("// Returns:","").rstrip().replace("\\n","\n"));
 		test_in = test_code[2].replace("// STDIN:","").rstrip().replace("\\n","\n");
 		test_out = "^" + test_code[3].replace("// STDOUT:","").rstrip().replace("\\n","\n") + "$";
 		test_err = "^" + test_code[4].replace("// STDERR:","").rstrip().replace("\\n","\n") + "$";
 		
-		p = subprocess.Popen("./"+f, shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, close_fds=True)
+		p = subprocess.Popen(mcwd + "/javascript/" + f, shell=True,
+							 stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+							 stderr=subprocess.PIPE, close_fds=True,
+							 cwd=mcwd+"/javascript/")
 		(out,err)=(p.stdout, p.stderr)
 		
 		(run_out,run_err)=p.communicate(test_in + "\004")
