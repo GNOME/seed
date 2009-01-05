@@ -19,5 +19,33 @@ In order to use functions from the canvas module, you must first import it:
 <pre class="sh_javascript">
 Seed.import_namespace("canvas");
 </pre>
+<div class="section"><b>External Documentation</b></div>
+<p>
+The canvas module is actually an implementation of a subset of the <a href="https://developer.mozilla.org/en/Canvas_tutorial">HTML Canvas</a> element. Many of the functions from Canvas directly translate into Seed, and you can use <a href="http://www.whatwg.org/specs/web-apps/current-work/#the-canvas-element">any</a> <a href="https://developer.mozilla.org/en/HTML/Canvas">Canvas</a> <a href="http://developer.apple.com/documentation/appleapplications/Conceptual/SafariJSProgTopics/Tasks/Canvas.html">documentation</a> to help develop Seed canvas code. The drawing functions will not be redocumented here.
+</p>
+<div class="section"><b>new CairoCanvas</b>(cairo)<br/>
+<b>new PDFCanvas</b>(filename, width, height)<br/>
+<b>new SVGCanvas</b>(filename, width, height)<br/>
+<b>new ImageCanvas</b>(filename, width, height)</div>
+<p>
+Construct a Canvas with a particular output format. <b>CairoCanvas</b>es are constructed given a <i>cairo</i> to draw to, while the others output to a file, and need to be given a size for the canvas.
+</p>
+<div class="section">canvas.<b>flush</b>()</div>
+<p>
+
+</p>
+<div class="section">canvas.<b>finish</b>()</div>
+<div class="section">canvas.<b>showPage</b>()</div>
+<div class="section">canvas.<b>destroy</b>()</div>
+
+
+<!-- 
+
+	{"flush", seed_canvas_flush, 0},
+	{"finish", seed_canvas_finish, 0},
+	{"showPage", seed_canvas_showpage, 0},
+	{"destroy", seed_canvas_destroy, 0},
+
+-->
 </body>
 </html>
