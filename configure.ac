@@ -119,6 +119,7 @@ po/Makefile.in
 src/Makefile
 extensions/Makefile
 tests/Makefile
+tests/javascript/Makefile
 doc/Makefile
 doc/modules/Makefile
 doc/tutorial-standalone/Makefile
