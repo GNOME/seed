@@ -388,7 +388,7 @@ static void seed_gtype_builtin_get_property(GObject * object,
 	JSValueRef jsval = seed_object_get_property(ctx, jsobj,
 												name);
 	
-	seed_gvalue_from_seed_value(ctx, jsval, spec->owner_type,
+	seed_gvalue_from_seed_value(ctx, jsval, spec->value_type,
 								value, 0);
 	
 	g_free(name);
