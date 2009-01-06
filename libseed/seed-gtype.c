@@ -638,9 +638,12 @@ seed_gtype_constructor_invoked(JSContextRef ctx,
 	new_type = g_type_register_static(parent_type, new_name, &type_info, 0);
 	seed_gobject_get_class_for_gtype(ctx, new_type);
 	JSObjectSetPrivate(constructor_ref, (gpointer) new_type);
+	
+	seed_object_set_property(ctx, constructor_ref, 
+							 "type", seed_value_from_int(ctx, new_type, exception));
 
 	g_free(new_name);
-	return JSObjectMake(ctx, gobject_constructor_class, (gpointer) new_type);
+	return constructor_ref;
 }
 
 static JSValueRef
