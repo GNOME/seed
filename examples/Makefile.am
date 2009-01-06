@@ -1,4 +1,4 @@
-SUBDIRS = lightsoff \
+SUBDIRS = \
           clutter-shader \
           glib \
           browser \

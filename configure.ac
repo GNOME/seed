@@ -125,7 +125,6 @@ doc/modules/Makefile
 doc/tutorial-standalone/Makefile
 doc/reference/Makefile
 examples/Makefile
-examples/lightsoff/Makefile
 examples/clutter-shader/Makefile
 examples/glib/Makefile
 examples/browser/Makefile

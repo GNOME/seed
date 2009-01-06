@@ -15,15 +15,15 @@ c.add_attribute(cr, "text", 0);
 v.append_column(c);
 
 var m = new Gtk.ListStore();
-m.set_column_types(1, [GObject.TYPE_STRING]);
+m.set_column_types(1, [GObject.TYPE_INT]);
 
 var iter = new Gtk.TreeIter();
 m.append(iter);
-m.set_value(iter, 0, "Test 1");
+m.set_value(iter, 0, [GObject.TYPE_INT, 3]);
 m.append(iter);
-m.set_value(iter, 0, "Test 2");
+m.set_value(iter, 0, 2);
 m.append(iter);
-m.set_value(iter, 0, "Hello World!");
+m.set_value(iter, 0, 9);
 
 //TODO: FIXME: Why does property not work here?
 v.set_model(m);
