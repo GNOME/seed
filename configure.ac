@@ -73,6 +73,14 @@ AC_TRY_CPP([#include <sqlite3.h>], have_sqlite3_h=yes, have_sqlite3_h=no)
 AM_CONDITIONAL(BUILD_SQLITE3_MODULE, test "x$have_sqlite3_h" = "xyes")
 AC_SUBST(BUILD_SQLITE3_MODULE)
 
+dnl =========================Install Examples==================================
+AC_ARG_ENABLE(examples,
+              AC_HELP_STRING([--enable-examples],
+                             [build and install Javascript examples. [default=yes]]),
+                             [enable_examples=$enableval],[enable_examples="yes"])
+AM_CONDITIONAL([BUILD_SEED_EXAMPLES], [test "x$enable_examples"="xyes"])
+AC_SUBST(BUILD_SEED_EXAMPLES)
+
 dnl =============================Debug=========================================
 AC_ARG_ENABLE(debug,
               AC_HELP_STRING([--enable-debug],
@@ -142,6 +150,10 @@ Build Configuration:
    Debug......................$enable_debug
    Profiling/Coverage.........$enable_profile
    gtk-doc....................$enable_gtk_doc
+
+Installation:
+   Prefix.....................$prefix
+   Install examples...........$enable_examples
 
 Modules:
    SQLite.....................$have_sqlite3_h

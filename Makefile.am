@@ -5,9 +5,15 @@ SUBDIRS = po \
 	src \
 	extensions \
 	doc \
-	examples \
 	modules \
 	tests
+
+if BUILD_SEED_EXAMPLES
+SUBDIRS += examples
+
+tellme:
+	echo asdfasdf
+endif
 
 seeddocdir = ${prefix}/share/doc/seed
 seeddoc_DATA = \
