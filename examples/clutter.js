@@ -18,31 +18,29 @@ colors = [	"blanched almond",
 
 function alpha_func(alpha)
 {
-	try
-	{
-		var timeline = alpha.get_timeline();
-		var frame = timeline.get_current_frame();
-		var n_frames = timeline.num_frames;
-		var fps = timeline.fps;
-		var duration = n_frames/fps;
-		var time = frame/fps;
+	var timeline = alpha.get_timeline();
+	var frame = timeline.get_current_frame();
+	var n_frames = timeline.num_frames;
+	var fps = timeline.fps;
+	var duration = n_frames/fps;
+	var time = frame/fps;
 	
-		if ((time/=duration) < (1/2.75))
-			return Clutter.ALPHA_MAX_ALPHA*(7.5625*time*time);
-		else if (time < (2/2.75))
-			return Clutter.ALPHA_MAX_ALPHA*(7.5625 * 
-							(time-=(1.5/2.75))*time+.75);
-		else if (time < (2.5/2.75))
-			return Clutter.ALPHA_MAX_ALPHA*(7.5625 *
-							(time-=(2.25/2.75))*time+.9375);
-		else
-			return Clutter.ALPHA_MAX_ALPHA*(7.5625 *
-							(time-=(2.625/2.75))*time+.984375);
-	}
-	catch (e)
-	{
-		Seed.print(e.message);
-	}
+	if ((time/=duration) < (1/2.75))
+		return Clutter.ALPHA_MAX_ALPHA*(7.5625*time*time);
+	else if (time < (2/2.75))
+		return Clutter.ALPHA_MAX_ALPHA*(7.5625 * 
+										(time-=(1.5/2.75))*time+.75);
+	else if (time < (2.5/2.75))
+		return Clutter.ALPHA_MAX_ALPHA*(7.5625 *
+										(time-=(2.25/2.75))*time+.9375);
+	else
+		return Clutter.ALPHA_MAX_ALPHA*(7.5625 *
+										(time-=(2.625/2.75))*time+.984375);
+}
+catch (e)
+{
+	Seed.print(e.message);
+}
 }
 
 var stage = new Clutter.Stage();

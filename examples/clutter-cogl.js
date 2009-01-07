@@ -6,7 +6,7 @@ const RIPPLE_S = 2000;
 const RIPPLE_W = 8;
 const RIPPLE_G = 2;
 const RIPPLE_N = 5;
-const RIPPLE_MIND = 150;
+const RIPPLE_MIND = 450;
 const RIPPLE_MAXD = 2000;
 const RIPPLE_WX = Clutter.double_to_fixed(RIPPLE_W);
 
@@ -18,6 +18,30 @@ function angle_from_deg(x)
 	return (((x) * 1024.0) / 360.0);
 }
 
+function alpha_func(alpha)
+{
+	var timeline = alpha.get_timeline();
+	var frame = timeline.get_current_frame();
+	var n_frames = timeline.num_frames;
+	var fps = timeline.fps;
+	var duration = n_frames/fps;
+	var time = frame/fps;
+	
+	if ((time/=duration) < (1/2.75))
+		return Clutter.ALPHA_MAX_ALPHA*(7.5625*time*time);
+	else if (time < (2/2.75))
+		return Clutter.ALPHA_MAX_ALPHA*(7.5625 * 
+										(time-=(1.5/2.75))*time+.75);
+	else if (time < (2.5/2.75))
+		return Clutter.ALPHA_MAX_ALPHA*(7.5625 *
+										(time-=(2.25/2.75))*time+.9375);
+	else
+		return Clutter.ALPHA_MAX_ALPHA*(7.5625 *
+										(time-=(2.625/2.75))*time+.984375);
+
+
+}
+
 function destroy_actor(actor)
 {
 	actor.destroy();
@@ -25,15 +49,11 @@ function destroy_actor(actor)
 
 function circle_paint (actor)
 {
-	var fill_color = new Clutter.Color({red: 0xff,
-									   green: 0xff,
-									   blue: 0xff});
-	
 	var radius = Clutter.double_to_fixed(actor.width/2);
 	
-	fill_color.alpha = actor.opacity;
+	actor.fill_color.alpha = actor.opacity;
 	
-	Clutter.cogl_color(fill_color);
+	Clutter.cogl_color(actor.fill_color);
 	Clutter.cogl_path_move_to(radius, radius);
 	Clutter.cogl_path_arc(radius, radius, radius, radius,
 						  angle_from_deg(0),
@@ -57,6 +77,12 @@ function ripple(stage, x, y)
 	{
 		var actor = new Clutter.Rectangle({color: transp});
 		
+		actor.fill_color = new Clutter.Color({red: 0xff,
+											  green: 0xff,
+											  blue: 0xff});
+	
+
+
 		var size = ((RIPPLE_W * 2) * (i+1)) + (RIPPLE_G * i);
 		
 		actor.width = actor.height = size;
@@ -82,7 +108,7 @@ Clutter.init(null, null);
 
 var template = 
 	new Clutter.EffectTemplate.for_duration(RIPPLE_S,
-											Clutter.sine_inc_func);
+											alpha_func);
 
 var stage = new Clutter.Stage();
 stage.width = SCREEN_W; stage.height = SCREEN_H;
