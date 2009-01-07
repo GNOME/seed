@@ -5,7 +5,7 @@ Seed.import_namespace("GLib");
 const RIPPLE_S = 2000;
 const RIPPLE_W = 8;
 const RIPPLE_G = 2;
-const RIPPLE_N = 5;
+const RIPPLE_N = 3;
 const RIPPLE_MIND = 450;
 const RIPPLE_MAXD = 2000;
 const RIPPLE_WX = Clutter.double_to_fixed(RIPPLE_W);
@@ -112,8 +112,7 @@ var template =
 
 var stage = new Clutter.Stage();
 stage.width = SCREEN_W; stage.height = SCREEN_H;
-stage.color = {red: 0xe0, green: 0xf2, 
-			   blue: 0xfc, alpha: 0xff};
+stage.color = {};
 
 stage.signal["button_press_event"].connect(
 	function(stage, event)
