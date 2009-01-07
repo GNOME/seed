@@ -8,7 +8,7 @@ with (Gtk)
 	
 	var quit = function ()
 	{
-		Gtk.main_quit();
+		main_quit();
 	}
 	
 	var w = new Window();
@@ -21,7 +21,7 @@ with (Gtk)
 	var label = new Label({label: "Press Q to quit"});
 	w.add(label);
 	
-	w.resize(300, 300);
+	w.set_size_request(300, 300);
 	w.show_all();
 	
 	main();

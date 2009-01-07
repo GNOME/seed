@@ -36,11 +36,7 @@ function alpha_func(alpha)
 	else
 		return Clutter.ALPHA_MAX_ALPHA*(7.5625 *
 										(time-=(2.625/2.75))*time+.984375);
-}
-catch (e)
-{
-	Seed.print(e.message);
-}
+
 }
 
 var stage = new Clutter.Stage();
