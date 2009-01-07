@@ -9,6 +9,7 @@ examples_DATA = \
 	actions.js \
 	Gnio.js \
 	gtktreeview.js \
+	clutter-cogl.js \
 	Gnio-server.js \
 	clutter-cairo.js \
 	threaded-repl.js \
@@ -33,6 +34,7 @@ examples_DATA = \
 EXTRA_DIST = \
 	COPYING \
 	actions.js \
+	clutter-cogl.js \
 	gtktreeview.js \
 	calculator.js \
 	clutter-cairo.js \
