@@ -2,16 +2,8 @@
 #include <stdlib.h>
 #include "test-common.h"
 
-/* This is a bit of sugar for adding new conformance tests:
- *
- * - It adds an extern function definition just to save maintaining a header
- *   that lists test entry points.
- * - It sets up callbacks for a fixture, which lets us share initialization
- *   *code* between tests. (see test-conform-common.c)
- * - It passes in a shared *data* pointer that is initialised once in main(),
- *   that gets passed to the fixture setup and test functions. (See the
- *   definition in test-conform-common.h)
- */
+// Test stuff stolen from Clutter
+
 #define TEST_SIMPLE(NAMESPACE, FUNC)									\
 	extern void FUNC (TestSimpleFixture *fixture, gconstpointer data);	\
 	g_test_add (NAMESPACE "/" #FUNC,									\
@@ -42,15 +34,12 @@ int main (int argc, char **argv)
 
 	g_test_init (&argc, &argv, NULL);
 
-	//g_test_bug_base ("http://bugzilla.openedhand.com/show_bug.cgi?id=%s");
-
 	SeedEngine * eng = seed_init(NULL, NULL);
 
 	shared_state->argc_addr = &argc;
 	shared_state->argv_addr = &argv;
 
-	TEST_SIMPLE ("/tests", basica);
-	TEST_SIMPLE ("/tests", basicb);
+	TEST_SIMPLE ("/", basic);
 
 	return g_test_run ();
 }
