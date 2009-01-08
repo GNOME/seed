@@ -21,32 +21,15 @@
 				FUNC,													\
 				test_simple_fixture_teardown);
 
-
-void test_simple_fixture_setup (TestSimpleFixture *fixture,
-					gconstpointer data);
-void test_simple_fixture_teardown (TestSimpleFixture *fixture,
-					   gconstpointer data);
-
-/*
- * Initialise stuff before each test is run
- */
-void
-test_simple_fixture_setup (TestSimpleFixture *fixture, gconstpointer data)
+void test_simple_fixture_setup (TestSimpleFixture *fixture, gconstpointer data)
 {
 }
 
-
-/*
- * Cleanup stuff after each test has finished
- */
-void
-test_simple_fixture_teardown (TestSimpleFixture *fixture, gconstpointer data)
+void test_simple_fixture_teardown (TestSimpleFixture *fixture, gconstpointer data)
 {
-
 }
 
-int
-main (int argc, char **argv)
+int main (int argc, char **argv)
 {
 	TestSharedState *shared_state = g_new0(TestSharedState, 1);
 	const gchar * display = g_getenv ("DISPLAY");
@@ -61,12 +44,12 @@ main (int argc, char **argv)
 
 	//g_test_bug_base ("http://bugzilla.openedhand.com/show_bug.cgi?id=%s");
 
-	g_assert (seed_init(shared_state->argc_addr, shared_state->argv_addr) == 0);
+	g_assert(seed_init(shared_state->argc_addr, shared_state->argv_addr) == 0);
 
 	shared_state->argc_addr = &argc;
 	shared_state->argv_addr = &argv;
 
-	TEST_SIMPLE ("/tests", test_tests);
+	TEST_SIMPLE ("/tests", basic);
 
 	return g_test_run ();
 }

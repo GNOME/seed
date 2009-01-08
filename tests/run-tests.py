@@ -49,7 +49,8 @@ for f in os.listdir("javascript"):
 			passed.append([f,test_out,run_out])
 			sys.stdout.write(".")
 		sys.stdout.flush()
-print
+
+#p = subprocess.Popen("
 
 revnof = os.popen("svn info | grep \"Revision\"")
 revno = "".join(revnof.readlines()).rstrip()
