@@ -47,7 +47,7 @@ function fade(t)
 	with(t)
 	{
 		var timeline = new Clutter.Timeline({num_frames:duration*global_fps, fps:global_fps});
-		var effect = new Clutter.EffectTemplate(timeline, Clutter.ramp_inc_func);
+		var effect = new Clutter.EffectTemplate.c_new(timeline, Clutter.ramp_inc_func);
 
 		b.opacity = 0;
 
@@ -243,7 +243,7 @@ function tiles_fly(t)
 		{
 			for(var i = 0; i < stage.width; i += tile_w)
 			{
-				var g = new Clutter.CloneTexture({parent_texture:a});
+				var g = new Clutter.CloneTexture({parent_texture:a.parent_texture});
 				g.set_clip(i,j,tile_w,tile_h);
 
 				g.width = a.width;
@@ -290,7 +290,7 @@ function tiles(t)
 		{
 			for(var i = 0; i < stage.width; i += tile_w)
 			{
-				var g = new Clutter.CloneTexture({parent_texture:a});
+				var g = new Clutter.CloneTexture({parent_texture:a.parent_texture});
 				g.set_clip(i,j,tile_w,tile_h);
 
 				g.width = a.width;
@@ -350,7 +350,7 @@ function tiles_across(t)
 		{
 			for(var i = 0; i < stage.width; i += tile_w)
 			{
-				var g = new Clutter.CloneTexture({parent_texture:a});
+				var g = new Clutter.CloneTexture({parent_texture:a.parent_texture});
 				g.set_clip(i,j,tile_w,tile_h);
 
 				g.width = a.width;
@@ -405,9 +405,9 @@ function doorway(t)
 {
 	with(t)
 	{
-		var reflection = new Clutter.CloneTexture({parent_texture:b});
-		var left_tile = new Clutter.CloneTexture({parent_texture:a});
-		var right_tile = new Clutter.CloneTexture({parent_texture:a});
+		var reflection = new Clutter.CloneTexture({parent_texture:b.parent_texture});
+		var left_tile = new Clutter.CloneTexture({parent_texture:a.parent_texture});
+		var right_tile = new Clutter.CloneTexture({parent_texture:a.parent_texture});
 
 		reflection.width = b.width;
 		reflection.height = b.height;
@@ -490,9 +490,9 @@ function color_planes(t)
 	with(t)
 	{		
 		a.opacity = b.opacity = 0;
-		var r_part = new Clutter.CloneTexture({parent_texture:a});
-		var g_part = new Clutter.CloneTexture({parent_texture:a});
-		var b_part = new Clutter.CloneTexture({parent_texture:a});
+		var r_part = new Clutter.CloneTexture({parent_texture:a.parent_texture});
+		var g_part = new Clutter.CloneTexture({parent_texture:a.parent_texture});
+		var b_part = new Clutter.CloneTexture({parent_texture:a.parent_texture});
 
 		r_part.width = g_part.width = b_part.width = a.width;
 		r_part.height = g_part.height = b_part.height = a.height;
@@ -596,7 +596,7 @@ function blur(t)
 	with(t)
 	{		
 		a.opacity = b.opacity = 0;
-		var blur = new Clutter.CloneTexture({parent_texture:a});
+		var blur = new Clutter.CloneTexture({parent_texture:a.parent_texture});
 		blur.width = a.width;
 		blur.height = a.height;
 		
@@ -658,47 +658,5 @@ void main ()												   \
 	}
 }
 
-function completed()
-{
-	Seed.quit(0);
-}
+transitions = [ fade, fly, push, reveal, move_in, drop, pivot, fall_out, scale, tiles_fly, tiles, tiles_across, doorway, color_planes, blur ];
 
-var stage = new Clutter.Stage();
-stage.signal.hide.connect(function(){Clutter.main_quit()});
-stage.set_size(1024,768);
-stage.show_all();
-//stage.fullscreen = true;
-
-var black = new Clutter.Color();
-Clutter.color_parse("Black", black);
-stage.color = black;
-
-var begin = new Clutter.Texture.from_file("one.jpg");
-var end = new Clutter.Texture.from_file("two.jpg");
-
-with(begin)
-{
-	filter_quality = Clutter.TextureQuality.High;
-	width = stage.width;
-	height = stage.height;
-}
-
-with(end)
-{
-	filter_quality = Clutter.TextureQuality.High;
-	width = stage.width;
-	height = stage.height;
-}
-
-stage.add_actor(end);
-stage.add_actor(begin);
-
-GLib.timeout_add(500,
-				 function ()
-				 {
-					 doorway({a:begin, b:end, duration:3, done:completed, direction:d_out});
-
-					 return false;
-				 });
-
-Clutter.main();
