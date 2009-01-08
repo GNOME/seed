@@ -128,6 +128,7 @@ src/Makefile
 extensions/Makefile
 tests/Makefile
 tests/javascript/Makefile
+tests/c/Makefile
 doc/Makefile
 doc/modules/Makefile
 doc/tutorial-standalone/Makefile

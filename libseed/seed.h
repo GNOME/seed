@@ -308,25 +308,7 @@ typedef struct _seed_class_definition {
 	SeedObjectConvertToTypeCallback convert_to_type;
 } seed_class_definition;
 
-seed_class_definition seed_empty_class = {
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-};
+#define seed_empty_class { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,};
 
 SeedClass seed_create_class(seed_class_definition * def);
 

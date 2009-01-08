@@ -1,4 +1,4 @@
-SUBDIRS = javascript
+SUBDIRS = javascript c
 EXTRA_DIST = \
     COPYING \
     run-tests.py \
