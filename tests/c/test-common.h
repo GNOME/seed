@@ -6,6 +6,7 @@ typedef struct _TestSharedState
 {
   int	 *argc_addr;
   char ***argv_addr;
+  SeedEngine * eng;
 } TestSharedState;
 
 

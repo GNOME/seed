@@ -2,7 +2,8 @@ noinst_PROGRAMS = test
 
 test_SOURCES =					\
 	main.c						\
-	basic.c
+	basic.c						\
+	api-types.c
 	
 test_CFLAGS = -Wall				\
 	 $(SEED_CFLAGS)
