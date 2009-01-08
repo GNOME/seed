@@ -44,12 +44,13 @@ int main (int argc, char **argv)
 
 	//g_test_bug_base ("http://bugzilla.openedhand.com/show_bug.cgi?id=%s");
 
-	g_assert(seed_init(shared_state->argc_addr, shared_state->argv_addr) == 0);
+	SeedEngine * eng = seed_init(NULL, NULL);
 
 	shared_state->argc_addr = &argc;
 	shared_state->argv_addr = &argv;
 
-	TEST_SIMPLE ("/tests", basic);
+	TEST_SIMPLE ("/tests", basica);
+	TEST_SIMPLE ("/tests", basicb);
 
 	return g_test_run ();
 }

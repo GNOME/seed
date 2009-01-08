@@ -313,17 +313,24 @@ void seed_init_builtins(SeedEngine * local_eng, gint * argc, gchar *** argv)
 
 	arrayObj = JSObjectMake(local_eng->context, NULL, NULL);
 
-	for (i = 0; i < *argc; ++i)
+	if(argc)
 	{
-		// TODO: exceptions!
+		for (i = 0; i < *argc; ++i)
+		{
+			// TODO: exceptions!
 
-		JSObjectSetPropertyAtIndex(local_eng->context, arrayObj, i,
-								   seed_value_from_string(local_eng->context,
-														  (*argv)[i], 0), NULL);
+			JSObjectSetPropertyAtIndex(local_eng->context, arrayObj, i,
+									   seed_value_from_string(local_eng->context,
+															  (*argv)[i], 0), NULL);
+		}
+
+		argcref = seed_value_from_int(local_eng->context, *argc, 0);
 	}
-
-	argcref = seed_value_from_int(local_eng->context, *argc, 0);
-
+	else
+	{
+		argcref = seed_value_from_int(local_eng->context, 0, 0);
+	}
+	
 	seed_object_set_property(local_eng->context, arrayObj, "length", argcref);
 	seed_object_set_property(local_eng->context, obj, "argv", arrayObj);
 }

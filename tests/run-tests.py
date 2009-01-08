@@ -46,11 +46,26 @@ for f in os.listdir("javascript"):
 			failed.append([f,test_retval,p.returncode,2]);
 			sys.stdout.write("x")
 		else:
-			passed.append([f,test_out,run_out])
+			passed.append([f])
 			sys.stdout.write(".")
 		sys.stdout.flush()
 
-#p = subprocess.Popen("
+p = subprocess.Popen(mcwd + "/c/test", shell=True,
+					 stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+					 stderr=subprocess.PIPE, close_fds=True);
+(c_out, c_err) = p.communicate()
+
+for c_test in c_out.rstrip().split("\n"):
+	c_status = c_test.split(": ");
+	a_error = c_err.rstrip().replace("**\nERROR:","").replace("\nAborted","")
+	if (len(c_status) < 2) or (c_status[1] != "OK"):
+		failed.append(["c_test" + c_status[0], "OK", a_error,1])
+		sys.stdout.write(".")
+	else:
+		passed.append([c_status[0]])
+	sys.stdout.flush()
+
+print
 
 revnof = os.popen("svn info | grep \"Revision\"")
 revno = "".join(revnof.readlines()).rstrip()
