@@ -128,7 +128,7 @@ seed_field_get_value(JSContextRef ctx,
 {
 	GITypeInfo *field_type;
 	GArgument field_value;
-	JSValueRef ret;
+	JSValueRef ret = JSValueMakeNull(ctx);;
 
 	field_type = g_field_info_get_type(field);
 	if (!g_field_info_get_field(field, object, &field_value))
@@ -142,20 +142,26 @@ seed_field_get_value(JSContextRef ctx,
 
 			interface = g_type_info_get_interface(field_type);
 			gint offset = g_field_info_get_offset(field);
+
+			g_base_info_unref((GIBaseInfo *)field_type);
 			switch (g_base_info_get_type(interface))
 			{
 			case GI_INFO_TYPE_STRUCT:
-				return seed_make_struct(ctx, (object + offset), interface);
+				ret = seed_make_struct(ctx, (object + offset), interface);
+				break;
 
 			case GI_INFO_TYPE_UNION:
-				return seed_make_union(ctx, (object + offset), interface);
-
+				ret = seed_make_union(ctx, (object + offset), interface);
+				break;
 			case GI_INFO_TYPE_BOXED:
-				return seed_make_boxed(ctx, (object + offset), interface);
-
+				ret = seed_make_boxed(ctx, (object + offset), interface);
+				break;
 			default:
-				g_base_info_unref(interface);
+				break;
 			}
+			g_base_info_unref(interface);
+			
+			return ret;
 		}
 
 		return JSValueMakeNull(ctx);
@@ -476,6 +482,10 @@ JSObjectRef seed_union_prototype(JSContextRef ctx,
 		g_hash_table_insert(union_prototype_hash,
 							key,
 							proto);
+	}
+	else
+	{
+		g_free(key);
 	}
 
 	return proto;

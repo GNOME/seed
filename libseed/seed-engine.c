@@ -1121,15 +1121,19 @@ seed_gi_import_namespace(JSContextRef ctx,
 		else if (info && (g_base_info_get_type(info) == GI_INFO_TYPE_CONSTANT))
 		{
 			GArgument argument;
+			GITypeInfo * constant_type =
+				g_constant_info_get_type((GIConstantInfo *) info);
 			JSValueRef constant_value;
 
 			g_constant_info_get_value((GIConstantInfo *) info, &argument);
 			constant_value =
 				seed_gi_argument_make_js(ctx, &argument,
-										 g_constant_info_get_type((GIConstantInfo *) info), exception);
+										 constant_type, exception);
 			seed_object_set_property(ctx, namespace_ref,
 									 g_base_info_get_name(info),
 									 constant_value);
+			
+			g_base_info_unref((GIBaseInfo *)constant_type);
 
 		}
 		g_base_info_unref(info);
