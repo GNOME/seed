@@ -1,12 +1,14 @@
 The goal of this file is to tell you what each example serves as an example of, or a list of what kind of examples we have.
 
+== External Examples ==
+
+The Lights Off example now lives in the gnome-games module. It uses Clutter,
+	with custom animations, SVGs, GConf, etc.
+
 == Large Examples ==
 
 browser/
 	- An incomplete WebKit-based web browser. Uses much of Gtk and WebKit.
-
-lightsoff/
-	- A simple game, in Clutter. Uses custom animations, loads SVGs, GConf, etc.
 
 shader/
 	- A GLSL shader example. Utilizes Gtk with Clutter, GtkSourceView,

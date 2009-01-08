@@ -14,32 +14,32 @@ var d_out = 1;
 
 function bounce_alpha(alpha)
 {
-    try
-    {
-	    timeline = alpha.get_timeline();
-	    frame = timeline.get_current_frame();
-	    n_frames = timeline.num_frames;
-	    fps = timeline.fps;
-	    duration = n_frames/fps;
-	    time = frame/fps;
-	    
-	    if ((time/=duration) < (1/2.75))
+	try
+	{
+		timeline = alpha.get_timeline();
+		frame = timeline.get_current_frame();
+		n_frames = timeline.num_frames;
+		fps = timeline.fps;
+		duration = n_frames/fps;
+		time = frame/fps;
+		
+		if ((time/=duration) < (1/2.75))
 		return Clutter.ALPHA_MAX_ALPHA*(7.5625*time*time);
-	    else if (time < (2/2.75))
+		else if (time < (2/2.75))
 		return Clutter.ALPHA_MAX_ALPHA*(7.5625 * 
 						(time-=(1.5/2.75))*time+.75);
-	    else if (time < (2.5/2.75))
+		else if (time < (2.5/2.75))
 		return Clutter.ALPHA_MAX_ALPHA*(7.5625 *
 						(time-=(2.25/2.75))*time+.9375);
-	    else
+		else
 		return Clutter.ALPHA_MAX_ALPHA*(7.5625 * (time-=
 							  (2.625/2.75))*time+.984375);
-	    
-    }
-    catch (e)
-    {
-	    Seed.print(e.message);
-    }
+		
+	}
+	catch (e)
+	{
+		Seed.print(e.message);
+	}
 }
 
 function fade(t)
@@ -160,7 +160,7 @@ function drop(t)
 		var timeline = new Clutter.Timeline({num_frames:duration*global_fps, fps:global_fps});
 		var effect = new Clutter.EffectTemplate.c_new(timeline, bounce_alpha);
 
-	    b.y = - stage.height;
+		b.y = - stage.height;
 		b.raise_top();
 
 		var cline = Clutter.effect_move(effect, b, 0, 0);
@@ -504,54 +504,54 @@ function color_planes(t)
 uniform sampler2D tex;										   \
 void main ()												   \
 {															   \
-    vec4 color = texture2D (tex, vec2(gl_TexCoord[0]));		   \
-    color.rgb = vec3(1.0, 0.0, 0.0) * color.rgb;			   \
-    color.a = color.r;										   \
-    gl_FragColor = color;									   \
+	vec4 color = texture2D (tex, vec2(gl_TexCoord[0]));		   \
+	color.rgb = vec3(1.0, 0.0, 0.0) * color.rgb;			   \
+	color.a = color.r;										   \
+	gl_FragColor = color;									   \
 }";
 		var g_shader = new Clutter.Shader();
 		g_shader.fragment_source = "						   \
 uniform sampler2D tex;										   \
 void main ()												   \
 {															   \
-    vec4 color = texture2D (tex, vec2(gl_TexCoord[0]));		   \
-    color.rgb = vec3(0.0, 1.0, 0.0) * color.rgb;			   \
+	vec4 color = texture2D (tex, vec2(gl_TexCoord[0]));		   \
+	color.rgb = vec3(0.0, 1.0, 0.0) * color.rgb;			   \
 	color.a = color.g;										   \
-    gl_FragColor = color;									   \
+	gl_FragColor = color;									   \
 }";
-        var b_shader = new Clutter.Shader();
+		var b_shader = new Clutter.Shader();
 		b_shader.fragment_source = "						   \
 uniform sampler2D tex;										   \
 void main ()												   \
 {															   \
-    vec4 color = texture2D (tex, vec2(gl_TexCoord[0]));		   \
-    color.rgb = vec3(0.0, 0.0, 1.0) * color.rgb;			   \
+	vec4 color = texture2D (tex, vec2(gl_TexCoord[0]));		   \
+	color.rgb = vec3(0.0, 0.0, 1.0) * color.rgb;			   \
 	color.a = color.b;										   \
-    gl_FragColor = color;									   \
+	gl_FragColor = color;									   \
 }";
 		r_shader.compile();
-        g_shader.compile();
-        b_shader.compile();
+		g_shader.compile();
+		b_shader.compile();
 
 		r_part.set_shader(r_shader);
-        g_part.set_shader(g_shader);
-        b_part.set_shader(b_shader);
+		g_part.set_shader(g_shader);
+		b_part.set_shader(b_shader);
 
-        stage.add_actor(r_part);
-        stage.add_actor(g_part);
-        stage.add_actor(b_part);
+		stage.add_actor(r_part);
+		stage.add_actor(g_part);
+		stage.add_actor(b_part);
 
-        stage.show_all();
+		stage.show_all();
 
-        r_part.opacity = 254;
-        g_part.opacity = 254;
-        b_part.opacity = 254;
+		r_part.opacity = 254;
+		g_part.opacity = 254;
+		b_part.opacity = 254;
 
 		r_part.anchor_x = g_part.anchor_x = b_part.anchor_x = r_part.width/2;
-        r_part.anchor_y = g_part.anchor_y = b_part.anchor_y = r_part.height/2;
+		r_part.anchor_y = g_part.anchor_y = b_part.anchor_y = r_part.height/2;
 
-        r_part.x = g_part.x = b_part.x = stage.width/2;
-        r_part.y = g_part.y = b_part.y = stage.height/2;
+		r_part.x = g_part.x = b_part.x = stage.width/2;
+		r_part.y = g_part.y = b_part.y = stage.height/2;
 
 		var timeline = new Clutter.Timeline({num_frames:0.2*duration*global_fps,
 											 fps:global_fps});
@@ -559,33 +559,33 @@ void main ()												   \
 
 		Clutter.effect_depth(effect, r_part, 200);
 		Clutter.effect_depth(effect, g_part, 0);
-        Clutter.effect_depth(effect, b_part, -200);
+		Clutter.effect_depth(effect, b_part, -200);
 
-        timeline.start();
+		timeline.start();
 
-        timeline.signal.completed.connect(function(){
+		timeline.signal.completed.connect(function(){
 
-        var timeline = new Clutter.Timeline({num_frames:0.6*duration*global_fps,
+		var timeline = new Clutter.Timeline({num_frames:0.6*duration*global_fps,
 											 fps:global_fps});
 		var effect = new Clutter.EffectTemplate.c_new(timeline, Clutter.smoothstep_inc_func);
 
-        Clutter.effect_rotate(effect, r_part, 1, 180, 0, 0, -200, 0);
-        Clutter.effect_rotate(effect, g_part, 1, 180, 0, 0, 0, 0);
-        Clutter.effect_rotate(effect, b_part, 1, 180, 0, 0, 200, 0);
+		Clutter.effect_rotate(effect, r_part, 1, 180, 0, 0, -200, 0);
+		Clutter.effect_rotate(effect, g_part, 1, 180, 0, 0, 0, 0);
+		Clutter.effect_rotate(effect, b_part, 1, 180, 0, 0, 200, 0);
 
-        timeline.start();
+		timeline.start();
 
-        timeline.signal.completed.connect(function(){
+		timeline.signal.completed.connect(function(){
 
-        var timeline = new Clutter.Timeline({num_frames:0.2*duration*global_fps,
+		var timeline = new Clutter.Timeline({num_frames:0.2*duration*global_fps,
 											 fps:global_fps});
 		var effect = new Clutter.EffectTemplate.c_new(timeline, Clutter.sine_inc_func);
 
-        Clutter.effect_depth(effect, r_part, 400);
-        Clutter.effect_depth(effect, g_part, 0);
-        Clutter.effect_depth(effect, b_part, -400);
+		Clutter.effect_depth(effect, r_part, 400);
+		Clutter.effect_depth(effect, g_part, 0);
+		Clutter.effect_depth(effect, b_part, -400);
 
-        timeline.start();
+		timeline.start();
 });
 });
 	}
@@ -597,8 +597,8 @@ function blur(t)
 	{		
 		a.opacity = b.opacity = 0;
 		var blur = new Clutter.CloneTexture({parent_texture:a});
-        blur.width = a.width;
-        blur.height = a.height;
+		blur.width = a.width;
+		blur.height = a.height;
 		
 		var blur_shader = new Clutter.Shader();
 		blur_shader.fragment_source = "						   \
@@ -607,38 +607,34 @@ uniform float radius = 1;									   \
 uniform float x_step = .00097, y_step = 0.0013;				   \
 void main ()												   \
 {															   \
-     vec4 color = texture2D (tex, vec2(gl_TexCoord[0]));       \
-     float u, v;											   \
-     int count = 1;											   \
-     for (u=-radius;u<radius;u++)							   \
-       for (v=-radius;v<radius;v++)							   \
-         {													   \
-           color += texture2D(tex,							   \
-                vec2(gl_TexCoord[0].s + u * 1.0 * x_step,	   \
-                     gl_TexCoord[0].t + v * 1.0 * y_step));	   \
-           count ++;										   \
-         }													   \
-     color = color / float(count);							   \
+	 vec4 color = texture2D (tex, vec2(gl_TexCoord[0]));	   \
+	 float u, v;											   \
+	 int count = 1;											   \
+	 for (u=-radius;u<radius;u++)							   \
+	   for (v=-radius;v<radius;v++)							   \
+		 {													   \
+		   color += texture2D(tex,							   \
+				vec2(gl_TexCoord[0].s + u * 1.0 * x_step,	   \
+					 gl_TexCoord[0].t + v * 1.0 * y_step));	   \
+		   count ++;										   \
+		 }													   \
+	 color = color / float(count);							   \
 	 gl_FragColor = color;									   \
-     gl_FragColor = gl_FragColor * gl_Color;				   \
+	 gl_FragColor = gl_FragColor * gl_Color;				   \
 }";
-        blur_shader.compile();
+		blur_shader.compile();
 
 		blur.set_shader(blur_shader);
 
-        stage.add_actor(blur);
+		stage.add_actor(blur);
 
-        stage.show_all();
+		stage.show_all();
 
-        blur.opacity = 254;
+		blur.opacity = 254;
 
 		var timeline = new Clutter.Timeline({num_frames:duration*global_fps,
 											 fps:global_fps});
 		var effect = new Clutter.EffectTemplate.c_new(timeline, Clutter.ramp_inc_func);
-
-//		Clutter.effect_depth(effect, r_part, 200);
-//		Clutter.effect_depth(effect, g_part, 0);
-//        Clutter.effect_depth(effect, b_part, -200);
 
 		timeline.signal.new_frame.connect(function (tl, frame)
 			   {
@@ -646,20 +642,19 @@ void main ()												   \
 					   blur.set_shader_param("radius", num * 10);
 			   });
 
-        timeline.signal.completed.connect(function ()
-        {
-            var timeline = new Clutter.Timeline({num_frames:duration*global_fps,
-											     fps:global_fps});
-		    var effect = new Clutter.EffectTemplate.c_new(timeline, Clutter.smoothstep_inc_func);
-            b.opacity = 0;
-            b.raise_top();
-		    Clutter.effect_fade(effect, b, 255);
-		    //var cline = Clutter.effect_fade(effect, blur, 0);
+		timeline.signal.completed.connect(function ()
+		{
+			var timeline = new Clutter.Timeline({num_frames:duration*global_fps,
+												 fps:global_fps});
+			var effect = new Clutter.EffectTemplate.c_new(timeline, Clutter.smoothstep_inc_func);
+			b.opacity = 0;
+			b.raise_top();
+			Clutter.effect_fade(effect, b, 255);
 
-            timeline.start();
-        });
+			timeline.start();
+		});
 
-        timeline.start();
+		timeline.start();
 	}
 }
 
