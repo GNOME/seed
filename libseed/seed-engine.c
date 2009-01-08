@@ -532,6 +532,7 @@ seed_gobject_add_methods_for_type(JSContextRef ctx,
 		info = g_object_info_get_method(oinfo, i);
 		seed_gobject_define_property_from_function_info(ctx,
 														info, object, TRUE);
+		g_base_info_unref((GIBaseInfo *) info);
 	}
 }
 

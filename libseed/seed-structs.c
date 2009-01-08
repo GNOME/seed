@@ -570,6 +570,10 @@ JSObjectRef seed_struct_prototype(JSContextRef ctx,
 							key,
 							proto);
 	}
+	else
+	{
+		g_free(key);
+	}
 
 	return proto;
 }
