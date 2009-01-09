@@ -325,6 +325,7 @@ seed_gobject_method_invoked(JSContextRef ctx,
 				g_base_info_unref((GIBaseInfo *) arg_info);
 				g_free(in_args);
 				g_free(out_args);
+				g_free(out_values);
 
 				return JSValueMakeNull(ctx);
 			}
@@ -402,6 +403,7 @@ seed_gobject_method_invoked(JSContextRef ctx,
 		g_free(in_args);
 		g_free(out_args);
 		g_error_free(error);
+		g_free(out_values);
 
 		return JSValueMakeNull(ctx);
 	}
