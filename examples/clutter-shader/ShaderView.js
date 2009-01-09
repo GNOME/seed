@@ -8,7 +8,7 @@
 
 	var source_buf = new GtkSource.SourceBuffer({language: js_lang});
 	source_buf.text = Gio.simple_read("default.glsl");
-	var source_view = GtkSource.SourceView.new_with_buffer(source_buf);
+	var source_view = new GtkSource.SourceView.with_buffer(source_buf);
 	source_view.set_show_line_numbers(true);
 	source_view.set_show_right_margin(true);
 	source_view.set_highlight_current_line(true);
