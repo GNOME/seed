@@ -6,16 +6,17 @@ EXTRA_DIST = \
     closure-finalization.js \
     c-module.js \
     compare.js \
-    gvalue-argument.js \
     constructor-args.js \
     constructor-prototype.js \
     enum.js \
+    everything.js \
     fork.js \
     array-gtype.js \
     function-info.js \
     gdk-event.js \
     gerror.js \
     gobject-scope.js \
+    gvalue-argument.js \
     gtype-class-init-exception.js \
     gtype.js \
     gtype-property.js \
