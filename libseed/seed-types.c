@@ -195,10 +195,11 @@ gboolean seed_gi_release_in_arg(GITransfer transfer,
 	type_tag = g_type_info_get_tag((GITypeInfo *) type_info);
 
 	switch (type_tag)
-	{
+	{1
 		// TODO: FIXME: Leaaaks?
 	case GI_TYPE_TAG_UTF8:
 	case GI_TYPE_TAG_FILENAME:
+	case GI_TYPE_TAG_ARRAY:
 		return seed_release_arg(GI_TRANSFER_EVERYTHING,
 								type_info, type_tag, arg);
 	default:
