@@ -4,9 +4,9 @@
  * argument */
 typedef struct _TestSharedState
 {
-  int	 *argc_addr;
-  char ***argv_addr;
-  SeedEngine * eng;
+	int *argc_addr;
+	char ***argv_addr;
+	SeedEngine * eng;
 } TestSharedState;
 
 
@@ -16,6 +16,6 @@ typedef struct _TestSharedState
  * the test is finished. */
 typedef struct _TestSimpleFixture
 {
-  /**/
+	SeedContext * context;
 } TestSimpleFixture;
 

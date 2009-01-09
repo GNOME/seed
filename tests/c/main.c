@@ -15,10 +15,13 @@
 
 void test_simple_fixture_setup (TestSimpleFixture *fixture, gconstpointer data)
 {
+	TestSharedState * state = (TestSharedState *)data;
+	fixture->context = seed_context_create(state->eng->group, NULL);
 }
 
 void test_simple_fixture_teardown (TestSimpleFixture *fixture, gconstpointer data)
 {
+	seed_context_unref(fixture->context);
 }
 
 int main (int argc, char **argv)
@@ -41,6 +44,7 @@ int main (int argc, char **argv)
 	shared_state->eng = eng;
 
 	TEST_SIMPLE ("/", basic);
+	TEST_SIMPLE ("/", closures);
 	TEST_SIMPLE ("/types/", basic_types);
 
 	return g_test_run ();
