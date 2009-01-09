@@ -195,6 +195,7 @@ gboolean seed_gi_release_in_arg(GITransfer transfer,
 
 	switch (type_tag)
 	{
+		// TODO: FIXME: Leaaaks?
 	case GI_TYPE_TAG_UTF8:
 		return seed_release_arg(GI_TRANSFER_EVERYTHING,
 								type_info, type_tag, arg);
@@ -685,6 +686,8 @@ seed_gi_argument_make_js(JSContextRef ctx,
 				ival =
 					(JSValueRef) seed_gi_argument_make_js(ctx, &larg,
 														  list_type, exception);
+				if (!ival)
+					ival = JSValueMakeNull(ctx);
 				JSObjectSetPropertyAtIndex(ctx, ret, i, ival, NULL);
 				i++;
 			}
@@ -710,6 +713,8 @@ seed_gi_argument_make_js(JSContextRef ctx,
 				ival =
 					(JSValueRef) seed_gi_argument_make_js(ctx, &larg,
 														  list_type, exception);
+				if (!ival)
+					ival = JSValueMakeNull(ctx);
 				JSObjectSetPropertyAtIndex(ctx, ret, i, ival, NULL);
 				i++;
 			}
