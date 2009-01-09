@@ -127,6 +127,7 @@ static gboolean seed_release_arg(GITransfer transfer,
 
 			g_base_info_unref((GIBaseInfo *) param_type);
 		}
+		break;
 	case GI_TYPE_TAG_INTERFACE:
 		{
 			if (arg->v_pointer)
@@ -150,13 +151,17 @@ static gboolean seed_release_arg(GITransfer transfer,
 							  G_OBJECT(arg->v_pointer)->ref_count);
 					g_object_unref(G_OBJECT(arg->v_pointer));
 				}
-				else if (gtype == G_TYPE_VALUE)
+				else if (g_type_is_a(gtype, G_TYPE_VALUE))
 				{
 					GValue * gval = (GValue *)arg->v_pointer;
 					// Free/unref the GValue's contents.
 					g_value_unset(gval);
 					// Free the GValue.
 					g_slice_free1(sizeof(GValue), gval);
+				}
+				else if (g_type_is_a(gtype, G_TYPE_CLOSURE))
+				{
+					g_closure_unref(arg->v_pointer);
 				}
 
 				g_base_info_unref(interface_info);
@@ -195,8 +200,13 @@ gboolean seed_gi_release_in_arg(GITransfer transfer,
 	type_tag = g_type_info_get_tag((GITypeInfo *) type_info);
 
 	switch (type_tag)
-	{1
+	{
 		// TODO: FIXME: Leaaaks?
+	case GI_TYPE_TAG_INTERFACE:
+	{
+		// TODO: FIXME: Need some safe way to look for GClosure.
+		break;
+	}
 	case GI_TYPE_TAG_UTF8:
 	case GI_TYPE_TAG_FILENAME:
 	case GI_TYPE_TAG_ARRAY:
