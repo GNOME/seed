@@ -205,6 +205,42 @@ gboolean seed_gi_release_in_arg(GITransfer transfer,
 	return TRUE;
 }
 
+static JSValueRef
+seed_gi_make_jsarray(JSContextRef ctx,
+					 void * array,
+					 GITypeInfo * param_type,
+					 JSValueRef * exception)
+{
+	GITypeTag element_type;
+	JSValueRef ret = JSValueMakeNull(ctx);
+
+	element_type = g_type_info_get_tag(param_type);
+	
+	if (element_type == GI_TYPE_TAG_UTF8)
+	{
+		JSValueRef * elements;
+		guint length, i;
+		gchar ** str_array = (gchar **) array;
+
+		length = g_strv_length(str_array);
+		if (!length)
+			return ret;
+
+		elements = g_alloca(sizeof(JSValueRef) * length);
+		for (i = 0; i < length; ++i)
+		{
+			elements[i] = seed_value_from_string(ctx, 
+												 str_array[i],
+												 exception);
+		}
+		
+		ret = (JSValueRef) JSObjectMakeArray(ctx, length, 
+											 elements, exception);
+	}
+	
+	return ret;
+}
+
 static gboolean
 seed_gi_make_array(JSContextRef ctx,
 				   JSValueRef array,
@@ -497,7 +533,7 @@ seed_gi_make_argument(JSContextRef ctx,
 			}
 			else if (!JSValueIsObject(ctx, value))
 			{
-				// Is this right?
+				// TODO: FIXME: Is this right?
 				return FALSE;
 			}
 			else
@@ -579,8 +615,24 @@ seed_gi_argument_make_js(JSContextRef ctx,
 		return seed_value_from_string(ctx, arg->v_string, exception);
 	case GI_TYPE_TAG_GTYPE:
 		return seed_value_from_int(ctx, arg->v_int, exception);
+	case GI_TYPE_TAG_ARRAY:
+	{
+		GITypeInfo *param_type;
+		JSValueRef ret;
+		if (!g_type_info_is_zero_terminated(type_info))
+			break;
+		
+		param_type = g_type_info_get_param_type(type_info, 0);
+		
+		ret = seed_gi_make_jsarray(ctx, arg->v_pointer, param_type,
+								   exception);
+		
+		g_base_info_unref((GIBaseInfo *) param_type);
+		
+		return ret;		
+	}
 	case GI_TYPE_TAG_INTERFACE:
-		{
+	{
 			GIBaseInfo *interface;
 			GIInfoType interface_type;
 
