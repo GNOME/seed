@@ -675,7 +675,7 @@ seed_gi_argument_make_js(JSContextRef ctx,
 			gint i = 0;
 			GList *list = arg->v_pointer;
 
-			ret = JSObjectMake(ctx, NULL, NULL);
+			ret = JSObjectMakeArray(ctx, 0, NULL, exception);
 			list_type = g_type_info_get_param_type(type_info, 0);
 
 			for (; list != NULL; list = list->next)
@@ -702,7 +702,7 @@ seed_gi_argument_make_js(JSContextRef ctx,
 			gint i = 0;
 			GSList *list = arg->v_pointer;
 
-			ret = JSObjectMake(ctx, NULL, NULL);
+			ret = JSObjectMakeArray(ctx, 0, NULL, exception);
 			list_type = g_type_info_get_param_type(type_info, 0);
 
 			for (; list != NULL; list = list->next)
