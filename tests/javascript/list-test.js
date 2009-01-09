@@ -1,8 +1,9 @@
 #!/usr/bin/env seed
 // Returns: 0
 // STDIN:
-// STDOUT:\[object Object\]\n\[object GtkButton\]\n\[object GtkButton\]
+// STDOUT:\[object GtkButton\],\[object GtkButton\]\n\[object GtkButton\]\n\[object GtkButton\]
 // STDERR:
+
 Seed.import_namespace("Gtk");
 
 Gtk.init(null, null);
