@@ -197,6 +197,14 @@ gchar *seed_value_to_string(SeedContext ctx,
 SeedValue seed_value_from_string(SeedContext ctx,
 								 gchar * val, SeedException * exception);
 
+gchar * seed_value_to_filename(SeedContext ctx,
+							   SeedValue val,
+							   SeedValue *exception);
+SeedValue seed_value_from_filename(SeedContext ctx,
+									const gchar * filename,
+									SeedValue * exception);
+
+
 GObject *seed_value_to_object(SeedContext ctx,
 							  SeedValue val, SeedException * exception);
 SeedValue seed_value_from_object(SeedContext ctx,

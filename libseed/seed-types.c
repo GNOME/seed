@@ -108,6 +108,7 @@ static gboolean seed_release_arg(GITransfer transfer,
 	switch (type_tag)
 	{
 	case GI_TYPE_TAG_UTF8:
+	case GI_TYPE_TAG_FILENAME:
 		g_free(arg->v_string);
 		break;
 	case GI_TYPE_TAG_ARRAY:
@@ -197,6 +198,7 @@ gboolean seed_gi_release_in_arg(GITransfer transfer,
 	{
 		// TODO: FIXME: Leaaaks?
 	case GI_TYPE_TAG_UTF8:
+	case GI_TYPE_TAG_FILENAME:
 		return seed_release_arg(GI_TRANSFER_EVERYTHING,
 								type_info, type_tag, arg);
 	default:
@@ -366,6 +368,9 @@ seed_gi_make_argument(JSContextRef ctx,
 		break;
 	case GI_TYPE_TAG_UTF8:
 		arg->v_string = seed_value_to_string(ctx, value, exception);
+		break;
+	case GI_TYPE_TAG_FILENAME:
+		arg->v_string = seed_value_to_filename(ctx, value, exception);
 		break;
 	case GI_TYPE_TAG_GTYPE:
 		arg->v_int = seed_value_to_int(ctx, value, exception);
@@ -614,6 +619,8 @@ seed_gi_argument_make_js(JSContextRef ctx,
 		return seed_value_from_double(ctx, arg->v_double, exception);
 	case GI_TYPE_TAG_UTF8:
 		return seed_value_from_string(ctx, arg->v_string, exception);
+	case GI_TYPE_TAG_FILENAME:
+		return seed_value_from_filename(ctx, arg->v_string, exception);
 	case GI_TYPE_TAG_GTYPE:
 		return seed_value_from_int(ctx, arg->v_int, exception);
 	case GI_TYPE_TAG_ARRAY:
@@ -1373,6 +1380,48 @@ JSValueRef seed_value_from_string(JSContextRef ctx,
 	JSStringRelease(jsstr);
 
 	return valstr;
+}
+
+JSValueRef seed_value_from_filename(JSContextRef ctx,
+									const gchar * filename,
+									JSValueRef * exception)
+{
+	GError *e = NULL;
+	gchar * utf8;
+	
+	utf8 = g_filename_to_utf8(filename, -1, NULL,
+							  NULL, &e);
+	if (e)
+	{
+		seed_make_exception_from_gerror(ctx, exception, e);
+		g_error_free(e);
+		// TODO: FIXMEShould be JS Null maybe?
+		return NULL;
+	}
+	
+	return seed_value_from_string(ctx, utf8, exception);
+}
+
+gchar * seed_value_to_filename(JSContextRef ctx,
+							   JSValueRef val,
+							   JSValueRef *exception)
+{
+	GError * e = NULL;
+	gchar * utf8 = seed_value_to_string(ctx, val, exception);
+	gchar * filename;
+	
+	filename = g_filename_from_utf8(utf8, -1, 
+									NULL, NULL,
+									&e);
+	g_free(utf8);
+	if (e)
+	{
+		seed_make_exception_from_gerror(ctx, exception, e);
+		g_error_free(e);
+		return NULL;
+	}
+
+	return filename;
 }
 
 GObject *seed_value_to_object(JSContextRef ctx,
