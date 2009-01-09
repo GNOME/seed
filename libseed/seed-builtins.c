@@ -33,7 +33,7 @@ seed_include(JSContextRef ctx,
 			 const JSValueRef arguments[], JSValueRef * exception)
 {
 	JSStringRef file_contents, file_name;
-	const gchar *import_file;
+	gchar *import_file;
 	gchar *buffer, *walk;
 
 	if (argumentCount != 1)
@@ -53,6 +53,9 @@ seed_include(JSContextRef ctx,
 	{
 		gchar *mes = g_strdup_printf("File not found: %s.\n", import_file);
 		seed_make_exception(ctx, exception, "FileNotFound", mes);
+		
+		g_free(import_file);
+		g_free(buffer);
 		g_free(mes);
 		return JSValueMakeNull(ctx);
 	}
@@ -66,7 +69,7 @@ seed_include(JSContextRef ctx,
 		walk++;
 	}
 
-	walk = strdup(walk);
+	walk = g_strdup(walk);
 	g_free(buffer);
 
 	file_contents = JSStringCreateWithUTF8CString(walk);
@@ -76,6 +79,8 @@ seed_include(JSContextRef ctx,
 
 	JSStringRelease(file_contents);
 	JSStringRelease(file_name);
+	g_free(import_file);
+	g_free(walk);
 
 	return JSValueMakeNull(ctx);
 }
