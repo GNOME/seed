@@ -18,7 +18,7 @@
 </head>
 <body onload="sh_highlightDocument();">
 <div id="header">Seed Coding Conventions</div>
-<div id="subheader">v.0.3</div>
+<div id="subheader">v.@VERSION@</div>
 <div class="section">Naming and Capitalization</div>
 <p>
 <ul>

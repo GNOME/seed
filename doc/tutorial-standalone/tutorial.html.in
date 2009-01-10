@@ -23,7 +23,7 @@
 </head>
 <body onload="sh_highlightDocument();">
 <div id="header">Seed Tutorial : Standalone</div>
-<div id="subheader">v.0.3</div>
+<div id="subheader">v.@VERSION@</div>
 <div class="section">Introduction</div>
 <p>Seed, first and foremost, provides an easily embeddable JavaScript engine to developers looking for a straightforward way to create extensible applications. It also provides bindings between <a href="http://library.gnome.org/devel/gobject/stable/">GObject</a> and the <a href="http://www.webkit.org">WebKit</a> JavaScript engine, giving new developers access to the power of the GNOME stack from a familiar and simple language, and allowing rapid prototyping of applications for hardened GNOME developers.</p>
 <p>This tutorial begins with a few brief examples, and then dives right in, following the development of a simple Seed program, from beginning to end. By the end of the tutorial, you'll have your very own tiny WebKit-based web browser, as well as a summary knowledge of the use of Seed to build GTK+ applications.</p>

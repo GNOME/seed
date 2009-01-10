@@ -122,7 +122,16 @@ GTK_DOC_CHECK(1.9)
 dnl =============================Output========================================
 AC_OUTPUT([
 Makefile
+
 README
+doc/conventions.html
+doc/runtime.html
+doc/tutorial-standalone/tutorial.html
+doc/modules/canvas.html
+doc/modules/multiprocessing.html
+doc/modules/readline.html
+doc/modules/sqlite.html
+
 libseed/Makefile
 po/Makefile.in
 src/Makefile

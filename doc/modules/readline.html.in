@@ -11,7 +11,7 @@
 </head>
 <body onload="sh_highlightDocument();">
 <div id="header">Seed <i>readline</i> Module</div>
-<div id="subheader">v.0.3</div>
+<div id="subheader">v.@VERSION@</div>
 <div class="section"><b>Usage</b></div>
 <p>
 In order to use functions from the readline module, you must first import it:
