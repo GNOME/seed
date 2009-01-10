@@ -127,7 +127,6 @@ dnl =============================Output========================================
 AC_OUTPUT([
 Makefile
 
-README
 doc/conventions.html
 doc/runtime.html
 doc/tutorial-standalone/tutorial.html
