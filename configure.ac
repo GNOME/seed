@@ -11,6 +11,8 @@ AC_PROG_CC
 AM_PROG_CC_STDC
 AC_HEADER_STDC
 
+CFLAGS="-O3"
+
 dnl =====================Internationalization==================================
 GETTEXT_PACKAGE=seed
 AC_SUBST(GETTEXT_PACKAGE)
@@ -88,7 +90,8 @@ AC_ARG_ENABLE(debug,
               [enable_debug="yes"],[enable_debug="no"])
 
 if test "x$enable_debug" = "xyes"; then
-  SEED_DEBUG_CFLAGS="-DSEED_ENABLE_DEBUG -g -O0"
+  SEED_DEBUG_CFLAGS="-DSEED_ENABLE_DEBUG -g"
+  CFLAGS="-O0"
 else
   SEED_DEBUG_CFLAGS="-DG_DISABLE_ASSERT -DG_DISABLE_CHECKS -DG_DISABLE_CAST_CHECKS"
 fi
@@ -102,8 +105,9 @@ AC_ARG_ENABLE(profile,
               [enable_profile="yes"],[enable_profile="no"])
 
 if test "x$enable_profile" = "xyes"; then
-  SEED_PROFILE_CFLAGS="-fprofile-arcs -ftest-coverage -O0"
+  SEED_PROFILE_CFLAGS="-fprofile-arcs -ftest-coverage"
   SEED_PROFILE_LDFLAGS="-lgcov"
+  CFLAGS="-O0"
 fi
 
 AC_SUBST(SEED_PROFILE_CFLAGS)
@@ -116,7 +120,7 @@ PKG_CHECK_MODULES(LIBSEED, gobject-introspection-1.0 webkit-1.0)
 AC_CONFIG_FILES([
 seed.pc])
 
-dnl ==========================gtk-doc=========================================
+dnl =============================gtk-doc=======================================
 GTK_DOC_CHECK(1.9)
 
 dnl =============================Output========================================
