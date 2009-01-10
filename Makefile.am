@@ -10,9 +10,6 @@ SUBDIRS = po \
 
 if BUILD_SEED_EXAMPLES
 SUBDIRS += examples
-
-tellme:
-	echo asdfasdf
 endif
 
 seeddocdir = ${prefix}/share/doc/seed
