@@ -21,3 +21,7 @@ Recommended Dependencies (Ubuntu package name):
    * clutter-cairo (libclutter-cairo-0.8-dev)
    * cairo (libcairo-dev)
    * gtk-doc (gtk-doc-tools)
+
+-- If building on OS X, install automake, autoconf, gtk-doc, etc. from MacPorts;
+   then, export PATH=/opt/local/bin:$PATH (if /opt/local is your MacPorts installation)
+   and build Seed as you normally would.
