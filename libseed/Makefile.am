@@ -22,24 +22,16 @@ libseed_la_SOURCES = \
 	seed-types.c \
 	seed-types.h
 
-libseed_la_LIBADD = \
-	$(LIBSEED_LIBS)
+libseed_la_LIBADD = $(LIBSEED_LIBS)
 
-AM_CPPFLAGS = \
-        -lgmodule-2.0 \
-	$(LIBSEED_CFLAGS)
+AM_CPPFLAGS = -lgmodule-2.0 $(LIBSEED_CFLAGS) $(SEED_OSX_CFLAGS)
 
-seedheaders_HEADERS = \
-	seed.h
+seedheaders_HEADERS = seed.h
 
-seedheadersdir = \
-	$(pkgincludedir)
+seedheadersdir = $(pkgincludedir)
 
-EXTRA_DIST = \
-	$(seedheaders_HEADERS)
+EXTRA_DIST = $(seedheaders_HEADERS)
 
-LIBSEED_CFLAGS+= -Wall -Werror $(SEED_DEBUG_CFLAGS) $(SEED_PROFILE_CFLAGS)
-AM_LDFLAGS=$(SEED_PROFILE_LDFLAGS)
-
-## File created by the gnome-build tools
-
+LIBSEED_CFLAGS += -Wall -Werror $(SEED_DEBUG_CFLAGS) \
+                  $(SEED_PROFILE_CFLAGS) $(SEED_OSX_CFLAGS)
+AM_LDFLAGS = $(SEED_PROFILE_LDFLAGS) $(SEED_OSX_LDFLAGS)

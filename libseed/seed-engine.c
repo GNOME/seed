@@ -710,7 +710,7 @@ seed_gobject_get_property(JSContextRef context,
 			goto found;
 		else
 		{
-			GIFieldInfo *field;
+			GIFieldInfo *field = 0;
 			GIBaseInfo *info = (GIBaseInfo *)
 				g_irepository_find_by_gtype(0, G_OBJECT_TYPE(b));
 			gint n;

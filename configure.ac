@@ -1,4 +1,6 @@
 AC_INIT(seed, 0.3)
+AC_CANONICAL_BUILD
+AC_CANONICAL_HOST
 
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
 AC_CONFIG_HEADERS([config.h])
@@ -113,9 +115,19 @@ fi
 AC_SUBST(SEED_PROFILE_CFLAGS)
 AC_SUBST(SEED_PROFILE_LDFLAGS)
 
+dnl ===========================Darwin Build====================================
+SEED_OSX_CFLAGS=
+SEED_OSX_LDFLAGS=
+
+SEED_OSX_CFLAGS="-F/Applications/WebKit.app/Contents/Frameworks/10.5 -framework JavaScriptCore"
+SEED_OSX_LDFLAGS="-F/Applications/WebKit.app/Contents/Frameworks/10.5 -framework JavaScriptCore"
+
+AC_SUBST(SEED_OSX_CFLAGS)
+AC_SUBST(SEED_OSX_LDFLAGS)
+
 dnl ===========================Packages========================================
-PKG_CHECK_MODULES(SEED, gobject-introspection-1.0 webkit-1.0)
-PKG_CHECK_MODULES(LIBSEED, gobject-introspection-1.0 webkit-1.0)
+PKG_CHECK_MODULES(SEED, gobject-introspection-1.0)
+PKG_CHECK_MODULES(LIBSEED, gobject-introspection-1.0)
 
 AC_CONFIG_FILES([
 seed.pc])
