@@ -125,7 +125,6 @@ GTK_DOC_CHECK(1.9)
 
 dnl =============================Output========================================
 AC_OUTPUT([
-README
 Makefile
 
 doc/conventions.html
