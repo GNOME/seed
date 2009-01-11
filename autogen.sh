@@ -124,22 +124,22 @@ do
       if grep "^AM_GLIB_GNU_GETTEXT" configure.ac >/dev/null; then
 	echo "Creating $dr/aclocal.m4 ..."
 	test -r $dr/aclocal.m4 || touch $dr/aclocal.m4
-	echo "Running glib-gettextize...  Ignore non-fatal messages."
+	echo "Running glib-gettextize ...  Ignore non-fatal messages."
 	echo "no" | glib-gettextize --force --copy
 	echo "Making $dr/aclocal.m4 writable ..."
 	test -r $dr/aclocal.m4 && chmod u+w $dr/aclocal.m4
       fi
       if grep "^IT_PROG_INTLTOOL" configure.ac >/dev/null; then
-        echo "Running intltoolize..."
+        echo "Running intltoolize ..."
 	intltoolize --copy --force --automake
       fi
       if grep "^AM_PROG_XML_I18N_TOOLS" configure.ac >/dev/null; then
-        echo "Running xml-i18n-toolize..."
+        echo "Running xml-i18n-toolize ..."
 	xml-i18n-toolize --copy --force --automake
       fi
       if grep "^AM_PROG_LIBTOOL" configure.ac >/dev/null; then
 	if test -z "$NO_LIBTOOLIZE" ; then 
-	  echo "Running libtoolize..."
+	  echo "Running libtoolize ..."
 	  libtoolize --force --copy || glibtoolize --force --copy
 	fi
       fi
