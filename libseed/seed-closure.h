@@ -43,7 +43,7 @@ typedef struct _SeedNativeClosure {
 	ffi_cif *cif;
 } SeedNativeClosure;
 
-JSClassRef seed_native_callback_class;
+extern JSClassRef seed_native_callback_class;
 
 SeedNativeClosure *seed_make_native_closure(JSContextRef ctx,
 											GICallableInfo * info,

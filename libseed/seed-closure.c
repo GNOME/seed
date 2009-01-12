@@ -21,6 +21,8 @@
 #include "seed-private.h"
 #include <sys/mman.h>
 
+JSClassRef seed_native_callback_class;
+
 static ffi_type *get_ffi_type(GITypeInfo * info)
 {
 	ffi_type *rettype = NULL;
