@@ -77,6 +77,11 @@ AC_TRY_CPP([#include <sqlite3.h>], have_sqlite3_h=yes, have_sqlite3_h=no)
 AM_CONDITIONAL(BUILD_SQLITE3_MODULE, test "x$have_sqlite3_h" = "xyes")
 AC_SUBST(BUILD_SQLITE3_MODULE)
 
+dnl =========================turtle example====================================
+AC_TRY_CPP([#include <gtk/gtk.h>], want_turtle=yes, want_turtle=no)
+AM_CONDITIONAL(BUILD_TURTLE_EXAMPLE, test "x$want_turtle" = "xyes")
+AC_SUBST(BUILD_TURTLE_EXAMPLE)
+
 dnl =========================Install Examples==================================
 AC_ARG_ENABLE(examples,
               AC_HELP_STRING([--enable-examples],
@@ -185,4 +190,7 @@ Modules:
    SQLite.....................$have_sqlite3_h
    Canvas.....................$have_cairo_h
    readline...................$have_readline_h
+
+Examples:
+   Turtle.....................$want_turtle
 "

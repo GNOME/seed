@@ -1,3 +1,5 @@
+if BUILD_TURTLE_EXAMPLE
+
 AM_CPPFLAGS = \
 	$(SEED_CFLAGS)
 
@@ -15,3 +17,5 @@ seed_turtle_LDFLAGS = \
 seed_turtle_LDADD = \
 	$(SEED_LIBS) \
 	-lseed
+
+endif
