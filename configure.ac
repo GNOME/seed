@@ -124,15 +124,20 @@ dnl ===========================Darwin Build====================================
 SEED_OSX_CFLAGS=
 SEED_OSX_LDFLAGS=
 
-SEED_OSX_CFLAGS="-F/Applications/WebKit.app/Contents/Frameworks/10.5 -framework JavaScriptCore"
-SEED_OSX_LDFLAGS="-F/Applications/WebKit.app/Contents/Frameworks/10.5 -framework JavaScriptCore"
-
+case "$host_os" in
+	darwin*)
+		SEED_OSX_CFLAGS="-F/Applications/WebKit.app/Contents/Frameworks/10.5 -framework JavaScriptCore"
+		SEED_OSX_LDFLAGS="-F/Applications/WebKit.app/Contents/Frameworks/10.5 -framework JavaScriptCore"
+		PKG_CHECK_MODULES(SEED, gobject-introspection-1.0)
+		PKG_CHECK_MODULES(LIBSEED, gobject-introspection-1.0)
+		;;
+	*)
+		PKG_CHECK_MODULES(SEED, webkit-1.0 gobject-introspection-1.0)
+		PKG_CHECK_MODULES(LIBSEED, webkit-1.0 gobject-introspection-1.0)
+		;;
+esac
 AC_SUBST(SEED_OSX_CFLAGS)
 AC_SUBST(SEED_OSX_LDFLAGS)
-
-dnl ===========================Packages========================================
-PKG_CHECK_MODULES(SEED, gobject-introspection-1.0)
-PKG_CHECK_MODULES(LIBSEED, gobject-introspection-1.0)
 
 AC_CONFIG_FILES([
 seed.pc])

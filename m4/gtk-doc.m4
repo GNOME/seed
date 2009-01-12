@@ -1,1 +1,1 @@
-/opt/local/share/aclocal/gtk-doc.m4
+/usr/share/aclocal/gtk-doc.m4
