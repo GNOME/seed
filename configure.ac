@@ -60,10 +60,13 @@ if test x"$have_ffi_pkgconfig" = xno ; then
   AC_SUBST(FFI_CFLAGS)
 fi
 
+dnl =======================WebKit ContextGroup=================================
+AC_CHECK_LIB(webkit-1.0, JSContextGroupCreate, , AC_MSG_ERROR([Your copy of WebKit is too old.]))
+
 dnl ========================readline module====================================
 AC_TRY_CPP([#include <readline/readline.h>],
-					 have_readline_h=yes,
-					 have_readline_h=no)
+			have_readline_h=yes,
+			have_readline_h=no)
 AM_CONDITIONAL(BUILD_READLINE_MODULE, test "x$have_readline_h" = "xyes")
 AC_SUBST(BUILD_READLINE_MODULE)
 
