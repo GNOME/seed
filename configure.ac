@@ -61,7 +61,13 @@ if test x"$have_ffi_pkgconfig" = xno ; then
 fi
 
 dnl =======================WebKit ContextGroup=================================
-AC_CHECK_LIB(webkit-1.0, JSContextGroupCreate, , AC_MSG_ERROR([Your copy of WebKit is too old.]))
+case "$host_os" in
+	darwin*)
+		;;
+	*)
+		AC_CHECK_LIB(webkit-1.0, JSContextGroupCreate, , AC_MSG_ERROR([Your copy of WebKit is too old.]))
+		;;
+esac
 
 dnl ========================readline module====================================
 AC_TRY_CPP([#include <readline/readline.h>],
