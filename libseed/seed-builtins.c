@@ -51,7 +51,7 @@ seed_include(JSContextRef ctx,
 
 	if (!buffer)
 	{
-		gchar *mes = g_strdup_printf("File not found: %s.\n", import_file);
+		gchar *mes = g_strdup_printf("File not found: %s", import_file);
 		seed_make_exception(ctx, exception, "FileNotFound", mes);
 
 		g_free(import_file);

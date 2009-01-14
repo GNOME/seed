@@ -1,8 +1,19 @@
 #!/usr/bin/env seed
 // Returns: 0
 // STDIN:
+// STDOUT:Seed\.spawn expected 1 argument\nFailed to execute child process "asihfieuhgieuhgw" \(No such file or directory\)\nSeed\.include expected 1 argument, got 0\nFile not found: 1\.000000\nFile not found: \nSeed\.include expected 1 argument, got 2\nSeed\.include expected 1 argument, got 2\nSeed\.print expected 1 argument, got 0\nSeed\.print expected 1 argument, got 2\nSeed\.print expected 1 argument, got 2\nSeed\.print expected 1 argument, got 3\nSeed\.introspect expected 1 argument, got 0\nSeed\.introspect expected 1 argument, got 2\nSeed\.check_syntax expected 1 argument, got 0\nSeed\.check_syntax expected 1 argument, got 2
+// STDERR:
+// Returns: 0
+// STDIN:
 // STDOUT:Seed\.include expected 1 argument, got 0\nFile not found: 1\.000000\.\n\nFile not found: \.\n\nSeed\.include expected 1 argument, got 2\nSeed\.include expected 1 argument, got 2\nSeed\.print expected 1 argument, got 0\nSeed\.print expected 1 argument, got 2\nSeed\.print expected 1 argument, got 2\nSeed\.print expected 1 argument, got 3\nSeed\.introspect expected 1 argument, got 0\nSeed\.introspect expected 1 argument, got 2\nSeed\.check_syntax expected 1 argument, got 0\nSeed\.check_syntax expected 1 argument, got 2
 // STDERR:
+
+try{
+Seed.spawn();
+}catch(e){Seed.print(e.message)}
+try{
+Seed.spawn("asihfieuhgieuhgw");
+}catch(e){Seed.print(e.message)}
 
 try{
 Seed.include();
