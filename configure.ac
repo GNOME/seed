@@ -255,3 +255,11 @@ Modules:
 Examples:
    Turtle.....................$want_turtle
 "
+
+if test "x$want_readline_module" != "xyes"; then
+echo "
+WARNING: The readline module is not enabled.
+         Without this, the Seed REPL will not work;
+         however, most Seed applications will still run.
+"
+fi
