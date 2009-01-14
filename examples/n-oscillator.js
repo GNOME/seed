@@ -49,12 +49,12 @@ function oscillator(freq)
 	{
 		if (playing == false)
 		{
-			pipeline.set_state(Gst.State.Playing);
+			pipeline.set_state(Gst.State.PLAYING);
 			playing = true;
 		}
 		else
 		{
-			pipeline.set_state(Gst.State.Paused);
+			pipeline.set_state(Gst.State.PAUSED);
 			playing = false;
 		}
 	}

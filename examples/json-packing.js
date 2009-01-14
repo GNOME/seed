@@ -13,10 +13,10 @@ var packing = [
 		child: label,
 		fill: false,
 		padding: 10,
-		position: Gtk.PackType.End
+		position: Gtk.PackType.END
 	},
 	{
-		child:button,
+		child: button,
 		fill: false,
 		padding: 100,
 		expand: true

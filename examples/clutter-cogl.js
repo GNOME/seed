@@ -86,7 +86,7 @@ function ripple(stage, x, y)
 		var size = ((RIPPLE_W * 2) * (i+1)) + (RIPPLE_G * i);
 		
 		actor.width = actor.height = size;
-		actor.set_anchor_point_from_gravity(Clutter.Gravity.Center);
+		actor.set_anchor_point_from_gravity(Clutter.Gravity.CENTER);
 		actor.x = x;
 		actor.y = y;
 		actor.opacity = 0x80;
