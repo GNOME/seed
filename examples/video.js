@@ -15,7 +15,7 @@ pipeline.add(source);
 pipeline.add(sink);
 source.link(sink);
 
-pipeline.set_state(Gst.State.Playing);
+pipeline.set_state(Gst.State.PLAYING);
 
 Gtk.main();
 
