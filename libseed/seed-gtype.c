@@ -585,7 +585,7 @@ seed_gtype_constructor_invoked(JSContextRef ctx,
 										  (JSObjectRef) arguments[0],
 										  "class_init");
 	instance_init = seed_object_get_property(ctx, (JSObjectRef) arguments[0],
-											 "instance_init");
+											 "init");
 	name = seed_object_get_property(ctx, (JSObjectRef) arguments[0], "name");
 
 	new_name = seed_value_to_string(ctx, name, exception);

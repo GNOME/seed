@@ -6,7 +6,7 @@ Gtk.init(null, null);
 BrowserToolbar = new GType({
     parent: Gtk.HBox.type,
     name: "BrowserToolbar",
-    instance_init: function (klass)
+    init: function (klass)
     {
         // Private
         var url_bar = new Gtk.Entry();

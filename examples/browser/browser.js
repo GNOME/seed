@@ -9,7 +9,7 @@ Gtk.init(null, null);
 TabbedBrowser = new GType({
     parent: Gtk.Notebook.type,
     name: "TabbedBrowser",
-    instance_init: function (klass)
+    init: function (klass)
     {
         // Public
         this.close_tab = function (tab)
@@ -57,7 +57,7 @@ TabbedBrowser = new GType({
 BrowserTab = new GType({
     parent: Gtk.VBox.type,
     name: "BrowserTab",
-    instance_init: function (klass)
+    init: function (klass)
     {
         // Private
         var toolbar = new BrowserToolbar();
@@ -103,7 +103,7 @@ BrowserTab = new GType({
 BrowserView = new GType({
     parent: WebKit.WebView.type,
     name: "BrowserView",
-    instance_init: function (klass)
+    init: function (klass)
     {
         // Private
         var tab;
@@ -154,7 +154,7 @@ BrowserView = new GType({
 BrowserToolbar = new GType({
     parent: Gtk.HBox.type,
     name: "BrowserToolbar",
-    instance_init: function (klass)
+    init: function (klass)
     {
         // Private
         var url_bar = new Gtk.Entry();

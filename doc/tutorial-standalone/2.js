@@ -9,7 +9,7 @@ Gtk.init(null, null);
 Browser = new GType({
     parent: Gtk.VBox.type,
     name: "Browser",
-    instance_init: function (klass)
+    init: function (klass)
     {
         // Private
         var toolbar = new BrowserToolbar();
@@ -42,7 +42,7 @@ Browser = new GType({
 BrowserView = new GType({
     parent: WebKit.WebView.type,
     name: "BrowserView",
-    instance_init: function (klass)
+    init: function (klass)
     {
         // Private
         var update_url = function (web_view, web_frame)
@@ -72,7 +72,7 @@ BrowserView = new GType({
 BrowserToolbar = new GType({
     parent: Gtk.HBox.type,
     name: "BrowserToolbar",
-    instance_init: function (klass)
+    init: function (klass)
     {
         // Private
         var url_bar = new Gtk.Entry();

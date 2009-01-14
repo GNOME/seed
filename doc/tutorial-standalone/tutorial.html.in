@@ -152,14 +152,14 @@ window.signal.hide.connect(function () { Gtk.main_quit(); });
 BrowserToolbar = new GType({
     parent: Gtk.HBox.type,
     name: "BrowserToolbar",
-    instance_init: function (klass)
+    init: function (klass)
     {
 
     }
 });
 </pre>
 <p>
-You'll notice that the GType takes a JavaScript object. The three most important properties which we'll be using are <i>parent</i>, the type of the 'parent' class, from which our subclass should inherit its default behavior; <i>name</i>, the UpperCamelCase name of our new class; and <i>instance_init</i>, a JavaScript function which is called each time a new instance of the class is made.
+You'll notice that the GType takes a JavaScript object. The three most important properties which we'll be using are <i>parent</i>, the type of the 'parent' class, from which our subclass should inherit its default behavior; <i>name</i>, the UpperCamelCase name of our new class; and <i>init</i>, a JavaScript function which is called each time a new instance of the class is made.
 </p>
 <div class="section">Working with Widgets</div>
 <p>We'll start by making the BrowserToolbar's buttons. GTK provides a ToolButton widget, which is generally used for making such toolbars, as well as various different stock icons (to ensure consistency within all GTK applications). Browsing through <a href="http://library.gnome.org/devel/gtk/stable/gtk-Stock-Items.html">the GTK Stock Item documentation</a>, we find that we're looking for "<code>gtk-go-back</code>", "<code>gtk-go-forward</code>", and "<code>gtk-refresh</code>". A glance at the <a href="http://library.gnome.org/devel/gtk/stable/GtkToolButton.html">GtkToolButton documentation</a> shows us that we can choose a stock icon by setting the <code>stock-id</code> property - we'll use JSON constructors to keep things tidy. Do note that we use underscores instead of dashes, because the property name isn't quoted (thus, a dash would indicate subtraction, which isn't what we're looking for!):</p>
@@ -167,7 +167,7 @@ You'll notice that the GType takes a JavaScript object. The three most important
 <span class="unchanged">BrowserToolbar = new GType({
     parent: Gtk.HBox.type,
     name: "BrowserToolbar",
-    instance_init: function (klass)
+    init: function (klass)
     {</span>
         // Private
         var url_bar = new Gtk.Entry();
@@ -193,7 +193,7 @@ You'll notice that the GType takes a JavaScript object. The three most important
 <span class="unchanged">BrowserToolbar = new GType({
     parent: Gtk.HBox.type,
     name: "BrowserToolbar",
-    instance_init: function (klass)
+    init: function (klass)
     {
         // Private
         var url_bar = new Gtk.Entry();
@@ -252,7 +252,7 @@ window.add(toolbar);
 BrowserView = new GType({
     parent: WebKit.WebView.type,
     name: "BrowserView",
-    instance_init: function (klass)
+    init: function (klass)
     {
         // Private
         var update_url = function (web_view, web_frame)
@@ -290,7 +290,7 @@ window.resize(600,600);
 <span class="unchanged">BrowserToolbar = new GType({
     parent: Gtk.HBox.type,
     name: "BrowserToolbar",
-    instance_init: function (klass)
+    init: function (klass)
     {
         // Private
         var url_bar = new Gtk.Entry();
@@ -353,7 +353,7 @@ window.resize(600,600);
 Browser = new GType({
     parent: Gtk.VBox.type,
     name: "Browser",
-    instance_init: function (klass)
+    init: function (klass)
     {
         // Private
         var toolbar = new BrowserToolbar();

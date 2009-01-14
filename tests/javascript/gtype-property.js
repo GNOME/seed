@@ -23,7 +23,7 @@ class_init: function(klass, prototype)
 													  false,
 													  GObject.ParamFlags.READABLE | GObject.ParamFlags.WRITABLE));
 },
-instance_init: function(klass)
+init: function(klass)
 {
 	
 }};

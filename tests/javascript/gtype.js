@@ -15,7 +15,7 @@ HelloWindowType = {
 	prototype.message = "Prototypes!";
 	Seed.print("In klass init");
     },
-    instance_init: function(klass)
+    init: function(klass)
     {
 	this.title = "Hello!";
 	Seed.print("In constructor for " + this);

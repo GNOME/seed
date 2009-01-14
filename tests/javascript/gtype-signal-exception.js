@@ -36,7 +36,7 @@ HelloWindowType = {
 	}
 
     },
-    instance_init: function(klass)
+    init: function(klass)
     {
     }};
 
