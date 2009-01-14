@@ -21,7 +21,7 @@ class_init: function(klass, prototype)
 													  "test property",
 													  "A test property!",
 													  false,
-													  GObject.ParamFlags.Readable | GObject.ParamFlags.Writable));
+													  GObject.ParamFlags.READABLE | GObject.ParamFlags.WRITABLE));
 },
 instance_init: function(klass)
 {

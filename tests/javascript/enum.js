@@ -8,8 +8,8 @@ Seed.import_namespace("Gtk");
 Gtk.init(null, null);
 
 b = new Gtk.Button();
-b.relief = Gtk.ReliefStyle.None;
+b.relief = Gtk.ReliefStyle.NONE;
 
-Seed.print(Gtk.ReliefStyle.None);
+Seed.print(Gtk.ReliefStyle.NONE);
 
 

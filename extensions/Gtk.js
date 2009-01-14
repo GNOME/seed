@@ -12,7 +12,7 @@
 				 var position = entry["position"];
 
 				 if (position == null)
-					 position = Gtk.PackType.Start;
+					 position = Gtk.PackType.START;
 				 
 				 this.pack_start(child);
 				 this.set_child_packing(child, 
