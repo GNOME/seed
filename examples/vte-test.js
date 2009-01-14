@@ -23,8 +23,8 @@ with (Gtk)
 
 
 	scroll.add(vte);
-	scroll.set_policy(PolicyType.Automatic,
-					  PolicyType.Automatic);
+	scroll.set_policy(PolicyType.AUTOMATIC,
+					  PolicyType.AUTOMATIC);
 
 	window.add(scroll);
 	window.resize(600,400);
