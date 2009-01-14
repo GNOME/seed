@@ -1,3 +1,5 @@
+if BUILD_EXAMPLE_MODULE
+
 lib_LTLIBRARIES = \
 	libexample.la
 
@@ -15,6 +17,8 @@ AM_CPPFLAGS = \
 	$(SEED_DEBUG_CFLAGS) $(SEED_PROFILE_CFLAGS)
 
 AM_LDFLAGS = $(SEED_PROFILE_LDFLAGS)
+
+endif
 
 libdir = ${exec_prefix}/lib/seed
 

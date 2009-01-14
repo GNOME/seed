@@ -1,4 +1,4 @@
-if BUILD_SQLITE3_MODULE
+if BUILD_SQLITE_MODULE
 
 lib_LTLIBRARIES = \
 	libsqlite.la
