@@ -484,7 +484,7 @@ seed_gobject_define_property_from_function_info(JSContextRef ctx,
 
 	name = g_base_info_get_name((GIBaseInfo *) info);
 	if (!strcmp(name, "new"))
-		name = "_new";
+		name = "c_new";
 	seed_object_set_property(ctx, object, name, method_ref);
 	seed_object_set_property(ctx, method_ref, "info",
 							 seed_make_struct(ctx,
