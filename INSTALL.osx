@@ -1,0 +1,4 @@
+When building on OS X, install automake, autoconf, gtk-doc, etc. from MacPorts;
+then, export PATH=/opt/local/bin:$PATH (if /opt/local is your MacPorts
+installation) and build Seed as you normally would. You also must have a recent
+WebKit nightly installed to /Applications/WebKit.app.
