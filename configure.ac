@@ -63,7 +63,8 @@ case "$host_os" in
 	darwin*)
 		;;
 	*)
-		AC_CHECK_LIB(webkit-1.0, JSContextGroupCreate, , AC_MSG_ERROR([Your copy of WebKit is too old.]))
+		AC_CHECK_LIB(webkit-1.0, JSContextGroupCreate, ,
+					 AC_MSG_ERROR([The installed version of WebKit is too old. Install WebKit from SVN and try again.]))
 		;;
 esac
 
@@ -257,8 +258,7 @@ Examples:
 "
 
 if test "x$want_readline_module" != "xyes"; then
-echo "
-WARNING: The readline module is not enabled.
+echo "WARNING: The readline module is not enabled.
          Without this, the Seed REPL will not work;
          however, most Seed applications will still run.
 "
