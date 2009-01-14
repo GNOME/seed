@@ -3,10 +3,12 @@
 	* automake
 	* autoconf
 	* gtk-doc
+	* gnome-common
 	* glib2
 	* libtool
 	* pkg-config
 	* intltool
+	* libffi
 
 2. Install the following optional packages from MacPorts:
 
@@ -14,6 +16,8 @@
 	* readline
 	* libsoup
 	* sqlite3
+	* gtk2
+	* 
 
 3. Optionally, download and install:
 
