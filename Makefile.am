@@ -6,11 +6,8 @@ SUBDIRS = po \
 	extensions \
 	doc \
 	modules \
-	tests
-
-if BUILD_SEED_EXAMPLES
-SUBDIRS += examples
-endif
+	tests \
+	examples
 
 seeddocdir = ${prefix}/share/doc/seed
 seeddoc_DATA = \

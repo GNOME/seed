@@ -4,6 +4,7 @@ SUBDIRS = \
           browser \
           turtle
 
+if BUILD_SEED_EXAMPLES
 examplesdir=$(datadir)/doc/seed/examples
 examples_DATA = \
 	actions.js \
@@ -31,6 +32,8 @@ examples_DATA = \
 	vte-test.js \
 	threaded-repl.js \
 	HACKING
+endif
+
 EXTRA_DIST = \
 	COPYING \
 	actions.js \

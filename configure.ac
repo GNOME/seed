@@ -154,7 +154,7 @@ AC_ARG_ENABLE(examples,
 			  AC_HELP_STRING([--enable-examples],
 							 [install JavaScript examples. [default=yes]]),
 			  [enable_examples=$enableval],[enable_examples="yes"])
-AM_CONDITIONAL([BUILD_SEED_EXAMPLES], [test "x$enable_examples"="xyes"])
+AM_CONDITIONAL(BUILD_SEED_EXAMPLES, test "x$enable_examples" = "xyes")
 
 dnl =============================Debug=========================================
 AC_ARG_ENABLE(debug,

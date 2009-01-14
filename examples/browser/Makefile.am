@@ -1,3 +1,4 @@
+if BUILD_SEED_EXAMPLES
 browserdir = $(datadir)/doc/seed/examples/browser
 browser_DATA = \
 	browser-actions.js \
@@ -9,6 +10,8 @@ browser_DATA = \
 	browser-toolbar.js \
 	COPYING \
 	main.js
+endif
+
 EXTRA_DIST = \
 	browser-actions.js \
 	browser-bookmarks.js \
