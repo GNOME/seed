@@ -9,7 +9,7 @@
 // STDERR:\/bin\/sh: \.\/struct-offsets_\.c: Permission denied
 Seed.import_namespace("Clutter");
 
-c = Clutter.Color._new();
+c = new Clutter.Color();
 Clutter.color_parse("red", c);
 
 Seed.print(c.red);
