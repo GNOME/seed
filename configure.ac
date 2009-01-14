@@ -236,6 +236,7 @@ doc/tutorial-standalone/Makefile
 doc/reference/Makefile
 examples/Makefile
 examples/clutter-shader/Makefile
+examples/clutter-transitions/Makefile
 examples/glib/Makefile
 examples/browser/Makefile
 examples/turtle/Makefile
