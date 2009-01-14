@@ -1,5 +1,6 @@
 SUBDIRS = \
           clutter-shader \
+          clutter-transitions \
           glib \
           browser \
           turtle
@@ -60,6 +61,4 @@ EXTRA_DIST = \
 	vte-test.js \
 	threaded-repl.js \
 	HACKING
-
-## File created by the gnome-build tools
 
