@@ -87,7 +87,7 @@ AM_CONDITIONAL(BUILD_SQLITE3_MODULE, test "x$have_sqlite3_h" = "xyes")
 AC_SUBST(BUILD_SQLITE3_MODULE)
 
 dnl =========================turtle example====================================
-AC_TRY_CPP([#include <gtk/gtk.h>], want_turtle=yes, want_turtle=no)
+PKG_CHECK_EXISTS(gtk+-2.0, want_turtle=yes, want_turtle=no)
 AM_CONDITIONAL(BUILD_TURTLE_EXAMPLE, test "x$want_turtle" = "xyes")
 AC_SUBST(BUILD_TURTLE_EXAMPLE)
 
