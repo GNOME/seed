@@ -74,7 +74,7 @@ seed_struct_constructor_invoked(JSContextRef ctx,
 	}
 	ret = seed_construct_struct_type_with_parameters(ctx, info,
 													 parameters, exception);
-	
+
 	return (JSObjectRef) ret;
 }
 
@@ -107,7 +107,8 @@ seed_gobject_constructor_invoked(JSContextRef ctx,
 	if (argumentCount > 1)
 	{
 		gchar *mes = g_strdup_printf("Constructor expects"
-									 " 1 argument, got %d", (unsigned int) argumentCount);
+									 " 1 argument, got %d",
+									 (unsigned int)argumentCount);
 		seed_make_exception(ctx, exception, "ArgumentError", mes);
 		g_free(mes);
 
@@ -220,7 +221,8 @@ seed_gobject_equals(JSContextRef ctx,
 	if (argumentCount != 1)
 	{
 		gchar *mes = g_strdup_printf("GObject equals comparison expected"
-									 " 1 argument, got %d", (unsigned int) argumentCount);
+									 " 1 argument, got %d",
+									 (unsigned int)argumentCount);
 		seed_make_exception(ctx, exception, "ArgumentError", mes);
 		g_free(mes);
 
@@ -377,7 +379,8 @@ seed_gobject_method_invoked(JSContextRef ctx,
 				{
 					if (G_IS_OBJECT(retval.v_pointer))
 					{
-						sunk = G_IS_INITIALLY_UNOWNED(G_OBJECT(retval.v_pointer));
+						sunk =
+							G_IS_INITIALLY_UNOWNED(G_OBJECT(retval.v_pointer));
 						if (sunk)
 							g_object_ref_sink(G_OBJECT(retval.v_pointer));
 					}
@@ -445,15 +448,14 @@ seed_gobject_method_invoked(JSContextRef ctx,
 
 static JSObjectRef
 seed_gobject_named_constructor_invoked(JSContextRef ctx,
-								 JSObjectRef constructor,
-								 size_t argumentCount,
-								 const JSValueRef arguments[],
-								 JSValueRef * exception)
+									   JSObjectRef constructor,
+									   size_t argumentCount,
+									   const JSValueRef arguments[],
+									   JSValueRef * exception)
 {
-	return (JSObjectRef)seed_gobject_method_invoked(ctx, constructor, 
-									   NULL, argumentCount,
-									   arguments,
-									   exception);
+	return (JSObjectRef) seed_gobject_method_invoked(ctx, constructor,
+													 NULL, argumentCount,
+													 arguments, exception);
 }
 
 void
@@ -964,7 +966,7 @@ seed_gi_import_namespace(JSContextRef ctx,
 				seed_object_set_property(ctx, enum_class, name, value_ref);
 
 				g_free(name);
-				g_base_info_unref((GIBaseInfo*)val);
+				g_base_info_unref((GIBaseInfo *) val);
 
 			}
 		}
@@ -1002,22 +1004,19 @@ seed_gi_import_namespace(JSContextRef ctx,
 					flags = g_function_info_get_flags(finfo);
 					if (flags & GI_FUNCTION_IS_CONSTRUCTOR)
 					{
-						JSObjectRef constructor = 
-							JSObjectMake(ctx,
-										 gobject_named_constructor_class,
-										 finfo);
-						const gchar * fname =
-							g_base_info_get_name((GIBaseInfo *)
-												 finfo);
+						JSObjectRef constructor = JSObjectMake(ctx,
+															   gobject_named_constructor_class,
+															   finfo);
+						const gchar *fname =
+							g_base_info_get_name((GIBaseInfo *) finfo);
 						if (strstr(fname, "new_") == fname)
 							fname += 4;
 						else if (!strcmp(fname, "new"))
-							fname ="c_new";
-						
+							fname = "c_new";
+
 						seed_object_set_property(ctx,
 												 constructor_ref,
-												 fname, 
-												 constructor);
+												 fname, constructor);
 					}
 					else if (!(flags & GI_FUNCTION_IS_METHOD))
 					{
@@ -1057,19 +1056,17 @@ seed_gi_import_namespace(JSContextRef ctx,
 				finfo = g_struct_info_get_method((GIStructInfo *) info, i);
 
 				flags = g_function_info_get_flags(finfo);
-				
+
 				if (flags & GI_FUNCTION_IS_METHOD)
-					g_base_info_unref((GIBaseInfo *)finfo);
+					g_base_info_unref((GIBaseInfo *) finfo);
 				else
 					seed_gobject_define_property_from_function_info
 						(ctx, finfo, struct_ref, FALSE);
 
 			}
-			
-			proto = seed_struct_prototype(ctx,
-										  info);
-			seed_object_set_property(ctx, struct_ref,
-									 "prototype", proto);
+
+			proto = seed_struct_prototype(ctx, info);
+			seed_object_set_property(ctx, struct_ref, "prototype", proto);
 
 			seed_object_set_property(ctx, namespace_ref,
 									 g_base_info_get_name(info), struct_ref);
@@ -1093,19 +1090,17 @@ seed_gi_import_namespace(JSContextRef ctx,
 
 				finfo = g_union_info_get_method((GIUnionInfo *) info, i);
 				flags = g_function_info_get_flags(finfo);
-				
+
 				if (flags & GI_FUNCTION_IS_METHOD)
-					g_base_info_unref((GIBaseInfo *)finfo);
+					g_base_info_unref((GIBaseInfo *) finfo);
 				else
 					seed_gobject_define_property_from_function_info
 						(ctx, finfo, struct_ref, FALSE);
 
 			}
 
-			proto = seed_union_prototype(ctx,
-										  info);
-			seed_object_set_property(ctx, struct_ref,
-									 "prototype", proto);
+			proto = seed_union_prototype(ctx, info);
+			seed_object_set_property(ctx, struct_ref, "prototype", proto);
 
 			seed_object_set_property(ctx, namespace_ref,
 									 g_base_info_get_name(info), struct_ref);
@@ -1124,7 +1119,7 @@ seed_gi_import_namespace(JSContextRef ctx,
 		else if (info && (g_base_info_get_type(info) == GI_INFO_TYPE_CONSTANT))
 		{
 			GArgument argument;
-			GITypeInfo * constant_type =
+			GITypeInfo *constant_type =
 				g_constant_info_get_type((GIConstantInfo *) info);
 			JSValueRef constant_value;
 
@@ -1135,8 +1130,8 @@ seed_gi_import_namespace(JSContextRef ctx,
 			seed_object_set_property(ctx, namespace_ref,
 									 g_base_info_get_name(info),
 									 constant_value);
-			
-			g_base_info_unref((GIBaseInfo *)constant_type);
+
+			g_base_info_unref((GIBaseInfo *) constant_type);
 
 		}
 		g_base_info_unref(info);
@@ -1248,7 +1243,7 @@ JSClassDefinition gobject_constructor_def = {
 JSClassDefinition gobject_named_constructor_def = {
 	0,							/* Version, always 0 */
 	0,
-	"gobject_named_constructor",		/* Class Name */
+	"gobject_named_constructor",	/* Class Name */
 	NULL,						/* Parent Class */
 	NULL,						/* Static Values */
 	NULL,						/* Static Functions */
@@ -1327,7 +1322,8 @@ seed_arg_no_debug_cb(const char *key, const char *value, gpointer user_data)
 static GOptionEntry seed_args[] = {
 #ifdef SEED_ENABLE_DEBUG
 	{"seed-debug", 0, 0, G_OPTION_ARG_CALLBACK, seed_arg_debug_cb,
-	 "Seed debugging messages to show. Comma separated list of: all, misc, finalization, initialization, construction, invocation, signal, structs, gtype.", "FLAGS"},
+	 "Seed debugging messages to show. Comma separated list of: all, misc, finalization, initialization, construction, invocation, signal, structs, gtype.",
+	 "FLAGS"},
 	{"seed-no-debug", 0, 0, G_OPTION_ARG_CALLBACK, seed_arg_no_debug_cb,
 	 "Disable Seed debugging", "FLAGS"},
 #endif							/* SEED_ENABLE_DEBUG */
@@ -1410,7 +1406,8 @@ SeedEngine *seed_init(gint * argc, gchar *** argv)
 	JSClassRetain(gobject_method_class);
 	gobject_constructor_class = JSClassCreate(&gobject_constructor_def);
 	JSClassRetain(gobject_constructor_class);
-	gobject_named_constructor_class = JSClassCreate(&gobject_named_constructor_def);
+	gobject_named_constructor_class =
+		JSClassCreate(&gobject_named_constructor_def);
 	JSClassRetain(gobject_named_constructor_class);
 	gobject_signal_class = JSClassCreate(seed_get_signal_class());
 	JSClassRetain(gobject_signal_class);
@@ -1428,8 +1425,7 @@ SeedEngine *seed_init(gint * argc, gchar *** argv)
 	seed_create_function(eng->context, "import_namespace",
 						 &seed_gi_import_namespace, seed_obj_ref);
 
-	g_irepository_require(g_irepository_get_default(), "GObject",
-						  NULL, 0, 0);
+	g_irepository_require(g_irepository_get_default(), "GObject", NULL, 0, 0);
 	g_irepository_require(g_irepository_get_default(), "GIRepository",
 						  NULL, 0, 0);
 

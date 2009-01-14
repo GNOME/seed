@@ -374,19 +374,19 @@ SeedNativeClosure *seed_make_native_closure(JSContextRef ctx,
 	cif = g_new0(ffi_cif, 1);
 
 	privates = g_new0(SeedNativeClosure, 1);
-	privates->info = (GICallableInfo *)g_base_info_ref((GIBaseInfo *)info);
+	privates->info = (GICallableInfo *) g_base_info_ref((GIBaseInfo *) info);
 	privates->function = function;
 	privates->cif = cif;
 
 	for (i = 0; i < num_args; i++)
 	{
-		GITypeInfo * type;
-		
+		GITypeInfo *type;
+
 		arg_info = g_callable_info_get_arg(info, i);
 		type = g_arg_info_get_type(arg_info);
 		arg_types[i] = get_ffi_type(type);
-		g_base_info_unref((GIBaseInfo *)arg_info);
-		g_base_info_unref((GIBaseInfo *)type);
+		g_base_info_unref((GIBaseInfo *) arg_info);
+		g_base_info_unref((GIBaseInfo *) type);
 	}
 	arg_types[num_args] = 0;
 
@@ -403,8 +403,8 @@ SeedNativeClosure *seed_make_native_closure(JSContextRef ctx,
 							 (JSValueRef) JSObjectMake(ctx,
 													   seed_native_callback_class,
 													   privates));
-	
-	g_base_info_unref((GIBaseInfo *)return_type);
+
+	g_base_info_unref((GIBaseInfo *) return_type);
 
 	return privates;
 }

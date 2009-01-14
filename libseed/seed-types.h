@@ -109,9 +109,8 @@ gdouble seed_value_to_double(JSContextRef ctx,
 JSValueRef seed_value_from_double(JSContextRef ctx,
 								  gdouble val, JSValueRef * exception);
 
-gchar * seed_value_to_filename(JSContextRef ctx,
-							   JSValueRef val,
-							   JSValueRef *exception);
+gchar *seed_value_to_filename(JSContextRef ctx,
+							  JSValueRef val, JSValueRef * exception);
 JSValueRef seed_value_from_filename(JSContextRef ctx,
 									const gchar * filename,
 									JSValueRef * exception);

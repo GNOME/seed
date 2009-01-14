@@ -6,13 +6,10 @@
 #include <sys/mman.h>
 
 SeedObject namespace_ref;
-SeedEngine * eng;
+SeedEngine *eng;
 
 static void
-seed_handle_rl_closure(ffi_cif * cif,
-					   void * result,
-					   void ** args,
-					   void * userdata)
+seed_handle_rl_closure(ffi_cif * cif, void *result, void **args, void *userdata)
 {
 	SeedContext ctx = seed_context_create(eng->group, NULL);
 	SeedValue exception = 0;
@@ -21,28 +18,28 @@ seed_handle_rl_closure(ffi_cif * cif,
 	seed_object_call(ctx, function, 0, 0, 0, &exception);
 	if (exception)
 	{
-		gchar *mes = seed_exception_to_string(ctx, 
+		gchar *mes = seed_exception_to_string(ctx,
 											  exception);
 		g_warning("Exception in readline bind key closure. %s \n", mes, 0);
 	}
-	seed_context_unref((SeedContext)ctx);
+	seed_context_unref((SeedContext) ctx);
 }
 
 // "Leaky" in that it exists for lifetime of program,
 // kind of unavoidable though.
-static ffi_closure * seed_make_rl_closure(SeedObject function)
+static ffi_closure *seed_make_rl_closure(SeedObject function)
 {
-	ffi_cif * cif;
+	ffi_cif *cif;
 	ffi_closure *closure;
 	ffi_arg result;
 	ffi_status status;
-	
+
 	cif = g_new0(ffi_cif, 1);
 	closure = mmap(0, sizeof(ffi_closure), PROT_READ | PROT_WRITE |
 				   PROT_EXEC, MAP_ANON | MAP_PRIVATE, -1, 0);
 	ffi_prep_cif(cif, FFI_DEFAULT_ABI, 0, &ffi_type_sint, 0);
 	ffi_prep_closure(closure, cif, seed_handle_rl_closure, function);
-	
+
 	return closure;
 }
 
@@ -51,11 +48,10 @@ seed_readline_bind(SeedContext ctx,
 				   SeedObject function,
 				   SeedObject this_object,
 				   size_t argumentCount,
-				   const SeedValue arguments[],
-				   SeedValue * exception)
+				   const SeedValue arguments[], SeedValue * exception)
 {
-	gchar * key;
-	ffi_closure * c;
+	gchar *key;
+	ffi_closure *c;
 
 	if (argumentCount != 2)
 	{
@@ -68,12 +64,12 @@ seed_readline_bind(SeedContext ctx,
 	}
 
 	key = seed_value_to_string(ctx, arguments[0], exception);
-	c = seed_make_rl_closure((SeedObject)arguments[1]);
-	
-	rl_bind_key(*key, (Function*)c);
-	
+	c = seed_make_rl_closure((SeedObject) arguments[1]);
+
+	rl_bind_key(*key, (Function *) c);
+
 	g_free(key);
-	
+
 	return seed_make_null(ctx);
 }
 
@@ -82,8 +78,7 @@ seed_readline(SeedContext ctx,
 			  SeedObject function,
 			  SeedObject this_object,
 			  size_t argumentCount,
-			  const SeedValue arguments[],
-			  SeedValue * exception)
+			  const SeedValue arguments[], SeedValue * exception)
 {
 	SeedValue valstr = 0;
 	gchar *str = 0;
@@ -120,21 +115,21 @@ seed_readline(SeedContext ctx,
 void seed_module_init(SeedEngine * local_eng)
 {
 	seed_class_definition readline_class_def = seed_empty_class;
-	
+
 	eng = local_eng;
 
 	namespace_ref = seed_make_object(eng->context, 0, 0);
 
 	seed_create_function(eng->context,
 						 "readline",
-						 (SeedFunctionCallback)seed_readline,
-						 (SeedObject)namespace_ref);
+						 (SeedFunctionCallback) seed_readline,
+						 (SeedObject) namespace_ref);
 
 	seed_create_function(eng->context,
 						 "bind",
-						 (SeedFunctionCallback)seed_readline_bind,
-						 (SeedObject)namespace_ref);
-	
-	seed_object_set_property(eng->context, 
+						 (SeedFunctionCallback) seed_readline_bind,
+						 (SeedObject) namespace_ref);
+
+	seed_object_set_property(eng->context,
 							 eng->global, "readline", namespace_ref);
 }

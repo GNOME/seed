@@ -54,10 +54,9 @@ JSObjectRef seed_make_object(JSContextRef ctx,
 }
 
 void seed_object_set_property_at_index(JSContextRef ctx,
-								  JSObjectRef object,
-								  gint index,
-								  JSValueRef value,
-								  JSValueRef * exception)
+									   JSObjectRef object,
+									   gint index,
+									   JSValueRef value, JSValueRef * exception)
 {
 	JSObjectSetPropertyAtIndex(ctx, object, index, value, exception);
 }
@@ -109,7 +108,7 @@ JSValueRef seed_simple_evaluate(JSContextRef ctx, gchar * source)
 {
 	JSValueRef ret;
 	JSStringRef script = JSStringCreateWithUTF8CString(source);
-	
+
 	ret = JSEvaluateScript(ctx, script, NULL, NULL, 0, NULL);
 
 	JSStringRelease(script);

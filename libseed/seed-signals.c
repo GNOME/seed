@@ -85,8 +85,8 @@ static void closure_invalidated(gpointer data, GClosure * c)
 {
 	JSContextRef ctx = JSGlobalContextCreateInGroup(context_group,
 													0);
-	SeedClosure * closure = (SeedClosure *) c;
-	
+	SeedClosure *closure = (SeedClosure *) c;
+
 	SEED_NOTE(FINALIZATION, "Finalizing closure.");
 /*
   WebKit bug?
@@ -97,7 +97,7 @@ static void closure_invalidated(gpointer data, GClosure * c)
 	if (!JSValueIsUndefined(ctx, closure->function))
 		JSValueUnprotect(ctx, closure->function);
 
-	JSGlobalContextRelease((JSGlobalContextRef)ctx);
+	JSGlobalContextRelease((JSGlobalContextRef) ctx);
 }
 
 static void seed_gobject_signal_connect(JSContextRef ctx,
@@ -125,7 +125,7 @@ static void seed_gobject_signal_connect(JSContextRef ctx,
 	if (this_obj && !JSValueIsNull(ctx, this_obj))
 	{
 		JSValueProtect(ctx, this_obj);
-//		((SeedClosure *) closure)->this = this_obj;
+//      ((SeedClosure *) closure)->this = this_obj;
 	}
 	else
 	{
@@ -135,7 +135,7 @@ static void seed_gobject_signal_connect(JSContextRef ctx,
 	if (user_data && !JSValueIsNull(ctx, user_data))
 	{
 		((SeedClosure *) closure)->user_data = user_data;
-		//	JSValueProtect(ctx, user_data);
+		//  JSValueProtect(ctx, user_data);
 	}
 
 	JSValueProtect(ctx, (JSObjectRef) func);
@@ -160,7 +160,7 @@ seed_gobject_signal_connect_by_name(JSContextRef ctx,
 	{
 		gchar *mes = g_strdup_printf("Signal connection expected"
 									 " 2 or 3 arguments. Got "
-									 "%d", (unsigned int) argumentCount);
+									 "%d", (unsigned int)argumentCount);
 		seed_make_exception(ctx, exception, "ArgumentError", mes);
 
 		g_free(mes);
@@ -171,7 +171,7 @@ seed_gobject_signal_connect_by_name(JSContextRef ctx,
 	{
 		user_data = (JSObjectRef) arguments[2];
 	}
-	
+
 	signal_name = seed_value_to_string(ctx, arguments[0], exception);
 	obj = (GObject *) JSObjectGetPrivate(thisObject);
 	obj_type = G_OBJECT_TYPE(obj);
@@ -310,8 +310,8 @@ seed_gobject_signal_emit(JSContextRef ctx,
 									 "arguments, got %d",
 									 query.signal_name,
 									 g_type_name(query.itype),
-									 (unsigned int) query.n_params,
-									 (unsigned int) argumentCount);
+									 (unsigned int)query.n_params,
+									 (unsigned int)argumentCount);
 		seed_make_exception(ctx, exception, "ArgumentError", mes);
 		g_free(mes);
 		return JSValueMakeNull(ctx);
@@ -360,7 +360,7 @@ seed_gobject_signal_connect_on_property(JSContextRef ctx,
 	{
 		gchar *mes = g_strdup_printf("Signal connection expected"
 									 " 1, or 2 arguments. Got "
-									 "%d", (unsigned int) argumentCount);
+									 "%d", (unsigned int)argumentCount);
 		seed_make_exception(ctx, exception, "ArgumentError", mes);
 
 		g_free(mes);

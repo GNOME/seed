@@ -40,7 +40,7 @@ seed_include(JSContextRef ctx,
 	{
 		gchar *mes =
 			g_strdup_printf("Seed.include expected 1 argument, "
-							"got %d", (unsigned int) argumentCount);
+							"got %d", (unsigned int)argumentCount);
 		seed_make_exception(ctx, exception, "ArgumentError", mes);
 		g_free(mes);
 		return JSValueMakeNull(ctx);
@@ -53,7 +53,7 @@ seed_include(JSContextRef ctx,
 	{
 		gchar *mes = g_strdup_printf("File not found: %s.\n", import_file);
 		seed_make_exception(ctx, exception, "FileNotFound", mes);
-		
+
 		g_free(import_file);
 		g_free(buffer);
 		g_free(mes);
@@ -96,7 +96,7 @@ seed_print(JSContextRef ctx,
 	{
 		gchar *mes =
 			g_strdup_printf("Seed.print expected 1 argument," " got %d",
-							(unsigned int) argumentCount);
+							(unsigned int)argumentCount);
 		seed_make_exception(ctx, exception, "ArgumentError", mes);
 		g_free(mes);
 		return JSValueMakeNull(ctx);
@@ -146,7 +146,7 @@ seed_introspect(JSContextRef ctx,
 	{
 		gchar *mes =
 			g_strdup_printf("Seed.introspect expected 1 argument, "
-							"got %d", (unsigned int) argumentCount);
+							"got %d", (unsigned int)argumentCount);
 		seed_make_exception(ctx, exception, "ArgumentError", mes);
 		g_free(mes);
 		return JSValueMakeNull(ctx);
@@ -213,7 +213,7 @@ seed_check_syntax(JSContextRef ctx,
 	{
 		gchar *mes = g_strdup_printf("Seed.check_syntax expected "
 									 "1 argument, got %d",
-									 (unsigned int) argumentCount);
+									 (unsigned int)argumentCount);
 		seed_make_exception(ctx, exception, "ArgumentError", mes);
 		g_free(mes);
 	}
@@ -289,7 +289,7 @@ seed_quit(JSContextRef ctx,
 	else if (argumentCount > 1)
 	{
 		gchar *mes = g_strdup_printf("Seed.quit expected " "1 argument, got %d",
-									 (unsigned int) argumentCount);
+									 (unsigned int)argumentCount);
 		seed_make_exception(ctx, exception, "ArgumentError", mes);
 		g_free(mes);
 	}
@@ -318,15 +318,17 @@ void seed_init_builtins(SeedEngine * local_eng, gint * argc, gchar *** argv)
 
 	arrayObj = JSObjectMake(local_eng->context, NULL, NULL);
 
-	if(argc)
+	if (argc)
 	{
 		for (i = 0; i < *argc; ++i)
 		{
 			// TODO: exceptions!
 
 			JSObjectSetPropertyAtIndex(local_eng->context, arrayObj, i,
-									   seed_value_from_string(local_eng->context,
-															  (*argv)[i], 0), NULL);
+									   seed_value_from_string(local_eng->
+															  context,
+															  (*argv)[i], 0),
+									   NULL);
 		}
 
 		argcref = seed_value_from_int(local_eng->context, *argc, 0);
@@ -335,7 +337,7 @@ void seed_init_builtins(SeedEngine * local_eng, gint * argc, gchar *** argv)
 	{
 		argcref = seed_value_from_int(local_eng->context, 0, 0);
 	}
-	
+
 	seed_object_set_property(local_eng->context, arrayObj, "length", argcref);
 	seed_object_set_property(local_eng->context, obj, "argv", arrayObj);
 }

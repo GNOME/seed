@@ -21,8 +21,8 @@
 #include <sys/mman.h>
 
 JSClassRef seed_gtype_class;
-GIBaseInfo * objectclass_info = NULL;
-GIBaseInfo * paramspec_info = NULL;
+GIBaseInfo *objectclass_info = NULL;
+GIBaseInfo *paramspec_info = NULL;
 
 GQuark qgetter;
 GQuark qsetter;
@@ -216,7 +216,7 @@ seed_property_method_invoked(JSContextRef ctx,
 	{
 		gchar *mes =
 			g_strdup_printf("Property installation expected 1 argument"
-							" got %d \n", (unsigned int) argumentCount);
+							" got %d \n", (unsigned int)argumentCount);
 		seed_make_exception(ctx, exception, "ArgumentError", mes);
 		g_free(mes);
 
@@ -268,7 +268,7 @@ seed_gsignal_method_invoked(JSContextRef ctx,
 	if (argumentCount != 1)
 	{
 		gchar *mes = g_strdup_printf("Signal constructor expected 1 argument"
-									 " got %d \n", (unsigned int) argumentCount);
+									 " got %d \n", (unsigned int)argumentCount);
 		seed_make_exception(ctx, exception, "ArgumentError", mes);
 		g_free(mes);
 		return (JSObjectRef) JSValueMakeNull(ctx);
@@ -357,48 +357,43 @@ seed_gsignal_method_invoked(JSContextRef ctx,
 }
 
 static void seed_gtype_builtin_set_property(GObject * object,
-									guint property_id,
-									const GValue *value,
-									GParamSpec *spec)
+											guint property_id,
+											const GValue * value,
+											GParamSpec * spec)
 {
 	JSContextRef ctx = JSGlobalContextCreateInGroup(context_group, 0);
-	gchar * name = g_strjoin(NULL, "_", spec->name, NULL);
-	JSObjectRef jsobj = (JSObjectRef)seed_value_from_object(ctx, object, 0);
-	
-	seed_object_set_property(ctx, 
-							 jsobj, 
-							 name, 
-							 seed_value_from_gvalue(ctx, 
-													(GValue *)value, 
-													0));
-	
+	gchar *name = g_strjoin(NULL, "_", spec->name, NULL);
+	JSObjectRef jsobj = (JSObjectRef) seed_value_from_object(ctx, object, 0);
+
+	seed_object_set_property(ctx,
+							 jsobj,
+							 name,
+							 seed_value_from_gvalue(ctx, (GValue *) value, 0));
+
 	g_free(name);
 	JSGlobalContextRelease((JSGlobalContextRef) ctx);
 }
 
 static void seed_gtype_builtin_get_property(GObject * object,
-									guint property_id,
-									GValue *value,
-									GParamSpec *spec)
+											guint property_id,
+											GValue * value, GParamSpec * spec)
 {
 	// TODO: Exceptions
 	JSContextRef ctx = JSGlobalContextCreateInGroup(context_group, 0);
-	gchar * name = g_strjoin(NULL, "_", spec->name, NULL);
+	gchar *name = g_strjoin(NULL, "_", spec->name, NULL);
 	JSObjectRef jsobj = (JSObjectRef) seed_value_from_object(ctx, object, 0);
 	JSValueRef jsval = seed_object_get_property(ctx, jsobj,
 												name);
-	
-	seed_gvalue_from_seed_value(ctx, jsval, spec->value_type,
-								value, 0);
-	
+
+	seed_gvalue_from_seed_value(ctx, jsval, spec->value_type, value, 0);
+
 	g_free(name);
 	JSGlobalContextRelease((JSGlobalContextRef) ctx);
 }
 
 static void seed_gtype_set_property(GObject * object,
 									guint property_id,
-									const GValue *value,
-									GParamSpec *spec)
+									const GValue * value, GParamSpec * spec)
 {
 	gpointer data = g_param_spec_get_qdata(spec, qsetter);
 
@@ -411,8 +406,7 @@ static void seed_gtype_set_property(GObject * object,
 
 static void seed_gtype_get_property(GObject * object,
 									guint property_id,
-									GValue *value,
-									GParamSpec *spec)
+									GValue * value, GParamSpec * spec)
 {
 	gpointer data = g_param_spec_get_qdata(spec, qgetter);
 
@@ -433,8 +427,8 @@ seed_handle_class_init_closure(ffi_cif * cif,
 	JSValueRef exception = 0;
 	JSContextRef ctx = JSGlobalContextCreateInGroup(context_group,
 													0);
-	GObjectClass * klass = *(GObjectClass **) args[0];
-	
+	GObjectClass *klass = *(GObjectClass **) args[0];
+
 	klass->get_property = seed_gtype_get_property;
 	klass->set_property = seed_gtype_set_property;
 
@@ -448,7 +442,7 @@ seed_handle_class_init_closure(ffi_cif * cif,
 	// TODO: 
 	// Should probably have a custom type for class, and have it auto convert.
 	seed_object_set_property(ctx, (JSObjectRef) jsargs[0],
-  							 "type", seed_value_from_int(ctx, type, 0));
+							 "type", seed_value_from_int(ctx, type, 0));
 	seed_object_set_property(ctx, (JSObjectRef) jsargs[0],
 							 "property_count", seed_value_from_int(ctx, 1, 0));
 
@@ -572,7 +566,7 @@ seed_gtype_constructor_invoked(JSContextRef ctx,
 		gchar *mes =
 			g_strdup_printf("GType constructor expected 1 "
 							"argument, got %d \n",
-							(unsigned int) argumentCount);
+							(unsigned int)argumentCount);
 		seed_make_exception(ctx, exception, "ArgumentError", mes);
 		g_free(mes);
 		return (JSObjectRef) JSValueMakeNull(ctx);
@@ -638,9 +632,10 @@ seed_gtype_constructor_invoked(JSContextRef ctx,
 	new_type = g_type_register_static(parent_type, new_name, &type_info, 0);
 	seed_gobject_get_class_for_gtype(ctx, new_type);
 	JSObjectSetPrivate(constructor_ref, (gpointer) new_type);
-	
-	seed_object_set_property(ctx, constructor_ref, 
-							 "type", seed_value_from_int(ctx, new_type, exception));
+
+	seed_object_set_property(ctx, constructor_ref,
+							 "type", seed_value_from_int(ctx, new_type,
+														 exception));
 
 	g_free(new_name);
 	return constructor_ref;
@@ -648,71 +643,69 @@ seed_gtype_constructor_invoked(JSContextRef ctx,
 
 static JSValueRef
 seed_param_getter_invoked(JSContextRef ctx,
-							 JSObjectRef function,
-							 JSObjectRef thisObject,
-							 size_t argumentCount,
-							 const JSValueRef arguments[],
-							 JSValueRef * exception)
+						  JSObjectRef function,
+						  JSObjectRef thisObject,
+						  size_t argumentCount,
+						  const JSValueRef arguments[], JSValueRef * exception)
 {
 	GParamSpec *pspec = seed_pointer_get_pointer(ctx, thisObject);
 
 	if (argumentCount != 1)
 	{
-		gchar * mes = g_strdup_printf("ParamSpec.get expected "
-									  "1 argument, got %d",
-									  (unsigned int) argumentCount);
+		gchar *mes = g_strdup_printf("ParamSpec.get expected "
+									 "1 argument, got %d",
+									 (unsigned int)argumentCount);
 		seed_make_exception(ctx, exception, "ArgumentError", mes);
 		g_free(mes);
-		
+
 		return JSValueMakeNull(ctx);
 	}
 	else if (JSValueIsNull(ctx, arguments[0]) ||
 			 !JSValueIsObject(ctx, arguments[0]) ||
-			 !JSObjectIsFunction(ctx, (JSObjectRef)arguments[0]))
+			 !JSObjectIsFunction(ctx, (JSObjectRef) arguments[0]))
 	{
 		// Maybe should  accept C functions
 		seed_make_exception(ctx, exception, "ArgumentError",
 							"ParamSpec.get expected a function");
 		return JSValueMakeNull(ctx);
 	}
-	
-	g_param_spec_set_qdata(pspec, qgetter, (gpointer)arguments[0]);
-	
+
+	g_param_spec_set_qdata(pspec, qgetter, (gpointer) arguments[0]);
+
 	return seed_value_from_boolean(ctx, TRUE, exception);
 }
 
 static JSValueRef
 seed_param_setter_invoked(JSContextRef ctx,
-							 JSObjectRef function,
-							 JSObjectRef thisObject,
-							 size_t argumentCount,
-							 const JSValueRef arguments[],
-							 JSValueRef * exception)
+						  JSObjectRef function,
+						  JSObjectRef thisObject,
+						  size_t argumentCount,
+						  const JSValueRef arguments[], JSValueRef * exception)
 {
 	GParamSpec *pspec = seed_pointer_get_pointer(ctx, thisObject);
 
 	if (argumentCount != 1)
 	{
-		gchar * mes = g_strdup_printf("ParamSpec.set expected "
-									  "1 argument, got %d",
-									  (unsigned int) argumentCount);
+		gchar *mes = g_strdup_printf("ParamSpec.set expected "
+									 "1 argument, got %d",
+									 (unsigned int)argumentCount);
 		seed_make_exception(ctx, exception, "ArgumentError", mes);
 		g_free(mes);
-		
+
 		return JSValueMakeNull(ctx);
 	}
 	else if (JSValueIsNull(ctx, arguments[0]) ||
 			 !JSValueIsObject(ctx, arguments[0]) ||
-			 !JSObjectIsFunction(ctx, (JSObjectRef)arguments[0]))
+			 !JSObjectIsFunction(ctx, (JSObjectRef) arguments[0]))
 	{
 		// Maybe should  accept C functions
 		seed_make_exception(ctx, exception, "ArgumentError",
 							"ParamSpec.set expected a function");
 		return JSValueMakeNull(ctx);
 	}
-	
-	g_param_spec_set_qdata(pspec, qsetter, (gpointer)arguments[0]);
-	
+
+	g_param_spec_set_qdata(pspec, qsetter, (gpointer) arguments[0]);
+
 	return seed_value_from_boolean(ctx, TRUE, exception);
 }
 
@@ -721,28 +714,20 @@ void seed_define_gtype_functions(JSContextRef ctx)
 	JSObjectRef proto;
 
 	objectclass_info = g_irepository_find_by_name(NULL,
-												   "GObject",
-												   "ObjectClass");
+												  "GObject", "ObjectClass");
 
 	proto = seed_struct_prototype(ctx, objectclass_info);
 
 	seed_create_function(ctx, "c_install_property",
-						 &seed_property_method_invoked,
-						 proto);	
+						 &seed_property_method_invoked, proto);
 	seed_create_function(ctx, "install_signal",
 						 &seed_gsignal_method_invoked, proto);
 
-	paramspec_info = g_irepository_find_by_name(NULL,
-												"GObject",
-												"ParamSpec");
+	paramspec_info = g_irepository_find_by_name(NULL, "GObject", "ParamSpec");
 	proto = seed_struct_prototype(ctx, paramspec_info);
 
-	seed_create_function(ctx, "get",
-						 &seed_param_getter_invoked,
-						 proto);
-	seed_create_function(ctx, "set",
-						 &seed_param_setter_invoked,
-						 proto);
+	seed_create_function(ctx, "get", &seed_param_getter_invoked, proto);
+	seed_create_function(ctx, "set", &seed_param_setter_invoked, proto);
 }
 
 void seed_gtype_init(SeedEngine * local_eng)
@@ -757,12 +742,10 @@ void seed_gtype_init(SeedEngine * local_eng)
 	gtype_constructor = JSObjectMake(local_eng->context, seed_gtype_class, 0);
 
 	seed_object_set_property(local_eng->context,
-							 local_eng->global,
-							 "GType",
-							 gtype_constructor);
+							 local_eng->global, "GType", gtype_constructor);
 
 	qgetter = g_quark_from_static_string("js-getter");
 	qsetter = g_quark_from_static_string("js-setter");
-	
+
 	seed_define_gtype_functions(local_eng->context);
 }

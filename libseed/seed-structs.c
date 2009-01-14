@@ -33,8 +33,8 @@ typedef struct _seed_struct_privates {
 	gsize size;
 } seed_struct_privates;
 
-GHashTable * struct_prototype_hash = NULL;
-GHashTable * union_prototype_hash = NULL;
+GHashTable *struct_prototype_hash = NULL;
+GHashTable *union_prototype_hash = NULL;
 
 static void seed_pointer_finalize(JSObjectRef object)
 {
@@ -46,7 +46,7 @@ static void seed_pointer_finalize(JSObjectRef object)
 			  priv->pointer,
 			  priv->free_pointer,
 			  priv->info ? g_base_info_get_name(priv->info) : "[generic]",
-		      priv->size);
+			  priv->size);
 
 	if (priv->free_pointer)
 	{
@@ -143,7 +143,7 @@ seed_field_get_value(JSContextRef ctx,
 			interface = g_type_info_get_interface(field_type);
 			gint offset = g_field_info_get_offset(field);
 
-			g_base_info_unref((GIBaseInfo *)field_type);
+			g_base_info_unref((GIBaseInfo *) field_type);
 			switch (g_base_info_get_type(interface))
 			{
 			case GI_INFO_TYPE_STRUCT:
@@ -160,7 +160,7 @@ seed_field_get_value(JSContextRef ctx,
 				break;
 			}
 			g_base_info_unref(interface);
-			
+
 			return ret;
 		}
 
@@ -215,7 +215,7 @@ seed_struct_set_property(JSContextRef context,
 	gint length;
 	GArgument field_value;
 	GIFieldInfo *field;
-	gchar * cproperty_name;
+	gchar *cproperty_name;
 	GITypeInfo *field_type;
 	seed_struct_privates *priv =
 		(seed_struct_privates *) JSObjectGetPrivate(object);
@@ -243,7 +243,7 @@ seed_struct_set_property(JSContextRef context,
 
 	g_base_info_unref((GIBaseInfo *) field_type);
 	g_base_info_unref((GIBaseInfo *) field);
-	
+
 	return TRUE;
 }
 
@@ -426,9 +426,8 @@ void seed_pointer_set_free(JSContextRef ctx,
 }
 
 static void seed_pointer_set_slice(JSContextRef ctx,
-								   JSValueRef pointer, 
-								   gboolean free_pointer,
-	                               gsize size)
+								   JSValueRef pointer,
+								   gboolean free_pointer, gsize size)
 {
 	seed_struct_privates *priv = JSObjectGetPrivate((JSObjectRef) pointer);
 	priv->slice_alloc = free_pointer;
@@ -445,21 +444,19 @@ JSObjectRef seed_make_pointer(JSContextRef ctx, gpointer pointer)
 	return JSObjectMake(ctx, seed_pointer_class, priv);
 }
 
-JSObjectRef seed_union_prototype(JSContextRef ctx,
-								  GIBaseInfo *info)
+JSObjectRef seed_union_prototype(JSContextRef ctx, GIBaseInfo * info)
 {
 	JSObjectRef proto;
 	const gchar *namespace, *name;
 	gchar *key;
 	gint n_methods, i;
-	
+
 	name = g_base_info_get_name(info);
 	namespace = g_base_info_get_namespace(info);
 	key = g_strjoin(NULL, namespace, name, NULL);
-	
-	proto = (JSObjectRef) g_hash_table_lookup(union_prototype_hash,
-											  key);
-	
+
+	proto = (JSObjectRef) g_hash_table_lookup(union_prototype_hash, key);
+
 	if (!proto)
 	{
 		proto = JSObjectMake(ctx, 0, 0);
@@ -473,15 +470,12 @@ JSObjectRef seed_union_prototype(JSContextRef ctx,
 
 			seed_gobject_define_property_from_function_info(ctx,
 															(GIFunctionInfo *)
-															finfo, proto,
-															TRUE);
+															finfo, proto, TRUE);
 
 			g_base_info_unref((GIBaseInfo *) finfo);
 		}
 
-		g_hash_table_insert(union_prototype_hash,
-							key,
-							proto);
+		g_hash_table_insert(union_prototype_hash, key, proto);
 	}
 	else
 	{
@@ -532,21 +526,19 @@ JSObjectRef seed_make_boxed(JSContextRef ctx, gpointer boxed, GIBaseInfo * info)
 	return object;
 }
 
-JSObjectRef seed_struct_prototype(JSContextRef ctx,
-								  GIBaseInfo *info)
+JSObjectRef seed_struct_prototype(JSContextRef ctx, GIBaseInfo * info)
 {
 	JSObjectRef proto;
 	const gchar *namespace, *name;
 	gchar *key;
 	gint n_methods, i;
-	
+
 	name = g_base_info_get_name(info);
 	namespace = g_base_info_get_namespace(info);
 	key = g_strjoin(NULL, namespace, name, NULL);
-	
-	proto = (JSObjectRef) g_hash_table_lookup(struct_prototype_hash,
-											  key);
-	
+
+	proto = (JSObjectRef) g_hash_table_lookup(struct_prototype_hash, key);
+
 	if (!proto)
 	{
 		proto = JSObjectMake(ctx, 0, 0);
@@ -560,15 +552,12 @@ JSObjectRef seed_struct_prototype(JSContextRef ctx,
 
 			seed_gobject_define_property_from_function_info(ctx,
 															(GIFunctionInfo *)
-															finfo, proto,
-															TRUE);
+															finfo, proto, TRUE);
 
 			g_base_info_unref((GIBaseInfo *) finfo);
 		}
 
-		g_hash_table_insert(struct_prototype_hash,
-							key,
-							proto);
+		g_hash_table_insert(struct_prototype_hash, key, proto);
 	}
 	else
 	{
@@ -612,11 +601,9 @@ void seed_structs_init(void)
 	seed_union_class = JSClassCreate(&seed_union_def);
 	seed_boxed_def.parentClass = seed_struct_class;
 	seed_boxed_class = JSClassCreate(&seed_boxed_def);
-	
-	struct_prototype_hash = g_hash_table_new(g_str_hash,
-											 g_str_equal);
-	union_prototype_hash = g_hash_table_new(g_str_hash,
-											 g_str_equal);
+
+	struct_prototype_hash = g_hash_table_new(g_str_hash, g_str_equal);
+	union_prototype_hash = g_hash_table_new(g_str_hash, g_str_equal);
 }
 
 JSObjectRef
@@ -648,10 +635,10 @@ seed_construct_struct_type_with_parameters(JSContextRef ctx,
 	g_assert(size);
 	object = g_slice_alloc0(size);
 
-	SEED_NOTE(CONSTRUCTION, "Constructing struct/union of type: %s. Size: %zu \n",
+	SEED_NOTE(CONSTRUCTION,
+			  "Constructing struct/union of type: %s. Size: %zu \n",
 			  g_base_info_get_name(info), size);
 
-	
 	if (type == GI_INFO_TYPE_STRUCT)
 		ret = seed_make_struct(ctx, object, info);
 	else

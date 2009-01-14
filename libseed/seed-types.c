@@ -153,7 +153,7 @@ static gboolean seed_release_arg(GITransfer transfer,
 				}
 				else if (g_type_is_a(gtype, G_TYPE_VALUE))
 				{
-					GValue * gval = (GValue *)arg->v_pointer;
+					GValue *gval = (GValue *) arg->v_pointer;
 					// Free/unref the GValue's contents.
 					g_value_unset(gval);
 					// Free the GValue.
@@ -203,10 +203,10 @@ gboolean seed_gi_release_in_arg(GITransfer transfer,
 	{
 		// TODO: FIXME: Leaaaks?
 	case GI_TYPE_TAG_INTERFACE:
-	{
-		// TODO: FIXME: Need some safe way to look for GClosure.
-		break;
-	}
+		{
+			// TODO: FIXME: Need some safe way to look for GClosure.
+			break;
+		}
 	case GI_TYPE_TAG_UTF8:
 	case GI_TYPE_TAG_FILENAME:
 	case GI_TYPE_TAG_ARRAY:
@@ -221,20 +221,19 @@ gboolean seed_gi_release_in_arg(GITransfer transfer,
 
 static JSValueRef
 seed_gi_make_jsarray(JSContextRef ctx,
-					 void * array,
-					 GITypeInfo * param_type,
-					 JSValueRef * exception)
+					 void *array,
+					 GITypeInfo * param_type, JSValueRef * exception)
 {
 	GITypeTag element_type;
 	JSValueRef ret = JSValueMakeNull(ctx);
 
 	element_type = g_type_info_get_tag(param_type);
-	
+
 	if (element_type == GI_TYPE_TAG_UTF8)
 	{
-		JSValueRef * elements;
+		JSValueRef *elements;
 		guint length, i;
-		gchar ** str_array = (gchar **) array;
+		gchar **str_array = (gchar **) array;
 
 		length = g_strv_length(str_array);
 		if (!length)
@@ -243,15 +242,12 @@ seed_gi_make_jsarray(JSContextRef ctx,
 		elements = g_alloca(sizeof(JSValueRef) * length);
 		for (i = 0; i < length; ++i)
 		{
-			elements[i] = seed_value_from_string(ctx, 
-												 str_array[i],
-												 exception);
+			elements[i] = seed_value_from_string(ctx, str_array[i], exception);
 		}
-		
-		ret = (JSValueRef) JSObjectMakeArray(ctx, length, 
-											 elements, exception);
+
+		ret = (JSValueRef) JSObjectMakeArray(ctx, length, elements, exception);
 	}
-	
+
 	return ret;
 }
 
@@ -444,14 +440,13 @@ seed_gi_make_argument(JSContextRef ctx,
 					}
 					else if (type == G_TYPE_VALUE)
 					{
-						GValue * gval = g_slice_alloc0(sizeof(GValue));
+						GValue *gval = g_slice_alloc0(sizeof(GValue));
 						seed_gvalue_from_seed_value(ctx,
 													value,
-													(GType)NULL,
-													gval,
-													exception);
+													(GType) NULL,
+													gval, exception);
 						arg->v_pointer = gval;
-						
+
 						g_base_info_unref(interface);
 						break;
 					}
@@ -470,8 +465,7 @@ seed_gi_make_argument(JSContextRef ctx,
 						JSObjectRef strukt =
 							seed_construct_struct_type_with_parameters(ctx,
 																	   interface,
-																	   (JSObjectRef)
-																	   value,
+																	   (JSObjectRef) value,
 																	   exception);
 						arg->v_pointer = seed_pointer_get_pointer(ctx, strukt);
 					}
@@ -635,23 +629,23 @@ seed_gi_argument_make_js(JSContextRef ctx,
 	case GI_TYPE_TAG_GTYPE:
 		return seed_value_from_int(ctx, arg->v_int, exception);
 	case GI_TYPE_TAG_ARRAY:
-	{
-		GITypeInfo *param_type;
-		JSValueRef ret;
-		if (!g_type_info_is_zero_terminated(type_info))
-			break;
-		
-		param_type = g_type_info_get_param_type(type_info, 0);
-		
-		ret = seed_gi_make_jsarray(ctx, arg->v_pointer, param_type,
-								   exception);
-		
-		g_base_info_unref((GIBaseInfo *) param_type);
-		
-		return ret;		
-	}
+		{
+			GITypeInfo *param_type;
+			JSValueRef ret;
+			if (!g_type_info_is_zero_terminated(type_info))
+				break;
+
+			param_type = g_type_info_get_param_type(type_info, 0);
+
+			ret = seed_gi_make_jsarray(ctx, arg->v_pointer, param_type,
+									   exception);
+
+			g_base_info_unref((GIBaseInfo *) param_type);
+
+			return ret;
+		}
 	case GI_TYPE_TAG_INTERFACE:
-	{
+		{
 			GIBaseInfo *interface;
 			GIInfoType interface_type;
 
@@ -913,45 +907,45 @@ seed_gvalue_from_seed_value(JSContextRef ctx,
 			return TRUE;
 		}
 	default:
-	{
-		// TODO: FIXME: This whole undefined type area
-		// needs some heaaavy improvement.
+		{
+			// TODO: FIXME: This whole undefined type area
+			// needs some heaaavy improvement.
 
-		// Support [GObject.TYPE_INT, 3]
-		// TODO: FIXME: Might crash.
-		if (type == 0 && JSValueIsObject(ctx, val))
-		{
-			// TODO: FIXME: Better array test like the cool one on reddit.
-			guint length = 
-				seed_value_to_int(ctx,
-								  seed_object_get_property(ctx,
-														   (JSObjectRef) val,
-														   "length"),
-								  exception);
-			
-			if (length)
+			// Support [GObject.TYPE_INT, 3]
+			// TODO: FIXME: Might crash.
+			if (type == 0 && JSValueIsObject(ctx, val))
 			{
-				type = seed_value_to_int(ctx,
-										 JSObjectGetPropertyAtIndex(ctx,
-														(JSObjectRef) val,
-														0, exception),
-										 exception);
-				val = JSObjectGetPropertyAtIndex(ctx,
-												 (JSObjectRef) val,
-												 1, exception);
-				if (type) // Prevents recursion.
-				{ 
-					return seed_gvalue_from_seed_value(ctx, val,
-													   type, ret,
-													   exception);
+				// TODO: FIXME: Better array test like the cool one on reddit.
+				guint length = seed_value_to_int(ctx,
+												 seed_object_get_property(ctx,
+																		  (JSObjectRef) val,
+																		  "length"),
+												 exception);
+
+				if (length)
+				{
+					type = seed_value_to_int(ctx,
+											 JSObjectGetPropertyAtIndex(ctx,
+																		(JSObjectRef)
+																		val, 0,
+																		exception),
+											 exception);
+					val =
+						JSObjectGetPropertyAtIndex(ctx, (JSObjectRef) val, 1,
+												   exception);
+					if (type)	// Prevents recursion.
+					{
+						return seed_gvalue_from_seed_value(ctx, val,
+														   type, ret,
+														   exception);
+					}
+					// TODO: FIXME: Handle better?
+					else
+						g_assert_not_reached();
 				}
-				// TODO: FIXME: Handle better?
-				else
-					g_assert_not_reached();
 			}
-		}
-		switch (JSValueGetType(ctx, val))
-		{
+			switch (JSValueGetType(ctx, val))
+			{
 			case kJSTypeBoolean:
 				{
 					g_value_init(ret, G_TYPE_BOOLEAN);
@@ -1398,10 +1392,9 @@ JSValueRef seed_value_from_filename(JSContextRef ctx,
 									JSValueRef * exception)
 {
 	GError *e = NULL;
-	gchar * utf8;
-	
-	utf8 = g_filename_to_utf8(filename, -1, NULL,
-							  NULL, &e);
+	gchar *utf8;
+
+	utf8 = g_filename_to_utf8(filename, -1, NULL, NULL, &e);
 	if (e)
 	{
 		seed_make_exception_from_gerror(ctx, exception, e);
@@ -1409,21 +1402,18 @@ JSValueRef seed_value_from_filename(JSContextRef ctx,
 		// TODO: FIXMEShould be JS Null maybe?
 		return NULL;
 	}
-	
+
 	return seed_value_from_string(ctx, utf8, exception);
 }
 
-gchar * seed_value_to_filename(JSContextRef ctx,
-							   JSValueRef val,
-							   JSValueRef *exception)
+gchar *seed_value_to_filename(JSContextRef ctx,
+							  JSValueRef val, JSValueRef * exception)
 {
-	GError * e = NULL;
-	gchar * utf8 = seed_value_to_string(ctx, val, exception);
-	gchar * filename;
-	
-	filename = g_filename_from_utf8(utf8, -1, 
-									NULL, NULL,
-									&e);
+	GError *e = NULL;
+	gchar *utf8 = seed_value_to_string(ctx, val, exception);
+	gchar *filename;
+
+	filename = g_filename_from_utf8(utf8, -1, NULL, NULL, &e);
 	g_free(utf8);
 	if (e)
 	{
