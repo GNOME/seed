@@ -958,10 +958,8 @@ seed_gi_import_namespace(JSContextRef ctx,
 				{
 					if (name[j] == '-')
 						name[j] = '_';
+					name[j] = g_ascii_toupper(name[j]);
 				}
-
-				// Non ascii enums? :P
-				*name = g_ascii_toupper(*name);
 
 				seed_object_set_property(ctx, enum_class, name, value_ref);
 
