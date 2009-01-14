@@ -1,4 +1,31 @@
-When building on OS X, install automake, autoconf, gtk-doc, etc. from MacPorts;
-then, export PATH=/opt/local/bin:$PATH (if /opt/local is your MacPorts
-installation) and build Seed as you normally would. You also must have a recent
-WebKit nightly installed to /Applications/WebKit.app.
+1. Install the following packages from MacPorts:
+
+	* automake
+	* autoconf
+	* gtk-doc
+	* glib2
+	* libtool
+	* pkg-config
+	* intltool
+
+2. Install the following optional packages from MacPorts:
+
+	* cairo
+	* readline
+	* libsoup
+	* sqlite3
+
+3. Optionally, download and install:
+
+	* clutter 0.8
+
+4. Download a WebKit nightly from http://nightly.webkit.org, and
+   install it to /Applications/WebKit.app
+
+5. Add your MacPorts binaries folder to your path:
+
+   $ export PATH=/opt/local/bin:$PATH
+
+   Note: You may have installed MacPorts somewhere other than /opt/local.
+
+6. Build gobject-introspection, gir-repository, and Seed as you normally would. 
