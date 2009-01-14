@@ -632,6 +632,9 @@ seed_gi_argument_make_js(JSContextRef ctx,
 		{
 			GITypeInfo *param_type;
 			JSValueRef ret;
+
+			if (arg->v_pointer == NULL)
+				return JSValueMakeNull(ctx);
 			if (!g_type_info_is_zero_terminated(type_info))
 				break;
 
