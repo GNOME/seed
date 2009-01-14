@@ -5,6 +5,9 @@ test_SOURCES =					\
 	basic.c						\
 	api-types.c					\
 	api-closure.c
+
+EXTRA_DIST =					\
+	test-common.h
 	
 test_CFLAGS = -Wall				\
 	 $(SEED_CFLAGS)
