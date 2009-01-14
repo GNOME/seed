@@ -85,6 +85,11 @@ AC_MSG_CHECKING(for sqlite3)
 AC_TRY_CPP([#include <sqlite3.h>], have_sqlite3_h=yes, have_sqlite3_h=no)
 AC_MSG_RESULT([$have_sqlite3_h])
 
+dnl =============================gtk+-2.0======================================
+AC_MSG_CHECKING(for gtk+-2.0)
+PKG_CHECK_EXISTS(gtk+-2.0, have_gtk=yes, have_gtk=no)
+AC_MSG_RESULT([$have_gtk])
+
 dnl =============================Modules=======================================
 AC_ARG_ENABLE(canvas-module,
 			  AC_HELP_STRING([--enable-canvas-module],
@@ -133,9 +138,16 @@ AM_CONDITIONAL(BUILD_READLINE_MODULE, test "x$want_readline_module" = "xyes")
 AM_CONDITIONAL(BUILD_SQLITE_MODULE, test "x$want_sqlite_module" = "xyes")
 
 dnl =========================turtle example====================================
-PKG_CHECK_EXISTS(gtk+-2.0, want_turtle=yes, want_turtle=no)
-AM_CONDITIONAL(BUILD_TURTLE_EXAMPLE, test "x$want_turtle" = "xyes")
-AC_SUBST(BUILD_TURTLE_EXAMPLE)
+AC_ARG_ENABLE(turtle-example,
+			  AC_HELP_STRING([--enable-turtle-example],
+							 [enable the turtle graphics example. [default=yes]]),
+			  [want_turtle_example=$enableval],[want_turtle_example="yes"])
+
+if test x"$have_gtk" != x"yes" ; then
+	want_turtle_example="no"
+fi
+
+AM_CONDITIONAL(BUILD_TURTLE_EXAMPLE, test "x$want_turtle_example" = "xyes")
 
 dnl =========================Install Examples==================================
 AC_ARG_ENABLE(examples,
@@ -143,7 +155,6 @@ AC_ARG_ENABLE(examples,
 							 [install JavaScript examples. [default=yes]]),
 			  [enable_examples=$enableval],[enable_examples="yes"])
 AM_CONDITIONAL([BUILD_SEED_EXAMPLES], [test "x$enable_examples"="xyes"])
-AC_SUBST(BUILD_SEED_EXAMPLES)
 
 dnl =============================Debug=========================================
 AC_ARG_ENABLE(debug,
@@ -248,13 +259,13 @@ Installation:
 
 Modules:
    Canvas.....................$want_canvas_module
-   example............... ....$want_example_module
+   example....................$want_example_module
    multiprocessing............$want_multiprocessing_module
    readline...................$want_readline_module
    SQLite.....................$want_sqlite_module
 
 Examples:
-   Turtle.....................$want_turtle
+   Turtle.....................$want_turtle_example
 "
 
 if test "x$want_readline_module" != "xyes"; then
