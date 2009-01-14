@@ -16,14 +16,14 @@ var end = new Clutter.Texture.from_file("two.jpg");
 
 with(begin)
 {
-	filter_quality = Clutter.TextureQuality.High;
+	filter_quality = Clutter.TextureQuality.HIGH;
 	width = stage.width;
 	height = stage.height;
 }
 
 with(end)
 {
-	filter_quality = Clutter.TextureQuality.High;
+	filter_quality = Clutter.TextureQuality.HIGH;
 	width = stage.width;
 	height = stage.height;
 }
