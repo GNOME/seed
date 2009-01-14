@@ -30,8 +30,8 @@ Browser = new GType({
         // Implementation
         scroll_view.smooth_scroll = true;
         scroll_view.add(web_view);
-        scroll_view.set_policy(Gtk.PolicyType.Automatic,
-                               Gtk.PolicyType.Automatic);
+        scroll_view.set_policy(Gtk.PolicyType.AUTOMATIC,
+                               Gtk.PolicyType.AUTOMATIC);
 
         this.pack_start(toolbar);
         this.pack_start(scroll_view, true, true);

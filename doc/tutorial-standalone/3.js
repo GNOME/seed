@@ -29,9 +29,9 @@ TabbedBrowser = new GType({
             new_tab.get_web_view().browse(url);
             
             var tab_label = new Gtk.Label({label:"Untitled"});
-            var tab_button = new Gtk.Button({relief: Gtk.ReliefStyle.None});
+            var tab_button = new Gtk.Button({relief: Gtk.ReliefStyle.NONE});
             tab_button.set_image(new Gtk.Image({stock: "gtk-close", 
-                                                icon_size: Gtk.IconSize.Menu}));
+                                                icon_size: Gtk.IconSize.MENU}));
             tab_button.signal.clicked.connect(this.close_tab, this);
             
             var tab_title = new Gtk.HBox();
@@ -91,8 +91,8 @@ BrowserTab = new GType({
         
         scroll_view.smooth_scroll = true;
         scroll_view.add(web_view);
-        scroll_view.set_policy(Gtk.PolicyType.Automatic,
-                               Gtk.PolicyType.Automatic);
+        scroll_view.set_policy(Gtk.PolicyType.AUTOMATIC,
+                               Gtk.PolicyType.AUTOMATIC);
 
         this.pack_start(toolbar);
         this.pack_start(scroll_view, true, true);
