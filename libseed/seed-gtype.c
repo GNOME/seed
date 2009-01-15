@@ -449,8 +449,7 @@ seed_handle_class_init_closure(ffi_cif * cif,
 	JSObjectCallAsFunction(ctx, function, 0, 2, jsargs, &exception);
 	if (exception)
 	{
-		gchar *mes = seed_exception_to_string(ctx,
-											  exception);
+		gchar *mes = seed_exception_to_string(ctx, exception);
 		g_warning("Exception in class init closure. %s \n", mes);
 	}
 
@@ -466,8 +465,7 @@ seed_handle_instance_init_closure(ffi_cif * cif,
 	JSValueRef exception = 0;
 	JSObjectRef this_object;
 
-	JSContextRef ctx = JSGlobalContextCreateInGroup(context_group,
-													0);
+	JSContextRef ctx = JSGlobalContextCreateInGroup(context_group, 0);
 
 	jsargs = seed_make_pointer(ctx, *(gpointer *) args[1]);
 	this_object =
@@ -480,22 +478,20 @@ seed_handle_instance_init_closure(ffi_cif * cif,
 	JSObjectCallAsFunction(ctx, function, this_object, 1, &jsargs, &exception);
 	if (exception)
 	{
-		gchar *mes = seed_exception_to_string(ctx,
-											  exception);
+		gchar *mes = seed_exception_to_string(ctx, exception);
 		g_warning("Exception in instance init closure. %s \n", mes);
 	}
 
 	JSGlobalContextRelease((JSGlobalContextRef) ctx);
-
 }
 
 static ffi_closure *seed_make_class_init_closure(JSObjectRef function)
 {
 	ffi_cif *cif;
 	ffi_closure *closure;
-	ffi_type **arg_types;;
+	ffi_type **arg_types;
 
-// Might need to protect function.
+	// Might need to protect function.
 
 	cif = g_new0(ffi_cif, 1);
 	arg_types = g_new0(ffi_type *, 3);
@@ -516,9 +512,9 @@ static ffi_closure *seed_make_instance_init_closure(JSObjectRef function)
 {
 	ffi_cif *cif;
 	ffi_closure *closure;
-	ffi_type **arg_types;;
+	ffi_type **arg_types;
 
-// Might need to protect function.
+	// Might need to protect function.
 
 	cif = g_new0(ffi_cif, 1);
 	arg_types = g_new0(ffi_type *, 3);
