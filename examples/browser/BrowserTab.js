@@ -7,7 +7,7 @@ BrowserTab = new GType({
         klass.c_install_property(GObject.param_spec_object("web_view",
                                  "WebView",
                                  "WebView to display",
-                                 BrowserView.type,
+                                 GObject.TYPE_OBJECT,
                                  GObject.ParamFlags.READABLE |
                                      GObject.ParamFlags.WRITABLE));
     },
@@ -41,6 +41,9 @@ BrowserTab = new GType({
         };
         
         // Implementation
+        
+        Seed.print("Wv:"); Seed.print(this.web_view);
+        
         if(this.web_view == null)
         {
             Seed.print("creating new webview");

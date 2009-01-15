@@ -19,8 +19,10 @@ TabbedBrowser = new GType({
         {
             var new_tab;
             
-            if(new_web_view)
-                new_tab = new BrowserTab({"web_view":new_web_view});
+            Seed.print(new_web_view);
+            
+            if(new_web_view != null)
+                new_tab = new BrowserTab({web_view:new_web_view});
             else
                 new_tab = new BrowserTab();
             

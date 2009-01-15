@@ -8,14 +8,10 @@ BrowserView = new GType({
         
         var install_signals = function (web_view)
         {
-            Seed.print("connecting");
-            
             web_view.set_scroll_adjustments(null, null);
             web_view.signal.title_changed.connect(update_title);
             web_view.signal.load_committed.connect(update_url);
             web_view.signal.create_web_view.connect(create_new_tab);
-            
-            Seed.print("connected");
         }
         
         var update_title = function (web_view, web_frame, title)
