@@ -7,14 +7,14 @@ FindBoxType = {
 	{
 		var closeButton = new Gtk.Button();
 		closeButton.set_image(new Gtk.Image({stock: "gtk-close", 
-				icon_size: Gtk.IconSize.Menu}));
+				icon_size: Gtk.IconSize.MENU}));
 		closeButton.signal.clicked.connect(
 			function (button, findBox)
             {
 				findBox.entryBox.text = "";
 				findBox.hide();
             }, this);
-		closeButton.set_relief(Gtk.ReliefStyle.None);
+		closeButton.set_relief(Gtk.ReliefStyle.NONE);
 
 		var findLabel = new Gtk.Label({label:"Find: "});
 		this.entryBox = new Gtk.Entry();

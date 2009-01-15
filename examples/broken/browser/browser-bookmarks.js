@@ -4,7 +4,7 @@ var bookmark_path = GLib.get_home_dir() + "/.seed_browser_bookmarks.db";
 
 //check if the bookmarks db exists and if there are permissions
 
-var new_db = (!GLib.file_test(bookmark_path, GLib.FileTest.Exists));
+var new_db = (!GLib.file_test(bookmark_path, GLib.FileTest.EXISTS));
 
 bookmarks_db = new sqlite.Database(bookmark_path);
 

@@ -9,9 +9,9 @@ function title_changed(webView, webFrame, title, tab)
 
 function url_changed(webView, webFrame, tab)
 {
-	tab.toolbar.back.sensitive = webView.can_go_back();
-	tab.toolbar.forward.sensitive = webView.can_go_forward();
-	tab.toolbar.urlBar.text = webFrame.get_uri();
+	//tab.toolbar.back.sensitive = webView.can_go_back();
+	//tab.toolbar.forward.sensitive = webView.can_go_forward();
+	//tab.toolbar.urlBar.text = webFrame.get_uri();
 	return false;
 }
 
@@ -89,9 +89,9 @@ BrowserTabType = {
 					status.push(hoverContextId, uri);
            		});
 			
-			this.toolbar.urlBar.signal.activate.connect(browse, this);
-			this.toolbar.back.sensitive = this.webView.can_go_back();
-			this.toolbar.forward.sensitive = this.webView.can_go_forward();
+			//this.toolbar.urlBar.signal.activate.connect(browse, this);
+			//this.toolbar.back.sensitive = this.webView.can_go_back();
+			//this.toolbar.forward.sensitive = this.webView.can_go_forward();
 
 			
 			webView.set_settings(webKitSettings);
@@ -120,8 +120,8 @@ BrowserTabType = {
 			var scrollView = new Gtk.ScrolledWindow();
 			scrollView.smooth_scroll = true;
 			scrollView.add(this.webView);
-			scrollView.set_policy(Gtk.PolicyType.Automatic,
-								  Gtk.PolicyType.Automatic);
+			scrollView.set_policy(Gtk.PolicyType.AUTOMATIC,
+								  Gtk.PolicyType.AUTOMATIC);
 			this.pack_start(scrollView, true, true);
 			this.show_all();
 		}
@@ -130,31 +130,19 @@ BrowserTabType = {
 	{
 		this.webView = null;
 		
-		this.toolbar = new BrowserToolbar();
+		//this.toolbar = new BrowserToolbar();
 
-		this.pack_start(this.toolbar);
-	
-		var closeButton = new Gtk.Button();
-		closeButton.set_image(new Gtk.Image({stock: "gtk-close", 
-				icon_size: Gtk.IconSize.Menu}));
-		closeButton.signal.clicked.connect(close_tab, this);
-		closeButton.set_relief(Gtk.ReliefStyle.None);
+		//this.pack_start(this.toolbar);
 	
 		this.progress = new Gtk.ProgressBar({fraction: 0.5});
 	
-		this.title = new Gtk.HBox();
-		this.titleLabel = new Gtk.Label({label:"Untitled"})
-		this.title.pack_start(this.titleLabel);
-		this.title.pack_start(closeButton);
-		this.title.show_all();
-		
 /*		forker_pipe.write("fork");
 		this.pid = parseInt(forker_pipe.read());
 		Seed.print("new pid: " + this.pid);*/
 		
 		
 		this.show_all();
-		this.toolbar.urlBar.grab_focus();
+		//tthis.toolbar.urlBar.grab_focus();
 	}};
 
 BrowserTab = new GType(BrowserTabType);

@@ -137,6 +137,12 @@ AM_CONDITIONAL(BUILD_MULTIPROCESSING_MODULE, test "x$want_multiprocessing_module
 AM_CONDITIONAL(BUILD_READLINE_MODULE, test "x$want_readline_module" = "xyes")
 AM_CONDITIONAL(BUILD_SQLITE_MODULE, test "x$want_sqlite_module" = "xyes")
 
+AC_SUBST(BUILD_CANVAS_MODULE)
+AC_SUBST(BUILD_EXAMPLE_MODULE)
+AC_SUBST(BUILD_MULTIPROCESSING_MODULE)
+AC_SUBST(BUILD_READLINE_MODULE)
+AC_SUBST(BUILD_SQLITE_MODULE)
+
 dnl =========================turtle example====================================
 AC_ARG_ENABLE(turtle-example,
 			  AC_HELP_STRING([--enable-turtle-example],
@@ -148,6 +154,7 @@ if test x"$have_gtk" != x"yes" ; then
 fi
 
 AM_CONDITIONAL(BUILD_TURTLE_EXAMPLE, test "x$want_turtle_example" = "xyes")
+AC_SUBST(BUILD_TURTLE_EXAMPLE)
 
 dnl =========================Install Examples==================================
 AC_ARG_ENABLE(examples,
@@ -155,6 +162,7 @@ AC_ARG_ENABLE(examples,
 							 [install JavaScript examples. [default=yes]]),
 			  [enable_examples=$enableval],[enable_examples="yes"])
 AM_CONDITIONAL(BUILD_SEED_EXAMPLES, test "x$enable_examples" = "xyes")
+AC_SUBST(BUILD_SEED_EXAMPLES)
 
 dnl =============================Debug=========================================
 AC_ARG_ENABLE(debug,

@@ -7,7 +7,7 @@ TabbedBrowserType = {
 		{
 			var tab = new BrowserTab();
 			
-			this.append_page(tab, tab.title);
+			this.append_page(tab, new Gtk.Label({label:"Untitled"}));
 			this.set_tab_reorderable(tab, true);
 			
 			if(selectTabOnCreation)
