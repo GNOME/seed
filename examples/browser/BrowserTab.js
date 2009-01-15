@@ -1,11 +1,21 @@
 BrowserTab = new GType({
     parent: Gtk.VBox.type,
     name: "BrowserTab",
+    class_init: function(klass, prototype)
+    {
+        // TODO: Robb is promising a prettier interface to this.
+        klass.c_install_property(GObject.param_spec_object("web_view",
+                                 "WebView",
+                                 "WebView to display",
+                                 BrowserView.type,
+                                 GObject.ParamFlags.READABLE |
+                                     GObject.ParamFlags.WRITABLE));
+    },
     init: function (klass)
     {
         // Private
         var toolbar = new BrowserToolbar();
-        var web_view = new BrowserView();
+        var local_web_view;
         var scroll_view = new Gtk.ScrolledWindow();
         var tab_label;
         
@@ -14,10 +24,10 @@ BrowserTab = new GType({
         {
             return toolbar;
         };
-
+        
         this.get_web_view = function ()
         {
-            return web_view;
+            return local_web_view;
         };
         
         this.set_tab_label = function (new_tab_label)
@@ -31,10 +41,20 @@ BrowserTab = new GType({
         };
         
         // Implementation
-        web_view.set_tab(this);
+        if(this.web_view == null)
+        {
+            Seed.print("creating new webview");
+            local_web_view = new BrowserView();
+        }
+        else
+        {
+            local_web_view = this.web_view;
+        }
+        
+        local_web_view.set_tab(this);
         
         scroll_view.smooth_scroll = true;
-        scroll_view.add(web_view);
+        scroll_view.add(local_web_view);
         scroll_view.set_policy(Gtk.PolicyType.AUTOMATIC,
                                Gtk.PolicyType.AUTOMATIC);
 

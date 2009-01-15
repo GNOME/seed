@@ -15,10 +15,17 @@ TabbedBrowser = new GType({
             }
         };
         
-        this.new_tab = function (url)
+        this.new_tab = function (url, new_web_view)
         {
-            var new_tab = new BrowserTab();
-            new_tab.get_web_view().browse(url);
+            var new_tab;
+            
+            if(new_web_view)
+                new_tab = new BrowserTab({"web_view":new_web_view});
+            else
+                new_tab = new BrowserTab();
+            
+            if(!new_web_view)
+                new_tab.get_web_view().browse(url);
             
             var tab_label = new Gtk.Label({label:"Untitled"});
             var tab_button = new Gtk.Button({relief: Gtk.ReliefStyle.NONE});
