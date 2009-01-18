@@ -93,9 +93,9 @@ AIPaddle = new GType({
 		// Public
 		this.update_velocity = function ()
 		{
-			if((this.y + 50) > (ball.y + 15)) // UP
+			if((this.y + (this.height/2)) > (ball.y + (ball.height/2))) // UP
 				this.accelerate(-1);
-			else if((this.y + 50) < (ball.y + 15)) // DOWN
+			else if((this.y + (this.height/2)) < (ball.y + (ball.height/2))) // DOWN
 				this.accelerate(1);
 		};
 		
@@ -115,6 +115,58 @@ Ball = new GType({
 	name: "Ball",
 	init: function(klass)
 	{
+		// Private
+		var v_x = -2;
+		var v_y = 4;
+		
+		// Public
+		this.update_position = function ()
+		{
+			this.x += v_x;
+			this.y += v_y;
+		};
+		
+		this.detect_collisions = function ()
+		{
+			// Bounce off Top/Bottom Walls
+			if((this.y < 0) || (this.y > (stage.height - this.height)))
+			{
+				v_y = -v_y;
+			}
+			
+			var bounce_paddle = function (ball, paddle)
+			{
+				// Should make the paddle 1-width here (and fix associated 
+				//  problems), in order to prevent coming in edgewise...
+				
+				var ball_left = ball.x;
+				var ball_right = ball.x + ball.width;
+				var ball_top = ball.y;
+				var ball_bottom = ball.y + ball.height;
+				
+				var paddle_left = paddle.x;
+				var paddle_right = paddle.x + paddle.width;
+				var paddle_top = paddle.y;
+				var paddle_bottom = paddle.y + paddle.height;
+				
+				if(	((ball_left > paddle_left && ball_left < paddle_right) ||
+					 (ball_right < paddle_right && ball_right > paddle_left)) &&
+					((ball_top > paddle_top && ball_top < paddle_bottom) ||
+					 (ball_bottom > paddle_top && ball_bottom < paddle_bottom)))
+				{
+					v_x = -v_x;
+					ball.x = (paddle_left > (stage.width/2)) ?
+								paddle_left - ball.width : paddle_right;
+					
+					v_y += paddle.get_velocity() * 2;
+				}
+			}
+			
+			bounce_paddle(this, p_one);
+			bounce_paddle(this, p_two);
+		};
+		
+		// Implementation
 		var bkg = new Clutter.Texture.from_file("ball.png");
 
 		bkg.filter_quality = Clutter.TextureQuality.HIGH;
@@ -123,10 +175,7 @@ Ball = new GType({
 	}
 });
 
-var timeline = new Clutter.Timeline({fps:60, num_frames:30000});
-
-var ballv_x = -2, ballv_y = 4;
-var p1v_y = 0, p2v_y = 0;
+var timeline = new Clutter.Timeline({fps:60, num_frames:1});
 
 timeline.signal.new_frame.connect(
 	function(timeline, frame_num)
@@ -137,50 +186,20 @@ timeline.signal.new_frame.connect(
 		p_one.update_velocity();
 		p_two.update_velocity();
 		
-		// Update ball position
-		ball.x += ballv_x;
-		ball.y += ballv_y;
+		ball.update_position();
+		ball.detect_collisions();
 		
-		// Bounce ball off top/bottom walls
-		if((ball.y < 0) || (ball.y > (500-30)))
-			ballv_y = -ballv_y;
-		
-		// Bounce ball off paddles
-		if((ball.x < 30 && ball.x > 0) && ((ball.y > p_one.y && ball.y < p_one.y+p_one.height) ||
-										   (ball.y + ball.height > p_one.y &&
-											ball.y + ball.height < p_one.y + p_one.height)))
-		{
-			ballv_x = -ballv_x;
-			ballv_y += p1v_y * 2;
-		}
-		else if(ball.x < 20)
-		{
-			Seed.print("YAY YOU LOST!!");
-		}
-		
-		if(((ball.x + ball.width) > 470 && (ball.x + ball.width) < 500) && ((ball.y > p_two.y && ball.y < p_two.y+p_two.height) ||
-										   (ball.y + ball.height > p_two.y &&
-											ball.y + ball.height < p_two.y + p_two.height)))
-		{
-			ballv_x = -ballv_x;
-			ballv_y += p2v_y * 2;
-		}
-		else if(ball.x > 480)
-		{
-			Seed.print("YAY COMPUTER LOST!!");
-		}
+		timeline.rewind();
 	});
 
 timeline.start();
 
+var black = new Clutter.Color();
+Clutter.color_parse("Black", black);
+
 var stage = new Clutter.Stage();
 stage.signal.hide.connect(function(){Clutter.main_quit()});
 stage.set_size(500,500);
-var transp = new Clutter.Color();
-var red = new Clutter.Color();
-Clutter.color_parse("Red", red);
-var black = new Clutter.Color();
-Clutter.color_parse("Black", black);
 stage.color = black;
 
 var p_one = new Paddle();
@@ -195,6 +214,12 @@ p_two.load_texture();
 
 stage.add_actor(p_one);
 stage.add_actor(p_two);
+
+var midline = new Clutter.Texture.from_file("midline.png");
+midline.filter_quality = Clutter.TextureQuality.HIGH;
+midline.x = (stage.width/2) - (midline.width/2);
+midline.opacity = 30;
+stage.add_actor(midline);
 
 var ball = new Ball();
 ball.width = ball.height = 30;
