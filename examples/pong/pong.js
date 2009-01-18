@@ -6,6 +6,8 @@ Clutter.init(null, null);
 
 const GLOBAL_DECEL = 0.2;
 
+var winning_animation = 1;
+
 Paddle = new GType({
 	parent: Clutter.Group.type,
 	name: "Paddle",
@@ -81,7 +83,26 @@ Paddle = new GType({
 			bkg.filter_quality = Clutter.TextureQuality.HIGH;
 			this.add_actor(bkg);
 			bkg.show();
+		};
+		
+		this.won_game = function ()
+		{
+			//var tl = new Clutter.Timeline({fps:60, num_frames:30});
+			//var effect = new Clutter.EffectTemplate.c_new(tl,
+			//											  Clutter.sine_inc_func);
+			
+			//Clutter.effect_scale(effect, this, 1, 1.2);
 		}
+		
+		this.lost_game = function ()
+		{
+			//var tl = new Clutter.Timeline({fps:60, num_frames:30});
+			//var effect = new Clutter.EffectTemplate.c_new(tl,
+			//											  Clutter.sine_inc_func);
+			
+			//Clutter.effect_fade(effect, this, 0);
+			//Clutter.effect_scale(effect, this, 20 * ((this.x > (stage.width/2)) ? -1 : 1), 0);
+		};
 	}
 });
 
@@ -120,6 +141,12 @@ Ball = new GType({
 		var v_y = 4;
 		
 		// Public
+		this.set_velocity = function (vinx, viny)
+		{
+			v_x = vinx;
+			v_y = viny;
+		};
+		
 		this.update_position = function ()
 		{
 			this.x += v_x;
@@ -158,12 +185,48 @@ Ball = new GType({
 					ball.x = (paddle_left > (stage.width/2)) ?
 								paddle_left - ball.width : paddle_right;
 					
-					v_y += paddle.get_velocity() * 2;
+					// TODO: Fix "spin" from paddle...
+					//v_y += paddle.get_velocity() * 2;
 				}
 			}
 			
 			bounce_paddle(this, p_one);
 			bounce_paddle(this, p_two);
+		};
+		
+		this.check_boundaries = function ()
+		{
+			if(this.x < p_one.x)
+			{
+				p_one.lost_game();
+				p_two.won_game();
+			}
+			else if((this.x + this.width) > (p_two.x + p_two.width))
+			{
+				p_one.won_game();
+				p_two.lost_game();
+			}
+			else
+			{
+				return;
+			}
+			
+			// Someone won, stop moving
+			
+			if(winning_animation)
+				return;
+			
+			v_x = v_y = 0;
+			
+			winning_animation = 1;
+			
+			var tl = new Clutter.Timeline({fps:60, num_frames:30});
+			var effect = new Clutter.EffectTemplate.c_new(tl,
+														  Clutter.sine_inc_func);
+			
+			var tl2 = Clutter.effect_fade(effect, this, 0);
+			
+			tl2.signal.completed.connect(create_new_ball);
 		};
 		
 		// Implementation
@@ -188,6 +251,7 @@ timeline.signal.new_frame.connect(
 		
 		ball.update_position();
 		ball.detect_collisions();
+		ball.check_boundaries();
 		
 		timeline.rewind();
 	});
@@ -203,14 +267,15 @@ stage.set_size(500,500);
 stage.color = black;
 
 var p_one = new Paddle();
-p_one.y = p_one.x = 10;
-
 var p_two = new AIPaddle();
-p_two.y = 10;
-p_two.x = 470;
 
 p_one.load_texture();
 p_two.load_texture();
+
+p_one.y = p_one.x = 10;
+
+p_two.y = stage.height - p_two.height - 10;
+p_two.x = stage.width - p_two.width - 10;
 
 stage.add_actor(p_one);
 stage.add_actor(p_two);
@@ -221,11 +286,31 @@ midline.x = (stage.width/2) - (midline.width/2);
 midline.opacity = 30;
 stage.add_actor(midline);
 
-var ball = new Ball();
-ball.width = ball.height = 30;
-ball.x = ball.y = 300;
+var ball = null;
 
-stage.add_actor(ball);
+function create_new_ball ()
+{
+	if(!ball)
+	{
+		ball = new Ball();
+		stage.add_actor(ball);
+	}
+	
+	var tl = new Clutter.Timeline({fps:60, num_frames:30});
+	var effect = new Clutter.EffectTemplate.c_new(tl,
+												  Clutter.sine_inc_func);
+	
+	Clutter.effect_fade(effect, ball, 255);
+	
+	ball.width = ball.height = 30;
+	ball.x = ball.y = 300;
+	
+	ball.set_velocity(Math.random() * 12 - 6, Math.random() * 12 - 6);
+	
+	winning_animation = 0;
+};
+
+create_new_ball();
 
 key_up = key_down = 0;
 
