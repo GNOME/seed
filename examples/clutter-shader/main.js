@@ -18,7 +18,7 @@ shader = new Clutter.Shader();
 var shaderfield = new ShaderView("fragment_source", texture,reflection);
 var vbox = new Gtk.VBox();
 var notebook = new Gtk.Notebook();
-var c = Clutter.Color._new();
+var c = new Clutter.Color();
 Clutter.color_parse("Black",c);
 
 notebook.append_page(shaderfield.hbox, new Gtk.Label({label:"Fragment"}));
