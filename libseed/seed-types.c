@@ -125,7 +125,8 @@ static gboolean seed_release_arg(GITransfer transfer,
 				else if (transfer == GI_TRANSFER_CONTAINER)
 					g_free(arg->v_pointer);
 			}
-			else if (g_type_info_get_tag(param_type) == GI_TYPE_TAG_GTYPE)
+			else if (g_type_info_get_tag(param_type) == GI_TYPE_TAG_GTYPE ||
+					 g_type_info_get_tag(param_type) == GI_TYPE_TAG_FLOAT)
 				g_free(arg->v_pointer);
 			else
 				g_assert_not_reached();
@@ -285,7 +286,7 @@ seed_gi_make_array(JSContextRef ctx,
 
 		*array_p = result;
 	}
-	if (element_type == GI_TYPE_TAG_GTYPE)
+	else if (element_type == GI_TYPE_TAG_GTYPE)
 	{
 		GType *result;
 		guint i;
@@ -301,6 +302,24 @@ seed_gi_make_array(JSContextRef ctx,
 			result[i] = seed_value_to_int(ctx, elem, exception);
 		}
 
+		*array_p = result;
+	}
+	else if (element_type == GI_TYPE_TAG_FLOAT)
+	{
+		gfloat * result;
+		guint i;
+		
+		result = g_new0(gfloat, length+1);
+		
+		for (i = 0; i < length; i++)
+		{
+			JSValueRef elem = JSObjectGetPropertyAtIndex(ctx,
+														 (JSObjectRef) array,
+														 i,
+														 exception);
+			result[i] = seed_value_to_float(ctx, elem, exception);
+		}
+		
 		*array_p = result;
 	}
 	else
