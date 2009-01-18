@@ -1,5 +1,103 @@
 #!/usr/bin/env seed
 
+Seed.import_namespace("Clutter");
+
+Clutter.init(null, null);
+
+const GLOBAL_DECEL = 0.2;
+
+Paddle = new GType({
+	parent: Clutter.Rectangle.type,
+	name: "Paddle",
+	init: function(klass)
+	{
+		// Private
+		var velocity = 0;
+		
+		// Public
+		this.update_position = function ()
+		{
+			this.y += velocity;
+			
+			// Decelerate
+			if(velocity > 0)
+			{
+				velocity -= 4 - GLOBAL_DECEL;
+				
+				if(velocity < 0)
+					velocity = 0;
+			}
+			else if(velocity < 0)
+			{
+				velocity += 4 - GLOBAL_DECEL;
+				
+				if(velocity > 0)
+					velocity = 0;
+			}
+			
+			// Make sure paddle is in bounds
+			if(this.y < 10)
+			{
+				this.y = 10;
+				velocity = 0;
+			}
+			if(this.y > 390)
+			{
+				this.y = 390;
+				velocity = 0;
+			}
+		};
+		
+		this.update_velocity = function ()
+		{
+			if(key_up)
+				this.accelerate(-1);
+			else if(key_down)
+				this.accelerate(1);
+		};
+		
+		this.accelerate = function (direction)
+		{
+			if(velocity == 0)
+				velocity = direction * 5;
+			else
+				velocity = velocity + (direction*4);
+		};
+		
+		this.set_velocity = function (new_v)
+		{
+			velocity = new_v;
+		};
+		
+		this.get_velocity = function ()
+		{
+			return velocity;
+		};
+
+		// Implementation
+		this.color = green;
+		
+		this.width = 20;
+		this.height = 100;
+	}
+});
+
+AIPaddle = new GType({
+	parent: Paddle.type,
+	name: "AIPaddle",
+	init: function(klass)
+	{
+		// Public
+		this.update_velocity = function ()
+		{
+			if((this.y + 50) > (ball.y + 15)) // UP
+				this.accelerate(-1);
+			else // DOWN
+				this.accelerate(1);
+		};
+	}
+});
+
 function angle_from_deg(x)
 {
 	return (((x) * 1024.0) / 360.0);
@@ -9,7 +107,7 @@ function circle_paint(actor)
 {
 	var radius = Clutter.double_to_fixed(actor.width/2);
 	
-	Clutter.cogl_color(green);
+	Clutter.cogl_color(red);
 	Clutter.cogl_path_move_to(radius, radius);
 	Clutter.cogl_path_arc(radius, radius, radius, radius,
 						  angle_from_deg(0),
@@ -17,10 +115,6 @@ function circle_paint(actor)
 	Clutter.cogl_path_close();
 	Clutter.cogl_path_fill();	
 }
-
-Seed.import_namespace("Clutter");
-
-Clutter.init(null, null);
 
 var timeline = new Clutter.Timeline({fps:60, num_frames:30000});
 
@@ -30,64 +124,29 @@ var p1v_y = 0, p2v_y = 0;
 timeline.signal.new_frame.connect(
 	function(timeline, frame_num)
 	{
-		if((p_two.y + 50) > (ball.y + 15)) // UP
-		{
-			if(p2v_y == 0)
-				p2v_y = -5;
-			else
-				p2v_y -= 4;
-		}
-		else // DOWN
-		{
-			if(p2v_y == 0)
-				p2v_y = 5;
-			else
-				p2v_y += 4;
-		}
-	
-		p_one.y += p1v_y;
-		p_two.y += p2v_y;
+		p_one.update_position();
+		p_two.update_position();
 		
-		if(p1v_y > 0)
-		{
-			p1v_y-=5;
-			if(p1v_y < 0)
-				p1v_y = 0;
-		}
-		else if(p1v_y < 0)
-		{
-			p1v_y+=5;
-			if(p1v_y > 0)
-				p1v_y = 0;
-		}
+		p_one.update_velocity();
+		p_two.update_velocity();
 		
-		if(p2v_y > 0)
-		{
-			p2v_y-=5;
-			if(p2v_y < 0)
-				p2v_y = 0;
-		}
-		else if(p2v_y < 0)
-		{
-			p2v_y+=5;
-			if(p2v_y > 0)
-				p2v_y = 0;
-		}
-		
+		// Update ball position
 		ball.x += ballv_x;
 		ball.y += ballv_y;
 		
+		// Bounce ball off top/bottom walls
 		if((ball.y < 0) || (ball.y > (500-30)))
 			ballv_y = -ballv_y;
-			
-		if((ball.x < 20 && ball.x > 0) && ((ball.y > p_one.y && ball.y < p_one.y+p_one.height) ||
+		
+		// Bounce ball off paddles
+		if((ball.x < 30 && ball.x > 0) && ((ball.y > p_one.y && ball.y < p_one.y+p_one.height) ||
 										   (ball.y + ball.height > p_one.y &&
 											ball.y + ball.height < p_one.y + p_one.height)))
 		{
 			ballv_x = -ballv_x;
 			ballv_y += p1v_y * 2;
 		}
-		else if(ball.x < 10)
+		else if(ball.x < 20)
 		{
 			Seed.print("YAY YOU LOST!!");
 		}
@@ -99,31 +158,9 @@ timeline.signal.new_frame.connect(
 			ballv_x = -ballv_x;
 			ballv_y += p2v_y * 2;
 		}
-		else if(ball.x < 10)
+		else if(ball.x > 480)
 		{
-			Seed.print("YAY YOU LOST!!");
-		}
-		
-		if(p_one.y < 10)
-		{
-			p_one.y = 10;
-			p1v_y = 0;
-		}
-		if(p_one.y > 390)
-		{
-			p_one.y = 390;
-			p1v_y = 0;
-		}
-		
-		if(p_two.y < 10)
-		{
-			p_two.y = 10;
-			p2v_y = 0;
-		}
-		if(p_two.y > 390)
-		{
-			p_two.y = 390;
-			p2v_y = 0;
+			Seed.print("YAY COMPUTER LOST!!");
 		}
 	});
 
@@ -135,22 +172,18 @@ stage.set_size(500,500);
 var transp = new Clutter.Color();
 var green = new Clutter.Color();
 Clutter.color_parse("Green", green);
+var red = new Clutter.Color();
+Clutter.color_parse("Red", red);
 var black = new Clutter.Color();
 Clutter.color_parse("Black", black);
 stage.color = black;
 
-var p_one = new Clutter.Rectangle();
-p_one.color = green;
+var p_one = new Paddle();
 p_one.y = p_one.x = 10;
-p_one.width = 20;
-p_one.height = 100;
 
-var p_two = new Clutter.Rectangle();
-p_two.color = green;
+var p_two = new AIPaddle();
 p_two.y = 10;
 p_two.x = 470;
-p_two.width = 20;
-p_two.height = 100;
 
 stage.add_actor(p_one);
 stage.add_actor(p_two);
@@ -162,24 +195,26 @@ ball.x = ball.y = 300;
 
 stage.add_actor(ball);
 
+key_up = key_down = 0;
+
 stage.signal["key_press_event"].connect(
 	function(stage, event)
 	{
 		if(event.key.keyval == 65362) // UP
-		{
-			if(p1v_y == 0)
-				p1v_y = -5;
-			else
-				p1v_y -= 4;
-		}
+			key_up = 1;
 		else if(event.key.keyval == 65364) // DOWN
-		{
-			if(p1v_y == 0)
-				p1v_y = 5;
-			else
-				p1v_y += 4;
-		}
-	
+			key_down = 1;
+
+		return true;
+	});
+
+stage.signal["key_release_event"].connect(
+	function(stage, event)
+	{
+		if(event.key.keyval == 65362) // UP
+			key_up = 0;
+		else if(event.key.keyval == 65364) // DOWN
+			key_down = 0;
 		
 		return true;
 	});
