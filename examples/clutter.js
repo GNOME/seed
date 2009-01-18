@@ -36,7 +36,6 @@ function alpha_func(alpha)
 	else
 		return Clutter.ALPHA_MAX_ALPHA*(7.5625 *
 										(time-=(2.625/2.75))*time+.984375);
-
 }
 
 var stage = new Clutter.Stage();
@@ -71,8 +70,10 @@ for (var i = 0; i < colors.length; i++)
 	stage.add_actor(r);
 	rectangles[i] = r;
 }
+
 // Was initially intended as a test to see if performance was accetable to do
 // custom animations at 60fps. Turns out to be fine, serves as an example now.
+
 timeline.signal.new_frame.connect(
 	function(timeline, frame_num)
 	{
@@ -82,12 +83,13 @@ timeline.signal.new_frame.connect(
 			rectangles[i].rotation_angle_z += 1;
 		}
 	});
+
 timeline.signal.completed.connect(
 	function(timeline)
 	{
 		
 		var text = new Clutter.Label({text:"Congratulations!",
-									  font_name:"Bitstream Vera Sans 40"});
+									   font_name:"Bitstream Vera Sans 40"});
 		var fadeline = new Clutter.Timeline({fps:60, num_frames:200});
 		var effect = new Clutter.EffectTemplate.c_new(timeline, alpha_func);
 		
@@ -117,6 +119,5 @@ timeline.signal.completed.connect(
 	});
 
 timeline.start();
-
 Clutter.main();
 

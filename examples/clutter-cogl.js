@@ -1,4 +1,5 @@
 #!/usr/bin/env seed
+
 Seed.import_namespace("Clutter");
 Seed.import_namespace("GLib");
 
@@ -13,7 +14,7 @@ const RIPPLE_WX = Clutter.double_to_fixed(RIPPLE_W);
 const SCREEN_W = 640;
 const SCREEN_H = 480;
 
-function angle_from_deg(x)
+function deg_to_rad(x)
 {
 	return (((x) * 1024.0) / 360.0);
 }
@@ -38,8 +39,6 @@ function alpha_func(alpha)
 	else
 		return Clutter.ALPHA_MAX_ALPHA*(7.5625 *
 										(time-=(2.625/2.75))*time+.984375);
-
-
 }
 
 function destroy_actor(actor)
@@ -56,13 +55,13 @@ function circle_paint (actor)
 	Clutter.cogl_color(actor.fill_color);
 	Clutter.cogl_path_move_to(radius, radius);
 	Clutter.cogl_path_arc(radius, radius, radius, radius,
-						  angle_from_deg(0),
-						  angle_from_deg(360));
+						  deg_to_rad(0),
+						  deg_to_rad(360));
 	Clutter.cogl_path_line_to(radius - RIPPLE_WX/2, radius);
 	Clutter.cogl_path_arc(radius, radius, 
 						  radius-RIPPLE_WX/2, radius-RIPPLE_WX/2,
-						  angle_from_deg(0),
-						  angle_from_deg(360));
+						  deg_to_rad(0),
+						  deg_to_rad(360));
 	Clutter.cogl_path_close();
 	Clutter.cogl_path_fill();	
 }
@@ -71,7 +70,7 @@ function ripple(stage, x, y)
 {
 	var transp = new Clutter.Color();
 	
-	var n = parseInt(Math.random()*RIPPLE_N)+1;
+	var n = parseInt(Math.random()*RIPPLE_N , 10) + 1;
 	
 	for (i = 0; i < n; i++)
 	{
@@ -80,9 +79,7 @@ function ripple(stage, x, y)
 		actor.fill_color = new Clutter.Color({red: 0xff,
 											  green: 0xff,
 											  blue: 0xff});
-	
-
-
+		
 		var size = ((RIPPLE_W * 2) * (i+1)) + (RIPPLE_G * i);
 		
 		actor.width = actor.height = size;
@@ -100,18 +97,17 @@ function ripple(stage, x, y)
 		Clutter.effect_fade(template, actor,
 							0x00,
 							destroy_actor);
-						
 	}
 }
 
 Clutter.init(null, null);
 
-var template = 
-	new Clutter.EffectTemplate.for_duration(RIPPLE_S,
-											alpha_func);
+var template = new Clutter.EffectTemplate.for_duration(RIPPLE_S, alpha_func);
 
 var stage = new Clutter.Stage();
-stage.width = SCREEN_W; stage.height = SCREEN_H;
+
+stage.width = SCREEN_W;
+stage.height = SCREEN_H;
 stage.color = {};
 
 stage.signal["button_press_event"].connect(
@@ -126,16 +122,12 @@ stage.show();
 
 function random_ripple()
 {
-	ripple(stage,
-		   Math.random()*SCREEN_W,
-		   Math.random()*SCREEN_H);
-	GLib.timeout_add(Math.random()*RIPPLE_MAXD + RIPPLE_MIND,
-					 random_ripple);
+	ripple(stage, Math.random()*SCREEN_W, Math.random()*SCREEN_H);
+	GLib.timeout_add(Math.random()*RIPPLE_MAXD + RIPPLE_MIND, random_ripple);
+	
 	return false;
 }
 
 random_ripple();
-
 Clutter.main();
-
 

@@ -1,4 +1,5 @@
 #!/usr/bin/env seed
+
 Seed.import_namespace("Gtk")
 Seed.import_namespace("Gdk");
 
@@ -21,7 +22,7 @@ with (Gtk)
 	var label = new Label({label: "Press Q to quit"});
 	w.add(label);
 	
-	w.set_size_request(300, 300);
+	w.resize(300, 300);
 	w.show_all();
 	
 	main();

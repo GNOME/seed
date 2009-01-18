@@ -1,4 +1,5 @@
 #!/usr/bin/env seed
+
 Seed.import_namespace("Canvas");
 Seed.import_namespace("Clutter");
 Seed.import_namespace("ClutterCairo");
@@ -11,10 +12,10 @@ cr = c.create();
 ctx = new Canvas.CairoCanvas(cr);
 
 ctx.fillStyle = "rgb(200,0,0)";
-ctx.fillRect (10, 10, 55, 50);
+ctx.fillRect(10, 10, 55, 50);
 
 ctx.fillStyle = "rgba(0, 0, 200, 0.5)";
-ctx.fillRect (30, 30, 55, 50);
+ctx.fillRect(30, 30, 55, 50);
 
 c.width = c.height = 100;
 c.x = c.y = 100;
