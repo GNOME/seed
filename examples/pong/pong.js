@@ -7,7 +7,7 @@ Clutter.init(null, null);
 const GLOBAL_DECEL = 0.2;
 
 Paddle = new GType({
-	parent: Clutter.Rectangle.type,
+	parent: Clutter.Group.type,
 	name: "Paddle",
 	init: function(klass)
 	{
@@ -41,9 +41,9 @@ Paddle = new GType({
 				this.y = 10;
 				velocity = 0;
 			}
-			if(this.y > 390)
+			if(this.y > (stage.height - this.height - 10))
 			{
-				this.y = 390;
+				this.y = (stage.height - this.height - 10);
 				velocity = 0;
 			}
 		};
@@ -73,12 +73,15 @@ Paddle = new GType({
 		{
 			return velocity;
 		};
-
-		// Implementation
-		this.color = green;
 		
-		this.width = 20;
-		this.height = 100;
+		this.load_texture = function ()
+		{
+			var bkg = new Clutter.Texture.from_file("player.png");
+
+			bkg.filter_quality = Clutter.TextureQuality.HIGH;
+			this.add_actor(bkg);
+			bkg.show();
+		}
 	}
 });
 
@@ -92,29 +95,33 @@ AIPaddle = new GType({
 		{
 			if((this.y + 50) > (ball.y + 15)) // UP
 				this.accelerate(-1);
-			else // DOWN
+			else if((this.y + 50) < (ball.y + 15)) // DOWN
 				this.accelerate(1);
 		};
+		
+		this.load_texture = function ()
+		{
+			var bkg = new Clutter.Texture.from_file("player2.png");
+
+			bkg.filter_quality = Clutter.TextureQuality.HIGH;
+			this.add_actor(bkg);
+			bkg.show();
+		}
 	}
 });
 
-function angle_from_deg(x)
-{
-	return (((x) * 1024.0) / 360.0);
-}
+Ball = new GType({
+	parent: Clutter.Group.type,
+	name: "Ball",
+	init: function(klass)
+	{
+		var bkg = new Clutter.Texture.from_file("ball.png");
 
-function circle_paint(actor)
-{
-	var radius = Clutter.double_to_fixed(actor.width/2);
-	
-	Clutter.cogl_color(red);
-	Clutter.cogl_path_move_to(radius, radius);
-	Clutter.cogl_path_arc(radius, radius, radius, radius,
-						  angle_from_deg(0),
-						  angle_from_deg(360));
-	Clutter.cogl_path_close();
-	Clutter.cogl_path_fill();	
-}
+		bkg.filter_quality = Clutter.TextureQuality.HIGH;
+		this.add_actor(bkg);
+		bkg.show();
+	}
+});
 
 var timeline = new Clutter.Timeline({fps:60, num_frames:30000});
 
@@ -170,8 +177,6 @@ var stage = new Clutter.Stage();
 stage.signal.hide.connect(function(){Clutter.main_quit()});
 stage.set_size(500,500);
 var transp = new Clutter.Color();
-var green = new Clutter.Color();
-Clutter.color_parse("Green", green);
 var red = new Clutter.Color();
 Clutter.color_parse("Red", red);
 var black = new Clutter.Color();
@@ -185,11 +190,13 @@ var p_two = new AIPaddle();
 p_two.y = 10;
 p_two.x = 470;
 
+p_one.load_texture();
+p_two.load_texture();
+
 stage.add_actor(p_one);
 stage.add_actor(p_two);
 
-var ball = new Clutter.Rectangle({color: transp});
-ball.signal["paint"].connect(circle_paint);
+var ball = new Ball();
 ball.width = ball.height = 30;
 ball.x = ball.y = 300;
 
