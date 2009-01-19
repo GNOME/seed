@@ -5,6 +5,7 @@ BrowserStatusbar = new GType({
     {
         // Private
         var progress = new Gtk.ProgressBar();
+        var progress_box = new Gtk.VBox();
         var transient_status_group = this.get_context_id("transient");
         
         // Public
@@ -20,9 +21,8 @@ BrowserStatusbar = new GType({
         };
         
         // Implementation
-        
-        // TODO: Determine how to either make smaller progressbar
-        //        or, use Gtk SVN's ability to embed it in a text view!
-        this.pack_end(progress, false, false, 0);
+        this.pack_end(progress_box, false, false, 3);
+        progress_box.pack_start(progress, true, true, 3);
+        progress.set_size_request(-1, 10);
     }
 });
