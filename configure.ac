@@ -254,6 +254,7 @@ modules/sqlite/Makefile
 modules/canvas/Makefile
 modules/readline/Makefile
 modules/Multiprocessing/Makefile
+opengl-glib/Makefile
 ])
 
 echo "
