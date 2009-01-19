@@ -206,8 +206,8 @@ case "$host_os" in
 		PKG_CHECK_MODULES(LIBSEED, gobject-introspection-1.0)
 		;;
 	*)
-		PKG_CHECK_MODULES(SEED, webkit-1.0 gobject-introspection-1.0)
-		PKG_CHECK_MODULES(LIBSEED, webkit-1.0 gobject-introspection-1.0)
+		PKG_CHECK_MODULES(SEED, webkit-1.0 gobject-introspection-1.0 libffi)
+		PKG_CHECK_MODULES(LIBSEED, webkit-1.0 gobject-introspection-1.0 libffi)
 		;;
 esac
 AC_SUBST(SEED_OSX_CFLAGS)
