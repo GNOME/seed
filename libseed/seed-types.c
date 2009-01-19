@@ -117,19 +117,22 @@ static gboolean seed_release_arg(GITransfer transfer,
 			GITypeInfo *param_type;
 
 			param_type = g_type_info_get_param_type(type_info, 0);
-
-			if (g_type_info_get_tag(param_type) == GI_TYPE_TAG_UTF8)
+			
+			switch (g_type_info_get_tag(param_type))
 			{
+			case GI_TYPE_TAG_UTF8:
 				if (transfer ==  GI_TRANSFER_EVERYTHING)
 					g_strfreev(arg->v_pointer);
 				else if (transfer == GI_TRANSFER_CONTAINER)
 					g_free(arg->v_pointer);
-			}
-			else if (g_type_info_get_tag(param_type) == GI_TYPE_TAG_GTYPE ||
-					 g_type_info_get_tag(param_type) == GI_TYPE_TAG_FLOAT)
+				break;
+			case GI_TYPE_TAG_GTYPE:
+			case GI_TYPE_TAG_FLOAT:
 				g_free(arg->v_pointer);
-			else
+				break;
+			default:
 				g_assert_not_reached();
+			}
 
 			g_base_info_unref((GIBaseInfo *) param_type);
 		}
