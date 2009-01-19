@@ -7,7 +7,7 @@ libreadline_la_SOURCES = \
 	seed-readline.c
 
 libreadline_la_LDFLAGS = \
-	`pkg-config --libs seed libffi` -lreadline
+	`pkg-config --libs seed libffi`
 
 AM_CPPFLAGS = \
 	-I../../libseed/ \
@@ -17,7 +17,7 @@ AM_CPPFLAGS = \
 	`pkg-config --cflags libffi` \
 	$(SEED_DEBUG_CFLAGS) $(SEED_PROFILE_CFLAGS)
 
-AM_LDFLAGS = $(SEED_PROFILE_LDFLAGS)
+AM_LDFLAGS = $(SEED_PROFILE_LDFLAGS) -lreadline
 
 endif
 
