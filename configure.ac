@@ -248,6 +248,7 @@ examples/clutter-transitions/Makefile
 examples/glib/Makefile
 examples/browser/Makefile
 examples/turtle/Makefile
+examples/opengl/Makefile
 modules/Makefile
 modules/example/Makefile
 modules/sqlite/Makefile

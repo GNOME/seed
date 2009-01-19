@@ -3,6 +3,7 @@ SUBDIRS = \
           clutter-transitions \
           glib \
           browser \
+          opengl \
           turtle
 
 if BUILD_SEED_EXAMPLES
