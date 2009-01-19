@@ -6,14 +6,6 @@ BrowserView = new GType({
         // Private
         var tab;
         
-        var install_signals = function (web_view)
-        {
-            web_view.set_scroll_adjustments(null, null);
-            web_view.signal.title_changed.connect(update_title);
-            web_view.signal.load_committed.connect(update_url);
-            web_view.signal.create_web_view.connect(create_new_tab);
-        }
-        
         var update_title = function (web_view, web_frame, title)
         {
             if(title.length > 25)
@@ -33,16 +25,16 @@ BrowserView = new GType({
         
         var create_new_tab = function (web_view, web_frame, new_web_view)
         {
-            new_web_view = new WebKit.WebView();
+            new_web_view = new BrowserView();
             new_web_view.signal.web_view_ready.connect(show_new_tab);
             return new_web_view;
         }
         
         var show_new_tab = function (new_web_view)
         {
-            Seed.print("new tab!");
-            //install_signals(new_web_view);
             browser.new_tab("", new_web_view);
+            
+            return false;
         };
         
         // Public
@@ -65,6 +57,9 @@ BrowserView = new GType({
         };
         
         // Implementation
-        install_signals(this);
+        this.set_scroll_adjustments(null, null);
+        this.signal.title_changed.connect(update_title);
+        this.signal.load_committed.connect(update_url);
+        this.signal.create_web_view.connect(create_new_tab);
     }
 });
