@@ -128,6 +128,7 @@ static gboolean seed_release_arg(GITransfer transfer,
 				break;
 			case GI_TYPE_TAG_GTYPE:
 			case GI_TYPE_TAG_FLOAT:
+			case GI_TYPE_TAG_UINT8:
 				g_free(arg->v_pointer);
 				break;
 			default:
@@ -271,7 +272,9 @@ seed_gi_make_array(JSContextRef ctx,
 
 	element_type = g_type_info_get_tag(param_type);
 
-	if (element_type == GI_TYPE_TAG_UTF8)
+	switch (element_type)
+	{
+	case GI_TYPE_TAG_UTF8:
 	{
 		char **result;
 		guint i;
@@ -289,7 +292,8 @@ seed_gi_make_array(JSContextRef ctx,
 
 		*array_p = result;
 	}
-	else if (element_type == GI_TYPE_TAG_GTYPE)
+	break;
+	case GI_TYPE_TAG_GTYPE:
 	{
 		GType *result;
 		guint i;
@@ -307,7 +311,8 @@ seed_gi_make_array(JSContextRef ctx,
 
 		*array_p = result;
 	}
-	else if (element_type == GI_TYPE_TAG_FLOAT)
+	break;
+	case GI_TYPE_TAG_FLOAT:
 	{
 		gfloat * result;
 		guint i;
@@ -325,8 +330,27 @@ seed_gi_make_array(JSContextRef ctx,
 		
 		*array_p = result;
 	}
-	else
+	break;
+	case GI_TYPE_TAG_UINT8:
 	{
+		guint8 * result;
+		guint i;
+		
+		result = g_new0(guint8, length+1);
+		
+		for (i = 0; i < length; i++)
+		{
+			JSValueRef elem = JSObjectGetPropertyAtIndex(ctx,
+														 (JSObjectRef) array,
+														 i,
+														 exception);
+			result[i] = seed_value_to_uchar(ctx, elem, exception);
+		}
+		
+		*array_p = result;
+	}
+	break;
+	default:
 		seed_make_exception(ctx, exception, "ArgumentError",
 							"Unhandled array element type");
 		return FALSE;
