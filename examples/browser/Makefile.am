@@ -7,6 +7,7 @@ browser_DATA = \
 	BrowserToolbar.js \
 	BrowserView.js \
 	TabbedBrowser.js \
+	BrowserStatusbar.js \
 	main.js
 endif
 
@@ -17,5 +18,6 @@ EXTRA_DIST = \
 	BrowserToolbar.js \
 	BrowserView.js \
 	TabbedBrowser.js \
+	BrowserStatusbar.js \
 	main.js
 
