@@ -24,7 +24,7 @@ libseed_la_SOURCES = \
 
 libseed_la_LIBADD = $(LIBSEED_LIBS)
 
-AM_CPPFLAGS = -lgmodule-2.0 $(LIBSEED_CFLAGS) $(SEED_OSX_CFLAGS)
+AM_CPPFLAGS = -lgmodule-2.0 $(LIBSEED_CFLAGS) $(SEED_OSX_CFLAGS) $(FFI_CFLAGS)
 
 seedheaders_HEADERS = seed.h
 
@@ -32,6 +32,5 @@ seedheadersdir = $(pkgincludedir)
 
 EXTRA_DIST = $(seedheaders_HEADERS)
 
-LIBSEED_CFLAGS += -Wall -Werror $(SEED_DEBUG_CFLAGS) $(SEED_PROFILE_CFLAGS) \
-								$(FFI_CFLAGS)
+LIBSEED_CFLAGS += -Wall -Werror $(SEED_DEBUG_CFLAGS) $(SEED_PROFILE_CFLAGS)
 AM_LDFLAGS = $(SEED_PROFILE_LDFLAGS) $(SEED_OSX_LDFLAGS) $(FFI_LIBS)
