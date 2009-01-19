@@ -19,6 +19,7 @@ BrowserTab = new GType({
         var toolbar = new BrowserToolbar();
         var web_view = new BrowserView();
         var scroll_view = new Gtk.ScrolledWindow();
+        var statusbar = new BrowserStatusbar();
         var tab_label;
         
         // Public
@@ -30,7 +31,9 @@ BrowserTab = new GType({
         this.set_web_view = function (new_web_view)
         {
             scroll_view.remove(web_view);
+            
             web_view = new_web_view;
+            
             scroll_view.add(web_view);
             web_view.set_tab(this);
             web_view.show();
@@ -51,6 +54,11 @@ BrowserTab = new GType({
             return tab_label;
         };
         
+        this.get_statusbar = function ()
+        {
+            return statusbar;
+        };
+        
         // Implementation
         web_view.set_tab(this);
         
@@ -61,6 +69,7 @@ BrowserTab = new GType({
 
         this.pack_start(toolbar);
         this.pack_start(scroll_view, true, true);
+        this.pack_start(statusbar);
         this.show_all();
     }
 });

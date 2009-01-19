@@ -17,17 +17,11 @@ TabbedBrowser = new GType({
         
         this.new_tab = function (url, new_web_view)
         {
-            var new_tab;
+            var new_tab = new BrowserTab();
             
             if(new_web_view != null)
-            {
-                new_tab = new BrowserTab();
                 new_tab.set_web_view(new_web_view);
-            }
             else
-                new_tab = new BrowserTab();
-            
-            if(!new_web_view)
                 new_tab.get_web_view().browse(url);
             
             var tab_label = new Gtk.Label({label:"Untitled"});
@@ -44,6 +38,10 @@ TabbedBrowser = new GType({
             new_tab.set_tab_label(tab_label);
             
             this.append_page(new_tab, tab_title);
+            this.set_tab_reorderable(new_tab, true);
+            
+            if(select_new_tabs)
+                this.page = this.page_num(new_tab);
         };
 
         this.current_tab = function ()

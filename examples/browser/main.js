@@ -7,6 +7,7 @@ Gtk.init(null, null);
 
 Seed.include("BrowserSettings.js");
 Seed.include("BrowserView.js");
+Seed.include("BrowserStatusbar.js");
 Seed.include("BrowserTab.js");
 Seed.include("TabbedBrowser.js");
 Seed.include("BrowserToolbar.js");
