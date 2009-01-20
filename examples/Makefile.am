@@ -12,6 +12,7 @@ examplesdir=$(datadir)/doc/seed/examples
 examples_DATA = \
 	actions.js \
 	Gnio.js \
+	gdkpixbufloader.js \
 	gtktreeview.js \
 	async-quine.js \
 	clutter-cogl.js \
@@ -43,6 +44,7 @@ EXTRA_DIST = \
 	actions.js \
 	clutter-cogl.js \
 	gtktreeview.js \
+	gdkpixbufloader.js \
 	calculator.js \
 	clutter-cairo.js \
 	async-quine.js \
