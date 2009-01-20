@@ -1,8 +1,9 @@
 if BUILD_SEED_EXAMPLES
 gldir=$(datadir)/doc/seed/examples/glib
 gl_DATA = \
-	glut-teapot.js
-	triangle-actor.js
+	glut-teapot.js \
+	triangle-actor.js \
+	seed-gears.js
 endif
 
 
