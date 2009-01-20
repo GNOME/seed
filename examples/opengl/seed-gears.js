@@ -29,18 +29,18 @@ function gear(inner_radius, outer_radius, width, teeth, tooth_depth)
 	GL.Begin(GL.QUADS);
 	da = 2.0 * Math.PI / teeth / 4.0;
 	for (var i = 0; i < teeth; i++) {
-		var angle = i * 2.0 * Math.PI / teeth;
-		
-		GL.Vertex3f(r1 * Math.cos(angle), r1 * Math.sin(angle),
-					width * 0.5);
-		GL.Vertex3f(r2 * Math.cos(angle + da), r2 * Math.sin(angle + da), 
-					width * 0.5);
-		GL.Vertex3f(r2 * Math.cos(angle + 2 * da),
+		var angle = (i) * 2.0 * Math.PI / teeth;
+	
+		GL.Vertex3f(r2 * Math.cos(angle + 2 * da), 
 					r2 * Math.sin(angle + 2 * da), width * 0.5);
 		GL.Vertex3f(r1 * Math.cos(angle + 3 * da), 
 					r1 * Math.sin(angle + 3 * da), width * 0.5);
+		GL.Vertex3f(r1 * Math.cos(angle), r1 * Math.sin(angle), width * 0.5);
+		GL.Vertex3f(r2 * Math.cos(angle + da), 
+					r2 * Math.sin(angle + da), width * 0.5);
 	}
-	GL.End();
+    GL.End();
+
 	
 	GL.Normal3f(0.0, 0.0, -1.0);
 
