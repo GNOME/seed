@@ -69,8 +69,6 @@ function async_callback(source, result)
 	data.results.forEach(function(m) {messages.pack_start(make_block(m))});
 	
 	messages.show_all();
-	Seed.print("Hello");
-
 };
 
 // Define the behavior for the button press by associating an anonymous

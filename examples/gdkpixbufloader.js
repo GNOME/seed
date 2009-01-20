@@ -26,6 +26,7 @@ blue_marble.read_async(0, null, function(source, result)
 						   
 						   var pixbuf = loader.get_pixbuf();
 						   pixbuf.savev("bluemarble","jpeg");
+						Seed.quit();
 					   });
 
 var loop = GLib.main_loop_new();
