@@ -249,6 +249,7 @@ examples/glib/Makefile
 examples/browser/Makefile
 examples/turtle/Makefile
 examples/opengl/Makefile
+examples/twitter/Makefile
 modules/Makefile
 modules/example/Makefile
 modules/sqlite/Makefile

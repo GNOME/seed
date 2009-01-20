@@ -4,6 +4,7 @@ SUBDIRS = \
           glib \
           browser \
           opengl \
+	  twitter \
           turtle
 
 if BUILD_SEED_EXAMPLES
