@@ -1,4 +1,4 @@
-girdir = $(datadir)/gir
+girdir = $(datadir)/gir-1.0
 gir_DATA = GL-1.0.gir GLUT-1.0.gir GLTypes-1.0.gir GLU-1.0.gir
 
 typelibdir = $(libdir)/girepository-1.0
