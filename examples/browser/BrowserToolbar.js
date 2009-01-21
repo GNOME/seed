@@ -46,6 +46,12 @@ BrowserToolbar = new GType({
             forward_button.sensitive = can_go_forward;
         };
         
+        this.set_progress = function (progress)
+        {
+            if(have_progress_bar)
+                url_bar.set_progress_fraction(progress);
+        };
+        
         // Implementation
         back_button.signal.clicked.connect(back);
         forward_button.signal.clicked.connect(forward);

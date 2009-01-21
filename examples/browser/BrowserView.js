@@ -25,7 +25,7 @@ BrowserView = new GType({
         
         var update_progress = function (bar, progress)
         {
-            tab.get_statusbar().get_progress().fraction = progress / 100;
+            tab.get_toolbar().set_progress(progress / 100);
         };
         
         var create_new_tab = function (web_view, web_frame, new_web_view)
@@ -49,16 +49,12 @@ BrowserView = new GType({
         
         var load_finished = function ()
         {
-            tab.get_statusbar().get_progress().hide();
+            tab.get_toolbar().set_progress(0);
         };
         
         var load_committed = function (web_view, web_frame)
         {
             update_url(web_view, web_frame);
-            
-            // Show statusbar in committed; otherwise, open-in-new-tab views
-            // haven't yet acquired a tab on which to show a progressbar.
-            tab.get_statusbar().get_progress().show();
         };
         
         // Public
