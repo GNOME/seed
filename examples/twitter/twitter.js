@@ -24,31 +24,34 @@ window.signal.hide.connect(Gtk.main_quit);
 Gtk.rc_parse_string(
 	'style "tv" {base[NORMAL] = @bg_color} widget_class "*GtkTextView" style "tv"');
 
-function get_pixbuf(uri) {
-	var loader = new GdkPixbuf.PixbufLoader();
+function put_pixbuf(container, uri)
+{
 	var file = Gio.file_new_for_uri(uri);
-	
-	var dstream = new Gio.DataInputStream.c_new(file.read());
-	
-	// FIXME: HACK
-	try
-	{
-		while (1)
-		{
-			loader.write([dstream.read_byte()], 1);
-		}
-	}
-	catch (e)
-	{
-		Seed.print(e.name + " " + e.message);
-	}
-	
-	return loader.get_pixbuf();
+	file.read_async(0, null, function(source, result)
+					{
+						var loader = new GdkPixbuf.PixbufLoader();
+						var stream = source.read_finish(result);
+						var dstream = new Gio.DataInputStream.c_new(stream);
+
+						try
+						{
+							while (1)
+							{
+								loader.write([dstream.read_byte()], 1);
+							}
+						}
+						catch (e)
+						{
+							Seed.print(e.name + " " + e.message);
+						}
+						container.pack_start(
+							new Gtk.Image.from_pixbuf(loader.get_pixbuf()));
+						container.show_all();
+					});
 }
 
 // This function generates the GTK+ widgets that display the retrieved messages
 function make_block(data) {
-	var pixbuf = get_pixbuf(data.profile_image_url);
 	var vbox = new Gtk.VBox({"spacing": 10, "border-width": 5});
 	var hbox = new Gtk.HBox();
 
@@ -68,7 +71,8 @@ function make_block(data) {
 	heading.set_alignment(0, 0);
 	vbox.pack_start(hbox);
 	hbox.pack_start(heading);
-	hbox.pack_start(new Gtk.Image.from_pixbuf(pixbuf), true);
+//	hbox.pack_start(new Gtk.Image.from_pixbuf(pixbuf), true);
+	put_pixbuf(hbox, data.profile_image_url);
 	vbox.pack_start(message);
 
 	var frame = new Gtk.Frame({"border-width": 5});
@@ -125,6 +129,7 @@ layout.pack_start(scroll, true, true);
 window.add(layout);
 window.show_all();
 
+window.resize(300, 500);
 // Start the main GTK+ loop and initiate the program
 Gtk.main();
 
