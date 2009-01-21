@@ -3,7 +3,9 @@
 // Import libraries that are used by the program
 Seed.import_namespace("Gtk");
 Seed.import_namespace("Gdk");
+Seed.import_namespace("GdkPixbuf");
 Seed.import_namespace("Gio");
+Seed.import_namespace("GLib");
 
 // Pretty.js is John Resig's date display library. It downloaded it and
 // put it in the same directory as this script. You can easily use a lot
@@ -22,9 +24,33 @@ window.signal.hide.connect(Gtk.main_quit);
 Gtk.rc_parse_string(
 	'style "tv" {base[NORMAL] = @bg_color} widget_class "*GtkTextView" style "tv"');
 
+function get_pixbuf(uri) {
+	var loader = new GdkPixbuf.PixbufLoader();
+	var file = Gio.file_new_for_uri(uri);
+	
+	var dstream = new Gio.DataInputStream.c_new(file.read());
+	
+	// FIXME: HACK
+	try
+	{
+		while (1)
+		{
+			loader.write([dstream.read_byte()], 1);
+		}
+	}
+	catch (e)
+	{
+		Seed.print(e.name + " " + e.message);
+	}
+	
+	return loader.get_pixbuf();
+}
+
 // This function generates the GTK+ widgets that display the retrieved messages
 function make_block(data) {
+	var pixbuf = get_pixbuf(data.profile_image_url);
 	var vbox = new Gtk.VBox({"spacing": 10, "border-width": 5});
+	var hbox = new Gtk.HBox();
 
 	// The text styling for the heading is done with simple Pango markup.
 	var heading = new Gtk.Label({
@@ -40,11 +66,14 @@ function make_block(data) {
 	message.buffer.text = data.text;
   
 	heading.set_alignment(0, 0);
-	vbox.pack_start(heading);
+	vbox.pack_start(hbox);
+	hbox.pack_start(heading);
+	hbox.pack_start(new Gtk.Image.from_pixbuf(pixbuf), true);
 	vbox.pack_start(message);
 
 	var frame = new Gtk.Frame({"border-width": 5});
 	frame.add(vbox);
+	frame.show_all();
 	return frame;
 }
 
@@ -66,7 +95,9 @@ function async_callback(source, result)
 	var data = JSON.parse(dstream.read_until("", 0));
 	
 	messages.foreach(function(m) {messages.remove(m)});
-	data.results.forEach(function(m) {messages.pack_start(make_block(m))});
+	data.results.forEach(function(m) {messages.pack_start(make_block(m));
+			while (GLib.main_context_pending())
+ 			                          GLib.main_context_iteration()});
 	
 	messages.show_all();
 };
