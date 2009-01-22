@@ -1,9 +1,10 @@
+if BUILD_GL_TYPELIBS
+
 girdir = $(datadir)/gir-1.0
 gir_DATA = GL-1.0.gir GLUT-1.0.gir GLTypes-1.0.gir GLU-1.0.gir
 
 typelibdir = $(libdir)/girepository-1.0
 typelib_DATA = GL-1.0.typelib GLUT-1.0.typelib GLTypes-1.0.typelib GLU-1.0.typelib
-
 
 GL-1.0.typelib: GLTypes-1.0.typelib
 	g-ir-compiler --includedir=. GL-1.0.gir -o GL-1.0.typelib
@@ -13,4 +14,5 @@ GLUT-1.0.typelib: GL-1.0.typelib
 	g-ir-compiler --includedir=. GLUT-1.0.gir -o GLUT-1.0.typelib
 GLU-1.0.typelib: GL-1.0.typelib
 	g-ir-compiler --includedir=. GLU-1.0.gir -o GLU-1.0.typelib
-	
+
+endif

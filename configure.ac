@@ -65,11 +65,24 @@ case "$host_os" in
 	*)
 		save_LIBS=$LIBS
 		LIBS=`pkg-config --libs webkit-1.0`
-		AC_CHECK_LIB(webkit-1.0 ,JSContextGroupCreate,,
-					   AC_MSG_ERROR([The installed version of WebKit is too old. Install WebKit from SVN and try again.]))
+		AC_CHECK_LIB(webkit-1.0, JSContextGroupCreate,,
+					 AC_MSG_ERROR([The installed version of WebKit is too old. Install WebKit from SVN and try again.]))
 		LIBS=$save_LIBS
 		;;
 esac
+
+dnl =============================GL/GLUT=======================================
+dnl We should actually be more careful (and modularly check for GL/GLUT/GLU)...
+
+AC_MSG_CHECKING(for GLUT)
+AC_TRY_CPP([#include <GL/glut.h>],
+			have_glut_h=yes,
+			have_glut_h=no)
+AC_MSG_RESULT([$have_glut_h])
+
+want_gl_typelibs=$have_glut_h
+AM_CONDITIONAL(BUILD_GL_TYPELIBS, test "x$want_gl_typelibs" = "xyes")
+AC_SUBST(BUILD_GL_TYPELIBS)
 
 dnl ==============================readline=====================================
 AC_MSG_CHECKING(for readline)
@@ -271,6 +284,7 @@ Build Configuration:
 Installation:
    Prefix.....................$prefix
    Install examples...........$enable_examples
+   GL/GLUT bindings...........$want_gl_typelibs
 
 Modules:
    Canvas.....................$want_canvas_module
