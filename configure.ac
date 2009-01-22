@@ -59,14 +59,17 @@ if test x"$have_ffi_pkgconfig" = xno ; then
 fi
 
 dnl =======================WebKit ContextGroup=================================
-dnl case "$host_os" in
-dnl 	darwin*)
-dnl 		;;
-dnl 	*)
-dnl 		AC_CHECK_LIB(webkit-1.0, JSContextGroupCreate, ,
-dnl 					 AC_MSG_ERROR([The installed version of WebKit is too old. Install WebKit from SVN and try again.]))
-dnl 		;;
-dnl  esac
+case "$host_os" in
+	darwin*)
+		;;
+	*)
+		save_LIBS=$LIBS
+		LIBS=`pkg-config --libs webkit-1.0`
+		AC_CHECK_LIB(webkit-1.0 ,JSContextGroupCreate,,
+					   AC_MSG_ERROR([The installed version of WebKit is too old. Install WebKit from SVN and try again.]))
+		LIBS=$save_LIBS
+		;;
+esac
 
 dnl ==============================readline=====================================
 AC_MSG_CHECKING(for readline)
