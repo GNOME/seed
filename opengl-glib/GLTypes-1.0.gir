@@ -19,6 +19,7 @@
 	<alias name="clampd" target="double" c:type="GLclampd"/>
 	<alias name="void" target="double" c:type="GLvoid"/>
 	<alias name="char" target="char" c:type="GLchar"/>
+	<alias name="handle" target="int" c:type="GLhandleARB"/>
     <function name="InitNames" c:identifier="glInitNames">
       <return-value transfer-ownership="none">
         <type name="none" c:type="void"/>
