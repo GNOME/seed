@@ -15,4 +15,6 @@ GLUT-1.0.typelib: GL-1.0.typelib
 GLU-1.0.typelib: GL-1.0.typelib
 	g-ir-compiler --includedir=. GLU-1.0.gir -o GLU-1.0.typelib
 
+CLEANFILES = GL-1.0.typelib GLTypes-1.0.typelib GLUT-1.0.typelib GLU-1.0.typelib
+
 endif
