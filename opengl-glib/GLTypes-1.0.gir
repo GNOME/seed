@@ -17,9 +17,12 @@
 	<alias name="clampf" target="float" c:type="GLclampf"/>
 	<alias name="double" target="double" c:type="GLdouble"/>
 	<alias name="clampd" target="double" c:type="GLclampd"/>
-	<alias name="void" target="double" c:type="GLvoid"/>
+	<alias name="void" target="gpointer" c:type="GLvoid"/>
 	<alias name="char" target="char" c:type="GLchar"/>
 	<alias name="handle" target="int" c:type="GLhandleARB"/>
+	<alias name="charARB" target="charARB" c:type="GLcharARB"/>
+	<alias name="sizeiptr" target="gpointer" c:type="GLsizeiptr"/>
+	<alias name="intptr" target="gintptr" c:type="GLintptr"/>
     <function name="InitNames" c:identifier="glInitNames">
       <return-value transfer-ownership="none">
         <type name="none" c:type="void"/>
