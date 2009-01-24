@@ -19,6 +19,19 @@ Imports functions and constructors from the given gobject-introspection <i>names
 <pre class="sh_javascript">
 Seed.import_namespace("Gtk", "2.0");
 </pre>
+<p>
+Behaviour when loading a namespace which has already been loaded is undefined and most likely unwanted. To work around this, a try/catch block can be used:
+</p>
+<pre class="sh_javascript">
+try
+{
+    Clutter;
+}
+catch(e)
+{
+    Seed.import_namespace("Clutter");
+}
+</pre>
 <div class="section"><b>Seed.include</b>(file)</div>
 <p>
 Evaluates a Javascript <i>file</i> as if it were included in the file at the point include is called.
