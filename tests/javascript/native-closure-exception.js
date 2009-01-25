@@ -2,7 +2,7 @@
 // Returns: 0
 // STDIN:
 // STDOUT:
-// STDERR:\n\*\* \(seed:[0-9]+\): WARNING \*\*: Exception in closure marshal\. Line 11 in .*\/native-closure-exception\.js: ReferenceError Can't find variable: a
+// STDERR:\n\*\* \(seed:[0-9]+\): WARNING \*\*: Exception in closure marshal\. Line 12 in .*\/native-closure-exception\.js: ReferenceError Can't find variable: a
 
 Seed.import_namespace("Gtk");
 Gtk.init(null, null);
