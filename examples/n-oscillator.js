@@ -5,7 +5,7 @@ Seed.import_namespace("Gst","0.10");
 Gst.init(null, null);
 Gtk.init(null, null);
 
-// This is a really ugly program.
+// This is a really ugly program. Please fix it.
 
 function oscillator(freq)
 {
@@ -32,13 +32,11 @@ function oscillator(freq)
 	
 	var playing = false;
 	
-	var adjustment = vscale.adjustment;
-	adjustment.upper = 3000;
-	adjustment.value = freq;
+	vscale.adjustment.upper = 3000;
+	vscale.adjustment.value = freq;
 	
-	var adjustment = volscale.adjustment;
-	adjustment.upper = 10;
-	adjustment.value = volume.volume;
+	volscale.adjustment.upper = 10;
+	volscale.adjustment.value = volume.volume;
 	
 	hbox.pack_start(vscale, true, true, 10);
 	hbox.pack_start(volscale, true, true, 10);
@@ -47,7 +45,7 @@ function oscillator(freq)
 	
 	var toggle = function(button, that) 
 	{
-		if (playing == false)
+		if (playing === false)
 		{
 			pipeline.set_state(Gst.State.PLAYING);
 			playing = true;
@@ -57,15 +55,18 @@ function oscillator(freq)
 			pipeline.set_state(Gst.State.PAUSED);
 			playing = false;
 		}
-	}
+	};
+	
 	var update_freq = function(range)
 	{
 		audiosrc.freq = range.get_value();
-	}
+	};
+	
 	var update_vol = function(range)
 	{
 		volume.volume = range.get_value();
-	}
+	};
+	
 	button.signal.clicked.connect(toggle);
 	vscale.signal.value_changed.connect(update_freq);
 	volscale.signal.value_changed.connect(update_vol);

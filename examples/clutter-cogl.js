@@ -32,14 +32,18 @@ function alpha_func(alpha)
 		return Clutter.ALPHA_MAX_ALPHA*(7.5625*time*time);
 	else if (time < (2/2.75))
 		return Clutter.ALPHA_MAX_ALPHA*(7.5625 * 
-										(time-=(1.5/2.75))*time+.75);
+										(time-=(1.5/2.75))*time+0.75);
 	else if (time < (2.5/2.75))
 		return Clutter.ALPHA_MAX_ALPHA*(7.5625 *
-										(time-=(2.25/2.75))*time+.9375);
+										(time-=(2.25/2.75))*time+0.9375);
 	else
 		return Clutter.ALPHA_MAX_ALPHA*(7.5625 *
-										(time-=(2.625/2.75))*time+.984375);
+										(time-=(2.625/2.75))*time+0.984375);
 }
+
+Clutter.init(null, null);
+
+var template = new Clutter.EffectTemplate.for_duration(RIPPLE_S, alpha_func);
 
 function destroy_actor(actor)
 {
@@ -99,10 +103,6 @@ function ripple(stage, x, y)
 							destroy_actor);
 	}
 }
-
-Clutter.init(null, null);
-
-var template = new Clutter.EffectTemplate.for_duration(RIPPLE_S, alpha_func);
 
 var stage = new Clutter.Stage();
 

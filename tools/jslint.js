@@ -4129,6 +4129,7 @@ JSLINT = function () {
 
 
     stmt('var', varstatement);
+    stmt('const', varstatement);
 
     stmt('new', function () {
         error("'new' should not be used as a statement.");

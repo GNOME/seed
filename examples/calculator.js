@@ -6,14 +6,13 @@ Seed.import_namespace("GLib");
 
 Gtk.init(null, null);
 
-var window, label;
 var calc_val = "";
 
 function update_display()
 {
 	label.set_markup("<span size='30000'>" + calc_val + "</span>");
 	
-	if(calc_val == "")
+	if(calc_val === "")
 	{
 		label.set_markup("<span size='30000'>0</span>");
 	}
@@ -53,14 +52,14 @@ function pressed_operator(button)
 
 function pressed_number(button)
 {
-	calc_val = (((calc_val == 0) ? "" : calc_val) + button.label);
+	calc_val = (((calc_val === 0) ? "" : calc_val) + button.label);
 	update_display();
 }
 
 function swap_sign(button)
 {
 	calc_val = ((calc_val[0] == "-") ? 
-		    calc_val.substring(1) : "-" + calc_val) 
+		    calc_val.substring(1) : "-" + calc_val);
 	update_display();
 }
 

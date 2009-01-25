@@ -29,17 +29,17 @@ function alpha_func(alpha)
 		return Clutter.ALPHA_MAX_ALPHA*(7.5625*time*time);
 	else if (time < (2/2.75))
 		return Clutter.ALPHA_MAX_ALPHA*(7.5625 * 
-										(time-=(1.5/2.75))*time+.75);
+										(time-=(1.5/2.75))*time+0.75);
 	else if (time < (2.5/2.75))
 		return Clutter.ALPHA_MAX_ALPHA*(7.5625 *
-										(time-=(2.25/2.75))*time+.9375);
+										(time-=(2.25/2.75))*time+0.9375);
 	else
 		return Clutter.ALPHA_MAX_ALPHA*(7.5625 *
-										(time-=(2.625/2.75))*time+.984375);
+										(time-=(2.625/2.75))*time+0.984375);
 }
 
 var stage = new Clutter.Stage();
-stage.signal.hide.connect(function(){Clutter.main_quit()});
+stage.signal.hide.connect(function(){Clutter.main_quit();});
 var timeline = new Clutter.Timeline({fps:60, num_frames:300});
 stage.show_all();
 

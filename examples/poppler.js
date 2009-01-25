@@ -15,7 +15,7 @@ var num_pages = null;
 
 function draw_document()
 {
-	if (current_page != null)
+	if (current_page !== null)
 	{
 		drawing_area.window.clear();
 		cairo = Gdk.cairo_create(drawing_area.window);
@@ -27,6 +27,12 @@ function draw_document()
 
 function set_page(num)
 {
+	if(num < 0)
+	{
+		set_page(0);
+		return;
+	}
+	
 	if(num >= num_pages)
 	{
 		set_page(num_pages - 1);
@@ -45,10 +51,10 @@ function set_page(num)
 	else
 		next_button.sensitive = true;
 	
-	if (page_num == 0)
-		previous_button.sensitive = false;
-	else
+	if (page_num)
 		previous_button.sensitive = true;
+	else
+		previous_button.sensitive = false;
 }
 
 function open_file(sv)
@@ -96,7 +102,7 @@ function make_toolbar()
 	entry = new Gtk.Entry({text:"0"});
 	entry_item.add(entry);
 	entry_item.width_request = 40;
-	entry.signal.activate.connect(function(){set_page(parseInt(entry.text, 10)-1)});
+	entry.signal.activate.connect(function(){set_page(parseInt(entry.text, 10)-1);});
 	var label_item = new Gtk.ToolItem();
 	page_label = new Gtk.Label({label: " of 0"});
 	label_item.add(page_label);
@@ -139,7 +145,7 @@ window.add(main_vbox);
 main_vbox.pack_start(toolbar);
 main_vbox.pack_start(drawing_area, true, true);
 
-window.signal.hide.connect(function () {Gtk.main_quit()});
+window.signal.hide.connect(function () {Gtk.main_quit();});
 
 window.show_all();
 window.resize(600,800);

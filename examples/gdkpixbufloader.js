@@ -1,4 +1,5 @@
-#!/usr/local/bin/seed
+#!/usr/bin/env seed
+
 Seed.import_namespace("GLib");
 Seed.import_namespace("Gio");
 Seed.import_namespace("GdkPixbuf");

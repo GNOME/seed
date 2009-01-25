@@ -1,7 +1,7 @@
-#!/usr/local/bin/seed
+#!/usr/bin/env seed
+
 Seed.import_namespace("GLib");
 Seed.import_namespace("Gio");
-
 
 var file = Gio.file_new_for_path("./async-quine.js");
 

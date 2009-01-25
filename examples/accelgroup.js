@@ -10,7 +10,7 @@ with (Gtk)
 	var quit = function ()
 	{
 		main_quit();
-	}
+	};
 	
 	var w = new Window();
 	w.signal.hide.connect(quit);
