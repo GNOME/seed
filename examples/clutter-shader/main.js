@@ -1,5 +1,5 @@
 #!/usr/bin/env seed
-Seed.import_namespace("Clutter");
+Seed.import_namespace("Clutter", "0.8");
 Seed.import_namespace("Gtk");
 Seed.import_namespace("GtkSource");
 Seed.import_namespace("GtkClutter");
