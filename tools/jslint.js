@@ -1808,8 +1808,9 @@ JSLINT = function () {
                 }
                 break;
             default:
-                warning("Line breaking error '{a}'.",
-                        token, token.value);
+                // TIMTIMTIM
+                //warning("Line breaking error '{a}'.",
+                //        token, token.value);
             }
         }
     }
@@ -2368,8 +2369,9 @@ JSLINT = function () {
             }
             advance('}', t);
         } else {
-            warning("Expected '{a}' and instead saw '{b}'.",
-                    nexttoken, '{', nexttoken.value);
+            // TIMTIMTIM
+            //warning("Expected '{a}' and instead saw '{b}'.",
+            //        nexttoken, '{', nexttoken.value);
             noreach = true;
             a = [statement()];
             noreach = false;
@@ -4430,7 +4432,8 @@ JSLINT = function () {
             s = block(true);
             if (!option.forin && (s.length > 1 || typeof s[0] !== 'object' ||
                     s[0].value !== 'if')) {
-                warning("The body of a for in should be wrapped in an if statement to filter unwanted properties from the prototype.", this);
+                // TIMTIMTIM
+                //warning("The body of a for in should be wrapped in an if statement to filter unwanted properties from the prototype.", this);
             }
             funct['(breakage)'] -= 1;
             funct['(loopage)'] -= 1;
