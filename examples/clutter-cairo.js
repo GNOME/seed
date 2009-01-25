@@ -1,8 +1,8 @@
 #!/usr/bin/env seed
 
 Seed.import_namespace("Canvas");
-Seed.import_namespace("Clutter");
-Seed.import_namespace("ClutterCairo");
+Seed.import_namespace("Clutter", "0.8");
+Seed.import_namespace("ClutterCairo", "0.8");
 
 Clutter.init(null, null);
 
