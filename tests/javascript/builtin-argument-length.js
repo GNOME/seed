@@ -10,56 +10,56 @@
 
 try{
 Seed.spawn();
-}catch(e){Seed.print(e.message)}
+}catch(e){Seed.print(e.message);}
 try{
 Seed.spawn("asihfieuhgieuhgw");
-}catch(e){Seed.print(e.message)}
+}catch(e){Seed.print(e.message);}
 
 try{
 Seed.include();
-}catch(e){Seed.print(e.message)}
+}catch(e){Seed.print(e.message);}
 try{
 Seed.include(1);
-}catch(e){Seed.print(e.message)}
+}catch(e){Seed.print(e.message);}
 try{
 Seed.include("");
-}catch(e){Seed.print(e.message)}
+}catch(e){Seed.print(e.message);}
 try{
 Seed.include(1,2);
-}catch(e){Seed.print(e.message)}
+}catch(e){Seed.print(e.message);}
 try{
 Seed.include("fail.js","another.js");
-}catch(e){Seed.print(e.message)}
+}catch(e){Seed.print(e.message);}
 
 try{
 Seed.print();
-}catch(e){Seed.print(e.message)}
+}catch(e){Seed.print(e.message);}
 try{
 Seed.print(1, 2);
-}catch(e){Seed.print(e.message)}
+}catch(e){Seed.print(e.message);}
 try{
 Seed.print("asdf", 2);
-}catch(e){Seed.print(e.message)}
+}catch(e){Seed.print(e.message);}
 try{
 Seed.print(1, 2, 3);
-}catch(e){Seed.print(e.message)}
+}catch(e){Seed.print(e.message);}
 
 try{
 Seed.introspect();
-}catch(e){Seed.print(e.message)}
+}catch(e){Seed.print(e.message);}
 try{
 Seed.introspect(Seed, 5.23);
-}catch(e){Seed.print(e.message)}
+}catch(e){Seed.print(e.message);}
 
 try{
 Seed.check_syntax();
-}catch(e){Seed.print(e.message)}
+}catch(e){Seed.print(e.message);}
 try{
 Seed.check_syntax("5+5", "asdf");
-}catch(e){Seed.print(e.message)}
+}catch(e){Seed.print(e.message);}
 
 try{
 Seed.quit(1,2);
-}catch(e){Seed.print(e.message)}
+}catch(e){Seed.print(e.message);}
 
 Seed.quit();
