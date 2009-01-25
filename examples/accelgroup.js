@@ -1,6 +1,6 @@
 #!/usr/bin/env seed
 
-Seed.import_namespace("Gtk")
+Seed.import_namespace("Gtk");
 Seed.import_namespace("Gdk");
 
 with (Gtk)

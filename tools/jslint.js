@@ -4292,8 +4292,22 @@ JSLINT = function () {
         funct['(breakage)'] -= 1;
         funct['(loopage)'] -= 1;
     }).labelled = true;
+    
+    // TIMTIMTIM
+    blockstmt('with', function () {
+        var t = nexttoken;
+        funct['(breakage)'] += 1;
+        advance('(');
+        nonadjacent(this, t);
+        nospace();
+        parse(20);
+        advance(')', t);
+        nospace(prevtoken, token);
+        block(true);
+        funct['(breakage)'] -= 1;
+    }).labelled = true;
 
-    reserve('with');
+    //reserve('with');
 
     blockstmt('switch', function () {
         var t = nexttoken,
