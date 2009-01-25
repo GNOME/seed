@@ -3,7 +3,7 @@
 Seed.include("transition-library.js");
 
 var stage = new Clutter.Stage();
-stage.signal.hide.connect(function(){Clutter.main_quit()});
+stage.signal.hide.connect(function(){Clutter.main_quit();});
 stage.set_size(1024,768);
 stage.show_all();
 

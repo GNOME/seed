@@ -39,7 +39,7 @@
 			shader.enabled = true;
 			that.actor.set_shader(shader);
 			that.reflection.set_shader(shader);
-		}
+		};
 
 	compile.signal.clicked.connect(this.make_shader, this);
 }

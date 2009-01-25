@@ -27,13 +27,13 @@ function bounce_alpha(alpha)
 		return Clutter.ALPHA_MAX_ALPHA*(7.5625*time*time);
 		else if (time < (2/2.75))
 		return Clutter.ALPHA_MAX_ALPHA*(7.5625 * 
-						(time-=(1.5/2.75))*time+.75);
+						(time-=(1.5/2.75))*time+0.75);
 		else if (time < (2.5/2.75))
 		return Clutter.ALPHA_MAX_ALPHA*(7.5625 *
-						(time-=(2.25/2.75))*time+.9375);
+						(time-=(2.25/2.75))*time+0.9375);
 		else
 		return Clutter.ALPHA_MAX_ALPHA*(7.5625 * (time-=
-							  (2.625/2.75))*time+.984375);
+							  (2.625/2.75))*time+0.984375);
 		
 	}
 	catch (e)
@@ -235,7 +235,7 @@ function tiles_fly(t)
 		var timeline = new Clutter.Timeline({num_frames:duration*global_fps, fps:global_fps});
 		var effect = new Clutter.EffectTemplate.c_new(timeline, Clutter.smoothstep_inc_func);
 
-		var tiles = new Array();
+		var tiles = [ ];
 		var tile_w = stage.width / 8;
 		var tile_h = stage.height / 6;
 
@@ -280,9 +280,10 @@ function tiles_fly(t)
 
 function tiles(t)
 {
+	var timeline;
 	with(t)
 	{
-		var tiles = new Array();
+		var tiles = [ ];
 		var tile_w = stage.width / 8;
 		var tile_h = stage.height / 6;
 
@@ -313,26 +314,26 @@ function tiles(t)
 
 		for(var til in tiles)
 		{
-			var timeline = new Clutter.Timeline({num_frames:(Math.random()+0.01)*duration*global_fps,
-												 fps:global_fps});
+			timeline = new Clutter.Timeline({num_frames:(Math.random()+0.01)*duration*global_fps,
+											 fps:global_fps});
 			var effect = new Clutter.EffectTemplate.c_new(timeline, Clutter.ramp_inc_func);
 
 			Clutter.effect_rotate(effect, tiles[til], 1, 180, 0, 0, 0, Math.random()>0.5 ? 1 : 0);
 			Clutter.effect_fade(effect, tiles[til], 0);
 		}
 
-		var timeline = new Clutter.Timeline({num_frames:duration*global_fps,
-											 fps:global_fps});
+		timeline = new Clutter.Timeline({num_frames:duration*global_fps,
+										 fps:global_fps});
 
 		timeline.signal.completed.connect(function (timeline, tiles)
-									   {
-										   for(var til in tiles)
-										   {
-											   tiles[til].destroy();
-										   }
-										   
-										   done();
-									   }, tiles);
+										  {
+											  for(var til in tiles)
+											  {
+												  tiles[til].destroy();
+											  }
+											  
+											  done();
+										  }, tiles);
 
 		timeline.start();
 	}
@@ -340,9 +341,10 @@ function tiles(t)
 
 function tiles_across(t)
 {
+	var timeline;
 	with(t)
 	{
-		var tiles = new Array();
+		var tiles = [ ];
 		var tile_w = stage.width / 8;
 		var tile_h = stage.height / 6;
 
@@ -376,16 +378,16 @@ function tiles_across(t)
 			var multiplier = (((tiles[til].anchor_x*tiles[til].anchor_y)/
 								 (stage.width*stage.height)) + 0.01);
 			
-			var timeline = new Clutter.Timeline({num_frames:multiplier*duration*global_fps,
-												 fps:global_fps});
+			timeline = new Clutter.Timeline({num_frames:multiplier*duration*global_fps,
+											 fps:global_fps});
 			var effect = new Clutter.EffectTemplate.c_new(timeline, Clutter.ramp_inc_func);
 
 			Clutter.effect_rotate(effect, tiles[til], 1, 180, 0, 0, 0);
 			Clutter.effect_fade(effect, tiles[til], 0);
 		}
 
-		var timeline = new Clutter.Timeline({num_frames:duration*global_fps,
-											 fps:global_fps});
+		timeline = new Clutter.Timeline({num_frames:duration*global_fps,
+										 fps:global_fps});
 		
 		timeline.signal.completed.connect(function (timeline, tiles)
 									   {
@@ -446,7 +448,7 @@ function doorway(t)
 
 		a.opacity = 0;
 
-		group.scale_x = group.scale_y = .5;
+		group.scale_x = group.scale_y = 0.5;
 
 		stage.add_actor(left_tile);
 		stage.add_actor(right_tile);

@@ -15,7 +15,7 @@ var num_pages = null;
 
 function draw_document()
 {
-	if (current_page !== null)
+	if (current_page)
 	{
 		drawing_area.window.clear();
 		cairo = Gdk.cairo_create(drawing_area.window);

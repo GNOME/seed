@@ -69,7 +69,7 @@ BrowserView = new GType({
         this.set_tab = function (new_tab)
         {
             tab = new_tab;
-        }
+        };
         
         this.get_tab = function ()
         {

@@ -14,7 +14,7 @@ function enum_structlike(indent, e)
 	for (prop in e)
 	{
 		Seed.print(indent + "* " + prop);
-		if (e[prop] !== null && (e[prop].toString().search("struct") > 0 ||
+		if (e[prop] && (e[prop].toString().search("struct") > 0 ||
 								e[prop].toString().search("union") > 0))
 			enum_structlike(indent + "   ", e[prop]);
 	}

@@ -14,7 +14,7 @@ function prettyDate(time){
 	if ( isNaN(day_diff) || day_diff < 0 || day_diff >= 31 )
 		return;
 			
-	return day_diff == 0 && (
+	return !day_diff && (
 			diff < 60 && "just now" ||
 			diff < 120 && "1 minute ago" ||
 			diff < 3600 && Math.floor( diff / 60 ) + " minutes ago" ||

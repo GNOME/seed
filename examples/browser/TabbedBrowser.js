@@ -19,7 +19,7 @@ TabbedBrowser = new GType({
         {
             var new_tab = new BrowserTab();
             
-            if(new_web_view != null)
+            if(new_web_view)
                 new_tab.set_web_view(new_web_view);
             else
                 new_tab.get_web_view().browse(url);

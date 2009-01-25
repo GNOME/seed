@@ -4,6 +4,7 @@ Seed.import_namespace("GLUT");
 
 function gear(inner_radius, outer_radius, width, teeth, tooth_depth)
 {
+	var i, angle;
 	var r0 = inner_radius;
 	var r1 = outer_radius - tooth_depth / 2.0;
 	var r2 = outer_radius + tooth_depth / 2.0;
@@ -11,14 +12,13 @@ function gear(inner_radius, outer_radius, width, teeth, tooth_depth)
 	var da = 2.0 * Math.PI / teeth/ 4.0;
 	
 	GL.ShadeModel(GL.FLAT);
-
 	GL.Normal3f(0.0, 0.0, 1.0);
 	
 	GL.Begin(GL.QUAD_STRIP);
 	
-	for (var i = 0; i <= teeth; i++)
+	for (i = 0; i <= teeth; i++)
 	{
-		var angle = i * 2.0 * Math.PI / teeth;
+		angle = i * 2.0 * Math.PI / teeth;
 		GL.Vertex3f(r0 * Math.cos(angle), r0 * Math.sin(angle), width * 0.5);
 		GL.Vertex3f(r1 * Math.cos(angle), r1 * Math.sin(angle), width * 0.5);
 		GL.Vertex3f(r0 * Math.cos(angle), r0 * Math.sin(angle), width * 0.5);
@@ -28,8 +28,9 @@ function gear(inner_radius, outer_radius, width, teeth, tooth_depth)
 
 	GL.Begin(GL.QUADS);
 	da = 2.0 * Math.PI / teeth / 4.0;
-	for (var i = 0; i < teeth; i++) {
-		var angle = (i) * 2.0 * Math.PI / teeth;
+	for (i = 0; i < teeth; i++)
+	{
+		angle = (i) * 2.0 * Math.PI / teeth;
 
 		GL.Vertex3f(r2 * Math.cos(angle + 2 * da), 
 					r2 * Math.sin(angle + 2 * da), width * 0.5);
@@ -48,8 +49,9 @@ function gear(inner_radius, outer_radius, width, teeth, tooth_depth)
 
 	/* draw back face */
 	GL.Begin(GL.QUAD_STRIP);
-	for (i = 0; i <= teeth; i++) {
-		var angle = i * 2.0 * Math.PI / teeth;
+	for (i = 0; i <= teeth; i++)
+	{
+		angle = i * 2.0 * Math.PI / teeth;
 		GL.Vertex3f(r1 * Math.cos(angle), r1 * Math.sin(angle), -width * 0.5);
 		GL.Vertex3f(r0 * Math.cos(angle), r0 * Math.sin(angle), -width * 0.5);
 		GL.Vertex3f(r1 * Math.cos(angle + 3 * da), r1 * Math.sin(angle + 3 * da), -width * 0.5);
@@ -60,8 +62,9 @@ function gear(inner_radius, outer_radius, width, teeth, tooth_depth)
 	/* draw back sides of teeth */
 	GL.Begin(GL.QUADS);
 	da = 2.0 * Math.PI / teeth / 4.0;
-	for (var i = 0; i < teeth; i++) {
-		var angle = i * 2.0 * Math.PI / teeth;
+	for (i = 0; i < teeth; i++)
+	{
+		angle = i * 2.0 * Math.PI / teeth;
 
 		GL.Vertex3f(r1 * Math.cos(angle + 3 * da), r1 * Math.sin(angle + 3 * da), -width * 0.5);
 		GL.Vertex3f(r2 * Math.cos(angle + 2 * da), r2 * Math.sin(angle + 2 * da), -width * 0.5);
@@ -72,8 +75,9 @@ function gear(inner_radius, outer_radius, width, teeth, tooth_depth)
 
 	/* draw outward faces of teeth */
 	GL.Begin(GL.QUAD_STRIP);
-	for (var i = 0; i < teeth; i++) {
-		var angle = i * 2.0 * Math.PI / teeth;
+	for (i = 0; i < teeth; i++)
+	{
+		angle = i * 2.0 * Math.PI / teeth;
 
 		GL.Vertex3f(r1 * Math.cos(angle), r1 * Math.sin(angle), width * 0.5);
 		GL.Vertex3f(r1 * Math.cos(angle), r1 * Math.sin(angle), -width * 0.5);
@@ -105,8 +109,9 @@ function gear(inner_radius, outer_radius, width, teeth, tooth_depth)
 
 	/* draw inside radius cylinder */
 	GL.Begin(GL.QUAD_STRIP);
-	for (var i = 0; i <= teeth; i++) {
-		var angle = i * 2.0 * Math.PI / teeth;
+	for (i = 0; i <= teeth; i++)
+	{
+		angle = i * 2.0 * Math.PI / teeth;
 		GL.Normal3f(-Math.cos(angle), -Math.sin(angle), 0.0);
 		GL.Vertex3f(r0 * Math.cos(angle), r0 * Math.sin(angle), -width * 0.5);
 		GL.Vertex3f(r0 * Math.cos(angle), r0 * Math.sin(angle), width * 0.5);

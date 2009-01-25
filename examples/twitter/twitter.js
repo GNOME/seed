@@ -98,13 +98,13 @@ function async_callback(source, result)
 	var dstream = new Gio.DataInputStream.c_new(stream);
 	var data = JSON.parse(dstream.read_until("", 0));
 	
-	messages.foreach(function(m) {messages.remove(m)});
-	data.results.forEach(function(m) {messages.pack_start(make_block(m));
-			while (GLib.main_context_pending())
- 			                          GLib.main_context_iteration()});
+	messages.foreach(function(m) {messages.remove(m);});
+	data.results.forEach(function(m) {	messages.pack_start(make_block(m));
+										while (GLib.main_context_pending())
+ 											GLib.main_context_iteration();});
 	
 	messages.show_all();
-};
+}
 
 // Define the behavior for the button press by associating an anonymous
 // function with the button's click signal handler

@@ -60,10 +60,10 @@ Paddle = new GType({
 		
 		this.accelerate = function (direction)
 		{
-			if(velocity == 0)
-				velocity = direction * 5;
-			else
+			if(velocity)
 				velocity = velocity + (direction*4);
+			else
+				velocity = direction * 5;
 		};
 		
 		this.set_velocity = function (new_v)
@@ -92,7 +92,7 @@ Paddle = new GType({
 			//											  Clutter.sine_inc_func);
 			
 			//Clutter.effect_scale(effect, this, 1, 1.2);
-		}
+		};
 		
 		this.lost_game = function ()
 		{
@@ -127,7 +127,7 @@ AIPaddle = new GType({
 			bkg.filter_quality = Clutter.TextureQuality.HIGH;
 			this.add_actor(bkg);
 			bkg.show();
-		}
+		};
 	}
 });
 
@@ -188,7 +188,7 @@ Ball = new GType({
 					// TODO: Fix "spin" from paddle...
 					//v_y += paddle.get_velocity() * 2;
 				}
-			}
+			};
 			
 			bounce_paddle(this, p_one);
 			bounce_paddle(this, p_two);
@@ -262,7 +262,7 @@ var black = new Clutter.Color();
 Clutter.color_parse("Black", black);
 
 var stage = new Clutter.Stage();
-stage.signal.hide.connect(function(){Clutter.main_quit()});
+stage.signal.hide.connect(function(){Clutter.main_quit();});
 stage.set_size(500,500);
 stage.color = black;
 
@@ -308,7 +308,7 @@ function create_new_ball ()
 	ball.set_velocity(Math.random() * 12 - 6, Math.random() * 12 - 6);
 	
 	winning_animation = 0;
-};
+}
 
 create_new_ball();
 
