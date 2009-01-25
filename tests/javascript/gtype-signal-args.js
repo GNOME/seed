@@ -18,7 +18,7 @@ HelloWindow = new GType({
                                      return_type: Gtk.Window.type};
 
         hello_signal_id = klass.install_signal(HelloSignalDefinition);
-    },
+    }
 });
 
 w = new HelloWindow();
@@ -26,7 +26,7 @@ w = new HelloWindow();
 w.signal.hello.connect(function(object, number, string)
                        {
                            Seed.print(number + " " + string);
-                           return new Gtk.Window()
+                           return new Gtk.Window();
                        });
 
 Seed.print(w.signal.hello.emit(2, "Test"));

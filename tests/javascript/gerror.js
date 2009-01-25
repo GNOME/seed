@@ -7,7 +7,9 @@
 // STDIN:
 // STDOUT:
 // STDERR:
-Seed.import_namespace("Gio")
+
+Seed.import_namespace("Gio");
+
 try
 {
 	Gio.simple_write(".", "test");

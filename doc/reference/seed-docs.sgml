@@ -12,7 +12,7 @@
   </bookinfo>
 
   <chapter>
-    <title>[Seed External API]</title>
+    <title>Seed External API</title>
     <xi:include href="xml/seed.xml"/>
   </chapter>
 </book>

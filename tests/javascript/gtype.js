@@ -12,23 +12,22 @@ HelloWindowType = {
     name: "HelloWindow",
     class_init: function(klass, prototype)
     {
-	prototype.message = "Prototypes!";
-	Seed.print("In klass init");
+        prototype.message = "Prototypes!";
+        Seed.print("In klass init");
     },
     init: function(klass)
     {
-	this.title = "Hello!";
-	Seed.print("In constructor for " + this);
+        this.title = "Hello!";
+        Seed.print("In constructor for " + this);
     }};
 
 HelloWindow = new GType(HelloWindowType);
 w = new HelloWindow();
 Seed.print(w.message);
 w.signal.map.connect(
-		     function(widget)
-		     {
-			 Seed.print("In map, verifying widget.title : " 
-				    + widget.title)
-		     });
+             function(widget)
+             {
+                 Seed.print("In map, verifying widget.title : " + widget.title);
+             });
 w.show();
-	  
+      

@@ -10,12 +10,11 @@ function runLint(filename)
 
 	read_file = read_file.replace("#!/usr/bin/env seed","");
 	
-	Seed.print("=====================================");
-	Seed.print("    " + filename);
-	Seed.print("=====================================");
-
 	if(JSLINT(read_file, {white:false, passfail: false, eqeqeq: false, forin: false}))
 		return;
+	
+	Seed.print("################################################################################");
+	Seed.print("            " + filename);
 	
 	for(no in JSLINT.errors)
 	{
@@ -30,4 +29,8 @@ function runLint(filename)
 	return JSLINT.errors.length;
 }
 
-runLint("run-lint.js");
+for(a in Seed.argv)
+{
+	if(a >= 2)
+		runLint(Seed.argv[a]);
+}

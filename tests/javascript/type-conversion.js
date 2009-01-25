@@ -18,7 +18,7 @@ for ( i in tests )
 {
 	try
 	{
-		eval(tests[i])
+		eval(tests[i]);
 	}
 	catch (e)
 	{

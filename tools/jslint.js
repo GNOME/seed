@@ -653,7 +653,7 @@ JSLINT = function () {
             String              : true,
             SyntaxError         : true,
             TypeError           : true,
-            URIError            : true
+            URIError            : true,
         },
 
         standard_member = {
