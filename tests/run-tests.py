@@ -8,6 +8,7 @@ import os
 import re
 import sys
 import subprocess
+import difflib
 
 passed = []
 failed = []
@@ -76,11 +77,17 @@ for fail in failed:
 	print "-------------FAILED TEST---------------"
 	print "Name: %s" % fail[0]
 	if fail[3] == 1:
-		print "  Expected Error:\t" + fail[1]
-		print "  Actual Error:\t" + fail[2]
+		for line in difflib.unified_diff(fail[1].replace("\\","").replace("^","").replace("$","").split("\n"),
+										 fail[2].split("\n"),
+										 fromfile="Expected Error",
+										 tofile="Actual Error"):
+			print line.rstrip()
 	elif fail[3] == 0:
-		print "  Expected Output:\t" + fail[1]
-		print "  Actual Output:\t" + fail[2]
+		for line in difflib.unified_diff(fail[1].replace("\\","").replace("^","").replace("$","").split("\n"),
+										 fail[2].split("\n"),
+										 fromfile="Expected Output",
+										 tofile="Actual Output"):
+			print line.rstrip()
 		print "  Error Output:\t\t" + fail[4]
 	elif fail[3] == 2:
 		print "  Expected Retval:\t%d" % fail[1]
