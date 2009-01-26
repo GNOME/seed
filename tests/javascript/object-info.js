@@ -1,7 +1,7 @@
 #!/usr/bin/env seed
 // Returns: 0
 // STDIN:
-// STDOUT:Window implements interfaces\nInterface: Buildable\nInterface: ImplementorIface
+// STDOUT:Window implements interfaces\nInterface: (Buildable|ImplementorIface)\nInterface: (Buildable|ImplementorIface)
 // STDERR:
 Seed.import_namespace("Gtk");
 Seed.import_namespace("GIRepository");
