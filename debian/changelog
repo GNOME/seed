@@ -1,0 +1,59 @@
+seed (0.3.1-2) intrepid; urgency=low
+
+  * Build problem.
+
+ -- Tim Horton <hortont424@gmail.com>  Fri, 02 Jan 2009 21:26:46 -0500
+
+seed (0.3.1-1) intrepid; urgency=low
+
+  * Update to 0.3.1 release.
+
+ -- Tim Horton <hortont424@gmail.com>  Fri, 02 Jan 2009 21:19:18 -0500
+
+seed (0.3-4) intrepid; urgency=low
+
+  * Hopefully final 64bit fixes (at least the size_t thing).
+
+ -- Tim Horton <hortont424@gmail.com>  Thu, 01 Jan 2009 18:42:58 -0500
+
+seed (0.3-3) intrepid; urgency=low
+
+  * More 64bit fixes.
+
+ -- Tim Horton <hortont424@gmail.com>  Thu, 01 Jan 2009 18:20:48 -0500
+
+seed (0.3-2) intrepid; urgency=low
+
+  * Fixing 64bit build problem.
+
+ -- Tim Horton <hortont424@gmail.com>  Thu, 01 Jan 2009 16:51:45 -0500
+
+seed (0.3-1) intrepid; urgency=low
+
+  * Updated to SVN tagged 0.3 release.
+
+ -- Tim Horton <hortont424@gmail.com>  Thu, 01 Jan 2009 05:33:11 -0500
+
+seed (0.1.2-1) intrepid; urgency=low
+
+  * SVN tagged 0.1.2 release.
+
+ -- Tim Horton <hortont424@gmail.com>  Sat, 08 Nov 2008 18:12:15 -0500
+
+seed (0.1.0-9) intrepid; urgency=low
+
+  * SVN tagged 0.1.0 release.
+
+ -- Tim Horton <hortont424@gmail.com>  Sat, 08 Nov 2008 01:04:29 -0500
+
+seed (0.1.0-6) intrepid; urgency=low
+
+  * Added dependencies.
+
+ -- Tim Horton <hortont424@gmail.com>  Fri, 07 Nov 2008 21:54:08 -0500
+
+seed (0.1.0-1) intrepid; urgency=low
+
+  * Initial release.
+
+ -- Tim Horton <hortont424@gmail.com>  Fri, 07 Nov 2008 21:11:41 -0500

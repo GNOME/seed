@@ -1,0 +1,46 @@
+Source: seed
+Section: devel
+Priority: optional
+Maintainer: Tim Horton <hortont424@gmail.com>
+Build-Depends:	libffi-dev,
+				libwebkit-dev,
+				libgirepository-dev,
+				gobject-introspection,
+				libreadline-dev,
+				intltool,
+				gnome-pkg-tools,
+				gnome-devel,
+				libglib2.0-dev,
+				build-essential,
+				pkg-config,
+				debhelper,
+				cdbs,
+				flex,
+				bison,
+				libsqlite3-dev
+Standards-Version: 3.6.1
+Homepage: http://live.gnome.org/Seed
+
+Package: seed
+Architecture: any
+Section: devel
+Depends: ${shlibs:Depends},
+		 ${misc:Depends},
+		 gobject-introspection,
+		 libglib2.0-dev,
+		 libwebkit-1.0-1,
+		 libreadline5,
+		 libffi5,
+		 libsqlite3-0,
+		 libgirepository-dev,
+		 gobject-introspection-repository,
+		 gobject-introspection-glib-2.0,
+		 libcairo2-dev,
+		 libxml2-dev,
+		 libwebkit-dev,
+		 libclutter-gtk-0.8-dev,
+		 libclutter-0.8-dev,
+		 libclutter-cairo-0.8-dev,
+		 libclutter-gst-0.8-dev,
+		 ${shlibs:Depends}, ${misc:Depends}
+Description: Javascript GObject bindings.
