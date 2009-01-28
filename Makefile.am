@@ -7,8 +7,7 @@ SUBDIRS = po \
 	doc \
 	modules \
 	tests \
-	examples \
-	opengl-glib 
+	examples
 
 seeddocdir = ${prefix}/share/doc/seed
 seeddoc_DATA = \

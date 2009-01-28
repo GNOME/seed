@@ -71,47 +71,6 @@ case "$host_os" in
 		;;
 esac
 
-dnl =============================GL/GLUT=======================================
-dnl We should actually be more careful (and modularly check for GL/GLUT/GLU)...
-
-AC_ARG_ENABLE(opengl-glib,
-			  AC_HELP_STRING([--enable-opengl-glib],
-							 [install OpenGL GLib Typelibs. [default=yes]]),
-			  [want_opengl_glib=$enableval],[want_opengl_glib="yes"])
-
-AC_MSG_CHECKING(for GL)
-AC_TRY_CPP([#include <GL/gl.h>],
-			have_gl_h=yes,
-			have_gl_h=no)
-AC_MSG_RESULT([$have_gl_h])
-
-AC_MSG_CHECKING(for GLUT)
-AC_TRY_CPP([#include <GL/glut.h>],
-			have_glut_h=yes,
-			have_glut_h=no)
-AC_MSG_RESULT([$have_glut_h])
-
-AC_MSG_CHECKING(for GLU)
-AC_TRY_CPP([#include <GL/glu.h>],
-			have_glu_h=yes,
-			have_glu_h=no)
-AC_MSG_RESULT([$have_glu_h])
-
-if test x"$have_gl_h" != x"yes" ; then
-	want_opengl_glib="no"
-fi
-
-if test x"$have_glut_h" != x"yes" ; then
-	want_opengl_glib="no"
-fi
-
-if test x"$have_glu_h" != x"yes" ; then
-	want_opengl_glib="no"
-fi
-
-AM_CONDITIONAL(BUILD_GL_TYPELIBS, test "x$want_opengl_glib" = "xyes")
-AC_SUBST(BUILD_GL_TYPELIBS)
-
 dnl ==============================readline=====================================
 AC_MSG_CHECKING(for readline)
 AC_TRY_CPP([#include <readline/readline.h>],
@@ -300,7 +259,6 @@ modules/sqlite/Makefile
 modules/canvas/Makefile
 modules/readline/Makefile
 modules/Multiprocessing/Makefile
-opengl-glib/Makefile
 ])
 
 echo "
@@ -312,7 +270,6 @@ Build Configuration:
 Installation:
    Prefix.....................$prefix
    Install examples...........$enable_examples
-   GL/GLUT bindings...........$want_opengl_glib
 
 Modules:
    Canvas.....................$want_canvas_module
