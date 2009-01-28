@@ -66,7 +66,7 @@ case "$host_os" in
 		save_LIBS=$LIBS
 		LIBS=`pkg-config --libs webkit-1.0`
 		AC_CHECK_LIB(webkit-1.0, JSContextGroupCreate,,
-					 AC_MSG_ERROR([The installed version of WebKit is too old. Install WebKit from SVN and try again.]))
+					 AC_MSG_ERROR([The installed version of WebKit is too old. Seed requires WebKit SVN revision 35442 or greater.]))
 		LIBS=$save_LIBS
 		;;
 esac
