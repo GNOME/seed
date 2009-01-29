@@ -875,6 +875,8 @@ seed_gi_import_namespace(JSContextRef ctx,
 	JSStringRef extension_script;
 	gint n, i;
 	GModule *extension;
+	
+	ctx = eng->context;
 
 	if (argumentCount == 0)
 	{
@@ -1381,7 +1383,7 @@ SeedEngine *seed_init(gint * argc, gchar *** argv)
 	g_type_init();
 	g_log_set_handler("GLib-GObject", G_LOG_LEVEL_WARNING, seed_log_handler, 0);
 
-	if (seed_parse_args(argc, argv) == FALSE)
+	if ((argc != 0) && seed_parse_args(argc, argv) == FALSE)
 	{
 		SEED_NOTE(MISC, "failed to parse arguments.");
 		return false;

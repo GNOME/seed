@@ -172,3 +172,23 @@ void seed_object_set_private(JSObjectRef object, gpointer value)
 {
 	JSObjectSetPrivate(object, value);
 }
+
+gboolean seed_value_is_null(JSContextRef ctx,
+			    JSValueRef value)
+{
+	return JSValueIsNull(ctx, value);
+}
+
+gboolean seed_value_is_object(JSContextRef ctx,
+			      JSValueRef value)
+{
+	return seed_value_is_null(ctx, value) &&
+		JSValueIsObject(ctx, value);
+}
+gboolean seed_value_is_function(JSContextRef ctx,
+				 JSObjectRef value)
+{
+	return seed_value_is_object(ctx, value) && 
+		JSObjectIsFunction(ctx, value);
+}
+
