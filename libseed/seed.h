@@ -73,6 +73,8 @@ SeedValue seed_simple_evaluate(SeedContext ctx, gchar * source);
 SeedScript *seed_make_script(SeedContext ctx,
 							 const gchar * s, const gchar * source_url,
 							 gint line_number);
+SeedScript *seed_script_new_from_file(SeedContext ctx, 
+				      gchar *file);
 SeedException seed_script_exception(SeedScript * s);
 void seed_make_exception(SeedContext ctx, SeedException e,
 						 gchar * name, gchar * message);

@@ -1,18 +1,18 @@
 /*    This file is part of Seed.
-*     Seed is free software: you can redistribute it and/or modify 
-*     it under the terms of the GNU Lesser General Public License as
-*     published by 
-*     the Free Software Foundation, either version 3 of the License, or 
-*     (at your option) any later version. 
-*     Seed is distributed in the hope that it will be useful, 
-*     but WITHOUT ANY WARRANTY; without even the implied warranty of 
-*     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
-*     GNU Lesser General Public License for more details. 
-*     You should have received a copy of the GNU Lesser General Public License 
-*     along with Seed.  If not, see <http://www.gnu.org/licenses/>. 
-*
-*     Copyright (C) Robert Carr 2008 <carrr@rpi.edu>
-*/
+ *     Seed is free software: you can redistribute it and/or modify 
+ *     it under the terms of the GNU Lesser General Public License as
+ *     published by 
+ *     the Free Software Foundation, either version 3 of the License, or 
+ *     (at your option) any later version. 
+ *     Seed is distributed in the hope that it will be useful, 
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of 
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ *     GNU Lesser General Public License for more details. 
+ *     You should have received a copy of the GNU Lesser General Public License 
+ *     along with Seed.  If not, see <http://www.gnu.org/licenses/>. 
+ *
+ *     Copyright (C) Robert Carr 2008 <carrr@rpi.edu>
+ */
 
 #include "seed-private.h"
 
@@ -27,7 +27,7 @@ void seed_value_unprotect(JSContextRef ctx, JSValueRef value)
 }
 
 JSGlobalContextRef seed_context_create(JSContextGroupRef group,
-									   JSClassRef global_class)
+				       JSClassRef global_class)
 {
 	return JSGlobalContextCreateInGroup(group, global_class);
 }
@@ -48,37 +48,40 @@ JSValueRef seed_make_null(JSContextRef ctx)
 }
 
 JSObjectRef seed_make_object(JSContextRef ctx,
-							 JSClassRef class, gpointer private)
+			     JSClassRef class, gpointer private)
 {
 	return JSObjectMake(ctx, class, private);
 }
 
 void seed_object_set_property_at_index(JSContextRef ctx,
-									   JSObjectRef object,
-									   gint index,
-									   JSValueRef value, JSValueRef * exception)
+				       JSObjectRef object,
+				       gint index,
+				       JSValueRef value, JSValueRef * exception)
 {
 	JSObjectSetPropertyAtIndex(ctx, object, index, value, exception);
 }
 
 JSValueRef seed_object_call(JSContextRef ctx,
-							JSObjectRef object,
-							JSObjectRef this,
-							size_t argument_count,
-							const JSValueRef arguments[],
-							JSValueRef * exception)
+			    JSObjectRef object,
+			    JSObjectRef this,
+			    size_t argument_count,
+			    const JSValueRef arguments[],
+			    JSValueRef * exception)
 {
 	return JSObjectCallAsFunction(ctx, object, this,
-								  argument_count, arguments, exception);
+				      argument_count, arguments, exception);
 }
 
 SeedScript *seed_make_script(JSContextRef ctx,
-							 const gchar * js,
-							 const gchar * source_url, gint line_number)
+			     const gchar * js,
+			     const gchar * source_url, gint line_number)
 {
 	SeedScript *ret = g_new0(SeedScript, 1);
 
-	ret->script = JSStringCreateWithUTF8CString(js);
+	if (js)
+		ret->script = JSStringCreateWithUTF8CString(js);
+	else
+		ret->script = JSStringCreateWithUTF8CString("");
 
 	if (source_url)
 	{
@@ -87,9 +90,27 @@ SeedScript *seed_make_script(JSContextRef ctx,
 	ret->line_number = line_number;
 
 	JSCheckScriptSyntax(ctx, ret->script,
-						ret->source_url, ret->line_number, &ret->exception);
+			    ret->source_url, ret->line_number, &ret->exception);
 
 	return ret;
+}
+
+SeedScript *seed_script_new_from_file(JSContextRef ctx, 
+				      gchar *file)
+{
+	SeedScript *script;
+	GError *e = NULL;
+	gchar *contents = NULL;
+	
+	g_file_get_contents(file, &contents, NULL, &e);
+	script = seed_make_script(ctx, contents, file, 0);
+	if (e)
+	{
+		seed_make_exception_from_gerror(ctx, &script->exception, e);
+		g_error_free(e);
+	}
+	
+	return script;	
 }
 
 JSValueRef seed_evaluate(JSContextRef ctx, SeedScript * js, JSObjectRef this)
@@ -98,8 +119,8 @@ JSValueRef seed_evaluate(JSContextRef ctx, SeedScript * js, JSObjectRef this)
 
 	js->exception = 0;
 	ret = JSEvaluateScript(ctx,
-						   js->script, this, js->source_url,
-						   js->line_number, &js->exception);
+			       js->script, this, js->source_url,
+			       js->line_number, &js->exception);
 
 	return ret;
 }
@@ -126,7 +147,7 @@ gsize seed_string_get_maximum_size(JSStringRef string)
 }
 
 gsize seed_string_to_utf8_buffer(JSStringRef string, gchar * buffer,
-								 size_t buffer_size)
+				 size_t buffer_size)
 {
 	return JSStringGetUTF8CString(string, buffer, buffer_size);
 }
@@ -157,8 +178,8 @@ JSClassRef seed_create_class(JSClassDefinition * def)
 }
 
 JSObjectRef seed_make_constructor(JSContextRef ctx,
-								  JSClassRef class,
-								  JSObjectCallAsConstructorCallback constructor)
+				  JSClassRef class,
+				  JSObjectCallAsConstructorCallback constructor)
 {
 	return JSObjectMakeConstructor(ctx, class, constructor);
 }
@@ -182,11 +203,11 @@ gboolean seed_value_is_null(JSContextRef ctx,
 gboolean seed_value_is_object(JSContextRef ctx,
 			      JSValueRef value)
 {
-	return seed_value_is_null(ctx, value) &&
+	return !seed_value_is_null(ctx, value) &&
 		JSValueIsObject(ctx, value);
 }
 gboolean seed_value_is_function(JSContextRef ctx,
-				 JSObjectRef value)
+				JSObjectRef value)
 {
 	return seed_value_is_object(ctx, value) && 
 		JSObjectIsFunction(ctx, value);
