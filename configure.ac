@@ -189,14 +189,25 @@ AC_ARG_ENABLE(profile,
 							 [turn on profiling [default=no]]),
 			  [enable_profile="yes"],[enable_profile="no"])
 
+AC_ARG_ENABLE(profile-modules,
+			  AC_HELP_STRING([--enable-profile-modules],
+							 [turn on profiling for modules [default=no]]),
+			  [enable_profile_modules="yes"],[enable_profile_modules="no"])
+
 if test "x$enable_profile" = "xyes"; then
 	SEED_PROFILE_CFLAGS="-fprofile-arcs -ftest-coverage"
 	SEED_PROFILE_LDFLAGS="-lgcov"
 	CFLAGS="-O0"
 fi
 
+if test "x$enable_profile" = "xno"; then
+	[enable_profile_modules="no"]
+fi
+
 AC_SUBST(SEED_PROFILE_CFLAGS)
 AC_SUBST(SEED_PROFILE_LDFLAGS)
+
+AM_CONDITIONAL(PROFILE_MODULES, test "x$enable_profile_modules" = "xyes")
 
 dnl ===========================Darwin Build====================================
 SEED_OSX_CFLAGS=
@@ -266,6 +277,7 @@ echo "
 Build Configuration:
    Debug......................$enable_debug
    Profiling/Coverage.........$enable_profile
+   Profiling for Modules......$enable_profile_modules
    gtk-doc....................$enable_gtk_doc
 
 Installation:

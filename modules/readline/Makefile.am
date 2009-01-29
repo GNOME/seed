@@ -15,9 +15,14 @@ AM_CPPFLAGS = \
 	`pkg-config --cflags glib-2.0` -g \
 	`pkg-config --cflags gobject-introspection-1.0` \
 	`pkg-config --cflags libffi` \
-	$(SEED_DEBUG_CFLAGS) $(SEED_PROFILE_CFLAGS)
+	$(SEED_DEBUG_CFLAGS)
 
-AM_LDFLAGS = $(SEED_PROFILE_LDFLAGS) -lreadline
+AM_LDFLAGS = -lreadline
+
+if PROFILE_MODULES
+	AM_CPPFLAGS += $(SEED_PROFILE_CFLAGS)
+	AM_LDFLAGS += $(SEED_PROFILE_LDFLAGS)
+endif
 
 endif
 

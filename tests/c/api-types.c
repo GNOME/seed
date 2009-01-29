@@ -1,5 +1,8 @@
 #include "../../libseed/seed.h"
 #include "test-common.h"
+#include <string.h>
+
+// The biggest problem here is everything gets cast to a double in JSCore!
 
 void basic_types(TestSimpleFixture * fixture, gconstpointer _data)
 {
@@ -53,6 +56,46 @@ void basic_types(TestSimpleFixture * fixture, gconstpointer _data)
 	
 	g_assert(uchar_test_in == uchar_test_out);
 	
+	// long to/from JS equality
+	
+	glong long_test_in = -454250;
+	SeedValue * long_test = seed_value_from_long(fixture->context,
+												 long_test_in, NULL);
+	glong long_test_out = seed_value_to_long(fixture->context,
+											 long_test, NULL);
+	
+	g_assert(long_test_in == long_test_out);
+	
+	// ulong to/from JS equality
+	
+	gulong ulong_test_in = 250;
+	SeedValue * ulong_test = seed_value_from_ulong(fixture->context,
+												   ulong_test_in, NULL);
+	gulong ulong_test_out = seed_value_to_ulong(fixture->context,
+												ulong_test, NULL);
+	
+	g_assert(ulong_test_in == ulong_test_out);
+	
+	// int64 to/from JS equality
+	
+	gint64 int64_test_in = -54374;
+	SeedValue * int64_test = seed_value_from_int64(fixture->context,
+												   int64_test_in, NULL);
+	gint64 int64_test_out = seed_value_to_int64(fixture->context,
+											  int64_test, NULL);
+	
+	g_assert(int64_test_in == int64_test_out);
+	
+	// uint64 to/from JS equality
+	
+	guint64 uint64_test_in = 2946623;
+	SeedValue * uint64_test = seed_value_from_uint64(fixture->context,
+													 uint64_test_in, NULL);
+	guint64 uint64_test_out = seed_value_to_uint64(fixture->context,
+												 uint64_test, NULL);
+	
+	g_assert(uint64_test_in == uint64_test_out);
+	
 	// float to/from JS equality
 	
 	gfloat float_test_in = 1.618;
@@ -63,5 +106,37 @@ void basic_types(TestSimpleFixture * fixture, gconstpointer _data)
 	
 	g_assert(float_test_in == float_test_out);
 
+	// double to/from JS equality
+	
+	gdouble double_test_in = 1.6134857638;
+	SeedValue * double_test = seed_value_from_double(fixture->context,
+													 double_test_in, NULL);
+	gdouble double_test_out = seed_value_to_double(fixture->context,
+												   double_test, NULL);
+	
+	g_assert(double_test_in == double_test_out);
+	
+	// string to/from JS equality
+	
+	gchar * string_test_in = "Hello, world!";
+	SeedValue * string_test = seed_value_from_string(fixture->context,
+													 string_test_in, NULL);
+	gchar * string_test_out = seed_value_to_string(fixture->context,
+												   string_test, NULL);
+	
+	g_assert(strncmp(string_test_in, string_test_out,
+					 strlen(string_test_in)) == 0);
+	
+	// filename to/from JS equality
+	
+	gchar * filename_test_in = "/bin";
+	SeedValue * filename_test = seed_value_from_filename(fixture->context,
+														 filename_test_in,
+														 NULL);
+	gchar * filename_test_out = seed_value_to_filename(fixture->context,
+													   filename_test, NULL);
+	
+	g_assert(strncmp(filename_test_in, filename_test_out,
+					 strlen(filename_test_in)) == 0);
 }
 
