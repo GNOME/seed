@@ -24,8 +24,10 @@ w = new HelloWindow();
 
 w.signal.hello.connect(function(object, number, string)
                        {
-                           return 5;
+                       	   //return number; // Neither of these work
+                           return [GObject.TYPE_INT, 5];
                        });
 
+// Seed.print dies if you try to print a GValue, or something...
 Seed.print(w.signal.hello.emit(2));
-
+//w.signal.hello.emit(2);
