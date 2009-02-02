@@ -6,8 +6,8 @@ var tile_size = 50;
 
 // Configuration
 Seed.import_namespace("Gtk");
-Seed.import_namespace("Clutter", "0.8");
-Seed.import_namespace("GtkClutter", "0.8");
+Seed.import_namespace("Clutter", "0.9");
+Seed.import_namespace("GtkClutter", "0.9");
 Seed.import_namespace("GdkPixbuf");
 Seed.import_namespace("GConf");
 Seed.import_namespace("GLib");
@@ -27,6 +27,9 @@ stage.title = "Same Seed";
 stage.signal.hide.connect(function () { Clutter.main_quit(); });
 stage.color = black;
 stage.set_size((tiles_w * tile_size),(tiles_h * tile_size));
+
+colors = [load_svg("blue.svg"), load_svg("green.svg"),
+		  load_svg("red.svg"), load_svg("yellow.svg")]
 
 board = new Board();
 

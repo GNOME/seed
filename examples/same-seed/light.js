@@ -7,13 +7,13 @@ function load_svg(file)
 	var tx = GtkClutter.texture_new_from_pixbuf(pb);
 	tx.filter_quality = Clutter.TextureQuality.HIGH;
 	
+	stage.add_actor(tx);
+	tx.x = tx.y = -2000;
+	
 	return tx;
 }
 
-var colors = [load_svg("blue.svg"),
-			  load_svg("green.svg"),
-			  load_svg("red.svg"),
-			  load_svg("yellow.svg")];
+var colors;
 
 Light = new GType({
 	parent: Clutter.Group.type,
@@ -28,8 +28,8 @@ Light = new GType({
 		// Public
 		this.visited = false;
 		
-		this.on = new Clutter.CloneTexture({parent_texture: colors[state],
-											reactive: true});
+		this.on = new Clutter.Clone({source: colors[state],
+									 reactive: true});
 		
 		this.get_state = function ()
 		{
