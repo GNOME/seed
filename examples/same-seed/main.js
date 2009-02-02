@@ -18,6 +18,9 @@ GConf.init(null, null);
 Seed.include("light.js");
 Seed.include("board.js");
 
+var score = 0;
+var timelines = [];
+
 var black = new Clutter.Color();
 Clutter.color_parse("Black", black);
 
@@ -28,8 +31,8 @@ stage.signal.hide.connect(function () { Clutter.main_quit(); });
 stage.color = black;
 stage.set_size((tiles_w * tile_size),(tiles_h * tile_size));
 
-colors = [load_svg("blue.svg"), load_svg("green.svg"),
-		  load_svg("red.svg"), load_svg("yellow.svg")]
+colors = [load_svg("blue.svg"), load_svg("green.svg")]//,
+//		  load_svg("red.svg"), load_svg("yellow.svg")]
 
 board = new Board();
 
