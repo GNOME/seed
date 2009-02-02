@@ -44,17 +44,12 @@ Board = new GType({
 			var x = li.get_light_x();
 			var y = li.get_light_y();
 			
-			//Seed.printf("%d %d " + li.toString(), x, y);
-			//Seed.print(lights[x][y+1]);
-			
 			if(li.visited || li.get_closed())
 				return [ ];
 			
 			li.visited = true;
 			
 			var con = [li];
-			
-			// doesn't deal with state of tile yet
 			
 			if(lights[x][y+1] && (li.get_state() == lights[x][y+1].get_state()))
 				con = con.concat(_connected_lights(lights[x][y+1]));
@@ -96,6 +91,9 @@ Board = new GType({
 			
 			var cl = connected_lights(picked);
 			
+			if(cl.length < 2)
+				return false;
+			
 			for(i in cl)
 			{
 				cl[i].opacity = 255;
@@ -112,69 +110,17 @@ Board = new GType({
 		
 		this.remove_region = function (actor, event, light)
 		{
-			if(event.button.button == 2)
-			{
-				x = light.get_light_x();
-				y = light.get_light_y();
-				
-				Seed.print(x + " " + y);
-				
-				for(i in lights[x])
-					Seed.print(x + " " + i + " " + lights[x][i].get_closed() + " " + (i == y));
-				
-				Seed.print(lights[x].length);
-				
-				if(lights[x][y+1])
-					Seed.print("up " + lights[x][y+1].get_closed());
-				else
-					Seed.print(x + " " + (y+1) + " " +lights[x][y+1]);
-				
-				if(lights[x][y-1])
-					Seed.print("down " + lights[x][y-1].get_closed());
-				else
-					Seed.print(x + " " + (y-1) + " " +lights[x][y-1]);
-				
-				if(lights[x-1] && lights[x-1][x])
-					Seed.print("left " + lights[x-1][y].get_closed());
-				else
-					Seed.print((x-1) + " " + y + " " +lights[x-1]);
-				
-				if(lights[x+1] && lights[x+1][y])
-					Seed.print("right " + lights[x+1][y].get_closed());
-				else
-					Seed.print((x+1) + " " + y + " " +lights[x+1]);
-				
-				return false;
-			}
-		
-			if(event.button.button == 3)
-			{
-				var str = [];
-				
-				for(var i = 0; i < tiles_h; i++)
-					str[i] = "";
-				
-				for(x in lights)
-				{
-					for(y in lights[x])
-						//if(lights[x][y].get_closed())
-						//	str[y] += " ";
-						//else
-							str[y] += lights[x][y].get_state();
-				}
-				
-				for(i in str)
-					Seed.print(str[i]);
-				
-				return false;
-			}
-		
 			var cl = connected_lights(light);
+			
+			if(cl.length < 2)
+				return false;
 			
 			for(i in cl)
 			{
 				cl[i].close_tile();
 			}
+			
+			var real_x = 0;
 			
 			for(x in lights)
 			{
@@ -191,22 +137,27 @@ Board = new GType({
 						bad_lights.push(li);
 				}
 				
-				lights[x] = good_lights.concat(bad_lights);
+				lights[real_x] = good_lights.concat(bad_lights);
 				
-				for(y in lights[x])
+				var empty_col = true;
+				
+				for(y in lights[real_x])
 				{
-					lights[x][y].set_light_y(parseInt(y,10));
+					lights[real_x][y].set_light_x(real_x);
+					lights[real_x][y].set_light_y(parseInt(y,10)); //wtfstring?
+					lights[real_x][y].set_position(real_x * tile_size + offset,
+												   (tiles_h - y - 1) * tile_size + offset);
 					
-					Seed.print(lights[x][y].get_light_y() + 2);
-				
-					lights[x][y].set_position(x * tile_size + offset,
-											  (tiles_h - y - 1) * tile_size + offset);
+					if(!lights[real_x][y].get_closed())
+						empty_col = false;
 				}
 				
-				
-				
-				
+				if(!empty_col)
+					real_x++;
 			}
+			
+			for(;real_x < tiles_w; real_x++)
+				lights[real_x] = null;
 			
 			return false;
 		}

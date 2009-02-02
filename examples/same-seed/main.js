@@ -1,7 +1,7 @@
 #!/usr/bin/env seed
 
-var tiles_w = 5;
-var tiles_h = 5;
+var tiles_w = 15;
+var tiles_h = 10;
 var tile_size = 50;
 
 // Configuration
