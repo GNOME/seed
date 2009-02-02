@@ -44,7 +44,10 @@ Board = new GType({
 			var x = li.get_light_x();
 			var y = li.get_light_y();
 			
-			if(li.visited)
+			//Seed.printf("%d %d " + li.toString(), x, y);
+			//Seed.print(lights[x][y+1]);
+			
+			if(li.visited || li.get_closed())
 				return [ ];
 			
 			li.visited = true;
@@ -53,16 +56,16 @@ Board = new GType({
 			
 			// doesn't deal with state of tile yet
 			
-			if((y+1 < tiles_h) && (li.get_state() == lights[x][y+1].get_state()))
+			if(lights[x][y+1] && (li.get_state() == lights[x][y+1].get_state()))
 				con = con.concat(_connected_lights(lights[x][y+1]));
 			
-			if((y-1 >= 0) && (li.get_state() == lights[x][y-1].get_state()))
+			if(lights[x][y-1] && (li.get_state() == lights[x][y-1].get_state()))
 				con = con.concat(_connected_lights(lights[x][y-1]));
 			
-			if((x+1 < tiles_w) && (li.get_state() == lights[x+1][y].get_state()))
+			if(lights[x+1] && (li.get_state() == lights[x+1][y].get_state()))
 				con = con.concat(_connected_lights(lights[x+1][y]));
 			
-			if((x-1 >= 0) && (li.get_state() == lights[x-1][y].get_state()))
+			if(lights[x-1] && (li.get_state() == lights[x-1][y].get_state()))
 				con = con.concat(_connected_lights(lights[x-1][y]));
 			
 			return con;
@@ -109,47 +112,100 @@ Board = new GType({
 		
 		this.remove_region = function (actor, event, light)
 		{
+			if(event.button.button == 2)
+			{
+				x = light.get_light_x();
+				y = light.get_light_y();
+				
+				Seed.print(x + " " + y);
+				
+				for(i in lights[x])
+					Seed.print(x + " " + i + " " + lights[x][i].get_closed() + " " + (i == y));
+				
+				Seed.print(lights[x].length);
+				
+				if(lights[x][y+1])
+					Seed.print("up " + lights[x][y+1].get_closed());
+				else
+					Seed.print(x + " " + (y+1) + " " +lights[x][y+1]);
+				
+				if(lights[x][y-1])
+					Seed.print("down " + lights[x][y-1].get_closed());
+				else
+					Seed.print(x + " " + (y-1) + " " +lights[x][y-1]);
+				
+				if(lights[x-1] && lights[x-1][x])
+					Seed.print("left " + lights[x-1][y].get_closed());
+				else
+					Seed.print((x-1) + " " + y + " " +lights[x-1]);
+				
+				if(lights[x+1] && lights[x+1][y])
+					Seed.print("right " + lights[x+1][y].get_closed());
+				else
+					Seed.print((x+1) + " " + y + " " +lights[x+1]);
+				
+				return false;
+			}
+		
+			if(event.button.button == 3)
+			{
+				var str = [];
+				
+				for(var i = 0; i < tiles_h; i++)
+					str[i] = "";
+				
+				for(x in lights)
+				{
+					for(y in lights[x])
+						//if(lights[x][y].get_closed())
+						//	str[y] += " ";
+						//else
+							str[y] += lights[x][y].get_state();
+				}
+				
+				for(i in str)
+					Seed.print(str[i]);
+				
+				return false;
+			}
+		
 			var cl = connected_lights(light);
 			
 			for(i in cl)
 			{
-				cl[i].flip();
+				cl[i].close_tile();
 			}
 			
-			x = 0;
-			//for(x in lights)
+			for(x in lights)
 			{
-				var y = 0;
+				var good_lights = [];
+				var bad_lights = [];
 				
-				while(y != lights[x].length - 1)
+				for(y in lights[x])
 				{
 					var li = lights[x][y];
-					// if find empty one
-					// pull next full one down
-					// go back one
 					
-					var p = -1, found_full = -1;
-					
-					if(li.get_closed())
-					{
-						for(p = y; p < lights[x].length; p++)
-						{
-							if(!lights[x][p].get_closed())
-							{
-								found_full = p;
-								break;
-							}
-						}
-					}
-					
-					if(found_full != -1)
-					{
-						lights[x][found_full].y += 50;
-						y--;
-					}
-					
-					y++;
+					if(!li.get_closed())
+						good_lights.push(li);
+					else
+						bad_lights.push(li);
 				}
+				
+				lights[x] = good_lights.concat(bad_lights);
+				
+				for(y in lights[x])
+				{
+					lights[x][y].set_light_y(parseInt(y,10));
+					
+					Seed.print(lights[x][y].get_light_y() + 2);
+				
+					lights[x][y].set_position(x * tile_size + offset,
+											  (tiles_h - y - 1) * tile_size + offset);
+				}
+				
+				
+				
+				
 			}
 			
 			return false;
@@ -169,7 +225,7 @@ Board = new GType({
 				lights[x][y].set_light_y(y);
 				
 				lights[x][y].set_position(x * tile_size + offset,
-										  y * tile_size + offset);
+										  (tiles_h - y - 1) * tile_size + offset);
 				this.add_actor(lights[x][y]);
 				lights[x][y].on.signal.button_press_event.connect(this.remove_region,
 																  lights[x][y]);

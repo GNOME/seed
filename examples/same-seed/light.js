@@ -41,18 +41,11 @@ Light = new GType({
 			return closed;
 		}
 		
-		this.flip = function ()
+		this.close_tile = function ()
 		{
-			closed = !closed;
+			closed = true;
 			
-			if(closed)
-			{
-				this.hide();
-			}
-			else
-			{
-				this.show();
-			}
+			this.hide();
 		}
 		
 		this.set_light_x = function (new_x)
