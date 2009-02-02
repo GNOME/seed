@@ -25,9 +25,12 @@ w = new HelloWindow();
 
 w.signal.hello.connect(function(object, number, string)
                        {
+                           var win = new Gtk.Window();
                            Seed.print(number + " " + string);
-                           return new Gtk.Window();
+                           return win;
                        });
 
-Seed.print(w.signal.hello.emit(2, "Test"));
+w.signal.hello.emit(2, "Test");
+
+//Seed.print(w.signal.hello.emit(2, "Test"));
 

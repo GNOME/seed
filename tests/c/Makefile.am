@@ -4,7 +4,8 @@ test_SOURCES =					\
 	main.c						\
 	basic.c						\
 	api-types.c					\
-	api-closure.c
+	api-closure.c				\
+	api-js-signal-from-c.c
 
 EXTRA_DIST =					\
 	test-common.h

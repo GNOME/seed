@@ -46,6 +46,7 @@ int main (int argc, char **argv)
 	TEST_SIMPLE ("/", basic);
 	TEST_SIMPLE ("/", closures);
 	TEST_SIMPLE ("/types/", basic_types);
+	TEST_SIMPLE ("/js-signal-from-c/", js_signal_from_c);
 
 	return g_test_run ();
 }

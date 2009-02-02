@@ -911,44 +911,39 @@ seed_gvalue_from_seed_value(JSContextRef ctx,
 			return TRUE;
 		}
 	case G_TYPE_LONG:
+		{
+			g_value_init(ret, G_TYPE_LONG);
+			g_value_set_long(ret, seed_value_to_long(ctx, val, exception));
+			return TRUE;
+		}
 	case G_TYPE_ULONG:
+		{
+			g_value_init(ret, G_TYPE_ULONG);
+			g_value_set_ulong(ret, seed_value_to_ulong(ctx, val, exception));
+			return TRUE;
+		}
 	case G_TYPE_INT64:
+		{
+			g_value_init(ret, G_TYPE_INT64);
+			g_value_set_int64(ret, seed_value_to_int64(ctx, val, exception));
+			return TRUE;
+		}
 	case G_TYPE_UINT64:
+		{
+			g_value_init(ret, G_TYPE_UINT64);
+			g_value_set_uint64(ret, seed_value_to_uint64(ctx, val, exception));
+			return TRUE;
+		}
 	case G_TYPE_FLOAT:
+		{
+			g_value_init(ret, G_TYPE_FLOAT);
+			g_value_set_float(ret, seed_value_to_float(ctx, val, exception));
+			return TRUE;
+		}
 	case G_TYPE_DOUBLE:
 		{
-			switch (type)
-			{
-			case G_TYPE_LONG:
-				g_value_init(ret, G_TYPE_LONG);
-				g_value_set_long(ret, seed_value_to_long(ctx, val, exception));
-				break;
-			case G_TYPE_ULONG:
-				g_value_init(ret, G_TYPE_ULONG);
-				g_value_set_ulong(ret, seed_value_to_ulong(ctx,
-														   val, exception));
-				break;
-			case G_TYPE_INT64:
-				g_value_init(ret, G_TYPE_INT64);
-				g_value_set_int64(ret, seed_value_to_int64(ctx,
-														   val, exception));
-				break;
-			case G_TYPE_UINT64:
-				g_value_init(ret, G_TYPE_UINT64);
-				g_value_set_uint64(ret, seed_value_to_uint64(ctx,
-															 val, exception));
-				break;
-			case G_TYPE_FLOAT:
-				g_value_init(ret, G_TYPE_FLOAT);
-				g_value_set_float(ret, seed_value_to_float(ctx,
-														   val, exception));
-				break;
-			case G_TYPE_DOUBLE:
-				g_value_init(ret, G_TYPE_DOUBLE);
-				g_value_set_double(ret, seed_value_to_double(ctx,
-															 val, exception));
-				break;
-			}
+			g_value_init(ret, G_TYPE_DOUBLE);
+			g_value_set_double(ret, seed_value_to_double(ctx, val, exception));
 			return TRUE;
 		}
 	case G_TYPE_STRING:
