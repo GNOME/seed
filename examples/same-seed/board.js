@@ -196,8 +196,13 @@ Board = new GType({
 					
 					li.set_light_x(real_x);
 					li.set_light_y(parseInt(y,10));
-					li.set_position(real_x * tile_size + offset,
-									(tiles_h - y - 1) * tile_size + offset);
+					
+					li.anim = li.animate(Clutter.AnimationMode.EASE_OUT_BOUNCE, 500,
+					{
+						x: [GObject.TYPE_INT, real_x * tile_size + offset],
+						y: [GObject.TYPE_INT, (tiles_h - y - 1) * tile_size + offset]
+					});
+					li.anim.timeline.start();
 					
 					if(!li.get_closed())
 						empty_col = false;
