@@ -1,22 +1,3 @@
-function alpha_func(alpha)
-{
-	var timeline = alpha.get_timeline();
-	var frame = timeline.get_current_frame();
-	var n_frames = timeline.num_frames;
-	var fps = timeline.fps;
-	var duration = n_frames/fps;
-	var time = frame/fps;
-
-	if ((time/=duration) < (1/2.75))
-		return Clutter.ALPHA_MAX_ALPHA*(7.5625*time*time);
-	else if (time < (2/2.75))
-		return Clutter.ALPHA_MAX_ALPHA*(7.5625*(time-=(1.5/2.75))*time+.75);
-	else if (time < (2.5/2.75))
-		return Clutter.ALPHA_MAX_ALPHA*(7.5625*(time-=(2.25/2.75))*time+.9375);
-	else
-		return Clutter.ALPHA_MAX_ALPHA*(7.5625*(time-=(2.625/2.75))*time+.984375);
-}
-
 function delete_board(timeline, board)
 {
 	board.destroy();
@@ -97,7 +78,7 @@ Board = new GType({
 			
 			if(lights[x][y+1] && (li.get_state() == lights[x][y+1].get_state()))
 				return true;
-			
+
 			if(lights[x][y-1] && (li.get_state() == lights[x][y-1].get_state()))
 				return true;
 			
@@ -151,6 +132,8 @@ Board = new GType({
 			{
 				li = all_lights[i];
 				
+				// For some reason, any_connected_lights isn't always right...
+				
 				if(!li.get_closed() && any_connected_lights(li))
 					return false;
 			}
@@ -176,7 +159,7 @@ Board = new GType({
 			return lights;
 		};
 		
-		this.remove_region = function (actor, event, light)
+		this.remove_region = function (actor, event)
 		{
 			if(cl.length < 2)
 				return false;
@@ -211,28 +194,6 @@ Board = new GType({
 				{
 					var li = lights[real_x][y];
 					
-					var timeline = new Clutter.Timeline.for_duration(1000);
-					var anim = new Clutter.Animation();
-					
-					anim.set_timeline(null);
-					anim.set_alpha(null);
-					anim.object = li;
-					anim.set_duration(1000);
-					anim.set_mode(Clutter.AnimationMode.EASE_IN_BOUNCE);
-					
-					var y_interval = new
-						Clutter.Interval.with_values(GObject.TYPE_INT,
-							[GObject.TYPE_INT, li.y],
-							[GObject.TYPE_INT, ((tiles_h - y - 1) * tile_size + offset)]);
-					
-					var height_interval = new
-						Clutter.Interval.with_values(GObject.TYPE_INT,
-							[GObject.TYPE_INT, li.height],
-							[GObject.TYPE_INT, 0]);
-					
-					//anim.bind_property("y", y_interval);
-					anim.bind_property("y", height_interval);
-					
 					li.set_light_x(real_x);
 					li.set_light_y(parseInt(y,10));
 					li.set_position(real_x * tile_size + offset,
@@ -240,11 +201,6 @@ Board = new GType({
 					
 					if(!li.get_closed())
 						empty_col = false;
-
-					//timeline.start();
-					//timelines.push(anim);
-					//timelines.push(timeline);
-					//timelines.push(height_interval);
 				}
 				
 				if(!empty_col)
@@ -276,17 +232,18 @@ Board = new GType({
 			for(var y = 0; y < tiles_h; y++)
 			{
 				var offset = tile_size/2;
-				lights[x][y] = new Light();
+				var li = new Light();
+				
+				li.set_light_x(x);
+				li.set_light_y(y);
+				
+				li.set_position(x * tile_size + offset,
+								(tiles_h - y - 1) * tile_size + offset);
+				this.add_actor(li);
+				li.on.signal.button_press_event.connect(this.remove_region);
+				
+				lights[x][y] = li;
 				all_lights.push(lights[x][y]);
-				
-				lights[x][y].set_light_x(x);
-				lights[x][y].set_light_y(y);
-				
-				lights[x][y].set_position(x * tile_size + offset,
-										  (tiles_h - y - 1) * tile_size + offset);
-				this.add_actor(lights[x][y]);
-				lights[x][y].on.signal.button_press_event.connect(this.remove_region,
-																  lights[x][y]);
 			}
 		}
 		
