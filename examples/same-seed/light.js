@@ -2,18 +2,13 @@ var tile_svg_size = 50;
 
 function load_svg(file)
 {
-	var pb = new GdkPixbuf.Pixbuf.from_file_at_size(file, tile_svg_size,
-													tile_svg_size);
-	var tx = GtkClutter.texture_new_from_pixbuf(pb);
+	var tx = new Clutter.Texture({filename: file});
 	tx.filter_quality = Clutter.TextureQuality.HIGH;
-	
-	stage.add_actor(tx);
-	tx.x = tx.y = -2000;
-	
 	return tx;
 }
 
-var colors;
+var colors = [load_svg("blue.svg"), load_svg("green.svg"),
+			  load_svg("red.svg"), load_svg("yellow.svg")];
 
 Light = new GType({
 	parent: Clutter.Group.type,
@@ -23,7 +18,7 @@ Light = new GType({
 		// Private
 		var closed = false;
 		var light_x, light_y;
-		var state = Math.floor(Math.random() * colors.length);
+		var state = Math.floor(Math.random() * max_colors);
 		
 		// Public
 		this.visited = false;
@@ -36,6 +31,39 @@ Light = new GType({
 			return state;
 		}
 		
+		this.animate_out = function ()
+		{
+			this.on.anim = this.on.animate(Clutter.AnimationMode.LINEAR,500,
+			{
+				height: [GObject.TYPE_INT, tile_size * 2],
+				width: [GObject.TYPE_INT, tile_size * 2],
+				x: [GObject.TYPE_INT, -tile_size/2],
+				y: [GObject.TYPE_INT, -tile_size/2]
+			});
+			this.on.anim.timeline.start();
+			
+			this.on.anim.timeline.signal.completed.connect(this.hide_light, this);
+			
+			this.anim = this.animate(Clutter.AnimationMode.LINEAR,500,
+			{
+				opacity: [GObject.TYPE_UCHAR, 0]
+			});
+			
+			this.anim.timeline.start();
+		}
+		
+		this.animate_to = function (new_x, new_y)
+		{
+			this.anim = this.animate(Clutter.AnimationMode.EASE_OUT_BOUNCE, 500,
+			{
+				x: [GObject.TYPE_INT, new_x],
+				y: [GObject.TYPE_INT, new_y]
+			});
+			this.anim.timeline.start();
+			
+			return this.anim.timeline;
+		}
+		
 		this.get_closed = function ()
 		{
 			return closed;
@@ -44,6 +72,7 @@ Light = new GType({
 		this.close_tile = function ()
 		{
 			closed = true;
+			this.animate_out();
 		}
 		
 		this.hide_light = function (timeline, light)
@@ -51,6 +80,9 @@ Light = new GType({
 			light.hide();
 			
 			delete on;
+			
+			if(light.anim)
+				delete light.anim;
 			
 			return false;
 		}

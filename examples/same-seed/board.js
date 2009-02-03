@@ -1,36 +1,31 @@
-function delete_board(timeline, board)
-{
-	board.destroy();
-	
-	return true;
-}
-
 Board = new GType({
 	parent: Clutter.Group.type,
 	name: "Board",
 	init: function(klass)
 	{
-		// Global
-
-		
 		// Private
-		var lights = new Array();
-		var all_lights = new Array();
-		var cl, oldpicked;
+		var lights = [], all_lights = [];
+		var cl, oldcl = [ ], oldpicked;
 		var animating = false;
 		
 		function done_animating()
 		{
 			animating = false;
 			
+			Seed.print("asdf");
+			
+			var x = new Object(), y = new Object();
+			window.window.get_pointer(x, y, null);
+			
+			var picked = stage.get_actor_at_pos(x.value, y.value).get_parent();
+			
+			light_lights_from(picked);
+			
 			return false;
 		}
 		
-		function _light_connected_lights(li)
+		function _connected_lights(li)
 		{
-			// Anything anyone can do to make this function faster
-			// will make the game snappier.
-			
 			if(!li || li.visited || li.get_closed())
 				return [ ];
 			
@@ -41,63 +36,60 @@ Board = new GType({
 			
 			var con = [li];
 			
-			//while(GLib.main_context_pending())
-			//	GLib.main_context_iteration();
-			
-			// Do all of the concatenation together for performance
+			while(GLib.main_context_pending())
+				GLib.main_context_iteration();
 			
 			var a = [], b = [], c = [], d = [];
 			
 			if(lights[x][y+1] && (li.get_state() == lights[x][y+1].get_state()))
-				a = _light_connected_lights(lights[x][y+1]);
+				a = _connected_lights(lights[x][y+1]);
 			
 			if(lights[x][y-1] && (li.get_state() == lights[x][y-1].get_state()))
-				b = _light_connected_lights(lights[x][y-1]);
+				b = _connected_lights(lights[x][y-1]);
 			
-			if(lights[x+1] && (li.get_state() == lights[x+1][y].get_state()))
-				c = _light_connected_lights(lights[x+1][y]);
+			if(lights[x+1] && lights[x+1][y] && 
+			   (li.get_state() == lights[x+1][y].get_state()))
+				c = _connected_lights(lights[x+1][y]);
 			
-			if(lights[x-1] && (li.get_state() == lights[x-1][y].get_state()))
-				d = _light_connected_lights(lights[x-1][y]);
+			if(lights[x-1] && lights[x-1][y] &&
+			   (li.get_state() == lights[x-1][y].get_state()))
+				d = _connected_lights(lights[x-1][y]);
 			
 			return con.concat(a,b,c,d);
 		};
 		
-		function light_connected_lights(li)
+		function connected_lights(li)
 		{
 			for(var i in all_lights)
-			{
 				all_lights[i].visited = false;
-			}
 			
 			if(!li.get_light_x) // We're picking something other than a light!
 				return [ li ];
 			
-			return _light_connected_lights(li);
+			return _connected_lights(li);
 		};
 		
 		function any_connected_lights(li)
 		{
-			if(!li)
+			if(!li || li.get_closed())
 				return false;
 			
 			var x = li.get_light_x();
 			var y = li.get_light_y();
 			
-			if(li.get_closed())
-				return false;
-			
 			if(lights[x][y+1] && (li.get_state() == lights[x][y+1].get_state()))
-				return true;
+				return !lights[x][y+1].get_closed();
 
 			if(lights[x][y-1] && (li.get_state() == lights[x][y-1].get_state()))
-				return true;
+				return !lights[x][y-1].get_closed();
 			
-			if(lights[x+1] && (li.get_state() == lights[x+1][y].get_state()))
-				return true;
+			if(lights[x+1] && lights[x+1][y] &&
+			   (li.get_state() == lights[x+1][y].get_state()))
+				return !lights[x+1][y].get_closed();
 			
-			if(lights[x-1] && (li.get_state() == lights[x-1][y].get_state()))
-				return true;
+			if(lights[x-1] && lights[x-1][y] &&
+			   (li.get_state() == lights[x-1][y].get_state()))
+				return !lights[x-1][y].get_closed();
 			
 			return false;
 		};
@@ -110,7 +102,49 @@ Board = new GType({
 			return (n_lights - 2) * (n_lights - 2);
 		};
 		
-		var mouse_moved = function (actor, event)
+		function light_lights_from(li)
+		{
+			cl = connected_lights(li);
+			
+			for(var i in oldcl)
+				oldcl[i].opacity = 180;
+			
+			if(cl.length < 2)
+				return false;
+			
+			for(var i in cl)
+				cl[i].opacity = 255;
+			
+			oldcl = cl;
+		};
+		
+		function update_score(tiles)
+		{
+			var points_awarded = calculate_score(tiles);
+			
+			if(fly_score)
+			{
+				var score_text = new Score();
+				score_text.animate_score(points_awarded);
+			}
+			
+			score += points_awarded;
+			
+			Seed.print(score);
+			
+			if(board.has_completed())
+			{
+				if(board.has_won())
+					score += 1000;
+				
+				var score_text = new Score();
+				score_text.animate_final_score(score);
+				
+				Seed.print("Done with: " + score + " points!");
+			}
+		}
+		
+		var enter_tile = function (actor, event)
 		{
 			if(animating)
 				return false;
@@ -120,24 +154,10 @@ Board = new GType({
 			
 			if(picked == oldpicked)
 				return false;
-			else
-				oldpicked = picked;
 			
-			cl = light_connected_lights(picked);
+			oldpicked = picked;
 			
-			for(var i in all_lights)
-			{
-				if(!all_lights[i].get_closed())
-					all_lights[i].opacity = 180;
-			}
-			
-			if(cl.length < 2)
-				return false;
-			
-			for(var i in cl)
-			{
-				cl[i].opacity = 255;
-			}
+			light_lights_from(picked);
 			
 			return false;
 		};
@@ -148,8 +168,6 @@ Board = new GType({
 			for(var i in all_lights)
 			{
 				li = all_lights[i];
-				
-				// For some reason, any_connected_lights isn't always right...
 				
 				if(!li.get_closed() && any_connected_lights(li))
 					return false;
@@ -178,15 +196,19 @@ Board = new GType({
 		
 		this.remove_region = function (actor, event)
 		{
+			if(animating)
+				return false;
+				
+			if(!cl)
+				light_lights_from(actor.get_parent());
+			
 			if(cl.length < 2)
 				return false;
 			
 			for(var i in cl)
-			{
 				cl[i].close_tile();
-			}
 			
-			var real_x = 0;
+			var real_x = 0, timeline = 0;
 			
 			for(var x in lights)
 			{
@@ -214,39 +236,15 @@ Board = new GType({
 					li.set_light_x(real_x);
 					li.set_light_y(parseInt(y,10));
 					
-					if(li.get_closed() && !li.on.anim)
-					{
-						Seed.print("hiding");
-						li.on.anim = li.on.animate(Clutter.AnimationMode.LINEAR,500,
-						{
-							height: [GObject.TYPE_INT, tile_size * 2],
-							width: [GObject.TYPE_INT, tile_size * 2],
-							x: [GObject.TYPE_INT, -tile_size/2],
-							y: [GObject.TYPE_INT, -tile_size/2]
-						});
-						li.on.anim.timeline.start();
-						
-						li.on.anim.timeline.signal.completed.connect(li.hide_light, li);
-						
-						li.anim = li.animate(Clutter.AnimationMode.LINEAR,500,
-						{
-							opacity: [GObject.TYPE_UCHAR, 0]
-						});
-						li.anim.timeline.start();
-					}
-					else if(((real_x * tile_size + offset) != li.x) ||
-							(((tiles_h - y - 1) * tile_size + offset) != li.y))
+					var new_x = real_x * tile_size + offset;
+					var new_y = (tiles_h - y - 1) * tile_size + offset;
+					
+					if(!li.get_closed() && ((new_x != li.x) ||
+												 (new_y != li.y)))
 					{
 						animating = true;
 						
-						li.anim = li.animate(Clutter.AnimationMode.EASE_OUT_BOUNCE, 500,
-						{
-							x: [GObject.TYPE_INT, real_x * tile_size + offset],
-							y: [GObject.TYPE_INT, (tiles_h - y - 1) * tile_size + offset]
-						});
-						li.anim.timeline.start();
-						
-						li.anim.timeline.signal.completed.connect(done_animating);
+						timeline = li.animate_to(new_x, new_y);
 					}
 					
 					if(!li.get_closed())
@@ -257,20 +255,15 @@ Board = new GType({
 					real_x++;
 			}
 			
+			if(timeline)
+				timeline.signal.completed.connect(done_animating);
+			
 			for(;real_x < tiles_w; real_x++)
 				lights[real_x] = null;
 			
-			score += calculate_score(cl.length);
+			update_score(cl.length);
 			
-			Seed.print(score);
-			
-			if(board.has_completed())
-			{
-				if(board.has_won())
-					score += 1000;
-				
-				Seed.print("Done with: " + score + " points!");
-			}
+			cl = oldpicked = null;
 			
 			return false;
 		}
@@ -281,7 +274,6 @@ Board = new GType({
 			lights[x] = new Array();
 			for(var y = 0; y < tiles_h; y++)
 			{
-				var offset = tile_size/2;
 				var li = new Light();
 				
 				li.set_light_x(x);
@@ -297,7 +289,7 @@ Board = new GType({
 			}
 		}
 		
-		this.signal.motion_event.connect(mouse_moved);
+		this.signal.enter_event.connect(enter_tile);
 		this.reactive = true;
 	}
 });
