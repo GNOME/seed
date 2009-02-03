@@ -12,7 +12,7 @@ Board = new GType({
 		{
 			animating = false;
 			
-			var x = new Object(), y = new Object();
+			/*var x = new Object(), y = new Object();
 			window.window.get_pointer(x, y, null);
 			
 			var picked = stage.get_actor_at_pos(x.value, y.value);
@@ -21,7 +21,7 @@ Board = new GType({
 				picked = picked.get_parent();
 			
 			if(picked && picked.get_light_x)
-				light_lights_from(picked);
+				light_lights_from(picked);*/
 			
 			return false;
 		}
@@ -109,7 +109,8 @@ Board = new GType({
 			cl = connected_lights(li);
 			
 			for(var i in oldcl)
-				oldcl[i].opacity = 180;
+				if(!oldcl[i].get_closed())
+					oldcl[i].opacity = 180;
 			
 			if(cl.length < 2)
 				return false;
@@ -148,8 +149,8 @@ Board = new GType({
 		
 		var enter_tile = function (actor, event)
 		{
-			if(animating)
-				return false;
+			//if(animating)
+			//	return false;
 			
 			var picked = stage.get_actor_at_pos(event.motion.x,
 												event.motion.y).get_parent();
