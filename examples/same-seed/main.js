@@ -28,14 +28,13 @@ Seed.include("score.js");
 var score = 0;
 var timelines = [];
 
-var window = new Gtk.Window();
+var window = new Gtk.Window({title: "Same Seed"});
 var clutter = new GtkClutter.Embed();
 var stage = clutter.get_stage();
 var vbox = new Gtk.VBox();
 
 window.signal.hide.connect(function () { Gtk.main_quit(); });
 
-stage.title = "Same Seed";
 stage.color = {alpha: 0};
 stage.set_size((tiles_w * tile_size),(tiles_h * tile_size));
 

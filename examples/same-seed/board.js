@@ -12,12 +12,11 @@ Board = new GType({
 		{
 			animating = false;
 			
-			Seed.print("asdf");
-			
 			var x = new Object(), y = new Object();
 			window.window.get_pointer(x, y, null);
 			
 			var picked = stage.get_actor_at_pos(x.value, y.value).get_parent();
+			Seed.print(picked);
 			if(picked && picked.get_light_x)
 				light_lights_from(picked);
 			
@@ -289,7 +288,8 @@ Board = new GType({
 			}
 		}
 		
-		this.signal.enter_event.connect(enter_tile);
+		//this.signal.enter_event.connect(enter_tile);
+		this.signal.motion_event.connect(enter_tile);
 		this.reactive = true;
 	}
 });

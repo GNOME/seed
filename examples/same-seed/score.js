@@ -24,7 +24,7 @@ Score = new GType({
 			stage.add_actor(this);
 			this.show();
 			
-			this.anim = this.animate(Clutter.AnimationMode.EASE_OUT_SINE,500,
+			this.anim = this.animate(Clutter.AnimationMode.EASE_OUT_SINE,400,
 			{
 				depth: [GObject.TYPE_INT, 500],
 				opacity: [GObject.TYPE_UCHAR, 0]
