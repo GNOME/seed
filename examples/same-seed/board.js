@@ -10,7 +10,6 @@ Board = new GType({
 		
 		function done_animating()
 		{
-			Seed.print("HIFJHGIDUFHG");
 			animating = false;
 			
 			var x = new Object(), y = new Object();
@@ -157,9 +156,6 @@ Board = new GType({
 		
 		var enter_tile = function (actor, event)
 		{
-			//if(animating)
-			//	return false;
-			
 			var picked = stage.get_actor_at_pos(event.motion.x,
 												event.motion.y).get_parent();
 			
