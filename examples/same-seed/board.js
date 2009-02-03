@@ -12,7 +12,7 @@ Board = new GType({
 		{
 			animating = false;
 			
-			/*var x = new Object(), y = new Object();
+			var x = new Object(), y = new Object();
 			window.window.get_pointer(x, y, null);
 			
 			var picked = stage.get_actor_at_pos(x.value, y.value);
@@ -21,7 +21,14 @@ Board = new GType({
 				picked = picked.get_parent();
 			
 			if(picked && picked.get_light_x)
-				light_lights_from(picked);*/
+			{
+				if(picked == oldpicked)
+					return false;
+			
+				oldpicked = picked;
+				
+				light_lights_from(picked);
+			}
 			
 			return false;
 		}
