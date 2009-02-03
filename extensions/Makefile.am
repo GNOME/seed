@@ -1,4 +1,4 @@
-EXTRA_DIST= Gio.js Seed.js Gtk.js GObject.js
+EXTRA_DIST= Gio.js Seed.js Gtk.js GObject.js Clutter.js
 
 extensiondir=$(datadir)/seed
-extension_DATA = Gio.js Seed.js Gtk.js GObject.js
+extension_DATA = Gio.js Seed.js Gtk.js GObject.js Clutter.js
