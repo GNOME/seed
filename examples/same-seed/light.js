@@ -44,13 +44,13 @@ Light = new GType({
 		this.close_tile = function ()
 		{
 			closed = true;
-			
-			//this.hide();
 		}
 		
 		this.hide_light = function (timeline, light)
 		{
 			light.hide();
+			
+			delete on;
 			
 			return false;
 		}

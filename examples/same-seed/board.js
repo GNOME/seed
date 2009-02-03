@@ -41,8 +41,8 @@ Board = new GType({
 			
 			var con = [li];
 			
-			while(GLib.main_context_pending())
-				GLib.main_context_iteration();
+			//while(GLib.main_context_pending())
+			//	GLib.main_context_iteration();
 			
 			// Do all of the concatenation together for performance
 			
@@ -214,8 +214,9 @@ Board = new GType({
 					li.set_light_x(real_x);
 					li.set_light_y(parseInt(y,10));
 					
-					if(li.get_closed())
+					if(li.get_closed() && !li.on.anim)
 					{
+						Seed.print("hiding");
 						li.on.anim = li.on.animate(Clutter.AnimationMode.LINEAR,500,
 						{
 							height: [GObject.TYPE_INT, tile_size * 2],
@@ -233,7 +234,8 @@ Board = new GType({
 						});
 						li.anim.timeline.start();
 					}
-					else
+					else if(((real_x * tile_size + offset) != li.x) ||
+							(((tiles_h - y - 1) * tile_size + offset) != li.y))
 					{
 						animating = true;
 						
