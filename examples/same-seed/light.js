@@ -50,6 +50,8 @@ Light = new GType({
 			});
 			
 			this.anim.timeline.start();
+			
+			GLib.main_context_iteration();
 		}
 		
 		this.animate_to = function (new_x, new_y)
@@ -60,6 +62,8 @@ Light = new GType({
 				y: [GObject.TYPE_INT, new_y]
 			});
 			this.anim.timeline.start();
+			
+			GLib.main_context_iteration();
 			
 			return this.anim.timeline;
 		}

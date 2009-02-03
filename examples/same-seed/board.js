@@ -10,6 +10,7 @@ Board = new GType({
 		
 		function done_animating()
 		{
+			Seed.print("HIFJHGIDUFHG");
 			animating = false;
 			
 			var x = new Object(), y = new Object();
@@ -220,6 +221,8 @@ Board = new GType({
 			
 			var real_x = 0, timeline = 0;
 			
+			animating = true;
+			
 			for(var x in lights)
 			{
 				var good_lights = [];
@@ -252,21 +255,36 @@ Board = new GType({
 					if(!li.get_closed() && ((new_x != li.x) ||
 												 (new_y != li.y)))
 					{
-						animating = true;
-						
 						timeline = li.animate_to(new_x, new_y);
+						
+						// This might go away after we can pass timelines around
+						var nullize_anim = function (asdf, li)
+						{
+							li.anim = null;
+						}
+						
+						timeline.signal.completed.connect(nullize_anim, li);
 					}
 					
 					if(!li.get_closed())
 						empty_col = false;
+					
+					GLib.main_context_iteration();
 				}
+				
+				GLib.main_context_iteration();
 				
 				if(!empty_col)
 					real_x++;
 			}
 			
-			if(timeline)
+			if(timeline && li.anim)
+						// This needs to be changed when we get the ability
+						// to pass timelines around.... will fix bugs on
+						// slower machines / boards with many tiles
 				timeline.signal.completed.connect(done_animating);
+			else
+				animating = false;
 			
 			for(;real_x < tiles_w; real_x++)
 				lights[real_x] = null;
