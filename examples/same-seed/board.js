@@ -18,8 +18,8 @@ Board = new GType({
 			window.window.get_pointer(x, y, null);
 			
 			var picked = stage.get_actor_at_pos(x.value, y.value).get_parent();
-			
-			light_lights_from(picked);
+			if(picked && picked.get_light_x)
+				light_lights_from(picked);
 			
 			return false;
 		}
