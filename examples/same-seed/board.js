@@ -17,6 +17,14 @@ Board = new GType({
 		var lights = new Array();
 		var all_lights = new Array();
 		var cl, oldpicked;
+		var animating = false;
+		
+		function done_animating()
+		{
+			animating = false;
+			
+			return false;
+		}
 		
 		function _light_connected_lights(li)
 		{
@@ -32,6 +40,9 @@ Board = new GType({
 			li.visited = true;
 			
 			var con = [li];
+			
+			while(GLib.main_context_pending())
+				GLib.main_context_iteration();
 			
 			// Do all of the concatenation together for performance
 			
@@ -101,18 +112,24 @@ Board = new GType({
 		
 		var mouse_moved = function (actor, event)
 		{
+			if(animating)
+				return false;
+			
 			var picked = stage.get_actor_at_pos(event.motion.x,
 												event.motion.y).get_parent();
 			
 			if(picked == oldpicked)
-				return;
+				return false;
+			else
+				oldpicked = picked;
+			
+			cl = light_connected_lights(picked);
 			
 			for(var i in all_lights)
 			{
-				all_lights[i].opacity = 180;
+				if(!all_lights[i].get_closed())
+					all_lights[i].opacity = 180;
 			}
-			
-			cl = light_connected_lights(picked);
 			
 			if(cl.length < 2)
 				return false;
@@ -197,12 +214,38 @@ Board = new GType({
 					li.set_light_x(real_x);
 					li.set_light_y(parseInt(y,10));
 					
-					li.anim = li.animate(Clutter.AnimationMode.EASE_OUT_BOUNCE, 500,
+					if(li.get_closed())
 					{
-						x: [GObject.TYPE_INT, real_x * tile_size + offset],
-						y: [GObject.TYPE_INT, (tiles_h - y - 1) * tile_size + offset]
-					});
-					li.anim.timeline.start();
+						li.on.anim = li.on.animate(Clutter.AnimationMode.LINEAR,500,
+						{
+							height: [GObject.TYPE_INT, tile_size * 2],
+							width: [GObject.TYPE_INT, tile_size * 2],
+							x: [GObject.TYPE_INT, -tile_size/2],
+							y: [GObject.TYPE_INT, -tile_size/2]
+						});
+						li.on.anim.timeline.start();
+						
+						li.on.anim.timeline.signal.completed.connect(li.hide_light, li);
+						
+						li.anim = li.animate(Clutter.AnimationMode.LINEAR,500,
+						{
+							opacity: [GObject.TYPE_UCHAR, 0]
+						});
+						li.anim.timeline.start();
+					}
+					else
+					{
+						animating = true;
+						
+						li.anim = li.animate(Clutter.AnimationMode.EASE_OUT_BOUNCE, 500,
+						{
+							x: [GObject.TYPE_INT, real_x * tile_size + offset],
+							y: [GObject.TYPE_INT, (tiles_h - y - 1) * tile_size + offset]
+						});
+						li.anim.timeline.start();
+						
+						li.anim.timeline.signal.completed.connect(done_animating);
+					}
 					
 					if(!li.get_closed())
 						empty_col = false;

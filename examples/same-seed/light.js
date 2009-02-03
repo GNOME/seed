@@ -1,4 +1,4 @@
-var tile_svg_size = 100;
+var tile_svg_size = 50;
 
 function load_svg(file)
 {
@@ -45,7 +45,14 @@ Light = new GType({
 		{
 			closed = true;
 			
-			this.hide();
+			//this.hide();
+		}
+		
+		this.hide_light = function (timeline, light)
+		{
+			light.hide();
+			
+			return false;
 		}
 		
 		this.set_light_x = function (new_x)

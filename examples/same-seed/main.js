@@ -24,6 +24,8 @@ var timelines = [];
 var black = new Clutter.Color();
 Clutter.color_parse("Black", black);
 
+Clutter.set_motion_events_frequency(10);
+
 var stage = new Clutter.Stage();
 
 stage.title = "Same Seed";
