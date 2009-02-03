@@ -15,8 +15,11 @@ Board = new GType({
 			var x = new Object(), y = new Object();
 			window.window.get_pointer(x, y, null);
 			
-			var picked = stage.get_actor_at_pos(x.value, y.value).get_parent();
-			Seed.print(picked);
+			var picked = stage.get_actor_at_pos(x.value, y.value);
+			
+			if(picked)
+				picked = picked.get_parent();
+			
 			if(picked && picked.get_light_x)
 				light_lights_from(picked);
 			
