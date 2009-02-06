@@ -1,10 +1,23 @@
 == Seed 0.4, < Album Name Here > (2009.02.06) ==
 
+* Many, many crash fixes.
+
+* Significantly better base memory usage (on the order of MB) for some apps.
+
 * Enums use Gtk.WindowType.NORMAL instead of Gtk.WindowType.Normal.
   This may break existing code in subtle ways (as Gtk.WindowType.Normal
   will now be JavaScript null).
 
+* instance_init is now just init when creating new GTypes. This will require 
+  changes in any code using subclassing.
+
 * Clutter 0.9 animation API wrappers
+
+* Support for arrays of gfloats
+
+* API additions: seed_script_new_from_file, 
+
+* Seed now builds on Mac OS X. Instructions in INSTALL.osx.
 
 * New examples:
     * opengl-glib examples (teapot, gears, triangle)
@@ -13,6 +26,8 @@
     * Clutter-COGL example
     * Reddit client (Gio and JSON)
     * Library of Clutter "slide transitions"
+
+* The Lights Off example now lives in Gnome Games.
 
 == Seed 0.3, Wednesday Morning 3AM (2008.12.31) ==
 
