@@ -10,28 +10,55 @@ The Lights Off example now lives in the gnome-games module. It uses Clutter,
 browser/
 	- An incomplete WebKit-based web browser. Uses much of Gtk and WebKit.
 
-shader/
+clutter-shader/
 	- A GLSL shader example. Utilizes Gtk with Clutter, GtkSourceView,
 	  ClutterTexture, and Clutter Shader.
+
+clutter-transitions/
+	- A library of interesting slide transition animations; many are similar to
+	  those found in Keynote. Makes heavy use of Clutter 0.8.
+
+glib/
+	- A small collection of examples that utilize interesting parts of GLib.
+	  Threading, timeouts/timers, and reading the enivronment are all covered.
+
+opengl/
+	- Examples which use OpenGL-GLib. Includes the classic GLUT teapot, a Seed
+	  port of glxgears, and a simple colored triangle.
+
+same-seed/
+	- An in-progress Clutter port of Same Gnome. Makes heavy use of the new 
+	  Clutter 0.9 API, which is signficantly different from our older examples,
+	  which all use Clutter 0.8.
 
 turtle/
 	- Written in C, exposes an interface to Javascript as an embedding language.
 	  Simple turtle graphics demo.
 
+twitter/
+	- A simple Gtk Twitter client which was introduced in Ars Technica's article
+	  on Seed. Uses async network access, John Resig's pretty.js, etc.
+
 == Smaller Examples ==
 
 accelgroup.js: Proper use of Gtk key accelerators.
 actions.js: Gtk actions, for menus, toolbars, and accelerators.
+async-quine.js: A Quine which loads itself asynchronouosly.
 calculator.js: Simple Gtk widgets, packing, labels, signals. javascript eval.
-clutter-cairo.js: Draws into a Clutter context using our Canvas extension (through Clutter-Cairo).
-clutter.js: Clutter, implementing custom clutter animations, using clutter effects, clutter colors.
+clutter-cairo.js: Draws into a Clutter context using our Canvas extension.
+clutter-cogl.js: Draw ripples from the mouse, using Clutter's COGL library.
+clutter.js: Clutter, implementing custom clutter animations, using clutter
+            effects, clutter colors.
 gconf.js: Getting a key out of gconf.
+gdkpixbufloader.js: Uses async network Gio to show a large picture from NASA.
 Gnio.js: Simple use of Gnio, performs an HTTP request.
 Gnio-server.js: Uses Gnio to run a cowsay server.
 gtkplug.js: Use of GtkPlug, to embed one process' GtkLabel in another's window.
-introspect.js: Introspecting gobject methods (useful at REPL for example).
+gtktreeview.js: A quick example of using GtkTreeView from Seed.
+introspect.js: Introspecting GObject methods (useful at REPL for example).
 json-packing.js: Simple example of using JSON for Gtk packing.
-ls.js: Gio, Seed.argv.
+json-reddit.js: Loads Reddit JSON feed, prints out top stories.
+ls.js: A simple 'ls' implementation utilizing Gio, and Seed.argv.
 n-oscillator.js: gstreamer, Gtk.VScale
 notify-test.js: Demonstrates use of both libnotify and Gio file monitoring.
 poppler.js: GtkDrawingArea, GtkToolbar, Poppler for rendering pdfs. GDK/Cairo.
