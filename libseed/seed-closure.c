@@ -398,7 +398,7 @@ SeedNativeClosure *seed_make_native_closure(JSContextRef ctx,
 	ffi_prep_cif(cif, FFI_DEFAULT_ABI, num_args,
 				 get_ffi_type(return_type), arg_types);
 	ffi_prep_closure(closure, cif, seed_handle_closure, privates);
-	
+
 	JSValueProtect(ctx, function);
 
 	seed_object_set_property(ctx, (JSObjectRef) function,

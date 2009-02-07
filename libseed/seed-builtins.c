@@ -325,9 +325,8 @@ void seed_init_builtins(SeedEngine * local_eng, gint * argc, gchar *** argv)
 			// TODO: exceptions!
 
 			JSObjectSetPropertyAtIndex(local_eng->context, arrayObj, i,
-									   seed_value_from_string(local_eng->
-															  context,
-															  (*argv)[i], 0),
+									   seed_value_from_string
+									   (local_eng->context, (*argv)[i], 0),
 									   NULL);
 		}
 

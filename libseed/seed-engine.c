@@ -877,7 +877,7 @@ seed_gi_import_namespace(JSContextRef ctx,
 	JSStringRef extension_script;
 	gint n, i;
 	GModule *extension;
-	
+
 	ctx = eng->context;
 
 	if (argumentCount == 0)

@@ -75,8 +75,7 @@ SeedValue seed_simple_evaluate(SeedContext ctx, gchar * source);
 SeedScript *seed_make_script(SeedContext ctx,
 							 const gchar * s, const gchar * source_url,
 							 gint line_number);
-SeedScript *seed_script_new_from_file(SeedContext ctx, 
-				      gchar *file);
+SeedScript *seed_script_new_from_file(SeedContext ctx, gchar * file);
 SeedException seed_script_exception(SeedScript * s);
 void seed_make_exception(SeedContext ctx, SeedException e,
 						 gchar * name, gchar * message);
@@ -114,12 +113,9 @@ gsize seed_string_to_utf8_buffer(SeedString string, gchar * buffer,
 gboolean seed_string_is_equal(SeedString a, SeedString b);
 gboolean seed_string_is_equal_utf8(SeedString a, const gchar * b);
 
-gboolean seed_value_is_null(SeedContext ctx,
-			    SeedValue value);
-gboolean seed_value_is_object(SeedContext ctx,
-			      SeedValue value);
-gboolean seed_value_is_function(SeedContext ctx,
-				 SeedObject value);
+gboolean seed_value_is_null(SeedContext ctx, SeedValue value);
+gboolean seed_value_is_object(SeedContext ctx, SeedValue value);
+gboolean seed_value_is_function(SeedContext ctx, SeedObject value);
 
 SeedValue seed_object_call(SeedContext ctx,
 						   SeedObject object,
