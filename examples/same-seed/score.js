@@ -38,7 +38,7 @@ Score = new GType({
 		{
 			label.set_font_name("Bitstrem Vera Sans 50");
 			label.set_markup("<b>Game Over!</b>\n" + points + " points");
-			label.set_alignment(Pango.Alignment.CENTER);
+			label.set_line_alignment(Pango.Alignment.CENTER);
 			label.set_color({red:255, green:255, blue:255, alpha:255});
 			
 			this.set_anchor_point(this.width/2, this.height/2);
