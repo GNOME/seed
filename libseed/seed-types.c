@@ -373,6 +373,8 @@ seed_gi_make_array(JSContextRef ctx,
 					GValue *result;
 					guint i;
 
+					// TODO:FIXME: Robb. Valgrind thinks there's a leak here,
+					//             at least while running Same Seed.
 					result = g_new0(GValue, length + 1);
 
 					for (i = 0; i < length; i++)
@@ -1493,6 +1495,7 @@ JSValueRef seed_value_from_filename(JSContextRef ctx,
 	gchar *utf8;
 
 	utf8 = g_filename_to_utf8(filename, -1, NULL, NULL, &e);
+	
 	if (e)
 	{
 		seed_make_exception_from_gerror(ctx, exception, e);
@@ -1501,7 +1504,11 @@ JSValueRef seed_value_from_filename(JSContextRef ctx,
 		return NULL;
 	}
 
-	return seed_value_from_string(ctx, utf8, exception);
+	JSValueRef valstr = seed_value_from_string(ctx, utf8, exception);
+
+	g_free(utf8);
+
+	return valstr;
 }
 
 gchar *seed_value_to_filename(JSContextRef ctx,
