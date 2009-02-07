@@ -44,11 +44,11 @@ Seed.print(test_closure_one_arg(function (a) { return [GObject.TYPE_INT, a]; }))
 
 Seed.print(test_value_return(123).get_int());
 
-Seed.print(TestEnum.Value1);
-Seed.print(TestEnum.Value2);
-Seed.print(TestEnum.Value3);
-Seed.print(TestFlags.Flag1);
-Seed.print(TestFlags.Flag2);
+Seed.print(TestEnum.VALUE1);
+Seed.print(TestEnum.VALUE2);
+Seed.print(TestEnum.VALUE3);
+Seed.print(TestFlags.FLAG1);
+Seed.print(TestFlags.FLAG2);
 // Err.... wot? The gir has 2 in twice... Seed.print(TestFlags.Flag3);
 
 TestStructA.some_int = 15;
@@ -57,7 +57,7 @@ TestStructA.some_int8 = 120;
 Seed.print(TestStructA.some_int8);
 TestStructA.some_double = 120.2357;
 Seed.print(TestStructA.some_double);
-TestStructA.some_enum = TestEnum.Value3;
+TestStructA.some_enum = TestEnum.VALUE3;
 Seed.print(TestStructA.some_enum);
 
 TestStructB.some_int8 = 19;
