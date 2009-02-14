@@ -9,7 +9,11 @@ Score = new GType({
 		// Public
 		this.hide_score = function (timeline, score)
 		{
+			if(!score)
+				score = this;
+			
 			score.hide();
+			stage.remove_actor(score);
 		};
 		
 		this.animate_score = function (points)
@@ -39,7 +43,6 @@ Score = new GType({
 			label.set_font_name("Bitstrem Vera Sans 50");
 			label.set_markup("<b>Game Over!</b>\n" + points + " points");
 			label.set_line_alignment(Pango.Alignment.CENTER);
-			label.set_color({red:255, green:255, blue:255, alpha:255});
 			
 			this.set_anchor_point(this.width/2, this.height/2);
 			
@@ -64,7 +67,7 @@ Score = new GType({
 		
 		// Implementation
 		label = new Clutter.Text();
-		label.set_color({red:255, green:255, blue:255, alpha:200});
+		label.set_color({red:255, green:255, blue:255, alpha:255});
 		
 		this.add_actor(label);
 		label.show();

@@ -7,6 +7,7 @@ Board = new GType({
 		var lights = [], all_lights = [];
 		var cl, oldcl = [ ], oldpicked;
 		var animating = false;
+		var final_score;
 		
 		function done_animating()
 		{
@@ -16,6 +17,8 @@ Board = new GType({
 			window.window.get_pointer(x, y, null);
 			
 			var picked = stage.get_actor_at_pos(x.value, y.value);
+			
+			Seed.print(picked);
 			
 			if(picked)
 				picked = picked.get_parent();
@@ -147,19 +150,19 @@ Board = new GType({
 				if(board.has_won())
 					score += 1000;
 				
-				var score_text = new Score();
-				score_text.animate_final_score(score);
+				final_score = new Score();
+				final_score.animate_final_score(score);
 				
 				Seed.print("Done with: " + score + " points!");
 			}
-		}
+		};
 		
-		var enter_tile = function (actor, event)
+		function enter_tile(actor, event)
 		{
 			var picked = stage.get_actor_at_pos(event.motion.x,
 												event.motion.y).get_parent();
 			
-			if(picked == oldpicked)
+			if(picked === oldpicked)
 				return false;
 			
 			oldpicked = picked;
@@ -219,6 +222,8 @@ Board = new GType({
 			
 			animating = true;
 			
+			//timeline = new Clutter.Timeline({duration: 500});
+			
 			for(var x in lights)
 			{
 				var good_lights = [];
@@ -251,7 +256,7 @@ Board = new GType({
 					if(!li.get_closed() && ((new_x != li.x) ||
 												 (new_y != li.y)))
 					{
-						timeline = li.animate_to(new_x, new_y);
+						timeline = li.animate_to(new_x, new_y, timeline);
 						
 						// This might go away after we can pass timelines around
 						var nullize_anim = function (asdf, li)
@@ -274,6 +279,8 @@ Board = new GType({
 					real_x++;
 			}
 			
+			//timeline.start();
+			
 			if(timeline && li.anim)
 						// This needs to be changed when we get the ability
 						// to pass timelines around.... will fix bugs on
@@ -292,28 +299,42 @@ Board = new GType({
 			return false;
 		}
 		
-		// Implementation
-		for(var x = 0; x < tiles_w; x++)
+		this.new_game = function ()
 		{
-			lights[x] = new Array();
-			for(var y = 0; y < tiles_h; y++)
+			var children = this.get_children();
+			
+			for(var i in children)
+				this.remove_actor(children[i]);
+			
+			if(final_score)
+				final_score.hide_score();
+			
+			all_lights = new Array();
+			
+			for(var x = 0; x < tiles_w; x++)
 			{
-				var li = new Light();
+				lights[x] = new Array();
+				for(var y = 0; y < tiles_h; y++)
+				{
+					var li = new Light();
 				
-				li.set_light_x(x);
-				li.set_light_y(y);
+					li.set_light_x(x);
+					li.set_light_y(y);
 				
-				li.set_position(x * tile_size + offset,
-								(tiles_h - y - 1) * tile_size + offset);
-				this.add_actor(li);
-				li.on.signal.button_press_event.connect(this.remove_region);
+					li.set_position(x * tile_size + offset,
+									(tiles_h - y - 1) * tile_size + offset);
+					this.add_actor(li);
+					li.on.signal.button_press_event.connect(this.remove_region);
 				
-				lights[x][y] = li;
-				all_lights.push(lights[x][y]);
+					lights[x][y] = li;
+					all_lights.push(lights[x][y]);
+				}
 			}
-		}
+		};
 		
-		//this.signal.enter_event.connect(enter_tile);
+		// Implementation
+		this.new_game();
+		
 		this.signal.motion_event.connect(enter_tile);
 		this.reactive = true;
 	}
