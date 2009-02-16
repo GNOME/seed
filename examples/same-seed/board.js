@@ -5,7 +5,7 @@ Board = new GType({
 	{
 		// Private
 		var lights = [], all_lights = [];
-		var cl, oldcl = [ ], oldpicked;
+		var cl, oldcl = [], oldpicked;
 		var animating = false;
 		var final_score;
 		
