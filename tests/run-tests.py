@@ -68,10 +68,7 @@ for c_test in c_out.rstrip().split("\n"):
 
 print
 
-revnof = os.popen("svn info | grep \"Revision\"")
-revno = "".join(revnof.readlines()).rstrip()
-
-print "libseed test run (%s):" % revno
+print "libseed test run:"
 print "%d tests passed; %d tests failed.\n" % (len(passed), len(failed))
 for fail in failed:
 	print "-------------FAILED TEST---------------"
