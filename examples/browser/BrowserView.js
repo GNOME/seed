@@ -57,6 +57,19 @@ BrowserView = new GType({
             update_url(web_view, web_frame);
         };
         
+        var clicked_link = function (web_view, web_frame, request,
+                                     action, decision, window)
+        {
+            if(action.get_reason() == WebKit.WebNavigationReason.LINK_CLICKED &&
+               action.get_button() == 2)
+            {
+                browser.new_tab(request.get_uri(), null);
+                return true;
+            }
+            
+            return false;
+        };
+        
         // Public
         this.browse = function (url)
         {
@@ -83,6 +96,10 @@ BrowserView = new GType({
         this.signal.load_committed.connect(load_committed);
         this.signal.load_finished.connect(load_finished);
         this.signal.load_progress_changed.connect(update_progress);
+        
+        // For some reason, this segfaults seed in the instance init closure handler
+        // Once that's fixed, uncommenting the next line will give middle-click-open-in-new tab
+        //this.signal.navigation_policy_decision_requested.connect(clicked_link);
         
         this.signal.hovering_over_link.connect(hover_link);
         
