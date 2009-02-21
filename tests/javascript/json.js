@@ -3,6 +3,7 @@
 // STDIN:
 // STDOUT:
 // STDERR:
+
 a = {test: 3,
      hello: "Goodbye",
      more: {a: "1", b: 2, c:"d"}};

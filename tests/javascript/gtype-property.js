@@ -3,10 +3,6 @@
 // STDIN:
 // STDOUT:1\.000000\n0\.000000
 // STDERR:
-   // Returns: 0
-   // STDIN:
-   // STDOUT:In klass init\nIn constructor for \[object HelloWindow\]\nPrototypes!\nIn map, verifying widget\.title : Hello!
-   // STDERR:
 
 Seed.import_namespace("Gtk");
 Seed.import_namespace("GObject");

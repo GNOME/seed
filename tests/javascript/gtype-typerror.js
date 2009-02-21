@@ -3,6 +3,7 @@
 // STDIN:
 // STDOUT:GType constructor expected GType for parent
 // STDERR:
+
 Seed.import_namespace("Gtk");
 
 

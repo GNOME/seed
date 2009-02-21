@@ -3,10 +3,7 @@
 // STDIN:
 // STDOUT:0\.000000\n200\.000000
 // STDERR:
-// Returns: 0
-// STDIN:
-// STDOUT:
-// STDERR:
+
 Seed.import_namespace("Gdk");
 
 color = new Gdk.Color();

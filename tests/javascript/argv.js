@@ -3,4 +3,5 @@
 // STDIN:
 // STDOUT:seed
 // STDERR:
+
 Seed.print(Seed.argv[0]);

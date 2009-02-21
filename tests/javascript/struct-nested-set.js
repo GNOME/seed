@@ -3,6 +3,7 @@
 // STDIN:
 // STDOUT:\[object seed_union\]\n0\.000000\n300\.000000
 // STDERR:
+
 Seed.import_namespace("Gdk");
 
 e = new Gdk.Event();

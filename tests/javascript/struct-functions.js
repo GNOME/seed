@@ -3,6 +3,7 @@
 // STDIN:
 // STDOUT:
 // STDERR:
+
 Seed.import_namespace("GConf");
 
 GConf.init(null, null);

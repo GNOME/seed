@@ -3,6 +3,7 @@
 // STDIN:
 // STDOUT:Hello World
 // STDERR:
+
 Seed.import_namespace("Gtk");
 Gtk.init(null, null);
 

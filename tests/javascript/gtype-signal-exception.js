@@ -3,10 +3,6 @@
 // STDIN:
 // STDOUT:Signal definition needs name property\nSignal definition needs name property
 // STDERR:
-// Returns: 0
-// STDIN:
-// STDOUT:Hello\nGoodbye
-// STDERR:
 
 Seed.import_namespace("Gtk");
 Gtk.init(null, null);

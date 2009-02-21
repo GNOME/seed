@@ -3,6 +3,7 @@
 // STDIN:
 // STDOUT:string\nstring\ninteger 4\nfloat 0\.333333\nmore 0\.333333333\nless 0\.33
 // STDERR:
+
 Seed.printf("string");
 Seed.printf("%s", "string");
 Seed.printf("%s %d", "integer", 2+2);

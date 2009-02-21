@@ -3,4 +3,5 @@
 // STDIN:
 // STDOUT:Hello World!\n\[null\]
 // STDERR:
+
 Seed.print(Seed.print("Hello World!"));

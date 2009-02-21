@@ -3,10 +3,6 @@
 // STDIN:
 // STDOUT:GIoError Error opening file .* Is a directory
 // STDERR:
-// Returns: 0
-// STDIN:
-// STDOUT:
-// STDERR:
 
 Seed.import_namespace("Gio");
 

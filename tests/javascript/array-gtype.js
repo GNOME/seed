@@ -3,6 +3,7 @@
 // STDIN:
 // STDOUT:
 // STDERR:
+
 Seed.import_namespace("Gtk");
 Seed.import_namespace("GObject");
 
