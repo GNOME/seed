@@ -1,0 +1,9 @@
+* Why does 'new Pango.FontDescription()' fail?
+
+* Why does attaching to WebKit's navigation_policy_decision_requested 
+  signal automatically segfault Seed?
+
+* Why can't we return GTypes or GObjects from Seed-installed signals 
+  without segfaulting Seed?
+
+* Why don't Clutter 0.9 GIRs have offsets for ClutterColor?
