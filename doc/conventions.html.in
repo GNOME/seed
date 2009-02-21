@@ -26,5 +26,13 @@
     <li>Always use underscore_case for the names of variables and functions.</li>
 </ul>
 </p>
+
+<div class="section">Encapsulation</div>
+<p>
+<ul>
+    <li>Prefer functions to properties, for performance's sake.</li>
+    <li>Place all code for a class <em>within</em> its init function. Look at the tutorial Web Browser for an example.</li>
+</ul>
+</p>
 </body>
 </html>
