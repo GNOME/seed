@@ -43,7 +43,7 @@ profile-reset:
 
 profile: profile-reset test
 	cp libseed/*.c libseed/.libs/
-	
+
 if PROFILE_MODULES
 	cp modules/readline/*.c modules/readline/.libs/
 	cp modules/example/*.c modules/example/.libs/
@@ -51,9 +51,9 @@ if PROFILE_MODULES
 	cp modules/canvas/*.c modules/canvas/.libs/
 	cp modules/Multiprocessing/*.c modules/Multiprocessing/.libs/
 endif
-	
+
 	cd libseed/.libs ; gcov *.c
-	
+
 if PROFILE_MODULES
 	cd modules/readline/.libs ; gcov *.c
 	cd modules/example/.libs ; gcov *.c
@@ -61,12 +61,12 @@ if PROFILE_MODULES
 	cd modules/canvas/.libs ; gcov *.c
 	cd modules/Multiprocessing/.libs ; gcov *.c
 endif
-	
+
 profile-gui: profile
 if PROFILE_MODULES
 	$mods_prof = --directory modules/readline/.libs --directory modules/example/.libs --directory modules/sqlite/.libs
 endif
-	
+
 	lcov --directory libseed/.libs $(mods_prof) --capture --output-file seed.info
 	cp seed.info /tmp/
-	cd /tmp ; genhtml seed.info ; gnome-open index.html
+	cd /tmp ; genhtml seed.info ; gnome-www-browser index.html
