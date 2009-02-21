@@ -44,7 +44,7 @@ function put_pixbuf(container, uri)
 						{
 							Seed.print(e.name + " " + e.message);
 						}
-						container.pack_start(
+						container.pack_end(
 							new Gtk.Image.from_pixbuf(loader.get_pixbuf()));
 						container.show_all();
 					});
@@ -58,8 +58,8 @@ function make_block(data) {
 	// The text styling for the heading is done with simple Pango markup.
 	var heading = new Gtk.Label({
 			"use-markup": true,
-			"label": "<b><big>" + data.from_user + "</big></b> " +
-			"(<small>" + prettyDate(data.created_at) + "</small>)"
+			"label": "<b><big>" + data.from_user + "</big></b>\n" +
+			"<small>" + prettyDate(data.created_at) + "</small>"
 		});
 
 	// The message text is displayed in a TextView widget because the GTK+ label
@@ -71,7 +71,6 @@ function make_block(data) {
 	heading.set_alignment(0, 0);
 	vbox.pack_start(hbox);
 	hbox.pack_start(heading);
-//	hbox.pack_start(new Gtk.Image.from_pixbuf(pixbuf), true);
 	put_pixbuf(hbox, data.profile_image_url);
 	vbox.pack_start(message);
 
@@ -90,7 +89,6 @@ scroll.set_policy(1, 1);
 // Create the input textbox and the search button
 var textbox = new Gtk.Entry();
 var button = new Gtk.Button({"label": "_Search", "use-underline": true});
-
 
 function async_callback(source, result)
 {
@@ -120,7 +118,6 @@ function do_search(w)
 
 button.signal.clicked.connect(do_search);
 textbox.signal.activate.connect(do_search);
-
 
 // Pack the remaining widgets into the window layout
 var searchbox = new Gtk.HBox();
