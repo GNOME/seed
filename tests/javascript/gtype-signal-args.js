@@ -30,7 +30,5 @@ w.signal.hello.connect(function(object, number, string)
                            return win;
                        });
 
-w.signal.hello.emit(2, "Test");
-
-//Seed.print(w.signal.hello.emit(2, "Test"));
+Seed.print(w.signal.hello.emit(2, "Test"));
 
