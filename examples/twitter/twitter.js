@@ -108,13 +108,18 @@ function async_callback(source, result)
 
 // Define the behavior for the button press by associating an anonymous
 // function with the button's click signal handler
-button.signal.clicked.connect(function(w) {
-		var twitter = 
-			Gio.file_new_for_uri("http://search.twitter.com/search.json?q="
-								 + textbox.get_text());
-		
-		twitter.read_async(0, null, async_callback);
-	});
+
+function do_search(w)
+{
+	var twitter = 
+		Gio.file_new_for_uri("http://search.twitter.com/search.json?q="
+							 + textbox.get_text());
+	
+	twitter.read_async(0, null, async_callback);
+}
+
+button.signal.clicked.connect(do_search);
+textbox.signal.activate.connect(do_search);
 
 
 // Pack the remaining widgets into the window layout
