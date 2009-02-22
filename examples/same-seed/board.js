@@ -13,7 +13,7 @@ Board = new GType({
 		{
 			animating = false;
 			
-			var x = new Object(), y = new Object();
+			var x = {}, y = {};
 			window.window.get_pointer(x, y, null);
 			
 			var picked = stage.get_actor_at_pos(x.value, y.value);
@@ -68,7 +68,7 @@ Board = new GType({
 				d = _connected_lights(lights[x-1][y]);
 			
 			return con.concat(a,b,c,d);
-		};
+		}
 		
 		function connected_lights(li)
 		{
@@ -79,7 +79,7 @@ Board = new GType({
 				return [ li ];
 			
 			return _connected_lights(li);
-		};
+		}
 		
 		function any_connected_lights(li)
 		{
@@ -104,7 +104,7 @@ Board = new GType({
 				return !lights[x-1][y].get_closed();
 			
 			return false;
-		};
+		}
 		
 		function calculate_score(n_lights)
 		{
@@ -112,24 +112,26 @@ Board = new GType({
 				return 0;
 
 			return (n_lights - 2) * (n_lights - 2);
-		};
+		}
 		
 		function light_lights_from(li)
 		{
+			var i;
+			
 			cl = connected_lights(li);
 			
-			for(var i in oldcl)
+			for(i in oldcl)
 				if(!oldcl[i].get_closed())
 					oldcl[i].opacity = 180;
 			
 			if(cl.length < 2)
 				return false;
 			
-			for(var i in cl)
+			for(i in cl)
 				cl[i].opacity = 255;
 			
 			oldcl = cl;
-		};
+		}
 		
 		function update_score(tiles)
 		{
@@ -155,7 +157,7 @@ Board = new GType({
 				
 				Seed.print("Done with: " + score + " points!");
 			}
-		};
+		}
 		
 		function enter_tile(actor, event)
 		{
@@ -170,7 +172,7 @@ Board = new GType({
 			light_lights_from(picked);
 			
 			return false;
-		};
+		}
 		
 		// Public
 		this.has_completed = function ()
@@ -226,12 +228,13 @@ Board = new GType({
 			
 			for(var x in lights)
 			{
+				var y, li;
 				var good_lights = [];
 				var bad_lights = [];
 				
-				for(var y in lights[x])
+				for(y in lights[x])
 				{
-					var li = lights[x][y];
+					li = lights[x][y];
 					
 					if(!li.get_closed())
 						good_lights.push(li);
@@ -243,9 +246,9 @@ Board = new GType({
 				
 				var empty_col = true;
 				
-				for(var y in lights[real_x])
+				for(y in lights[real_x])
 				{
-					var li = lights[real_x][y];
+					li = lights[real_x][y];
 					
 					li.set_light_x(real_x);
 					li.set_light_y(parseInt(y,10));
@@ -262,7 +265,7 @@ Board = new GType({
 						var nullize_anim = function (asdf, li)
 						{
 							li.anim = null;
-						}
+						};
 						
 						timeline.signal.completed.connect(nullize_anim, li);
 					}
@@ -297,7 +300,7 @@ Board = new GType({
 			cl = oldpicked = null;
 			
 			return false;
-		}
+		};
 		
 		this.new_game = function ()
 		{
@@ -309,11 +312,11 @@ Board = new GType({
 			if(final_score)
 				final_score.hide_score();
 			
-			all_lights = new Array();
+			all_lights = [];
 			
 			for(var x = 0; x < tiles_w; x++)
 			{
-				lights[x] = new Array();
+				lights[x] = [];
 				for(var y = 0; y < tiles_h; y++)
 				{
 					var li = new Light();

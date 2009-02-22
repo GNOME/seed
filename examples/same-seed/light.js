@@ -29,7 +29,7 @@ Light = new GType({
 		this.get_state = function ()
 		{
 			return state;
-		}
+		};
 		
 		this.animate_out = function ()
 		{
@@ -52,7 +52,7 @@ Light = new GType({
 			this.anim.timeline.start();
 			
 			GLib.main_context_iteration();
-		}
+		};
 		
 		this.animate_to = function (new_x, new_y, timeline)
 		{
@@ -68,18 +68,18 @@ Light = new GType({
 			GLib.main_context_iteration();
 			
 			return this.anim.timeline;
-		}
+		};
 		
 		this.get_closed = function ()
 		{
 			return closed;
-		}
+		};
 		
 		this.close_tile = function ()
 		{
 			closed = true;
 			this.animate_out();
-		}
+		};
 		
 		this.hide_light = function (timeline, light)
 		{
@@ -91,27 +91,27 @@ Light = new GType({
 				delete light.anim;
 			
 			return false;
-		}
+		};
 		
 		this.set_light_x = function (new_x)
 		{
 			light_x = new_x;
-		}
+		};
 		
 		this.set_light_y = function (new_y)
 		{
 			light_y = new_y;
-		}
+		};
 		
 		this.get_light_x = function ()
 		{
 			return light_x;
-		}
+		};
 		
 		this.get_light_y = function ()
 		{
 			return light_y;
-		}
+		};
 		
 		// Implementation
 		this.on.set_size(tile_size, tile_size);
