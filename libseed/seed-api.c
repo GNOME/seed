@@ -47,6 +47,13 @@ void seed_context_unref(JSGlobalContextRef ctx)
 	JSGlobalContextRelease(ctx);
 }
 
+/**
+ * seed_make_null:
+ * @ctx: A #JSContextRef.
+ *
+ * Return value: A #JSValueRef representing %NULL.
+ *
+ */
 JSValueRef seed_make_null(JSContextRef ctx)
 {
 	return JSValueMakeNull(ctx);
@@ -58,6 +65,17 @@ JSObjectRef seed_make_object(JSContextRef ctx,
 	return JSObjectMake(ctx, class, private);
 }
 
+/**
+ * seed_object_set_property_at_index:
+ * @ctx: A #JSContextRef.
+ * @object: A #JSObjectRef on which to set the property.
+ * @index: The index of the property to set.
+ * @value: The #JSValueRef to use as the property's value.
+ * @exception: A reference to a #JSValueRef in which to store any exceptions. Pass %NULL to ignore exceptions.
+ *
+ * Sets the property @index on @object to @value.
+ *
+ */
 void seed_object_set_property_at_index(JSContextRef ctx,
 									   JSObjectRef object,
 									   gint index,
@@ -112,6 +130,16 @@ SeedScript *seed_make_script(JSContextRef ctx,
 	return ret;
 }
 
+/**
+ * seed_script_new_from_file:
+ * @ctx: A #JSContextRef.
+ * @file: The filename of the script to load.
+ *
+ * Uses seed_make_script to create a #SeedScript from the contents of @file.
+ *
+ * Return value: The newly created #SeedScript.
+ *
+ */
 SeedScript *seed_script_new_from_file(JSContextRef ctx, gchar * file)
 {
 	SeedScript *script;
@@ -152,6 +180,16 @@ JSValueRef seed_evaluate(JSContextRef ctx, SeedScript * s, JSObjectRef this)
 	return ret;
 }
 
+/**
+ * seed_simple_evaluate:
+ * @ctx: A #JSContextRef.
+ * @source: A string representing the JavaScript to evaluate.
+ *
+ * Evaluates a string of JavaScript.
+ *
+ * Return value: The #SeedValue returned by evaluating the script.
+ *
+ */
 JSValueRef seed_simple_evaluate(JSContextRef ctx, gchar * source)
 {
 	JSValueRef ret;
@@ -163,16 +201,39 @@ JSValueRef seed_simple_evaluate(JSContextRef ctx, gchar * source)
 	return ret;
 }
 
+/**
+ * seed_script_exception:
+ * @s: A #SeedScript.
+ *
+ * Return value: A #JSValueRef representing the exception of @s.
+ *
+ */
 JSValueRef seed_script_exception(SeedScript * s)
 {
 	return s->exception;
 }
 
+/**
+ * seed_string_get_maximum_size:
+ * @string: A #JSStringRef.
+ *
+ * Return value: The maximum number of bytes @string will take up if converted to a null-terminated UTF8 string.
+ *
+ */
 gsize seed_string_get_maximum_size(JSStringRef string)
 {
 	return JSStringGetMaximumUTF8CStringSize(string);
 }
 
+/**
+ * seed_string_to_utf8_buffer:
+ * @string: A #JSStringRef.
+ * @buffer: An allocated string.
+ * @buffer_size: The length of @buffer, in bytes.
+ *
+ * Return value: A null-terminated UTF8 representation of @string.
+ *
+ */
 gsize seed_string_to_utf8_buffer(JSStringRef string, gchar * buffer,
 								 size_t buffer_size)
 {
