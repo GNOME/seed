@@ -5,4 +5,3 @@ void basic(TestSimpleFixture * fixture, gconstpointer _data)
 {
 	g_assert(1);
 }
-

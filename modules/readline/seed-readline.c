@@ -87,12 +87,12 @@ seed_readline(SeedContext ctx,
 	const gchar *histfname = g_get_home_dir();
 	gchar *path = g_build_filename(histfname, ".seed_history", NULL);
 
-	if(!readline_has_initialized)
+	if (!readline_has_initialized)
 	{
 		read_history(path);
 		readline_has_initialized = 1;
 	}
-	
+
 	if (argumentCount != 1)
 	{
 		gchar *mes =

@@ -17,7 +17,6 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 #include <glib.h>
 #include <glib-object.h>
 #include <stdio.h>
@@ -26,11 +25,11 @@
 #include <stdlib.h>
 #include <girepository.h>
 
-SeedEngine * eng;
+SeedEngine *eng;
 
-void seed_repl(int argc, char ** argv)
+void seed_repl(int argc, char **argv)
 {
-	SeedScript  * script;
+	SeedScript *script;
 
 	script = seed_make_script(eng->context, "Seed.import_namespace('readline');"
 							  "while(1) { try { Seed.print(eval("
@@ -38,19 +37,19 @@ void seed_repl(int argc, char ** argv)
 							  "Seed.print(e.name + \" \" + e.message);}}",
 							  NULL, 0);
 	seed_evaluate(eng->context, script, 0);
-	
+
 	g_free(script);
 }
 
 void seed_exec(gint argc, gchar ** argv)
 {
-	SeedScript  * script;
+	SeedScript *script;
 	SeedException e;
-	gchar * buffer;
+	gchar *buffer;
 
 	g_file_get_contents(argv[1], &buffer, 0, 0);
 
-	if(!buffer)
+	if (!buffer)
 	{
 		g_critical("File %s not found!", argv[1]);
 		exit(1);
@@ -79,25 +78,23 @@ void seed_exec(gint argc, gchar ** argv)
 				   seed_exception_get_message(eng->context, e),
 				   seed_exception_get_file(eng->context, e),
 				   seed_exception_get_line(eng->context, e));
-	
+
 	g_free(script);
 }
 
 int main(gint argc, gchar ** argv)
-{	
+{
 	g_set_prgname("seed");
 	g_thread_init(0);
 	eng = seed_init(&argc, &argv);
 
-	if (!g_irepository_require(g_irepository_get_default(), 
-							   "GObject", 0, 0, 0))
+	if (!g_irepository_require(g_irepository_get_default(), "GObject", 0, 0, 0))
 		g_critical("Unable to import GObject repository");
-		
-	if(argc == 1)
+
+	if (argc == 1)
 		seed_repl(argc, argv);
 	else
 		seed_exec(argc, argv);
-	
+
 	return 0;
 }
-
