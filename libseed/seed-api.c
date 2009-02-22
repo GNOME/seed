@@ -135,7 +135,7 @@ SeedScript *seed_make_script(JSContextRef ctx,
  * @ctx: A #JSContextRef.
  * @file: The filename of the script to load.
  *
- * Uses seed_make_script to create a #SeedScript from the contents of @file.
+ * Uses seed_make_script() to create a #SeedScript from the contents of @file.
  *
  * Return value: The newly created #SeedScript.
  *
