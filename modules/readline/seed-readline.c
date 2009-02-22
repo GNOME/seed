@@ -7,7 +7,7 @@
 
 SeedObject namespace_ref;
 SeedEngine *eng;
-int readline_has_initialized = 0;
+gboolean readline_has_initialized = FALSE;
 
 static void
 seed_handle_rl_closure(ffi_cif * cif, void *result, void **args, void *userdata)
@@ -58,7 +58,7 @@ seed_readline_bind(SeedContext ctx,
 	{
 		gchar *mes =
 			g_strdup_printf("Seed.readline_bind expected 2 arguments, "
-							"got %d", argumentCount);
+							"got %Zd", argumentCount);
 		seed_make_exception(ctx, exception, "ArgumentError", mes);
 		g_free(mes);
 		return seed_make_null(ctx);
@@ -90,14 +90,14 @@ seed_readline(SeedContext ctx,
 	if (!readline_has_initialized)
 	{
 		read_history(path);
-		readline_has_initialized = 1;
+		readline_has_initialized = TRUE;
 	}
 
 	if (argumentCount != 1)
 	{
 		gchar *mes =
 			g_strdup_printf("Seed.readline expected 1 argument, "
-							"got %d", argumentCount);
+							"got %Zd", argumentCount);
 		seed_make_exception(ctx, exception, "ArgumentError", mes);
 		g_free(mes);
 		return seed_make_null(ctx);
