@@ -1,4 +1,4 @@
-== Seed 0.5, < Album Name Here > (2009.02.xx) ==
+== Seed 0.5, Transformer (2009.02.xx) ==
 
 * Many, many crash fixes.
 
@@ -11,11 +11,16 @@
 * instance_init is now just init when creating new GTypes. This will require 
   changes in any code using subclassing.
 
-* Clutter 0.9 animation API wrappers
+* Clutter 0.9 animation API wrappers.
 
-* Support for arrays of gfloats
+* Add seed_repl_expose; gives the ability to drop to a JavaScript REPL from
+  within C, and magically expose JSValueRefs to JS in a simple way.
 
-* API additions: seed_script_new_from_file, 
+* Seed.readline history persists between sessions (stored in ~/.seed_history)
+
+* Support for arrays of gfloats.
+
+* API additions: seed_script_new_from_file
 
 * Seed now builds on Mac OS X. Instructions in INSTALL.osx.
 
