@@ -5,5 +5,3 @@
 
 * Why can't we return GTypes or GObjects from Seed-installed signals 
   without segfaulting Seed?
-
-* Why don't Clutter 0.9 GIRs have offsets for ClutterColor?
