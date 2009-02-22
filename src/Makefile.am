@@ -19,7 +19,7 @@ seed_SOURCES = \
 	main.c
 
 seed_LDFLAGS = \
-	-L../libseed/.libs -lseed -lreadline $(SEED_PROFILE_LDFLAGS)
+	-L../libseed/.libs -lseed $(SEED_PROFILE_LDFLAGS)
 
 seed_LDADD = \
 	$(SEED_LIBS) \

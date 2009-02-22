@@ -14,5 +14,5 @@ test_CFLAGS = -Wall				\
 	 $(SEED_CFLAGS)
 
 test_LDADD = $(SEED_LIBS) -lseed
-test_LDFLAGS = -L../../libseed/.libs -lseed -lreadline
+test_LDFLAGS = -L../../libseed/.libs -lseed
 
