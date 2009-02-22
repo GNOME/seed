@@ -24,6 +24,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <string.h>
+#include <stdarg.h>
 
 GQuark qname = 0;
 GQuark qprototype = 0;
@@ -1289,6 +1290,45 @@ void seed_create_function(JSContextRef ctx,
 
 	oref = JSObjectMakeFunctionWithCallback(ctx, NULL, func);
 	seed_object_set_property(ctx, obj, name, oref);
+}
+
+void seed_repl_expose(JSContextRef ctx, ...)
+{
+	va_list argp;
+	void * expose;
+	JSObjectRef arrayObj;
+	int i = 0;
+	JSStringRef script;
+	JSObjectRef seed = (JSObjectRef) seed_object_get_property(ctx,
+												JSContextGetGlobalObject(ctx),
+												"Seed");
+	
+	va_start(argp, ctx);
+	
+	arrayObj = JSObjectMake(ctx, NULL, NULL);
+	
+	printf("Seed Debug REPL\nExposing:\n");
+	
+	while((expose = va_arg(argp, void *)))
+	{
+		printf("\t%p\n", expose);
+		JSObjectSetPropertyAtIndex(ctx, arrayObj, i++, expose, NULL);
+	}
+	
+	printf("\nAs numbered properties on the Seed.debug_argv global.\n");
+	
+	seed_object_set_property(ctx, seed, "debug_argv", arrayObj);
+	
+	script = JSStringCreateWithUTF8CString("Seed.import_namespace('readline');"
+								  "while(1) { try { Seed.print(eval("
+								  "readline.readline(\"> \"))); } catch(e) {"
+								  "Seed.print(e.name + \" \" + e.message);}}");
+	
+	JSEvaluateScript(ctx, script, NULL, NULL, 0, NULL);
+	
+	JSStringRelease(script);
+	
+	va_end(argp);
 }
 
 static void
