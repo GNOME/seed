@@ -1307,15 +1307,15 @@ void seed_repl_expose(JSContextRef ctx, ...)
 	
 	arrayObj = JSObjectMake(ctx, NULL, NULL);
 	
-	printf("Seed Debug REPL\nExposing:\n");
+	printf("Seed Debug REPL\n\nExposing:\n");
 	
 	while((expose = va_arg(argp, void *)))
 	{
-		printf("\t%p\n", expose);
+		printf("  Seed.debug_argv[%d] = %p\n", i, expose);
 		JSObjectSetPropertyAtIndex(ctx, arrayObj, i++, expose, NULL);
 	}
 	
-	printf("\nAs numbered properties on the Seed.debug_argv global.\n");
+	printf("\n");
 	
 	seed_object_set_property(ctx, seed, "debug_argv", arrayObj);
 	
