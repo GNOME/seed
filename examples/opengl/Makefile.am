@@ -6,6 +6,10 @@ gl_DATA = \
 	seed-gears.js
 endif
 
+EXTRA_DIST = \
+	glut-teapot.js \
+	triangle-actor.js \
+	seed-gears.js
 
 ## File created by the gnome-build tools
 
