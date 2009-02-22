@@ -126,7 +126,7 @@ The external API of libseed. Used for embedding Seed in your applications, or wr
 </para>
 
 @ctx: 
-@s: 
+@js: 
 @source_url: 
 @line_number: 
 @Returns: 

@@ -1416,6 +1416,16 @@ static gboolean seed_parse_args(int *argc, char ***argv)
 	return ret;
 }
 
+/**
+ * seed_init:
+ * @argc: A reference to the number of arguments remaining to parse.
+ * @argv: A reference to an array of string arguments remaining to parse.
+ *
+ * Initializes a new #SeedEngine.
+ *
+ * Return value: The newly created and initialized #SeedEngine.
+ *
+ */
 SeedEngine *seed_init(gint * argc, gchar *** argv)
 {
 	JSObjectRef seed_obj_ref;

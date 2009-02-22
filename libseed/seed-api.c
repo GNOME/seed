@@ -77,6 +77,18 @@ JSValueRef seed_object_call(JSContextRef ctx,
 								  argument_count, arguments, exception);
 }
 
+/**
+ * seed_make_script:
+ * @ctx: A #JSContextRef.
+ * @js: A string representing the contents of the script.
+ * @source_url: The filename of the script, for reference in error messages, or %NULL.
+ * @line_number: The line number of the beginning of the script, for reference in error messages, or %NULL.
+ *
+ * Creates a new #SeedScript instance with @js as the contents, then checks for proper syntax.
+ *
+ * Return value: The newly created #SeedScript.
+ *
+ */
 SeedScript *seed_make_script(JSContextRef ctx,
 							 const gchar * js,
 							 const gchar * source_url, gint line_number)
@@ -117,14 +129,25 @@ SeedScript *seed_script_new_from_file(JSContextRef ctx, gchar * file)
 	return script;
 }
 
-JSValueRef seed_evaluate(JSContextRef ctx, SeedScript * js, JSObjectRef this)
+/**
+ * seed_evaluate:
+ * @ctx: A #JSContextRef.
+ * @s: A #SeedScript to evaluate.
+ * @this: The object which should be assigned to the "this" global.
+ *
+ * Evaluates a #SeedScript with @this as the global "this" object.
+ *
+ * Return value: The #SeedValue returned by evaluating the script.
+ *
+ */
+JSValueRef seed_evaluate(JSContextRef ctx, SeedScript * s, JSObjectRef this)
 {
 	JSValueRef ret;
 
-	js->exception = 0;
+	s->exception = 0;
 	ret = JSEvaluateScript(ctx,
-						   js->script, this, js->source_url,
-						   js->line_number, &js->exception);
+						   s->script, this, s->source_url,
+						   s->line_number, &s->exception);
 
 	return ret;
 }
