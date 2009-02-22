@@ -3,6 +3,19 @@
 Seed.import_namespace("Clutter", "0.9");
 Clutter.init(null, null);
 
+colors = [	"blanched almond", 
+				"OldLace", 
+				"MistyRose", 
+				"White", 
+				"LavenderBlush",
+				"CornflowerBlue",
+				"chartreuse",
+				"chocolate",
+				"light coral",
+				"medium violet red",
+				"LemonChiffon2",
+				"RosyBrown3"];
+
 function create_rectangles(rectangles, colors)
 {
 	for(var i in colors)
@@ -15,7 +28,7 @@ function create_rectangles(rectangles, colors)
 		r.width = r.height = stage.height / colors.length;
 		r.color = c;
 		r.set_anchor_point_from_gravity(Clutter.Gravity.CENTER);
-		r.y = i * r.height + r.height/2
+		r.y = i * r.height + r.height/2;
 		r.show();
 		
 		stage.add_actor(r);
@@ -26,17 +39,16 @@ function create_rectangles(rectangles, colors)
 
 function animate_rectangles(rectangles)
 {
-	var anim = new Array(rectangles.length);
-	var bounce;
 	for (var i in rectangles)
 	{
-		anim[i] = rectangles[i].animate(Clutter.AnimationMode.LINEAR, 5000, {
+		rectangles[i].anim = rectangles[i].animate(Clutter.AnimationMode.LINEAR, 5000,
+			{
 				x: [GObject.TYPE_INT, stage.width / 2],
 				rotation_angle_z: [GObject.TYPE_DOUBLE, 500]
 			});
-		anim[i].timeline.start();
+		rectangles[i].anim.timeline.start();
 	}
-	anim[i].timeline.signal.completed.connect(
+	rectangles[i].anim.timeline.signal.completed.connect(
 		function(tml)
 		{
 			var white = new Clutter.Color({red:255,
@@ -50,16 +62,17 @@ function animate_rectangles(rectangles)
 			text.set_anchor_point_from_gravity(Clutter.Gravity.CENTER);
 			text.x = stage.width / 2;
 			text.y = -text.height;	// Off-stage
-			text.y = 0;
 			stage.add_actor(text);
 			text.show();
-			bounce = text.animate(Clutter.AnimationMode.EASE_OUT_BOUNCE, 3000,
-				{y: [GObject.TYPE_INT, stage.height / 2]});
-			bounce.timeline.start();
+			text.anim = text.animate(Clutter.AnimationMode.EASE_OUT_BOUNCE, 3000,
+				{
+					y: [GObject.TYPE_INT, stage.height / 2]
+				});
+			text.anim.timeline.start();
 
 			for (var i in rectangles)
 			{
-				rectangles[i].exp = 
+				rectangles[i].anim = 
 					rectangles[i].animate(Clutter.AnimationMode.EASE_OUT_BOUNCE, 3000,
 					{
 						x: [GObject.TYPE_INT, Math.random() * stage.width],
@@ -70,26 +83,13 @@ function animate_rectangles(rectangles)
 					//rotation_angle change makes it stop spinning. don't know why it's still
 					//spinning here, it really should have stopped when the timeline did. 
 
-				rectangles[i].exp.timeline.start();
+				rectangles[i].anim.timeline.start();
 			}
 		});
 }
 
 function main()
 {
-	colors = [	"blanched almond", 
-				"OldLace", 
-				"MistyRose", 
-				"White", 
-				"LavenderBlush",
-				"CornflowerBlue",
-				"chartreuse",
-				"chocolate",
-				"light coral",
-				"medium violet red",
-				"LemonChiffon2",
-				"RosyBrown3"];
-
 	stage = new Clutter.Stage();
 	var rectangles = new Array(colors.length);
 	stage.signal.hide.connect(function(){Clutter.main_quit();});
