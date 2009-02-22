@@ -7,6 +7,7 @@
 
 SeedObject namespace_ref;
 SeedEngine *eng;
+int readline_has_initialized = 0;
 
 static void
 seed_handle_rl_closure(ffi_cif * cif, void *result, void **args, void *userdata)
@@ -81,9 +82,17 @@ seed_readline(SeedContext ctx,
 			  const SeedValue arguments[], SeedValue * exception)
 {
 	SeedValue valstr = 0;
-	gchar *str = 0;
+	gchar *str = NULL;
 	gchar *buf;
+	const gchar *histfname = g_get_home_dir();
+	gchar *path = g_build_filename(histfname, ".seed_history", NULL);
 
+	if(!readline_has_initialized)
+	{
+		read_history(path);
+		readline_has_initialized = 1;
+	}
+	
 	if (argumentCount != 1)
 	{
 		gchar *mes =
@@ -104,7 +113,11 @@ seed_readline(SeedContext ctx,
 		g_free(str);
 	}
 
+	write_history(path);
+	history_truncate_file(path, 1000);
+
 	g_free(buf);
+	g_free(path);
 
 	if (valstr == 0)
 		valstr = seed_make_null(ctx);
