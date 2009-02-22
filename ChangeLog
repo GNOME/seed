@@ -26,6 +26,7 @@
     * Clutter-COGL example
     * Reddit client (Gio and JSON)
     * Library of Clutter "slide transitions"
+    * Rewrote clutter example for 0.9
 
 * The Lights Off example now lives in Gnome Games.
 
