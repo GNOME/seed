@@ -4,7 +4,7 @@
 // STDOUT:255\.000000\n0\.000000
 // STDERR:
 
-Seed.import_namespace("Clutter", "0.8");
+Seed.import_namespace("Clutter");
 
 c = new Clutter.Color();
 Clutter.color_parse("red", c);
