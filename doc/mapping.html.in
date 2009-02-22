@@ -1,0 +1,27 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+    <title>Seed C Mapping Conventions</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <link rel="stylesheet" href="style.css" type="text/css" charset="utf-8" />
+    <script type="text/javascript" src="sh.js"></script>
+    <script type="text/javascript" src="sh_js.js"></script>
+    <link type="text/css" rel="stylesheet" href="sh.css" />
+    <style type="text/css">
+    div.section
+    {
+        font-weight: bold;
+    }
+    </style>
+
+</head>
+<body onload="sh_highlightDocument();">
+<div id="header">Seed C Mapping Conventions</div>
+<div id="subheader">v.@VERSION@</div>
+<div class="section">Enums and Flags</div>
+<p>
+
+</p>
+</body>
+</html>

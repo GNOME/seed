@@ -239,6 +239,7 @@ AC_OUTPUT([
 Makefile
 
 doc/conventions.html
+doc/mapping.html
 doc/runtime.html
 doc/tutorial-standalone/tutorial.html
 doc/modules/canvas.html
