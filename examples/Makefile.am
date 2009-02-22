@@ -24,7 +24,8 @@ examples_DATA = \
 	gconf.js \
 	video.js \
 	accelgroup.js \
-	clutter.js \
+	clutter-0.8.js \
+	clutter-0.9.js \
 	introspect.js \
 	poppler.js \
 	json-packing.js \
@@ -53,7 +54,8 @@ EXTRA_DIST = \
 	accelgroup.js \
 	Gnio.js \
 	Gnio-server.js \
-	clutter.js \
+	clutter-0.8.js \
+	clutter-0.9.js \
 	introspect.js \
 	poppler.js \
 	json-packing.js \
