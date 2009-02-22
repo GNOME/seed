@@ -1,6 +1,6 @@
+#include <stdio.h>
 #include "../../libseed/seed.h"
 #include <ffi.h>
-#include <stdio.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <sys/mman.h>
@@ -146,3 +146,4 @@ void seed_module_init(SeedEngine * local_eng)
 	seed_object_set_property(eng->context,
 							 eng->global, "readline", namespace_ref);
 }
+

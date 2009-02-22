@@ -22,12 +22,11 @@
 #ifndef _SEED_PRIVATE_H
 #define _SEED_PRIVATE_H
 
+#include <stdlib.h>
 #include <JavaScriptCore/JavaScript.h>
 #include <glib.h>
 #include <glib-object.h>
 #include <gmodule.h>
-#include <stdlib.h>
-#include <stdio.h>
 #include <girepository.h>
 #include <ffi.h>
 

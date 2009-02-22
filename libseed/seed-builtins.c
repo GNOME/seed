@@ -20,9 +20,7 @@
  */
 
 #include <unistd.h>
-#include <stdio.h>
 #include "seed-private.h"
-#include <string.h>
 #include <sys/mman.h>
 
 static JSValueRef
@@ -40,7 +38,7 @@ seed_include(JSContextRef ctx,
 	{
 		gchar *mes =
 			g_strdup_printf("Seed.include expected 1 argument, "
-							"got %d", (unsigned int)argumentCount);
+							"got %Zd", argumentCount);
 		seed_make_exception(ctx, exception, "ArgumentError", mes);
 		g_free(mes);
 		return JSValueMakeNull(ctx);
@@ -95,15 +93,15 @@ seed_print(JSContextRef ctx,
 	if (argumentCount != 1)
 	{
 		gchar *mes =
-			g_strdup_printf("Seed.print expected 1 argument," " got %d",
-							(unsigned int)argumentCount);
+			g_strdup_printf("Seed.print expected 1 argument," " got %Zd",
+								argumentCount);
 		seed_make_exception(ctx, exception, "ArgumentError", mes);
 		g_free(mes);
 		return JSValueMakeNull(ctx);
 	}
 
 	gchar *buf = seed_value_to_string(ctx, arguments[0], exception);
-	printf("%s\n", buf);
+	g_print("%s\n", buf);
 	g_free(buf);
 
 	return JSValueMakeNull(ctx);
@@ -140,13 +138,13 @@ seed_introspect(JSContextRef ctx,
 
 	GICallableInfo *info;
 	JSObjectRef data_obj, args_obj;
-	gint i;
+	guint i;
 
 	if (argumentCount != 1)
 	{
 		gchar *mes =
 			g_strdup_printf("Seed.introspect expected 1 argument, "
-							"got %d", (unsigned int)argumentCount);
+							"got %Zd", argumentCount);
 		seed_make_exception(ctx, exception, "ArgumentError", mes);
 		g_free(mes);
 		return JSValueMakeNull(ctx);
@@ -212,8 +210,7 @@ seed_check_syntax(JSContextRef ctx,
 	else
 	{
 		gchar *mes = g_strdup_printf("Seed.check_syntax expected "
-									 "1 argument, got %d",
-									 (unsigned int)argumentCount);
+									 "1 argument, got %Zd", argumentCount);
 		seed_make_exception(ctx, exception, "ArgumentError", mes);
 		g_free(mes);
 	}
@@ -269,6 +266,7 @@ seed_spawn(JSContextRef ctx,
 	seed_object_set_property(ctx, ret, "stderr",
 							 seed_value_from_string(ctx, stderr, exception));
 
+	g_free(line);
 	g_free(stdout);
 	g_free(stderr);
 
@@ -288,8 +286,8 @@ seed_quit(JSContextRef ctx,
 	}
 	else if (argumentCount > 1)
 	{
-		gchar *mes = g_strdup_printf("Seed.quit expected " "1 argument, got %d",
-									 (unsigned int)argumentCount);
+		gchar *mes = g_strdup_printf("Seed.quit expected " "1 argument, got %Zd",
+										argumentCount);
 		seed_make_exception(ctx, exception, "ArgumentError", mes);
 		g_free(mes);
 	}

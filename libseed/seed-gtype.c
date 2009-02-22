@@ -218,7 +218,7 @@ seed_property_method_invoked(JSContextRef ctx,
 	{
 		gchar *mes =
 			g_strdup_printf("Property installation expected 1 argument"
-							" got %d \n", (unsigned int)argumentCount);
+							" got %Zd \n", argumentCount);
 		seed_make_exception(ctx, exception, "ArgumentError", mes);
 		g_free(mes);
 
@@ -270,7 +270,7 @@ seed_gsignal_method_invoked(JSContextRef ctx,
 	if (argumentCount != 1)
 	{
 		gchar *mes = g_strdup_printf("Signal constructor expected 1 argument"
-									 " got %d \n", (unsigned int)argumentCount);
+									 " got %Zd \n", argumentCount);
 		seed_make_exception(ctx, exception, "ArgumentError", mes);
 		g_free(mes);
 		return (JSObjectRef) JSValueMakeNull(ctx);
@@ -563,8 +563,7 @@ seed_gtype_constructor_invoked(JSContextRef ctx,
 	{
 		gchar *mes =
 			g_strdup_printf("GType constructor expected 1 "
-							"argument, got %d \n",
-							(unsigned int)argumentCount);
+							"argument, got %Zd \n", argumentCount);
 		seed_make_exception(ctx, exception, "ArgumentError", mes);
 		g_free(mes);
 		return (JSObjectRef) JSValueMakeNull(ctx);
@@ -651,8 +650,7 @@ seed_param_getter_invoked(JSContextRef ctx,
 	if (argumentCount != 1)
 	{
 		gchar *mes = g_strdup_printf("ParamSpec.get expected "
-									 "1 argument, got %d",
-									 (unsigned int)argumentCount);
+									 "1 argument, got %Zd", argumentCount);
 		seed_make_exception(ctx, exception, "ArgumentError", mes);
 		g_free(mes);
 
@@ -685,8 +683,7 @@ seed_param_setter_invoked(JSContextRef ctx,
 	if (argumentCount != 1)
 	{
 		gchar *mes = g_strdup_printf("ParamSpec.set expected "
-									 "1 argument, got %d",
-									 (unsigned int)argumentCount);
+									 "1 argument, got %Zd", argumentCount);
 		seed_make_exception(ctx, exception, "ArgumentError", mes);
 		g_free(mes);
 

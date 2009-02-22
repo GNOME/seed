@@ -17,17 +17,16 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <stdlib.h>
 #include <glib.h>
 #include <glib-object.h>
-#include <stdio.h>
 #include "../libseed/seed.h"
 #include "../libseed/seed-debug.h"
-#include <stdlib.h>
 #include <girepository.h>
 
 SeedEngine *eng;
 
-void seed_repl(int argc, char **argv)
+void seed_repl(gint argc, gchar **argv)
 {
 	SeedScript *script;
 
@@ -82,7 +81,7 @@ void seed_exec(gint argc, gchar ** argv)
 	g_free(script);
 }
 
-int main(gint argc, gchar ** argv)
+gint main(gint argc, gchar ** argv)
 {
 	g_set_prgname("seed");
 	g_thread_init(0);
@@ -98,3 +97,4 @@ int main(gint argc, gchar ** argv)
 
 	return 0;
 }
+

@@ -110,8 +110,7 @@ seed_gobject_constructor_invoked(JSContextRef ctx,
 	if (argumentCount > 1)
 	{
 		gchar *mes = g_strdup_printf("Constructor expects"
-									 " 1 argument, got %d",
-									 (unsigned int)argumentCount);
+									 " 1 argument, got %Zd", argumentCount);
 		seed_make_exception(ctx, exception, "ArgumentError", mes);
 		g_free(mes);
 
@@ -224,8 +223,7 @@ seed_gobject_equals(JSContextRef ctx,
 	if (argumentCount != 1)
 	{
 		gchar *mes = g_strdup_printf("GObject equals comparison expected"
-									 " 1 argument, got %d",
-									 (unsigned int)argumentCount);
+									 " 1 argument, got %Zd", argumentCount);
 		seed_make_exception(ctx, exception, "ArgumentError", mes);
 		g_free(mes);
 
@@ -276,7 +274,7 @@ seed_gobject_method_invoked(JSContextRef ctx,
 	GArgument *in_args;
 	GArgument *out_args;
 	GArgument *out_values;
-	gint n_args, n_in_args, n_out_args, i;
+	guint n_args, n_in_args, n_out_args, i;
 	GIArgInfo *arg_info;
 	GITypeInfo *type_info;
 	GIDirection dir;
@@ -1303,20 +1301,19 @@ void seed_repl_expose(JSContextRef ctx, ...)
 															  JSContextGetGlobalObject
 															  (ctx),
 															  "Seed");
-
 	va_start(argp, ctx);
 
 	arrayObj = JSObjectMake(ctx, NULL, NULL);
 
-	printf("Seed Debug REPL\n\nExposing:\n");
+	g_print("Seed Debug REPL\n\nExposing:\n");
 
 	while ((expose = va_arg(argp, void *)))
 	{
-		printf("  Seed.debug_argv[%d] = %p\n", i, expose);
+		g_print("  Seed.debug_argv[%d] = %p\n", i, expose);
 		JSObjectSetPropertyAtIndex(ctx, arrayObj, i++, expose, NULL);
 	}
 
-	printf("\n");
+	g_print("\n");
 
 	seed_object_set_property(ctx, seed, "debug_argv", arrayObj);
 
