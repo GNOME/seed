@@ -11,30 +11,28 @@ if (child_pid === 0)
 {
 	Gtk.init(null, null);
 	
-	var pipe = pipes[0];
+	var id = parseInt(pipes[0].read(), 10);
 
-	var id = parseInt(pipe.read(), 10);
-
-	var l = new Gtk.Label({label: "Hello GtkPlug World"});
-	var s = new Gtk.Plug.c_new(id);
+	var label = new Gtk.Label({label: "Hello GtkPlug World"});
+	var plug = new Gtk.Plug.c_new(id);
 	
-	s.add(l);
-	s.show_all();
+	plug.add(label);
+	plug.show_all();
 	Gtk.main();
 }
 
 Gtk.init(null, null);
 
-var w = new Gtk.Window();
-w.signal.hide.connect(function () { Gtk.main_quit(); });
+var window = new Gtk.Window();
+window.signal.hide.connect(function () { Gtk.main_quit(); });
 
-var s = new Gtk.Socket();
+var socket = new Gtk.Socket();
 var pipe = pipes[1];
 
-w.add(s);
-w.show_all();
+window.add(socket);
+window.show_all();
 
-pipe.write(s.get_id());
+pipe.write(socket.get_id());
 
 Gtk.main();
 
