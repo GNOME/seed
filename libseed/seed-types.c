@@ -1493,7 +1493,8 @@ seed_value_from_string (JSContextRef ctx,
 
 JSValueRef
 seed_value_from_filename (JSContextRef ctx,
-			  const gchar * filename, JSValueRef * exception)
+			  const gchar * filename, 
+			  JSValueRef * exception)
 {
   GError *e = NULL;
   gchar *utf8;
