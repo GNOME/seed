@@ -1,13 +1,13 @@
 #!/usr/bin/env seed
 // Returns: 0
 // STDIN:
-// STDOUT:255\.000000\n0\.000000
+// STDOUT:17\.000000\n0\.000000
 // STDERR:
 
-Seed.import_namespace("Clutter");
+Seed.import_namespace("Pango");
 
-c = new Clutter.Color();
-Clutter.color_parse("red", c);
+c = new Pango.Color();
+c.red = 17;
 
 Seed.print(c.red);
 Seed.print(c.blue);

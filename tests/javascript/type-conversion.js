@@ -1,17 +1,16 @@
 #!/usr/bin/env seed
 // Returns: 0
 // STDIN:
-// STDOUT:Javascript number out of range of guchar\nCan not convert Javascript value to boolean\nCan not convert Javascript value to int
+// STDOUT:Can not convert Javascript value to boolean\nCan not convert Javascript value to int
 // STDERR:
 
-Seed.import_namespace("Clutter");
-Clutter.init(null, null);
+Seed.import_namespace("Gtk");
+Gtk.init(null, null);
 
-actor = new Clutter.Rectangle();
+actor = new Gtk.Window();
 tests = [
-	"actor.opacity = 300",
-	"actor.reactive = \"Nutrition\"",
-	"actor.width = actor"];
+	"actor.accept_focus = 'hello'",
+	"actor.default_width = actor"];
 
 
 for ( i in tests )
