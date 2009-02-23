@@ -32,26 +32,27 @@ extern SeedEngine *eng;
 
 extern JSContextGroupRef context_group;
 
-typedef struct _SeedScript {
-	JSStringRef script;
-	JSValueRef exception;
+typedef struct _SeedScript
+{
+  JSStringRef script;
+  JSValueRef exception;
 
-	JSStringRef source_url;
-	gint line_number;
+  JSStringRef source_url;
+  gint line_number;
 } SeedScript;
 
-JSObjectRef seed_gobject_get_prototype_for_gtype(GType type);
-JSClassRef seed_gobject_get_class_for_gtype(JSContextRef ctx, GType type);
+JSObjectRef seed_gobject_get_prototype_for_gtype (GType type);
+JSClassRef seed_gobject_get_class_for_gtype (JSContextRef ctx, GType type);
 
 void
-seed_gobject_define_property_from_function_info(JSContextRef ctx,
-												GIFunctionInfo * info,
-												JSObjectRef object,
-												gboolean instance);
-void seed_create_function(JSContextRef ctx, gchar * name,
-						  gpointer func, JSObjectRef obj);
+seed_gobject_define_property_from_function_info (JSContextRef ctx,
+						 GIFunctionInfo * info,
+						 JSObjectRef object,
+						 gboolean instance);
+void seed_create_function (JSContextRef ctx, gchar * name,
+			   gpointer func, JSObjectRef obj);
 
-void seed_repl_expose(JSContextRef ctx, ...);
+void seed_repl_expose (JSContextRef ctx, ...);
 
 typedef void (*SeedModuleInitCallback) (SeedEngine * eng);
 

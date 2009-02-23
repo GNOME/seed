@@ -1,50 +1,50 @@
 /*
- * -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*- 
- */
-
-/*
- *	This file is part of Seed, the GObject Introspection<->Javascript bindings.
+ * This file is part of Seed, the GObject Introspection<->Javascript bindings.
  *
- *		Seed is free software: you can redistribute it and/or modify 
- *		it under the terms of the GNU Lesser General Public License as
- *		published by the Free Software Foundation, either version 3 of
- *		the License, or (at your option) any later version. 
- *		Seed is distributed in the hope that it will be useful, 
- *		but WITHOUT ANY WARRANTY; without even the implied warranty of 
- *		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
- *		GNU Lesser General Public License for more details. 
- *		You should have received a copy of the GNU Lesser General Public License 
- *		along with Seed.  If not, see <http://www.gnu.org/licenses/>. 
- *
- *		Copyright (C) Robert Carr 2008 <carrr@rpi.edu>
+ * Seed is free software: you can redistribute it and/or modify 
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of
+ * the License, or (at your option) any later version. 
+ * Seed is distributed in the hope that it will be useful, 
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * GNU Lesser General Public License for more details. 
+ * You should have received a copy of the GNU Lesser General Public License 
+ * along with Seed.  If not, see <http://www.gnu.org/licenses/>. 
+ * 
+ * Copyright (C) Robert Carr 2008 <carrr@rpi.edu>
  */
 
 #include "seed-private.h"
 
-void seed_value_protect(JSContextRef ctx, JSValueRef value)
+void
+seed_value_protect (JSContextRef ctx, JSValueRef value)
 {
-	JSValueProtect(ctx, value);
+  JSValueProtect (ctx, value);
 }
 
-void seed_value_unprotect(JSContextRef ctx, JSValueRef value)
+void
+seed_value_unprotect (JSContextRef ctx, JSValueRef value)
 {
-	JSValueUnprotect(ctx, value);
+  JSValueUnprotect (ctx, value);
 }
 
-JSGlobalContextRef seed_context_create(JSContextGroupRef group,
-									   JSClassRef global_class)
+JSGlobalContextRef
+seed_context_create (JSContextGroupRef group, JSClassRef global_class)
 {
-	return JSGlobalContextCreateInGroup(group, global_class);
+  return JSGlobalContextCreateInGroup (group, global_class);
 }
 
-JSGlobalContextRef seed_context_ref(JSGlobalContextRef ctx)
+JSGlobalContextRef
+seed_context_ref (JSGlobalContextRef ctx)
 {
-	return JSGlobalContextRetain(ctx);
+  return JSGlobalContextRetain (ctx);
 }
 
-void seed_context_unref(JSGlobalContextRef ctx)
+void
+seed_context_unref (JSGlobalContextRef ctx)
 {
-	JSGlobalContextRelease(ctx);
+  JSGlobalContextRelease (ctx);
 }
 
 /**
@@ -54,15 +54,16 @@ void seed_context_unref(JSGlobalContextRef ctx)
  * Return value: A #JSValueRef representing %NULL.
  *
  */
-JSValueRef seed_make_null(JSContextRef ctx)
+JSValueRef
+seed_make_null (JSContextRef ctx)
 {
-	return JSValueMakeNull(ctx);
+  return JSValueMakeNull (ctx);
 }
 
-JSObjectRef seed_make_object(JSContextRef ctx,
-							 JSClassRef class, gpointer private)
+JSObjectRef
+seed_make_object (JSContextRef ctx, JSClassRef class, gpointer private)
 {
-	return JSObjectMake(ctx, class, private);
+  return JSObjectMake (ctx, class, private);
 }
 
 /**
@@ -76,23 +77,24 @@ JSObjectRef seed_make_object(JSContextRef ctx,
  * Sets the property @index on @object to @value.
  *
  */
-void seed_object_set_property_at_index(JSContextRef ctx,
-									   JSObjectRef object,
-									   gint index,
-									   JSValueRef value, JSValueRef * exception)
+void
+seed_object_set_property_at_index (JSContextRef ctx,
+				   JSObjectRef object,
+				   gint index,
+				   JSValueRef value, JSValueRef * exception)
 {
-	JSObjectSetPropertyAtIndex(ctx, object, index, value, exception);
+  JSObjectSetPropertyAtIndex (ctx, object, index, value, exception);
 }
 
-JSValueRef seed_object_call(JSContextRef ctx,
-							JSObjectRef object,
-							JSObjectRef this,
-							size_t argument_count,
-							const JSValueRef arguments[],
-							JSValueRef * exception)
+JSValueRef
+seed_object_call (JSContextRef ctx,
+		  JSObjectRef object,
+		  JSObjectRef this,
+		  size_t argument_count,
+		  const JSValueRef arguments[], JSValueRef * exception)
 {
-	return JSObjectCallAsFunction(ctx, object, this,
-								  argument_count, arguments, exception);
+  return JSObjectCallAsFunction (ctx, object, this,
+				 argument_count, arguments, exception);
 }
 
 /**
@@ -107,27 +109,28 @@ JSValueRef seed_object_call(JSContextRef ctx,
  * Return value: The newly created #SeedScript.
  *
  */
-SeedScript *seed_make_script(JSContextRef ctx,
-							 const gchar * js,
-							 const gchar * source_url, gint line_number)
+SeedScript *
+seed_make_script (JSContextRef ctx,
+		  const gchar * js,
+		  const gchar * source_url, gint line_number)
 {
-	SeedScript *ret = g_new0(SeedScript, 1);
+  SeedScript *ret = g_new0 (SeedScript, 1);
 
-	if (js)
-		ret->script = JSStringCreateWithUTF8CString(js);
-	else
-		ret->script = JSStringCreateWithUTF8CString("");
+  if (js)
+    ret->script = JSStringCreateWithUTF8CString (js);
+  else
+    ret->script = JSStringCreateWithUTF8CString ("");
 
-	if (source_url)
-	{
-		ret->source_url = JSStringCreateWithUTF8CString(source_url);
-	}
-	ret->line_number = line_number;
+  if (source_url)
+    {
+      ret->source_url = JSStringCreateWithUTF8CString (source_url);
+    }
+  ret->line_number = line_number;
 
-	JSCheckScriptSyntax(ctx, ret->script,
-						ret->source_url, ret->line_number, &ret->exception);
+  JSCheckScriptSyntax (ctx, ret->script,
+		       ret->source_url, ret->line_number, &ret->exception);
 
-	return ret;
+  return ret;
 }
 
 /**
@@ -140,21 +143,22 @@ SeedScript *seed_make_script(JSContextRef ctx,
  * Return value: The newly created #SeedScript.
  *
  */
-SeedScript *seed_script_new_from_file(JSContextRef ctx, gchar * file)
+SeedScript *
+seed_script_new_from_file (JSContextRef ctx, gchar * file)
 {
-	SeedScript *script;
-	GError *e = NULL;
-	gchar *contents = NULL;
+  SeedScript *script;
+  GError *e = NULL;
+  gchar *contents = NULL;
 
-	g_file_get_contents(file, &contents, NULL, &e);
-	script = seed_make_script(ctx, contents, file, 0);
-	if (e)
-	{
-		seed_make_exception_from_gerror(ctx, &script->exception, e);
-		g_error_free(e);
-	}
+  g_file_get_contents (file, &contents, NULL, &e);
+  script = seed_make_script (ctx, contents, file, 0);
+  if (e)
+    {
+      seed_make_exception_from_gerror (ctx, &script->exception, e);
+      g_error_free (e);
+    }
 
-	return script;
+  return script;
 }
 
 /**
@@ -168,16 +172,17 @@ SeedScript *seed_script_new_from_file(JSContextRef ctx, gchar * file)
  * Return value: The #SeedValue returned by evaluating the script.
  *
  */
-JSValueRef seed_evaluate(JSContextRef ctx, SeedScript * s, JSObjectRef this)
+JSValueRef
+seed_evaluate (JSContextRef ctx, SeedScript * s, JSObjectRef this)
 {
-	JSValueRef ret;
+  JSValueRef ret;
 
-	s->exception = 0;
-	ret = JSEvaluateScript(ctx,
-						   s->script, this, s->source_url,
-						   s->line_number, &s->exception);
+  s->exception = 0;
+  ret = JSEvaluateScript (ctx,
+			  s->script, this, s->source_url,
+			  s->line_number, &s->exception);
 
-	return ret;
+  return ret;
 }
 
 /**
@@ -190,15 +195,16 @@ JSValueRef seed_evaluate(JSContextRef ctx, SeedScript * s, JSObjectRef this)
  * Return value: The #SeedValue returned by evaluating the script.
  *
  */
-JSValueRef seed_simple_evaluate(JSContextRef ctx, gchar * source)
+JSValueRef
+seed_simple_evaluate (JSContextRef ctx, gchar * source)
 {
-	JSValueRef ret;
-	JSStringRef script = JSStringCreateWithUTF8CString(source);
+  JSValueRef ret;
+  JSStringRef script = JSStringCreateWithUTF8CString (source);
 
-	ret = JSEvaluateScript(ctx, script, NULL, NULL, 0, NULL);
+  ret = JSEvaluateScript (ctx, script, NULL, NULL, 0, NULL);
 
-	JSStringRelease(script);
-	return ret;
+  JSStringRelease (script);
+  return ret;
 }
 
 /**
@@ -208,9 +214,10 @@ JSValueRef seed_simple_evaluate(JSContextRef ctx, gchar * source)
  * Return value: A #JSValueRef representing the exception of @s.
  *
  */
-JSValueRef seed_script_exception(SeedScript * s)
+JSValueRef
+seed_script_exception (SeedScript * s)
 {
-	return s->exception;
+  return s->exception;
 }
 
 /**
@@ -220,9 +227,10 @@ JSValueRef seed_script_exception(SeedScript * s)
  * Return value: The maximum number of bytes @string will take up if converted to a null-terminated UTF8 string.
  *
  */
-gsize seed_string_get_maximum_size(JSStringRef string)
+gsize
+seed_string_get_maximum_size (JSStringRef string)
 {
-	return JSStringGetMaximumUTF8CStringSize(string);
+  return JSStringGetMaximumUTF8CStringSize (string);
 }
 
 /**
@@ -234,65 +242,77 @@ gsize seed_string_get_maximum_size(JSStringRef string)
  * Return value: A null-terminated UTF8 representation of @string.
  *
  */
-gsize seed_string_to_utf8_buffer(JSStringRef string, gchar * buffer,
-								 size_t buffer_size)
+gsize
+seed_string_to_utf8_buffer (JSStringRef string, gchar * buffer,
+			    size_t buffer_size)
 {
-	return JSStringGetUTF8CString(string, buffer, buffer_size);
+  return JSStringGetUTF8CString (string, buffer, buffer_size);
 }
 
-gboolean seed_string_is_equal(JSStringRef a, JSStringRef b)
+gboolean
+seed_string_is_equal (JSStringRef a, JSStringRef b)
 {
-	return JSStringIsEqual(a, b);
+  return JSStringIsEqual (a, b);
 }
 
-gboolean seed_string_is_equal_utf8(JSStringRef a, const gchar * b)
+gboolean
+seed_string_is_equal_utf8 (JSStringRef a, const gchar * b)
 {
-	return JSStringIsEqualToUTF8CString(a, b);
+  return JSStringIsEqualToUTF8CString (a, b);
 }
 
-JSStringRef seed_string_ref(JSStringRef string)
+JSStringRef
+seed_string_ref (JSStringRef string)
 {
-	return JSStringRetain(string);
+  return JSStringRetain (string);
 }
 
-void seed_string_unref(JSStringRef string)
+void
+seed_string_unref (JSStringRef string)
 {
-	JSStringRelease(string);
+  JSStringRelease (string);
 }
 
-JSClassRef seed_create_class(JSClassDefinition * def)
+JSClassRef
+seed_create_class (JSClassDefinition * def)
 {
-	return JSClassCreate(def);
+  return JSClassCreate (def);
 }
 
-JSObjectRef seed_make_constructor(JSContextRef ctx,
-								  JSClassRef class,
-								  JSObjectCallAsConstructorCallback constructor)
+JSObjectRef
+seed_make_constructor (JSContextRef ctx,
+		       JSClassRef class,
+		       JSObjectCallAsConstructorCallback constructor)
 {
-	return JSObjectMakeConstructor(ctx, class, constructor);
+  return JSObjectMakeConstructor (ctx, class, constructor);
 }
 
-gpointer seed_object_get_private(JSObjectRef object)
+gpointer
+seed_object_get_private (JSObjectRef object)
 {
-	return (gpointer) JSObjectGetPrivate(object);
+  return (gpointer) JSObjectGetPrivate (object);
 }
 
-void seed_object_set_private(JSObjectRef object, gpointer value)
+void
+seed_object_set_private (JSObjectRef object, gpointer value)
 {
-	JSObjectSetPrivate(object, value);
+  JSObjectSetPrivate (object, value);
 }
 
-gboolean seed_value_is_null(JSContextRef ctx, JSValueRef value)
+gboolean
+seed_value_is_null (JSContextRef ctx, JSValueRef value)
 {
-	return JSValueIsNull(ctx, value);
+  return JSValueIsNull (ctx, value);
 }
 
-gboolean seed_value_is_object(JSContextRef ctx, JSValueRef value)
+gboolean
+seed_value_is_object (JSContextRef ctx, JSValueRef value)
 {
-	return !seed_value_is_null(ctx, value) && JSValueIsObject(ctx, value);
+  return !seed_value_is_null (ctx, value) && JSValueIsObject (ctx, value);
 }
 
-gboolean seed_value_is_function(JSContextRef ctx, JSObjectRef value)
+gboolean
+seed_value_is_function (JSContextRef ctx, JSObjectRef value)
 {
-	return seed_value_is_object(ctx, value) && JSObjectIsFunction(ctx, value);
+  return seed_value_is_object (ctx, value) && JSObjectIsFunction (ctx, value);
 }
