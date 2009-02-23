@@ -28,6 +28,7 @@
 #include <glib-object.h>
 #include <gmodule.h>
 #include <girepository.h>
+#include <girffi.h>
 #include <ffi.h>
 
 typedef struct _SeedEngine SeedEngine;

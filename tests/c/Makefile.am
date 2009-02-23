@@ -10,7 +10,7 @@ test_SOURCES =					\
 EXTRA_DIST =					\
 	test-common.h
 	
-test_CFLAGS = -Wall				\
+test_CFLAGS = -g -Wall				\
 	 $(SEED_CFLAGS)
 
 test_LDADD = $(SEED_LIBS) -lseed
