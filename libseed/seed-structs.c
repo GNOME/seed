@@ -210,6 +210,48 @@ seed_union_get_property (JSContextRef context,
 }
 
 static bool
+seed_union_set_property (JSContextRef context,
+			  JSObjectRef object,
+			  JSStringRef property_name,
+			  JSValueRef value, JSValueRef * exception)
+{
+  gint length;
+  GArgument field_value;
+  GIFieldInfo *field;
+  gchar *cproperty_name;
+  GITypeInfo *field_type;
+  seed_struct_privates *priv =
+    (seed_struct_privates *) JSObjectGetPrivate (object);
+  gboolean ret;
+
+  length = JSStringGetMaximumUTF8CStringSize (property_name);
+  cproperty_name = g_alloca (length * sizeof (gchar));
+  JSStringGetUTF8CString (property_name, cproperty_name, length);
+
+  SEED_NOTE (STRUCTS, "Setting property on union of type: %s  "
+	     "with name %s \n",
+	     g_base_info_get_name (priv->info), cproperty_name);
+
+  field =
+    seed_union_find_field ((GIUnionInfo *) priv->info, cproperty_name);
+
+  if (!field)
+    {
+      return 0;
+    }
+
+  field_type = g_field_info_get_type (field);
+
+  seed_gi_make_argument (context, value, field_type, &field_value, exception);
+  ret = g_field_info_set_field (field, priv->pointer, &field_value);
+
+  g_base_info_unref ((GIBaseInfo *) field_type);
+  g_base_info_unref ((GIBaseInfo *) field);
+
+  return TRUE;
+}
+
+static bool
 seed_struct_set_property (JSContextRef context,
 			  JSObjectRef object,
 			  JSStringRef property_name,
@@ -382,7 +424,7 @@ JSClassDefinition seed_union_def = {
   NULL,
   NULL,				/* Has Property */
   seed_union_get_property,
-  NULL,				/* Set Property */
+  seed_union_set_property,	/* Set Property */
   NULL,				/* Delete Property */
   seed_enumerate_structlike_properties,	/* Get Property Names */
   NULL,				/* Call As Function */
