@@ -18,6 +18,7 @@
 #include <unistd.h>
 #include "seed-private.h"
 #include <sys/mman.h>
+#include <stdio.h>
 
 static JSValueRef
 seed_include (JSContextRef ctx,
@@ -97,7 +98,7 @@ seed_print (JSContextRef ctx,
     }
 
   gchar *buf = seed_value_to_string (ctx, arguments[0], exception);
-  g_print ("%s\n", buf);
+  puts(buf);
   g_free (buf);
 
   return JSValueMakeNull (ctx);
