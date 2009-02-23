@@ -331,7 +331,8 @@ seed_gobject_signal_emit (JSContextRef ctx,
 				 &params[i + 1], exception);
 
   
-  g_value_init(&ret_value, query.return_type);
+  if (query.return_type != G_TYPE_NONE)
+	  g_value_init(&ret_value, query.return_type);
   g_signal_emitv (params, privates->signal_id, 0, &ret_value);
 
   for (i = 0; i < argumentCount; i++)
@@ -340,7 +341,8 @@ seed_gobject_signal_emit (JSContextRef ctx,
   
   ret = seed_value_from_gvalue (ctx, &ret_value, exception);
   
-  g_value_unset(&ret_value);
+  if (query.return_type != G_TYPE_NONE)
+	  g_value_unset(&ret_value);
 
   return ret;
 }
