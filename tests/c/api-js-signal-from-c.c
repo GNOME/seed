@@ -1,7 +1,7 @@
 #include "../../libseed/seed.h"
 #include "test-common.h"
 
-gfloat hello_cb(gpointer w, gint a, gchar * b)
+gdouble hello_cb(gpointer w, gint a, gchar * b)
 {
 	g_assert(a == 2);
 	g_assert(strncmp(b, "Test", 4) == 0);
@@ -24,7 +24,7 @@ void js_signal_from_c(TestSimpleFixture * fixture, gconstpointer _data)
 					      "	var HelloSignalDefinition = {name: \"hello\","
 					      "								 parameters: [GObject.TYPE_INT,"
 					      "											  GObject.TYPE_STRING],"
-					      "								 return_type: GObject.TYPE_FLOAT};"
+					      "								 return_type: GObject.TYPE_DOUBLE};"
 					      "	hello_signal_id = klass.install_signal(HelloSignalDefinition);"
 					      "    },"
 					      "    init: function(instance)"
@@ -41,5 +41,5 @@ void js_signal_from_c(TestSimpleFixture * fixture, gconstpointer _data)
 		seed_simple_evaluate(state->eng->context,
 				     "g = w.signal.hello.emit(2,'Test')");
 
-	g_assert(seed_value_to_float(state->eng->context, val, NULL) == 5.12);
+	g_assert(seed_value_to_double(state->eng->context, val, NULL) == 5.12);
 }
