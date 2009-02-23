@@ -24,6 +24,6 @@
 
 #include "seed-private.h"
 
-void seed_init_builtins(SeedEngine * local_eng, gint * argc, gchar *** argv);
+void seed_init_builtins (SeedEngine * local_eng, gint * argc, gchar *** argv);
 
 #endif
