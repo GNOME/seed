@@ -16,6 +16,7 @@
  */
 
 #include "seed-private.h"
+#include <stdio.h>
 #include <string.h>
 JSClassRef seed_struct_class = 0;
 JSClassRef seed_union_class = 0;
@@ -152,7 +153,6 @@ seed_field_get_value (JSContextRef ctx,
 	    case GI_INFO_TYPE_STRUCT:
 	      ret = seed_make_struct (ctx, (object + offset), interface);
 	      break;
-
 	    case GI_INFO_TYPE_UNION:
 	      ret = seed_make_union (ctx, (object + offset), interface);
 	      break;
@@ -255,7 +255,8 @@ static bool
 seed_struct_set_property (JSContextRef context,
 			  JSObjectRef object,
 			  JSStringRef property_name,
-			  JSValueRef value, JSValueRef * exception)
+			  JSValueRef value, 
+			  JSValueRef * exception)
 {
   gint length;
   GArgument field_value;
@@ -296,7 +297,8 @@ seed_struct_set_property (JSContextRef context,
 static JSValueRef
 seed_struct_get_property (JSContextRef context,
 			  JSObjectRef object,
-			  JSStringRef property_name, JSValueRef * exception)
+			  JSStringRef property_name,
+			  JSValueRef * exception)
 {
   gchar *cproperty_name;
   int length;

@@ -1,7 +1,7 @@
 #!/usr/bin/env seed
 // Returns: 0
 // STDIN:
-// STDOUT:\[object seed_union\]\n0\.000000\n300\.000000
+// STDOUT:\[object seed_union\]\n2\.000000\n300\.000000
 // STDERR:
 
 Seed.import_namespace("Gdk");

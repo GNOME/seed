@@ -766,7 +766,7 @@ seed_gi_argument_make_js (JSContextRef ctx,
 		 || interface_type == GI_INFO_TYPE_FLAGS)
 	  {
 	    g_base_info_unref (interface);
-	    return seed_value_from_double (ctx, arg->v_double, exception);
+	    return seed_value_from_long (ctx, arg->v_long, exception);
 	  }
 	else if (interface_type == GI_INFO_TYPE_STRUCT)
 	  {
