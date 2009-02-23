@@ -17,49 +17,7 @@ The external API of libseed. Used for embedding Seed in your applications, or wr
 <!-- ##### SECTION Stability_Level ##### -->
 
 
-<!-- ##### TYPEDEF SeedString ##### -->
-<para>
-
-</para>
-
-
-<!-- ##### TYPEDEF SeedValue ##### -->
-<para>
-
-</para>
-
-
-<!-- ##### TYPEDEF SeedObject ##### -->
-<para>
-
-</para>
-
-
 <!-- ##### TYPEDEF SeedClass ##### -->
-<para>
-
-</para>
-
-
-<!-- ##### TYPEDEF SeedException ##### -->
-<para>
-
-</para>
-
-
-<!-- ##### TYPEDEF SeedContext ##### -->
-<para>
-
-</para>
-
-
-<!-- ##### TYPEDEF SeedGlobalContext ##### -->
-<para>
-
-</para>
-
-
-<!-- ##### TYPEDEF SeedContextGroup ##### -->
 <para>
 
 </para>
@@ -95,12 +53,6 @@ The external API of libseed. Used for embedding Seed in your applications, or wr
 @SEED_CLASS_ATTRIBUTE_NONE: 
 @SEED_CLASS_ATTRIBUTE_NO_SHARED_PROTOTYPE: 
 
-<!-- ##### STRUCT SeedScript ##### -->
-<para>
-
-</para>
-
-
 <!-- ##### STRUCT SeedEngine ##### -->
 <para>
 
@@ -120,6 +72,57 @@ The external API of libseed. Used for embedding Seed in your applications, or wr
 @Returns: 
 
 
+<!-- ##### TYPEDEF SeedContext ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### TYPEDEF SeedGlobalContext ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### TYPEDEF SeedContextGroup ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION seed_context_create ##### -->
+<para>
+
+</para>
+
+@group: 
+@global_class: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_context_ref ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_context_unref ##### -->
+<para>
+
+</para>
+
+@ctx: 
+
+
+<!-- ##### STRUCT SeedScript ##### -->
+<para>
+
+</para>
+
+
 <!-- ##### FUNCTION seed_make_script ##### -->
 <para>
 
@@ -132,6 +135,37 @@ The external API of libseed. Used for embedding Seed in your applications, or wr
 @Returns: 
 
 
+<!-- ##### FUNCTION seed_evaluate ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@s: 
+@this: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_simple_evaluate ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@source: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_script_new_from_file ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@file: 
+@Returns: 
+
+
 <!-- ##### FUNCTION seed_script_exception ##### -->
 <para>
 
@@ -139,6 +173,43 @@ The external API of libseed. Used for embedding Seed in your applications, or wr
 
 @s: 
 @Returns: 
+
+
+<!-- ##### FUNCTION seed_create_function ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@name: 
+@callback: 
+@object: 
+
+
+<!-- ##### FUNCTION seed_create_class ##### -->
+<para>
+
+</para>
+
+@def: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_make_constructor ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@class: 
+@Param3: 
+@Returns: 
+
+
+<!-- ##### TYPEDEF SeedException ##### -->
+<para>
+
+</para>
 
 
 <!-- ##### FUNCTION seed_make_exception ##### -->
@@ -202,42 +273,77 @@ The external API of libseed. Used for embedding Seed in your applications, or wr
 @Returns: 
 
 
-<!-- ##### FUNCTION seed_evaluate ##### -->
+<!-- ##### TYPEDEF SeedObject ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION seed_object_call ##### -->
 <para>
 
 </para>
 
 @ctx: 
-@s: 
+@object: 
 @this: 
+@argument_count: 
+@arguments: 
+@exception: 
 @Returns: 
 
 
-<!-- ##### FUNCTION seed_context_create ##### -->
-<para>
-
-</para>
-
-@group: 
-@global_class: 
-@Returns: 
-
-
-<!-- ##### FUNCTION seed_context_ref ##### -->
+<!-- ##### FUNCTION seed_object_set_property_at_index ##### -->
 <para>
 
 </para>
 
 @ctx: 
+@object: 
+@index: 
+@value: 
+@exception: 
+
+
+<!-- ##### FUNCTION seed_object_get_private ##### -->
+<para>
+
+</para>
+
+@object: 
 @Returns: 
 
 
-<!-- ##### FUNCTION seed_context_unref ##### -->
+<!-- ##### FUNCTION seed_object_set_private ##### -->
+<para>
+
+</para>
+
+@object: 
+@value: 
+
+
+<!-- ##### FUNCTION seed_object_get_property ##### -->
 <para>
 
 </para>
 
 @ctx: 
+@object: 
+@name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_object_set_property ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@object: 
+@name: 
+@value: 
+@Returns: 
 
 
 <!-- ##### FUNCTION seed_make_null ##### -->
@@ -260,93 +366,10 @@ The external API of libseed. Used for embedding Seed in your applications, or wr
 @Returns: 
 
 
-<!-- ##### FUNCTION seed_object_get_private ##### -->
+<!-- ##### TYPEDEF SeedValue ##### -->
 <para>
 
 </para>
-
-@object: 
-@Returns: 
-
-
-<!-- ##### FUNCTION seed_object_set_private ##### -->
-<para>
-
-</para>
-
-@object: 
-@value: 
-
-
-<!-- ##### FUNCTION seed_string_ref ##### -->
-<para>
-
-</para>
-
-@string: 
-@Returns: 
-
-
-<!-- ##### FUNCTION seed_string_unref ##### -->
-<para>
-
-</para>
-
-@string: 
-
-
-<!-- ##### FUNCTION seed_string_get_maximum_size ##### -->
-<para>
-
-</para>
-
-@string: 
-@Returns: 
-
-
-<!-- ##### FUNCTION seed_string_to_utf8_buffer ##### -->
-<para>
-
-</para>
-
-@string: 
-@buffer: 
-@buffer_size: 
-@Returns: 
-
-
-<!-- ##### FUNCTION seed_string_is_equal ##### -->
-<para>
-
-</para>
-
-@a: 
-@b: 
-@Returns: 
-
-
-<!-- ##### FUNCTION seed_string_is_equal_utf8 ##### -->
-<para>
-
-</para>
-
-@a: 
-@b: 
-@Returns: 
-
-
-<!-- ##### FUNCTION seed_object_call ##### -->
-<para>
-
-</para>
-
-@ctx: 
-@object: 
-@this: 
-@argument_count: 
-@arguments: 
-@exception: 
-@Returns: 
 
 
 <!-- ##### FUNCTION seed_value_unprotect ##### -->
@@ -367,39 +390,34 @@ The external API of libseed. Used for embedding Seed in your applications, or wr
 @value: 
 
 
-<!-- ##### FUNCTION seed_object_set_property ##### -->
+<!-- ##### FUNCTION seed_value_is_null ##### -->
 <para>
 
 </para>
 
 @ctx: 
-@object: 
-@name: 
 @value: 
 @Returns: 
 
 
-<!-- ##### FUNCTION seed_object_get_property ##### -->
+<!-- ##### FUNCTION seed_value_is_function ##### -->
 <para>
 
 </para>
 
 @ctx: 
-@object: 
-@name: 
+@value: 
 @Returns: 
 
 
-<!-- ##### FUNCTION seed_object_set_property_at_index ##### -->
+<!-- ##### FUNCTION seed_value_is_object ##### -->
 <para>
 
 </para>
 
 @ctx: 
-@object: 
-@index: 
 @value: 
-@exception: 
+@Returns: 
 
 
 <!-- ##### FUNCTION seed_value_to_boolean ##### -->
@@ -688,6 +706,69 @@ The external API of libseed. Used for embedding Seed in your applications, or wr
 @Returns: 
 
 
+<!-- ##### TYPEDEF SeedString ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION seed_string_ref ##### -->
+<para>
+
+</para>
+
+@string: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_string_unref ##### -->
+<para>
+
+</para>
+
+@string: 
+
+
+<!-- ##### FUNCTION seed_string_get_maximum_size ##### -->
+<para>
+
+</para>
+
+@string: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_string_to_utf8_buffer ##### -->
+<para>
+
+</para>
+
+@string: 
+@buffer: 
+@buffer_size: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_string_is_equal ##### -->
+<para>
+
+</para>
+
+@a: 
+@b: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_string_is_equal_utf8 ##### -->
+<para>
+
+</para>
+
+@a: 
+@b: 
+@Returns: 
+
+
 <!-- ##### FUNCTION seed_pointer_get_pointer ##### -->
 <para>
 
@@ -709,17 +790,6 @@ The external API of libseed. Used for embedding Seed in your applications, or wr
 @argument_count: 
 @arguments: 
 @exception: 
-
-
-<!-- ##### FUNCTION seed_create_function ##### -->
-<para>
-
-</para>
-
-@ctx: 
-@name: 
-@callback: 
-@object: 
 
 
 <!-- ##### USER_FUNCTION SeedModuleInitCallback ##### -->
@@ -841,23 +911,16 @@ The external API of libseed. Used for embedding Seed in your applications, or wr
 @Returns: 
 
 
-<!-- ##### FUNCTION seed_create_class ##### -->
-<para>
-
-</para>
-
-@def: 
-@Returns: 
-
-
-<!-- ##### FUNCTION seed_make_constructor ##### -->
+<!-- ##### USER_FUNCTION SeedObjectCallAsConstructorCallback ##### -->
 <para>
 
 </para>
 
 @ctx: 
-@class: 
-@Param3: 
+@constructor: 
+@argument_count: 
+@arguments: 
+@exception: 
 @Returns: 
 
 
