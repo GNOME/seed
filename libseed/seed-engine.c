@@ -1463,6 +1463,7 @@ seed_init (gint * argc, gchar *** argv)
   eng->context = JSGlobalContextCreateInGroup (context_group, NULL);
   eng->global = JSContextGetGlobalObject (eng->context);
   eng->group = context_group;
+  eng->search_path = NULL;
 
   gobject_class = JSClassCreate (&gobject_def);
   JSClassRetain (gobject_class);

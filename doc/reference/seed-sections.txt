@@ -107,6 +107,8 @@ SeedClassAttributes
 <SUBSECTION>
 SeedEngine
 seed_init
+seed_engine_set_search_path
+seed_engine_get_search_path
 <SUBSECTION>
 SeedContext
 SeedGlobalContext

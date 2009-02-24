@@ -28,8 +28,10 @@ seed_include (JSContextRef ctx,
 	      const JSValueRef arguments[], JSValueRef * exception)
 {
   JSStringRef file_contents, file_name;
-  gchar *import_file;
+  GDir *dir;
+  gchar *import_file, *abs_path;
   gchar *buffer, *walk;
+  guint i;
 
   if (argumentCount != 1)
     {
@@ -40,9 +42,34 @@ seed_include (JSContextRef ctx,
       g_free (mes);
       return JSValueMakeNull (ctx);
     }
+
   import_file = seed_value_to_string (ctx, arguments[0], exception);
 
-  g_file_get_contents (import_file, &buffer, 0, 0);
+  /* just try current dir if no path set, or use the absolute path */
+  if (!eng->search_path || g_path_is_absolute (import_file))
+    g_file_get_contents (import_file, &buffer, 0, NULL);
+  else				/* A search path is set and path given is not absolute.  */
+    {
+      for (i = 0; i < g_strv_length (eng->search_path); ++i)
+	{
+	  dir = g_dir_open (eng->search_path[i], 0, NULL);
+
+	  if (!dir)		/* skip bad path entries */
+	    continue;
+
+	  abs_path =
+	    g_build_filename (eng->search_path[i], import_file, NULL);
+
+	  if (g_file_get_contents (abs_path, &buffer, 0, NULL))
+	    {
+	      g_free (abs_path);
+	      break;
+	    }
+
+	  g_dir_close (dir);
+	  g_free (abs_path);
+	}
+    }
 
   if (!buffer)
     {
@@ -294,6 +321,86 @@ seed_quit (JSContextRef ctx,
   exit (EXIT_SUCCESS);
 }
 
+static JSValueRef
+seed_get_include_path (JSContextRef ctx,
+		       JSObjectRef function,
+		       JSObjectRef this_object,
+		       size_t argumentCount,
+		       const JSValueRef arguments[], JSValueRef * exception)
+{
+  JSValueRef ret;
+  if (argumentCount > 0)
+    {
+      gchar *mes =
+	g_strdup_printf ("Seed.get_include_path expected "
+			 "0 arguments, got %Zd",
+			 argumentCount);
+      seed_make_exception (ctx, exception, "ArgumentError", mes);
+      g_free (mes);
+      return (JSValueMakeNull (ctx));
+    }
+
+  /* also do I want this to give a list? seems more useful. */
+
+  gchar *path_string = g_strjoinv (":", eng->search_path);
+  ret = seed_value_from_string (ctx, path_string, exception);
+  g_free (path_string);
+
+  return ret;
+}
+
+#if 0
+static JSValueRef
+seed_set_include_path (JSContextRef ctx,
+		       JSObjectRef function,
+		       JSObjectRef this_object,
+		       size_t argumentCount,
+		       const JSValueRef arguments[], JSValueRef * exception)
+{
+  guint i;
+
+  if (argumentCount == 0)
+    {
+      gchar *mes =
+	g_strdup_printf ("Seed.set_include_path expected "
+			 "> 0 arguments, got %Zd",
+			 argumentCount);
+      seed_make_exception (ctx, exception, "ArgumentError", mes);
+      g_free (mes);
+      return JSValueMakeNull (ctx);
+    }
+
+  g_print ("going to free context's search path.: %p\n", eng->search_path);
+
+  gchar *t = g_strjoinv (":", eng->search_path);
+  g_print ("about to free '%s'\n", t);
+  g_free (t);
+
+  g_strfreev (eng->search_path);	/* free the old path. */
+  g_print ("allocating new eng->search_path\n");
+  eng->search_path = (gchar **) g_malloc (argumentCount + 1);	/* args + NULL terminator */
+  g_print ("new eng->search_path: %p\n", eng->search_path);
+
+  for (i = 0; i < argumentCount; ++i)
+    {
+      g_print ("yay argcount: i: %d %p\n", i, arguments[i]);
+      eng->search_path[i] =
+	seed_value_to_string (ctx, arguments[i], exception);
+    }
+
+  eng->search_path[argumentCount] = NULL;	/* null terminator in last position. */
+
+  g_print ("New path length is : %d\n", g_strv_length (eng->search_path));
+
+  t = g_strjoinv (":", eng->search_path);
+  g_print ("path is '%s'\n", t);
+  g_free (t);
+
+  return JSValueMakeNull (ctx);
+}
+#endif
+
+
 void
 seed_init_builtins (SeedEngine * local_eng, gint * argc, gchar *** argv)
 {
@@ -314,6 +421,9 @@ seed_init_builtins (SeedEngine * local_eng, gint * argc, gchar *** argv)
   seed_create_function (local_eng->context, "fork", &seed_fork, obj);
   seed_create_function (local_eng->context, "spawn", &seed_spawn, obj);
   seed_create_function (local_eng->context, "quit", &seed_quit, obj);
+  //seed_create_function(local_eng->context, "set_include_path", &seed_set_include_path, obj);
+  seed_create_function (local_eng->context, "get_include_path",
+			&seed_get_include_path, obj);
 
   arrayObj = JSObjectMake (local_eng->context, NULL, NULL);
 
