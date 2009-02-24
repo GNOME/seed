@@ -274,7 +274,11 @@ seed_canvas_update_stroke_style (SeedContext ctx,
   gchar *stroke_style = seed_value_to_string (ctx, value, e);
 
   if (!priv->styles)
-    priv->styles = g_slist_prepend(priv->styles, g_new0(SeedCanvasStyle, 1));
+    {
+      priv->styles = g_slist_prepend(priv->styles, g_new0(SeedCanvasStyle, 1));
+      ((SeedCanvasStyle *) priv->styles->data)->global_opacity = 1;
+      ((SeedCanvasStyle *) priv->styles->data)->fill.a = 1;
+    }
   
   style = (SeedCanvasStyle *)priv->styles->data;
   
@@ -298,7 +302,11 @@ seed_canvas_update_fill_style (SeedContext ctx,
   gchar *fill_style = seed_value_to_string (ctx, value, e);
 
   if (!priv->styles)
-    priv->styles = g_slist_prepend(priv->styles, g_new0(SeedCanvasStyle, 1));
+    {
+      priv->styles = g_slist_prepend(priv->styles, g_new0(SeedCanvasStyle, 1));
+      ((SeedCanvasStyle *) priv->styles->data)->global_opacity = 1;
+      ((SeedCanvasStyle *) priv->styles->data)->stroke.a = 1;
+    }
   
   style = (SeedCanvasStyle *)priv->styles->data;
   
@@ -321,8 +329,13 @@ seed_canvas_update_global_alpha (SeedContext ctx,
   gdouble global_alpha = seed_value_to_double (ctx, value, e);
 
   if (!priv->styles)
-    priv->styles = g_slist_prepend(priv->styles, g_new0(SeedCanvasStyle, 1));
-  
+    {
+      priv->styles = g_slist_prepend(priv->styles, g_new0(SeedCanvasStyle, 1));
+      ((SeedCanvasStyle *) priv->styles->data)->global_opacity = 1;
+      ((SeedCanvasStyle *) priv->styles->data)->stroke.a = 1;
+      ((SeedCanvasStyle *) priv->styles->data)->fill.a = 1;
+    }
+
   style = (SeedCanvasStyle *)priv->styles->data;
   
   style->global_opacity = global_alpha;
