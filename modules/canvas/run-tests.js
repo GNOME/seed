@@ -377,7 +377,9 @@ tests = [test1, test2, test3, test4, test5, test6, test7, test8, test9, test10, 
 ctx = new Canvas.PDFCanvas("tests.pdf", 500, 500);
 for (test in tests)
 {
+	ctx.save();
 	tests[test](ctx);
+	ctx.restore();
 	ctx.showPage();
 }
 
