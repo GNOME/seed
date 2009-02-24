@@ -429,7 +429,7 @@ seed_canvas_save (SeedContext ctx,
   SeedCanvasStyle *old_style = (SeedCanvasStyle *)priv->styles->data;
 
   cairo_save (cr);
-
+  
   priv->styles = g_slist_prepend(priv->styles, g_new(SeedCanvasStyle, 1));
 
   memcpy(priv->styles->data, old_style, sizeof(SeedCanvasStyle));
@@ -449,8 +449,8 @@ seed_canvas_restore (SeedContext ctx,
   SeedCanvasStyle *style;
 
   style = (SeedCanvasStyle *)priv->styles->data;
-  //  priv->styles = g_slist_delete_link(priv->styles, priv->styles);
-  //  g_free(style);
+  priv->styles = g_slist_delete_link(priv->styles, priv->styles);
+  g_free(style);
 
   cairo_restore (cr);
 
