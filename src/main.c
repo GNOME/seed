@@ -26,75 +26,79 @@
 
 SeedEngine *eng;
 
-void seed_repl(gint argc, gchar **argv)
+void
+seed_repl (gint argc, gchar ** argv)
 {
-	SeedScript *script;
+  SeedScript *script;
 
-	script = seed_make_script(eng->context, "Seed.import_namespace('readline');"
-							  "while(1) { try { Seed.print(eval("
-							  "readline.readline(\"> \"))); } catch(e) {"
-							  "Seed.print(e.name + \" \" + e.message);}}",
-							  NULL, 0);
-	seed_evaluate(eng->context, script, 0);
+  script =
+    seed_make_script (eng->context,
+		      "Seed.import_namespace('readline');"
+		      "while(1) { try { Seed.print(eval("
+		      "readline.readline(\"> \"))); } catch(e) {"
+		      "Seed.print(e.name + \" \" + e.message);}}", NULL, 0);
+  seed_evaluate (eng->context, script, 0);
 
-	g_free(script);
+  g_free (script);
 }
 
-void seed_exec(gint argc, gchar ** argv)
+void
+seed_exec (gint argc, gchar ** argv)
 {
-	SeedScript *script;
-	SeedException e;
-	gchar *buffer;
+  SeedScript *script;
+  SeedException e;
+  gchar *buffer;
 
-	g_file_get_contents(argv[1], &buffer, 0, 0);
+  g_file_get_contents (argv[1], &buffer, 0, 0);
 
-	if (!buffer)
-	{
-		g_critical("File %s not found!", argv[1]);
-		exit(1);
-	}
+  if (!buffer)
+    {
+      g_critical ("File %s not found!", argv[1]);
+      exit (1);
+    }
 
-	if (*buffer == '#')
-	{
-		while (*buffer != '\n')
-			buffer++;
-		buffer++;
-	}
-	script = seed_make_script(eng->context, buffer, argv[1], 1);
-	if ((e = seed_script_exception(script)))
-	{
-		g_critical("%s. %s in %s at line %d",
-				   seed_exception_get_name(eng->context, e),
-				   seed_exception_get_message(eng->context, e),
-				   seed_exception_get_file(eng->context, e),
-				   seed_exception_get_line(eng->context, e));
-		exit(1);
-	}
-	seed_evaluate(eng->context, script, 0);
-	if ((e = seed_script_exception(script)))
-		g_critical("%s. %s in %s at line %d",
-				   seed_exception_get_name(eng->context, e),
-				   seed_exception_get_message(eng->context, e),
-				   seed_exception_get_file(eng->context, e),
-				   seed_exception_get_line(eng->context, e));
+  if (*buffer == '#')
+    {
+      while (*buffer != '\n')
+	buffer++;
+      buffer++;
+    }
+  script = seed_make_script (eng->context, buffer, argv[1], 1);
+  if ((e = seed_script_exception (script)))
+    {
+      g_critical ("%s. %s in %s at line %d",
+		  seed_exception_get_name (eng->context, e),
+		  seed_exception_get_message (eng->context, e),
+		  seed_exception_get_file (eng->context, e),
+		  seed_exception_get_line (eng->context, e));
+      exit (1);
+    }
+  seed_evaluate (eng->context, script, 0);
+  if ((e = seed_script_exception (script)))
+    g_critical ("%s. %s in %s at line %d",
+		seed_exception_get_name (eng->context, e),
+		seed_exception_get_message (eng->context, e),
+		seed_exception_get_file (eng->context, e),
+		seed_exception_get_line (eng->context, e));
 
-	g_free(script);
+  g_free (script);
 }
 
-gint main(gint argc, gchar ** argv)
+gint
+main (gint argc, gchar ** argv)
 {
-	g_set_prgname("seed");
-	g_thread_init(0);
-	eng = seed_init(&argc, &argv);
+  g_set_prgname ("seed");
+  g_thread_init (0);
+  eng = seed_init (&argc, &argv);
 
-	if (!g_irepository_require(g_irepository_get_default(), "GObject", 0, 0, 0))
-		g_critical("Unable to import GObject repository");
+  if (!g_irepository_require
+      (g_irepository_get_default (), "GObject", 0, 0, 0))
+    g_critical ("Unable to import GObject repository");
 
-	if (argc == 1)
-		seed_repl(argc, argv);
-	else
-		seed_exec(argc, argv);
+  if (argc == 1)
+    seed_repl (argc, argv);
+  else
+    seed_exec (argc, argv);
 
-	return 0;
+  return 0;
 }
-

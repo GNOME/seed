@@ -98,7 +98,7 @@ seed_print (JSContextRef ctx,
     }
 
   gchar *buf = seed_value_to_string (ctx, arguments[0], exception);
-  puts(buf);
+  puts (buf);
   g_free (buf);
 
   return JSValueMakeNull (ctx);
