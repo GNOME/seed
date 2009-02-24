@@ -16,7 +16,6 @@
  */
 
 #include "seed-private.h"
-#include <string.h>
 #include <dlfcn.h>
 
 JSClassRef gobject_class;
@@ -1438,9 +1437,9 @@ gchar *
 seed_value_to_string (JSContextRef ctx,
 		      JSValueRef val, JSValueRef * exception)
 {
-  JSStringRef jsstr = 0;
+  JSStringRef jsstr = NULL;
   JSValueRef func, str;
-  gchar *buf = 0;
+  gchar *buf = NULL;
   gint length;
 
   if (val == NULL)
@@ -1452,7 +1451,7 @@ seed_value_to_string (JSContextRef ctx,
     }
   else if (JSValueIsNull (ctx, val) || JSValueIsUndefined (ctx, val))
     {
-      buf = strdup ("[null]");
+      buf = g_strdup ("[null]");
     }
   else
     {
