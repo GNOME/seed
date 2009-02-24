@@ -211,9 +211,9 @@ seed_union_get_property (JSContextRef context,
 
 static bool
 seed_union_set_property (JSContextRef context,
-			 JSObjectRef object,
-			 JSStringRef property_name,
-			 JSValueRef value, JSValueRef * exception)
+			  JSObjectRef object,
+			  JSStringRef property_name,
+			  JSValueRef value, JSValueRef * exception)
 {
   gint length;
   GArgument field_value;
@@ -232,7 +232,8 @@ seed_union_set_property (JSContextRef context,
 	     "with name %s \n",
 	     g_base_info_get_name (priv->info), cproperty_name);
 
-  field = seed_union_find_field ((GIUnionInfo *) priv->info, cproperty_name);
+  field =
+    seed_union_find_field ((GIUnionInfo *) priv->info, cproperty_name);
 
   if (!field)
     {
@@ -254,7 +255,8 @@ static bool
 seed_struct_set_property (JSContextRef context,
 			  JSObjectRef object,
 			  JSStringRef property_name,
-			  JSValueRef value, JSValueRef * exception)
+			  JSValueRef value, 
+			  JSValueRef * exception)
 {
   gint length;
   GArgument field_value;
@@ -295,7 +297,8 @@ seed_struct_set_property (JSContextRef context,
 static JSValueRef
 seed_struct_get_property (JSContextRef context,
 			  JSObjectRef object,
-			  JSStringRef property_name, JSValueRef * exception)
+			  JSStringRef property_name,
+			  JSValueRef * exception)
 {
   gchar *cproperty_name;
   int length;

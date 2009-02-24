@@ -24,8 +24,6 @@
 #include "../libseed/seed-debug.h"
 #include <girepository.h>
 
-#define DEFAULT_PATH ".:/usr/share/doc/seed/examples"
-
 SeedEngine *eng;
 
 void seed_repl(gint argc, gchar **argv)
@@ -85,14 +83,9 @@ void seed_exec(gint argc, gchar ** argv)
 
 gint main(gint argc, gchar ** argv)
 {
-	gchar** path;
 	g_set_prgname("seed");
-	g_thread_init(NULL);
+	g_thread_init(0);
 	eng = seed_init(&argc, &argv);
-
-	path = g_strsplit(DEFAULT_PATH, ":", -1);
-
-	seed_engine_set_search_path(eng, path);
 
 	if (!g_irepository_require(g_irepository_get_default(), "GObject", 0, 0, 0))
 		g_critical("Unable to import GObject repository");
@@ -101,8 +94,6 @@ gint main(gint argc, gchar ** argv)
 		seed_repl(argc, argv);
 	else
 		seed_exec(argc, argv);
-
-	g_strfreev(path);
 
 	return 0;
 }

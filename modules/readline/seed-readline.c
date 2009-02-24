@@ -104,8 +104,8 @@ seed_readline(SeedContext ctx,
 	}
 
 	buf = seed_value_to_string(ctx, arguments[0], exception);
-	str = readline(buf);
 
+	str = readline(buf);
 	if (str && *str)
 	{
 		add_history(str);

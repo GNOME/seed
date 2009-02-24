@@ -16,6 +16,7 @@
  */
 
 #include "seed-private.h"
+#include <string.h>
 #include <dlfcn.h>
 
 JSClassRef gobject_class;
@@ -839,8 +840,8 @@ seed_gi_argument_make_js (JSContextRef ctx,
 }
 
 JSValueRef
-seed_value_from_gvalue (JSContextRef ctx, GValue * gval,
-			JSValueRef * exception)
+seed_value_from_gvalue (JSContextRef ctx,
+			GValue * gval, JSValueRef * exception)
 {
   if (!G_IS_VALUE (gval))
     {
@@ -1144,8 +1145,8 @@ seed_gvalue_from_seed_value (JSContextRef ctx,
 }
 
 JSValueRef
-seed_object_get_property (JSContextRef ctx, JSObjectRef val,
-			  const gchar * name)
+seed_object_get_property (JSContextRef ctx,
+			  JSObjectRef val, const gchar * name)
 {
 
   JSStringRef jname = JSStringCreateWithUTF8CString (name);
@@ -1177,8 +1178,8 @@ seed_object_set_property (JSContextRef ctx, JSObjectRef object,
 /* TODO: Make some macros or something for making exceptions, code is littered
    with annoyingness right now */
 gboolean
-seed_value_to_boolean (JSContextRef ctx, JSValueRef val,
-		       JSValueRef * exception)
+seed_value_to_boolean (JSContextRef ctx,
+		       JSValueRef val, JSValueRef * exception)
 {
   if (!JSValueIsBoolean (ctx, val))
     {
@@ -1196,8 +1197,8 @@ seed_value_to_boolean (JSContextRef ctx, JSValueRef val,
 }
 
 JSValueRef
-seed_value_from_boolean (JSContextRef ctx, gboolean val,
-			 JSValueRef * exception)
+seed_value_from_boolean (JSContextRef ctx,
+			 gboolean val, JSValueRef * exception)
 {
   return JSValueMakeBoolean (ctx, val);
 }
@@ -1370,8 +1371,8 @@ seed_value_from_int64 (JSContextRef ctx, gint64 val, JSValueRef * exception)
 }
 
 guint64
-seed_value_to_uint64 (JSContextRef ctx, JSValueRef val,
-		      JSValueRef * exception)
+seed_value_to_uint64 (JSContextRef ctx,
+		      JSValueRef val, JSValueRef * exception)
 {
   if (!JSValueIsNumber (ctx, val))
     {
@@ -1413,8 +1414,8 @@ seed_value_from_float (JSContextRef ctx, gfloat val, JSValueRef * exception)
 }
 
 gdouble
-seed_value_to_double (JSContextRef ctx, JSValueRef val,
-		      JSValueRef * exception)
+seed_value_to_double (JSContextRef ctx,
+		      JSValueRef val, JSValueRef * exception)
 {
   if (!JSValueIsNumber (ctx, val))
     {
@@ -1439,7 +1440,7 @@ seed_value_to_string (JSContextRef ctx,
 {
   JSStringRef jsstr = 0;
   JSValueRef func, str;
-  gchar *buf = NULL;
+  gchar *buf = 0;
   gint length;
 
   if (val == NULL)
@@ -1451,11 +1452,12 @@ seed_value_to_string (JSContextRef ctx,
     }
   else if (JSValueIsNull (ctx, val) || JSValueIsUndefined (ctx, val))
     {
-      buf = g_strdup ("[null]");
+      buf = strdup ("[null]");
     }
   else
     {
-      if (!JSValueIsString (ctx, val))	/* In this case, it's an object */
+      if (!JSValueIsString (ctx, val))	// In this case,
+	// it's an object
 	{
 	  func =
 	    seed_object_get_property (ctx, (JSObjectRef) val, "toString");
@@ -1474,6 +1476,7 @@ seed_value_to_string (JSContextRef ctx,
       if (jsstr)
 	JSStringRelease (jsstr);
     }
+
   return buf;
 }
 
@@ -1490,7 +1493,8 @@ seed_value_from_string (JSContextRef ctx,
 
 JSValueRef
 seed_value_from_filename (JSContextRef ctx,
-			  const gchar * filename, JSValueRef * exception)
+			  const gchar * filename, 
+			  JSValueRef * exception)
 {
   GError *e = NULL;
   gchar *utf8;
@@ -1561,8 +1565,8 @@ seed_value_to_object (JSContextRef ctx,
 }
 
 JSValueRef
-seed_value_from_object (JSContextRef ctx, GObject * val,
-			JSValueRef * exception)
+seed_value_from_object (JSContextRef ctx,
+			GObject * val, JSValueRef * exception)
 {
   if (val == NULL)
     return JSValueMakeNull (ctx);
