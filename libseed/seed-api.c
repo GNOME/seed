@@ -316,3 +316,19 @@ seed_value_is_function (JSContextRef ctx, JSObjectRef value)
 {
   return seed_value_is_object (ctx, value) && JSObjectIsFunction (ctx, value);
 }
+
+/**
+ * seed_engine_set_search_path:
+ * @eng: A #SeedEngine, to set the path on.
+ *
+ * @path: A #gchar**, A null terminated list of strings containing path
+ *
+ * Return value: void
+ *
+ */
+void
+seed_engine_set_search_path (SeedEngine * eng, gchar ** path)
+{
+  g_free (eng->search_path);	/* this should be null from seed_init unless there's already a path set. */
+  eng->search_path = g_strdupv (path);
+}

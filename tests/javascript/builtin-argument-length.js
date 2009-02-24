@@ -1,7 +1,7 @@
 #!/usr/bin/env seed
 // Returns: 0
 // STDIN:
-// STDOUT:Seed\.spawn expected 1 argument\nFailed to execute child process "asihfieuhgieuhgw" \(No such file or directory\)\nSeed\.include expected 1 argument, got 0\nFile not found: 1\.000000\nFile not found: \nSeed\.include expected 1 argument, got 2\nSeed\.include expected 1 argument, got 2\nSeed\.print expected 1 argument, got 0\nSeed\.print expected 1 argument, got 2\nSeed\.print expected 1 argument, got 2\nSeed\.print expected 1 argument, got 3\nSeed\.introspect expected 1 argument, got 0\nSeed\.introspect expected 1 argument, got 2\nSeed\.check_syntax expected 1 argument, got 0\nSeed\.check_syntax expected 1 argument, got 2
+// STDOUT:Seed\.spawn expected 1 argument\nFailed to execute child process "asihfieuhgieuhgw" \(No such file or directory\)\nSeed\.include expected 1 argument, got 0\nFailed to open file: 1\.000000\nFailed to open file: \nSeed\.include expected 1 argument, got 2\nSeed\.include expected 1 argument, got 2\nSeed\.print expected 1 argument, got 0\nSeed\.print expected 1 argument, got 2\nSeed\.print expected 1 argument, got 2\nSeed\.print expected 1 argument, got 3\nSeed\.introspect expected 1 argument, got 0\nSeed\.introspect expected 1 argument, got 2\nSeed\.check_syntax expected 1 argument, got 0\nSeed\.check_syntax expected 1 argument, got 2
 // STDERR:
 
 try{

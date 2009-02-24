@@ -37,6 +37,7 @@ struct _SeedEngine
 {
   JSGlobalContextRef context;
   JSObjectRef global;
+  gchar **search_path;
 
   JSContextGroupRef group;
 };
