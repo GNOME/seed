@@ -66,6 +66,7 @@ typedef struct _SeedEngine
 {
   SeedGlobalContext context;
   SeedValue global;
+  gchar **search_path;
 
   SeedContextGroup group;
 } SeedEngine;
@@ -341,5 +342,7 @@ SeedObject seed_make_constructor (SeedContext ctx,
 				  SeedClass class,
 				  SeedObjectCallAsConstructorCallback
 				  constructor);
+
+void seed_engine_set_search_path (SeedEngine * eng, gchar ** path);
 
 #endif
