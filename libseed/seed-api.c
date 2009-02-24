@@ -317,13 +317,11 @@ seed_value_is_function (JSContextRef ctx, JSObjectRef value)
   return seed_value_is_object (ctx, value) && JSObjectIsFunction (ctx, value);
 }
 
-/*
+/**
  * seed_engine_set_search_path:
  * @eng: A #SeedEngine, on which to set the path.
  *
  * @path: A #gchar**, a null-terminated list of strings containing path
- *
- * Return value: void
  *
  */
 void
