@@ -10,18 +10,45 @@ SeedObject namespace_ref;
 SeedClass canvas_class;
 SeedEngine *eng;
 
-#define GET_CR cairo_t * cr = seed_object_get_private(this_object)
+typedef struct _SeedCanvasColor {
+  gdouble r;
+  gdouble g;
+  gdouble b;
+  gdouble a;
+} SeedCanvasColor;
+
+typedef struct _SeedCanvasStyle {
+  SeedCanvasColor fill;
+  SeedCanvasColor stroke;
+  
+  gdouble global_opacity;
+} SeedCanvasStyle;
+
+typedef struct _SeedCanvasPrivates {
+  cairo_t *cr;
+  
+  GSList *styles;
+} SeedCanvasPrivates;
+
+#define GET_CR  \
+  SeedCanvasPrivates *priv = seed_object_get_private(this_object);	\
+  cairo_t *cr = priv->cr
+  
 
 SeedObject
 canvas_construct_canvas_from_cairo (SeedContext ctx, cairo_t * cr,
 				    SeedException * exception)
 {
   SeedObject obj;
+  SeedCanvasPrivates *priv = g_slice_alloc(sizeof(SeedCanvasPrivates));
 
   cairo_set_source_rgb (cr, 0, 0, 0);
   cairo_set_miter_limit (cr, 10);
+  
+  priv->cr = cr;
+  priv->styles = NULL;
 
-  obj = seed_make_object (ctx, canvas_class, cr);
+  obj = seed_make_object (ctx, canvas_class, priv);
 
   seed_object_set_property (ctx, obj, "globalAlpha",
 			    seed_value_from_double (ctx, 1.0, exception));
@@ -169,14 +196,15 @@ canvas_construct_canvas (SeedContext ctx,
 }
 
 void
-seed_canvas_parse_color (cairo_t * cr, gchar * spec, gdouble global_alpha)
+seed_canvas_parse_color (SeedCanvasColor *color,
+			 gchar *spec)
 {
   if (*spec == '#')
     {
       guint r = 0, g = 0, b = 0, a = 0, found;
-      // Might be libc dependent (the alpha behaviour);
+      
       if (strlen (spec) > 4)
-	found = sscanf (spec, "#%2x%2x%2x%2x", &r, &g, &b, &a);
+	found = sscanf(spec, "#%2x%2x%2x%2x", &r, &g, &b, &a);
       else
 	{
 	  found = sscanf (spec, "#%1x%1x%1x%1x", &r, &g, &b, &a);
@@ -186,9 +214,13 @@ seed_canvas_parse_color (cairo_t * cr, gchar * spec, gdouble global_alpha)
 	  a *= 17;
 	}
       if (found < 4)
-	a = global_alpha * 255;
+	a = 0xff;
+      
+      color->r = r / 255.0;
+      color->g = r / 255.0;
+      color->b = r / 255.0;
+      color->a = a / 255.0;
 
-      cairo_set_source_rgba (cr, r / 255.0, g / 255.0, b / 255.0, a / 255.0);
       return;
     }
   else if (*spec == 'r')
@@ -199,26 +231,103 @@ seed_canvas_parse_color (cairo_t * cr, gchar * spec, gdouble global_alpha)
 	  {
 	    gint r, g, b;
 	    gfloat a;
-
+	    
 	    sscanf (spec, "rgba(%d,%d,%d,%f)", &r, &g, &b, &a);
-	    cairo_set_source_rgba (cr, r / 255.0, g / 255.0, b / 255.0, a);
+	    
+	    color->r = r/255.0;
+	    color->g = g/255.0;
+	    color->b = b/255.0;
+	    color->a = a;
+	    
 	    return;
 	  }
 	case '(':
 	  {
 	    gint r, g, b;
-
+	    
 	    sscanf (spec, "rgb(%d,%d,%d)", &r, &g, &b);
-	    cairo_set_source_rgba (cr, r / 255.0, g / 255.0, b / 255.0,
-				   global_alpha);
+	    
+	    color->r = r / 255.0;
+	    color->g = g / 255.0;
+	    color->b = b / 255.0;
+	    
 	    return;
 	  }
 	}
     }
   else if (*spec == '[')
     {
-      cairo_set_source_rgb (cr, 0, 0, 0);
+      color->r = color->b = color->g = 0;
+      color->a = 1;
     }
+}
+
+gboolean
+seed_canvas_update_stroke_style (SeedContext ctx,
+				 SeedObject this_object,
+				 SeedString property_name,
+				 SeedValue value, SeedException * e)
+{
+  SeedCanvasStyle *style;
+  GET_CR;
+  
+  gchar *stroke_style = seed_value_to_string (ctx, value, e);
+
+  if (!priv->styles)
+    priv->styles = g_slist_prepend(priv->styles, g_new0(SeedCanvasStyle, 1));
+  
+  style = (SeedCanvasStyle *)priv->styles->data;
+  
+  seed_canvas_parse_color (&style->stroke, stroke_style);
+  
+  g_free(stroke_style);
+  
+  return FALSE;
+}
+
+
+gboolean
+seed_canvas_update_fill_style (SeedContext ctx,
+				 SeedObject this_object,
+				 SeedString property_name,
+				 SeedValue value, SeedException * e)
+{
+  SeedCanvasStyle *style;
+  GET_CR;
+  
+  gchar *fill_style = seed_value_to_string (ctx, value, e);
+
+  if (!priv->styles)
+    priv->styles = g_slist_prepend(priv->styles, g_new0(SeedCanvasStyle, 1));
+  
+  style = (SeedCanvasStyle *)priv->styles->data;
+  
+  seed_canvas_parse_color (&style->fill, fill_style);
+  
+  g_free(fill_style);
+  
+  return FALSE;
+}
+
+gboolean
+seed_canvas_update_global_alpha (SeedContext ctx,
+				 SeedObject this_object,
+				 SeedString property_name,
+				 SeedValue value, SeedException * e)
+{
+  SeedCanvasStyle *style;
+  GET_CR;
+  
+  gdouble global_alpha = seed_value_to_double (ctx, value, e);
+
+  if (!priv->styles)
+    priv->styles = g_slist_prepend(priv->styles, g_new0(SeedCanvasStyle, 1));
+  
+  style = (SeedCanvasStyle *)priv->styles->data;
+  
+  style->global_opacity = global_alpha;
+  
+  return FALSE;
 }
 
 gboolean
@@ -287,24 +396,25 @@ seed_canvas_set_linejoin (SeedContext ctx,
 }
 
 void
-seed_canvas_stroke_setup (SeedContext ctx,
-			  SeedObject this_object,
-			  cairo_t * cr, SeedException * exception)
+seed_canvas_apply_stroke_style (SeedCanvasStyle *style,
+				cairo_t * cr)
 {
-  gchar *stroke_color = seed_value_to_string (ctx,
-					      seed_object_get_property (ctx,
-									this_object,
-									"strokeStyle"),
-					      exception);
-  gdouble global_alpha = seed_value_to_double (ctx,
-					       seed_object_get_property (ctx,
-									 this_object,
-									 "globalAlpha"),
-					       exception);
+  cairo_set_source_rgba(cr, 
+			style->stroke.r,
+			style->stroke.g,
+			style->stroke.b,
+			style->stroke.a * style->global_opacity);
+}
 
-  seed_canvas_parse_color (cr, stroke_color, global_alpha);
-
-  g_free (stroke_color);
+void
+seed_canvas_apply_fill_style (SeedCanvasStyle *style,
+				cairo_t * cr)
+{
+  cairo_set_source_rgba(cr, 
+			style->fill.r,
+			style->fill.g,
+			style->fill.b,
+			style->fill.a * style->global_opacity);
 }
 
 SeedValue
@@ -315,7 +425,14 @@ seed_canvas_save (SeedContext ctx,
 		  const SeedValue arguments[], SeedException * exception)
 {
   GET_CR;
+
+  SeedCanvasStyle *old_style = (SeedCanvasStyle *)priv->styles->data;
+
   cairo_save (cr);
+
+  priv->styles = g_slist_prepend(priv->styles, g_new(SeedCanvasStyle, 1));
+
+  memcpy(priv->styles->data, old_style, sizeof(SeedCanvasStyle));
 
   return seed_make_null (ctx);
 }
@@ -328,6 +445,13 @@ seed_canvas_restore (SeedContext ctx,
 		     const SeedValue arguments[], SeedException * exception)
 {
   GET_CR;
+
+  SeedCanvasStyle *style;
+
+  style = (SeedCanvasStyle *)priv->styles->data;
+  //  priv->styles = g_slist_delete_link(priv->styles, priv->styles);
+  //  g_free(style);
+
   cairo_restore (cr);
 
   return seed_make_null (ctx);
@@ -470,7 +594,7 @@ seed_canvas_stroke_rect (SeedContext ctx,
   GET_CR;
   gdouble x, y, width, height;
 
-  seed_canvas_stroke_setup (ctx, this_object, cr, exception);
+  seed_canvas_apply_stroke_style ((SeedCanvasStyle *)priv->styles->data, cr);
 
   x = seed_value_to_double (ctx, arguments[0], exception);
   y = seed_value_to_double (ctx, arguments[1], exception);
@@ -492,19 +616,7 @@ seed_canvas_fill_rect (SeedContext ctx,
 {
   GET_CR;
   gdouble x, y, width, height;
-  gchar *stroke_color = seed_value_to_string (ctx,
-					      seed_object_get_property (ctx,
-									this_object,
-									"fillStyle"),
-					      exception);
-  gdouble global_alpha = seed_value_to_double (ctx,
-					       seed_object_get_property (ctx,
-									 this_object,
-									 "globalAlpha"),
-					       exception);
-
-  seed_canvas_parse_color (cr, stroke_color, global_alpha);
-  g_free (stroke_color);
+  seed_canvas_apply_fill_style ((SeedCanvasStyle *)priv->styles->data, cr);
 
   x = seed_value_to_double (ctx, arguments[0], exception);
   y = seed_value_to_double (ctx, arguments[1], exception);
@@ -589,7 +701,7 @@ seed_canvas_stroke (SeedContext ctx,
 {
   GET_CR;
 
-  seed_canvas_stroke_setup (ctx, this_object, cr, exception);
+  seed_canvas_apply_stroke_style ((SeedCanvasStyle *)priv->styles->data, cr);
 
   cairo_stroke (cr);
 
@@ -618,19 +730,7 @@ seed_canvas_fill (SeedContext ctx,
 		  const SeedValue arguments[], SeedException * exception)
 {
   GET_CR;
-  gchar *stroke_color = seed_value_to_string (ctx,
-					      seed_object_get_property (ctx,
-									this_object,
-									"fillStyle"),
-					      exception);
-  gdouble global_alpha = seed_value_to_double (ctx,
-					       seed_object_get_property (ctx,
-									 this_object,
-									 "globalAlpha"),
-					       exception);
-
-  seed_canvas_parse_color (cr, stroke_color, global_alpha);
-  g_free (stroke_color);
+  seed_canvas_apply_fill_style ((SeedCanvasStyle *)priv->styles->data, cr);
 
   cairo_fill (cr);
 
@@ -682,6 +782,10 @@ seed_canvas_quadratic (SeedContext ctx,
   qp2x = seed_value_to_double (ctx, arguments[2], exception);
   qp2y = seed_value_to_double (ctx, arguments[3], exception);
 
+
+  // Convert quadratic curve to cubic curve...
+  // I think the math is explained in some 
+  // freetype documentation somewhere.
   cp3x = qp2x;
   cp3y = qp2y;
 
@@ -803,69 +907,42 @@ canvas_finalize (SeedObject object)
 }
 
 seed_static_function canvas_funcs[] = {
-  {"save", seed_canvas_save, 0}
-  ,
-  {"restore", seed_canvas_restore, 0}
-  ,
-  {"scale", seed_canvas_scale, 0}
-  ,
-  {"rotate", seed_canvas_rotate, 0}
-  ,
-  {"translate", seed_canvas_translate, 0}
-  ,
-  {"transform", seed_canvas_transform, 0}
-  ,
-  {"setTransform", seed_canvas_set_transform, 0}
-  ,
-  {"clearRect", seed_canvas_clear_rect, 0}
-  ,
-  {"fillRect", seed_canvas_fill_rect, 0}
-  ,
-  {"strokeRect", seed_canvas_stroke_rect, 0}
-  ,
-  {"beginPath", seed_canvas_begin_path, 0}
-  ,
-  {"closePath", seed_canvas_end_path, 0}
-  ,
-  {"moveTo", seed_canvas_move_to, 0}
-  ,
-  {"lineTo", seed_canvas_line_to, 0}
-  ,
-  {"fill", seed_canvas_fill, 0}
-  ,
-  {"stroke", seed_canvas_stroke, 0}
-  ,
-  {"clip", seed_canvas_clip, 0}
-  ,
-  {"arc", seed_canvas_arc, 0}
-  ,
-  {"quadraticCurveTo", seed_canvas_quadratic, 0}
-  ,
-  {"bezierCurveTo", seed_canvas_bezier, 0}
-  ,
-  {"rect", seed_canvas_rect, 0}
-  ,
-  {"flush", seed_canvas_flush, 0}
-  ,
-  {"finish", seed_canvas_finish, 0}
-  ,
-  {"showPage", seed_canvas_showpage, 0}
-  ,
-  {"destroy", seed_canvas_destroy, 0}
-  ,
+  {"save", seed_canvas_save, 0},
+  {"restore", seed_canvas_restore, 0},
+  {"scale", seed_canvas_scale, 0},
+  {"rotate", seed_canvas_rotate, 0},
+  {"translate", seed_canvas_translate, 0},
+  {"transform", seed_canvas_transform, 0},
+  {"setTransform", seed_canvas_set_transform, 0},
+  {"clearRect", seed_canvas_clear_rect, 0},
+  {"fillRect", seed_canvas_fill_rect, 0},
+  {"strokeRect", seed_canvas_stroke_rect, 0},
+  {"beginPath", seed_canvas_begin_path, 0},
+  {"closePath", seed_canvas_end_path, 0},
+  {"moveTo", seed_canvas_move_to, 0},
+  {"lineTo", seed_canvas_line_to, 0},
+  {"fill", seed_canvas_fill, 0},
+  {"stroke", seed_canvas_stroke, 0},
+  {"clip", seed_canvas_clip, 0},
+  {"arc", seed_canvas_arc, 0},
+  {"quadraticCurveTo", seed_canvas_quadratic, 0},
+  {"bezierCurveTo", seed_canvas_bezier, 0},
+  {"rect", seed_canvas_rect, 0},
+  {"flush", seed_canvas_flush, 0},
+  {"finish", seed_canvas_finish, 0},
+  {"showPage", seed_canvas_showpage, 0},
+  {"destroy", seed_canvas_destroy, 0},
   {0, 0, 0}
 };
 
-//TODO: Implement getters that use cairo for consistency...
 seed_static_value canvas_properties[] = {
-  {"lineWidth", 0, seed_canvas_set_linewidth, 0}
-  ,
-  {"lineCap", 0, seed_canvas_set_linecap, 0}
-  ,
-  {"lineJoin", 0, seed_canvas_set_linejoin, 0}
-  ,
-  {"miterLimit", 0, seed_canvas_set_miterlimit, 0}
-  ,
+  {"lineWidth", 0, seed_canvas_set_linewidth, 0},
+  {"lineCap", 0, seed_canvas_set_linecap, 0},
+  {"lineJoin", 0, seed_canvas_set_linejoin, 0},
+  {"miterLimit", 0, seed_canvas_set_miterlimit, 0},
+  {"strokeStyle", 0, seed_canvas_update_stroke_style, 0},
+  {"fillStyle", 0, seed_canvas_update_fill_style, 0},
+  {"globalAlpha", 0, seed_canvas_update_global_alpha, 0},
   {0, 0, 0, 0}
 };
 
