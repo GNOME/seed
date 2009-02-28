@@ -321,7 +321,7 @@ seed_value_is_function (JSContextRef ctx, JSObjectRef value)
  * seed_engine_set_search_path:
  * @eng: A #SeedEngine, on which to set the path.
  *
- * @path: A #gchar**, a null-terminated list of strings containing path
+ * @path: A #gchar**, a null-terminated array of strings containing path to set.
  *
  */
 void
@@ -332,6 +332,13 @@ seed_engine_set_search_path (SeedEngine * eng, gchar ** path)
   eng->search_path = g_strdupv (path);
 }
 
+/**
+ * seed_engine_get_search_path:
+ * @eng: A #SeedEngine, to get the currently set search path.
+ *
+ * Return value: A null-terminated array of strings containing path
+ *
+ */
 gchar **
 seed_engine_get_search_path (SeedEngine * eng)
 {

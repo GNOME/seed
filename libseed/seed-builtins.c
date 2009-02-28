@@ -349,6 +349,9 @@ seed_get_include_path (JSContextRef ctx,
   return ret;
 }
 
+/* TODO: This allows setting of the search path from javascript. 
+ * currently causes crash if try to use more than once, probably some 
+ * kind of stack smashing or something, so fix that. */
 #if 0
 static JSValueRef
 seed_set_include_path (JSContextRef ctx,
