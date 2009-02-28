@@ -53,15 +53,6 @@ The external API of libseed. Used for embedding Seed in your applications, or wr
 @SEED_CLASS_ATTRIBUTE_NONE: 
 @SEED_CLASS_ATTRIBUTE_NO_SHARED_PROTOTYPE: 
 
-<!-- ##### STRUCT SeedEngine ##### -->
-<para>
-
-</para>
-
-@context: 
-@global: 
-@group: 
-
 <!-- ##### FUNCTION seed_init ##### -->
 <para>
 
@@ -69,6 +60,24 @@ The external API of libseed. Used for embedding Seed in your applications, or wr
 
 @argc: 
 @argv: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_engine_set_search_path ##### -->
+<para>
+
+</para>
+
+@eng: 
+@path: 
+
+
+<!-- ##### FUNCTION seed_engine_get_search_path ##### -->
+<para>
+
+</para>
+
+@eng: 
 @Returns: 
 
 
@@ -702,6 +711,28 @@ The external API of libseed. Used for embedding Seed in your applications, or wr
 
 @ctx: 
 @val: 
+@exception: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_value_to_filename ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@val: 
+@exception: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_value_from_filename ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@filename: 
 @exception: 
 @Returns: 
 

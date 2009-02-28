@@ -22,8 +22,9 @@
  * @ctx: A #SeedContext.
  * @value: The #SeedValue to protect.
  *
- * Increments the "protection count" of a SeedValue, in case you want to store
- * a reference somewhere where the garbage collector won't be able to find it.
+ * Increments the "protection count" of @value, in case you want to store
+ * a reference somewhere where the garbage collector won't be able to find it,
+ * and don't want it to be collected!
  *
  * In order for @value to be collected afterwards, it will need to be
  * unprotected the same number of times with seed_value_unprotect().
@@ -40,7 +41,7 @@ seed_value_protect (JSContextRef ctx, JSValueRef value)
  * @ctx: A #SeedContext.
  * @value: The #SeedValue to unprotect.
  *
- * Decrements the "protection count" of a SeedValue, as explained in 
+ * Decrements the "protection count" of @value, as explained in 
  * seed_value_protect().
  *
  */
@@ -66,12 +67,26 @@ seed_context_create (JSContextGroupRef group, JSClassRef global_class)
   return JSGlobalContextCreateInGroup (group, global_class);
 }
 
+/**
+ * seed_context_ref:
+ * @ctx: A #SeedContext.
+ *
+ * Increments the reference count of @ctx.
+ *
+ */
 JSGlobalContextRef
 seed_context_ref (JSGlobalContextRef ctx)
 {
   return JSGlobalContextRetain (ctx);
 }
 
+/**
+ * seed_context_unref:
+ * @ctx: A #SeedContext.
+ *
+ * Decrements the reference count of @ctx.
+ *
+ */
 void
 seed_context_unref (JSGlobalContextRef ctx)
 {
@@ -324,12 +339,26 @@ seed_string_is_equal_utf8 (JSStringRef a, const gchar * b)
   return JSStringIsEqualToUTF8CString (a, b);
 }
 
+/**
+ * seed_string_ref:
+ * @string: A #SeedString.
+ *
+ * Increments the reference count of @string.
+ *
+ */
 JSStringRef
 seed_string_ref (JSStringRef string)
 {
   return JSStringRetain (string);
 }
 
+/**
+ * seed_string_unref:
+ * @string: A #SeedString.
+ *
+ * Decrements the reference count of @string.
+ *
+ */
 void
 seed_string_unref (JSStringRef string)
 {
@@ -447,11 +476,14 @@ seed_value_is_function (JSContextRef ctx, JSObjectRef value)
  * @eng: A #SeedEngine, on which to set the path.
  * @path: A #gchar**, a null-terminated array of strings containing path to set.
  *
+ * Sets the default search path for Seed.include.
+ *
  */
 void
 seed_engine_set_search_path (SeedEngine * eng, gchar ** path)
 {
   /* this should be null from seed_init unless there's already a path set. */
+
   g_free (eng->search_path);
   eng->search_path = g_strdupv (path);
 }
