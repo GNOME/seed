@@ -315,7 +315,7 @@ seed_string_unref (JSStringRef string)
   JSStringRelease (string);
 }
 
-//TODO:FIXME: Do we have an external typedef or anything for JSClassDefinition?
+// TODO:FIXME: Do we have an external typedef or anything for JSClassDefinition?
 
 /**
  * seed_create_class:
@@ -329,6 +329,9 @@ seed_create_class (JSClassDefinition * def)
 {
   return JSClassCreate (def);
 }
+
+/* TODO:FIXME: GtkDoc is choking on JSObjectCallAsConstructorCallback, and 
+               merging it into the parameter name...??! */
 
 /**
  * seed_make_constructor:
