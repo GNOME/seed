@@ -315,12 +315,31 @@ seed_string_unref (JSStringRef string)
   JSStringRelease (string);
 }
 
+//TODO:FIXME: Do we have an external typedef or anything for JSClassDefinition?
+
+/**
+ * seed_create_class:
+ * @def: A #JSClassDefinition.
+ *
+ * Return value: A #SeedClass, described by @def. 
+ *
+ */
 JSClassRef
 seed_create_class (JSClassDefinition * def)
 {
   return JSClassCreate (def);
 }
 
+/**
+ * seed_make_constructor:
+ * @ctx: A #SeedContext.
+ * @class: A #SeedClass to use as the default for constructed objects.
+ * @constructor: The #JSObjectCallAsConstructorCallback function to call when
+ *               the constructor is invoked with 'new'.
+ *
+ * Return value: A #SeedObject, which is a constructor function.
+ *
+ */
 JSObjectRef
 seed_make_constructor (JSContextRef ctx,
 		       JSClassRef class,
@@ -329,30 +348,70 @@ seed_make_constructor (JSContextRef ctx,
   return JSObjectMakeConstructor (ctx, class, constructor);
 }
 
+/**
+ * seed_object_get_private:
+ * @object: A #SeedObject.
+ *
+ * Return value: A pointer to the private data of @object.
+ *
+ */
 gpointer
 seed_object_get_private (JSObjectRef object)
 {
   return (gpointer) JSObjectGetPrivate (object);
 }
 
+/**
+ * seed_object_set_private:
+ * @object: A #SeedObject.
+ * @value: A #gpointer to set the private data of @object to.
+ *
+ * Sets the private data of @object to @value.
+ *
+ */
 void
 seed_object_set_private (JSObjectRef object, gpointer value)
 {
   JSObjectSetPrivate (object, value);
 }
 
+/**
+ * seed_value_is_null:
+ * @ctx: A #SeedContext.
+ * @value: A #SeedValue.
+ *
+ * Return value: #true if @value represents %NULL, #false otherwise.
+ *
+ */
 gboolean
 seed_value_is_null (JSContextRef ctx, JSValueRef value)
 {
   return JSValueIsNull (ctx, value);
 }
 
+/**
+ * seed_value_is_object:
+ * @ctx: A #SeedContext.
+ * @value: A #SeedValue.
+ *
+ * Return value: #true if @value is an object, #false otherwise.
+ *
+ */
 gboolean
 seed_value_is_object (JSContextRef ctx, JSValueRef value)
 {
   return !seed_value_is_null (ctx, value) && JSValueIsObject (ctx, value);
 }
 
+/**
+ * seed_value_is_function:
+ * @ctx: A #SeedContext.
+ * @value: A #SeedObject.
+ *
+ * Return value: #true if @value is a function (and therefore, an object),
+ *               #false otherwise.
+ *
+ */
 gboolean
 seed_value_is_function (JSContextRef ctx, JSObjectRef value)
 {
