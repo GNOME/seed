@@ -266,12 +266,30 @@ seed_string_to_utf8_buffer (JSStringRef string, gchar * buffer,
   return JSStringGetUTF8CString (string, buffer, buffer_size);
 }
 
+/**
+ * seed_string_is_equal:
+ * @a: The first #SeedString to compare.
+ * @b: The second #SeedString to compare.
+ *
+ * Return value: #true, if a and b are equal, #false otherwise.
+ *
+ */
 gboolean
 seed_string_is_equal (JSStringRef a, JSStringRef b)
 {
   return JSStringIsEqual (a, b);
 }
 
+/**
+ * seed_string_is_equal_utf8:
+ * @a: The #SeedString to compare.
+ * @b: A #gchar* to compare to.
+ *
+ * Tests the equality of a SeedString and a UTF-8 C-style string.
+ *
+ * Return value: #true, if a and b are equal, #false otherwise.
+ *
+ */
 gboolean
 seed_string_is_equal_utf8 (JSStringRef a, const gchar * b)
 {
