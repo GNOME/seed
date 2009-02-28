@@ -29,6 +29,14 @@ seed_value_unprotect (JSContextRef ctx, JSValueRef value)
   JSValueUnprotect (ctx, value);
 }
 
+/**
+ * seed_context_create:
+ * @group: A #SeedContextGroup in which to create the new context, or %NULL to create it in the default context group.
+ * @global_class: The class to use to create the global object, or %NULL to create it with the default class.
+ *
+ * Return value: A new #SeedContext.
+ *
+ */
 JSGlobalContextRef
 seed_context_create (JSContextGroupRef group, JSClassRef global_class)
 {
