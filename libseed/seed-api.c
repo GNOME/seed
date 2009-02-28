@@ -73,6 +73,8 @@ seed_context_create (JSContextGroupRef group, JSClassRef global_class)
  *
  * Increments the reference count of @ctx.
  *
+ * Return value: @ctx
+ *
  */
 JSGlobalContextRef
 seed_context_ref (JSGlobalContextRef ctx)
@@ -344,6 +346,8 @@ seed_string_is_equal_utf8 (JSStringRef a, const gchar * b)
  * @string: A #SeedString.
  *
  * Increments the reference count of @string.
+ *
+ * Return value: @string
  *
  */
 JSStringRef
