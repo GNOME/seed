@@ -31,8 +31,10 @@ seed_value_unprotect (JSContextRef ctx, JSValueRef value)
 
 /**
  * seed_context_create:
- * @group: A #SeedContextGroup in which to create the new context, or %NULL to create it in the default context group.
- * @global_class: The #SeedClass to use to create the global object, or %NULL to create it with the default class.
+ * @group: A #SeedContextGroup in which to create the new context, or %NULL to
+ *         create it in the default context group.
+ * @global_class: The #SeedClass to use to create the global object, or %NULL to
+ *                create it with the default class.
  *
  * Return value: A new #SeedContext.
  *
@@ -71,7 +73,8 @@ seed_make_null (JSContextRef ctx)
 /**
  * seed_make_object:
  * @ctx: The #SeedContext in which to create the new object.
- * @class: The #SeedClass to use to create the new object, or %NULL to use the default object class.
+ * @class: The #SeedClass to use to create the new object, or %NULL to use the
+ *         default object class.
  * @private: The initial private data of the new object.
  *
  * Return value: A new #SeedObject.
@@ -89,7 +92,8 @@ seed_make_object (JSContextRef ctx, JSClassRef class, gpointer private)
  * @object: A #SeedObject on which to set the property.
  * @index: The index of the property to set.
  * @value: The #SeedValue to use as the property's value.
- * @exception: A reference to a #SeedValue in which to store any exceptions. Pass %NULL to ignore exceptions.
+ * @exception: A reference to a #SeedValue in which to store any exceptions.
+ *             Pass %NULL to ignore exceptions.
  *
  * Sets the property @index on @object to @value.
  *
@@ -118,10 +122,12 @@ seed_object_call (JSContextRef ctx,
  * seed_make_script:
  * @ctx: A #SeedContext.
  * @js: A string representing the contents of the script.
- * @source_url: The filename of the script, for reference in error messages, or %NULL.
- * @line_number: The line number of the beginning of the script, for reference in error messages, or %NULL.
+ * @source_url: The filename of the script, for reference in errors, or %NULL.
+ * @line_number: The line number of the beginning of the script, for reference
+ *               in error messages, or %NULL.
  *
- * Creates a new #SeedScript instance with @js as the contents, then checks for proper syntax.
+ * Creates a new #SeedScript instance with @js as the contents, then
+ * checks for proper syntax.
  *
  * Return value: The newly created #SeedScript.
  *
@@ -241,7 +247,8 @@ seed_script_exception (SeedScript * s)
  * seed_string_get_maximum_size:
  * @string: A #SeedString.
  *
- * Return value: The maximum number of bytes @string will take up if converted to a null-terminated UTF8 string.
+ * Return value: The maximum number of bytes @string will take up if converted
+ *               to a null-terminated UTF8 string.
  *
  */
 gsize
