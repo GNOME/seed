@@ -17,12 +17,33 @@
 
 #include "seed-private.h"
 
+/**
+ * seed_value_protect:
+ * @ctx: A #SeedContext.
+ * @value: The #SeedValue to protect.
+ *
+ * Increments the "protection count" of a SeedValue, in case you want to store
+ * a reference somewhere where the garbage collector won't be able to find it.
+ *
+ * In order for @value to be collected afterwards, it will need to be
+ * unprotected the same number of times with seed_value_unprotect().
+ *
+ */
 void
 seed_value_protect (JSContextRef ctx, JSValueRef value)
 {
   JSValueProtect (ctx, value);
 }
 
+/**
+ * seed_value_unprotect:
+ * @ctx: A #SeedContext.
+ * @value: The #SeedValue to unprotect.
+ *
+ * Decrements the "protection count" of a SeedValue, as explained in 
+ * seed_value_protect().
+ *
+ */
 void
 seed_value_unprotect (JSContextRef ctx, JSValueRef value)
 {
