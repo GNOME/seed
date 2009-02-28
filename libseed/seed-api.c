@@ -32,7 +32,7 @@ seed_value_unprotect (JSContextRef ctx, JSValueRef value)
 /**
  * seed_context_create:
  * @group: A #SeedContextGroup in which to create the new context, or %NULL to create it in the default context group.
- * @global_class: The class to use to create the global object, or %NULL to create it with the default class.
+ * @global_class: The #SeedClass to use to create the global object, or %NULL to create it with the default class.
  *
  * Return value: A new #SeedContext.
  *
@@ -68,6 +68,15 @@ seed_make_null (JSContextRef ctx)
   return JSValueMakeNull (ctx);
 }
 
+/**
+ * seed_make_object:
+ * @ctx: The #SeedContext in which to create the new object.
+ * @class: The #SeedClass to use to create the new object, or %NULL to use the default object class.
+ * @private: The initial private data of the new object.
+ *
+ * Return value: A new #SeedObject.
+ *
+ */
 JSObjectRef
 seed_make_object (JSContextRef ctx, JSClassRef class, gpointer private)
 {
