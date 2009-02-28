@@ -49,9 +49,9 @@ seed_context_unref (JSGlobalContextRef ctx)
 
 /**
  * seed_make_null:
- * @ctx: A #JSContextRef.
+ * @ctx: A #SeedContext.
  *
- * Return value: A #JSValueRef representing %NULL.
+ * Return value: A #SeedValue representing %NULL.
  *
  */
 JSValueRef
@@ -68,11 +68,11 @@ seed_make_object (JSContextRef ctx, JSClassRef class, gpointer private)
 
 /**
  * seed_object_set_property_at_index:
- * @ctx: A #JSContextRef.
- * @object: A #JSObjectRef on which to set the property.
+ * @ctx: A #SeedContext.
+ * @object: A #SeedObject on which to set the property.
  * @index: The index of the property to set.
- * @value: The #JSValueRef to use as the property's value.
- * @exception: A reference to a #JSValueRef in which to store any exceptions. Pass %NULL to ignore exceptions.
+ * @value: The #SeedValue to use as the property's value.
+ * @exception: A reference to a #SeedValue in which to store any exceptions. Pass %NULL to ignore exceptions.
  *
  * Sets the property @index on @object to @value.
  *
@@ -99,7 +99,7 @@ seed_object_call (JSContextRef ctx,
 
 /**
  * seed_make_script:
- * @ctx: A #JSContextRef.
+ * @ctx: A #SeedContext.
  * @js: A string representing the contents of the script.
  * @source_url: The filename of the script, for reference in error messages, or %NULL.
  * @line_number: The line number of the beginning of the script, for reference in error messages, or %NULL.
@@ -135,7 +135,7 @@ seed_make_script (JSContextRef ctx,
 
 /**
  * seed_script_new_from_file:
- * @ctx: A #JSContextRef.
+ * @ctx: A #SeedContext.
  * @file: The filename of the script to load.
  *
  * Uses seed_make_script() to create a #SeedScript from the contents of @file.
@@ -163,7 +163,7 @@ seed_script_new_from_file (JSContextRef ctx, gchar * file)
 
 /**
  * seed_evaluate:
- * @ctx: A #JSContextRef.
+ * @ctx: A #SeedContext.
  * @s: A #SeedScript to evaluate.
  * @this: The object which should be assigned to the "this" global.
  *
@@ -187,7 +187,7 @@ seed_evaluate (JSContextRef ctx, SeedScript * s, JSObjectRef this)
 
 /**
  * seed_simple_evaluate:
- * @ctx: A #JSContextRef.
+ * @ctx: A #SeedContext.
  * @source: A string representing the JavaScript to evaluate.
  *
  * Evaluates a string of JavaScript.
@@ -222,7 +222,7 @@ seed_script_exception (SeedScript * s)
 
 /**
  * seed_string_get_maximum_size:
- * @string: A #JSStringRef.
+ * @string: A #SeedString.
  *
  * Return value: The maximum number of bytes @string will take up if converted to a null-terminated UTF8 string.
  *
@@ -235,7 +235,7 @@ seed_string_get_maximum_size (JSStringRef string)
 
 /**
  * seed_string_to_utf8_buffer:
- * @string: A #JSStringRef.
+ * @string: A #SeedString.
  * @buffer: An allocated string.
  * @buffer_size: The length of @buffer, in bytes.
  *
