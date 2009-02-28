@@ -256,7 +256,7 @@ seed_string_get_maximum_size (JSStringRef string)
  * @buffer: An allocated string.
  * @buffer_size: The length of @buffer, in bytes.
  *
- * Return value: A null-terminated UTF8 representation of @string.
+ * Return value: A the number of bytes copied into @buffer.
  *
  */
 gsize
