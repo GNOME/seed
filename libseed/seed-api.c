@@ -145,6 +145,23 @@ seed_object_set_property_at_index (JSContextRef ctx,
   JSObjectSetPropertyAtIndex (ctx, object, index, value, exception);
 }
 
+/**
+ * seed_object_call
+ * @ctx: A #SeedContext.
+ * @object: A #SeedObject to call.
+ * @this: The #SeedObject to use as the 'this' object inside the called function.
+ * @argument_count: The number of arguments in the @arguments array.
+ * @arguments: An array (@argument_count long) of #SeedValues to pass in as the
+ *             function's arguments. 
+ * @exception: A reference to a #SeedValue in which to store any exceptions.
+ *             Pass %NULL to ignore exceptions.
+ *
+ * Calls @object as a function.
+ *
+ * Return value: The @SeedValue returned by the called function, or %NULL if an
+ *               exception occurs or the object is not a function.
+ *
+ */
 JSValueRef
 seed_object_call (JSContextRef ctx,
 		  JSObjectRef object,
