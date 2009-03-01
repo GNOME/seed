@@ -14,5 +14,6 @@
   <chapter>
     <title>Seed External API</title>
     <xi:include href="xml/seed.xml"/>
+    <xi:include href="xml/seed-value.xml"/>
   </chapter>
 </book>
