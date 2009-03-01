@@ -19,12 +19,6 @@
  * Copyright (C) Robert Carr 2008 <carrr@rpi.edu>
  */
 
-/**
- * SECTION:seed-value
- * @short_description: Conversion between Seed and C types.
- *
- */
-
 #include <glib.h>
 #include <glib-object.h>
 #include <girepository.h>
