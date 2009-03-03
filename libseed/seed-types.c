@@ -1730,6 +1730,7 @@ seed_value_to_object (JSContextRef ctx,
     }
 
   gobject = (GObject *) JSObjectGetPrivate ((JSObjectRef) val);
+  g_assert(G_IS_OBJECT(gobject));
 
   return gobject;
 }
