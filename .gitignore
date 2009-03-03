@@ -1,6 +1,7 @@
 *.o
 *.lo
 *.la
+*.bak
 .deps
 .libs
 *~
@@ -59,9 +60,6 @@ doc/reference/sgml-build.stamp
 doc/reference/sgml.stamp
 doc/reference/tmpl-build.stamp
 doc/reference/tmpl.stamp
-doc/reference/tmpl/seed-private.sgml.bak
-doc/reference/tmpl/seed-unused.sgml.bak
-doc/reference/tmpl/seed.sgml.bak
 doc/reference/xml/api-index-deprecated.xml
 doc/reference/xml/api-index-full.xml
 doc/reference/xml/object_index.sgml
@@ -143,3 +141,14 @@ tests/c/Makefile.in
 tests/c/test
 tests/javascript/Makefile
 tests/javascript/Makefile.in
+doc/reference/html/seed-SeedException.html
+doc/reference/html/seed-SeedString.html
+doc/reference/html/seed-SeedValue.html
+doc/reference/tmpl/seed-api.sgml
+doc/reference/tmpl/seed-exception.sgml
+doc/reference/tmpl/seed-string.sgml
+doc/reference/tmpl/seed-value.sgml
+doc/reference/xml/seed-api.xml
+doc/reference/xml/seed-exception.xml
+doc/reference/xml/seed-string.xml
+doc/reference/xml/seed-value.xml
