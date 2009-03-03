@@ -1615,13 +1615,13 @@ seed_value_to_string (JSContextRef ctx,
   if (val == NULL)
     return NULL;
 
-  if (JSValueIsBoolean (ctx, val) || JSValueIsNumber (ctx, val))
-    {
-      buf = g_strdup_printf ("%lf", JSValueToNumber (ctx, val, NULL));
-    }
   else if (JSValueIsNull (ctx, val) || JSValueIsUndefined (ctx, val))
     {
       buf = g_strdup ("[null]");
+    }
+  else if (JSValueIsBoolean (ctx, val) || JSValueIsNumber (ctx, val))
+    {
+      buf = g_strdup_printf ("%lf", JSValueToNumber (ctx, val, NULL));
     }
   else
     {
