@@ -35,6 +35,8 @@ gchar *glib_message = 0;
 
 GIBaseInfo *base_info_info = 0;
 
+GQuark js_ref_quark;
+
 guint seed_debug_flags = 0;	/* global seed debug flag */
 
 #ifdef SEED_ENABLE_DEBUG
@@ -1455,6 +1457,7 @@ seed_init (gint * argc, gchar *** argv)
 
   qname = g_quark_from_static_string ("js-type");
   qprototype = g_quark_from_static_string ("js-prototype");
+  js_ref_quark = g_quark_from_static_string ("js-ref");
 
   eng = (SeedEngine *) g_malloc (sizeof (SeedEngine));
 
@@ -1512,6 +1515,6 @@ seed_init (gint * argc, gchar *** argv)
 
   base_info_info =
     g_irepository_find_by_name (0, "GIRepository", "IBaseInfo");
-
+  
   return eng;
 }

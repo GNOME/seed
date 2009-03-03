@@ -36,6 +36,8 @@
 
 #include "seed-private.h"
 
+extern GQuark js_ref_quark;
+
 JSValueRef seed_value_from_gvalue (JSContextRef ctx,
 				   GValue * gval, JSValueRef * exception);
 

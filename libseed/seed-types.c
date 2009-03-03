@@ -68,7 +68,7 @@ seed_wrap_object (JSContextRef ctx, GObject * object)
 
   type = G_OBJECT_TYPE (object);
 
-  user_data = (JSValueRef) g_object_get_data (object, "js-ref");
+  user_data = (JSValueRef) g_object_get_qdata (object, js_ref_quark);
 
   if (user_data)
     return user_data;
@@ -89,7 +89,7 @@ seed_wrap_object (JSContextRef ctx, GObject * object)
       g_assert_not_reached ();
     }
 
-  g_object_set_data_full (object, "js-ref", (gpointer) js_ref,
+  g_object_set_qdata_full (object, js_ref_quark, (gpointer) js_ref,
 			  seed_gobject_destroyed);
 
   JSValueProtect (eng->context, js_ref);
