@@ -131,7 +131,6 @@ seed_release_arg (GITransfer transfer,
 	      g_free (arg->v_pointer);
 	      break;
 	    case GI_TYPE_TAG_INTERFACE:
-	      // TODOOO FIXME
 	      break;
 	    default:
 	      g_assert_not_reached ();
@@ -332,6 +331,44 @@ seed_gi_make_array (JSContextRef ctx,
 	    result[i] = seed_value_to_float (ctx, elem, exception);
 	  }
 
+	*array_p = result;
+      }
+      break;
+    case GI_TYPE_TAG_DOUBLE:
+      {
+	gdouble *result;
+	guint i;
+	
+	result = g_new0 (gdouble, length + 1);
+	
+	for (i = 0; i < length; i++)
+	  {
+	    JSValueRef elem = JSObjectGetPropertyAtIndex (ctx,
+							  (JSObjectRef) array,
+							  i,
+							  exception);
+	    result[i] = seed_value_to_double (ctx, elem, exception);
+	  }
+	
+	*array_p = result;
+      }
+      break;
+    case GI_TYPE_TAG_INT:
+      {
+	gint *result;
+	guint i;
+	
+	result = g_new0 (gint, length + 1);
+	
+	for (i = 0; i < length; i++)
+	  {
+	    JSValueRef elem = JSObjectGetPropertyAtIndex (ctx,
+							  (JSObjectRef) array,
+							  i,
+							  exception);
+	    result[i] = seed_value_to_int (ctx, elem, exception);
+	  }
+	
 	*array_p = result;
       }
       break;
