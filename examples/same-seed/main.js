@@ -7,7 +7,7 @@ var tiles_h = 10;
 var tile_size = 50;
 var offset = tile_size/2;
 
-var max_colors = 2;
+var max_colors = 4;
 var fly_score = true;
 
 Seed.import_namespace("Gtk");
