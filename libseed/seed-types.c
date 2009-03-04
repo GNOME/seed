@@ -203,8 +203,7 @@ seed_gi_release_arg (GITransfer transfer,
 
 gboolean
 seed_gi_release_in_arg (GITransfer transfer,
-			GITypeInfo * type_info, 
-			GArgument * arg)
+			GITypeInfo * type_info, GArgument * arg)
 {
   GITypeTag type_tag;
 
