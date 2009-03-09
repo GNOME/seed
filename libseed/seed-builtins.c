@@ -340,8 +340,6 @@ seed_get_include_path (JSContextRef ctx,
       return (JSValueMakeNull (ctx));
     }
 
-  /* also do I want this to give a list? seems more useful. */
-
   gchar *path_string = g_strjoinv (":", eng->search_path);
   ret = seed_value_from_string (ctx, path_string, exception);
   g_free (path_string);
@@ -349,10 +347,6 @@ seed_get_include_path (JSContextRef ctx,
   return ret;
 }
 
-/* TODO: This allows setting of the search path from javascript. 
- * currently causes crash if try to use more than once, probably some 
- * kind of stack smashing or something, so fix that. */
-#if 0
 static JSValueRef
 seed_set_include_path (JSContextRef ctx,
 		       JSObjectRef function,
@@ -360,49 +354,24 @@ seed_set_include_path (JSContextRef ctx,
 		       size_t argumentCount,
 		       const JSValueRef arguments[], JSValueRef * exception)
 {
-  guint i;
-
-  if (argumentCount == 0)
+  gchar *new_path;
+  if (argumentCount != 1)
     {
       gchar *mes =
 	g_strdup_printf ("Seed.set_include_path expected "
-			 "> 0 arguments, got %Zd",
+			 "1 argument, got %Zd",
 			 argumentCount);
       seed_make_exception (ctx, exception, "ArgumentError", mes);
       g_free (mes);
       return JSValueMakeNull (ctx);
     }
 
-  g_print ("going to free context's search path.: %p\n", eng->search_path);
-
-  gchar *t = g_strjoinv (":", eng->search_path);
-  g_print ("about to free '%s'\n", t);
-  g_free (t);
-
+  new_path = seed_value_to_string (ctx, arguments[0], exception);
   g_strfreev (eng->search_path);	/* free the old path. */
-  g_print ("allocating new eng->search_path\n");
-  eng->search_path = (gchar **) g_malloc (argumentCount + 1);	/* args + NULL terminator */
-  g_print ("new eng->search_path: %p\n", eng->search_path);
-
-  for (i = 0; i < argumentCount; ++i)
-    {
-      g_print ("yay argcount: i: %d %p\n", i, arguments[i]);
-      eng->search_path[i] =
-	seed_value_to_string (ctx, arguments[i], exception);
-    }
-
-  eng->search_path[argumentCount] = NULL;	/* null terminator in last position. */
-
-  g_print ("New path length is : %d\n", g_strv_length (eng->search_path));
-
-  t = g_strjoinv (":", eng->search_path);
-  g_print ("path is '%s'\n", t);
-  g_free (t);
+  eng->search_path = g_strsplit (new_path, ":", -1);
 
   return JSValueMakeNull (ctx);
 }
-#endif
-
 
 void
 seed_init_builtins (SeedEngine * local_eng, gint * argc, gchar *** argv)
@@ -424,7 +393,8 @@ seed_init_builtins (SeedEngine * local_eng, gint * argc, gchar *** argv)
   seed_create_function (local_eng->context, "fork", &seed_fork, obj);
   seed_create_function (local_eng->context, "spawn", &seed_spawn, obj);
   seed_create_function (local_eng->context, "quit", &seed_quit, obj);
-  //seed_create_function(local_eng->context, "set_include_path", &seed_set_include_path, obj);
+  seed_create_function (local_eng->context, "set_include_path",
+			&seed_set_include_path, obj);
   seed_create_function (local_eng->context, "get_include_path",
 			&seed_get_include_path, obj);
 
