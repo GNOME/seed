@@ -20,6 +20,8 @@
 #include <sys/mman.h>
 #include <stdio.h>
 
+#include <signal.h>
+
 static JSValueRef
 seed_include (JSContextRef ctx,
 	      JSObjectRef function,

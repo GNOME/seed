@@ -20,84 +20,6 @@
 
 JSClassRef seed_native_callback_class;
 
-static ffi_type *
-get_ffi_type (GITypeInfo * info)
-{
-  ffi_type *rettype = NULL;
-
-  if (g_type_info_is_pointer (info))
-    rettype = &ffi_type_pointer;
-  else
-    switch (g_type_info_get_tag (info))
-      {
-      case GI_TYPE_TAG_VOID:
-	rettype = &ffi_type_void;
-	break;
-      case GI_TYPE_TAG_BOOLEAN:
-	rettype = &ffi_type_uint;
-	break;
-      case GI_TYPE_TAG_INT8:
-	rettype = &ffi_type_sint8;
-	break;
-      case GI_TYPE_TAG_UINT8:
-	rettype = &ffi_type_uint8;
-	break;
-      case GI_TYPE_TAG_INT16:
-	rettype = &ffi_type_sint16;
-	break;
-      case GI_TYPE_TAG_UINT16:
-	rettype = &ffi_type_uint16;
-	break;
-      case GI_TYPE_TAG_INT32:
-	rettype = &ffi_type_sint32;
-	break;
-      case GI_TYPE_TAG_UINT32:
-	rettype = &ffi_type_uint32;
-	break;
-      case GI_TYPE_TAG_INT64:
-	rettype = &ffi_type_sint64;
-	break;
-      case GI_TYPE_TAG_UINT64:
-	rettype = &ffi_type_uint64;
-	break;
-      case GI_TYPE_TAG_INT:
-	rettype = &ffi_type_sint;
-	break;
-      case GI_TYPE_TAG_UINT:
-	rettype = &ffi_type_uint;
-	break;
-      case GI_TYPE_TAG_SSIZE:	/* FIXME */
-      case GI_TYPE_TAG_LONG:
-	rettype = &ffi_type_slong;
-	break;
-      case GI_TYPE_TAG_SIZE:	/* FIXME */
-      case GI_TYPE_TAG_TIME_T:	/* May not be portable */
-      case GI_TYPE_TAG_ULONG:
-	rettype = &ffi_type_ulong;
-	break;
-      case GI_TYPE_TAG_FLOAT:
-	rettype = &ffi_type_float;
-	break;
-      case GI_TYPE_TAG_DOUBLE:
-	rettype = &ffi_type_double;
-	break;
-      case GI_TYPE_TAG_UTF8:
-      case GI_TYPE_TAG_FILENAME:
-      case GI_TYPE_TAG_ARRAY:
-      case GI_TYPE_TAG_INTERFACE:
-      case GI_TYPE_TAG_GLIST:
-      case GI_TYPE_TAG_GSLIST:
-      case GI_TYPE_TAG_GHASH:
-      case GI_TYPE_TAG_ERROR:
-	rettype = &ffi_type_pointer;
-	break;
-      default:
-	g_assert_not_reached ();
-      }
-
-  return rettype;
-}
-
 static void
 seed_closure_finalize (JSObjectRef object)
 {
@@ -110,8 +32,8 @@ seed_closure_finalize (JSObjectRef object)
 
   g_free (privates->cif->arg_types);
   g_free (privates->cif);
+  g_callable_info_free_closure (privates->info, privates->closure);
   g_base_info_unref ((GIBaseInfo *) privates->info);
-  munmap (privates->closure, sizeof (ffi_closure));
 }
 
 static void
@@ -353,8 +275,7 @@ seed_make_native_closure (JSContextRef ctx,
   ffi_closure *closure;
   ffi_type **arg_types;
   GITypeInfo *return_type;
-  GIArgInfo *arg_info;
-  gint num_args, i;
+  gint num_args;
   SeedNativeClosure *privates;
   JSObjectRef cached;
 
@@ -377,25 +298,8 @@ seed_make_native_closure (JSContextRef ctx,
   privates->function = function;
   privates->cif = cif;
 
-  for (i = 0; i < num_args; i++)
-    {
-      GITypeInfo *type;
-
-      arg_info = g_callable_info_get_arg (info, i);
-      type = g_arg_info_get_type (arg_info);
-      arg_types[i] = get_ffi_type (type);
-      g_base_info_unref ((GIBaseInfo *) arg_info);
-      g_base_info_unref ((GIBaseInfo *) type);
-    }
-  arg_types[num_args] = 0;
-
-  closure = mmap (0, sizeof (ffi_closure), PROT_READ | PROT_WRITE |
-		  PROT_EXEC, MAP_ANON | MAP_PRIVATE, -1, 0);
+  closure = g_callable_info_prepare_closure (info, cif, seed_handle_closure, privates);
   privates->closure = closure;
-
-  ffi_prep_cif (cif, FFI_DEFAULT_ABI, num_args,
-		get_ffi_type (return_type), arg_types);
-  ffi_prep_closure (closure, cif, seed_handle_closure, privates);
 
   JSValueProtect (ctx, function);
 

@@ -22,8 +22,8 @@
 #include <string.h>
 #include <stdarg.h>
 
-GQuark qname = 0;
-GQuark qprototype = 0;
+GQuark qname;
+GQuark qprototype;
 
 JSClassRef gobject_signal_class;
 JSClassRef gobject_named_constructor_class;
