@@ -82,13 +82,13 @@ SeedScript *seed_make_script (SeedContext ctx,
 			      gint line_number);
 SeedScript *seed_script_new_from_file (SeedContext ctx, gchar * file);
 SeedException seed_script_exception (SeedScript * s);
-void seed_make_exception (SeedContext ctx, SeedException e,
-			  gchar * name, gchar * message);
-gchar *seed_exception_get_name (SeedContext ctx, SeedException e);
-gchar *seed_exception_get_message (SeedContext ctx, SeedException e);
-guint seed_exception_get_line (SeedContext ctx, SeedException e);
-gchar *seed_exception_get_file (SeedContext ctx, SeedException e);
-gchar *seed_exception_to_string (SeedContext ctx, SeedException e);
+void seed_make_exception (SeedContext ctx, SeedException exception,
+			  const gchar * name, const gchar * message);
+gchar *seed_exception_get_name (SeedContext ctx, SeedException exception);
+gchar *seed_exception_get_message (SeedContext ctx, SeedException exception);
+guint seed_exception_get_line (SeedContext ctx, SeedException exception);
+gchar *seed_exception_get_file (SeedContext ctx, SeedException exception);
+gchar *seed_exception_to_string (SeedContext ctx, SeedException exception);
 
 SeedValue seed_evaluate (SeedContext ctx, SeedScript * s, SeedObject this);
 

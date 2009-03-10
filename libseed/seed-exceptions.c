@@ -18,6 +18,19 @@
 #include "seed-private.h"
 #include <string.h>
 
+/**
+ * seed_make_exception:
+ * @ctx: A #SeedContext.
+ * @exception: A reference to a #SeedException in which to store the exception.
+ * @name: The #gchar* representing the exception name.
+ * @message: The #gchar* representing the details of the exception.
+ *
+ * The line number and file name of the exception created will be undefined.
+ *
+ * The runtime documentation contains a list of names of built-in exceptions,
+ * and should eventually be merged in here.
+ *
+ */
 void
 seed_make_exception (JSContextRef ctx,
 		     JSValueRef * exception,
@@ -52,6 +65,15 @@ seed_make_exception (JSContextRef ctx,
   JSStringRelease (js_message);
 }
 
+/**
+ * seed_make_exception:
+ * @ctx: A #SeedContext.
+ * @exception: A reference to a #SeedException in which to store the exception.
+ * @error: A #GError* from which to copy the properties of the exception.
+ *
+ * Generates @exception with the name and description of @error.
+ *
+ */
 void
 seed_make_exception_from_gerror (JSContextRef ctx,
 				 JSValueRef * exception, GError * error)
@@ -77,6 +99,14 @@ seed_make_exception_from_gerror (JSContextRef ctx,
   g_string_free (string, TRUE);
 }
 
+/**
+ * seed_exception_get_name:
+ * @ctx: A #SeedContext.
+ * @exception: A reference to a #SeedException.
+ *
+ * Return value: A #gchar* representing the name of @exception.
+ *
+ */
 gchar *
 seed_exception_get_name (JSContextRef ctx, JSValueRef e)
 {
@@ -89,6 +119,14 @@ seed_exception_get_name (JSContextRef ctx, JSValueRef e)
   return seed_value_to_string (ctx, name, 0);
 }
 
+/**
+ * seed_exception_get_message:
+ * @ctx: A #SeedContext.
+ * @exception: A reference to a #SeedException.
+ *
+ * Return value: A #gchar* representing the detailed message of @exception.
+ *
+ */
 gchar *
 seed_exception_get_message (JSContextRef ctx, JSValueRef e)
 {
@@ -101,6 +139,15 @@ seed_exception_get_message (JSContextRef ctx, JSValueRef e)
   return seed_value_to_string (ctx, name, 0);
 }
 
+/**
+ * seed_exception_get_line:
+ * @ctx: A #SeedContext.
+ * @exception: A reference to a #SeedException.
+ *
+ * Return value: A #guint representing the line number from which @exception
+ *               was thrown.
+ *
+ */
 guint
 seed_exception_get_line (JSContextRef ctx, JSValueRef e)
 {
@@ -112,6 +159,15 @@ seed_exception_get_line (JSContextRef ctx, JSValueRef e)
   return seed_value_to_uint (ctx, line, 0);
 }
 
+/**
+ * seed_exception_get_file:
+ * @ctx: A #SeedContext.
+ * @exception: A reference to a #SeedException.
+ *
+ * Return value: A #gchar* representing the name of the file from which
+ *               @exception was thrown.
+ *
+ */
 gchar *
 seed_exception_get_file (JSContextRef ctx, JSValueRef e)
 {
@@ -123,6 +179,15 @@ seed_exception_get_file (JSContextRef ctx, JSValueRef e)
   return seed_value_to_string (ctx, line, 0);
 }
 
+/**
+ * seed_exception_to_string:
+ * @ctx: A #SeedContext.
+ * @exception: A reference to a #SeedException.
+ *
+ * Return value: A #gchar* representing the name, detailed message, line number,
+ *               and file name of @exception.
+ *
+ */
 gchar *
 seed_exception_to_string (JSContextRef ctx, JSValueRef e)
 {
