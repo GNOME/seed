@@ -1245,6 +1245,17 @@ seed_value_to_boolean (JSContextRef ctx,
   return JSValueToBoolean (ctx, val);
 }
 
+/**
+ * seed_value_from_boolean:
+ * @ctx: A #SeedContext.
+ * @val: The #gboolean to represent.
+ * @exception: A reference to a #SeedValue in which to store any exceptions.
+ *             Pass %NULL to ignore exceptions.
+ *
+ * Return value: A %SeedValue which represents @val, or %NULL if an exception
+ *               is raised during the conversion.
+ *
+ */
 JSValueRef
 seed_value_from_boolean (JSContextRef ctx,
 			 gboolean val, JSValueRef * exception)
@@ -1280,6 +1291,17 @@ seed_value_to_uint (JSContextRef ctx, JSValueRef val, JSValueRef * exception)
   return (guint) JSValueToNumber (ctx, val, NULL);
 }
 
+/**
+ * seed_value_from_uint:
+ * @ctx: A #SeedContext.
+ * @val: The #guint to represent.
+ * @exception: A reference to a #SeedValue in which to store any exceptions.
+ *             Pass %NULL to ignore exceptions.
+ *
+ * Return value: A %SeedValue which represents @val, or %NULL if an exception
+ *               is raised during the conversion.
+ *
+ */
 JSValueRef
 seed_value_from_uint (JSContextRef ctx, guint val, JSValueRef * exception)
 {
@@ -1311,6 +1333,17 @@ seed_value_to_int (JSContextRef ctx, JSValueRef val, JSValueRef * exception)
   return (gint) JSValueToNumber (ctx, val, NULL);
 }
 
+/**
+ * seed_value_from_int:
+ * @ctx: A #SeedContext.
+ * @val: The #gint to represent.
+ * @exception: A reference to a #SeedValue in which to store any exceptions.
+ *             Pass %NULL to ignore exceptions.
+ *
+ * Return value: A %SeedValue which represents @val, or %NULL if an exception
+ *               is raised during the conversion.
+ *
+ */
 JSValueRef
 seed_value_from_int (JSContextRef ctx, gint val, JSValueRef * exception)
 {
@@ -1353,6 +1386,17 @@ seed_value_to_char (JSContextRef ctx, JSValueRef val, JSValueRef * exception)
   return (char) cv;
 }
 
+/**
+ * seed_value_from_char:
+ * @ctx: A #SeedContext.
+ * @val: The #gchar to represent.
+ * @exception: A reference to a #SeedValue in which to store any exceptions.
+ *             Pass %NULL to ignore exceptions.
+ *
+ * Return value: A %SeedValue which represents @val, or %NULL if an exception
+ *               is raised during the conversion.
+ *
+ */
 JSValueRef
 seed_value_from_char (JSContextRef ctx, gchar val, JSValueRef * exception)
 {
@@ -1395,6 +1439,17 @@ seed_value_to_uchar (JSContextRef ctx, JSValueRef val, JSValueRef * exception)
   return (guchar) cv;
 }
 
+/**
+ * seed_value_from_uchar:
+ * @ctx: A #SeedContext.
+ * @val: The #guchar to represent.
+ * @exception: A reference to a #SeedValue in which to store any exceptions.
+ *             Pass %NULL to ignore exceptions.
+ *
+ * Return value: A %SeedValue which represents @val, or %NULL if an exception
+ *               is raised during the conversion.
+ *
+ */
 JSValueRef
 seed_value_from_uchar (JSContextRef ctx, guchar val, JSValueRef * exception)
 {
@@ -1426,6 +1481,17 @@ seed_value_to_long (JSContextRef ctx, JSValueRef val, JSValueRef * exception)
   return (glong) JSValueToNumber (ctx, val, NULL);
 }
 
+/**
+ * seed_value_from_long:
+ * @ctx: A #SeedContext.
+ * @val: The #glong to represent.
+ * @exception: A reference to a #SeedValue in which to store any exceptions.
+ *             Pass %NULL to ignore exceptions.
+ *
+ * Return value: A %SeedValue which represents @val, or %NULL if an exception
+ *               is raised during the conversion.
+ *
+ */
 JSValueRef
 seed_value_from_long (JSContextRef ctx, glong val, JSValueRef * exception)
 {
@@ -1458,6 +1524,17 @@ seed_value_to_ulong (JSContextRef ctx, JSValueRef val, JSValueRef * exception)
   return (gulong) JSValueToNumber (ctx, val, NULL);
 }
 
+/**
+ * seed_value_from_ulong:
+ * @ctx: A #SeedContext.
+ * @val: The #gulong to represent.
+ * @exception: A reference to a #SeedValue in which to store any exceptions.
+ *             Pass %NULL to ignore exceptions.
+ *
+ * Return value: A %SeedValue which represents @val, or %NULL if an exception
+ *               is raised during the conversion.
+ *
+ */
 JSValueRef
 seed_value_from_ulong (JSContextRef ctx, gulong val, JSValueRef * exception)
 {
@@ -1490,6 +1567,17 @@ seed_value_to_int64 (JSContextRef ctx, JSValueRef val, JSValueRef * exception)
   return (gint64) JSValueToNumber (ctx, val, NULL);
 }
 
+/**
+ * seed_value_from_int64:
+ * @ctx: A #SeedContext.
+ * @val: The #gint64 to represent.
+ * @exception: A reference to a #SeedValue in which to store any exceptions.
+ *             Pass %NULL to ignore exceptions.
+ *
+ * Return value: A %SeedValue which represents @val, or %NULL if an exception
+ *               is raised during the conversion.
+ *
+ */
 JSValueRef
 seed_value_from_int64 (JSContextRef ctx, gint64 val, JSValueRef * exception)
 {
@@ -1524,6 +1612,17 @@ seed_value_to_uint64 (JSContextRef ctx,
   return (guint64) JSValueToNumber (ctx, val, NULL);
 }
 
+/**
+ * seed_value_from_uint64:
+ * @ctx: A #SeedContext.
+ * @val: The #guint64 to represent.
+ * @exception: A reference to a #SeedValue in which to store any exceptions.
+ *             Pass %NULL to ignore exceptions.
+ *
+ * Return value: A %SeedValue which represents @val, or %NULL if an exception
+ *               is raised during the conversion.
+ *
+ */
 JSValueRef
 seed_value_from_uint64 (JSContextRef ctx, guint64 val, JSValueRef * exception)
 {
@@ -1555,6 +1654,17 @@ seed_value_to_float (JSContextRef ctx, JSValueRef val, JSValueRef * exception)
   return (gfloat) JSValueToNumber (ctx, val, NULL);
 }
 
+/**
+ * seed_value_from_float:
+ * @ctx: A #SeedContext.
+ * @val: The #gfloat to represent.
+ * @exception: A reference to a #SeedValue in which to store any exceptions.
+ *             Pass %NULL to ignore exceptions.
+ *
+ * Return value: A %SeedValue which represents @val, or %NULL if an exception
+ *               is raised during the conversion.
+ *
+ */
 JSValueRef
 seed_value_from_float (JSContextRef ctx, gfloat val, JSValueRef * exception)
 {
@@ -1587,6 +1697,17 @@ seed_value_to_double (JSContextRef ctx,
   return (gdouble) JSValueToNumber (ctx, val, NULL);
 }
 
+/**
+ * seed_value_from_double:
+ * @ctx: A #SeedContext.
+ * @val: The #gdouble to represent.
+ * @exception: A reference to a #SeedValue in which to store any exceptions.
+ *             Pass %NULL to ignore exceptions.
+ *
+ * Return value: A %SeedValue which represents @val, or %NULL if an exception
+ *               is raised during the conversion.
+ *
+ */
 JSValueRef
 seed_value_from_double (JSContextRef ctx, gdouble val, JSValueRef * exception)
 {
@@ -1650,6 +1771,17 @@ seed_value_to_string (JSContextRef ctx,
   return buf;
 }
 
+/**
+ * seed_value_from_string:
+ * @ctx: A #SeedContext.
+ * @val: The #gchar* to represent.
+ * @exception: A reference to a #SeedValue in which to store any exceptions.
+ *             Pass %NULL to ignore exceptions.
+ *
+ * Return value: A %SeedValue which represents @val, or %NULL if an exception
+ *               is raised during the conversion.
+ *
+ */
 JSValueRef
 seed_value_from_string (JSContextRef ctx,
 			const gchar * val, JSValueRef * exception)
