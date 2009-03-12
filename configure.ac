@@ -1,20 +1,36 @@
+AC_PREREQ(2.59)
 AC_INIT(seed, 0.3)
-AC_CANONICAL_BUILD
+
+AM_INIT_AUTOMAKE([1.7 -Wno-portability])
+AM_MAINTAINER_MODE
+AC_CONFIG_HEADERS([config.h])
+
+AC_CONFIG_MACRO_DIR([m4])
+
 AC_CANONICAL_HOST
 
-AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
-AC_CONFIG_HEADERS([config.h])
-AM_MAINTAINER_MODE
-
-AC_CONFIG_MACRO_DIR(m4)
-
-AC_ISC_POSIX
 AC_PROG_CC
-AM_PROG_CC_STDC
 AM_PROG_CC_C_O
-AC_HEADER_STDC
+AC_PROG_LIBTOOL
+PKG_PROG_PKG_CONFIG
 
 CFLAGS="-O3"
+
+changequote(,)dnl
+ensureflag() {
+  flag="$1"; shift
+  result="$@"
+
+  case " ${result} " in
+  *[\ \	]${flag}[\ \	]*) ;;
+  *) result="${flag} ${result}" ;;
+  esac
+
+  echo ${result}
+}
+
+changequote([,])dnl
+
 
 dnl =====================Internationalization==================================
 GETTEXT_PACKAGE=seed
@@ -22,8 +38,6 @@ AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [GETTEXT package name])
 AM_GLIB_GNU_GETTEXT
 IT_PROG_INTLTOOL([0.35.0])
-
-AM_PROG_LIBTOOL
 
 dnl ============================libffi=========================================
 PKG_CHECK_MODULES(libffi, libffi, have_ffi_pkgconfig=yes, have_ffi_pkgconfig=no)
@@ -228,14 +242,13 @@ esac
 AC_SUBST(SEED_OSX_CFLAGS)
 AC_SUBST(SEED_OSX_LDFLAGS)
 
-AC_CONFIG_FILES([
-seed.pc])
-
 dnl =============================gtk-doc=======================================
 GTK_DOC_CHECK(1.9)
 
 dnl =============================Output========================================
-AC_OUTPUT([
+SHAVE_INIT([scripts])
+AC_CONFIG_FILES([
+seed.pc
 Makefile
 
 doc/conventions.html
@@ -246,6 +259,9 @@ doc/modules/canvas.html
 doc/modules/multiprocessing.html
 doc/modules/readline.html
 doc/modules/sqlite.html
+
+scripts/shave
+scripts/shave-libtool
 
 libseed/Makefile
 po/Makefile.in
@@ -273,6 +289,7 @@ modules/canvas/Makefile
 modules/readline/Makefile
 modules/Multiprocessing/Makefile
 ])
+AC_OUTPUT
 
 echo "
 Build Configuration:
