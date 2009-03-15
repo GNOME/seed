@@ -346,4 +346,19 @@ SeedObject seed_make_constructor (SeedContext ctx,
 void seed_engine_set_search_path (SeedEngine * eng, gchar ** path);
 gchar **seed_engine_get_search_path (SeedEngine * eng);
 
+void
+seed_signal_connect (SeedContext ctx,
+		     GObject *object,
+		     const gchar *signal,
+		     const gchar *script);
+
+void
+seed_signal_connect_value (SeedContext ctx,
+			   GObject *object,
+			   const gchar *signal,
+			   SeedValue function,
+			   SeedValue user_data);			   
+
+
+
 #endif

@@ -122,3 +122,7 @@ SeedObjectHasInstanceCallback
 SeedObjectConvertToTypeCallback
 SeedObjectCallAsConstructorCallback
 </SECTION>
+<SUBSECTION>
+seed_signal_connect
+seed_signal_connect_full
+</SECTION>

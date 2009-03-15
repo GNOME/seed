@@ -274,7 +274,8 @@ seed_evaluate (JSContextRef ctx, SeedScript * s, JSObjectRef this)
  *
  */
 JSValueRef
-seed_simple_evaluate (JSContextRef ctx, gchar * source)
+seed_simple_evaluate (JSContextRef ctx, 
+		      const gchar * source)
 {
   JSValueRef ret;
   JSStringRef script = JSStringCreateWithUTF8CString (source);
@@ -521,3 +522,44 @@ seed_engine_get_search_path (SeedEngine * eng)
 {
   return eng->search_path;
 }
+
+/**
+ * seed_signal_connect_full:
+ * @ctx: A valid #SeedContext
+ * @object: A #GObject, to connect the signal on.
+ * @signal: A signal specification.
+ * @function: The JavaScript function to connect to the signal.
+ * @user_data: An additional parameter to pass to the function.
+ */
+void
+seed_signal_connect_full (JSContextRef ctx,
+			   GObject *object,
+			   const gchar *signal,
+			   JSObjectRef function,
+			   JSObjectRef user_data)			   
+{
+  seed_gobject_signal_connect(ctx, signal, object, function,
+			       NULL, user_data);
+}
+
+/**
+ * seed_signal_connect:
+ * @ctx: A valid #SeedContext
+ * @object: A #GObject, to connect the signal on.
+ * @signal: A signal specification.
+ * @script: The script to connect to the signal. Should be a function.
+ */
+void
+seed_signal_connect (JSContextRef ctx,
+		     GObject *object,
+		     const gchar *signal,
+		     const gchar *script)
+{
+  JSValueRef func;
+  
+  func = seed_simple_evaluate(ctx, script);
+  seed_signal_connect_full(ctx, object, signal, (JSObjectRef)func,
+			   NULL);
+}
+
+

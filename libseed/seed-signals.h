@@ -33,6 +33,15 @@ void seed_signal_marshal_func (GClosure * closure,
 
 void seed_add_signals_to_object (JSContextRef ctx,
 				 JSObjectRef object_ref, GObject * obj);
+
+void seed_gobject_signal_connect (JSContextRef ctx,
+				  const gchar * signal_name,
+				  GObject * on_obj,
+				  JSObjectRef func,
+				  JSObjectRef this_obj, 
+				  JSObjectRef user_data);
+
+
 JSClassDefinition *seed_get_signal_class (void);
 extern JSClassRef gobject_signal_class;
 

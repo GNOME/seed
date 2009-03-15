@@ -101,12 +101,13 @@ closure_invalidated (gpointer data, GClosure * c)
   JSGlobalContextRelease ((JSGlobalContextRef) ctx);
 }
 
-static void
+void
 seed_gobject_signal_connect (JSContextRef ctx,
 			     const gchar * signal_name,
 			     GObject * on_obj,
 			     JSObjectRef func,
-			     JSObjectRef this_obj, JSObjectRef user_data)
+			     JSObjectRef this_obj, 
+			     JSObjectRef user_data)
 {
   GSignalQuery query;
   GClosure *closure;
