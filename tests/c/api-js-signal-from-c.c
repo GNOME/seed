@@ -1,6 +1,8 @@
 #include "../../libseed/seed.h"
 #include "test-common.h"
 
+#include <string.h>
+
 gdouble hello_cb(gpointer w, gint a, gchar * b)
 {
 	g_assert(a == 2);
