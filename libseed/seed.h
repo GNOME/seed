@@ -360,5 +360,6 @@ seed_signal_connect_value (SeedContext ctx,
 			   SeedValue user_data);			   
 
 
+SeedObject seed_context_get_global_object (SeedContext ctx);
 
 #endif

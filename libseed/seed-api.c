@@ -562,4 +562,10 @@ seed_signal_connect (JSContextRef ctx,
 			   NULL);
 }
 
+JSObjectRef
+seed_context_get_global_object (JSGlobalContextRef ctx)
+{
+  return JSContextGetGlobalObject(ctx);
+}
+
 
