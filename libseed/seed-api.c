@@ -496,18 +496,18 @@ seed_value_is_function (JSContextRef ctx, JSObjectRef value)
 /**
  * seed_engine_set_search_path:
  * @eng: A #SeedEngine, on which to set the path.
- * @path: A #gchar**, a null-terminated array of strings containing path to set.
+ * @path: A #gchar*, a colon separated string containing the path to set
  *
  * Sets the default search path for Seed.include.
  *
  */
 void
-seed_engine_set_search_path (SeedEngine * eng, gchar ** path)
+seed_engine_set_search_path (SeedEngine * eng, gchar * path)
 {
   /* this should be null from seed_init unless there's already a path set. */
 
-  g_free (eng->search_path);
-  eng->search_path = g_strdupv (path);
+  g_strfreev (eng->search_path);
+  eng->search_path = g_strsplit (path, ":", -1);
 }
 
 /**
