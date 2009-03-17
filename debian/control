@@ -43,8 +43,5 @@ Depends: ${shlibs:Depends},
 		 libclutter-gtk-0.8-dev,
 		 libclutter-0.8-dev,
 		 libclutter-cairo-0.8-dev,
-		 libclutter-gst-0.8-dev,
-		 libglut,
-		 libglu1
-		 ${shlibs:Depends}, ${misc:Depends}
-Description: Javascript GObject bindings.
+		 libclutter-gst-0.8-dev
+Description: The GObject JavaScriptCore bridge.
