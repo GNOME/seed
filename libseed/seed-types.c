@@ -1181,6 +1181,14 @@ seed_gvalue_from_seed_value (JSContextRef ctx,
   return FALSE;
 }
 
+/**
+ * seed_object_get_property
+ * @ctx: A #SeedContext
+ * @object: A #SeedObject
+ * @name: The property to get, should be a valid JavaScript identifier
+ *
+ * Returns: The value of the property or %NULL
+ */
 JSValueRef
 seed_object_get_property (JSContextRef ctx,
 			  JSObjectRef val, const gchar * name)
@@ -1196,6 +1204,15 @@ seed_object_get_property (JSContextRef ctx,
   return ret;
 }
 
+/**
+ * seed_object_set_property
+ * @ctx: A #SeedContext
+ * @object: A #SeedObject
+ * @name: The property to set, should be a valid JavaScript identifier
+ * @value: The value to set the property to.
+ *
+ * Returns: %TRUE on success, %FALSE otherwise.
+ */
 gboolean
 seed_object_set_property (JSContextRef ctx, JSObjectRef object,
 			  const gchar * name, JSValueRef value)
