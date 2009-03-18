@@ -31,7 +31,8 @@
  *
  */
 void
-seed_value_protect (JSContextRef ctx, JSValueRef value)
+seed_value_protect (JSContextRef ctx,
+		    JSValueRef value)
 {
   JSValueProtect (ctx, value);
 }
@@ -46,7 +47,8 @@ seed_value_protect (JSContextRef ctx, JSValueRef value)
  *
  */
 void
-seed_value_unprotect (JSContextRef ctx, JSValueRef value)
+seed_value_unprotect (JSContextRef ctx, 
+		      JSValueRef value)
 {
   JSValueUnprotect (ctx, value);
 }
@@ -62,7 +64,8 @@ seed_value_unprotect (JSContextRef ctx, JSValueRef value)
  *
  */
 JSGlobalContextRef
-seed_context_create (JSContextGroupRef group, JSClassRef global_class)
+seed_context_create (JSContextGroupRef group, 
+		     JSClassRef global_class)
 {
   return JSGlobalContextCreateInGroup (group, global_class);
 }
@@ -119,7 +122,9 @@ seed_make_null (JSContextRef ctx)
  *
  */
 JSObjectRef
-seed_make_object (JSContextRef ctx, JSClassRef class, gpointer private)
+seed_make_object (JSContextRef ctx,
+		  JSClassRef class, 
+		  gpointer private)
 {
   return JSObjectMake (ctx, class, private);
 }
@@ -190,7 +195,8 @@ seed_object_call (JSContextRef ctx,
 SeedScript *
 seed_make_script (JSContextRef ctx,
 		  const gchar * js,
-		  const gchar * source_url, gint line_number)
+		  const gchar * source_url,
+		  gint line_number)
 {
   SeedScript *ret = g_new0 (SeedScript, 1);
 
@@ -222,7 +228,8 @@ seed_make_script (JSContextRef ctx,
  *
  */
 SeedScript *
-seed_script_new_from_file (JSContextRef ctx, gchar * file)
+seed_script_new_from_file (JSContextRef ctx, 
+			   gchar * file)
 {
   SeedScript *script;
   GError *e = NULL;
@@ -251,7 +258,9 @@ seed_script_new_from_file (JSContextRef ctx, gchar * file)
  *
  */
 JSValueRef
-seed_evaluate (JSContextRef ctx, SeedScript * s, JSObjectRef this)
+seed_evaluate (JSContextRef ctx,
+	       SeedScript * s,
+	       JSObjectRef this)
 {
   JSValueRef ret;
 
