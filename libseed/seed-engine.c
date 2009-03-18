@@ -1293,7 +1293,9 @@ JSClassDefinition struct_constructor_def = {
 
 void
 seed_create_function (JSContextRef ctx,
-		      gchar * name, gpointer func, JSObjectRef obj)
+		      gchar * name, 
+		      gpointer func, 
+		      JSObjectRef obj)
 {
   JSObjectRef oref;
 

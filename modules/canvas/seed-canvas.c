@@ -229,10 +229,10 @@ seed_canvas_parse_color (SeedCanvasColor *color,
 	{
 	case 'a':
 	  {
-	    gint r, g, b;
+	    gdouble r, g, b;
 	    gfloat a;
 	    
-	    sscanf (spec, "rgba(%d,%d,%d,%f)", &r, &g, &b, &a);
+	    sscanf (spec, "rgba(%lf,%lf,%lf,%f)", &r, &g, &b, &a);
 	    
 	    color->r = r/255.0;
 	    color->g = g/255.0;
@@ -243,13 +243,14 @@ seed_canvas_parse_color (SeedCanvasColor *color,
 	  }
 	case '(':
 	  {
-	    gint r, g, b;
+	    gdouble r, g, b;
 	    
-	    sscanf (spec, "rgb(%d,%d,%d)", &r, &g, &b);
+	    sscanf (spec, "rgb(%lf,%lf,%lf)", &r, &g, &b);
 	    
 	    color->r = r / 255.0;
 	    color->g = g / 255.0;
 	    color->b = b / 255.0;
+	    color->a = 1.0;
 	    
 	    return;
 	  }
@@ -266,7 +267,8 @@ gboolean
 seed_canvas_update_stroke_style (SeedContext ctx,
 				 SeedObject this_object,
 				 SeedString property_name,
-				 SeedValue value, SeedException * e)
+				 SeedValue value, 
+				 SeedException * e)
 {
   SeedCanvasStyle *style;
   GET_CR;
@@ -714,7 +716,8 @@ seed_canvas_stroke (SeedContext ctx,
 {
   GET_CR;
 
-  seed_canvas_apply_stroke_style ((SeedCanvasStyle *)priv->styles->data, cr);
+  seed_canvas_apply_stroke_style ((SeedCanvasStyle *)priv->styles->data, 
+				  cr);
 
   cairo_stroke (cr);
 
