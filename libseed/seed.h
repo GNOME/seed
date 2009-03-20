@@ -343,7 +343,7 @@ SeedObject seed_make_constructor (SeedContext ctx,
 				  SeedObjectCallAsConstructorCallback
 				  constructor);
 
-void seed_engine_set_search_path (SeedEngine * eng, gchar ** path);
+void seed_engine_set_search_path (SeedEngine * eng, const gchar * path);
 gchar **seed_engine_get_search_path (SeedEngine * eng);
 
 void
