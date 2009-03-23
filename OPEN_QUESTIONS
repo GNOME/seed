@@ -2,6 +2,3 @@
 
 * Why does attaching to WebKit's navigation_policy_decision_requested 
   signal automatically segfault Seed?
-
-* Why can't we return GTypes or GObjects from Seed-installed signals 
-  without segfaulting Seed?
