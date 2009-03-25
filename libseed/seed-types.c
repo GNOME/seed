@@ -1068,20 +1068,22 @@ seed_gvalue_from_seed_value (JSContextRef ctx,
 	if (type == 0 && JSValueIsObject (ctx, val))
 	  {
 	    // TODO: FIXME: Better array test like the cool one on reddit.
-	    guint length = seed_value_to_int (ctx,
-					      seed_object_get_property (ctx,
-									(JSObjectRef) val,
-									"length"),
-					      exception);
+	    guint length = 
+	      seed_value_to_int (ctx,
+				 seed_object_get_property (ctx,
+							   (JSObjectRef) val,
+							   "length"),
+				 exception);
 
 	    if (length)
 	      {
-		type = seed_value_to_int (ctx,
-					  JSObjectGetPropertyAtIndex (ctx,
-								      (JSObjectRef)
-								      val, 0,
-								      exception),
-					  exception);
+		type = 
+		  seed_value_to_int (ctx,
+				     JSObjectGetPropertyAtIndex (ctx,
+								 (JSObjectRef)
+								 val, 0,
+								 exception),
+				     exception);
 		val =
 		  JSObjectGetPropertyAtIndex (ctx, (JSObjectRef) val, 1,
 					      exception);
