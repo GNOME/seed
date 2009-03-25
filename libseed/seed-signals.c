@@ -397,7 +397,7 @@ seed_gobject_signal_connect_on_property (JSContextRef ctx,
 JSStaticFunction signal_static_functions[] =
   { {"connect", seed_gobject_signal_connect_on_property, 0}
 ,
-{"emit", seed_gobject_signal_emit, 0}
+    {"emit", seed_gobject_signal_emit, 0}
 ,
 {0, 0, 0}
 };

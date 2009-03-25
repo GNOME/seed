@@ -1118,13 +1118,13 @@ seed_gvalue_from_seed_value (JSContextRef ctx,
   if (g_type_is_a (type, G_TYPE_ENUM) && JSValueIsNumber (ctx, val))
     {
       g_value_init (ret, type);
-      ret->data[0].v_long = seed_value_to_long (ctx, val, exception);
+      g_value_set_enum (ret, seed_value_to_long (ctx, val, exception));
       return TRUE;
     }
   else if (g_type_is_a (type, G_TYPE_FLAGS) && JSValueIsNumber (ctx, val))
     {
       g_value_init (ret, type);
-      ret->data[0].v_long = seed_value_to_long (ctx, val, exception);
+      g_value_set_flags (ret, seed_value_to_long (ctx, val, exception));
       return TRUE;
     }
   else if (g_type_is_a (type, G_TYPE_OBJECT)
@@ -1893,4 +1893,24 @@ seed_value_from_object (JSContextRef ctx,
     return JSValueMakeNull (ctx);
   else
     return seed_wrap_object (ctx, val);
+}
+
+gboolean
+seed_validate_enum (GIEnumInfo *info,
+		    long val)
+{
+  gint n, i;
+  
+  n = g_enum_info_get_n_values (info);
+  for (i = 0; i < n; i++)
+    {
+      GIValueInfo *value_info = g_enum_info_get_value (info, i);
+      glong value = g_value_info_get_value (value_info);
+
+      g_base_info_unref ((GIBaseInfo *)value_info);
+      if (value == val)
+	return TRUE;
+    }
+  
+  return FALSE;
 }

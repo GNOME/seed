@@ -142,4 +142,6 @@ JSValueRef seed_value_from_object (JSContextRef ctx,
 
 void seed_toggle_ref (gpointer data, GObject * object, gboolean is_last_ref);
 
+gboolean seed_validate_enum (GIEnumInfo *info, long val);
+
 #endif
