@@ -324,6 +324,17 @@ seed_quit (JSContextRef ctx,
 }
 
 static JSValueRef
+seed_breakpoint (JSContextRef ctx,
+		 JSObjectRef function,
+		 JSObjectRef this_object,
+		 size_t argumentCount,
+		 const JSValueRef arguments[], JSValueRef * exception)
+{
+  G_BREAKPOINT();
+  return JSValueMakeNull(ctx);
+}
+
+static JSValueRef
 seed_get_include_path (JSContextRef ctx,
 		       JSObjectRef function,
 		       JSObjectRef this_object,
@@ -399,6 +410,8 @@ seed_init_builtins (SeedEngine * local_eng, gint * argc, gchar *** argv)
 			&seed_set_include_path, obj);
   seed_create_function (local_eng->context, "get_include_path",
 			&seed_get_include_path, obj);
+  seed_create_function (local_eng->context, "breakpoint",
+			&seed_breakpoint, obj);
 
   arrayObj = JSObjectMake (local_eng->context, NULL, NULL);
 
