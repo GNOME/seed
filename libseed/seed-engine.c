@@ -1518,3 +1518,87 @@ seed_init (gint * argc, gchar *** argv)
   
   return eng;
 }
+
+
+
+SeedEngine *
+seed_init_with_context_group (gint * argc, 
+			      gchar *** argv,
+			      JSContextGroupRef group)
+{
+  JSObjectRef seed_obj_ref;
+  JSStringRef defaults_script;
+
+  g_type_init ();
+  g_log_set_handler ("GLib-GObject", G_LOG_LEVEL_WARNING, seed_log_handler,
+		     0);
+
+  if ((argc != 0) && seed_parse_args (argc, argv) == FALSE)
+    {
+      SEED_NOTE (MISC, "failed to parse arguments.");
+      return false;
+    }
+
+  qname = g_quark_from_static_string ("js-type");
+  qprototype = g_quark_from_static_string ("js-prototype");
+  js_ref_quark = g_quark_from_static_string ("js-ref");
+
+  eng = (SeedEngine *) g_malloc (sizeof (SeedEngine));
+
+  context_group = group;
+
+  eng->context = JSGlobalContextCreateInGroup (context_group, NULL);
+  eng->global = JSContextGetGlobalObject (eng->context);
+  eng->group = context_group;
+  eng->search_path = NULL;
+
+  gobject_class = JSClassCreate (&gobject_def);
+  JSClassRetain (gobject_class);
+  gobject_method_class = JSClassCreate (&gobject_method_def);
+  JSClassRetain (gobject_method_class);
+  gobject_constructor_class = JSClassCreate (&gobject_constructor_def);
+  JSClassRetain (gobject_constructor_class);
+  gobject_named_constructor_class =
+    JSClassCreate (&gobject_named_constructor_def);
+  JSClassRetain (gobject_named_constructor_class);
+  gobject_signal_class = JSClassCreate (seed_get_signal_class ());
+  JSClassRetain (gobject_signal_class);
+  seed_callback_class = JSClassCreate (&seed_callback_def);
+  JSClassRetain (seed_callback_class);
+  seed_struct_constructor_class = JSClassCreate (&struct_constructor_def);
+  JSClassRetain (seed_struct_constructor_class);
+
+  g_type_set_qdata (G_TYPE_OBJECT, qname, gobject_class);
+
+  seed_obj_ref = JSObjectMake (eng->context, NULL, NULL);
+  seed_object_set_property (eng->context, eng->global, "Seed", seed_obj_ref);
+  JSValueProtect (eng->context, seed_obj_ref);
+
+  seed_create_function (eng->context, "import_namespace",
+			&seed_gi_import_namespace, seed_obj_ref);
+
+  g_irepository_require (g_irepository_get_default (), "GObject", NULL, 0, 0);
+  g_irepository_require (g_irepository_get_default (), "GIRepository",
+			 NULL, 0, 0);
+
+  seed_init_builtins (eng, argc, argv);
+  seed_closures_init ();
+  seed_structs_init ();
+
+  seed_gtype_init (eng);
+
+  defaults_script =
+    JSStringCreateWithUTF8CString ("Seed.import_namespace(\""
+				   "GObject\");"
+				   "try{Seed.include(\"/usr/share/"
+				   "seed/Seed.js\");} catch(e){}"
+				   "Seed.include(\"/usr/local/share"
+				   "/seed/Seed.js\");");
+  JSEvaluateScript (eng->context, defaults_script, NULL, NULL, 0, NULL);
+  JSStringRelease (defaults_script);
+
+  base_info_info =
+    g_irepository_find_by_name (0, "GIRepository", "IBaseInfo");
+  
+  return eng;
+}

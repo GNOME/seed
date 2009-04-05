@@ -74,7 +74,10 @@ typedef struct _SeedEngine
 /*
  * seed-engine.c 
  */
-SeedEngine *seed_init (gint * argc, gchar *** argv);
+SeedEngine *seed_init (gint *argc, gchar ***argv);
+SeedEngine *seed_init_with_context_group (gint *argc, gchar ***argv,
+					  SeedContextGroup group);
+
 SeedValue seed_simple_evaluate (SeedContext ctx, gchar * source);
 
 SeedScript *seed_make_script (SeedContext ctx,
