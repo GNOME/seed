@@ -21,9 +21,8 @@
 
 typedef struct _signal_privates
 {
-  guint signal_id;
   GObject *object;
-  const gchar *signal_name;
+  gchar *signal_name;
 } signal_privates;
 
 JSClassRef signal_holder_class;
@@ -33,34 +32,10 @@ seed_signal_finalize (JSObjectRef object)
 {
   signal_privates *sig_priv = JSObjectGetPrivate (object);
 
+  g_free (sig_priv->signal_name);
   g_slice_free1 (sizeof (signal_privates), sig_priv);
 }
 
-static void
-seed_add_signal_to_object (JSContextRef ctx, JSObjectRef object_ref,
-			   GObject * obj, GSignalQuery * signal)
-{
-  guint k;
-  JSObjectRef signal_ref;
-  signal_privates *priv = g_slice_alloc (sizeof (signal_privates));
-  gchar *js_signal_name = g_strdup (signal->signal_name);
-  g_assert (signal);
-
-  for (k = 0; k < strlen (js_signal_name); k++)
-    {
-      if (js_signal_name[k] == '-')
-	js_signal_name[k] = '_';
-    }
-
-  signal_ref = JSObjectMake (ctx, gobject_signal_class, priv);
-
-  priv->signal_id = signal->signal_id;
-  priv->object = obj;
-  priv->signal_name = signal->signal_name;
-
-  seed_object_set_property (ctx, object_ref, js_signal_name, signal_ref);
-  g_free (js_signal_name);
-}
 
 static void
 seed_add_signals_for_type (JSContextRef ctx,
@@ -202,26 +177,12 @@ seed_add_signals_to_object (JSContextRef ctx,
 
   signals_ref = JSObjectMake (ctx, signal_holder_class, obj);
 
-  while (type != 0)
-    {
-      seed_add_signals_for_type (ctx, signals_ref, obj, type);
-
-      interfaces = g_type_interfaces (type, &n);
-      for (i = 0; i < n; i++)
-	seed_add_signals_for_type (ctx, signals_ref, obj, interfaces[i]);
-
-      type = g_type_parent (type);
-
-      g_free (interfaces);
-    }
-
   seed_object_set_property (ctx, object_ref, "signal", signals_ref);
-
-  connect_func =
+  
+  connect_func = 
     JSObjectMakeFunctionWithCallback (ctx, NULL,
 				      &seed_gobject_signal_connect_by_name);
-  JSValueProtect (ctx, connect_func);
-
+  
   seed_object_set_property (ctx, signals_ref, "connect", connect_func);
 }
 
@@ -230,7 +191,8 @@ seed_signal_marshal_func (GClosure * closure,
 			  GValue * return_value,
 			  guint n_param_values,
 			  const GValue * param_values,
-			  gpointer invocation_hint, gpointer marshall_data)
+			  gpointer invocation_hint,
+			  gpointer marshall_data)
 {
   SeedClosure *seed_closure = (SeedClosure *) closure;
   JSValueRef *args, exception = 0;
@@ -303,11 +265,14 @@ seed_gobject_signal_emit (JSContextRef ctx,
   GSignalQuery query;
 
   signal_privates *privates;
-  guint i;
+  guint i, signal_id;
 
   privates = JSObjectGetPrivate (thisObject);
 
-  g_signal_query (privates->signal_id, &query);
+  signal_id = g_signal_lookup (privates->signal_name,
+			       G_OBJECT_TYPE (privates->object));
+  
+  g_signal_query (signal_id, &query);
 
   if (argumentCount != query.n_params)
     {
@@ -334,7 +299,7 @@ seed_gobject_signal_emit (JSContextRef ctx,
 
   if (query.return_type != G_TYPE_NONE)
     g_value_init (&ret_value, query.return_type);
-  g_signal_emitv (params, privates->signal_id, 0, &ret_value);
+  g_signal_emitv (params, signal_id, 0, &ret_value);
 
   for (i = 0; i < argumentCount; i++)
     g_value_unset (&params[i]);
@@ -422,12 +387,39 @@ JSClassDefinition gobject_signal_def = {
   NULL				/* Convert To Type */
 };
 
+static JSValueRef
+seed_signal_holder_get_property (JSContextRef ctx,
+				 JSObjectRef object,
+				 JSStringRef property_name,
+				 JSValueRef *exception)
+{
+  GObject *gobj = JSObjectGetPrivate (object);
+  GType type = G_OBJECT_TYPE (gobj);
+  signal_privates *priv = g_slice_alloc (sizeof (signal_privates));
+  guint length = JSStringGetMaximumUTF8CStringSize (property_name);
+  gchar *signal_name = g_malloc (length * sizeof (gchar));
+  JSObjectRef signal_ref;
+
+  JSStringGetUTF8CString (property_name, signal_name, length);
+  
+  if (!strcmp (signal_name, "connect"))
+    return 0;
+
+  priv->object = gobj;
+  priv->signal_name = signal_name;
+  
+  signal_ref = JSObjectMake (ctx, gobject_signal_class, priv);
+  
+  return signal_ref;
+}
+
 JSClassDefinition *
 seed_get_signal_class (void)
 {
   JSClassDefinition signal_holder = kJSClassDefinitionEmpty;
 
   signal_holder.className = "gobject_signals";
+  signal_holder.getProperty = seed_signal_holder_get_property;
   signal_holder_class = JSClassCreate (&signal_holder);
   JSClassRetain (signal_holder_class);
 

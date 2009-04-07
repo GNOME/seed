@@ -673,7 +673,11 @@ seed_gobject_initialize (JSContextRef ctx, JSObjectRef object)
   base = g_irepository_find_by_gtype (g_irepository_get_default (),
 				      G_OBJECT_TYPE (gobject));
 
-  seed_add_signals_to_object (ctx, object, gobject);
+  
+  seed_add_signals_to_object (ctx,
+			      object,
+			      gobject);
+
   if (!base)
     return;
 
