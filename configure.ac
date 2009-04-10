@@ -149,6 +149,8 @@ if test x"$have_sqlite3_h" != x"yes" ; then
 	want_sqlite_module="no"
 fi
 
+want_dbus_modules="yes"
+
 AM_CONDITIONAL(BUILD_CANVAS_MODULE, test "x$want_canvas_module" = "xyes")
 AM_CONDITIONAL(BUILD_EXAMPLE_MODULE, test "x$want_example_module" = "xyes")
 AM_CONDITIONAL(BUILD_MULTIPROCESSING_MODULE, test "x$want_multiprocessing_module" = "xyes")
@@ -287,6 +289,7 @@ modules/example/Makefile
 modules/sqlite/Makefile
 modules/canvas/Makefile
 modules/readline/Makefile
+modules/dbus/Makefile
 modules/Multiprocessing/Makefile
 ])
 AC_OUTPUT

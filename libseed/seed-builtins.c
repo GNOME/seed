@@ -27,7 +27,8 @@ seed_include (JSContextRef ctx,
 	      JSObjectRef function,
 	      JSObjectRef this_object,
 	      size_t argumentCount,
-	      const JSValueRef arguments[], JSValueRef * exception)
+	      const JSValueRef arguments[], 
+	      JSValueRef * exception)
 {
   JSStringRef file_contents, file_name;
   GDir *dir;
@@ -107,6 +108,102 @@ seed_include (JSContextRef ctx,
   g_free (walk);
 
   return JSValueMakeNull (ctx);
+}
+
+static JSValueRef
+seed_scoped_include (JSContextRef ctx,
+		     JSObjectRef function,
+		     JSObjectRef this_object,
+		     size_t argumentCount,
+		     const JSValueRef arguments[], 
+		     JSValueRef * exception)
+{
+  JSContextRef nctx;
+  JSObjectRef global;
+  JSStringRef file_contents, file_name;
+  GDir *dir;
+  gchar *import_file, *abs_path;
+  gchar *buffer, *walk;
+  guint i;
+
+  if (argumentCount != 1)
+    {
+      gchar *mes =
+	g_strdup_printf ("Seed.include expected 1 argument, "
+			 "got %Zd", argumentCount);
+      seed_make_exception (ctx, exception, "ArgumentError", mes);
+      g_free (mes);
+      return JSValueMakeNull (ctx);
+    }
+
+  import_file = seed_value_to_string (ctx, arguments[0], exception);
+
+  /* just try current dir if no path set, or use the absolute path */
+  if (!eng->search_path || g_path_is_absolute (import_file))
+    g_file_get_contents (import_file, &buffer, 0, NULL);
+  else				/* A search path is set and path given is not absolute.  */
+    {
+      for (i = 0; i < g_strv_length (eng->search_path); ++i)
+	{
+	  dir = g_dir_open (eng->search_path[i], 0, NULL);
+
+	  if (!dir)		/* skip bad path entries */
+	    continue;
+
+	  abs_path =
+	    g_build_filename (eng->search_path[i], import_file, NULL);
+
+	  if (g_file_get_contents (abs_path, &buffer, 0, NULL))
+	    {
+	      g_free (abs_path);
+	      break;
+	    }
+
+	  g_dir_close (dir);
+	  g_free (abs_path);
+	}
+    }
+
+  if (!buffer)
+    {
+      gchar *mes = g_strdup_printf ("File not found: %s", import_file);
+      seed_make_exception (ctx, exception, "FileNotFound", mes);
+
+      g_free (import_file);
+      g_free (buffer);
+      g_free (mes);
+      return JSValueMakeNull (ctx);
+    }
+
+  walk = buffer;
+
+  if (*walk == '#')
+    {
+      while (*walk != '\n')
+	walk++;
+      walk++;
+    }
+
+  walk = g_strdup (walk);
+  g_free (buffer);
+
+  file_contents = JSStringCreateWithUTF8CString (walk);
+  file_name = JSStringCreateWithUTF8CString (import_file);
+
+  
+  nctx = JSGlobalContextCreateInGroup (context_group, 0);
+  JSEvaluateScript (nctx, file_contents, NULL, file_name, 0, exception);
+  
+  global = JSContextGetGlobalObject(nctx);
+  
+  JSGlobalContextRelease ((JSGlobalContextRef) nctx);
+
+  JSStringRelease (file_contents);
+  JSStringRelease (file_name);
+  g_free (import_file);
+  g_free (walk);
+
+  return global;
 }
 
 static JSValueRef
@@ -398,6 +495,8 @@ seed_init_builtins (SeedEngine * local_eng, gint * argc, gchar *** argv)
 					    "Seed");
 
   seed_create_function (local_eng->context, "include", &seed_include, obj);
+  seed_create_function (local_eng->context, "scoped_include", 
+			&seed_scoped_include, obj);
   seed_create_function (local_eng->context, "print", &seed_print, obj);
   seed_create_function (local_eng->context,
 			"check_syntax", &seed_check_syntax, obj);
