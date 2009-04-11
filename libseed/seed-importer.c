@@ -244,6 +244,21 @@ seed_gi_importer_handle_constant (JSContextRef ctx,
   g_base_info_unref ((GIBaseInfo *) constant_type);
 }
 
+static gchar *
+seed_gi_importer_get_version (JSContextRef ctx,
+			      gchar *namespace,
+			      JSValueRef *exception)
+{
+  JSValueRef version_ref;
+  gchar *version = NULL;
+  
+  version_ref = seed_object_get_property (ctx, gi_importer_versions, namespace);
+  if (!JSValueIsUndefined(ctx, version_ref))
+    version = seed_value_to_string (ctx, version_ref, exception);
+  
+  return version;  
+}
+
 static JSObjectRef
 seed_gi_importer_do_namespace (JSContextRef ctx,
 			       gchar *namespace,
@@ -253,19 +268,21 @@ seed_gi_importer_do_namespace (JSContextRef ctx,
   JSObjectRef namespace_ref;
   GError *e = NULL;
   guint n, i;
+  gchar *version;
   
   if (namespace_ref = g_hash_table_lookup (gi_imports, namespace))
     {
       return namespace_ref;
     }
   
-  // TODO: Versions.
+  version = seed_gi_importer_get_version (ctx, namespace, exception);
   if (!g_irepository_require (NULL, namespace,
-			      NULL, 0, &e))
+			      version, 0, &e))
     {
       seed_make_exception_from_gerror (ctx, exception, e);
       return NULL;
     }
+  g_free (version);
   
   n = g_irepository_get_n_infos (NULL, namespace);
   namespace_ref = JSObjectMake (ctx, NULL, NULL);
@@ -405,7 +422,7 @@ void seed_initialize_importer(JSContextRef ctx,
   
   gi_importer_class = JSClassCreate (&gi_importer_class_def);
   gi_importer = JSObjectMake (ctx, gi_importer_class, NULL);
-  gi_importer_versions = JSObjectMake (ctx, gi_importer_class, NULL);
+  gi_importer_versions = JSObjectMake (ctx, NULL, NULL);
   
   gi_imports = g_hash_table_new (g_str_hash, g_str_equal);
   
