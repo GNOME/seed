@@ -1,1 +1,1 @@
-SUBDIRS = example sqlite canvas Multiprocessing readline dbus
+SUBDIRS = example sqlite canvas Multiprocessing readline
