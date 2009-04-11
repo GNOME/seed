@@ -10,6 +10,17 @@ JSObjectRef gi_importer;
 JSObjectRef gi_importer_versions;
 
 static void
+seed_gi_importer_handle_function (JSContextRef ctx,
+				  JSObjectRef namespace_ref,
+				  GIFunctionInfo *info,
+				  JSValueRef *exception)
+{
+  seed_gobject_define_property_from_function_info (ctx, (GIFunctionInfo *) info,
+						   namespace_ref, FALSE);
+  g_base_info_ref ((GIBaseInfo *) info);
+}
+
+static void
 seed_gi_importer_handle_enum (JSContextRef ctx,
 			      JSObjectRef namespace_ref,
 			      GIEnumInfo *info,
@@ -195,6 +206,42 @@ seed_gi_importer_handle_union (JSContextRef ctx,
   seed_object_set_property (ctx, namespace_ref, g_base_info_get_name ((GIBaseInfo *)info), union_ref);
 }
 
+static void
+seed_gi_importer_handle_callback (JSContextRef ctx,
+				  JSObjectRef namespace_ref,
+				  GICallbackInfo *info,
+				  JSValueRef *exception)
+{
+  JSObjectRef callback_ref = JSObjectMake (ctx, 
+					   seed_callback_class,
+					   info);
+  seed_object_set_property (ctx, namespace_ref,
+			    g_base_info_get_name ((GIBaseInfo *) info),
+			    (JSValueRef) callback_ref);
+}
+
+static void
+seed_gi_importer_handle_constant (JSContextRef ctx,
+				  JSObjectRef namespace_ref,
+				  GIConstantInfo *info,
+				  JSValueRef *exception)
+{
+  GArgument argument;
+  GITypeInfo *constant_type =
+    g_constant_info_get_type (info);
+  JSValueRef constant_value;
+  
+  g_constant_info_get_value (info, &argument);
+  constant_value =
+    seed_gi_argument_make_js (ctx, &argument,
+			      constant_type, exception);
+  seed_object_set_property (ctx, namespace_ref,
+			    g_base_info_get_name ((GIBaseInfo *) info),
+			    constant_value);
+  
+  g_base_info_unref ((GIBaseInfo *) constant_type);
+}
+
 static JSObjectRef
 seed_gi_importer_do_namespace (JSContextRef ctx,
 			       gchar *namespace,
@@ -228,30 +275,31 @@ seed_gi_importer_do_namespace (JSContextRef ctx,
       switch (info_type)
 	{
 	case GI_INFO_TYPE_FUNCTION:
-	  seed_gobject_define_property_from_function_info (ctx, (GIFunctionInfo *) info,
-							   namespace_ref, FALSE);
+	  seed_gi_importer_handle_function (ctx, namespace_ref, (GIFunctionInfo *) info, exception);
 	  break;
 	case GI_INFO_TYPE_ENUM:
 	case GI_INFO_TYPE_FLAGS:
 	  seed_gi_importer_handle_enum (ctx, namespace_ref, (GIEnumInfo *) info, exception);
-	  g_base_info_unref (info);
 	  break;
 	case GI_INFO_TYPE_OBJECT:
 	  seed_gi_importer_handle_object (ctx, namespace_ref, (GIObjectInfo *) info, exception);
-	  g_base_info_unref (info);
 	  break;
 	case GI_INFO_TYPE_STRUCT:
 	  seed_gi_importer_handle_struct (ctx, namespace_ref, (GIStructInfo *) info, exception);
-	  g_base_info_unref (info);
 	  break;
 	case GI_INFO_TYPE_UNION:
 	  seed_gi_importer_handle_union (ctx, namespace_ref, (GIUnionInfo *) info, exception);
-	  g_base_info_unref (info);
 	  break;
-	  
+	case GI_INFO_TYPE_CALLBACK:
+	  seed_gi_importer_handle_callback (ctx, namespace_ref, (GICallbackInfo *) info, exception);
+	  break;
+	case GI_INFO_TYPE_CONSTANT:
+	  seed_gi_importer_handle_constant (ctx, namespace_ref, (GIConstantInfo *) info, exception);
+	  break;	  
 	default:
-	  g_base_info_unref (info);
+	  break;
 	}
+      g_base_info_unref (info);
     }
   
   return namespace_ref;
