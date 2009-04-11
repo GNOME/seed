@@ -9,6 +9,8 @@ JSClassRef gi_importer_class;
 JSObjectRef gi_importer;
 JSObjectRef gi_importer_versions;
 
+GHashTable *gi_imports;
+
 static void
 seed_gi_importer_handle_function (JSContextRef ctx,
 				  JSObjectRef namespace_ref,
@@ -252,8 +254,12 @@ seed_gi_importer_do_namespace (JSContextRef ctx,
   GError *e = NULL;
   guint n, i;
   
+  if (namespace_ref = g_hash_table_lookup (gi_imports, namespace))
+    {
+      return namespace_ref;
+    }
+  
   // TODO: Versions.
-  // TODO: Guard against multiple imports.
   if (!g_irepository_require (NULL, namespace,
 			      NULL, 0, &e))
     {
@@ -301,6 +307,8 @@ seed_gi_importer_do_namespace (JSContextRef ctx,
 	}
       g_base_info_unref (info);
     }
+  
+  g_hash_table_insert (gi_imports, g_strdup(namespace), namespace_ref);
   
   return namespace_ref;
   
@@ -398,6 +406,8 @@ void seed_initialize_importer(JSContextRef ctx,
   gi_importer_class = JSClassCreate (&gi_importer_class_def);
   gi_importer = JSObjectMake (ctx, gi_importer_class, NULL);
   gi_importer_versions = JSObjectMake (ctx, gi_importer_class, NULL);
+  
+  gi_imports = g_hash_table_new (g_str_hash, g_str_equal);
   
   seed_object_set_property (ctx, global, "imports", importer);
 }
