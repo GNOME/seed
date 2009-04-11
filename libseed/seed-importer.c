@@ -12,7 +12,8 @@ JSObjectRef gi_importer_versions;
 static void
 seed_gi_importer_handle_enum (JSContextRef ctx,
 			      JSObjectRef namespace_ref,
-			      GIEnumInfo *info)
+			      GIEnumInfo *info,
+			      JSValueRef *exception)
 {
   JSObjectRef enum_class;
   gint num_vals, j;
@@ -49,6 +50,76 @@ seed_gi_importer_handle_enum (JSContextRef ctx,
       g_free (name);
       g_base_info_unref ((GIBaseInfo *) val);
       
+    }
+}
+
+static void
+seed_gi_importer_handle_object (JSContextRef ctx,
+				JSObjectRef namespace_ref,
+				GIObjectInfo *info,
+				JSValueRef *exception)
+{
+  GType type;
+  JSClassRef class_ref;
+  
+  type = 
+    g_registered_type_info_get_g_type ((GIRegisteredTypeInfo *) info);
+  
+  if (type != 0)
+    {
+      GIFunctionInfo *finfo;
+      GIFunctionInfoFlags flags;
+      JSObjectRef constructor_ref;
+      guint i, n_methods;
+      
+      class_ref = seed_gobject_get_class_for_gtype (ctx, type);
+      
+      constructor_ref =
+	JSObjectMake (ctx,
+		      gobject_constructor_class, 
+		      (gpointer) type);
+		      
+      seed_object_set_property (ctx, constructor_ref,
+				"type",
+				seed_value_from_long (ctx, type, exception));
+      n_methods = g_object_info_get_n_methods (info);
+      for (i = 0; i < n_methods; i++)
+	{
+	  finfo = g_object_info_get_method (info, i);
+	  flags = g_function_info_get_flags (finfo);
+	  if (flags & GI_FUNCTION_IS_CONSTRUCTOR)
+	    {
+	      JSObjectRef constructor = JSObjectMake (ctx,
+						      gobject_named_constructor_class,
+						      finfo);
+	      const gchar *fname =
+		g_base_info_get_name ((GIBaseInfo *) finfo);
+	      if (strstr (fname, "new_") == fname)
+		fname += 4;
+	      else if (!strcmp (fname, "new"))
+		fname = "c_new";
+	      
+	      seed_object_set_property (ctx,
+					constructor_ref,
+					fname, constructor);
+	    }
+	  else if (!(flags & GI_FUNCTION_IS_METHOD))
+	    {
+	      seed_gobject_define_property_from_function_info
+		(ctx, finfo, constructor_ref, FALSE);
+	    }
+	  else
+	    {
+	      g_base_info_unref ((GIBaseInfo *) finfo);
+	    }
+	}
+
+      seed_object_set_property (ctx, namespace_ref,
+				g_base_info_get_name ((GIBaseInfo *) info), 
+				constructor_ref);
+      seed_object_set_property (ctx, namespace_ref,
+				"prototype",
+				seed_gobject_get_prototype_for_gtype (type));
     }
 }
 
@@ -90,9 +161,14 @@ seed_gi_importer_do_namespace (JSContextRef ctx,
 	  break;
 	case GI_INFO_TYPE_ENUM:
 	case GI_INFO_TYPE_FLAGS:
-	    seed_gi_importer_handle_enum (ctx, namespace_ref, (GIEnumInfo *) info);
-	    g_base_info_unref (info);
-	    break;
+	  seed_gi_importer_handle_enum (ctx, namespace_ref, (GIEnumInfo *) info, exception);
+	  g_base_info_unref (info);
+	  break;
+	case GI_INFO_TYPE_OBJECT:
+	  seed_gi_importer_handle_object (ctx, namespace_ref, (GIObjectInfo *) info, exception);
+	  g_base_info_unref (info);
+	  break;
+	  
 	default:
 	  g_base_info_unref (info);
 	}
@@ -127,9 +203,9 @@ seed_gi_importer_get_property (JSContextRef ctx,
 
 static JSValueRef
 seed_importer_get_property (JSContextRef ctx,
-			   JSObjectRef object,
-			   JSStringRef property_name, 
-			   JSValueRef *exception)
+			    JSObjectRef object,
+			    JSStringRef property_name, 
+			    JSValueRef *exception)
 {
   guint len;
   gchar *prop;
