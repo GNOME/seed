@@ -142,7 +142,7 @@ seed_gi_importer_handle_struct (JSContextRef ctx,
   for (i = 0; i < n_methods; i++)
     {
       GIFunctionInfoFlags flags;
-      finfo = g_struct_info_get_method ((GIStructInfo *) info, i);
+      finfo = g_struct_info_get_method (info, i);
       
       flags = g_function_info_get_flags (finfo);
       
@@ -157,6 +157,42 @@ seed_gi_importer_handle_struct (JSContextRef ctx,
   seed_object_set_property (ctx, struct_ref, "prototype", proto);
   
   seed_object_set_property (ctx, namespace_ref, g_base_info_get_name ((GIBaseInfo *)info), struct_ref);
+}
+
+static void
+seed_gi_importer_handle_union (JSContextRef ctx,
+			       JSObjectRef namespace_ref,
+			       GIUnionInfo *info,
+			       JSValueRef *exception)
+{
+  JSObjectRef union_ref;
+  JSObjectRef proto;
+  gint i, n_methods;
+  GIFunctionInfo *finfo;
+  
+  union_ref =
+    JSObjectMake (ctx, seed_struct_constructor_class, info);
+  
+  n_methods = g_union_info_get_n_methods (info);
+  
+  for (i = 0; i < n_methods; i++)
+    {
+      GIFunctionInfoFlags flags;
+      finfo = g_union_info_get_method (info, i);
+      
+      flags = g_function_info_get_flags (finfo);
+      
+      if (flags & GI_FUNCTION_IS_METHOD)
+	g_base_info_unref ((GIBaseInfo *) finfo);
+      else
+	seed_gobject_define_property_from_function_info
+	  (ctx, finfo, union_ref, FALSE);
+    }
+  
+  proto = seed_union_prototype (ctx, (GIBaseInfo *)info);
+  seed_object_set_property (ctx, union_ref, "prototype", proto);
+  
+  seed_object_set_property (ctx, namespace_ref, g_base_info_get_name ((GIBaseInfo *)info), union_ref);
 }
 
 static JSObjectRef
@@ -206,6 +242,10 @@ seed_gi_importer_do_namespace (JSContextRef ctx,
 	  break;
 	case GI_INFO_TYPE_STRUCT:
 	  seed_gi_importer_handle_struct (ctx, namespace_ref, (GIStructInfo *) info, exception);
+	  g_base_info_unref (info);
+	  break;
+	case GI_INFO_TYPE_UNION:
+	  seed_gi_importer_handle_union (ctx, namespace_ref, (GIUnionInfo *) info, exception);
 	  g_base_info_unref (info);
 	  break;
 	  
