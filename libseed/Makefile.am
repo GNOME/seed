@@ -20,7 +20,9 @@ libseed_la_SOURCES = \
 	seed-gtype.h \
 	seed-structs.h \
 	seed-types.c \
-	seed-types.h
+	seed-types.h \
+	seed-importer.c \
+	seed-importer.h 
 
 libseed_la_LIBADD = $(LIBSEED_LIBS)
 libseed_la_CPPFLAGS = -lgmodule-2.0 $(LIBSEED_CFLAGS) $(SEED_OSX_CFLAGS) $(FFI_CFLAGS)
