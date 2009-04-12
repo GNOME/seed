@@ -583,9 +583,10 @@ seed_importer_dir_get_property (JSContextRef ctx,
       
       for (i = 0; i < strlen (mentry); i++)
 	{
-	  if (mentry[i] = '.')
+	  if (mentry[i] == '.')
 	    mentry[i] = '\0';
 	}
+
       if (!strcmp (mentry, prop))
 	{
 	  JSObjectRef ret;
