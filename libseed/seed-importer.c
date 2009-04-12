@@ -9,6 +9,8 @@ JSClassRef gi_importer_class;
 JSObjectRef gi_importer;
 JSObjectRef gi_importer_versions;
 
+JSObjectRef importer_search_path;
+
 GHashTable *gi_imports;
 
 static void
@@ -280,6 +282,7 @@ seed_gi_importer_do_namespace (JSContextRef ctx,
 			      version, 0, &e))
     {
       seed_make_exception_from_gerror (ctx, exception, e);
+      g_error_free (e);
       return NULL;
     }
   g_free (version);
@@ -354,12 +357,146 @@ seed_gi_importer_get_property (JSContextRef ctx,
   
 }
 
+GSList *
+seed_importer_get_search_path (JSContextRef ctx,
+			       JSValueRef *exception)
+{
+  GSList *path = NULL;
+  JSValueRef search_path_ref, length_ref;
+  guint length, i;
+  
+  search_path_ref = seed_object_get_property (ctx, importer, "searchPath");
+  if (!JSValueIsObject(ctx, search_path_ref))
+    {
+      seed_make_exception (ctx, exception, "ArgumentError", "Importer searchPath object is not an array");
+      return NULL;
+    }
+  
+  length_ref = seed_object_get_property (ctx, (JSObjectRef) search_path_ref, "length");
+  length = seed_value_to_uint (ctx, length_ref, exception);
+  
+  for (i = 0; i < length; i--)
+    {
+      JSValueRef entry_ref;
+      gchar *entry;
+      
+      entry_ref = JSObjectGetPropertyAtIndex (ctx, (JSObjectRef) search_path_ref, i, exception);
+      entry = seed_value_to_string (ctx, entry_ref, exception);
+      
+      path = g_slist_append (path, entry);
+    }
+  
+  return path;
+}
+
+static JSObjectRef
+seed_importer_handle_file (JSContextRef ctx,
+			   const gchar *dir,
+			   const gchar *file,
+			   JSValueRef *exception)
+{
+  JSContextRef nctx;
+  JSObjectRef global;
+  JSStringRef file_contents, file_name;
+  gchar *contents, *walk, *file_path;
+  
+  file_path = g_strconcat (dir, "/", file, NULL);
+
+  if (!g_file_test (file_path, G_FILE_TEST_IS_REGULAR))
+    return NULL;
+  
+  g_file_get_contents (file_path, &contents, 0, NULL);
+  walk = contents;
+  if (*walk == '#')
+    {
+      while (*walk != '\n')
+	walk++;
+      walk++;
+    }
+  walk = g_strdup (walk);
+  g_free (contents);
+
+  file_contents = JSStringCreateWithUTF8CString (walk);
+  file_name = JSStringCreateWithUTF8CString (file);
+
+  
+  nctx = JSGlobalContextCreateInGroup (context_group, 0);
+  JSEvaluateScript (nctx, file_contents, NULL, file_name, 0, exception);
+
+  global = JSContextGetGlobalObject (nctx);
+  
+  JSGlobalContextRelease ((JSGlobalContextRef) nctx);
+  
+  JSStringRelease (file_contents);
+  JSStringRelease (file_name);
+  g_free (walk);
+  g_free (file_path);
+  
+  return global;
+}
+
+static JSObjectRef
+seed_importer_search (JSContextRef ctx,
+		      gchar *prop,
+		      JSValueRef *exception)
+{
+  GSList *path, *walk;
+  
+  path = seed_importer_get_search_path (ctx, exception);
+  
+  walk = path;
+  while (walk)
+    {
+      GError *e = NULL;
+      GDir *dir;
+      const gchar *entry;
+
+      dir = g_dir_open ((gchar *)walk->data, 0, &e);
+      if (e)
+	{
+	  seed_make_exception_from_gerror (ctx, exception, e);
+	  g_error_free (e);
+	  
+	  return NULL;
+	}
+      while (entry = g_dir_read_name(dir))
+	{
+	  guint i;
+	  gchar *mentry = g_strdup (entry);
+	  for (i = 0; i < strlen (mentry); i++)
+	    {
+	      if (mentry[i] == '.')
+		mentry[i] = '\0';
+	    }
+	  if (!strcmp (mentry, prop))
+	    {
+	      JSObjectRef ret;
+	      
+	      ret = seed_importer_handle_file (ctx, walk->data, entry, exception);
+
+	      g_dir_close (dir);
+	      g_free (mentry);
+
+	      return ret;
+	    }
+	  
+	  g_free (mentry);
+	}
+      g_dir_close (dir);
+      
+      walk = walk->next;
+    }
+  
+  return NULL;
+}
+
 static JSValueRef
 seed_importer_get_property (JSContextRef ctx,
 			    JSObjectRef object,
 			    JSStringRef property_name, 
 			    JSValueRef *exception)
 {
+  JSValueRef ret;
   guint len;
   gchar *prop;
   
@@ -369,8 +506,14 @@ seed_importer_get_property (JSContextRef ctx,
   
   if (!strcmp (prop, "gi"))
     return gi_importer;
+  if (!strcmp (prop, "searchPath"))
+    return NULL;
+  if (!strcmp (prop, "toString")) // HACK
+    return NULL;
   
-  return NULL;
+  ret = seed_importer_search (ctx, prop, exception);
+  
+  return ret;
 }
 
 
@@ -385,7 +528,7 @@ JSClassDefinition importer_class_def = {
   NULL,				/* Finalize */
   NULL,				/* Has Property */
   seed_importer_get_property,	/* Get Property */
-  NULL,				/* Set Property */
+  NULL,                         /* Set Property */
   NULL,				/* Delete Property */
   NULL,				/* Get Property Names */
   NULL,				/* Call As Function */
