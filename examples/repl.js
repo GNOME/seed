@@ -1,6 +1,6 @@
 #!/usr/bin/env seed
 
-Seed.import_namespace("readline");
+readline = imports.readline;
 
 while(1)
 {

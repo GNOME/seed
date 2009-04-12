@@ -1,6 +1,6 @@
 #!/usr/bin/env seed
 
-Seed.import_namespace("Soup");
+Soup = imports.gi.Soup;
 
 var session = new Soup.SessionSync();
 

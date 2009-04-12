@@ -1,6 +1,6 @@
 #!/usr/bin/env seed
-Seed.import_namespace("Gtk","2.0");
-Seed.import_namespace("Gst","0.10");
+Gtk = imports.gi.Gtk;
+Gst = imports.gi.Gst;
 
 Gst.init(null, null);
 Gtk.init(null, null);
@@ -14,7 +14,7 @@ function oscillator(freq)
 	var vscale = new Gtk.VScale();
 	var volscale = new Gtk.VScale();
 	var button = new Gtk.Button({label: "Toggle"});
-	
+
 	var pipeline = new Gst.Pipeline({name: "test"});
 	// No actual introspection data for audiotestsrc, so can not
 	// instantiate one with a constructor, have to use element_factory,
@@ -23,27 +23,27 @@ function oscillator(freq)
 	var audiosink = Gst.ElementFactory.make("alsasink", "sink");
 	var volume = Gst.ElementFactory.make("volume", "vcontrol");
 	audiosrc.freq = freq;
-	
+
 	pipeline.add(audiosrc);
 	pipeline.add(audiosink);
 	pipeline.add(volume);
 	audiosrc.link(volume);
 	volume.link(audiosink);
-	
+
 	var playing = false;
-	
+
 	vscale.adjustment.upper = 3000;
 	vscale.adjustment.value = freq;
-	
+
 	volscale.adjustment.upper = 10;
 	volscale.adjustment.value = volume.volume;
-	
+
 	hbox.pack_start(vscale, true, true, 10);
 	hbox.pack_start(volscale, true, true, 10);
 	this.vbox.pack_start(hbox, true, true, 10);
 	this.vbox.pack_start(button, false, false, 10);
-	
-	var toggle = function(button, that) 
+
+	var toggle = function(button, that)
 	{
 		if (playing === false)
 		{
@@ -56,17 +56,17 @@ function oscillator(freq)
 			playing = false;
 		}
 	};
-	
+
 	var update_freq = function(range)
 	{
 		audiosrc.freq = range.get_value();
 	};
-	
+
 	var update_vol = function(range)
 	{
 		volume.volume = range.get_value();
 	};
-	
+
 	button.signal.clicked.connect(toggle);
 	vscale.signal.value_changed.connect(update_freq);
 	volscale.signal.value_changed.connect(update_vol);
