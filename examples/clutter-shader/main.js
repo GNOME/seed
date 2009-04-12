@@ -1,10 +1,11 @@
 #!/usr/bin/env seed
-Seed.import_namespace("Clutter", "0.8");
-Seed.import_namespace("Gtk");
-Seed.import_namespace("GtkSource");
-Seed.import_namespace("GtkClutter");
-Seed.import_namespace("Gio");
-Seed.include("ShaderView.js");
+imports.gi.versions.Clutter = 0.8;
+Clutter = imports.gi.Clutter;
+Gtk = imports.gi.Gtk;
+GtkSource = imports.gi.GtkSource;
+GtkClutter = imports.gi.GtkClutter;
+Gio = imports.gi.Gio;
+ShaderView = imports.ShaderView;
 
 Gtk.init(null, null);
 GtkClutter.init(null, null);
@@ -15,7 +16,7 @@ var stage = gtkstage.get_stage();
 var texture = new Clutter.Texture({filename:"bob.jpg"});
 var reflection = new Clutter.CloneTexture({parent_texture: texture});
 shader = new Clutter.Shader();
-var shaderfield = new ShaderView("fragment_source", texture,reflection);
+var shaderfield = new ShaderView.ShaderView("fragment_source", texture,reflection);
 var vbox = new Gtk.VBox();
 var notebook = new Gtk.Notebook();
 var c = new Clutter.Color();
