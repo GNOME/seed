@@ -1,8 +1,8 @@
 #!/usr/bin/env seed
 
-Seed.import_namespace("Gdk");
-Seed.import_namespace("Gtk");
-Seed.import_namespace("GLib");
+Gdk = imports.gi.Gdk;
+Gtk = imports.gi.Gtk;
+GLib = imports.gi.GLib;
 
 Gtk.init(null, null);
 
@@ -11,7 +11,7 @@ var calc_val = "";
 function update_display()
 {
 	label.set_markup("<span size='30000'>" + calc_val + "</span>");
-	
+
 	if(calc_val === "")
 	{
 		label.set_markup("<span size='30000'>0</span>");
@@ -58,25 +58,25 @@ function pressed_number(button)
 
 function swap_sign(button)
 {
-	calc_val = ((calc_val[0] == "-") ? 
+	calc_val = ((calc_val[0] == "-") ?
 		    calc_val.substring(1) : "-" + calc_val);
 	update_display();
 }
 
 function random_num()
 {
-	calc_val = Math.floor(Math.random() * 1000) + "";	
+	calc_val = Math.floor(Math.random() * 1000) + "";
 	update_display();
 }
 
 function pack_buttons(buttons, vbox)
 {
 	var hbox = new Gtk.HBox();
-	
+
 	hbox.homogeneous = true;
 
 	vbox.pack_start(hbox, true, true, 2);
-	
+
 	for(i = 0; i <= 4; i++)
 	{
 		hbox.pack_start(buttons[i], true, true, 1);
@@ -93,22 +93,22 @@ function create_button(str, func)
 function create_buttons()
 {
 	var vbox = new Gtk.VBox();
-	
+
 	vbox.homogeneous = true;
-	
+
 	pack_buttons([	create_button("(", pressed_number),
 						create_button("←", backspace),
 						create_button("↻", random_num),
 						create_button("Clr", clear),
 						create_button("±", swap_sign)], vbox);
-						
+
 
 	pack_buttons([	create_button(")", pressed_number),
 						create_button("7", pressed_number),
 						create_button("8", pressed_number),
 						create_button("9", pressed_number),
 						create_button("/", pressed_operator)], vbox);
-	
+
 	pack_buttons([	create_button("sin(", pressed_number),
 						create_button("4", pressed_number),
 						create_button("5", pressed_number),
@@ -120,7 +120,7 @@ function create_buttons()
 						create_button("2", pressed_number),
 						create_button("3", pressed_number),
 						create_button("-", pressed_operator)], vbox);
-	
+
 	pack_buttons([	create_button("tan(", pressed_number),
 						create_button("0", pressed_number),
 						create_button(".", pressed_number),

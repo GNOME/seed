@@ -1,7 +1,7 @@
 #!/usr/bin/env seed
 
-Seed.import_namespace("Gtk","2.0");
-Seed.import_namespace("Vte");
+Gtk = imports.gi.Gtk;
+Vte = imports.gi.Vte;
 
 with (Gtk)
 {
@@ -9,7 +9,7 @@ with (Gtk)
 
 	var window = new Window();
 	window.signal.hide.connect(function () { Gtk.main_quit(); } );
-	
+
 	var scroll = new ScrolledWindow();
 
 	var vte = new Vte.Terminal();

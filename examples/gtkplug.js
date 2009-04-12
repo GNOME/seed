@@ -1,7 +1,8 @@
 #!/usr/bin/env seed
-Seed.import_namespace("Gtk");
-Seed.import_namespace("Multiprocessing");
-Seed.import_namespace("Gio");
+Gtk = imports.gi.Gtk;
+Gio = imports.gi.Gio;
+Multiprocessing = imports.multiprocessing;
+
 
 var pipes = new Multiprocessing.Pipe();
 
@@ -10,12 +11,12 @@ var child_pid = Seed.fork();
 if (child_pid === 0)
 {
 	Gtk.init(null, null);
-	
+
 	var id = parseInt(pipes[0].read(), 10);
 
 	var label = new Gtk.Label({label: "Hello GtkPlug World"});
 	var plug = new Gtk.Plug.c_new(id);
-	
+
 	plug.add(label);
 	plug.show_all();
 	Gtk.main();

@@ -1,7 +1,7 @@
 #!/usr/bin/env seed
-Seed.import_namespace("Gtk");
-Seed.import_namespace("Gst");
-Seed.import_namespace("GstVideo");
+Gtk = imports.gi.Gtk;
+Gst = imports.gi.Gst;
+GstVideo = imports.gi.GstVideo;
 
 Gtk.init(null, null);
 Gst.init(null, null);
