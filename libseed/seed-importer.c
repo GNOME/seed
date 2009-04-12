@@ -135,7 +135,7 @@ seed_gi_importer_handle_object (JSContextRef ctx,
       seed_object_set_property (ctx, namespace_ref,
 				g_base_info_get_name ((GIBaseInfo *) info), 
 				constructor_ref);
-      seed_object_set_property (ctx, namespace_ref,
+      seed_object_set_property (ctx, constructor_ref,
 				"prototype",
 				seed_gobject_get_prototype_for_gtype (type));
     }
