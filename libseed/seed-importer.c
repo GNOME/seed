@@ -554,9 +554,11 @@ seed_importer_dir_get_property (JSContextRef ctx,
 			    JSStringRef property_name, 
 			    JSValueRef *exception)
 {
+  GError *e = NULL;
   GDir *dir;
   guint len;
-  gchar *prop, *dir_path, *entry;
+  const gchar *entry;
+  gchar *dir_path, *prop;
 
   
   dir_path = JSObjectGetPrivate (object);
@@ -566,7 +568,37 @@ seed_importer_dir_get_property (JSContextRef ctx,
   JSStringGetUTF8CString (property_name, prop, len);
   
   // TODO: GError
-  dir = g_dir_open (dir_path, 0, NULL);
+  dir = g_dir_open (dir_path, 0, &e);
+  if (e)
+    {
+      seed_make_exception_from_gerror (ctx, exception, e);
+      g_error_free (e);
+      
+      return NULL;
+    }
+  while (entry = g_dir_read_name (dir))
+    {
+      gchar *mentry = g_strdup (entry);
+      guint i;
+      
+      for (i = 0; i < strlen (mentry); i++)
+	{
+	  if (mentry[i] = '.')
+	    mentry[i] = '\0';
+	}
+      if (!strcmp (mentry, prop))
+	{
+	  JSObjectRef ret;
+	  
+	  ret = seed_importer_handle_file (ctx, dir_path, entry, exception);
+	  g_dir_close (dir);
+	  g_free (mentry);
+	  
+	  return ret;
+	}
+      g_free (mentry);
+    }
+  g_dir_close (dir);
   
   return NULL;
 }
