@@ -510,9 +510,9 @@ seed_importer_handle_file (JSContextRef ctx,
   
   nctx = JSGlobalContextCreateInGroup (context_group, 0);
   global = JSContextGetGlobalObject (nctx);
-  seed_object_set_property (ctx, global, "imports", importer);
-  seed_object_set_property (ctx, global, "GType", seed_gtype_constructor);
-  seed_object_set_property (ctx, global, "Seed", seed_obj_ref);
+  seed_object_set_property (nctx, global, "imports", importer);
+  seed_object_set_property (nctx, global, "GType", seed_gtype_constructor);
+  seed_object_set_property (nctx, global, "Seed", seed_obj_ref);
 
   JSEvaluateScript (nctx, file_contents, NULL, file_name, 0, exception);
 

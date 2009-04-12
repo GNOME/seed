@@ -2,6 +2,7 @@ Gtk = imports.gi.Gtk;
 WebKit = imports.gi.WebKit;
 
 BrowserSettings = imports.BrowserSettings;
+BrowserView = imports.BrowserView;
 
 TabbedBrowser = new GType({
     parent: Gtk.Notebook.type,
