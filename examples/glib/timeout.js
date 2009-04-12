@@ -1,6 +1,6 @@
 #!/usr/bin/env seed
 
-Seed.import_namespace("GLib");
+GLib = imports.gi.GLib;
 
 count = 0;
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env seed
-Seed.import_namespace("GLib");
+GLib = imports.gi.GLib;
 
 Seed.print(GLib.getenv("HOME"));
 GLib.setenv("SEED", "Why Hello!");
