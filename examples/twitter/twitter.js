@@ -1,16 +1,16 @@
 #!/usr/bin/env seed
 
 // Import libraries that are used by the program
-Seed.import_namespace("Gtk");
-Seed.import_namespace("Gdk");
-Seed.import_namespace("GdkPixbuf");
-Seed.import_namespace("Gio");
-Seed.import_namespace("GLib");
+Gtk = imports.gi.Gtk;
+Gdk = imports.gi.Gdk;
+GdkPixbuf = imports.gi.GdkPixbuf;
+Gio = imports.gi.Gio;
+GLib = imports.gi.GLib;
 
 // Pretty.js is John Resig's date display library. It downloaded it and
 // put it in the same directory as this script. You can easily use a lot
 // of existing JS libs and import them into Seed applications at runtime.
-Seed.include("pretty.js");
+Pretty = imports.pretty;
 
 // Initialize GTK+
 Gtk.init(null, null);
@@ -59,7 +59,7 @@ function make_block(data) {
 	var heading = new Gtk.Label({
 			"use-markup": true,
 			"label": "<b><big>" + data.from_user + "</big></b>\n" +
-			"<small>" + prettyDate(data.created_at) + "</small>"
+			"<small>" + Pretty.prettyDate(data.created_at) + "</small>"
 		});
 
 	// The message text is displayed in a TextView widget because the GTK+ label
@@ -67,7 +67,7 @@ function make_block(data) {
 	// label because of the RC change at the top of the script.
 	var message = new Gtk.TextView({"wrap-mode": 2, "editable": false});
 	message.buffer.text = data.text;
-  
+
 	heading.set_alignment(0, 0);
 	vbox.pack_start(hbox);
 	hbox.pack_start(heading);
@@ -95,12 +95,12 @@ function async_callback(source, result)
 	var stream = source.read_finish(result);
 	var dstream = new Gio.DataInputStream.c_new(stream);
 	var data = JSON.parse(dstream.read_until("", 0));
-	
+
 	messages.foreach(function(m) {messages.remove(m);});
 	data.results.forEach(function(m) {	messages.pack_start(make_block(m));
 										while (GLib.main_context_pending())
  											GLib.main_context_iteration();});
-	
+
 	messages.show_all();
 }
 
@@ -109,10 +109,10 @@ function async_callback(source, result)
 
 function do_search(w)
 {
-	var twitter = 
+	var twitter =
 		Gio.file_new_for_uri("http://search.twitter.com/search.json?q="
 							 + textbox.get_text());
-	
+
 	twitter.read_async(0, null, async_callback);
 }
 

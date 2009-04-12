@@ -22,6 +22,8 @@
 #include <string.h>
 #include <stdarg.h>
 
+JSObjectRef seed_obj_ref;
+
 GQuark qname;
 GQuark qprototype;
 
@@ -1533,7 +1535,6 @@ seed_init_with_context_group (gint * argc,
 			      gchar *** argv,
 			      JSContextGroupRef group)
 {
-  JSObjectRef seed_obj_ref;
   JSStringRef defaults_script;
 
   g_type_init ();

@@ -26,4 +26,6 @@
 
 void seed_gtype_init (SeedEngine * eng);
 
+extern JSObjectRef seed_gtype_constructor;
+
 #endif

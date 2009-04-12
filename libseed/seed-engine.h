@@ -33,6 +33,8 @@ extern JSClassRef seed_struct_constructor_class;
 extern JSClassRef seed_callback_class;
 extern SeedEngine *eng;
 
+extern JSObjectRef seed_obj_ref;
+
 extern JSContextGroupRef context_group;
 
 typedef struct _SeedScript

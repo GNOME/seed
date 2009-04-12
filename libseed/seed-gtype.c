@@ -22,6 +22,8 @@ JSClassRef seed_gtype_class;
 GIBaseInfo *objectclass_info = NULL;
 GIBaseInfo *paramspec_info = NULL;
 
+JSObjectRef seed_gtype_constructor;
+
 GQuark qgetter;
 GQuark qsetter;
 
@@ -564,16 +566,16 @@ void
 seed_gtype_init (SeedEngine * local_eng)
 {
   JSClassDefinition gtype_def = kJSClassDefinitionEmpty;
-  JSObjectRef gtype_constructor;
+
 
   gtype_def.callAsConstructor = seed_gtype_constructor_invoked;
   seed_gtype_class = JSClassCreate (&gtype_def);
   JSClassRetain (seed_gtype_class);
 
-  gtype_constructor = JSObjectMake (local_eng->context, seed_gtype_class, 0);
+  seed_gtype_constructor = JSObjectMake (local_eng->context, seed_gtype_class, 0);
 
   seed_object_set_property (local_eng->context,
-			    local_eng->global, "GType", gtype_constructor);
+			    local_eng->global, "GType", seed_gtype_constructor);
 
   qgetter = g_quark_from_static_string ("js-getter");
   qsetter = g_quark_from_static_string ("js-setter");

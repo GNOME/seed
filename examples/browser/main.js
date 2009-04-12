@@ -1,12 +1,12 @@
 #!/usr/bin/env seed
 
-Seed.import_namespace("Gtk");
-Seed.import_namespace("WebKit");
+Gtk = imports.gi.Gtk;
+WebKit = imports.gi.WebKit;
 
 Gtk.init(null, null);
 
-Seed.include("BrowserSettings.js");
-Seed.include("BrowserView.js");
+BrowserSettings = imports.BrowserSettings;
+BrowserView = imports.BrowserView;
 Seed.include("BrowserStatusbar.js");
 Seed.include("BrowserTab.js");
 Seed.include("TabbedBrowser.js");
