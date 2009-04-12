@@ -38,25 +38,6 @@ seed_signal_finalize (JSObjectRef object)
 
 
 static void
-seed_add_signals_for_type (JSContextRef ctx,
-			   JSObjectRef object_ref, GObject * obj, GType type)
-{
-  guint n, i;
-  guint *signal_ids;
-  GSignalQuery query;
-  signal_ids = g_signal_list_ids (type, &n);
-  for (i = 0; i < n; i++)
-    {
-      g_signal_query (signal_ids[i], &query);
-      if (query.signal_id != 0)
-	{
-	  seed_add_signal_to_object (ctx, object_ref, obj, &query);
-	}
-    }
-  g_free (signal_ids);
-}
-
-static void
 closure_invalidated (gpointer data, GClosure * c)
 {
   JSContextRef ctx = JSGlobalContextCreateInGroup (context_group,

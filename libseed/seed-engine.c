@@ -301,6 +301,7 @@ seed_gobject_method_invoked (JSContextRef ctx,
 
   for (i = 0; (i < (n_args)); i++)
     {
+      SEED_NOTE (INVOCATION, "Converting arg: %d of function %s, exception is %p", i, g_base_info_get_name (info), exception);
       arg_info = g_callable_info_get_arg ((GICallableInfo *) info, i);
       dir = g_arg_info_get_direction (arg_info);
       type_info = g_arg_info_get_type (arg_info);
