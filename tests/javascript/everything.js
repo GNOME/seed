@@ -5,6 +5,7 @@
 // STDERR:
 
 Everything = imports.gi.Everything;
+GObject = imports.gi.GObject;
 
 with(Everything)
 {

@@ -5,9 +5,10 @@
 // STDERR:
 
 Gtk = imports.gi.Gtk;
+GObject = imports.gi.GObject;
 Gtk.init(null, null);
 
-HelloWindow = new GType({       
+HelloWindow = new GType({
     parent: Gtk.Window.type,
     name: "HelloWindow",
     class_init: function(klass, prototype)

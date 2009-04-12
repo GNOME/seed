@@ -16,7 +16,8 @@ void js_signal_from_c(TestSimpleFixture * fixture, gconstpointer _data)
 	TestSharedState *state = (TestSharedState *) _data;
 
 	SeedValue *val = seed_simple_evaluate(state->eng->context,
-					      "Seed.import_namespace(\"Gtk\");"
+					      "Gtk = imports.gi.Gtk;"
+					      "GObject = imports.gi.GObject;"
 					      "Gtk.init(null, null);"
 					      "HelloWindowType = {"
 					      "    parent: Gtk.Window.type,"
