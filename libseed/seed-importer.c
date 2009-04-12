@@ -11,6 +11,8 @@ JSObjectRef gi_importer_versions;
 
 JSObjectRef importer_search_path;
 
+JSClassRef importer_dir_class;
+
 GHashTable *gi_imports;
 GHashTable *file_imports;
 
@@ -358,6 +360,21 @@ seed_gi_importer_get_property (JSContextRef ctx,
   
 }
 
+static void
+seed_importer_free_search_path (GSList *path)
+{
+  GSList *walk = path;
+  
+  while (walk)
+    {
+      g_free (walk->data);
+      walk = walk->next;
+    }
+  
+  g_slist_free (path);
+}
+
+
 GSList *
 seed_importer_get_search_path (JSContextRef ctx,
 			       JSValueRef *exception)
@@ -410,7 +427,13 @@ seed_importer_handle_file (JSContextRef ctx,
     }
 
   if (!g_file_test (file_path, G_FILE_TEST_IS_REGULAR))
-    return NULL;
+    {
+      if (g_file_test (file_path, G_FILE_TEST_IS_DIR))
+	{
+	  return JSObjectMake (ctx, importer_dir_class, file_path);
+	}
+      return NULL;
+    }
   
   g_file_get_contents (file_path, &contents, 0, NULL);
   walk = contents;
@@ -483,6 +506,7 @@ seed_importer_search (JSContextRef ctx,
 
 	      g_dir_close (dir);
 	      g_free (mentry);
+	      seed_importer_free_search_path (path);
 
 	      return ret;
 	    }
@@ -494,6 +518,7 @@ seed_importer_search (JSContextRef ctx,
       walk = walk->next;
     }
   
+  seed_importer_free_search_path (path);
   return NULL;
 }
 
@@ -521,6 +546,29 @@ seed_importer_get_property (JSContextRef ctx,
   ret = seed_importer_search (ctx, prop, exception);
   
   return ret;
+}
+
+static JSValueRef
+seed_importer_dir_get_property (JSContextRef ctx,
+			    JSObjectRef object,
+			    JSStringRef property_name, 
+			    JSValueRef *exception)
+{
+  GDir *dir;
+  guint len;
+  gchar *prop, *dir_path, *entry;
+
+  
+  dir_path = JSObjectGetPrivate (object);
+  
+  len = JSStringGetMaximumUTF8CStringSize (property_name);
+  prop = g_alloca (len * sizeof (gchar));
+  JSStringGetUTF8CString (property_name, prop, len);
+  
+  // TODO: GError
+  dir = g_dir_open (dir_path, 0, NULL);
+  
+  return NULL;
 }
 
 
@@ -564,6 +612,26 @@ JSClassDefinition gi_importer_class_def = {
   NULL				/* Convert To Type */
 };
 
+JSClassDefinition importer_dir_class_def = {
+  0,				/* Version, always 0 */
+  0,
+  "importer_dir",		/* Class Name */
+  NULL,				/* Parent Class */
+  NULL,				/* Static Values */
+  NULL,				/* Static Functions */
+  NULL,                         /* Initialize */
+  NULL,				/* Finalize */
+  NULL,				/* Has Property */
+  seed_importer_dir_get_property,	/* Get Property */
+  NULL,				/* Set Property */
+  NULL,				/* Delete Property */
+  NULL,				/* Get Property Names */
+  NULL,				/* Call As Function */
+  NULL,	/* Call As Constructor */
+  NULL,				/* Has Instance */
+  NULL				/* Convert To Type */
+};
+
 void seed_initialize_importer(JSContextRef ctx,
 			      JSObjectRef global)
 {
@@ -573,6 +641,8 @@ void seed_initialize_importer(JSContextRef ctx,
   gi_importer_class = JSClassCreate (&gi_importer_class_def);
   gi_importer = JSObjectMake (ctx, gi_importer_class, NULL);
   gi_importer_versions = JSObjectMake (ctx, NULL, NULL);
+  
+  importer_dir_class = JSClassCreate (&importer_dir_class_def);
   
   gi_imports = g_hash_table_new (g_str_hash, g_str_equal);
   file_imports = g_hash_table_new (g_str_hash, g_str_equal);
