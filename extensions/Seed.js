@@ -653,5 +653,5 @@ Seed.thread_repl = function()
 
 Seed.printf = function () { Seed.print(Seed.sprintf.apply(this, arguments)) };
 
-      imports.searchPath = [".", "/usr/local/lib/seed", "/usr/lib/seed", "/usr/local/share/seed", "/usr/share/seed"];
+      imports.searchPath = ["/usr/local/lib/seed", "/usr/lib/seed", "/usr/local/share/seed", "/usr/share/seed", "."];
 
