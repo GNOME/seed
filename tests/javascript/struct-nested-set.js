@@ -4,7 +4,7 @@
 // STDOUT:\[object seed_union\]\n2\.000000\n300\.000000
 // STDERR:
 
-const Gdk = imports.gi.Gdk;
+Gdk = imports.gi.Gdk;
 
 e = new Gdk.Event();
 Seed.print(e);

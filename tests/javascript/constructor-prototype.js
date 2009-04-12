@@ -4,7 +4,7 @@
 // STDOUT:Hello World
 // STDERR:
 
-const Gtk = imports.gi.Gtk;
+Gtk = imports.gi.Gtk;
 Gtk.init(null, null);
 
 Gtk.Window.prototype.hello = "Hello World";

@@ -1156,10 +1156,7 @@ seed_gi_import_namespace (JSContextRef ctx,
     }
 
   jsextension =
-    g_strdup_printf ("try{Seed.include(\"/usr/share/seed/%s.js\");}"
-		     "catch(e){}"
-		     "Seed.include(\"/usr/local/share/seed/%s.js\");",
-		     namespace, namespace);
+	  g_strdup_printf("imports.extensions.%s", namespace);
   extension_script = JSStringCreateWithUTF8CString (jsextension);
   JSEvaluateScript (ctx, extension_script, NULL, NULL, 0, NULL);
   JSStringRelease (extension_script);
@@ -1599,8 +1596,7 @@ seed_init_with_context_group (gint * argc,
   seed_gtype_init (eng);
 
   defaults_script =
-    JSStringCreateWithUTF8CString ("const GObject = imports.gi.GObject;"
-				   "try{Seed.include(\"/usr/share/"
+    JSStringCreateWithUTF8CString ("try{Seed.include(\"/usr/share/"
 				   "seed/extensions/Seed.js\");} catch(e){}"
 				   "Seed.include(\"/usr/local/share"
 				   "/seed/extensions/Seed.js\");");

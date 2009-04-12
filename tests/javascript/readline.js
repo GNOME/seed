@@ -4,5 +4,5 @@
 // STDOUT:4.000000
 // STDERR:
 
-const readline = imports.readline;
+readline = imports.readline;
 Seed.print(eval(readline.readline("")));

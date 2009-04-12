@@ -4,8 +4,8 @@
 // STDOUT:resize
 // STDERR:
 
-const Gtk = imports.gi.Gtk;
-const GIRepository = imports.gi.GIRepository;
+Gtk = imports.gi.Gtk;
+GIRepository = imports.gi.GIRepository;
 
 f = Gtk.Window.prototype.resize.info;
 

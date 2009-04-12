@@ -1,4 +1,4 @@
-const Clutter = imports.gi.Clutter;
+Clutter = imports.gi.Clutter;
 
 Clutter.Actor.prototype.animate = function(mode, duration, json)
 {

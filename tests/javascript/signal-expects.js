@@ -4,7 +4,7 @@
 // STDOUT:In signal
 // STDERR:
 
-const Gtk = imports.gi.Gtk;
+Gtk = imports.gi.Gtk;
 Gtk.init(null, null);
 
 function expects_test(widget, user_data)

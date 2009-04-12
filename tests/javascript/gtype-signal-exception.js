@@ -4,7 +4,7 @@
 // STDOUT:Signal definition needs name property\nSignal definition needs name property
 // STDERR:
 
-const Gtk = imports.gi.Gtk;
+Gtk = imports.gi.Gtk;
 Gtk.init(null, null);
 
 HelloWindowType = {       

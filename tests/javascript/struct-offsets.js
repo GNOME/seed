@@ -4,7 +4,7 @@
 // STDOUT:17\.000000\n0\.000000
 // STDERR:
 
-const Pango = imports.gi.Pango;
+Pango = imports.gi.Pango;
 
 c = new Pango.Color();
 c.red = 17;

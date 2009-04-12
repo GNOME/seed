@@ -4,8 +4,8 @@
 // STDOUT:\[object GdkWindow\]\n\[object GdkWindow\]\n1\.000000\n200\.000000
 // STDERR:
 
-const Gtk = imports.gi.Gtk;
-const Gdk = imports.gi.Gdk;
+Gtk = imports.gi.Gtk;
+Gdk = imports.gi.Gdk;
 Gtk.init(null, null);
 
 function paint(wdg, evt)

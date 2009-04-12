@@ -4,7 +4,7 @@
 // STDOUT:\[object GtkButton\]\n1\.000000\n0\.500000
 // STDERR:
 
-const Gtk = imports.gi.Gtk;
+Gtk = imports.gi.Gtk;
 Gtk.init(null, null);
 
 function handle_opacity_change(obj, gobject, user_data)

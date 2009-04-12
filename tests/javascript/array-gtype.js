@@ -4,8 +4,8 @@
 // STDOUT:
 // STDERR:
 
-const Gtk = imports.gi.Gtk;
-const GObject = imports.gi.GObject;
+Gtk = imports.gi.Gtk;
+GObject = imports.gi.GObject;
 
 Gtk.init(null, null);
 

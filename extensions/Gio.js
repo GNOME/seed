@@ -1,4 +1,4 @@
-const Gio = imports.gi.Gio;
+Gio = imports.gi.Gio;
 
 (function()
 {

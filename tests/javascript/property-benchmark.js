@@ -4,7 +4,7 @@
 // STDOUT:
 // STDERR:
 
-const Gtk = imports.gi.Gtk;
+Gtk = imports.gi.Gtk;
 Gtk.init(null, null);
 
 window = new Gtk.Window();

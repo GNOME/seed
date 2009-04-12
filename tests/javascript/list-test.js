@@ -4,7 +4,7 @@
 // STDOUT:\[object GtkButton\],\[object GtkButton\]\n\[object GtkButton\]\n\[object GtkButton\]
 // STDERR:
 
-const Gtk = imports.gi.Gtk;
+Gtk = imports.gi.Gtk;
 
 Gtk.init(null, null);
 

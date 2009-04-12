@@ -4,8 +4,8 @@
 // STDOUT:JSON Win!
 // STDERR:
 
-const Gtk = imports.gi.Gtk;
-const GLib = imports.gi.GLib;
+Gtk = imports.gi.Gtk;
+GLib = imports.gi.GLib;
 
 Gtk.init(null, null);
 window = new Gtk.Window({title: "JSON Win!"});

@@ -4,7 +4,7 @@
 // STDOUT:5 100
 // STDERR:
 
-const Gtk = imports.gi.Gtk;
+Gtk = imports.gi.Gtk;
 Gtk.init(null, null);
 
 w = new Gtk.Window({width_request: 5, height_request: 100});

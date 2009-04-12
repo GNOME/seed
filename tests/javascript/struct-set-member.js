@@ -4,7 +4,7 @@
 // STDOUT:0\.000000\n200\.000000
 // STDERR:
 
-const Gdk = imports.gi.Gdk;
+Gdk = imports.gi.Gdk;
 
 color = new Gdk.Color();
 Seed.print(color.red);

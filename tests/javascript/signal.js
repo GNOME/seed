@@ -4,7 +4,7 @@
 // STDOUT:Window mapped.
 // STDERR:
 
-const Gtk = imports.gi.Gtk;
+Gtk = imports.gi.Gtk;
 Gtk.init(null, null);
 
 function mapped(window)

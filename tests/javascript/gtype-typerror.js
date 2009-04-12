@@ -4,7 +4,7 @@
 // STDOUT:GType constructor expected GType for parent
 // STDERR:
 
-const Gtk = imports.gi.Gtk;
+Gtk = imports.gi.Gtk;
 
 
 HelloWindowType = {

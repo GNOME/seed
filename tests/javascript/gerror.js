@@ -4,7 +4,7 @@
 // STDOUT:GIoError Error opening file .* Is a directory
 // STDERR:
 
-const Gio = imports.gi.Gio;
+Gio = imports.gi.Gio;
 
 try
 {

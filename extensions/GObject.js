@@ -1,4 +1,4 @@
-const GObject = imports.gi.GObject;
+GObject = imports.gi.GObject;
 
 (function()
  {

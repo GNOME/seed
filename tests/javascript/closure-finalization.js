@@ -4,7 +4,7 @@
 // STDOUT:\[object GtkVBox\]
 // STDERR:
 
-const Gtk = imports.gi.Gtk;
+Gtk = imports.gi.Gtk;
 
 Gtk.init(null, null);
 

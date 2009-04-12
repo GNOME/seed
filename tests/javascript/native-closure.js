@@ -4,7 +4,7 @@
 // STDOUT:\[object GtkLabel\]\n\[object GtkButton\]
 // STDERR:
 
-const Gtk = imports.gi.Gtk;
+Gtk = imports.gi.Gtk;
 Gtk.init(null, null);
 
 w = new Gtk.Window();
