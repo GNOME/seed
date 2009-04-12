@@ -1,11 +1,11 @@
 #!/usr/bin/env seed
 
-Seed.import_namespace("GLib");
-Seed.import_namespace("Gio");
-Seed.import_namespace("GdkPixbuf");
-Seed.import_namespace("Gtk");
+GLib = imports.gi.GLib;
+Gio = imports.gi.Gio;
+GdkPixbuf = imports.gi.GdkPixbuf;
+Gtk = imports.gi.Gtk;
 
-var blue_marble = 
+var blue_marble =
 	Gio.file_new_for_uri("http://veimages.gsfc.nasa.gov/7100/world.topo.bathy.200401.3x5400x2700.jpg");
 
 blue_marble.read_async(0, null, function(source, result)
@@ -24,7 +24,7 @@ blue_marble.read_async(0, null, function(source, result)
 						   catch (e)
 						   {
 						   }
-						   
+
 						   var pixbuf = loader.get_pixbuf();
 						   pixbuf.savev("bluemarble","jpeg");
 						Seed.quit();

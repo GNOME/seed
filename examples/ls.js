@@ -1,6 +1,6 @@
 #!/usr/bin/env seed
 
-Seed.import_namespace("Gio");
+Gio = imports.gi.Gio;
 
 // Gio.File is an interface, not an actual instantiable class, so we can not
 // construct one with a "path" property. Instead it is necessary to use

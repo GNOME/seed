@@ -1,5 +1,6 @@
 #!/usr/bin/env seed
-Seed.import_namespace("Gtk");
+Gtk = imports.gi.Gtk;
+GObject = imports.gi.GObject;
 
 Gtk.init(null, null);
 
