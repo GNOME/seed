@@ -1500,6 +1500,8 @@ seed_init (gint * argc, gchar *** argv)
   g_irepository_require (g_irepository_get_default (), "GObject", NULL, 0, 0);
   g_irepository_require (g_irepository_get_default (), "GIRepository",
 			 NULL, 0, 0);
+  
+  seed_initialize_importer (eng->context, eng->global);
 
   seed_init_builtins (eng, argc, argv);
   seed_closures_init ();
@@ -1584,6 +1586,8 @@ seed_init_with_context_group (gint * argc,
   g_irepository_require (g_irepository_get_default (), "GObject", NULL, 0, 0);
   g_irepository_require (g_irepository_get_default (), "GIRepository",
 			 NULL, 0, 0);
+
+  seed_initialize_importer (eng->context, eng->global);
 
   seed_init_builtins (eng, argc, argv);
   seed_closures_init ();
