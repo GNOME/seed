@@ -1,3 +1,5 @@
+const GObject = imports.gi.GObject;
+
 (function()
  {
      var types = [{name:"NONE", fundamental: 1},

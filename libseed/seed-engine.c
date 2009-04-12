@@ -1516,9 +1516,9 @@ seed_init (gint * argc, gchar *** argv)
     JSStringCreateWithUTF8CString ("Seed.import_namespace(\""
 				   "GObject\");"
 				   "try{Seed.include(\"/usr/share/"
-				   "seed/Seed.js\");} catch(e){}"
+				   "seed/extensions/Seed.js\");} catch(e){}"
 				   "Seed.include(\"/usr/local/share"
-				   "/seed/Seed.js\");");
+				   "/seed/extensions/Seed.js\");");
   JSEvaluateScript (eng->context, defaults_script, NULL, NULL, 0, NULL);
   JSStringRelease (defaults_script);
 
@@ -1599,12 +1599,11 @@ seed_init_with_context_group (gint * argc,
   seed_gtype_init (eng);
 
   defaults_script =
-    JSStringCreateWithUTF8CString ("Seed.import_namespace(\""
-				   "GObject\");"
+    JSStringCreateWithUTF8CString ("const GObject = imports.gi.GObject;"
 				   "try{Seed.include(\"/usr/share/"
-				   "seed/Seed.js\");} catch(e){}"
+				   "seed/extensions/Seed.js\");} catch(e){}"
 				   "Seed.include(\"/usr/local/share"
-				   "/seed/Seed.js\");");
+				   "/seed/extensions/Seed.js\");");
   JSEvaluateScript (eng->context, defaults_script, NULL, NULL, 0, NULL);
   JSStringRelease (defaults_script);
 

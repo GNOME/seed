@@ -1,3 +1,5 @@
+const Gio = imports.gi.Gio;
+
 (function()
 {
     var prototype = Gio.FileInputStream.prototype;

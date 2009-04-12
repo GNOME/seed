@@ -274,6 +274,8 @@ seed_gi_importer_do_namespace (JSContextRef ctx,
   GError *e = NULL;
   guint n, i;
   gchar *version;
+  gchar *jsextension;
+  JSStringRef extension_script;
   
   if (namespace_ref = g_hash_table_lookup (gi_imports, namespace))
     {
@@ -332,6 +334,14 @@ seed_gi_importer_do_namespace (JSContextRef ctx,
     }
   
   g_hash_table_insert (gi_imports, g_strdup(namespace), namespace_ref);
+
+  jsextension = g_strdup_printf ("imports.extensions.%s",
+				namespace);
+  extension_script = JSStringCreateWithUTF8CString (jsextension);
+  JSEvaluateScript (ctx, extension_script, NULL, NULL, 0, NULL);
+  JSStringRelease (extension_script);
+  g_free (jsextension);
+
   
   return namespace_ref;
   
@@ -493,9 +503,12 @@ seed_importer_handle_file (JSContextRef ctx,
 
   
   nctx = JSGlobalContextCreateInGroup (context_group, 0);
+  global = JSContextGetGlobalObject (nctx);
+  seed_object_set_property (ctx, global, "imports", importer);
+
   JSEvaluateScript (nctx, file_contents, NULL, file_name, 0, exception);
 
-  global = JSContextGetGlobalObject (nctx);
+
   g_hash_table_insert (file_imports, file_path, global);
   
   JSGlobalContextRelease ((JSGlobalContextRef) nctx);
@@ -527,12 +540,10 @@ seed_importer_search (JSContextRef ctx,
       dir = g_dir_open ((gchar *)walk->data, 0, &e);
       if (e)
 	{
-	  seed_make_exception_from_gerror (ctx, exception, e);
 	  g_error_free (e);
-	  g_free (prop_as_lib);
-	  seed_importer_free_search_path (path);
 	  
-	  return NULL;
+	  walk = walk->next;
+	  continue;
 	}
       while (entry = g_dir_read_name(dir))
 	{

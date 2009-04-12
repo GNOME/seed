@@ -1,3 +1,5 @@
+const Gtk = imports.gi.Gtk;
+
 (function()
  {
 	 var pack = function(packing)

@@ -1,3 +1,5 @@
+const Clutter = imports.gi.Clutter;
+
 Clutter.Actor.prototype.animate = function(mode, duration, json)
 {
 	var properties = new Array();
