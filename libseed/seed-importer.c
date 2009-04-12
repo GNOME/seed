@@ -375,7 +375,7 @@ seed_importer_get_search_path (JSContextRef ctx,
   length_ref = seed_object_get_property (ctx, (JSObjectRef) search_path_ref, "length");
   length = seed_value_to_uint (ctx, length_ref, exception);
   
-  for (i = 0; i < length; i--)
+  for (i = 0; i < length; i++)
     {
       JSValueRef entry_ref;
       gchar *entry;
