@@ -4,6 +4,6 @@
 // STDOUT:Got here!\n4.000000
 // STDERR:
 
-Seed.import_namespace("readline");
+const readline = imports.readline;
 readline.bind("a", function () { Seed.print("Got here!"); });
 Seed.print(eval(readline.readline("")));

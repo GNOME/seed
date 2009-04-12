@@ -4,7 +4,7 @@
 // STDOUT:2 Test\n\[object GtkWindow\]
 // STDERR:
 
-Seed.import_namespace("Gtk");
+const Gtk = imports.gi.Gtk;
 Gtk.init(null, null);
 
 HelloWindow = new GType({       

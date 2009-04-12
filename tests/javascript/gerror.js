@@ -4,7 +4,7 @@
 // STDOUT:GIoError Error opening file .* Is a directory
 // STDERR:
 
-Seed.import_namespace("Gio");
+const Gio = imports.gi.Gio;
 
 try
 {

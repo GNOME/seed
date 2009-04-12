@@ -4,7 +4,7 @@
 // STDOUT:Can not convert Javascript value to boolean\nCan not convert Javascript value to int
 // STDERR:
 
-Seed.import_namespace("Gtk");
+const Gtk = imports.gi.Gtk;
 Gtk.init(null, null);
 
 actor = new Gtk.Window();

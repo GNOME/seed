@@ -4,8 +4,8 @@
 // STDOUT:Window implements interfaces\nInterface: (Buildable|ImplementorIface)\nInterface: (Buildable|ImplementorIface)
 // STDERR:
 
-Seed.import_namespace("Gtk");
-Seed.import_namespace("GIRepository");
+const Gtk = imports.gi.Gtk;
+const GIRepository = imports.gi.GIRepository;
 
 info = GIRepository.irepository_find_by_gtype(null, Gtk.Window.type);
 Seed.print(GIRepository.base_info_get_name(info) + " implements interfaces");

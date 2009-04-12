@@ -4,7 +4,7 @@
 // STDOUT:
 // STDERR:\n\*\* \(seed:[0-9]+\): WARNING \*\*: Exception in class init closure\. Line 14 in .*\/gtype-class-init-exception\.js: ReferenceError Can't find variable: notAVariable
 
-Seed.import_namespace("Gtk");
+const Gtk = imports.gi.Gtk;
 Gtk.init(null, null);
 
 HelloWindowType = {

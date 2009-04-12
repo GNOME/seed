@@ -4,7 +4,7 @@
 // STDOUT:2.000000
 // STDERR:
  
-Seed.import_namespace("Gtk");
+const Gtk = imports.gi.Gtk;
 Gtk.init(null, null);
 
 b = new Gtk.Button();

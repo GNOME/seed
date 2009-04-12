@@ -4,7 +4,7 @@
 // STDOUT:GType constructor expected GType for parent
 // STDERR:
 
-Seed.import_namespace("Gtk");
+const Gtk = imports.gi.Gtk;
 
 
 HelloWindowType = {

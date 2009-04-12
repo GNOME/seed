@@ -4,8 +4,8 @@
 // STDOUT:JSON Win!
 // STDERR:
 
-Seed.import_namespace("Gtk");
-Seed.import_namespace("GLib");
+const Gtk = imports.gi.Gtk;
+const GLib = imports.gi.GLib;
 
 Gtk.init(null, null);
 window = new Gtk.Window({title: "JSON Win!"});

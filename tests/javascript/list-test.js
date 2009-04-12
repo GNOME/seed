@@ -4,7 +4,7 @@
 // STDOUT:\[object GtkButton\],\[object GtkButton\]\n\[object GtkButton\]\n\[object GtkButton\]
 // STDERR:
 
-Seed.import_namespace("Gtk");
+const Gtk = imports.gi.Gtk;
 
 Gtk.init(null, null);
 

@@ -4,7 +4,7 @@
 // STDOUT:\{"Hello":"World"\}
 // STDERR:
 
-Seed.import_namespace("Gtk");
+const Gtk = imports.gi.Gtk;
 Gtk.init(null, null);
 
 function userdata_test(widget, user_data)

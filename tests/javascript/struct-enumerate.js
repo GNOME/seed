@@ -4,7 +4,7 @@
 // STDOUT:x\ny\nwidth\nheight\nintersect\nunion
 // STDERR:
 
-Seed.import_namespace("Gdk");
+const Gdk = imports.gi.Gdk;
 
 r = new Gdk.Rectangle();
 for (prop in r)

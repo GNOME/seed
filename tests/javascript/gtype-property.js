@@ -4,8 +4,8 @@
 // STDOUT:1\.000000\n0\.000000
 // STDERR:
 
-Seed.import_namespace("Gtk");
-Seed.import_namespace("GObject");
+const Gtk = imports.gi.Gtk;
+const GObject = imports.gi.GObject;
 Gtk.init(null, null);
 
 HelloWindowType = {

@@ -4,7 +4,7 @@
 // STDOUT:\{"name":"set_opacity","return_type":"void","args":\{"0":\{"type":"double"\}\}\}
 // STDERR:
 
-Seed.import_namespace("Gtk");
+const Gtk = imports.gi.Gtk;
 Gtk.init(null, null);
 win = new Gtk.Window();
 Seed.print(JSON.stringify(Seed.introspect(win.set_opacity)));

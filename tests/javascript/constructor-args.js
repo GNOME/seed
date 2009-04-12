@@ -4,7 +4,7 @@
 // STDOUT:Constructor expects 1 argument, got 2\nConstructor expects object as argument
 // STDERR:
 
-Seed.import_namespace("Gtk");
+const Gtk = imports.gi.Gtk;
 Gtk.init(null, null);
 
 try

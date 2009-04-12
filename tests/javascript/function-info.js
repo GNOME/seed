@@ -4,8 +4,8 @@
 // STDOUT:resize
 // STDERR:
 
-Seed.import_namespace("Gtk");
-Seed.import_namespace("GIRepository");
+const Gtk = imports.gi.Gtk;
+const GIRepository = imports.gi.GIRepository;
 
 f = Gtk.Window.prototype.resize.info;
 
