@@ -12,6 +12,7 @@ JSObjectRef gi_importer_versions;
 JSObjectRef importer_search_path;
 
 GHashTable *gi_imports;
+GHashTable *file_imports;
 
 static void
 seed_gi_importer_handle_function (JSContextRef ctx,
@@ -401,6 +402,12 @@ seed_importer_handle_file (JSContextRef ctx,
   gchar *contents, *walk, *file_path;
   
   file_path = g_strconcat (dir, "/", file, NULL);
+  
+  if (global = g_hash_table_lookup (file_imports, file_path))
+    {
+      g_free (file_path);
+      return global;
+    }
 
   if (!g_file_test (file_path, G_FILE_TEST_IS_REGULAR))
     return NULL;
@@ -424,13 +431,13 @@ seed_importer_handle_file (JSContextRef ctx,
   JSEvaluateScript (nctx, file_contents, NULL, file_name, 0, exception);
 
   global = JSContextGetGlobalObject (nctx);
+  g_hash_table_insert (file_imports, file_path, global);
   
   JSGlobalContextRelease ((JSGlobalContextRef) nctx);
   
   JSStringRelease (file_contents);
   JSStringRelease (file_name);
   g_free (walk);
-  g_free (file_path);
   
   return global;
 }
@@ -568,6 +575,7 @@ void seed_initialize_importer(JSContextRef ctx,
   gi_importer_versions = JSObjectMake (ctx, NULL, NULL);
   
   gi_imports = g_hash_table_new (g_str_hash, g_str_equal);
+  file_imports = g_hash_table_new (g_str_hash, g_str_equal);
   
   seed_object_set_property (ctx, global, "imports", importer);
 }
