@@ -623,7 +623,7 @@ Seed.repl = function()
 			return true;
 		}
 	}
-	
+
 	try
 	{
 		item = readline.readline("> ");
@@ -646,10 +646,12 @@ Seed.glib_repl = function()
 
 Seed.thread_repl = function()
 {
-	GLib.thread_create_full(function() { while(Seed.repl()){} }, 
+	GLib.thread_create_full(function() { while(Seed.repl()){} },
 							null, 0, true);
-	
+
 }
 
 Seed.printf = function () { Seed.print(Seed.sprintf.apply(this, arguments)) };
+
+imports.searchPath = [".", "/usr/local/lib/seed", "/usr/lib/seed"];
 
