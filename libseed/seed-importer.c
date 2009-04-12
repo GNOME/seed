@@ -428,6 +428,8 @@ seed_importer_handle_native_module (JSContextRef ctx,
   JSObjectRef module_obj;
   SeedModuleInitCallback init;
   gchar *file_path = g_strconcat (dir, "/", file, NULL);
+  
+  SEED_NOTE (IMPORTER, "Trying native module: %s", file_path);
 
   if (module_obj = g_hash_table_lookup (file_imports, file_path))
     {
@@ -453,6 +455,7 @@ seed_importer_handle_native_module (JSContextRef ctx,
   g_module_symbol (module, "seed_module_init", (gpointer *) &init);
   module_obj = (*init) (eng);
   g_hash_table_insert (file_imports, file_path, module_obj);
+  SEED_NOTE (IMPORTER, "Loaded native module");
   
   g_free (file_path);
       
@@ -471,9 +474,11 @@ seed_importer_handle_file (JSContextRef ctx,
   gchar *contents, *walk, *file_path;
   
   file_path = g_strconcat (dir, "/", file, NULL);
+  SEED_NOTE (IMPORTER, "Trying to import file: %s", file_path);
   
   if (global = g_hash_table_lookup (file_imports, file_path))
     {
+      SEED_NOTE (IMPORTER, "Using existing global");
       g_free (file_path);
       return global;
     }
@@ -482,6 +487,7 @@ seed_importer_handle_file (JSContextRef ctx,
     {
       if (g_file_test (file_path, G_FILE_TEST_IS_DIR))
 	{
+	  SEED_NOTE (IMPORTER, "File is directory");
 	  return JSObjectMake (ctx, importer_dir_class, file_path);
 	}
       return NULL;
@@ -512,6 +518,9 @@ seed_importer_handle_file (JSContextRef ctx,
 
 
   g_hash_table_insert (file_imports, file_path, global);
+  // Does leak...but it's a debug statement.
+  SEED_NOTE (IMPORTER, "Evaluated file, exception: %s", 
+	     *exception ? seed_exception_to_string (ctx, *exception) : "(null)");
   
   JSGlobalContextRelease ((JSGlobalContextRef) nctx);
   
