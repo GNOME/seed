@@ -1,6 +1,6 @@
 #!/usr/bin/env seed
 
-Seed.import_namespace("Gtk");
+Gtk = imports.gi.Gtk;
 Gtk.init(null, null);
 
 with(Gtk)
@@ -34,7 +34,7 @@ with(Gtk)
 	open_action.signal.activate.connect(function () { Seed.print("Open file"); });
 
 	save_action = new Action({name:"save", label: "Save",
-							  tooltip:"Save File", 
+							  tooltip:"Save File",
 							  stock_id:STOCK_SAVE});
 	save_action.set_accel_group(accels);
 	actions.add_action_with_accel(save_action);
@@ -59,7 +59,7 @@ with(Gtk)
 
 	window.resize(300, 300);
 	window.show_all();
-	
+
 	main();
 }
 
