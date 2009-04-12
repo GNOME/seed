@@ -408,6 +408,48 @@ seed_importer_get_search_path (JSContextRef ctx,
 }
 
 static JSObjectRef
+seed_importer_handle_native_module (JSContextRef ctx,
+				    const gchar *dir,
+				    const gchar *file,
+				    JSValueRef *exception)
+
+{
+  GModule *module;
+  JSObjectRef module_obj;
+  SeedModuleInitCallback init;
+  gchar *file_path = g_strconcat (dir, "/", file, NULL);
+
+  if (module_obj = g_hash_table_lookup (file_imports, file_path))
+    {
+      g_free (file_path);
+      return module_obj;
+    }
+  
+  module = g_module_open (file_path, G_MODULE_BIND_LAZY);
+  
+  if (!module)
+    {
+      gchar *mes = g_strdup_printf ("Error loading native module at %s: %s",
+				    file_path,
+				    g_module_error());
+      // Could be a better exception
+      seed_make_exception (ctx, exception, "ModuleError",
+			   mes);
+      g_free (file_path);
+      g_free (mes);
+      
+      return NULL;
+    }
+  g_module_symbol (module, "seed_module_init", (gpointer *) &init);
+  module_obj = (*init) (eng);
+  g_hash_table_insert (file_imports, file_path, module_obj);
+  
+  g_free (file_path);
+      
+  return module_obj;
+}
+
+static JSObjectRef
 seed_importer_handle_file (JSContextRef ctx,
 			   const gchar *dir,
 			   const gchar *file,
@@ -471,6 +513,7 @@ seed_importer_search (JSContextRef ctx,
 		      JSValueRef *exception)
 {
   GSList *path, *walk;
+  gchar *prop_as_lib = g_strconcat ("lib", prop, NULL);
   
   path = seed_importer_get_search_path (ctx, exception);
   
@@ -486,6 +529,8 @@ seed_importer_search (JSContextRef ctx,
 	{
 	  seed_make_exception_from_gerror (ctx, exception, e);
 	  g_error_free (e);
+	  g_free (prop_as_lib);
+	  seed_importer_free_search_path (path);
 	  
 	  return NULL;
 	}
@@ -493,6 +538,7 @@ seed_importer_search (JSContextRef ctx,
 	{
 	  guint i;
 	  gchar *mentry = g_strdup (entry);
+
 	  for (i = 0; i < strlen (mentry); i++)
 	    {
 	      if (mentry[i] == '.')
@@ -506,6 +552,19 @@ seed_importer_search (JSContextRef ctx,
 
 	      g_dir_close (dir);
 	      g_free (mentry);
+	      g_free (prop_as_lib);
+	      seed_importer_free_search_path (path);
+
+	      return ret;
+	    }
+	  else if (g_str_has_prefix (mentry, prop_as_lib) && g_str_has_suffix (entry, G_MODULE_SUFFIX))
+	    {
+	      JSObjectRef ret;
+	      
+	      ret = seed_importer_handle_native_module (ctx, walk->data, entry, exception);
+	      g_dir_close (dir);
+	      g_free (mentry);
+	      g_free (prop_as_lib);
 	      seed_importer_free_search_path (path);
 
 	      return ret;
@@ -519,6 +578,7 @@ seed_importer_search (JSContextRef ctx,
     }
   
   seed_importer_free_search_path (path);
+  g_free (prop_as_lib);
   return NULL;
 }
 

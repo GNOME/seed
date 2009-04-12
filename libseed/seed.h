@@ -237,7 +237,7 @@ void seed_create_function (SeedContext ctx,
 			   gchar * name, SeedFunctionCallback callback,
 			   SeedObject object);
 
-typedef void (*SeedModuleInitCallback) (SeedEngine * eng);
+typedef SeedObject (*SeedModuleInitCallback) (SeedEngine * eng);
 
 typedef void (*SeedObjectInitializeCallback) (SeedContext ctx,
 					      SeedObject object);

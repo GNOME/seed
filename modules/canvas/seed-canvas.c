@@ -962,7 +962,7 @@ seed_static_value canvas_properties[] = {
   {0, 0, 0, 0}
 };
 
-void
+SeedObject
 seed_module_init (SeedEngine * local_eng)
 {
   SeedObject canvas_constructor, pdf_constructor,
@@ -972,9 +972,6 @@ seed_module_init (SeedEngine * local_eng)
   eng = local_eng;
 
   namespace_ref = seed_make_object (eng->context, 0, 0);
-
-  seed_object_set_property (eng->context, eng->global, "Canvas",
-			    namespace_ref);
 
   canvas_class_def.class_name = "CairoCanvas";
   canvas_class_def.static_functions = canvas_funcs;
@@ -1007,5 +1004,6 @@ seed_module_init (SeedEngine * local_eng)
 			    svg_constructor);
   seed_object_set_property (eng->context, namespace_ref, "ImageCanvas",
 			    svg_constructor);
-
+  
+  return namespace_ref;
 }

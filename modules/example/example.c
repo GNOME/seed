@@ -1,6 +1,8 @@
 #include <seed.h>
 
-void seed_module_init(SeedEngine * eng)
+SeedObject
+seed_module_init(SeedEngine * eng)
 {
-	g_printf("Hello Seed Module World \n");
+  g_printf("Hello Seed Module World \n");
+  return seed_make_object (eng->context, NULL, NULL);
 }

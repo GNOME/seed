@@ -57,6 +57,6 @@ void seed_create_function (JSContextRef ctx, gchar * name,
 
 void seed_repl_expose (JSContextRef ctx, ...);
 
-typedef void (*SeedModuleInitCallback) (SeedEngine * eng);
+typedef JSObjectRef (*SeedModuleInitCallback) (SeedEngine * eng);
 
 #endif

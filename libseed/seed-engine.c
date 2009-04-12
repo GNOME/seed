@@ -909,11 +909,14 @@ seed_gi_import_namespace (JSContextRef ctx,
   extension = seed_try_load_extension (namespace);
   if (extension)
     {
+      JSObjectRef module_object;
       SeedModuleInitCallback init;
 
       g_module_symbol (extension, "seed_module_init", (gpointer *) & init);
 
-      (*init) (eng);
+      module_object = (*init) (eng);
+      
+      seed_object_set_property (ctx, eng->global, namespace, module_object);
 
       g_free (namespace);
       return JSValueMakeNull (ctx);
