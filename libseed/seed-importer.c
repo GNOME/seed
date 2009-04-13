@@ -540,18 +540,11 @@ seed_importer_handle_file (JSContextRef ctx,
 
   file_contents = JSStringCreateWithUTF8CString (walk);
   file_name = JSStringCreateWithUTF8CString (file);
-
   
   nctx = JSGlobalContextCreateInGroup (context_group, 0);
-  global = JSContextGetGlobalObject (nctx);
-  // Set some objects that need to be available globally.
-  // Needs to be elsewhere...so that there can be some consistency
-  seed_object_set_property (nctx, global, "imports", importer);
-  seed_object_set_property (nctx, global, "GType", seed_gtype_constructor);
-  seed_object_set_property (nctx, global, "Seed", seed_obj_ref);
-
+  seed_prepare_global_context (nctx);
+  
   JSEvaluateScript (nctx, file_contents, NULL, file_name, 0, exception);
-
 
   g_hash_table_insert (file_imports, file_path, global);
   // Does leak...but it's a debug statement.

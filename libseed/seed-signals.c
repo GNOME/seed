@@ -43,7 +43,7 @@ closure_invalidated (gpointer data, GClosure * c)
   JSContextRef ctx = JSGlobalContextCreateInGroup (context_group,
 						   0);
   SeedClosure *closure = (SeedClosure *) c;
-
+  
   SEED_NOTE (FINALIZATION, "Finalizing closure.");
 /*
   WebKit bug?
@@ -182,6 +182,8 @@ seed_signal_marshal_func (GClosure * closure,
 
   JSContextRef ctx = JSGlobalContextCreateInGroup (context_group,
 						   0);
+
+  seed_prepare_global_context (ctx);
 
   args = g_newa (JSValueRef, n_param_values + 1);
 

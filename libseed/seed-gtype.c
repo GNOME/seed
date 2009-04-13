@@ -193,6 +193,8 @@ seed_gtype_builtin_set_property (GObject * object,
   JSContextRef ctx = JSGlobalContextCreateInGroup (context_group, 0);
   gchar *name = g_strjoin (NULL, "_", spec->name, NULL);
   JSObjectRef jsobj = (JSObjectRef) seed_value_from_object (ctx, object, 0);
+  
+  seed_prepare_global_context (ctx);
 
   seed_object_set_property (ctx,
 			    jsobj,
@@ -215,6 +217,8 @@ seed_gtype_builtin_get_property (GObject * object,
   JSObjectRef jsobj = (JSObjectRef) seed_value_from_object (ctx, object, 0);
   JSValueRef jsval = seed_object_get_property (ctx, jsobj,
 					       name);
+
+  seed_prepare_global_context (ctx);
 
   seed_gvalue_from_seed_value (ctx, jsval, spec->value_type, value, 0);
 
@@ -261,6 +265,8 @@ seed_handle_class_init_closure (ffi_cif * cif,
 						   0);
   GObjectClass *klass = *(GObjectClass **) args[0];
 
+  seed_prepare_global_context (ctx);
+
   klass->get_property = seed_gtype_get_property;
   klass->set_property = seed_gtype_set_property;
 
@@ -299,6 +305,8 @@ seed_handle_instance_init_closure (ffi_cif * cif,
   JSObjectRef this_object;
 
   JSContextRef ctx = JSGlobalContextCreateInGroup (context_group, 0);
+
+  seed_prepare_global_context (ctx);
 
   jsargs = seed_make_pointer (ctx, *(gpointer *) args[1]);
   this_object =

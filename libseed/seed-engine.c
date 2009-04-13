@@ -55,6 +55,16 @@ static const GDebugKey seed_debug_keys[] = {
 };
 #endif /* SEED_ENABLE_DEBUG */
 
+void
+seed_prepare_global_context (JSContextRef ctx)
+{
+  JSObjectRef global = JSContextGetGlobalObject (ctx);
+  
+  seed_object_set_property (ctx, global, "imports", importer);
+  seed_object_set_property (ctx, global, "GType", seed_gtype_constructor);
+  seed_object_set_property (ctx, global, "Seed", seed_obj_ref);
+}
+
 static JSObjectRef
 seed_struct_constructor_invoked (JSContextRef ctx,
 				 JSObjectRef constructor,
@@ -1450,7 +1460,6 @@ seed_parse_args (int *argc, char ***argv)
 SeedEngine *
 seed_init (gint * argc, gchar *** argv)
 {
-  JSObjectRef seed_obj_ref;
   JSStringRef defaults_script;
 
   g_type_init ();

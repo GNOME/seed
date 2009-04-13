@@ -61,4 +61,6 @@ void seed_repl_expose (JSContextRef ctx, ...);
 
 typedef JSObjectRef (*SeedModuleInitCallback) (SeedEngine * eng);
 
+void seed_prepare_global_context (JSContextRef ctx);
+
 #endif

@@ -1233,10 +1233,11 @@ seed_object_set_property (JSContextRef ctx, JSObjectRef object,
 			  const gchar * name, JSValueRef value)
 {
   JSStringRef jname = JSStringCreateWithUTF8CString (name);
+  JSValueRef exception = NULL;
 
   if (value)
     {
-      JSObjectSetProperty (ctx, (JSObjectRef) object, jname, value, 0, 0);
+      JSObjectSetProperty (ctx, (JSObjectRef) object, jname, value, 0, &exception);
     }
 
   JSStringRelease (jname);

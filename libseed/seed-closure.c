@@ -50,6 +50,8 @@ seed_handle_closure (ffi_cif * cif, void *result, void **args, void *userdata)
   GArgument rarg;
   GArgument return_arg;
   JSContextRef ctx = JSGlobalContextCreateInGroup (context_group, 0);
+  
+  seed_prepare_global_context (ctx);
 
   SEED_NOTE (INVOCATION, "Invoking closure of type: %s \n",
 	     g_base_info_get_name ((GIBaseInfo *) privates->info));

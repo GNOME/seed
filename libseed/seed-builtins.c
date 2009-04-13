@@ -141,7 +141,7 @@ seed_scoped_include (JSContextRef ctx,
   /* just try current dir if no path set, or use the absolute path */
   if (!eng->search_path || g_path_is_absolute (import_file))
     g_file_get_contents (import_file, &buffer, 0, NULL);
-  else				/* A search path is set and path given is not absolute.  */
+  else	/* A search path is set and path given is not absolute.  */
     {
       for (i = 0; i < g_strv_length (eng->search_path); ++i)
 	{
@@ -192,6 +192,8 @@ seed_scoped_include (JSContextRef ctx,
 
   
   nctx = JSGlobalContextCreateInGroup (context_group, 0);
+  seed_prepare_global_context (nctx);
+
   JSEvaluateScript (nctx, file_contents, NULL, file_name, 0, exception);
   
   global = JSContextGetGlobalObject(nctx);
