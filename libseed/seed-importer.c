@@ -375,9 +375,6 @@ seed_gi_importer_do_namespace (JSContextRef ctx,
   
   g_hash_table_insert (gi_imports, g_strdup(namespace), namespace_ref);
   
-  // Protect with respect to our persistent context. 
-  // TODO: Investigate whether this is correct.
-
   jsextension = g_strdup_printf ("imports.extensions.%s",
 				namespace);
   extension_script = JSStringCreateWithUTF8CString (jsextension);
