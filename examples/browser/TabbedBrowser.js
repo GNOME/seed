@@ -3,6 +3,7 @@ WebKit = imports.gi.WebKit;
 
 BrowserSettings = imports.BrowserSettings;
 BrowserView = imports.BrowserView;
+BrowserTab = imports.BrowserTab;
 
 TabbedBrowser = new GType({
     parent: Gtk.Notebook.type,
@@ -23,7 +24,7 @@ TabbedBrowser = new GType({
 
         this.new_tab = function (url, new_web_view)
         {
-            var new_tab = new BrowserTab();
+            var new_tab = new BrowserTab.BrowserTab();
 
             if(new_web_view)
                 new_tab.set_web_view(new_web_view);
@@ -56,6 +57,6 @@ TabbedBrowser = new GType({
         };
 
         // Implementation
-        this.new_tab(home_page);
+        this.new_tab(BrowserSettings.home_page);
     }
 });
