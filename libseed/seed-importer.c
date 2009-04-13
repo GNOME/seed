@@ -376,7 +376,7 @@ seed_gi_importer_do_namespace (JSContextRef ctx,
   g_hash_table_insert (gi_imports, g_strdup(namespace), namespace_ref);
   
   jsextension = g_strdup_printf ("imports.extensions.%s",
-				namespace);
+				 namespace);
   extension_script = JSStringCreateWithUTF8CString (jsextension);
   JSEvaluateScript (ctx, extension_script, NULL, NULL, 0, NULL);
   JSStringRelease (extension_script);
@@ -393,6 +393,7 @@ seed_gi_importer_get_property (JSContextRef ctx,
 			       JSStringRef property_name, 
 			       JSValueRef *exception)
 {
+  JSObjectRef ret;
   guint len;
   gchar *prop;
   
@@ -400,14 +401,22 @@ seed_gi_importer_get_property (JSContextRef ctx,
   prop = g_alloca (len * sizeof (gchar));
   JSStringGetUTF8CString (property_name, prop, len);
   
+  SEED_NOTE (IMPORTER, "seed_gi_importer_get_property with %s", prop);
+  
   if (!strcmp(prop, "versions"))
     return gi_importer_versions;
   // Nasty hack
   else if (!strcmp(prop, "toString"))
     return 0;
+  if (!strcmp (prop, "valueOf")) // HACK
+    return NULL;
 
-  return seed_gi_importer_do_namespace (ctx, prop, exception);
-  
+
+  ret = seed_gi_importer_do_namespace (ctx, prop, exception);
+  SEED_NOTE (IMPORTER, "Result (%p) from attempting to import %s: %s",
+	     ret, prop, seed_value_to_string (ctx, ret, exception));
+
+  return ret;  
 }
 
 static void
@@ -794,6 +803,9 @@ void seed_initialize_importer(JSContextRef ctx,
   gi_importer_class = JSClassCreate (&gi_importer_class_def);
   gi_importer = JSObjectMake (ctx, gi_importer_class, NULL);
   gi_importer_versions = JSObjectMake (ctx, NULL, NULL);
+  
+  JSValueProtect (ctx, gi_importer);
+  JSValueProtect (ctx, gi_importer_versions);
   
   importer_dir_class = JSClassCreate (&importer_dir_class_def);
   
