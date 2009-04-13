@@ -327,8 +327,10 @@ seed_gi_importer_do_namespace (JSContextRef ctx,
   g_free (version);
   
   n = g_irepository_get_n_infos (NULL, namespace);
-  namespace_ref = JSObjectMake (ctx, NULL, NULL);
-  JSValueProtect (ctx, namespace_ref);
+  
+  namespace_ref = JSObjectMake (eng->context, NULL, NULL);
+
+  JSValueProtect (eng->context, namespace_ref);
   
   for (i = 0; i < n; i++)
     {
@@ -368,6 +370,9 @@ seed_gi_importer_do_namespace (JSContextRef ctx,
     }
   
   g_hash_table_insert (gi_imports, g_strdup(namespace), namespace_ref);
+  
+  // Protect with respect to our persistent context. 
+  // TODO: Investigate whether this is correct.
 
   jsextension = g_strdup_printf ("imports.extensions.%s",
 				namespace);
@@ -543,6 +548,9 @@ seed_importer_handle_file (JSContextRef ctx,
   
   nctx = JSGlobalContextCreateInGroup (context_group, 0);
   seed_prepare_global_context (nctx);
+  
+  global = JSContextGetGlobalObject (nctx);
+  JSValueProtect (eng->context, global);
   
   JSEvaluateScript (nctx, file_contents, NULL, file_name, 0, exception);
 

@@ -2,6 +2,10 @@ Gtk = imports.gi.Gtk;
 WebKit = imports.gi.WebKit;
 
 Seed.print("In BrowserView.js imports: " + imports);
+Seed.print("imports.gi: " + imports.gi);
+Seed.print("imports.gi.WebKit: " + imports.gi.WebKit);
+
+Seed.quit();
 
 BrowserView = new GType({
     parent: WebKit.WebView.type,
