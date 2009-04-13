@@ -315,7 +315,6 @@ seed_gi_importer_do_namespace (JSContextRef ctx,
     {
       SEED_NOTE (IMPORTER, "Using existing namespace ref (%p) for %s",
 		 namespace_ref, namespace);
-      JSValueProtect (ctx, namespace_ref);
       return namespace_ref;
     }
   
