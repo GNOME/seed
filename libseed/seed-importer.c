@@ -313,6 +313,9 @@ seed_gi_importer_do_namespace (JSContextRef ctx,
   
   if (namespace_ref = g_hash_table_lookup (gi_imports, namespace))
     {
+      SEED_NOTE (IMPORTER, "Using existing namespace ref (%p) for %s",
+		 namespace_ref, namespace);
+      JSValueProtect (ctx, namespace_ref);
       return namespace_ref;
     }
   
@@ -328,9 +331,11 @@ seed_gi_importer_do_namespace (JSContextRef ctx,
   
   n = g_irepository_get_n_infos (NULL, namespace);
   
-  namespace_ref = JSObjectMake (eng->context, NULL, NULL);
+  namespace_ref = JSObjectMake (ctx, NULL, NULL);
+  SEED_NOTE (IMPORTER, "Constructing namespace ref (%p) for %s",
+	     namespace_ref, namespace);
 
-  JSValueProtect (eng->context, namespace_ref);
+  JSValueProtect (ctx, namespace_ref);
   
   for (i = 0; i < n; i++)
     {
