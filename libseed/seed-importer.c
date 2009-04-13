@@ -16,6 +16,40 @@ JSClassRef importer_dir_class;
 GHashTable *gi_imports;
 GHashTable *file_imports;
 
+/*
+ * Some high level documentation of the importer object.
+ * > imports
+ *   - An imports object is declared at the top level of every context
+ *   > gi
+ *      - The imports object has a special property named gi
+ *      - gi.NameSpace represents the namespace object for a specific
+ *        girepository namespace.
+ *      - The first attempt to access gi.Foo creates the object, all
+ *        subsequent attempts access the SAME object.
+ *      > versions
+ *        - the gi.versions object can be used to set versions of gi imports
+ *        - gi.versions.NameSpace being set to "0.8" will cause NameSpace to
+ *          require 0.8
+ *   > searchPath
+ *      - Should be an array, containing a list of paths to be searched for
+ *        importing javascript files and native modules.
+ *      - Default is set in Seed.js
+ *      - If set to an invalid value, this will not become evident until the
+ *        next time the imports object is used, at which point it will throw an
+ *        exception
+ *   > Accessing any other property (call it prop) will proceed as follows
+ *      - Look in the search path for a file prop.*
+ *      - If we find a file prop.*, see if it is a regular file or directory
+ *      - If it is a directory, return a directory object that behaves as does
+ *        the toplevel imports object, with the searchPath being exclusively
+ *        that directory
+ *      - If it is a file and ends in G_MODULE_SUFFIX, attempt to load it as a
+ *        native module and return the module object.
+ *      - If it is a file and does not end in G_MODULE_SUFFIX, evaluate it as a
+ *        JavaScript file in a NEW global context, and return the global object
+ *        for that context.
+ */
+
 static void
 seed_gi_importer_handle_function (JSContextRef ctx,
 				  JSObjectRef namespace_ref,

@@ -1,5 +1,5 @@
 #!/usr/bin/env seed
-Seed.import_namespace("Canvas");
+Canvas = imports.canvas;
 
 function drawSpirograph(ctx,R,r,O){
   var x1 = R-O;
@@ -9,9 +9,9 @@ function drawSpirograph(ctx,R,r,O){
   ctx.moveTo(x1,y1);
   do {
     if (i>20000) break;
-    var x2 = 
+    var x2 =
       (R+r)*Math.cos(i*Math.PI/72) - (r+O)*Math.cos(((R+r)/r)*(i*Math.PI/72))
-      var y2 = 
+      var y2 =
       (R+r)*Math.sin(i*Math.PI/72) - (r+O)*Math.sin(((R+r)/r)*(i*Math.PI/72))
       ctx.lineTo(x2,y2);
     x1 = x2;
@@ -26,7 +26,7 @@ function test10(ctx)
 {
   for (i=0;i<6;i++){
     for (j=0;j<6;j++){
-      ctx.fillStyle = 'rgb(' + Math.floor(255-42.5*i) + ',' + 
+      ctx.fillStyle = 'rgb(' + Math.floor(255-42.5*i) + ',' +
 	Math.floor(255-42.5*j) + ',0)';
       ctx.fillRect(j*25,i*25,25,25);
     }
@@ -34,7 +34,7 @@ function test10(ctx)
   ctx.translate(150, 0);
   for (i=0;i<6;i++){
     for (j=0;j<6;j++){
-      ctx.strokeStyle = 'rgb(0,' + Math.floor(255-42.5*i) + ',' + 
+      ctx.strokeStyle = 'rgb(0,' + Math.floor(255-42.5*i) + ',' +
 	Math.floor(255-42.5*j) + ')';
       ctx.beginPath();
       ctx.arc(12.5+j*25,12.5+i*25,10,0,Math.PI*2,true);
@@ -55,10 +55,10 @@ function test11(ctx)
   ctx.fillStyle = '#F30';
   ctx.fillRect(75,75,75,75);
   ctx.fillStyle = '#FFF';
-		
+
   // set transparency value
   ctx.globalAlpha = 0.2;
-		
+
   // Draw semi transparent circles
   for (i=0;i<7;i++){
     ctx.beginPath();
@@ -77,7 +77,7 @@ function test12(ctx)
   ctx.fillRect(0,75,150,37.5);
   ctx.fillStyle = 'rgb(255,51,0)';
   ctx.fillRect(0,112.5,150,37.5);
-		
+
   // Draw semi transparent rectangles
   for (i=0;i<10;i++){
     ctx.fillStyle = 'rgba(255,255,255,'+(i+1)/10+')';
@@ -101,7 +101,7 @@ function test13(ctx)
 function test14(ctx)
 {
   var lineCap = ['butt','round','square'];
-	
+
   ctx.strokeStyle = '#09f';
   ctx.beginPath();
   ctx.moveTo(10,10);
@@ -109,7 +109,7 @@ function test14(ctx)
   ctx.moveTo(10,140);
   ctx.lineTo(140,140);
   ctx.stroke();
-	
+
   // Draw lines
   ctx.strokeStyle = "rgb(0,0,0)";
   for (i=0;i<lineCap.length;i++){
@@ -196,7 +196,7 @@ function test1(ctx)
 {
   ctx.fillStyle = "rgb(200,0,0)";
   ctx.fillRect (10, 10, 55, 50);
-	
+
   ctx.fillStyle = "rgba(0, 0, 200, 0.5)";
   ctx.fillRect (30, 30, 55, 50);
 }
@@ -239,7 +239,7 @@ function test5(ctx)
   ctx.lineTo(105,25);
   ctx.lineTo(25,105);
   ctx.fill();
-		
+
   // Stroked triangle
   ctx.beginPath();
   ctx.moveTo(125,125);
@@ -247,7 +247,7 @@ function test5(ctx)
   ctx.lineTo(45,125);
   ctx.closePath();
   ctx.stroke();
-		
+
 }
 
 function test6(ctx)
@@ -261,9 +261,9 @@ function test6(ctx)
       var startAngle     = 0;                     // Starting point on circle
       var endAngle       = Math.PI+(Math.PI*j)/2; // End point on circle
       var anticlockwise  = i%2==0 ? false : true; // clockwise or anticlockwise
-				
+
       ctx.arc(x,y,radius,startAngle,endAngle, anticlockwise);
-				
+
       if (i>1){
 	ctx.fill();
       } else {
@@ -271,7 +271,7 @@ function test6(ctx)
       }
     }
   }
-		
+
 }
 
 function test7(ctx)
@@ -372,8 +372,8 @@ function test9(ctx)
   ctx.fill();
 }
 
-tests = [test1, test2, test3, test4, 
-	 test5, test6, test7, test8, 
+tests = [test1, test2, test3, test4,
+	 test5, test6, test7, test8,
 	 test9, test10, test11, test12,
 	 test13, test14, test15, test16];
 
