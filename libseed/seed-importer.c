@@ -510,6 +510,8 @@ seed_importer_handle_file (JSContextRef ctx,
   
   nctx = JSGlobalContextCreateInGroup (context_group, 0);
   global = JSContextGetGlobalObject (nctx);
+  // Set some objects that need to be available globally.
+  // Needs to be elsewhere...so that there can be some consistency
   seed_object_set_property (nctx, global, "imports", importer);
   seed_object_set_property (nctx, global, "GType", seed_gtype_constructor);
   seed_object_set_property (nctx, global, "Seed", seed_obj_ref);
