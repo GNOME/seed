@@ -70,6 +70,20 @@ seed_gobject_signal_connect (JSContextRef ctx,
 
   g_signal_query (g_signal_lookup (signal_name, G_OBJECT_TYPE (on_obj)),
 		  &query);
+#ifdef SEED_ENABLE_DEBUG
+  {
+    guint function_arity = 
+      seed_value_to_uint (ctx,
+			  seed_object_get_property(ctx, func, "length"),
+			  NULL);
+    if (function_arity != query.n_params)
+      {
+	SEED_MARK();
+	SEED_NOTE(SIGNAL, "Connecting signal: %s. Function has arity %d, signal expects %d", query.signal_name, function_arity, query.n_params);
+	SEED_MARK();
+      }
+  }
+#endif
 
   closure = g_closure_new_simple (sizeof (SeedClosure), 0);
   g_closure_add_finalize_notifier (closure, 0, closure_invalidated);
