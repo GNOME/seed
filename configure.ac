@@ -290,6 +290,7 @@ modules/sqlite/Makefile
 modules/canvas/Makefile
 modules/readline/Makefile
 modules/Multiprocessing/Makefile
+modules/os/Makefile
 ])
 AC_OUTPUT
 

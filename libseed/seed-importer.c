@@ -50,6 +50,10 @@ GHashTable *file_imports;
  *        for that context.
  */
 
+/* 
+* Handle definition of toplevel functions in a namespace.
+* i.e. Gtk.main
+*/
 static void
 seed_gi_importer_handle_function (JSContextRef ctx,
 				  JSObjectRef namespace_ref,
@@ -61,6 +65,12 @@ seed_gi_importer_handle_function (JSContextRef ctx,
   g_base_info_ref ((GIBaseInfo *) info);
 }
 
+/*
+ * Handle definition of enums in a namespace.
+ * Each enum class gets an object containing
+ * a value for each member, all in uppercase
+ * i.e. Gtk.WindowType.NORMAL
+ */
 static void
 seed_gi_importer_handle_enum (JSContextRef ctx,
 			      JSObjectRef namespace_ref,
@@ -105,6 +115,11 @@ seed_gi_importer_handle_enum (JSContextRef ctx,
     }
 }
 
+/*
+ * Handle setting up the prototype and constructor for a GObject type
+ * Namespace.Type will be the constructor and Namespace.Type.prototype is
+ * the prototype object. Namespace.Type.type will be the GType.
+ */
 static void
 seed_gi_importer_handle_object (JSContextRef ctx,
 				JSObjectRef namespace_ref,
@@ -175,6 +190,10 @@ seed_gi_importer_handle_object (JSContextRef ctx,
     }
 }
 
+/*
+ * Set up prototype and constructor for structs. Same semantics as objects except
+ * for the type.
+ */
 static void
 seed_gi_importer_handle_struct (JSContextRef ctx,
 				JSObjectRef namespace_ref,
@@ -261,6 +280,9 @@ seed_gi_importer_handle_callback (JSContextRef ctx,
 			    (JSValueRef) callback_ref);
 }
 
+/* 
+ * Define constants toplevel. Uses the casing as in the typelib
+ */
 static void
 seed_gi_importer_handle_constant (JSContextRef ctx,
 				  JSObjectRef namespace_ref,
@@ -764,7 +786,7 @@ JSClassDefinition gi_importer_class_def = {
   NULL,                         /* Initialize */
   NULL,				/* Finalize */
   NULL,				/* Has Property */
-  seed_gi_importer_get_property,	/* Get Property */
+  seed_gi_importer_get_property,/* Get Property */
   NULL,				/* Set Property */
   NULL,				/* Delete Property */
   NULL,				/* Get Property Names */
