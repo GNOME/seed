@@ -245,6 +245,22 @@ seed_os_getpgid (SeedContext ctx,
   return seed_value_from_long (ctx, (glong) getpgid(pid), exception);
 }
 
+SeedValue
+seed_os_getpgrp (SeedContext ctx,
+		 SeedObject function,
+		 SeedObject this_object,
+		 size_t argument_count,
+		 const SeedValue arguments[], 
+		 SeedException * exception)
+{
+  if (argument_count != 0)
+    {
+      EXPECTED_EXCEPTION("os.getpgrp", "no arguments");
+    }
+  
+  return seed_value_from_long (ctx, (glong) getpgrp(), exception);
+}
+
 seed_static_function os_funcs[] = {
   {"chdir", seed_os_chdir, 0},
   {"fchdir", seed_os_fchdir, 0},
@@ -255,7 +271,8 @@ seed_static_function os_funcs[] = {
   {"getgid", seed_os_getgid, 0},
   {"getuid", seed_os_getuid, 0},
   {"getlogin", seed_os_getlogin, 0},
-  {"getpgid", seed_os_getpgid, 0}
+  {"getpgid", seed_os_getpgid, 0},
+  {"getpgrp", seed_os_getpgrp, 0}
 };
 
 SeedObject
