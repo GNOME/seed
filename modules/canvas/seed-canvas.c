@@ -217,8 +217,8 @@ seed_canvas_parse_color (SeedCanvasColor *color,
 	a = 0xff;
       
       color->r = r / 255.0;
-      color->g = r / 255.0;
-      color->b = r / 255.0;
+      color->g = g / 255.0;
+      color->b = b / 255.0;
       color->a = a / 255.0;
 
       return;
@@ -302,7 +302,6 @@ seed_canvas_update_fill_style (SeedContext ctx,
   GET_CR;
   
   gchar *fill_style = seed_value_to_string (ctx, value, e);
-  g_printf("Updating style to: %s \n", fill_style);
 
   if (!priv->styles)
     {
@@ -427,7 +426,6 @@ void
 seed_canvas_apply_fill_style (SeedCanvasStyle *style,
 				cairo_t * cr)
 {
-  g_printf("Applying fill style: %f %f %f %f \n", style->fill.r, style->fill.g, style->fill.b, style->fill.a * style->global_opacity);
   cairo_set_source_rgba(cr, 
 			style->fill.r,
 			style->fill.g,
