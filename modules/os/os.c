@@ -106,7 +106,6 @@ seed_os_getegid (SeedContext ctx,
 		 const SeedValue arguments[], 
 		 SeedException * exception)
 {
-  SeedValue seed_ret;
   gid_t ret;
   
   if (argument_count != 0)
@@ -126,7 +125,6 @@ seed_os_geteuid (SeedContext ctx,
 		 const SeedValue arguments[], 
 		 SeedException * exception)
 {
-  SeedValue seed_ret;
   uid_t ret;
   
   if (argument_count != 0)
@@ -151,7 +149,7 @@ seed_os_getgid (SeedContext ctx,
   
   if (argument_count != 0)
     {
-      EXPECTED_EXCEPTION("os.getegid", "no arguments");
+      EXPECTED_EXCEPTION("os.getgid", "no arguments");
     }
   ret = getgid ();
 
@@ -160,18 +158,17 @@ seed_os_getgid (SeedContext ctx,
 
 SeedValue
 seed_os_getuid (SeedContext ctx,
-		 SeedObject function,
-		 SeedObject this_object,
-		 size_t argument_count,
-		 const SeedValue arguments[], 
-		 SeedException * exception)
+		SeedObject function,
+		SeedObject this_object,
+		size_t argument_count,
+		const SeedValue arguments[], 
+		SeedException * exception)
 {
-  SeedValue seed_ret;
   uid_t ret;
   
   if (argument_count != 0)
     {
-      EXPECTED_EXCEPTION("os.geteuid", "no arguments");
+      EXPECTED_EXCEPTION("os.getuid", "no arguments");
     }
   ret = getuid ();
 
@@ -193,7 +190,7 @@ seed_os_getgroups (SeedContext ctx,
   
   if (argument_count != 0)
     {
-      EXPECTED_EXCEPTION("os.geteuid", "no arguments");
+      EXPECTED_EXCEPTION("os.getgroups", "no arguments");
     }
   num_groups = getgroups(0, NULL);
   group_list = g_alloca (num_groups * sizeof(gid_t));
@@ -214,6 +211,22 @@ seed_os_getgroups (SeedContext ctx,
   return ret;
 }
 
+SeedValue
+seed_os_getlogin (SeedContext ctx,
+		  SeedObject function,
+		  SeedObject this_object,
+		  size_t argument_count,
+		  const SeedValue arguments[], 
+		  SeedException * exception)
+{
+  if (argument_count != 0)
+    {
+      EXPECTED_EXCEPTION("os.geteuid", "no arguments");
+    }
+
+  return seed_value_from_string (ctx, getlogin(), exception);
+}
+
 seed_static_function os_funcs[] = {
   {"chdir", seed_os_chdir, 0},
   {"fchdir", seed_os_fchdir, 0},
@@ -223,7 +236,7 @@ seed_static_function os_funcs[] = {
   {"geteuid", seed_os_geteuid, 0},
   {"getgid", seed_os_getgid, 0},
   {"getuid", seed_os_getuid, 0},
-  {"getgroups", seed_os_getgroups, 0}
+  {"getlogin", seed_os_getlogin, 0}
 };
 
 SeedObject
