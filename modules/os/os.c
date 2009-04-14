@@ -1,6 +1,7 @@
 #include <seed.h>
 #define _GNU_SOURCE
 #include <unistd.h>
+#include <stdio.h>
 
 SeedObject os_namespace;
 
@@ -74,10 +75,33 @@ seed_os_getcwd (SeedContext ctx,
   return seed_ret;
 }
 
+SeedValue
+seed_os_ctermid (SeedContext ctx,
+		 SeedObject function,
+		 SeedObject this_object,
+		 size_t argument_count,
+		 const SeedValue arguments[], 
+		 SeedException * exception)
+{
+  SeedValue seed_ret;
+  gchar *ret;
+  
+  if (argument_count != 0)
+    {
+      EXPECTED_EXCEPTION("os.getcwd", "no arguments");
+    }
+  // ctermid returns a static buffer
+  ret = ctermid (NULL);
+  seed_ret = seed_value_from_string (ctx, ret, exception);
+  
+  return seed_ret;
+}
+
 seed_static_function os_funcs[] = {
   {"chdir", seed_os_chdir, 0},
   {"fchdir", seed_os_fchdir, 0},
-  {"getcwd", seed_os_getcwd, 0}
+  {"getcwd", seed_os_getcwd, 0},
+  {"ctermid", seed_os_ctermid, 0}
 };
 
 SeedObject
