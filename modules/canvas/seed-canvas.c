@@ -281,6 +281,7 @@ seed_canvas_update_stroke_style (SeedContext ctx,
       priv->styles = g_slist_prepend(priv->styles, g_new0(SeedCanvasStyle, 1));
       ((SeedCanvasStyle *) priv->styles->data)->global_opacity = 1;
       ((SeedCanvasStyle *) priv->styles->data)->fill.a = 1;
+      ((SeedCanvasStyle *) priv->styles->data)->operator = CAIRO_OPERATOR_OVER;
     }
   
   style = (SeedCanvasStyle *)priv->styles->data;
@@ -309,6 +310,7 @@ seed_canvas_update_fill_style (SeedContext ctx,
       priv->styles = g_slist_prepend(priv->styles, g_new0(SeedCanvasStyle, 1));
       ((SeedCanvasStyle *) priv->styles->data)->global_opacity = 1;
       ((SeedCanvasStyle *) priv->styles->data)->stroke.a = 1;
+      ((SeedCanvasStyle *) priv->styles->data)->operator = CAIRO_OPERATOR_OVER;
     }
   
   style = (SeedCanvasStyle *)priv->styles->data;
@@ -338,6 +340,7 @@ seed_canvas_update_global_alpha (SeedContext ctx,
       ((SeedCanvasStyle *) priv->styles->data)->global_opacity = 1;
       ((SeedCanvasStyle *) priv->styles->data)->stroke.a = 1;
       ((SeedCanvasStyle *) priv->styles->data)->fill.a = 1;
+      ((SeedCanvasStyle *) priv->styles->data)->operator = CAIRO_OPERATOR_OVER;
     }
 
   style = (SeedCanvasStyle *)priv->styles->data;
@@ -363,6 +366,7 @@ seed_canvas_update_global_composite (SeedContext ctx,
       ((SeedCanvasStyle *) priv->styles->data)->global_opacity = 1;
       ((SeedCanvasStyle *) priv->styles->data)->stroke.a = 1;
       ((SeedCanvasStyle *) priv->styles->data)->fill.a = 1;
+      ((SeedCanvasStyle *) priv->styles->data)->operator = CAIRO_OPERATOR_OVER;
     }
 
   style = (SeedCanvasStyle *)priv->styles->data;
@@ -393,6 +397,8 @@ seed_canvas_update_global_composite (SeedContext ctx,
     style->operator = CAIRO_OPERATOR_ADD;
   else
     style->operator = CAIRO_OPERATOR_OVER;
+  
+  cairo_set_operator (cr, style->operator);
   
   g_free (composite_op);
   
@@ -473,10 +479,7 @@ seed_canvas_apply_stroke_style (SeedCanvasStyle *style,
 			style->stroke.g,
 			style->stroke.b,
 			style->stroke.a * style->global_opacity);
-  if (style->operator)
-    cairo_set_operator (cr, style->operator);
-  else
-    cairo_set_operator (cr, CAIRO_OPERATOR_OVER);
+  cairo_set_operator (cr, style->operator);
 }
 
 void
@@ -488,11 +491,7 @@ seed_canvas_apply_fill_style (SeedCanvasStyle *style,
 			style->fill.g,
 			style->fill.b,
 			style->fill.a * style->global_opacity);
-  if (style->operator)
-    cairo_set_operator (cr, style->operator);
-  else
-    cairo_set_operator (cr, CAIRO_OPERATOR_OVER);
-      
+  cairo_set_operator (cr, style->operator);
 }
 
 SeedValue

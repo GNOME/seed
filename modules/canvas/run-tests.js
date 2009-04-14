@@ -377,25 +377,27 @@ var compositeTypes = [
   'destination-over','destination-in','destination-out','destination-atop',
   'lighter','darker','copy','xor'
 ];
-function test17(ctx){
-  for (var i=0;i<3;i++){
-    for (var j = 0;j<4;j++){
-        // draw rectangle
-      ctx.fillStyle = "#09f";
-      ctx.fillRect(70*i,70*j,40,40);
+  function test17(ctx){
+    for (var i=0;i<3;i++){
+      for (var j = 0;j<4;j++){
+          // draw rectangle
+	ctx.save();
+	ctx.fillStyle = "#09f";
+	ctx.fillRect(70*i,70*j,40,40);
 
-      // set composite property
-      Seed.print(compositeTypes[i*4+j])
-      ctx.globalCompositeOperation = compositeTypes[i*4+j];
+	// set composite property
+//	Seed.print(compositeTypes[i*4+j])
+	ctx.globalCompositeOperation = compositeTypes[i*4+j];
 
-      // draw circle
-      ctx.fillStyle = "#f30";
-      ctx.beginPath();
-      ctx.arc(35+70*i,35+70*j,17,0,Math.PI*2,true);
-      ctx.fill();
-	}
+	// draw circle
+	ctx.fillStyle = "#f30";
+	ctx.beginPath();
+	ctx.arc(30+70*i,30+70*j,17,0,Math.PI*2,true);
+	ctx.fill();
+	ctx.restore();
+      }
+    }
   }
-}
 
 
 tests = [test1, test2, test3, test4,
