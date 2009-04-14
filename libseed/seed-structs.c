@@ -511,6 +511,7 @@ seed_union_prototype (JSContextRef ctx, GIBaseInfo * info)
   if (!proto)
     {
       proto = JSObjectMake (ctx, 0, 0);
+      JSValueProtect (eng->context, proto);
 
       n_methods = g_union_info_get_n_methods ((GIUnionInfo *) info);
       for (i = 0; i < n_methods; i++)
@@ -596,6 +597,7 @@ seed_struct_prototype (JSContextRef ctx, GIBaseInfo * info)
   if (!proto)
     {
       proto = JSObjectMake (ctx, 0, 0);
+      JSValueProtect (eng->context, proto);
 
       n_methods = g_struct_info_get_n_methods ((GIStructInfo *) info);
       for (i = 0; i < n_methods; i++)
