@@ -261,6 +261,38 @@ seed_os_getpgrp (SeedContext ctx,
   return seed_value_from_long (ctx, (glong) getpgrp(), exception);
 }
 
+SeedValue
+seed_os_getpid (SeedContext ctx,
+		SeedObject function,
+		SeedObject this_object,
+		size_t argument_count,
+		const SeedValue arguments[], 
+		SeedException * exception)
+{
+  if (argument_count != 0)
+    {
+      EXPECTED_EXCEPTION("os.getpid", "no arguments");
+    }
+  
+  return seed_value_from_long (ctx, (glong) getpid(), exception);
+}
+
+SeedValue
+seed_os_getppid (SeedContext ctx,
+		SeedObject function,
+		SeedObject this_object,
+		size_t argument_count,
+		const SeedValue arguments[], 
+		SeedException * exception)
+{
+  if (argument_count != 0)
+    {
+      EXPECTED_EXCEPTION("os.getpid", "no arguments");
+    }
+  
+  return seed_value_from_long (ctx, (glong) getppid(), exception);
+}
+
 seed_static_function os_funcs[] = {
   {"chdir", seed_os_chdir, 0},
   {"fchdir", seed_os_fchdir, 0},
@@ -272,7 +304,9 @@ seed_static_function os_funcs[] = {
   {"getuid", seed_os_getuid, 0},
   {"getlogin", seed_os_getlogin, 0},
   {"getpgid", seed_os_getpgid, 0},
-  {"getpgrp", seed_os_getpgrp, 0}
+  {"getpgrp", seed_os_getpgrp, 0},
+  {"getpid", seed_os_getpid, 0},
+  {"getppid", seed_os_getppid, 0}
 };
 
 SeedObject
