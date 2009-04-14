@@ -288,7 +288,7 @@ seed_canvas_update_stroke_style (SeedContext ctx,
   
   g_free(stroke_style);
   
-  return FALSE;
+  return TRUE;
 }
 
 
@@ -302,6 +302,7 @@ seed_canvas_update_fill_style (SeedContext ctx,
   GET_CR;
   
   gchar *fill_style = seed_value_to_string (ctx, value, e);
+  g_printf("Updating style to: %s \n", fill_style);
 
   if (!priv->styles)
     {
@@ -311,12 +312,13 @@ seed_canvas_update_fill_style (SeedContext ctx,
     }
   
   style = (SeedCanvasStyle *)priv->styles->data;
+
   
   seed_canvas_parse_color (&style->fill, fill_style);
   
   g_free(fill_style);
   
-  return FALSE;
+  return TRUE;
 }
 
 gboolean
@@ -342,7 +344,7 @@ seed_canvas_update_global_alpha (SeedContext ctx,
   
   style->global_opacity = global_alpha;
   
-  return FALSE;
+  return TRUE;
 }
 
 gboolean
@@ -425,6 +427,7 @@ void
 seed_canvas_apply_fill_style (SeedCanvasStyle *style,
 				cairo_t * cr)
 {
+  g_printf("Applying fill style: %f %f %f %f \n", style->fill.r, style->fill.g, style->fill.b, style->fill.a * style->global_opacity);
   cairo_set_source_rgba(cr, 
 			style->fill.r,
 			style->fill.g,
@@ -894,7 +897,7 @@ seed_canvas_showpage (SeedContext ctx,
 		      SeedObject this_object,
 		      size_t argument_count,
 		      const SeedValue arguments[], SeedException * exception)
-{
+ {
   GET_CR;
   cairo_show_page (cr);
 
