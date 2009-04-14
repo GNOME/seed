@@ -95,10 +95,6 @@ main (gint argc, gchar ** argv)
 
   seed_engine_set_search_path (eng, DEFAULT_PATH);
 
-  if (!g_irepository_require
-      (g_irepository_get_default (), "GObject", 0, 0, 0))
-    g_critical ("Unable to import GObject repository");
-
   if (argc == 1)
     seed_repl (argc, argv);
   else
