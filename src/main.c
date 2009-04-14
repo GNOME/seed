@@ -35,7 +35,7 @@ seed_repl (gint argc, gchar ** argv)
 
   script =
     seed_make_script (eng->context,
-					  "readline = imports.readline"
+					  "readline = imports.readline;"
 					  "while(1) { try { Seed.print(eval("
 					  "readline.readline(\"> \"))); } catch(e) {"
 					  "Seed.print(e.name + \" \" + e.message);}}", NULL, 0);
