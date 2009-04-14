@@ -253,9 +253,44 @@ seed_gtype_get_property (GObject * object,
     }
 }
 
+static GIBaseInfo *
+seed_get_class_info_for_type (GType type)
+{
+  GType parent;
+  GIBaseInfo *object_info;
+  
+  while (type = g_type_parent (type))
+    {
+      object_info = g_irepository_find_by_gtype (NULL, type);
+      if (object_info)
+	{
+	  return
+	    (GIBaseInfo *)g_object_info_get_class_struct 
+	                  ((GIObjectInfo *)object_info);
+	}
+      g_base_info_unref (object_info);
+    }
+  return NULL;
+}
+
+static void 
+seed_attach_methods_to_class_object (JSContextRef ctx,
+				     JSObjectRef object,
+				     JSValueRef *exception)
+{
+  seed_create_function (ctx, "c_install_property",
+			&seed_property_method_invoked, object);
+  seed_create_function (ctx, "install_signal",
+			&seed_gsignal_method_invoked, object);
+}
+
+
+
 static void
 seed_handle_class_init_closure (ffi_cif * cif,
-				void *result, void **args, void *userdata)
+				void *result, 
+				void **args, 
+				void *userdata)
 {
   JSObjectRef function = (JSObjectRef) userdata;
   JSValueRef jsargs[2];
@@ -264,6 +299,7 @@ seed_handle_class_init_closure (ffi_cif * cif,
   JSContextRef ctx = JSGlobalContextCreateInGroup (context_group,
 						   0);
   GObjectClass *klass = *(GObjectClass **) args[0];
+  GIBaseInfo *class_info;
 
   seed_prepare_global_context (ctx);
 
@@ -271,9 +307,17 @@ seed_handle_class_init_closure (ffi_cif * cif,
   klass->set_property = seed_gtype_set_property;
 
   type = (GType) JSObjectGetPrivate (*(JSObjectRef *) args[1]);
-  jsargs[0] = seed_make_struct (ctx, *(gpointer *) args[0], objectclass_info);
+  
+  class_info = seed_get_class_info_for_type (type);
+  
+  jsargs[0] = seed_make_struct (ctx, *(gpointer *) args[0], class_info);
   jsargs[1] = seed_gobject_get_prototype_for_gtype (type);
-
+  
+  seed_attach_methods_to_class_object (ctx, (JSObjectRef)jsargs[0], 
+				       &exception);
+  
+  g_base_info_unref ((GIBaseInfo *) class_info);
+  
   SEED_NOTE (GTYPE, "Marshalling class init closure for type: %s",
 	     g_type_name (type));
 
@@ -557,11 +601,6 @@ seed_define_gtype_functions (JSContextRef ctx)
 						 "GObject", "ObjectClass");
 
   proto = seed_struct_prototype (ctx, objectclass_info);
-
-  seed_create_function (ctx, "c_install_property",
-			&seed_property_method_invoked, proto);
-  seed_create_function (ctx, "install_signal",
-			&seed_gsignal_method_invoked, proto);
 
   paramspec_info = g_irepository_find_by_name (NULL, "GObject", "ParamSpec");
   proto = seed_struct_prototype (ctx, paramspec_info);
