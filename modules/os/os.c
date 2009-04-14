@@ -221,10 +221,28 @@ seed_os_getlogin (SeedContext ctx,
 {
   if (argument_count != 0)
     {
-      EXPECTED_EXCEPTION("os.geteuid", "no arguments");
+      EXPECTED_EXCEPTION("os.getlogin", "no arguments");
     }
 
   return seed_value_from_string (ctx, getlogin(), exception);
+}
+
+SeedValue
+seed_os_getpgid (SeedContext ctx,
+		 SeedObject function,
+		 SeedObject this_object,
+		 size_t argument_count,
+		 const SeedValue arguments[], 
+		 SeedException * exception)
+{
+  pid_t pid;
+  if (argument_count != 1)
+    {
+      EXPECTED_EXCEPTION("os.getpgid", "no arguments");
+    }
+  pid = (pid_t) seed_value_to_long (ctx, arguments[0], exception);
+  
+  return seed_value_from_long (ctx, (glong) getpgid(pid), exception);
 }
 
 seed_static_function os_funcs[] = {
@@ -236,7 +254,8 @@ seed_static_function os_funcs[] = {
   {"geteuid", seed_os_geteuid, 0},
   {"getgid", seed_os_getgid, 0},
   {"getuid", seed_os_getuid, 0},
-  {"getlogin", seed_os_getlogin, 0}
+  {"getlogin", seed_os_getlogin, 0},
+  {"getpgid", seed_os_getpgid, 0}
 };
 
 SeedObject
