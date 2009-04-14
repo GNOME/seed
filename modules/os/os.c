@@ -97,11 +97,53 @@ seed_os_ctermid (SeedContext ctx,
   return seed_ret;
 }
 
+SeedValue
+seed_os_getegid (SeedContext ctx,
+		 SeedObject function,
+		 SeedObject this_object,
+		 size_t argument_count,
+		 const SeedValue arguments[], 
+		 SeedException * exception)
+{
+  SeedValue seed_ret;
+  gid_t ret;
+  
+  if (argument_count != 0)
+    {
+      EXPECTED_EXCEPTION("os.getegid", "no arguments");
+    }
+  ret = getegid ();
+
+  return seed_value_from_long (ctx, (glong) ret, exception);
+}
+
+SeedValue
+seed_os_geteuid (SeedContext ctx,
+		 SeedObject function,
+		 SeedObject this_object,
+		 size_t argument_count,
+		 const SeedValue arguments[], 
+		 SeedException * exception)
+{
+  SeedValue seed_ret;
+  uid_t ret;
+  
+  if (argument_count != 0)
+    {
+      EXPECTED_EXCEPTION("os.geteuid", "no arguments");
+    }
+  ret = geteuid ();
+
+  return seed_value_from_long (ctx, (glong) ret, exception);
+}
+
 seed_static_function os_funcs[] = {
   {"chdir", seed_os_chdir, 0},
   {"fchdir", seed_os_fchdir, 0},
   {"getcwd", seed_os_getcwd, 0},
-  {"ctermid", seed_os_ctermid, 0}
+  {"ctermid", seed_os_ctermid, 0},
+  {"getegid", seed_os_getegid, 0},
+  {"geteuid", seed_os_geteuid, 0}
 };
 
 SeedObject
