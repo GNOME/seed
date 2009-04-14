@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <sys/stat.h>
+
 #include <seed.h>
 
 SeedObject os_namespace;
@@ -441,6 +443,25 @@ seed_os_strerror (SeedContext ctx,
   return seed_value_from_string (ctx, strerror(arg), exception);
 }
 
+SeedValue
+seed_os_umask (SeedContext ctx,
+	       SeedObject function,
+	       SeedObject this_object,
+	       size_t argument_count,
+	       const SeedValue arguments[], 
+	       SeedException * exception)
+{
+  mode_t arg;
+  
+  if (argument_count != 1)
+    {
+      EXPECTED_EXCEPTION("os.umask", "1 argument");
+    }
+  arg = seed_value_to_long (ctx, arguments[0], exception);
+  
+  return seed_value_from_long (ctx, umask(arg), exception);
+}
+
 seed_static_function os_funcs[] = {
   {"chdir", seed_os_chdir, 0},
   {"fchdir", seed_os_fchdir, 0},
@@ -461,7 +482,8 @@ seed_static_function os_funcs[] = {
   {"setgid", seed_os_setegid, 0},
   {"seteuid", seed_os_setegid, 0},
   {"setuid", seed_os_setuid, 0},
-  {"strerror", seed_os_strerror, 0}
+  {"strerror", seed_os_strerror, 0},
+  {"umask", seed_os_umask, 0}
 };
 
 SeedObject
