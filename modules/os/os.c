@@ -1,9 +1,11 @@
-#include <seed.h>
 #define _GNU_SOURCE
 #include <unistd.h>
 #include <stdio.h>
 #include <errno.h>
 #include <stdlib.h>
+#include <string.h>
+
+#include <seed.h>
 
 SeedObject os_namespace;
 
@@ -420,6 +422,25 @@ seed_os_setuid (SeedContext ctx,
   return seed_value_from_int (ctx, setuid(arg), exception);
 }
 
+SeedValue
+seed_os_strerror (SeedContext ctx,
+		  SeedObject function,
+		  SeedObject this_object,
+		  size_t argument_count,
+		  const SeedValue arguments[], 
+		  SeedException * exception)
+{
+  int arg;
+  
+  if (argument_count != 1)
+    {
+      EXPECTED_EXCEPTION("os.strerror", "1 argument");
+    }
+  arg = seed_value_to_int (ctx, arguments[0], exception);
+  
+  return seed_value_from_string (ctx, strerror(arg), exception);
+}
+
 seed_static_function os_funcs[] = {
   {"chdir", seed_os_chdir, 0},
   {"fchdir", seed_os_fchdir, 0},
@@ -439,7 +460,8 @@ seed_static_function os_funcs[] = {
   {"setegid", seed_os_setegid, 0},
   {"setgid", seed_os_setegid, 0},
   {"seteuid", seed_os_setegid, 0},
-  {"setuid", seed_os_setuid, 0}
+  {"setuid", seed_os_setuid, 0},
+  {"strerror", seed_os_strerror, 0}
 };
 
 SeedObject
