@@ -492,6 +492,30 @@ seed_os_uname (SeedContext ctx,
   return ret;
 }
 
+
+SeedValue
+seed_os_unsetenv (SeedContext ctx,
+		  SeedObject function,
+		  SeedObject this_object,
+		  size_t argument_count,
+		  const SeedValue arguments[], 
+		  SeedException * exception)
+{
+  gint ret;
+  gchar *arg;
+
+  if (argument_count != 1)
+    {
+      EXPECTED_EXCEPTION("os.unsetenv", "1 argument");
+    }
+  
+  arg = seed_value_to_string (ctx, arguments[0], exception);
+  ret = unsetenv (arg);
+  g_free (arg);
+
+  return seed_value_from_int (ctx, ret, exception);
+}
+
 seed_static_function os_funcs[] = {
   {"chdir", seed_os_chdir, 0},
   {"fchdir", seed_os_fchdir, 0},
@@ -514,7 +538,8 @@ seed_static_function os_funcs[] = {
   {"setuid", seed_os_setuid, 0},
   {"strerror", seed_os_strerror, 0},
   {"umask", seed_os_umask, 0},
-  {"uname", seed_os_uname, 0}
+  {"uname", seed_os_uname, 0},
+  {"unsetenv", seed_os_unsetenv, 0}
 };
 
 SeedObject
