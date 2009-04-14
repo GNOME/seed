@@ -6,6 +6,7 @@
 #include <string.h>
 
 #include <sys/stat.h>
+#include <sys/utsname.h>
 
 #include <seed.h>
 
@@ -462,6 +463,35 @@ seed_os_umask (SeedContext ctx,
   return seed_value_from_long (ctx, umask(arg), exception);
 }
 
+SeedValue
+seed_os_uname (SeedContext ctx,
+	       SeedObject function,
+	       SeedObject this_object,
+	       size_t argument_count,
+	       const SeedValue arguments[], 
+	       SeedException * exception)
+{
+  SeedValue elements[5], ret;
+  guint c;
+  struct utsname name;
+  
+  if (argument_count != 0)
+    {
+      EXPECTED_EXCEPTION("os.uname", "no arguments");
+    }
+  c = uname (&name);
+  // TODO: Do something with c
+  elements[0] = seed_value_from_string (ctx, name.sysname, exception);
+  elements[1] = seed_value_from_string (ctx, name.nodename, exception);
+  elements[2] = seed_value_from_string (ctx, name.release, exception);
+  elements[3] = seed_value_from_string (ctx, name.version, exception);
+  elements[4] = seed_value_from_string (ctx, name.machine, exception);
+  ret = seed_make_array (ctx, elements, 5, exception);
+  
+  
+  return ret;
+}
+
 seed_static_function os_funcs[] = {
   {"chdir", seed_os_chdir, 0},
   {"fchdir", seed_os_fchdir, 0},
@@ -483,7 +513,8 @@ seed_static_function os_funcs[] = {
   {"seteuid", seed_os_setegid, 0},
   {"setuid", seed_os_setuid, 0},
   {"strerror", seed_os_strerror, 0},
-  {"umask", seed_os_umask, 0}
+  {"umask", seed_os_umask, 0},
+  {"uname", seed_os_uname, 0}
 };
 
 SeedObject
