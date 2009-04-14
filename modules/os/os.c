@@ -343,6 +343,83 @@ seed_os_putenv (SeedContext ctx,
   return seed_value_from_int (ctx, ret, exception);
 }
 
+
+SeedValue
+seed_os_setegid (SeedContext ctx,
+		 SeedObject function,
+		 SeedObject this_object,
+		 size_t argument_count,
+		 const SeedValue arguments[], 
+		 SeedException * exception)
+{
+  gid_t arg;
+  
+  if (argument_count != 1)
+    {
+      EXPECTED_EXCEPTION("os.setegid", "1 argument");
+    }
+  arg = seed_value_to_long (ctx, arguments[0], exception);
+  
+  return seed_value_from_int (ctx, setegid(arg), exception);
+}
+
+SeedValue
+seed_os_setgid (SeedContext ctx,
+		 SeedObject function,
+		 SeedObject this_object,
+		 size_t argument_count,
+		 const SeedValue arguments[], 
+		 SeedException * exception)
+{
+  gid_t arg;
+  
+  if (argument_count != 1)
+    {
+      EXPECTED_EXCEPTION("os.setgid", "1 argument");
+    }
+  arg = seed_value_to_long (ctx, arguments[0], exception);
+  
+  return seed_value_from_int (ctx, setgid(arg), exception);
+}
+
+SeedValue
+seed_os_seteuid (SeedContext ctx,
+		 SeedObject function,
+		 SeedObject this_object,
+		 size_t argument_count,
+		 const SeedValue arguments[], 
+		 SeedException * exception)
+{
+  uid_t arg;
+  
+  if (argument_count != 1)
+    {
+      EXPECTED_EXCEPTION("os.seteuid", "1 argument");
+    }
+  arg = seed_value_to_long (ctx, arguments[0], exception);
+  
+  return seed_value_from_int (ctx, seteuid(arg), exception);
+}
+
+SeedValue
+seed_os_setuid (SeedContext ctx,
+		 SeedObject function,
+		 SeedObject this_object,
+		 size_t argument_count,
+		 const SeedValue arguments[], 
+		 SeedException * exception)
+{
+  uid_t arg;
+  
+  if (argument_count != 1)
+    {
+      EXPECTED_EXCEPTION("os.setuid", "1 argument");
+    }
+  arg = seed_value_to_long (ctx, arguments[0], exception);
+  
+  return seed_value_from_int (ctx, setuid(arg), exception);
+}
+
 seed_static_function os_funcs[] = {
   {"chdir", seed_os_chdir, 0},
   {"fchdir", seed_os_fchdir, 0},
@@ -358,7 +435,11 @@ seed_static_function os_funcs[] = {
   {"getpid", seed_os_getpid, 0},
   {"getppid", seed_os_getuid, 0},
   {"getenv", seed_os_getenv, 0},
-  {"putenv", seed_os_putenv, 0}
+  {"putenv", seed_os_putenv, 0},
+  {"setegid", seed_os_setegid, 0},
+  {"setgid", seed_os_setegid, 0},
+  {"seteuid", seed_os_setegid, 0},
+  {"setuid", seed_os_setuid, 0}
 };
 
 SeedObject
