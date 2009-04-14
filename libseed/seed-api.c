@@ -578,3 +578,11 @@ seed_context_get_global_object (JSGlobalContextRef ctx)
 }
 
 
+JSObjectRef
+seed_make_array (JSContextRef ctx, 
+		 const JSValueRef elements[],
+		 gsize num_elements, 
+		 JSValueRef *exception)
+{
+  return JSObjectMakeArray (ctx, num_elements, elements, exception);
+}
