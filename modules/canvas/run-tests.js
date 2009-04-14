@@ -372,10 +372,35 @@ function test9(ctx)
   ctx.fill();
 }
 
+var compositeTypes = [
+  'source-over','source-in','source-out','source-atop',
+  'destination-over','destination-in','destination-out','destination-atop',
+  'lighter','darker','copy','xor'
+];
+function test17(ctx){
+  for (var i=0;i<4;i++){
+    for (var j = 0;j<4;j++){
+        // draw rectangle
+      ctx.fillStyle = "#09f";
+      ctx.fillRect(70*i,70*j,40,40);
+      
+      // set composite property
+      ctx.globalCompositeOperation = compositeTypes[i*4+j];
+      
+      // draw circle
+      ctx.fillStyle = "#f30";
+      ctx.beginPath();
+      ctx.arc(35+70*i,35+70*j,17,0,Math.PI*2,true);
+      ctx.fill();
+	}
+  }
+}
+
+
 tests = [test1, test2, test3, test4,
 	 test5, test6, test7, test8,
 	 test9, test10, test11, test12,
-	 test13, test14, test15, test16];
+	 test13, test14, test15, test16, test17];
 
 ctx = new Canvas.PDFCanvas("tests.pdf", 500, 500);
 for (test in tests)
