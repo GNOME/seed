@@ -35,10 +35,10 @@ seed_repl (gint argc, gchar ** argv)
 
   script =
     seed_make_script (eng->context,
-		      "Seed.import_namespace('readline');"
-		      "while(1) { try { Seed.print(eval("
-		      "readline.readline(\"> \"))); } catch(e) {"
-		      "Seed.print(e.name + \" \" + e.message);}}", NULL, 0);
+					  "readline = imports.readline"
+					  "while(1) { try { Seed.print(eval("
+					  "readline.readline(\"> \"))); } catch(e) {"
+					  "Seed.print(e.name + \" \" + e.message);}}", NULL, 0);
   seed_evaluate (eng->context, script, 0);
 
   g_free (script);

@@ -1349,7 +1349,7 @@ seed_repl_expose (JSContextRef ctx, ...)
 
   seed_object_set_property (ctx, seed, "debug_argv", arrayObj);
 
-  script = JSStringCreateWithUTF8CString ("Seed.import_namespace('readline');"
+  script = JSStringCreateWithUTF8CString ("readline = imports.readline;"
 					  "while(1) { try { Seed.print(eval("
 					  "readline.readline(\"> \"))); } catch(e) {"
 					  "Seed.print(e.name + \" \" + e.message);}}");
@@ -1523,12 +1523,10 @@ seed_init (gint * argc, gchar *** argv)
   seed_gtype_init (eng);
 
   defaults_script =
-    JSStringCreateWithUTF8CString ("Seed.import_namespace(\""
-				   "GObject\");"
-				   "try{Seed.include(\"/usr/share/"
-				   "seed/extensions/Seed.js\");} catch(e){}"
-				   "Seed.include(\"/usr/local/share"
-				   "/seed/extensions/Seed.js\");");
+	  JSStringCreateWithUTF8CString ("try{Seed.include(\"/usr/share/"
+					 "seed/extensions/Seed.js\");} catch(e){}"
+					 "Seed.include(\"/usr/local/share"
+					 "/seed/extensions/Seed.js\");");
   JSEvaluateScript (eng->context, defaults_script, NULL, NULL, 0, NULL);
   JSStringRelease (defaults_script);
 
