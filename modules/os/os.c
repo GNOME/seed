@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <errno.h>
+#include <stdlib.h>
 
 SeedObject os_namespace;
 
@@ -238,7 +239,7 @@ seed_os_getpgid (SeedContext ctx,
   pid_t pid;
   if (argument_count != 1)
     {
-      EXPECTED_EXCEPTION("os.getpgid", "no arguments");
+      EXPECTED_EXCEPTION("os.getpgid", "1 argument");
     }
   pid = (pid_t) seed_value_to_long (ctx, arguments[0], exception);
   
@@ -287,10 +288,32 @@ seed_os_getppid (SeedContext ctx,
 {
   if (argument_count != 0)
     {
-      EXPECTED_EXCEPTION("os.getpid", "no arguments");
+      EXPECTED_EXCEPTION("os.getppid", "no arguments");
     }
   
   return seed_value_from_long (ctx, (glong) getppid(), exception);
+}
+
+SeedValue
+seed_os_getenv (SeedContext ctx,
+		SeedObject function,
+		SeedObject this_object,
+		size_t argument_count,
+		const SeedValue arguments[], 
+		SeedException * exception)
+{
+  SeedValue ret;
+  gchar *name, *value;
+  if (argument_count != 1)
+    {
+      EXPECTED_EXCEPTION("os.getenv", "1 arguments");
+    }
+  name = seed_value_to_string (ctx, arguments[0], exception);
+  value = getenv (name);
+  ret = seed_value_from_string (ctx, value, exception);
+  g_free (name);
+  
+  return ret;
 }
 
 seed_static_function os_funcs[] = {
@@ -306,7 +329,8 @@ seed_static_function os_funcs[] = {
   {"getpgid", seed_os_getpgid, 0},
   {"getpgrp", seed_os_getpgrp, 0},
   {"getpid", seed_os_getpid, 0},
-  {"getppid", seed_os_getppid, 0}
+  {"getppid", seed_os_getuid, 0},
+  {"getenv", seed_os_getenv, 0}
 };
 
 SeedObject
