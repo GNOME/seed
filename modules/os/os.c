@@ -2,6 +2,7 @@
 #define _GNU_SOURCE
 #include <unistd.h>
 #include <stdio.h>
+#include <errno.h>
 
 SeedObject os_namespace;
 
@@ -185,17 +186,32 @@ seed_os_getgroups (SeedContext ctx,
 		   const SeedValue arguments[], 
 		   SeedException * exception)
 {
-  SeedValue seed_ret;
+  SeedValue ret;
+  SeedValue *groups;
   gid_t *group_list;
-  guint num_groups;
+  guint num_groups, i;
   
   if (argument_count != 0)
     {
       EXPECTED_EXCEPTION("os.geteuid", "no arguments");
     }
-  ret = getuid ();
+  num_groups = getgroups(0, NULL);
+  group_list = g_alloca (num_groups * sizeof(gid_t));
+  groups = g_alloca (num_groups * sizeof(SeedValue));
+  if (getgroups (num_groups, group_list) < 0)
+    {
+      // TODO: Decide on how to handle exceptions for things like this...
+      // Investigate python
+      return seed_make_null (ctx);
+    }
+  
+  for (i = 0; i < num_groups; i++)
+    {
+      groups[i] = seed_value_from_long (ctx, (glong) group_list[i], exception);
+    }
+  ret = seed_make_array (ctx, groups, num_groups, exception);
 
-  return seed_value_from_long (ctx, (glong) ret, exception);
+  return ret;
 }
 
 seed_static_function os_funcs[] = {
