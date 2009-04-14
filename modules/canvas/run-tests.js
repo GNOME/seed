@@ -378,15 +378,16 @@ var compositeTypes = [
   'lighter','darker','copy','xor'
 ];
 function test17(ctx){
-  for (var i=0;i<4;i++){
+  for (var i=0;i<3;i++){
     for (var j = 0;j<4;j++){
         // draw rectangle
       ctx.fillStyle = "#09f";
       ctx.fillRect(70*i,70*j,40,40);
-      
+
       // set composite property
+      Seed.print(compositeTypes[i*4+j])
       ctx.globalCompositeOperation = compositeTypes[i*4+j];
-      
+
       // draw circle
       ctx.fillStyle = "#f30";
       ctx.beginPath();

@@ -22,6 +22,7 @@ typedef struct _SeedCanvasStyle {
   SeedCanvasColor stroke;
   
   gdouble global_opacity;
+  cairo_operator_t operator;
 } SeedCanvasStyle;
 
 typedef struct _SeedCanvasPrivates {
@@ -347,6 +348,58 @@ seed_canvas_update_global_alpha (SeedContext ctx,
 }
 
 gboolean
+seed_canvas_update_global_composite (SeedContext ctx,
+				     SeedObject this_object,
+				     SeedString property_name,
+				     SeedValue value, SeedException * e)
+{
+  SeedCanvasStyle *style;
+  GET_CR;
+  gchar *composite_op = seed_value_to_string (ctx, value, e);
+
+  if (!priv->styles)
+    {
+      priv->styles = g_slist_prepend(priv->styles, g_new0(SeedCanvasStyle, 1));
+      ((SeedCanvasStyle *) priv->styles->data)->global_opacity = 1;
+      ((SeedCanvasStyle *) priv->styles->data)->stroke.a = 1;
+      ((SeedCanvasStyle *) priv->styles->data)->fill.a = 1;
+    }
+
+  style = (SeedCanvasStyle *)priv->styles->data;
+  
+  if (!strcmp (composite_op, "copy"))
+    style->operator = CAIRO_OPERATOR_SOURCE;
+  else if (!strcmp (composite_op, "source-over"))
+    style->operator = CAIRO_OPERATOR_OVER;
+  else if (!strcmp (composite_op, "source-in"))
+    style->operator = CAIRO_OPERATOR_IN;
+  else if (!strcmp (composite_op, "source-out"))
+    style->operator = CAIRO_OPERATOR_OUT;
+  else if (!strcmp (composite_op, "source-atop"))
+    style->operator = CAIRO_OPERATOR_ATOP;
+  else if (!strcmp (composite_op, "destination-over"))
+    style->operator = CAIRO_OPERATOR_DEST_OVER;
+  else if (!strcmp (composite_op, "destination-in"))
+    style->operator = CAIRO_OPERATOR_DEST_IN;
+  else if (!strcmp (composite_op, "destination-out"))
+    style->operator = CAIRO_OPERATOR_DEST_OVER;
+  else if (!strcmp (composite_op, "destination-atop"))
+    style->operator = CAIRO_OPERATOR_DEST_ATOP;
+  else if (!strcmp (composite_op, "xor"))
+    style->operator = CAIRO_OPERATOR_XOR;
+  else if (!strcmp (composite_op, "darker"))
+    style->operator = CAIRO_OPERATOR_SATURATE;
+  else if (!strcmp (composite_op, "lighter"))
+    style->operator = CAIRO_OPERATOR_ADD;
+  else
+    style->operator = CAIRO_OPERATOR_OVER;
+  
+  g_free (composite_op);
+  
+  return TRUE;
+}
+
+gboolean
 seed_canvas_set_linewidth (SeedContext ctx,
 			   SeedObject this_object,
 			   SeedString property_name,
@@ -420,6 +473,10 @@ seed_canvas_apply_stroke_style (SeedCanvasStyle *style,
 			style->stroke.g,
 			style->stroke.b,
 			style->stroke.a * style->global_opacity);
+  if (style->operator)
+    cairo_set_operator (cr, style->operator);
+  else
+    cairo_set_operator (cr, CAIRO_OPERATOR_OVER);
 }
 
 void
@@ -431,6 +488,11 @@ seed_canvas_apply_fill_style (SeedCanvasStyle *style,
 			style->fill.g,
 			style->fill.b,
 			style->fill.a * style->global_opacity);
+  if (style->operator)
+    cairo_set_operator (cr, style->operator);
+  else
+    cairo_set_operator (cr, CAIRO_OPERATOR_OVER);
+      
 }
 
 SeedValue
@@ -960,6 +1022,7 @@ seed_static_value canvas_properties[] = {
   {"strokeStyle", 0, seed_canvas_update_stroke_style, 0},
   {"fillStyle", 0, seed_canvas_update_fill_style, 0},
   {"globalAlpha", 0, seed_canvas_update_global_alpha, 0},
+  {"globalCompositeOperation", 0, seed_canvas_update_global_composite, 0},
   {0, 0, 0, 0}
 };
 
