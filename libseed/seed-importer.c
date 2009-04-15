@@ -47,7 +47,7 @@ GHashTable *file_imports;
  *        native module and return the module object.
  *      - If it is a file and does not end in G_MODULE_SUFFIX, evaluate it as a
  *        JavaScript file in a NEW global context, and return the global object
- *        for that context.
+ *        for that context. 
  */
 
 /* 

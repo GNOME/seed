@@ -623,6 +623,29 @@ seed_os_fchmod (SeedContext ctx,
   
   return seed_value_from_int (ctx, fchmod (fd, mode), exception);
 }
+
+SeedValue
+seed_os_fchown (SeedContext ctx,
+		SeedObject function,
+		SeedObject this_object,
+		size_t argument_count,
+		const SeedValue arguments[], 
+		SeedException * exception)
+{
+  gint fd;
+  gid_t gid;
+  uid_t uid;
+
+  if (argument_count != 3)
+    {
+      EXPECTED_EXCEPTION ("os.fchown", "3 arguments");
+    }
+  fd = seed_value_to_int (ctx, arguments[0], exception);
+  uid = seed_value_to_long (ctx, arguments[1], exception);
+  gid = seed_value_to_long (ctx, arguments[2], exception);
+  
+  return seed_value_from_int (ctx, fchown (fd, uid, gid), exception);
+}
   
 seed_static_function os_funcs[] = {
   {"chdir", seed_os_chdir, 0},
@@ -652,7 +675,8 @@ seed_static_function os_funcs[] = {
   {"close", seed_os_close, 0},
   {"dup", seed_os_dup, 0},
   {"dup2", seed_os_dup2, 0},
-  {"fchmod", seed_os_fchmod, 0}
+  {"fchmod", seed_os_fchmod, 0},
+  {"fchown", seed_os_fchown, 0}
 };
 
 #define OS_DEFINE_ENUM(name, value) \
