@@ -1,5 +1,7 @@
 #!/usr/bin/env seed
-imports.gi.versions.Clutter = 0.8;
+imports.gi.versions.Clutter = "0.8";
+imports.gi.versions.GtkClutter = "0.8";
+
 Clutter = imports.gi.Clutter;
 Gtk = imports.gi.Gtk;
 GtkSource = imports.gi.GtkSource;
@@ -15,7 +17,7 @@ var gtkstage = new GtkClutter.Embed();
 var stage = gtkstage.get_stage();
 var texture = new Clutter.Texture({filename:"bob.jpg"});
 var reflection = new Clutter.CloneTexture({parent_texture: texture});
-shader = new Clutter.Shader();
+ShaderView.shader = new Clutter.Shader();
 var shaderfield = new ShaderView.ShaderView("fragment_source", texture,reflection);
 var vbox = new Gtk.VBox();
 var notebook = new Gtk.Notebook();
