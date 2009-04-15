@@ -337,6 +337,7 @@ seed
 </para>
 
 @eng: 
+@Returns: 
 
 
 <!-- ##### USER_FUNCTION SeedObjectInitializeCallback ##### -->

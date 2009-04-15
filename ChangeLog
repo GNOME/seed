@@ -20,7 +20,7 @@
   quantity of low-level system features unavailable from GLib.
 
 * Significant updates to Canvas module - most features are compatible with the
-  Mozilla implementation at this point.
+  Mozilla/WebKit implementations at this point.
 
 * Clutter 0.9 animation API wrappers.
 
@@ -29,11 +29,12 @@
 
 * Seed.readline history persists between sessions (stored in ~/.seed_history)
 
-* Support for arrays of gfloats.
+* Support for several more array types.
 
 * Added Seed.breakpoint(), which inserts a breakpoint instruction.
 
-* API additions: seed_script_new_from_file
+* API additions: Lots of API additions. Including a significant amount 
+of API documentation.
 
 * New examples:
     * opengl-glib examples (teapot, gears, triangle)
