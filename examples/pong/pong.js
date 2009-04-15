@@ -1,6 +1,7 @@
 #!/usr/bin/env seed
 
-Seed.import_namespace("Clutter", "0.8");
+imports.gi.versions.Clutter = "0.8";
+Clutter = imports.gi.Clutter;
 
 Clutter.init(null, null);
 
@@ -15,28 +16,28 @@ Paddle = new GType({
 	{
 		// Private
 		var velocity = 0;
-		
+
 		// Public
 		this.update_position = function ()
 		{
 			this.y += velocity;
-			
+
 			// Decelerate
 			if(velocity > 0)
 			{
 				velocity -= 4 - GLOBAL_DECEL;
-				
+
 				if(velocity < 0)
 					velocity = 0;
 			}
 			else if(velocity < 0)
 			{
 				velocity += 4 - GLOBAL_DECEL;
-				
+
 				if(velocity > 0)
 					velocity = 0;
 			}
-			
+
 			// Make sure paddle is in bounds
 			if(this.y < 10)
 			{
@@ -49,7 +50,7 @@ Paddle = new GType({
 				velocity = 0;
 			}
 		};
-		
+
 		this.update_velocity = function ()
 		{
 			if(key_up)
@@ -57,7 +58,7 @@ Paddle = new GType({
 			else if(key_down)
 				this.accelerate(1);
 		};
-		
+
 		this.accelerate = function (direction)
 		{
 			if(velocity)
@@ -65,17 +66,17 @@ Paddle = new GType({
 			else
 				velocity = direction * 5;
 		};
-		
+
 		this.set_velocity = function (new_v)
 		{
 			velocity = new_v;
 		};
-		
+
 		this.get_velocity = function ()
 		{
 			return velocity;
 		};
-		
+
 		this.load_texture = function ()
 		{
 			var bkg = new Clutter.Texture.from_file("player.png");
@@ -84,22 +85,22 @@ Paddle = new GType({
 			this.add_actor(bkg);
 			bkg.show();
 		};
-		
+
 		this.won_game = function ()
 		{
 			//var tl = new Clutter.Timeline({fps:60, num_frames:30});
 			//var effect = new Clutter.EffectTemplate.c_new(tl,
 			//											  Clutter.sine_inc_func);
-			
+
 			//Clutter.effect_scale(effect, this, 1, 1.2);
 		};
-		
+
 		this.lost_game = function ()
 		{
 			//var tl = new Clutter.Timeline({fps:60, num_frames:30});
 			//var effect = new Clutter.EffectTemplate.c_new(tl,
 			//											  Clutter.sine_inc_func);
-			
+
 			//Clutter.effect_fade(effect, this, 0);
 			//Clutter.effect_scale(effect, this, 20 * ((this.x > (stage.width/2)) ? -1 : 1), 0);
 		};
@@ -119,7 +120,7 @@ AIPaddle = new GType({
 			else if((this.y + (this.height/2)) < (ball.y + (ball.height/2))) // DOWN
 				this.accelerate(1);
 		};
-		
+
 		this.load_texture = function ()
 		{
 			var bkg = new Clutter.Texture.from_file("player2.png");
@@ -139,20 +140,20 @@ Ball = new GType({
 		// Private
 		var v_x = -2;
 		var v_y = 4;
-		
+
 		// Public
 		this.set_velocity = function (vinx, viny)
 		{
 			v_x = vinx;
 			v_y = viny;
 		};
-		
+
 		this.update_position = function ()
 		{
 			this.x += v_x;
 			this.y += v_y;
 		};
-		
+
 		this.detect_collisions = function ()
 		{
 			// Bounce off Top/Bottom Walls
@@ -160,22 +161,22 @@ Ball = new GType({
 			{
 				v_y = -v_y;
 			}
-			
+
 			var bounce_paddle = function (ball, paddle)
 			{
-				// Should make the paddle 1-width here (and fix associated 
+				// Should make the paddle 1-width here (and fix associated
 				//  problems), in order to prevent coming in edgewise...
-				
+
 				var ball_left = ball.x;
 				var ball_right = ball.x + ball.width;
 				var ball_top = ball.y;
 				var ball_bottom = ball.y + ball.height;
-				
+
 				var paddle_left = paddle.x;
 				var paddle_right = paddle.x + paddle.width;
 				var paddle_top = paddle.y;
 				var paddle_bottom = paddle.y + paddle.height;
-				
+
 				if(	((ball_left > paddle_left && ball_left < paddle_right) ||
 					 (ball_right < paddle_right && ball_right > paddle_left)) &&
 					((ball_top > paddle_top && ball_top < paddle_bottom) ||
@@ -184,16 +185,16 @@ Ball = new GType({
 					v_x = -v_x;
 					ball.x = (paddle_left > (stage.width/2)) ?
 								paddle_left - ball.width : paddle_right;
-					
+
 					// TODO: Fix "spin" from paddle...
 					//v_y += paddle.get_velocity() * 2;
 				}
 			};
-			
+
 			bounce_paddle(this, p_one);
 			bounce_paddle(this, p_two);
 		};
-		
+
 		this.check_boundaries = function ()
 		{
 			if(this.x < p_one.x)
@@ -210,25 +211,25 @@ Ball = new GType({
 			{
 				return;
 			}
-			
+
 			// Someone won, stop moving
-			
+
 			if(winning_animation)
 				return;
-			
+
 			v_x = v_y = 0;
-			
+
 			winning_animation = 1;
-			
+
 			var tl = new Clutter.Timeline({fps:60, num_frames:30});
 			var effect = new Clutter.EffectTemplate.c_new(tl,
 														  Clutter.sine_inc_func);
-			
+
 			var tl2 = Clutter.effect_fade(effect, this, 0);
-			
+
 			tl2.signal.completed.connect(create_new_ball);
 		};
-		
+
 		// Implementation
 		var bkg = new Clutter.Texture.from_file("ball.png");
 
@@ -245,14 +246,14 @@ timeline.signal.new_frame.connect(
 	{
 		p_one.update_position();
 		p_two.update_position();
-		
+
 		p_one.update_velocity();
 		p_two.update_velocity();
-		
+
 		ball.update_position();
 		ball.detect_collisions();
 		ball.check_boundaries();
-		
+
 		timeline.rewind();
 	});
 
@@ -295,18 +296,18 @@ function create_new_ball ()
 		ball = new Ball();
 		stage.add_actor(ball);
 	}
-	
+
 	var tl = new Clutter.Timeline({fps:60, num_frames:30});
 	var effect = new Clutter.EffectTemplate.c_new(tl,
 												  Clutter.sine_inc_func);
-	
+
 	Clutter.effect_fade(effect, ball, 255);
-	
+
 	ball.width = ball.height = 30;
 	ball.x = ball.y = 300;
-	
+
 	ball.set_velocity(Math.random() * 12 - 6, Math.random() * 12 - 6);
-	
+
 	winning_animation = 0;
 }
 
@@ -332,7 +333,7 @@ stage.signal["key_release_event"].connect(
 			key_up = 0;
 		else if(event.key.keyval == 65364) // DOWN
 			key_down = 0;
-		
+
 		return true;
 	});
 
