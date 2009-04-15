@@ -744,6 +744,28 @@ seed_os_isatty (SeedContext ctx,
   
   return seed_value_from_boolean (ctx, isatty (fd), exception);
 }
+
+SeedValue
+seed_os_lseek (SeedContext ctx,
+	       SeedObject function,
+	       SeedObject this_object,
+	       size_t argument_count,
+	       const SeedValue arguments[], 
+	       SeedException * exception)
+{
+  gint fd, whence;
+  off_t offset;
+
+  if (argument_count != 3)
+    {
+      EXPECTED_EXCEPTION ("os.lseek", "3 arguments");
+    }
+  fd = seed_value_to_int (ctx, arguments[0], exception);
+  offset = seed_value_to_long (ctx, arguments[1], exception);
+  whence = seed_value_to_int (ctx, arguments[2], exception);
+  
+  return seed_value_from_long (ctx, lseek (fd, offset, whence), exception);
+}
   
 seed_static_function os_funcs[] = {
   {"chdir", seed_os_chdir, 0},
@@ -779,7 +801,8 @@ seed_static_function os_funcs[] = {
   {"fpathconf", seed_os_fpathconf, 0},
   {"fsync", seed_os_fsync, 0},
   {"ftruncate", seed_os_ftruncate, 0},
-  {"isatty", seed_os_isatty, 0}
+  {"isatty", seed_os_isatty, 0},
+  {"lseek", seed_os_lseek, 0}
 };
 
 #define OS_DEFINE_ENUM(name, value) \
