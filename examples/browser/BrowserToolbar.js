@@ -1,5 +1,7 @@
 Gtk = imports.gi.Gtk;
 
+BrowserSettings = imports.BrowserSettings;
+
 BrowserToolbar = new GType({
     parent: Gtk.HBox.type,
     name: "BrowserToolbar",
@@ -50,7 +52,7 @@ BrowserToolbar = new GType({
 
         this.set_progress = function (progress)
         {
-            if(have_progress_bar)
+            if(BrowserSettings.have_progress_bar)
                 url_bar.set_progress_fraction(progress);
         };
 

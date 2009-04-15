@@ -47,7 +47,7 @@ TabbedBrowser = new GType({
             this.append_page(new_tab, tab_title);
             this.set_tab_reorderable(new_tab, true);
 
-            if(select_new_tabs)
+            if(BrowserSettings.select_new_tabs)
                 this.page = this.page_num(new_tab);
         };
 

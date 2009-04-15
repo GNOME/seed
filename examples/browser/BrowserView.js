@@ -1,6 +1,8 @@
 Gtk = imports.gi.Gtk;
 WebKit = imports.gi.WebKit;
 
+TabbedBrowser = imports.TabbedBrowser;
+
 BrowserView = new GType({
     parent: WebKit.WebView.type,
     name: "BrowserView",
@@ -40,7 +42,7 @@ BrowserView = new GType({
 
         var show_new_tab = function (new_web_view)
         {
-            browser.new_tab("", new_web_view);
+            TabbedBrowser.browser.new_tab("", new_web_view);
 
             return false;
         };
