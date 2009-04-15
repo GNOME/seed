@@ -8,6 +8,8 @@
 #include <sys/stat.h>
 #include <sys/utsname.h>
 
+#include <fcntl.h>
+
 #include <seed.h>
 
 SeedObject os_namespace;
@@ -542,6 +544,13 @@ seed_static_function os_funcs[] = {
   {"unsetenv", seed_os_unsetenv, 0}
 };
 
+#define OS_DEFINE_ENUM(name, value) \
+  seed_object_set_property (eng->context, os_namespace, name,		\
+			    seed_value_from_long (eng->context, value, NULL))
+#define OS_DEFINE_QUICK_ENUM(value)					\
+seed_object_set_property (eng->context, os_namespace, #value,		\
+			  seed_value_from_long (eng->context, value, NULL))
+
 SeedObject
 seed_module_init(SeedEngine * eng)
 {
@@ -552,4 +561,35 @@ seed_module_init(SeedEngine * eng)
   os_namespace_class = seed_create_class (&os_namespace_class_definition);
 
   os_namespace = seed_make_object (eng->context, os_namespace_class, NULL);
+  
+  OS_DEFINE_QUICK_ENUM (O_RDONLY);
+  OS_DEFINE_QUICK_ENUM (O_WRONLY);
+  OS_DEFINE_QUICK_ENUM (O_RDWR);
+  OS_DEFINE_QUICK_ENUM (O_APPEND);
+  OS_DEFINE_QUICK_ENUM (O_CREAT);
+  OS_DEFINE_QUICK_ENUM (O_EXCL);
+  OS_DEFINE_QUICK_ENUM (O_TRUNC);
+
+  OS_DEFINE_QUICK_ENUM (O_DSYNC);
+  OS_DEFINE_QUICK_ENUM (O_RSYNC);
+  OS_DEFINE_QUICK_ENUM (O_SYNC);
+  OS_DEFINE_QUICK_ENUM (O_NDELAY);
+  OS_DEFINE_QUICK_ENUM (O_NONBLOCK);
+  OS_DEFINE_QUICK_ENUM (O_NOCTTY);
+  //  OS_DEFINE_QUICK_ENUM (O_SHLOCK);
+  //  OS_DEFINE_QUICK_ENUM (O_EXLOCK);
+
+  OS_DEFINE_QUICK_ENUM (O_ASYNC);
+  OS_DEFINE_QUICK_ENUM (O_DIRECT);
+  OS_DEFINE_QUICK_ENUM (O_DIRECTORY);
+  OS_DEFINE_QUICK_ENUM (O_NOFOLLOW);
+  OS_DEFINE_QUICK_ENUM (O_NOATIME);
+
+
+  OS_DEFINE_QUICK_ENUM (SEEK_SET);
+  OS_DEFINE_QUICK_ENUM (SEEK_CUR);
+  OS_DEFINE_QUICK_ENUM (SEEK_END);
+
+
+  return os_namespace;
 }
