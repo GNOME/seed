@@ -10,6 +10,8 @@
 
 #include <fcntl.h>
 
+#include <pty.h>
+
 #include <seed.h>
 
 SeedObject os_namespace;
@@ -766,7 +768,60 @@ seed_os_lseek (SeedContext ctx,
   
   return seed_value_from_long (ctx, lseek (fd, offset, whence), exception);
 }
+
+SeedValue
+seed_os_openpty (SeedContext ctx,
+		 SeedObject function,
+		 SeedObject this_object,
+		 size_t argument_count,
+		 const SeedValue arguments[], 
+		 SeedException * exception)
+{
+  SeedValue fds[2], ret;
+  gint master,slave;
+
+  if (argument_count != 0)
+    {
+      EXPECTED_EXCEPTION ("os.openpty", "no arguments");
+    }
+  openpty (&master, &slave, NULL, NULL, NULL);
   
+  fds[0] = seed_value_from_int (ctx, master, exception);
+  fds[1] = seed_value_from_int (ctx, slave, exception);
+  
+  ret = seed_make_array (ctx, fds, 2, exception);
+  
+  return ret;
+}
+
+SeedValue
+seed_os_pipe (SeedContext ctx,
+	      SeedObject function,
+	      SeedObject this_object,
+	      size_t argument_count,
+	      const SeedValue arguments[], 
+	      SeedException * exception)
+{
+  SeedValue fds[2], ret;
+  gint fildes[2];
+
+  if (argument_count != 0)
+    {
+      EXPECTED_EXCEPTION ("os.pipe", "no arguments");
+    }
+  if (pipe (fildes) < 0)
+    {
+      // TODO
+    }
+  
+  fds[0] = seed_value_from_int (ctx, fildes[0], exception);
+  fds[1] = seed_value_from_int (ctx, fildes[1], exception);
+  
+  ret = seed_make_array (ctx, fds, 2, exception);
+  
+  return ret;
+}
+
 seed_static_function os_funcs[] = {
   {"chdir", seed_os_chdir, 0},
   {"fchdir", seed_os_fchdir, 0},
@@ -802,7 +857,9 @@ seed_static_function os_funcs[] = {
   {"fsync", seed_os_fsync, 0},
   {"ftruncate", seed_os_ftruncate, 0},
   {"isatty", seed_os_isatty, 0},
-  {"lseek", seed_os_lseek, 0}
+  {"lseek", seed_os_lseek, 0},
+  {"openpty", seed_os_openpty, 0},
+  {"pipe", seed_os_pipe, 0}
 };
 
 #define OS_DEFINE_ENUM(name, value) \

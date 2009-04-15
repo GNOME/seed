@@ -5,7 +5,7 @@ libos_la_SOURCES = \
 	os.c
 
 libos_la_LDFLAGS = \
-	`pkg-config --libs seed`
+	`pkg-config --libs seed` -lutil
 
 AM_CPPFLAGS = \
 	-I../../libseed/ \
