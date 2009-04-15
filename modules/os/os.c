@@ -874,7 +874,69 @@ seed_os_write (SeedContext ctx,
   
   nw = write (fd, buf, strlen (buf));
 
-  return seed_value_from_int (ctx, nw, exception);q
+  return seed_value_from_int (ctx, nw, exception);
+}
+
+SeedValue
+seed_os_ttyname (SeedContext ctx,
+		 SeedObject function,
+		 SeedObject this_object,
+		 size_t argument_count,
+		 const SeedValue arguments[], 
+		 SeedException * exception)
+{
+  SeedValue ret;
+  gint fd;
+
+  if (argument_count != 1)
+    {
+      EXPECTED_EXCEPTION ("os.ttyname", "1 argument");
+    }
+  fd = seed_value_to_int (ctx, arguments[0], exception);
+  
+  return seed_value_from_string (ctx, ttyname (fd), exception);
+}
+
+SeedValue
+seed_os_tcgetpgrp (SeedContext ctx,
+		   SeedObject function,
+		   SeedObject this_object,
+		   size_t argument_count,
+		   const SeedValue arguments[], 
+		   SeedException * exception)
+{
+  SeedValue ret;
+  gint fd;
+
+  if (argument_count != 1)
+    {
+      EXPECTED_EXCEPTION ("os.tcgetpgrp", "1 argument");
+    }
+  fd = seed_value_to_int (ctx, arguments[0], exception);
+  
+  return seed_value_from_long (ctx, tcgetpgrp (fd), exception);
+}
+
+SeedValue
+seed_os_tcsetpgrp (SeedContext ctx,
+		   SeedObject function,
+		   SeedObject this_object,
+		   size_t argument_count,
+		   const SeedValue arguments[], 
+		   SeedException * exception)
+{
+  SeedValue ret;
+  gint fd;
+  pid_t pgrp;
+
+  if (argument_count != 2)
+    {
+      EXPECTED_EXCEPTION ("os.tcsetpgrp", "2 arguments");
+    }
+  fd = seed_value_to_int (ctx, arguments[0], exception);
+  pgrp = seed_value_to_int (ctx, arguments[1], exception);
+  
+  return seed_value_from_int (ctx, tcsetpgrp (fd, pgrp), exception);
 }
 
 seed_static_function os_funcs[] = {
@@ -916,7 +978,10 @@ seed_static_function os_funcs[] = {
   {"openpty", seed_os_openpty, 0},
   {"pipe", seed_os_pipe, 0},
   {"read", seed_os_read, 0},
-  {"write", seed_os_write, 0}
+  {"write", seed_os_write, 0},
+  {"ttyname", seed_os_ttyname, 0},
+  {"tcgetpgrp", seed_os_tcgetpgrp, 0},
+  {"tcsetpgrp", seed_os_tcsetpgrp, 0}
 };
 
 #define OS_DEFINE_ENUM(name, value) \
