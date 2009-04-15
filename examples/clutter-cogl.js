@@ -9,7 +9,7 @@ const RIPPLE_G = 2;
 const RIPPLE_N = 3;
 const RIPPLE_MIND = 450;
 const RIPPLE_MAXD = 2000;
-const RIPPLE_WX = Clutter.cogl_double_to_fixed(RIPPLE_W);
+const RIPPLE_WX = Clutter.double_to_fixed(RIPPLE_W);
 
 const SCREEN_W = 640;
 const SCREEN_H = 480;
