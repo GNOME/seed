@@ -853,6 +853,30 @@ seed_os_read (SeedContext ctx,
   return ret;
 }
 
+SeedValue
+seed_os_write (SeedContext ctx,
+	       SeedObject function,
+	       SeedObject this_object,
+	       size_t argument_count,
+	       const SeedValue arguments[], 
+	       SeedException * exception)
+{
+  SeedValue ret;
+  gint fd, nw;
+  gchar *buf;
+
+  if (argument_count != 2)
+    {
+      EXPECTED_EXCEPTION ("os.write", "2 arguments");
+    }
+  fd = seed_value_to_int (ctx, arguments[0], exception);
+  buf = seed_value_to_string (ctx, arguments[1], exception);
+  
+  nw = write (fd, buf, strlen (buf));
+
+  return seed_value_from_int (ctx, nw, exception);q
+}
+
 seed_static_function os_funcs[] = {
   {"chdir", seed_os_chdir, 0},
   {"fchdir", seed_os_fchdir, 0},
@@ -891,7 +915,8 @@ seed_static_function os_funcs[] = {
   {"lseek", seed_os_lseek, 0},
   {"openpty", seed_os_openpty, 0},
   {"pipe", seed_os_pipe, 0},
-  {"read", seed_os_read, 0}
+  {"read", seed_os_read, 0},
+  {"write", seed_os_write, 0}
 };
 
 #define OS_DEFINE_ENUM(name, value) \
