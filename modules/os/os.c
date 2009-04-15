@@ -685,6 +685,25 @@ seed_os_fpathconf (SeedContext ctx,
   
   return seed_value_from_long (ctx, fpathconf (fd, name), exception);
 }
+
+SeedValue
+seed_os_fsync (SeedContext ctx,
+	       SeedObject function,
+	       SeedObject this_object,
+	       size_t argument_count,
+	       const SeedValue arguments[], 
+	       SeedException * exception)
+{
+  gint fd, name;
+
+  if (argument_count != 1)
+    {
+      EXPECTED_EXCEPTION ("os.fsync", "1 argument");
+    }
+  fd = seed_value_to_int (ctx, arguments[0], exception);
+  
+  return seed_value_from_long (ctx, fsync (fd), exception);
+}
   
 seed_static_function os_funcs[] = {
   {"chdir", seed_os_chdir, 0},
@@ -717,7 +736,8 @@ seed_static_function os_funcs[] = {
   {"fchmod", seed_os_fchmod, 0},
   {"fchown", seed_os_fchown, 0},
   {"fdatasync", seed_os_fdatasync, 0},
-  {"fpathconf", seed_os_fpathconf, 0}
+  {"fpathconf", seed_os_fpathconf, 0},
+  {"fsync", seed_os_fsync, 0}
 };
 
 #define OS_DEFINE_ENUM(name, value) \
