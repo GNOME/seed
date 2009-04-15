@@ -386,13 +386,12 @@ var compositeTypes = [
 	ctx.fillRect(70*i,70*j,40,40);
 
 	// set composite property
-//	Seed.print(compositeTypes[i*4+j])
 	ctx.globalCompositeOperation = compositeTypes[i*4+j];
 
 	// draw circle
 	ctx.fillStyle = "#f30";
 	ctx.beginPath();
-	ctx.arc(30+70*i,30+70*j,17,0,Math.PI*2,true);
+	ctx.arc(70*i,70*j,17,0,Math.PI*2,true);
 	ctx.fill();
 	ctx.restore();
       }

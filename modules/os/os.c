@@ -623,6 +623,127 @@ seed_os_fchmod (SeedContext ctx,
   
   return seed_value_from_int (ctx, fchmod (fd, mode), exception);
 }
+
+SeedValue
+seed_os_fchown (SeedContext ctx,
+		SeedObject function,
+		SeedObject this_object,
+		size_t argument_count,
+		const SeedValue arguments[], 
+		SeedException * exception)
+{
+  gint fd;
+  gid_t gid;
+  uid_t uid;
+
+  if (argument_count != 3)
+    {
+      EXPECTED_EXCEPTION ("os.fchown", "3 arguments");
+    }
+  fd = seed_value_to_int (ctx, arguments[0], exception);
+  uid = seed_value_to_long (ctx, arguments[1], exception);
+  gid = seed_value_to_long (ctx, arguments[2], exception);
+  
+  return seed_value_from_int (ctx, fchown (fd, uid, gid), exception);
+}
+
+SeedValue
+seed_os_fdatasync (SeedContext ctx,
+		   SeedObject function,
+		   SeedObject this_object,
+		   size_t argument_count,
+		   const SeedValue arguments[], 
+		   SeedException * exception)
+{
+  gint fd;
+
+  if (argument_count != 1)
+    {
+      EXPECTED_EXCEPTION ("os.fdatasync", "1 argument");
+    }
+  fd = seed_value_to_int (ctx, arguments[0], exception);
+  
+  return seed_value_from_int (ctx, fdatasync (fd), exception);
+}
+
+SeedValue
+seed_os_fpathconf (SeedContext ctx,
+		   SeedObject function,
+		   SeedObject this_object,
+		   size_t argument_count,
+		   const SeedValue arguments[], 
+		   SeedException * exception)
+{
+  gint fd, name;
+
+  if (argument_count != 2)
+    {
+      EXPECTED_EXCEPTION ("os.fpathconf", "2 arguments");
+    }
+  fd = seed_value_to_int (ctx, arguments[0], exception);
+  name = seed_value_to_int (ctx, arguments[1], exception);
+  
+  return seed_value_from_long (ctx, fpathconf (fd, name), exception);
+}
+
+SeedValue
+seed_os_fsync (SeedContext ctx,
+	       SeedObject function,
+	       SeedObject this_object,
+	       size_t argument_count,
+	       const SeedValue arguments[], 
+	       SeedException * exception)
+{
+  gint fd, name;
+
+  if (argument_count != 1)
+    {
+      EXPECTED_EXCEPTION ("os.fsync", "1 argument");
+    }
+  fd = seed_value_to_int (ctx, arguments[0], exception);
+  
+  return seed_value_from_long (ctx, fsync (fd), exception);
+}
+
+SeedValue
+seed_os_ftruncate (SeedContext ctx,
+		   SeedObject function,
+		   SeedObject this_object,
+		   size_t argument_count,
+		   const SeedValue arguments[], 
+		   SeedException * exception)
+{
+  gint fd;
+  off_t length;
+
+  if (argument_count != 2)
+    {
+      EXPECTED_EXCEPTION ("os.ftruncate", "2 arguments");
+    }
+  fd = seed_value_to_int (ctx, arguments[0], exception);
+  length = seed_value_to_int (ctx, arguments[1], exception);
+  
+  return seed_value_from_long (ctx, ftruncate (fd, length), exception);
+}
+
+SeedValue
+seed_os_isatty (SeedContext ctx,
+		SeedObject function,
+		SeedObject this_object,
+		size_t argument_count,
+		const SeedValue arguments[], 
+		SeedException * exception)
+{
+  gint fd;
+
+  if (argument_count != 1)
+    {
+      EXPECTED_EXCEPTION ("os.isatty", "1 argument");
+    }
+  fd = seed_value_to_int (ctx, arguments[0], exception);
+  
+  return seed_value_from_boolean (ctx, isatty (fd), exception);
+}
   
 seed_static_function os_funcs[] = {
   {"chdir", seed_os_chdir, 0},
@@ -652,7 +773,13 @@ seed_static_function os_funcs[] = {
   {"close", seed_os_close, 0},
   {"dup", seed_os_dup, 0},
   {"dup2", seed_os_dup2, 0},
-  {"fchmod", seed_os_fchmod, 0}
+  {"fchmod", seed_os_fchmod, 0},
+  {"fchown", seed_os_fchown, 0},
+  {"fdatasync", seed_os_fdatasync, 0},
+  {"fpathconf", seed_os_fpathconf, 0},
+  {"fsync", seed_os_fsync, 0},
+  {"ftruncate", seed_os_ftruncate, 0},
+  {"isatty", seed_os_isatty, 0}
 };
 
 #define OS_DEFINE_ENUM(name, value) \
