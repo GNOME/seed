@@ -12,7 +12,69 @@
 <body onload="sh_highlightDocument();">
 <div id="header">Seed Runtime</div>
 <div id="subheader">v.@VERSION@</div>
+<div class="section"><b>imports</b></div>
+<p>
+An <b>imports</b> object is defined globally in every Seed context. This provides access to GObject Introspection namespaces, C extension modules, and other JavaScript files, as explained in the next three sections.
+</p>
+<p>
+The default path to search for native modules and JavaScript files to be imported can be set as an array of strings on <b>imports.searchPath</b>:
+</p>
+<pre class="sh_javascript">
+imports.searchPath.push("/opt/javascript");
+</pre>
+<p>
+This will add /opt/javascript as the last location to search when looking for native Seed modules and JavaScript files. The default search path includes the current directory and the directory into which Seed's default native modules are installed.
+</p>
+<div class="section"><b>imports.gi</b></div>
+<p>
+Provides access to all installed gobject-introspection <i>namespaces</i>. <b>imports.gi.<i>namespace</i></b> will import functions and constructors from the given namespace and return an object providing them.
+</p>
+<p>
+Importing is done once per process, and any subsequent accesses to the same namespace return the <i>same</i> object, and are very cheap as a result.
+</p>
+<pre class="sh_javascript">
+Gtk = imports.gi.Gtk;
+Gtk.init(null, null);
+</pre>
+<p>A particular version of a namespace can be loaded by setting <i>before</i> it is first requested, by setting the <b>imports.gi.versions.<i>namespace</i></b> object to a string representing the version number to load:
+</p>
+<pre class="sh_javascript">
+imports.gi.versions.Clutter = "0.8";
+Clutter = imports.gi.Clutter; // The returned object represents clutter-0.8
+</pre>
+<div class="section"><b>Importing modules and JavaScript files</b></div>
+<p>
+Native C modules and JavaScript files can be imported in a similar fashion, by accessing <b>imports.<i>file</i></b>. Notice that the suffix (most likely .so or .js, respectively) is not included in the file name when requesting it, and keep this in mind when naming files.
+</p>
+<p>
+First, if the file name is actually a <i>directory</i>, an object is returned that represents the contents of that directory, which behaves exactly as <i>imports</i> does in regards to importing native modules and JavaScript files. For example, say you have the directory <i>js</i>, which contains <i>score.js</i>:
+</p>
+<pre class="sh_javascript">
+score = imports.js.score;
+</pre>
+<p>This will import score.js, just as described below.</p>
+<p>
+If the file is <i>not</i> a directory, but happens to have your system's shared library suffix, the native module is loaded, and the module object is returned, similar to GObject Introspection namespace imports:
+</p>
+<pre class="sh_javascript">
+readline = imports.readline;
+readline.readline(">");
+</pre>
+<p>
+Otherwise, Seed assumes that the file is a JavaScript file. If the file is found in the current path, it is evaluated (in a <b>separate</b> Seed context, so any state in the file it is imported from is not accessible), and the global object is returned. Keep in mind that it is possible to accidentally import a non-JavaScript file, as the extension is not taken into account.
+</p>
+<p>Imagine we have the file test_file.js:</p>
+<pre class="sh_javascript">
+test_string = "Hello, world!";
+</pre>
+<p>And another file, which we evaluate with <i>seed</i>:</p>
+<pre class="sh_javascript">
+test_file = imports.test_file;
+Seed.print(test_file.test_string);
+</pre>
+<p>This will print "Hello, world!", as expected. Notice how, unlike in versions of Seed prior to 0.5, the file is not actually evaluated in the context of the importing file, so its toplevel objects are not globally available.</p>
 <div class="section"><b>Seed.import_namespace</b>(namespace, <i>version</i>)</div>
+<p style="color:red;"><b>Deprecated. Do not use in new code. Will be removed in a future version.</b></p>
 <p>
 Imports functions and constructors from the given gobject-introspection <i>namespace</i>. The optional <i>version</i> parameter forces a particular version, and will throw an exception if the typelib for that version is not installed; if it is omitted, the latest version is loaded.
 </p>
@@ -102,19 +164,6 @@ else
 
     while(1)
         Seed.print("From Child");
-}
-</pre>
-<div class="section"><b>Seed.introspect</b>(function)</div>
-<p>
-Returns an object containing information about the function, its arguments, etc. This will eventually support introspection of a wider variety of Javascript types.
-</p>
-<pre class="sh_javascript">
-proto = Seed.prototype(Gtk.Window);
-method = Seed.introspect(proto.translate_coordinates);
-
-for(i in method.args)
-{
-    Seed.print(method.args[i].type)
 }
 </pre>
 <div class="section"><b>Seed.stringify</b>(object)</div>

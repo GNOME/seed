@@ -11,6 +11,17 @@
 * instance_init is now just init when creating new GTypes. This will require 
   changes in any code using subclassing.
 
+* Complete rewrite of import system, spanning GObject Introspection namespaces, 
+  native modules, and JavaScript files, which is compatible with Gjs.
+
+* Along with above, deprecate Seed.import_namespace.
+
+* New 'os' module, similar to that of Python. Provides access to a significant
+  quantity of low-level system features unavailable from GLib.
+
+* Significant updates to Canvas module - most features are compatible with the
+  Mozilla implementation at this point.
+
 * Clutter 0.9 animation API wrappers.
 
 * Add seed_repl_expose; gives the ability to drop to a JavaScript REPL from
@@ -20,9 +31,9 @@
 
 * Support for arrays of gfloats.
 
-* API additions: seed_script_new_from_file
+* Added Seed.breakpoint(), which inserts a breakpoint instruction.
 
-* Seed now builds on Mac OS X. Instructions in INSTALL.osx.
+* API additions: seed_script_new_from_file
 
 * New examples:
     * opengl-glib examples (teapot, gears, triangle)

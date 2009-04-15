@@ -1,6 +1,10 @@
 #!/usr/bin/env seed
 
-Seed.import_namespace("Clutter", "0.9");
+imports.gi.versions.Clutter = "0.9";
+
+Clutter = imports.gi.Clutter;
+GObject = imports.gi.GObject;
+
 Clutter.init(null, null);
 
 colors = [	"blanched almond", 
@@ -23,7 +27,7 @@ function create_rectangles(rectangles, colors)
 		var c = new Clutter.Color();
 		var r = new Clutter.Rectangle();
 		
-		Clutter.color_parse(colors[i], c);
+		c.from_string(colors[i]);
 		
 		r.width = r.height = stage.height / colors.length;
 		r.color = c;
