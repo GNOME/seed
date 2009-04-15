@@ -584,9 +584,10 @@ seed_importer_handle_file (JSContextRef ctx,
   global = JSContextGetGlobalObject (nctx);
   JSValueProtect (eng->context, global);
   
+  g_hash_table_insert (file_imports, file_path, global);
+
   JSEvaluateScript (nctx, file_contents, NULL, file_name, 0, exception);
 
-  g_hash_table_insert (file_imports, file_path, global);
   // Does leak...but it's a debug statement.
   SEED_NOTE (IMPORTER, "Evaluated file, exception: %s", 
 	     *exception ? seed_exception_to_string (ctx, *exception) : "(null)");
