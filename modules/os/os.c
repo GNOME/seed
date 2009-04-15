@@ -555,7 +555,7 @@ seed_os_close (SeedContext ctx,
   
   if (argument_count != 1)
     {
-      EXPECTED_EXCEPTION("os.open", "2 arguments");
+      EXPECTED_EXCEPTION("os.close", "2 arguments");
     }
   
   arg = seed_value_to_int (ctx, arguments[0], exception);
@@ -563,6 +563,67 @@ seed_os_close (SeedContext ctx,
   return seed_value_from_int (ctx, close (arg), exception);
 }
 
+SeedValue
+seed_os_dup (SeedContext ctx,
+	     SeedObject function,
+	     SeedObject this_object,
+	     size_t argument_count,
+	     const SeedValue arguments[], 
+	     SeedException * exception)
+{
+  gint arg;
+  
+  if (argument_count != 1)
+    {
+      EXPECTED_EXCEPTION("os.dup", "1 argument");
+    }
+  
+  arg = seed_value_to_int (ctx, arguments[0], exception);
+  
+  return seed_value_from_int (ctx, dup (arg), exception);
+}
+SeedValue
+seed_os_dup2 (SeedContext ctx,
+	      SeedObject function,
+	      SeedObject this_object,
+	      size_t argument_count,
+	      const SeedValue arguments[], 
+	      SeedException * exception)
+{
+  gint arg, arg2;
+  
+  if (argument_count != 2)
+    {
+      EXPECTED_EXCEPTION("os.dup2", "2 arguments");
+    }
+  
+  arg = seed_value_to_int (ctx, arguments[0], exception);
+  arg2 = seed_value_to_int (ctx, arguments[0], exception);
+  
+  return seed_value_from_int (ctx, dup2 (arg, arg2), exception);
+}
+
+SeedValue
+seed_os_fchmod (SeedContext ctx,
+		SeedObject function,
+		SeedObject this_object,
+		size_t argument_count,
+		const SeedValue arguments[], 
+		SeedException * exception)
+{
+  gint fd;
+  mode_t mode;
+
+  if (argument_count != 2)
+    {
+      EXPECTED_EXCEPTION ("os.fchmod", "2 arguments");
+    }
+  fd = seed_value_to_int (ctx, arguments[0], exception);
+  mode = seed_value_to_long (ctx, arguments[1], exception);
+  
+  return seed_value_from_int (ctx, fchmod (fd, mode), exception);
+}
+  
 seed_static_function os_funcs[] = {
   {"chdir", seed_os_chdir, 0},
   {"fchdir", seed_os_fchdir, 0},
@@ -588,7 +649,10 @@ seed_static_function os_funcs[] = {
   {"uname", seed_os_uname, 0},
   {"unsetenv", seed_os_unsetenv, 0},
   {"open", seed_os_open, 0},
-  {"close", seed_os_close, 0}
+  {"close", seed_os_close, 0},
+  {"dup", seed_os_dup, 0},
+  {"dup2", seed_os_dup2, 0},
+  {"fchmod", seed_os_fchmod, 0}
 };
 
 #define OS_DEFINE_ENUM(name, value) \
