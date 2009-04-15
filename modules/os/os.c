@@ -704,6 +704,46 @@ seed_os_fsync (SeedContext ctx,
   
   return seed_value_from_long (ctx, fsync (fd), exception);
 }
+
+SeedValue
+seed_os_ftruncate (SeedContext ctx,
+		   SeedObject function,
+		   SeedObject this_object,
+		   size_t argument_count,
+		   const SeedValue arguments[], 
+		   SeedException * exception)
+{
+  gint fd;
+  off_t length;
+
+  if (argument_count != 2)
+    {
+      EXPECTED_EXCEPTION ("os.ftruncate", "2 arguments");
+    }
+  fd = seed_value_to_int (ctx, arguments[0], exception);
+  length = seed_value_to_int (ctx, arguments[1], exception);
+  
+  return seed_value_from_long (ctx, ftruncate (fd, length), exception);
+}
+
+SeedValue
+seed_os_isatty (SeedContext ctx,
+		SeedObject function,
+		SeedObject this_object,
+		size_t argument_count,
+		const SeedValue arguments[], 
+		SeedException * exception)
+{
+  gint fd;
+
+  if (argument_count != 1)
+    {
+      EXPECTED_EXCEPTION ("os.isatty", "1 argument");
+    }
+  fd = seed_value_to_int (ctx, arguments[0], exception);
+  
+  return seed_value_from_boolean (ctx, isatty (fd), exception);
+}
   
 seed_static_function os_funcs[] = {
   {"chdir", seed_os_chdir, 0},
@@ -737,7 +777,9 @@ seed_static_function os_funcs[] = {
   {"fchown", seed_os_fchown, 0},
   {"fdatasync", seed_os_fdatasync, 0},
   {"fpathconf", seed_os_fpathconf, 0},
-  {"fsync", seed_os_fsync, 0}
+  {"fsync", seed_os_fsync, 0},
+  {"ftruncate", seed_os_ftruncate, 0},
+  {"isatty", seed_os_isatty, 0}
 };
 
 #define OS_DEFINE_ENUM(name, value) \
