@@ -1,5 +1,7 @@
 #include <string.h>
 
+#include <gio/gio.h>
+
 #include "seed-private.h"
 
 JSClassRef importer_class;
@@ -533,6 +535,19 @@ seed_importer_handle_native_module (JSContextRef ctx,
   return module_obj;
 }
 
+static gchar *
+seed_importer_canonicalize_path (gchar *path)
+{
+  GFile *file;
+  gchar *absolute_path;
+  
+  file = g_file_new_for_path (path);
+  absolute_path = g_file_get_path (file);
+  g_object_unref (file);
+  
+  return absolute_path;
+}
+
 static JSObjectRef
 seed_importer_handle_file (JSContextRef ctx,
 			   const gchar *dir,
@@ -542,15 +557,18 @@ seed_importer_handle_file (JSContextRef ctx,
   JSContextRef nctx;
   JSObjectRef global, c_global;
   JSStringRef file_contents, file_name;
-  gchar *contents, *walk, *file_path;
+  gchar *contents, *walk, *file_path, *canonical;
   
   file_path = g_strconcat (dir, "/", file, NULL);
+  canonical = seed_importer_canonicalize_path (file_path);
   SEED_NOTE (IMPORTER, "Trying to import file: %s", file_path);
   
-  if (global = g_hash_table_lookup (file_imports, file_path))
+  if (global = g_hash_table_lookup (file_imports, canonical))
     {
       SEED_NOTE (IMPORTER, "Using existing global");
+
       g_free (file_path);
+      g_free (canonical);
       return global;
     }
 
@@ -585,7 +603,8 @@ seed_importer_handle_file (JSContextRef ctx,
   c_global = JSContextGetGlobalObject (ctx);
   JSValueProtect (eng->context, global);
   
-  g_hash_table_insert (file_imports, file_path, global);
+  g_hash_table_insert (file_imports, canonical, global);
+  g_free (file_path);
 
   JSEvaluateScript (nctx, file_contents, c_global, file_name, 0, exception);
 
@@ -817,6 +836,14 @@ JSClassDefinition importer_dir_class_def = {
   NULL,				/* Has Instance */
   NULL				/* Convert To Type */
 };
+
+void
+seed_importer_add_global(JSObjectRef global,
+			 gchar *name)
+{
+  JSValueProtect (eng->context, global);
+  g_hash_table_insert (file_imports, seed_importer_canonicalize_path (name), global);
+}
 
 void seed_initialize_importer(JSContextRef ctx,
 			      JSObjectRef global)

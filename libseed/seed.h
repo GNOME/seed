@@ -368,4 +368,6 @@ seed_signal_connect_value (SeedContext ctx,
 
 SeedObject seed_context_get_global_object (SeedContext ctx);
 
+void seed_importer_add_global(SeedContext ctx, gchar *name);
+
 #endif

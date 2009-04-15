@@ -24,6 +24,8 @@
 #include "../libseed/seed-debug.h"
 #include <girepository.h>
 
+#include <string.h>
+
 #define DEFAULT_PATH "."
 
 SeedEngine *eng;
@@ -47,12 +49,13 @@ seed_repl (gint argc, gchar ** argv)
 void
 seed_exec (gint argc, gchar ** argv)
 {
+  SeedObject global;
   SeedScript *script;
   SeedException e;
   gchar *buffer;
 
   g_file_get_contents (argv[1], &buffer, 0, 0);
-
+  
   if (!buffer)
     {
       g_critical ("File %s not found!", argv[1]);
@@ -75,6 +78,10 @@ seed_exec (gint argc, gchar ** argv)
 		  seed_exception_get_line (eng->context, e));
       exit (1);
     }
+  
+  global = seed_context_get_global_object (eng->context);
+  seed_importer_add_global (global, argv[1]);
+
   seed_evaluate (eng->context, script, 0);
   if ((e = seed_script_exception (script)))
     g_critical ("%s. %s in %s at line %d",
