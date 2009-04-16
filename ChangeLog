@@ -11,6 +11,8 @@
 * instance_init is now just init when creating new GTypes. This will require 
   changes in any code using subclassing.
 
+* Enum types are validated when passed in to functions now.
+
 * Complete rewrite of import system, spanning GObject Introspection namespaces, 
   native modules, and JavaScript files, which is compatible with Gjs.
 

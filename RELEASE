@@ -1,0 +1,85 @@
+Today I am happy to announce the release of Seed 0.5. In keeping
+with the naming of Seed releases after albums, Seed 0.5 is
+designated "Transformer".
+
+For those not familiar, Seed (http://live.gnome.org/Seed), is a
+library that bridges WebKit's JavaScriptCore interpreter, with
+the GNOME platform. Using GObject-introspection, Seed provides
+automatic bindings around most GObject style libraries. In addition
+Seed has an API, which in combination with GObject-introspection can
+be used to easily enable your GObject application to be made 
+extensible with JavaScript (This is currently realized in the Seed
+extensions for epiphany). In addition to GNOME libraries, Seed
+can also access OpenGL, a significant portion of the POSIX API
+(based on Python's OS module), readline, and sqlite. More 
+modules can easily be written through a C interface.
+
+The highlights of this release include. A redesigned imports system,
+significantly better base memory usage (several MB) for most apps, enum
+validation, the new OS module, a more or less rewrite of the Canvas module (which
+makes it mostly compatible with WebKit/Mozilla canvas), significant
+API additions + gtk-doc, lots of new examples, and a lot of leak
+fixes + stability improvements. In addition when enabled at build time
+Seed now has a fairly rich logging system (modelled after Clutter's), which
+can be a big aid in debugging.
+
+The new imports system, combined with changes to enum casing, makes it
+significantly easier to port GJS code to Seed, and I now believe a port 
+of GNOME shell could be accomplished in an afternoon (by someone familiar).
+
+Seed now also has a bug tracker, at http://bugzilla.gnome.org/browse.cgi?product=seed.
+
+A "full" changelog (it's pretty possible some things have been forgotten) is below.
+
+== Seed 0.5, Transformer (2009.04.16) ==
+
+* Many, many crash fixes.
+
+* Significantly better base memory usage (on the order of MB) for some apps.
+
+* Enums use Gtk.WindowType.NORMAL instead of Gtk.WindowType.Normal.
+  This may break existing code in subtle ways (as Gtk.WindowType.Normal
+  will now be JavaScript null).
+
+* instance_init is now just init when creating new GTypes. This will require 
+  changes in any code using subclassing.
+
+* Enum types are validated when passed in to functions now.
+
+* Complete rewrite of import system, spanning GObject Introspection namespaces, 
+  native modules, and JavaScript files, which is compatible with Gjs.
+
+* Along with above, deprecate Seed.import_namespace.
+
+* New 'os' module, similar to that of Python. Provides access to a significant
+  quantity of low-level system features unavailable from GLib.
+
+* Significant updates to Canvas module - most features are compatible with the
+  Mozilla/WebKit implementations at this point.
+
+* Clutter 0.9 animation API wrappers.
+
+* Add seed_repl_expose; gives the ability to drop to a JavaScript REPL from
+  within C, and magically expose JSValueRefs to JS in a simple way.
+
+* Seed.readline history persists between sessions (stored in ~/.seed_history)
+
+* Support for several more array types.
+
+* Added Seed.breakpoint(), which inserts a breakpoint instruction.
+
+* API additions: Lots of API additions. Including a significant amount 
+of API documentation.
+
+* New examples:
+    * opengl-glib examples (teapot, gears, triangle)
+    * Gtk Twitter client (from the Ars Technica article)
+    * Same Seed (Clutter 0.9 rewrite of Same Gnome)
+    * Clutter-COGL example
+    * Reddit client (Gio and JSON)
+    * Library of Clutter "slide transitions"
+    * Rewrote clutter example for 0.9
+    * Rewrite of browser example.
+    * Several GLib examples
+
+* The Lights Off example now lives in Gnome Games.
