@@ -1,5 +1,5 @@
 if BUILD_SEED_EXAMPLES
-gldir=$(datadir)/doc/seed/examples/glib
+gldir=$(datadir)/doc/seed/examples/opengl
 gl_DATA = \
 	glut-teapot.js \
 	triangle-actor.js \
