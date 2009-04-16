@@ -17,7 +17,7 @@
 SeedObject os_namespace;
 
 #define EXPECTED_EXCEPTION(name, argnum) \
-  gchar *mes = g_strdup_printf (name " expected " argnum " got %d", argument_count); \
+  gchar *mes = g_strdup_printf (name " expected " argnum " got %Zd", argument_count); \
   seed_make_exception (ctx, exception, "ArgumentError", mes); \
   g_free (mes); \
   return seed_make_null (ctx);
