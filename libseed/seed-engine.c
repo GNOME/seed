@@ -860,31 +860,6 @@ seed_gobject_set_property (JSContextRef context,
   return TRUE;
 }
 
-static GModule *
-seed_try_load_extension (gchar * name)
-{
-  GModule *module;
-  gchar *path;
-  gchar *lowername;
-
-  lowername = g_utf8_strdown (name, -1);
-
-  path = g_module_build_path ("/usr/local/lib/seed", lowername);
-
-  module = g_module_open (path, G_MODULE_BIND_LAZY);
-
-  if (!module)
-    {
-      g_free (path);
-      path = g_module_build_path ("/usr/lib/seed", lowername);
-
-      module = g_module_open (path, G_MODULE_BIND_LAZY);
-    }
-  g_free (path);
-  g_free (lowername);
-  return module;
-}
-
 static JSValueRef
 seed_gi_import_namespace (JSContextRef ctx,
 			  JSObjectRef function,
@@ -897,7 +872,6 @@ seed_gi_import_namespace (JSContextRef ctx,
   const gchar *version = 0;
   gchar *jsextension;
   JSStringRef extension_script;
-  GModule *extension;
 
   ctx = eng->context;
 

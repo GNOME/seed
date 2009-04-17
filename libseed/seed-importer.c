@@ -335,7 +335,7 @@ seed_gi_importer_do_namespace (JSContextRef ctx,
   gchar *jsextension;
   JSStringRef extension_script;
   
-  if (namespace_ref = g_hash_table_lookup (gi_imports, namespace))
+  if ((namespace_ref = g_hash_table_lookup (gi_imports, namespace)))
     {
       SEED_NOTE (IMPORTER, "Using existing namespace ref (%p) for %s",
 		 namespace_ref, namespace);
@@ -504,7 +504,7 @@ seed_importer_handle_native_module (JSContextRef ctx,
   
   SEED_NOTE (IMPORTER, "Trying native module: %s", file_path);
 
-  if (module_obj = g_hash_table_lookup (file_imports, file_path))
+  if ((module_obj = g_hash_table_lookup (file_imports, file_path)))
     {
       g_free (file_path);
       return module_obj;
@@ -563,7 +563,7 @@ seed_importer_handle_file (JSContextRef ctx,
   canonical = seed_importer_canonicalize_path (file_path);
   SEED_NOTE (IMPORTER, "Trying to import file: %s", file_path);
   
-  if (global = g_hash_table_lookup (file_imports, canonical))
+  if ((global = g_hash_table_lookup (file_imports, canonical)))
     {
       SEED_NOTE (IMPORTER, "Using existing global");
 
@@ -646,7 +646,7 @@ seed_importer_search (JSContextRef ctx,
 	  walk = walk->next;
 	  continue;
 	}
-      while (entry = g_dir_read_name(dir))
+      while ((entry = g_dir_read_name(dir)))
 	{
 	  guint i;
 	  gchar *mentry = g_strdup (entry);
@@ -748,7 +748,7 @@ seed_importer_dir_get_property (JSContextRef ctx,
       
       return NULL;
     }
-  while (entry = g_dir_read_name (dir))
+  while ((entry = g_dir_read_name (dir)))
     {
       gchar *mentry = g_strdup (entry);
       guint i;

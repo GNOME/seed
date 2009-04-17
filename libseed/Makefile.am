@@ -25,7 +25,7 @@ libseed_la_SOURCES = \
 	seed-importer.h 
 
 libseed_la_LIBADD = $(LIBSEED_LIBS) $(LIBFFI_LIBS)
-libseed_la_CPPFLAGS = -lgmodule-2.0 $(LIBSEED_CFLAGS) $(SEED_OSX_CFLAGS) $(FFI_CFLAGS)
+libseed_la_CPPFLAGS = -lgmodule-2.0 $(LIBSEED_CFLAGS) $(SEED_OSX_CFLAGS) $(FFI_CFLAGS) -Wall
 libseed_la_LDFLAGS = -no-undefined $(SEED_PROFILE_LDFLAGS) $(SEED_OSX_LDFLAGS) $(FFI_LIBS)
 
 seedheaders_HEADERS = seed.h

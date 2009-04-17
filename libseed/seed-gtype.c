@@ -256,10 +256,9 @@ seed_gtype_get_property (GObject * object,
 static GIBaseInfo *
 seed_get_class_info_for_type (GType type)
 {
-  GType parent;
   GIBaseInfo *object_info;
   
-  while (type = g_type_parent (type))
+  while ((type = g_type_parent (type)))
     {
       object_info = g_irepository_find_by_gtype (NULL, type);
       if (object_info)

@@ -162,8 +162,6 @@ seed_add_signals_to_object (JSContextRef ctx,
 			    JSObjectRef object_ref, GObject * obj)
 {
   GType type;
-  GType *interfaces;
-  guint n, i;
   JSObjectRef signals_ref, connect_func;
 
   g_assert (obj);
@@ -391,7 +389,6 @@ seed_signal_holder_get_property (JSContextRef ctx,
 				 JSValueRef *exception)
 {
   GObject *gobj = JSObjectGetPrivate (object);
-  GType type = G_OBJECT_TYPE (gobj);
   signal_privates *priv = g_slice_alloc (sizeof (signal_privates));
   guint length = JSStringGetMaximumUTF8CStringSize (property_name);
   gchar *signal_name = g_malloc (length * sizeof (gchar));
