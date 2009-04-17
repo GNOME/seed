@@ -845,6 +845,27 @@ seed_importer_add_global(JSObjectRef global,
   g_hash_table_insert (file_imports, seed_importer_canonicalize_path (name), global);
 }
 
+void 
+seed_importer_set_search_path(JSContextRef ctx,
+			      gchar **search_path)
+{
+  JSObjectRef imports, array;
+  JSValueRef *array_elem;
+  guint length = g_strv_length (search_path), i;
+  
+  array_elem = g_alloca (length * sizeof (array_elem));
+  imports = (JSObjectRef) seed_object_get_property (ctx, JSContextGetGlobalObject (ctx), "imports");
+  
+  for (i = 0; i < length; i++)
+    {
+      array_elem[i] = seed_value_from_string (ctx, search_path[i], NULL);
+    }
+  
+  array = JSObjectMakeArray (ctx, length, array_elem, NULL);
+  seed_object_set_property (ctx, imports, "searchPath", array);  
+  
+}
+
 void seed_initialize_importer(JSContextRef ctx,
 			      JSObjectRef global)
 {

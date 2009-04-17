@@ -2,6 +2,10 @@ Today I am happy to announce the release of Seed 0.5. In keeping
 with the naming of Seed releases after albums, Seed 0.5 is
 designated "Transformer".
 
+Tarballs are available at http://ftp.gnome.org/pub/GNOME/sources/seed/0.5/
+it is also worth noting that Seed has moved to git.gnome.org since
+the last release.
+
 For those not familiar, Seed (http://live.gnome.org/Seed), is a
 library that bridges WebKit's JavaScriptCore interpreter, with
 the GNOME platform. Using GObject-introspection, Seed provides
@@ -27,7 +31,8 @@ The new imports system, combined with changes to enum casing, makes it
 significantly easier to port GJS code to Seed, and I now believe a port 
 of GNOME shell could be accomplished in an afternoon (by someone familiar).
 
-Seed now also has a bug tracker, at http://bugzilla.gnome.org/browse.cgi?product=seed.
+Seed now also has a bug tracker, at 
+http://bugzilla.gnome.org/browse.cgi?product=seed.
 
 A "full" changelog (it's pretty possible some things have been forgotten) is below.
 
