@@ -66,7 +66,11 @@ function animate()
 	stage.add_actor(at);
 	stage.show_all();
 
-	GLib.timeout_add(500, next_transition);
+	//GLib.timeout_add(500, next_transition);
+	trtimeline = new Clutter.Timeline();
+	trtimeline.duration = 500;
+	trtimeline.signal.completed.connect(next_transition);
+	trtimeline.start();
 }
 
 animate();
