@@ -1,6 +1,6 @@
 #!/usr/bin/env seed
 
-Seed.import_namespace("Gtk");
+Gtk = imports.gi.Gtk;
 Gtk.init(null, null);
 
 BrowserToolbar = new GType({
@@ -34,7 +34,7 @@ BrowserToolbar = new GType({
         {
             Seed.print("Navigate to: " + url.text);
         };
-        
+
         // Implementation
         back_button.signal.clicked.connect(back);
         forward_button.signal.clicked.connect(forward);

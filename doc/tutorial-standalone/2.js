@@ -2,8 +2,8 @@
 
 var home_page = "http://www.google.com";
 
-Seed.import_namespace("Gtk");
-Seed.import_namespace("WebKit");
+Gtk = imports.gi.Gtk;
+WebKit = imports.gi.WebKit;
 Gtk.init(null, null);
 
 Browser = new GType({
@@ -15,7 +15,7 @@ Browser = new GType({
         var toolbar = new BrowserToolbar();
         var web_view = new BrowserView();
         var scroll_view = new Gtk.ScrolledWindow();
-        
+
         // Public
         this.get_toolbar = function ()
         {
@@ -26,7 +26,7 @@ Browser = new GType({
         {
             return web_view;
         };
-        
+
         // Implementation
         scroll_view.smooth_scroll = true;
         scroll_view.add(web_view);
@@ -48,12 +48,12 @@ BrowserView = new GType({
         var update_url = function (web_view, web_frame)
         {
             var toolbar = browser.get_toolbar();
-            
+
             toolbar.set_url(web_frame.get_uri());
             toolbar.set_can_go_back(web_view.can_go_back());
             toolbar.set_can_go_forward(web_view.can_go_forward());
         };
-        
+
         // Public
         this.browse = function (url)
         {
@@ -62,7 +62,7 @@ BrowserView = new GType({
 
             this.open(url);
         };
-        
+
         // Implementation
         this.set_scroll_adjustments(null, null);
         this.signal.load_committed.connect(update_url);
@@ -106,17 +106,17 @@ BrowserToolbar = new GType({
         {
             url_bar.text = url;
         };
-        
+
         this.set_can_go_back = function (can_go_back)
         {
             back_button.sensitive = can_go_back;
         };
-        
+
         this.set_can_go_forward = function (can_go_forward)
         {
             forward_button.sensitive = can_go_forward;
         };
-        
+
         // Implementation
         back_button.signal.clicked.connect(back);
         forward_button.signal.clicked.connect(forward);

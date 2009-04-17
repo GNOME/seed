@@ -47,7 +47,7 @@ Hello, world!
 <p>There is one exception: in order to convert a string of digits into a 'number', JavaScript needs to be explicitly instructed to do so: <code>parseFloat("42.5")</code>.</p>
 <p>Seed also provides a very simple interface to the <a href="http://directory.fsf.org/project/readline/">GNU Readline</a> library, which allows programs to ask the user for input. This interface is in the <b>readline</b> module, which <u>must</u> be imported before it can be used. The only argument <code>readline.readline()</code> requires is the prompt for the user. Also, the current version of Seed ensures that everything typed is automatically saved in the prompt's history; if you press the up key while at a prompt, you can access and edit lines you've previously entered. Future versions of Seed will provide more control over the history and other parts of readline.</p>
 <pre class="sh_javascript">
-Seed.import_namespace("readline");
+readline = imports.readline;
 var my_name = readline.readline("Your name? ");
 var my_age = readline.readline("Your age? ");
 var old = 25;
@@ -95,7 +95,7 @@ catch(e)
 <pre class="sh_javascript">
 #!/usr/bin/env seed
 
-Seed.import_namespace("readline");
+readline = imports.readline;
 
 while(1)
 {
@@ -112,13 +112,13 @@ while(1)
 <p>You can (and <em>should!</em>) use this shell in order to experiment with and learn to use Seed.</p>
 <div class="section">Getting GTK Going</div>
 <p>Thus far in this tutorial, we've been completely ignoring the most useful part of Seed: the ability to use external libraries from within JavaScript. The single most useful of these libraries is GTK, the widget and windowing toolkit used by all GNOME applications, which will provide the ability to create and manipulate graphical windows, as well as just about any sort of widget you should require.</p>
-<p>In order to use GTK (or any other external library) in a Seed program, you first have to import the functions from said library. <code>Seed.import_namespace()</code>, taking as its only argument the name of the library to import, does this for us.</p>
-<p>Once the library has been imported, all of its functions are available on a global object with the same name as the library. For example, if we <code>Seed.import_namespace("Gtk")</code>, all of the imported functions are available on the GTK object: <code><a href="http://library.gnome.org/devel/gtk/2.14/gtk-General.html#gtk-init">GTK.init()</a></code>, etc.</p>
+<p>In order to use GTK (or any other external library) in a Seed program, you first have to import the functions from said library. <code>Gtk = imports.gi.Gtk</code>, does this for us. The imports.gi object is a special object which handles importing libraries from introspection data.</p>
+<p>Once the library has been imported</code>, all of the imported functions are available on the Gtk object: <code><a href="http://library.gnome.org/devel/gtk/2.14/gtk-General.html#gtk-init">GTK.init()</a></code>, etc.</p>
 <p>Let's start off the development of our browser by getting GTK working. It takes very little to get a window displayed with Seed:</p>
 <pre class="sh_javascript">
 #!/usr/bin/env seed
 
-Seed.import_namespace("Gtk");
+Gtk = imports.gi.Gtk;
 Gtk.init(null, null);
 
 var window = new Gtk.Window();
