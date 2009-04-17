@@ -369,7 +369,7 @@ seed_signal_connect_value (SeedContext ctx,
 SeedObject seed_context_get_global_object (SeedContext ctx);
 
 void seed_importer_add_global(SeedContext ctx, gchar *name);
-void seed_importer_set_search_path (JSContextRef ctx,
+void seed_importer_set_search_path (SeedContext ctx,
 				    gchar **search_path);
 
 
