@@ -433,58 +433,6 @@ seed_breakpoint (JSContextRef ctx,
   return JSValueMakeNull(ctx);
 }
 
-static JSValueRef
-seed_get_include_path (JSContextRef ctx,
-		       JSObjectRef function,
-		       JSObjectRef this_object,
-		       size_t argumentCount,
-		       const JSValueRef arguments[], JSValueRef * exception)
-{
-  JSValueRef ret;
-  if (argumentCount > 0)
-    {
-      gchar *mes =
-	g_strdup_printf ("Seed.get_include_path expected "
-			 "0 arguments, got %Zd",
-			 argumentCount);
-      seed_make_exception (ctx, exception, "ArgumentError", mes);
-      g_free (mes);
-      return (JSValueMakeNull (ctx));
-    }
-
-  gchar *path_string = g_strjoinv (":", eng->search_path);
-  ret = seed_value_from_string (ctx, path_string, exception);
-  g_free (path_string);
-
-  return ret;
-}
-
-static JSValueRef
-seed_set_include_path (JSContextRef ctx,
-		       JSObjectRef function,
-		       JSObjectRef this_object,
-		       size_t argumentCount,
-		       const JSValueRef arguments[], JSValueRef * exception)
-{
-  gchar *new_path;
-  if (argumentCount != 1)
-    {
-      gchar *mes =
-	g_strdup_printf ("Seed.set_include_path expected "
-			 "1 argument, got %Zd",
-			 argumentCount);
-      seed_make_exception (ctx, exception, "ArgumentError", mes);
-      g_free (mes);
-      return JSValueMakeNull (ctx);
-    }
-
-  new_path = seed_value_to_string (ctx, arguments[0], exception);
-  g_strfreev (eng->search_path);	/* free the old path. */
-  eng->search_path = g_strsplit (new_path, ":", -1);
-
-  return JSValueMakeNull (ctx);
-}
-
 void
 seed_init_builtins (SeedEngine * local_eng, gint * argc, gchar *** argv)
 {
@@ -507,10 +455,6 @@ seed_init_builtins (SeedEngine * local_eng, gint * argc, gchar *** argv)
   seed_create_function (local_eng->context, "fork", &seed_fork, obj);
   seed_create_function (local_eng->context, "spawn", &seed_spawn, obj);
   seed_create_function (local_eng->context, "quit", &seed_quit, obj);
-  seed_create_function (local_eng->context, "set_include_path",
-			&seed_set_include_path, obj);
-  seed_create_function (local_eng->context, "get_include_path",
-			&seed_get_include_path, obj);
   seed_create_function (local_eng->context, "breakpoint",
 			&seed_breakpoint, obj);
 
