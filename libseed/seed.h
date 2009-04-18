@@ -372,5 +372,7 @@ void seed_importer_add_global(SeedContext ctx, gchar *name);
 void seed_importer_set_search_path (SeedContext ctx,
 				    gchar **search_path);
 
+void seed_prepare_global_context (SeedContext ctx);
+
 
 #endif
