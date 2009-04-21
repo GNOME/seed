@@ -111,8 +111,6 @@ seed_gobject_signal_connect (JSContextRef ctx,
       //  JSValueProtect(ctx, user_data);
     }
 
-  JSValueProtect (ctx, (JSObjectRef) func);
-
   g_signal_connect_closure (on_obj, signal_name, closure, FALSE);
 }
 
