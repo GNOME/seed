@@ -656,7 +656,7 @@ seed_importer_search (JSContextRef ctx,
 	      if (mentry[i] == '.')
 		mentry[i] = '\0';
 	    }
-	  if (!strcmp (mentry, prop) && g_str_has_suffix (entry, ".js"))
+	  if (!strcmp (mentry, prop))
 	    {
 	      JSObjectRef ret;
 	      
