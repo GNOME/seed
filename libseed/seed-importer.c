@@ -776,6 +776,13 @@ seed_importer_dir_get_property (JSContextRef ctx,
   return NULL;
 }
 
+static void
+seed_importer_dir_finalize (JSObjectRef dir)
+{
+  gchar *dir_path = (gchar *) JSObjectGetPrivate (dir);
+  g_free (dir_path);
+}
+
 
 JSClassDefinition importer_class_def = {
   0,				/* Version, always 0 */
@@ -825,7 +832,7 @@ JSClassDefinition importer_dir_class_def = {
   NULL,				/* Static Values */
   NULL,				/* Static Functions */
   NULL,                         /* Initialize */
-  NULL,				/* Finalize */
+  seed_importer_dir_finalize,	/* Finalize */
   NULL,				/* Has Property */
   seed_importer_dir_get_property,	/* Get Property */
   NULL,				/* Set Property */
@@ -866,44 +873,10 @@ seed_importer_set_search_path(JSContextRef ctx,
   
 }
 
-static JSObjectRef
-seed_importer_construct_dir (JSContextRef ctx,
-			     JSObjectRef constructor,
-			     size_t argumentCount,
-			     const JSValueRef arguments[],
-			     JSValueRef *exception)
-{
-  gchar *dir;
-  
-  if (argumentCount != 1)
-    {
-      gchar *mes = g_strdup_printf("imports.Directory constructor expected 1 argument, got %d", argumentCount);
-      
-      seed_make_exception (ctx, exception, "ArgumentError", mes);
-      g_free (mes);
-      
-      return (JSObjectRef)JSValueMakeNull (ctx);
-    }
-  dir = seed_value_to_string (ctx, arguments[0], exception);
-  if (!g_file_test (dir, G_FILE_TEST_IS_DIR))
-    {
-      gchar * mes = g_strdup_printf("File: %s, is not a directory", dir);
-
-      seed_make_exception (ctx, exception, "ArgumentError", mes);
-      g_free (mes);
-      g_free (dir);
-      
-      return (JSObjectRef)JSValueMakeNull (ctx);
-    }
-  
-  return JSObjectMake (ctx, importer_dir_class, dir);
-}
 
 void seed_initialize_importer(JSContextRef ctx,
 			      JSObjectRef global)
 {
-  JSObjectRef dir_constructor;
-
   importer_class = JSClassCreate (&importer_class_def);
   importer = JSObjectMake (ctx, importer_class, NULL);
   
@@ -918,11 +891,6 @@ void seed_initialize_importer(JSContextRef ctx,
   
   gi_imports = g_hash_table_new (g_str_hash, g_str_equal);
   file_imports = g_hash_table_new (g_str_hash, g_str_equal);
-  
-  dir_constructor = JSObjectMakeConstructor (ctx, importer_dir_class,
-					     seed_importer_construct_dir);
-  seed_object_set_property (ctx, importer, "Directory", dir_constructor);
-  JSValueProtect (ctx, dir_constructor);
 					     
   seed_object_set_property (ctx, global, "imports", importer);
 }
