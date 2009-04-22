@@ -34,6 +34,8 @@ seed_closure_finalize (JSObjectRef object)
   g_free (privates->cif);
   g_callable_info_free_closure (privates->info, privates->closure);
   g_base_info_unref ((GIBaseInfo *) privates->info);
+  
+  JSValueUnprotect (eng->context, object);
 }
 
 static void

@@ -1,12 +1,13 @@
 #!/usr/bin/env seed
-Seed.import_namespace("Clutter", "0.8");
+imports.gi.versions.Clutter = "0.8";
+Clutter = imports.gi.Clutter;
 
 Clutter.init(null, null);
 
-colors = [	"blanched almond", 
-			"OldLace", 
-			"MistyRose", 
-			"White", 
+colors = [	"blanched almond",
+			"OldLace",
+			"MistyRose",
+			"White",
 			"LavenderBlush",
 			"CornflowerBlue",
 			"chartreuse",
@@ -24,11 +25,11 @@ function alpha_func(alpha)
 	var fps = timeline.fps;
 	var duration = n_frames/fps;
 	var time = frame/fps;
-	
+
 	if ((time/=duration) < (1/2.75))
 		return Clutter.ALPHA_MAX_ALPHA*(7.5625*time*time);
 	else if (time < (2/2.75))
-		return Clutter.ALPHA_MAX_ALPHA*(7.5625 * 
+		return Clutter.ALPHA_MAX_ALPHA*(7.5625 *
 										(time-=(1.5/2.75))*time+0.75);
 	else if (time < (2.5/2.75))
 		return Clutter.ALPHA_MAX_ALPHA*(7.5625 *
@@ -58,15 +59,15 @@ for (var i = 0; i < colors.length; i++)
 {
 	var c = new Clutter.Color();
 	Clutter.color_parse(colors[i],c);
-	
+
 	var r = new Clutter.Rectangle();
 	r.width = r.height = rheight;
 	r.color = c;
 	r.y = i * r.height+r.height/2;
-	
+
 	r.anchor_x = r.height/2;
 	r.anchor_y = r.height/2;
-	
+
 	stage.add_actor(r);
 	rectangles[i] = r;
 }
@@ -87,19 +88,19 @@ timeline.signal.new_frame.connect(
 timeline.signal.completed.connect(
 	function(timeline)
 	{
-		
+
 		var text = new Clutter.Label({text:"Congratulations!",
 									   font_name:"Bitstream Vera Sans 40"});
 		var fadeline = new Clutter.Timeline({fps:60, num_frames:200});
 		var effect = new Clutter.EffectTemplate.c_new(timeline, alpha_func);
-		
+
 		text.show();
 		stage.add_actor(text);
 		text.color = white;
-		
+
 		text.anchor_x = text.width / 2;
 		text.anchor_y = text.height / 2;
-		
+
 		text.x = stage.width / 2;
 
 		text.y = -text.height;
@@ -107,13 +108,13 @@ timeline.signal.completed.connect(
 							text,
 							text.x,
 							stage.height / 2);
-		
+
 		for (i in rectangles)
 		{
 			Clutter.effect_fade(effect, rectangles[i], 0);
-			Clutter.effect_move(effect, rectangles[i], 
+			Clutter.effect_move(effect, rectangles[i],
 								Math.random() * stage.width,
-								Math.random() * stage.height / 2 + 
+								Math.random() * stage.height / 2 +
 								stage.height / 2);
 		}
 	});
