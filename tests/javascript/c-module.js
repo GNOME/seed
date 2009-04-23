@@ -4,4 +4,4 @@
 // STDOUT:Hello Seed Module World
 // STDERR:
 
-Seed.import_namespace("Example");
+example = imports.example;
