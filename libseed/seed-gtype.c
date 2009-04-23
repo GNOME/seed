@@ -28,6 +28,12 @@ GQuark qgetter;
 GQuark qsetter;
 
 GQuark qiinit;
+GQuark qcinit;
+
+typedef struct _SeedGClassPrivates {
+  JSObjectRef constructor;
+  JSObjectRef func;
+} SeedGClassPrivates;
 
 static JSValueRef
 seed_property_method_invoked (JSContextRef ctx,
@@ -288,84 +294,6 @@ seed_attach_methods_to_class_object (JSContextRef ctx,
 
 
 static void
-seed_handle_class_init_closure (ffi_cif * cif,
-				void *result, 
-				void **args, 
-				void *userdata)
-{
-  JSObjectRef function = (JSObjectRef) userdata;
-  JSValueRef jsargs[2];
-  GType type;
-  JSValueRef exception = 0;
-  JSContextRef ctx = JSGlobalContextCreateInGroup (context_group,
-						   0);
-  GObjectClass *klass = *(GObjectClass **) args[0];
-  GIBaseInfo *class_info;
-
-  seed_prepare_global_context (ctx);
-
-  klass->get_property = seed_gtype_get_property;
-  klass->set_property = seed_gtype_set_property;
-
-  type = (GType) JSObjectGetPrivate (*(JSObjectRef *) args[1]);
-  
-  class_info = seed_get_class_info_for_type (type);
-  
-  jsargs[0] = seed_make_struct (ctx, *(gpointer *) args[0], class_info);
-  jsargs[1] = seed_gobject_get_prototype_for_gtype (type);
-  
-  seed_attach_methods_to_class_object (ctx, (JSObjectRef)jsargs[0], 
-				       &exception);
-  
-  g_base_info_unref ((GIBaseInfo *) class_info);
-  
-  SEED_NOTE (GTYPE, "Marshalling class init closure for type: %s",
-	     g_type_name (type));
-
-  // TODO: 
-  // Should probably have a custom type for class, and have it auto convert.
-  seed_object_set_property (ctx, (JSObjectRef) jsargs[0],
-			    "type", seed_value_from_int (ctx, type, 0));
-  seed_object_set_property (ctx, (JSObjectRef) jsargs[0],
-			    "property_count", seed_value_from_int (ctx, 1,
-								   0));
-
-  JSObjectCallAsFunction (ctx, function, 0, 2, jsargs, &exception);
-  if (exception)
-    {
-      gchar *mes = seed_exception_to_string (ctx, exception);
-      g_warning ("Exception in class init closure. %s \n", mes);
-    }
-
-  JSGlobalContextRelease ((JSGlobalContextRef) ctx);
-}
-
-
-static ffi_closure *
-seed_make_class_init_closure (JSObjectRef function)
-{
-  ffi_cif *cif;
-  ffi_closure *closure;
-  ffi_type **arg_types;
-
-  // Might need to protect function.
-
-  cif = g_new0 (ffi_cif, 1);
-  arg_types = g_new0 (ffi_type *, 3);
-
-  arg_types[0] = &ffi_type_pointer;
-  arg_types[1] = &ffi_type_uint;
-  arg_types[2] = 0;
-
-  closure = mmap (0, sizeof (ffi_closure), PROT_READ | PROT_WRITE |
-		  PROT_EXEC, MAP_ANON | MAP_PRIVATE, -1, 0);
-
-  ffi_prep_cif (cif, FFI_DEFAULT_ABI, 2, &ffi_type_void, arg_types);
-  ffi_prep_closure (closure, cif, seed_handle_class_init_closure, function);
-  return closure;
-}
-
-static void
 seed_gtype_instance_init (GTypeInstance *instance,
 			  gpointer g_class)
 {
@@ -400,6 +328,54 @@ seed_gtype_instance_init (GTypeInstance *instance,
   JSGlobalContextRelease ((JSGlobalContextRef) ctx);
 }
 
+static void
+seed_gtype_class_init (gpointer g_class,
+		       gpointer class_data)
+{
+  SeedGClassPrivates *priv;
+  GIBaseInfo *class_info;
+  JSContextRef ctx;
+  JSValueRef jsargs[2];
+  GType type;
+  JSValueRef exception = 0;
+  
+  priv = (SeedGClassPrivates *)class_data;
+  
+  ctx = JSGlobalContextCreateInGroup (context_group, 0);
+  seed_prepare_global_context (ctx);
+  
+  ((GObjectClass *)g_class)->get_property = seed_gtype_get_property;
+  ((GObjectClass *)g_class)->set_property = seed_gtype_set_property;
+  
+  type = (GType) JSObjectGetPrivate (priv->constructor);
+  class_info = seed_get_class_info_for_type (type);
+  
+  jsargs[0] = seed_make_struct (ctx, g_class, class_info);
+  jsargs[1] = seed_gobject_get_prototype_for_gtype (type);
+  
+  seed_attach_methods_to_class_object (ctx, (JSObjectRef) jsargs[0], &exception);
+  
+  g_base_info_unref ((GIBaseInfo *) class_info);
+  
+  SEED_NOTE (GTYPE, "Marshalling class init for type: %s",
+	     g_type_name (type));
+
+  seed_object_set_property (ctx, (JSObjectRef) jsargs[0],
+			    "type", seed_value_from_int (ctx, type, 0));
+  seed_object_set_property (ctx, (JSObjectRef) jsargs[0],
+			    "property_count", seed_value_from_int (ctx, 1,
+								   0));
+
+  JSObjectCallAsFunction (ctx, priv->func, 0, 2, jsargs, &exception);
+  if (exception)
+    {
+      gchar *mes = seed_exception_to_string (ctx, exception);
+      g_warning ("Exception in class init closure. %s \n", mes);
+    }
+
+  JSGlobalContextRelease ((JSGlobalContextRef) ctx);  
+}
+
 static JSObjectRef
 seed_gtype_constructor_invoked (JSContextRef ctx,
 				JSObjectRef constructor,
@@ -421,9 +397,9 @@ seed_gtype_constructor_invoked (JSContextRef ctx,
     0,
     NULL
   };
-  ffi_closure *init_closure = 0;
   GTypeQuery query;
   JSObjectRef constructor_ref;
+  SeedGClassPrivates *priv;
 
   if (argumentCount != 1)
     {
@@ -459,13 +435,7 @@ seed_gtype_constructor_invoked (JSContextRef ctx,
 
       return (JSObjectRef) JSValueMakeNull (ctx);
     }
-  if (!JSValueIsNull (ctx, class_init) &&
-      JSValueIsObject (ctx, class_init) &&
-      JSObjectIsFunction (ctx, (JSObjectRef) class_init))
-    {
-      init_closure = seed_make_class_init_closure ((JSObjectRef) class_init);
-      JSValueProtect (ctx, class_init);
-    }
+
 
   parent_type = (GType) seed_value_to_int (ctx, parent_ref, exception);
 
@@ -475,14 +445,27 @@ seed_gtype_constructor_invoked (JSContextRef ctx,
   g_type_query (parent_type, &query);
   type_info.class_size = query.class_size;
   type_info.instance_size = query.instance_size;
-  type_info.class_init = (GClassInitFunc) init_closure;
+  type_info.class_init = seed_gtype_class_init;
   type_info.instance_init = seed_gtype_instance_init;
+  
+  priv = g_slice_alloc (sizeof (SeedGClassPrivates));
+
+  if (!JSValueIsNull (ctx, class_init) &&
+      JSValueIsObject (ctx, class_init) &&
+      JSObjectIsFunction (ctx, (JSObjectRef) class_init))
+    {
+      priv->func = (gpointer) class_init;
+      JSValueProtect (ctx, class_init);
+    }
+
 
   constructor_ref = JSObjectMake (ctx, gobject_constructor_class,
 				  (gpointer) 0);
   JSValueProtect (ctx, constructor_ref);
 
-  type_info.class_data = constructor_ref;
+  priv->constructor = constructor_ref;
+  
+  type_info.class_data = priv;
 
   new_type = g_type_register_static (parent_type, new_name, &type_info, 0);
   seed_gobject_get_class_for_gtype (ctx, new_type);
@@ -607,6 +590,7 @@ seed_gtype_init (SeedEngine * local_eng)
   qgetter = g_quark_from_static_string ("js-getter");
   qsetter = g_quark_from_static_string ("js-setter");
   qiinit = g_quark_from_static_string("js-instance-init");
+  qcinit = g_quark_from_static_string("js-class-init");
 
   seed_define_gtype_functions (local_eng->context);
 }
