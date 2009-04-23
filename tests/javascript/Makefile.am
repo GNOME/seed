@@ -20,6 +20,7 @@ EXTRA_DIST = \
     gtype-class-init-exception.js \
     gtype.js \
     gtype-property.js \
+    gtype-property-construct.js \
     gtype-signal-exception.js \
     gtype-signal-args.js \
     gtype-signal.js \

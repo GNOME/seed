@@ -33,6 +33,8 @@ GQuark qcinit;
 typedef struct _SeedGClassPrivates {
   JSObjectRef constructor;
   JSObjectRef func;
+  
+  JSObjectRef definition;
 } SeedGClassPrivates;
 
 static JSValueRef
@@ -334,6 +336,34 @@ seed_gtype_construct (GType type,
 }
 
 static void
+seed_gtype_install_signals (JSContextRef ctx,
+			    JSObjectRef definition,
+			    GType type)
+{
+  JSObjectRef signals;
+  JSValueRef jslength;
+  guint i, length;
+  
+  signals = seed_object_get_property (ctx, definition, "signals");
+  if (JSValueIsNull(ctx, signals) || !JSValueIsObject (ctx, signals))
+    return;
+  
+  jslength = seed_object_get_property (ctx, definition, "length");
+  if (JSValueIsNull (ctx, jslength))
+    return;
+  
+  length = seed_value_to_uint (ctx, jslength, NULL);
+  for (i = 0; i < length; i++)
+    {
+      JSObjectRef signal = JSObjectGetPropertyAtIndex (ctx,
+						       (JSObjectRef) signals, 
+						       i,
+						       NULL);
+    }
+  
+}
+
+static void
 seed_gtype_class_init (gpointer g_class,
 		       gpointer class_data)
 {
@@ -355,6 +385,8 @@ seed_gtype_class_init (gpointer g_class,
   
   ctx = JSGlobalContextCreateInGroup (context_group, 0);
   seed_prepare_global_context (ctx);
+  
+  seed_gtype_install_signals (ctx, priv->definition, type);
     
   type = (GType) JSObjectGetPrivate (priv->constructor);
   class_info = seed_get_class_info_for_type (type);
@@ -475,6 +507,9 @@ seed_gtype_constructor_invoked (JSContextRef ctx,
   JSValueProtect (ctx, constructor_ref);
 
   priv->constructor = constructor_ref;
+  
+  JSValueProtect (ctx, arguments[0]);
+  priv->definition = (JSObjectRef) arguments[0];
   
   type_info.class_data = priv;
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env seed
 // Returns: 0
 // STDIN:
-// STDOUT:1\.000000\n0\.000000
+// STDOUT:1\.000000
 // STDERR:
 
 Gtk = imports.gi.Gtk;
@@ -17,15 +17,14 @@ class_init: function(klass, prototype)
 													  "test property",
 													  "A test property!",
 													  false,
-													  GObject.ParamFlags.READABLE | GObject.ParamFlags.WRITABLE));
+													  GObject.ParamFlags.CONSTRUCT | GObject.ParamFlags.READABLE | GObject.ParamFlags.WRITABLE));
 },
 init: function()
 {
+  Seed.print(this.test);
 }};
 
 HelloWindow = new GType(HelloWindowType);
 w = new HelloWindow({test: true});
-Seed.print(w.test);
-w = new HelloWindow();
-Seed.print(w.test);
+
 
