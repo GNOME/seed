@@ -27,6 +27,8 @@ JSObjectRef seed_gtype_constructor;
 GQuark qgetter;
 GQuark qsetter;
 
+GQuark qiinit;
+
 static JSValueRef
 seed_property_method_invoked (JSContextRef ctx,
 			      JSObjectRef function,
@@ -338,36 +340,6 @@ seed_handle_class_init_closure (ffi_cif * cif,
   JSGlobalContextRelease ((JSGlobalContextRef) ctx);
 }
 
-static void
-seed_handle_instance_init_closure (ffi_cif * cif,
-				   void *result, void **args, void *userdata)
-{
-  JSObjectRef function = (JSObjectRef) userdata;
-  JSValueRef jsargs;
-  JSValueRef exception = 0;
-  JSObjectRef this_object;
-
-  JSContextRef ctx = JSGlobalContextCreateInGroup (context_group, 0);
-
-  seed_prepare_global_context (ctx);
-
-  jsargs = seed_make_pointer (ctx, *(gpointer *) args[1]);
-  this_object =
-    (JSObjectRef) seed_value_from_object (ctx, *(GObject **) args[0], 0);
-
-  SEED_NOTE (GTYPE, "Handling instance init closure for: %p with type: %s",
-	     *(GObject **) args[0],
-	     g_type_name (G_OBJECT_TYPE (*(GObject **) args[0])));
-
-  JSObjectCallAsFunction (ctx, function, this_object, 1, &jsargs, &exception);
-  if (exception)
-    {
-      gchar *mes = seed_exception_to_string (ctx, exception);
-      g_warning ("Exception in instance init closure. %s \n", mes);
-    }
-
-  JSGlobalContextRelease ((JSGlobalContextRef) ctx);
-}
 
 static ffi_closure *
 seed_make_class_init_closure (JSObjectRef function)
@@ -393,29 +365,39 @@ seed_make_class_init_closure (JSObjectRef function)
   return closure;
 }
 
-static ffi_closure *
-seed_make_instance_init_closure (JSObjectRef function)
+static void
+seed_gtype_instance_init (GTypeInstance *instance,
+			  gpointer g_class)
 {
-  ffi_cif *cif;
-  ffi_closure *closure;
-  ffi_type **arg_types;
+  
+  JSContextRef ctx;
+  JSObjectRef func, this_object;
+  JSValueRef jsargs, exception=NULL;
 
-  // Might need to protect function.
+  func = g_type_get_qdata (G_TYPE_FROM_INSTANCE (instance), qiinit);
+  if (!func)
+    return;
+  
+  ctx = JSGlobalContextCreateInGroup (context_group, 0);
+  
+  seed_prepare_global_context (ctx);
+  
+  jsargs = seed_make_pointer (ctx, g_class);
+  this_object =
+    (JSObjectRef) seed_value_from_object (ctx, G_OBJECT (instance), 0);
 
-  cif = g_new0 (ffi_cif, 1);
-  arg_types = g_new0 (ffi_type *, 3);
+  SEED_NOTE (GTYPE, "Handling instance init closure for: %p with type: %s",
+	     g_class,
+	     g_type_name (G_TYPE_FROM_INSTANCE (instance)));
 
-  arg_types[0] = &ffi_type_pointer;
-  arg_types[1] = &ffi_type_pointer;
-  arg_types[2] = 0;
-
-  closure = mmap (0, sizeof (ffi_closure), PROT_READ | PROT_WRITE |
-		  PROT_EXEC, MAP_ANON | MAP_PRIVATE, -1, 0);
-
-  ffi_prep_cif (cif, FFI_DEFAULT_ABI, 2, &ffi_type_void, arg_types);
-  ffi_prep_closure (closure, cif, seed_handle_instance_init_closure,
-		    function);
-  return closure;
+  JSObjectCallAsFunction (ctx, func, this_object, 1, &jsargs, &exception);
+  if (exception)
+    {
+      gchar *mes = seed_exception_to_string (ctx, exception);
+      g_warning ("Exception in instance init closure. %s \n", mes);
+    }
+  
+  JSGlobalContextRelease ((JSGlobalContextRef) ctx);
 }
 
 static JSObjectRef
@@ -440,7 +422,6 @@ seed_gtype_constructor_invoked (JSContextRef ctx,
     NULL
   };
   ffi_closure *init_closure = 0;
-  ffi_closure *instance_init_closure = 0;
   GTypeQuery query;
   JSObjectRef constructor_ref;
 
@@ -485,14 +466,6 @@ seed_gtype_constructor_invoked (JSContextRef ctx,
       init_closure = seed_make_class_init_closure ((JSObjectRef) class_init);
       JSValueProtect (ctx, class_init);
     }
-  if (!JSValueIsNull (ctx, instance_init) &&
-      JSValueIsObject (ctx, instance_init) &&
-      JSObjectIsFunction (ctx, (JSObjectRef) instance_init))
-    {
-      instance_init_closure =
-	seed_make_instance_init_closure ((JSObjectRef) instance_init);
-      JSValueProtect (ctx, instance_init);
-    }
 
   parent_type = (GType) seed_value_to_int (ctx, parent_ref, exception);
 
@@ -503,7 +476,7 @@ seed_gtype_constructor_invoked (JSContextRef ctx,
   type_info.class_size = query.class_size;
   type_info.instance_size = query.instance_size;
   type_info.class_init = (GClassInitFunc) init_closure;
-  type_info.instance_init = (GInstanceInitFunc) instance_init_closure;
+  type_info.instance_init = seed_gtype_instance_init;
 
   constructor_ref = JSObjectMake (ctx, gobject_constructor_class,
 				  (gpointer) 0);
@@ -514,10 +487,18 @@ seed_gtype_constructor_invoked (JSContextRef ctx,
   new_type = g_type_register_static (parent_type, new_name, &type_info, 0);
   seed_gobject_get_class_for_gtype (ctx, new_type);
   JSObjectSetPrivate (constructor_ref, (gpointer) new_type);
-
+  
   seed_object_set_property (ctx, constructor_ref,
 			    "type", seed_value_from_int (ctx, new_type,
 							 exception));
+  
+  if (!JSValueIsNull (ctx, instance_init) &&
+      JSValueIsObject (ctx, instance_init) &&
+      JSObjectIsFunction (ctx, (JSObjectRef) instance_init))
+    {
+      g_type_set_qdata (new_type, qiinit, (gpointer) instance_init);
+      JSValueProtect (ctx, instance_init);
+    }
 
   g_free (new_name);
   return constructor_ref;
@@ -625,6 +606,7 @@ seed_gtype_init (SeedEngine * local_eng)
 
   qgetter = g_quark_from_static_string ("js-getter");
   qsetter = g_quark_from_static_string ("js-setter");
+  qiinit = g_quark_from_static_string("js-instance-init");
 
   seed_define_gtype_functions (local_eng->context);
 }

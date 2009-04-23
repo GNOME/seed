@@ -8,7 +8,7 @@ libreadline_la_SOURCES = \
 
 libreadline_la_LDFLAGS = \
 	-lreadline \
-	`pkg-config --libs seed libffi`
+	$(SEED_LDFLAGS)
 
 AM_CPPFLAGS = \
 	-I../../libseed/ \
@@ -17,8 +17,6 @@ AM_CPPFLAGS = \
 	`pkg-config --cflags gobject-introspection-1.0` \
 	`pkg-config --cflags libffi` \
 	$(SEED_DEBUG_CFLAGS)
-
-AM_LDFLAGS = -lreadline
 
 if PROFILE_MODULES
 	AM_CPPFLAGS += $(SEED_PROFILE_CFLAGS)
