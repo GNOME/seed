@@ -15,5 +15,5 @@ window.add(view);
 window.show_all();
 window.resize (300, 300);
 
-Gtk.main(0);
+Gtk.main();
 
