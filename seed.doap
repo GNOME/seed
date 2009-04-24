@@ -1,0 +1,25 @@
+<Project xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+         xmlns:foaf="http://xmlns.com/foaf/0.1/"
+         xmlns:gnome="http://api.gnome.org/doap-extensions#"
+         xmlns="http://usefulinc.com/ns/doap#">
+
+  <name xml:lang="en">Seed</name>
+  <shortdesc xml:lang="en">GNOME WebKit Javascript bindings</shortdesc>
+  <homepage rdf:resource="http://live.gnome.org/Seed" />
+
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Robert Carr</foaf:name>
+      <foaf:mbox rdf:resource="mailto:racarr@svn.gnome.org" />
+      <gnome:userid>racarr</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Tim Horton</foaf:name>
+      <foaf:mbox rdf:resource="mailto:hortont@svn.gnome.org" />
+      <gnome:userid>hortont</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+</Project>
