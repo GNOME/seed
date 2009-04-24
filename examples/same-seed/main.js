@@ -7,7 +7,7 @@ var tiles_h = 10;
 var tile_size = 50;
 var offset = tile_size/2;
 
-var max_colors = 4;
+var max_colors = 3;
 var fly_score = true;
 
 imports.gi.versions.Clutter = "0.9";

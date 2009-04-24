@@ -1,5 +1,12 @@
 #!/usr/bin/env seed
 
+imports.gi.versions.Clutter = "0.8";
+
+Clutter = imports.gi.Clutter;
+GLib = imports.gi.GLib;
+
+Clutter.init(null, null);
+
 Seed.include("transition-library.js");
 
 var stage = new Clutter.Stage();

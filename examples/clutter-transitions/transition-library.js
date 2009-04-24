@@ -1,8 +1,5 @@
 #!/usr/bin/env seed
-Seed.import_namespace("Clutter", "0.8");
-Seed.import_namespace("GLib");
 
-Clutter.init(null, null);
 
 global_fps = 60;
 var d_left = 0;

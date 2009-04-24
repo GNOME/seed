@@ -7,10 +7,6 @@ Gtk.init(null, null);
 
 TabbedBrowser = imports.TabbedBrowser;
 BrowserSettings = imports.BrowserSettings;
-//Seed.include("BrowserStatusbar.js");
-//Seed.include("BrowserTab.js");
-//Seed.include("TabbedBrowser.js");
-//Seed.include("BrowserToolbar.js");
 
 // Test for Gtk >= 2.16 (otherwise don't have a progress bar)
 
