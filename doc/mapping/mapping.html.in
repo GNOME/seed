@@ -36,7 +36,7 @@ When passing enums in to functions, the enum will be checked (to ensure it is in
 
 <div class="section">Toplevel Functions</div>
 <p>
-Toplevel library functions are mapped exactly as you would expect, with <span style="color:#ef2929">gtk</span>_<span style="color:#729fcf">main</span> mapping to <span style="color:#ef2929">Gtk</span>.<span style="color:#729fcf">Main</span>.
+Toplevel library functions are mapped exactly as you would expect, with <span style="color:#ef2929">gtk</span>_<span style="color:#729fcf">main</span> mapping to <span style="color:#ef2929">Gtk</span>.<span style="color:#729fcf">main</span>.
 </p>
 <div class="section">Constants</div>
 Constants are placed directly on the namespace, with the same casing as present in the C library.
