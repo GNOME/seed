@@ -44,13 +44,94 @@ Constants are placed directly on the namespace, with the same casing as present 
 Clutter.COGL_FIXED_0_5
 Clutter.Alt_L
 </pre>
+<div class="section">Objects</div>
+<p>
+Objects are given a constructor on the namespace. <span style="color:#ef2929">Clutter</span><span style="color:#729fcf">Texture</span> having a constructor at <span style="color:#ef2929">Clutter</span>.<span style="color:#729fcf">Texture</span>
+</p>
+<div class="subsection">Constructors</div>
+<p>
+Object constructors, accept as their only argument, a JavaScript object pairing GObject properties, with values.
+
+As an example,
+<pre class="javascript">
+w = new Gtk.Window({title: "Hello"});
+c = new Clutter.Texture({width: 300, height:300});
+</pre>
+All other properties are left to their default values. Note, Gtk.Window.prototype is the prototype of all Gtk.Window instances. It is also possible for objects to have "named" constructors which take specific arguments, i.e. for <code><span style="color:#ef2929">clutter</span>_<span style="color:#73d216">texture</span>_new_<span style="color:#729fcf">from_file</span</code> we have
+<pre class="javascript">t = new <span style="color:#ef2929">Clutter</span>.<span style="color:#73d216">Texture</span>.<span style="color:#729fcf">from_file</span>("/tmp/cat.png");</pre>
+
+In addition <code>gtk_window_new</code> maps to <code>Gtk.Window.c_new</code> (because <code>new</code> is a JavaScript keyword). This however is rarely used.
+</p>
+<div class="subsection">Methods & Static Methods </div>
+<p>
+Non static methods (or "instance" methods) are accessible from the object, as you would expect.
+<pre class="javascript">
+w = new Gtk.Window();
+w.resize(300, 300);
+</pre>
+
+Static methods are accessible from the constructor, so for <span style="color:#ef2929">clutter</span>_<span style="color:#73d216">stage</span>_<span style="color:#729fcf">get_default</span>.
+<pre class="javascript">
+c = <span style="color:#ef2929">Clutter</span>.<span style="color:#73d216">Stage</span>.<span style="color:#729fcf">get_default</span>();
+</pre>
+
+The type conversion, is fairly sophisticated, so where C methods expect non-basic types, like function pointers, GLists, or C arrays, you are able to just pass in JavaScript functions and arrays.
+<pre class="javascript">
+w = new Gtk.Window();
+w.add (new Gtk.VBox());
+w.foreach(function (widget) {
+              Seed.print(widget);
+         });
+
+children = w.get_children();
+for (i in children) {
+    Seed.print(children[i]);
+}
+
+</pre>
+</p>
+<div class="subsection">Properties</div>
+<p>
+When attempting to set a property on an object, the following things happen in order.
+<ul>
+<li>If the property name corresponds to a GObject property name, then the JavaScript value is converted to a GValue and set as the property. </li>
+<li>If the property name corresponds to a member of the objects struct (i.e. the GtkWindow struct), the JavaScript value is set inside the struct. </li>
+<li>The property name is set on the JavaScript object. </li>
+</ul>
+and vice versa for reading properties.
+
+One thing which may be surprising to developers used to other scripting languages (say, python) is that an attempt to access an unset property will just return <code>null</code>, instead of throwing an exception.
+
+So, accessing for example <code>actor.wi<u>td</u>h</code> will return <code>null</code> and it is up to you to catch your typo.
+</p>
+<div class="subsection">Signals</div>
+<p>
+Interaction with an objects signals, takes place through the <code>object.signals</code> property. For example
+<pre class="javascript">
+w.signal.map.connect(function(window) {Seed.print ("Hello world");});
+foo.signal.bar.emit(3, 7, "Baz");
+</pre>
+In addition you can use <code>user_data</code>, similar to C
+<pre class="javascript">
+w.signal.map.connect(function(window, user_data) {Seed.print(user_data)},  "Hello world");
+</pre>
+In many cases this is made useless by JavaScript's support for closures.
+
+Note, in many cases, it is useful to access signals with details, for example <code>notify::x</code> however as this is not a valid JavaScript identifier, you have to use the array syntax for accessing properties, 
+<pre class="javascript">
+w.signal["notify::x"].connect(function(){Seed.print("x changed")});
+</pre>
+
+Sometimes, it may be desirable to check that the functions you are connecting to signals, have the correct arity (accept the proper number of argmuents), and if you compile Seed with debugging enabled, and pass <code>--seed-debug=signal</code> or <code>--seed-debug=all</code>, Seed will give warnings when connections of improper arity are made (however clearly this is only sometimes a bug).
+
+</p>
 <div class="section">Structs and Unions</div>
 <p>
 Structs and Union's are given a constructor on the namespace. <span style="color:#ef2929">Gdk</span><span style="color:#729fcf">EventKey</span> simply having a constructor at <span style="color:#ef2929">Gdk</span>.<span style="color:#729fcf">EventKey</span>.
 </p>
 <div class="subsection">Constructors</div>
 <p>
-Struct and Union constructors, accept as their only argument, a pair of initialization parameters for fields, paired to values.
+Struct and Union constructors, accept as their only argument, a pair of initialization parameters, in a similar fashion to object constructors.
 
 As an example,
 
@@ -58,14 +139,14 @@ As an example,
 
 All other fields are "zeroed" in the C sense that the memory is allocated with g_slice_alloc0.
 
-It is interesting to note, that <code>Clutter.Color.prototype</code> is the prototype of all ClutterColor instances.
+Like objects <code>Clutter.Color.prototype</code> is the prototype of all ClutterColor instances.
 
-It is also possible for structs to have so called "named" constructors which take specific arguments, i.e. for <code><span style="color:#ef2929">soup</span>_<span style="color:#73d216">date</span>_new_<span style="color:#729fcf">from_now</span></code>
+Again like objects, structs can have "named" constructors which take specific arguments, i.e. for <code><span style="color:#ef2929">soup</span>_<span style="color:#73d216">date</span>_new_<span style="color:#729fcf">from_now</span></code>
 <pre class="javascript">d = new <span style="color:#ef2929">Soup</span>.<span style="color:#73d216">Date</span>.<span style="color:#729fcf">from_now</span>(0)</pre>
 
-In addition <code>soup_date_new</code> would map to <code>Soup.Date.c_new</code> (because <code>new</code> is a JavaScript keyword).
+Once again <code>soup_date_new</code> would map to <code>Soup.Date.c_new</code>.
 </p>
-<div class="subsection">Methods & Static methods</div>
+<div class="subsection">Methods & Static Methods</div>
 <p>
 Non static methods are directly accessible from the object, i.e.
 <pre class="javascript">
