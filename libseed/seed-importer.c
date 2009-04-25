@@ -219,7 +219,21 @@ seed_gi_importer_handle_struct (JSContextRef ctx,
       
       flags = g_function_info_get_flags (finfo);
       
-      if (flags & GI_FUNCTION_IS_METHOD)
+      if (flags & GI_FUNCTION_IS_CONSTRUCTOR)
+	{
+	  JSObjectRef constructor = JSObjectMake (ctx,
+						  gobject_named_constructor_class,
+						  finfo);
+	  const gchar *fname = 
+	    g_base_info_get_name ((GIBaseInfo *) finfo);
+	  if (g_str_has_prefix (fname, "new_"))
+	    fname += 4;
+	  else if (!strcmp (fname, "new"))
+	    fname = "c_new";
+	  
+	  seed_object_set_property (ctx, struct_ref, fname, constructor);
+	}
+      else if (flags & GI_FUNCTION_IS_METHOD)
 	g_base_info_unref ((GIBaseInfo *) finfo);
       else
 	seed_gobject_define_property_from_function_info
