@@ -31,10 +31,19 @@ In this example, <span style="color:#ef2929">Gtk</span> is the namespace, <span 
 
 It is worth noting that this is the same convention as Vala.
 
+When passing enums in to functions, the enum will be checked (to ensure it is in fact a value of the required enum class). This is not true for fields.
+</p>
+
 <div class="section">Toplevel Functions</div>
 <p>
 Toplevel library functions are mapped exactly as you would expect, with <span style="color:#ef2929">gtk</span>_<span style="color:#729fcf">main</span> mapping to <span style="color:#ef2929">Gtk</span>.<span style="color:#729fcf">Main</span>.
 </p>
+<div class="section">Constants</div>
+Constants are placed directly on the namespace, with the same casing as present in the C library.
+<pre style="javascript">
+Clutter.COGL_FIXED_0_5
+Clutter.Alt_L
+</pre>
 <div class="section">Structs and Unions</div>
 <p>
 Structs and Union's are given a constructor on the namespace. <span style="color:#ef2929">Gdk</span><span style="color:#729fcf">EventKey</span> simply having a constructor at <span style="color:#ef2929">Gdk</span>.<span style="color:#729fcf">EventKey</span>.
@@ -50,6 +59,11 @@ As an example,
 All other fields are "zeroed" in the C sense that the memory is allocated with g_slice_alloc0.
 
 It is interesting to note, that <code>Clutter.Color.prototype</code> is the prototype of all ClutterColor instances.
+
+It is also possible for structs to have so called "named" constructors which take specific arguments, i.e. for <code><span style="color:#ef2929">soup</span>_<span style="color:#73d216">date</span>_new_<span style="color:#729fcf">from_now</span></code>
+<pre class="javascript">d = new <span style="color:#ef2929">Soup</span>.<span style="color:#73d216">Date</span>.<span style="color:#729fcf">from_now</span>(0)</pre>
+
+In addition <code>soup_date_new</code> would map to <code>Soup.Date.c_new</code> (because <code>new</code> is a JavaScript keyword).
 </p>
 <div class="subsection">Methods & Static methods</div>
 <p>
@@ -59,6 +73,14 @@ c = new Clutter.Color ({red: 0xff, alpha: 0xff});
 c.from_string ("purple");
 </pre>
 </p>
+<b>TODO: Static methods</b>
 <div class="subsection">Implicit creation</div>
+<p>
+Anywhere where a struct is expected, (property assignment, or a method call), a JavaScript object describing the struct can be used.
+<pre style="javascript">
+stage.color = {red: 0xff, blue: 0xcc, alpha: 0xff};
+</pre>
+The semantics are identical to constructors, in that uninitialized fields will be zeroed.
+</p>
 </body>
 </html>
