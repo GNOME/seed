@@ -254,13 +254,14 @@ seed.pc
 Makefile
 
 doc/conventions.html
-doc/mapping.html
 doc/runtime.html
 doc/tutorial-standalone/tutorial.html
 doc/modules/canvas.html
 doc/modules/multiprocessing.html
 doc/modules/readline.html
 doc/modules/sqlite.html
+
+doc/mapping/mapping.html
 
 scripts/shave
 scripts/shave-libtool
@@ -276,6 +277,7 @@ doc/Makefile
 doc/modules/Makefile
 doc/tutorial-standalone/Makefile
 doc/reference/Makefile
+doc/mapping/Makefile
 examples/Makefile
 examples/clutter-shader/Makefile
 examples/clutter-transitions/Makefile

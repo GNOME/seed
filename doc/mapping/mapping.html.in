@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+    <title>Seed C Mapping Conventions</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <link rel="stylesheet" href="../style.css" type="text/css" charset="utf-8" />
+    <script type="text/javascript" src="../sh.js"></script>
+    <script type="text/javascript" src="../sh_js.js"></script>
+    <link type="text/css" rel="stylesheet" href="../sh.css" />
+    <style type="text/css">
+    div.section
+    {
+        font-weight: bold;
+    }
+    </style>
+
+</head>
+<body onload="sh_highlightDocument();">
+<div id="header">Seed C Mapping Conventions</div>
+<div id="subheader">v.@VERSION@</div>
+<div class="section">Enums and Flags</div>
+<p>
+The mapping of enum types to JavaScript is straightforward.
+</p>
+<div style="text-align: center;">
+<img src="./enum-mapping.png">
+</div>
+<p>
+In this example, <span style="color:#ef2929">Gtk</span> is the namespace, <span style="color:#73d216">WindowType</span> is the enum class, and <span style="color:#729fcf">NORMAL</span> is the enum member. Note that the enum member is always UPPERCASE, and the enum class is CasedLikeTypes.
+
+It is worth noting that this is the same convention as Vala.
+
+<div class="section">Toplevel Functions</div>
+<p>
+Toplevel library functions are mapped exactly as you would expect, with <span style="color:#ef2929">gtk</span>_<span style="color:#729fcf">main</span> mapping to <span style="color:#ef2929">Gtk</span>.<span style="color:#729fcf">Main</span>.
+</p>
+<div class="section">Structs and Unions</div>
+<p>
+Structs and Union's are given a constructor on the namespace. <span style="color:#ef2929">Gdk</span><span style="color:#729fcf">EventKey</span> simply having a constructor at <span style="color:#ef2929">Gdk</span>.<span style="color:#729fcf">EventKey</span>.
+</p>
+<div class="subsection">Constructors</div>
+<p>
+Struct and Union constructors, accept as their only argument, a pair of initialization parameters for fields, paired to values.
+
+As an example,
+
+ <pre class="javascript">c = new Clutter.Color({red: 0xff, alpha: 0xff});</pre>
+
+All other fields are "zeroed" in the C sense that the memory is allocated with g_slice_alloc0.
+
+It is interesting to note, that <code>Clutter.Color.prototype</code> is the prototype of all ClutterColor instances.
+</p>
+<div class="subsection">Methods & Static methods</div>
+<p>
+Non static methods are directly accessible from the object, i.e.
+<pre class="javascript">
+c = new Clutter.Color ({red: 0xff, alpha: 0xff});
+c.from_string ("purple");
+</pre>
+</p>
+<div class="subsection">Implicit creation</div>
+</body>
+</html>
