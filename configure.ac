@@ -56,9 +56,9 @@ if test x"$have_ffi_pkgconfig" = xno ; then
 
 		AC_SEARCH_LIBS(ffi_call,ffi,,AC_MSG_ERROR([libffi not found]),$other_LIBS)
 		if test x"$ac_cv_search_ffi_call" = x"none required" ; then
-			FFI_LDADD=$other_LIBS
+			FFI_LIBS=$other_LIBS
 		else
-			FFI_LDADD="$ac_cv_search_ffi_call $other_LIBS"
+			FFI_LIBS="$ac_cv_search_ffi_call $other_LIBS"
 		fi
 		LIBS=$save_LIBS
 	fi
@@ -69,7 +69,7 @@ if test x"$have_ffi_pkgconfig" = xno ; then
 	FFI_CFLAGS=
 
 	AC_MSG_RESULT([$have_ffi_h])
-	AC_SUBST(FFI_LDADD)
+	AC_SUBST(FFI_LIBS)
 	AC_SUBST(FFI_CFLAGS)
 fi
 
