@@ -17,7 +17,7 @@
 In order to use functions from the canvas module, you must first import it:
 </p>
 <pre class="sh_javascript">
-Seed.import_namespace("canvas");
+canvas = imports.canvas;
 </pre>
 <div class="section"><b>External Documentation</b></div>
 <p>

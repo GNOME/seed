@@ -17,7 +17,7 @@
 In order to use functions from the multiprocessing module, you must first import it:
 </p>
 <pre class="sh_javascript">
-Seed.import_namespace("multiprocessing");
+multiprocessing = imports.multiprocessing;
 </pre>
 </body>
 </html>

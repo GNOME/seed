@@ -17,7 +17,7 @@
 In order to use functions from the readline module, you must first import it:
 </p>
 <pre class="sh_javascript">
-Seed.import_namespace("readline");
+readline = imports.readline;
 </pre>
 <div class="section"><b>readline.readline</b>(prompt)</div>
 <p><i>Returns: user input</i></p>
