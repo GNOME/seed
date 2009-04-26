@@ -40,7 +40,7 @@ AM_GLIB_GNU_GETTEXT
 IT_PROG_INTLTOOL([0.35.0])
 
 dnl ============================libffi=========================================
-PKG_CHECK_MODULES(libffi, libffi, have_ffi_pkgconfig=yes, have_ffi_pkgconfig=no)
+PKG_CHECK_MODULES(FFI, libffi, have_ffi_pkgconfig=yes, have_ffi_pkgconfig=no)
 
 if test x"$have_ffi_pkgconfig" = xno ; then
 	AC_MSG_CHECKING(for ffi.h)
@@ -56,9 +56,9 @@ if test x"$have_ffi_pkgconfig" = xno ; then
 
 		AC_SEARCH_LIBS(ffi_call,ffi,,AC_MSG_ERROR([libffi not found]),$other_LIBS)
 		if test x"$ac_cv_search_ffi_call" = x"none required" ; then
-			FFI_LIBS=$other_LIBS
+			FFI_LDFLAGS=$other_LIBS
 		else
-			FFI_LIBS="$ac_cv_search_ffi_call $other_LIBS"
+			FFI_LDFLAGS="$ac_cv_search_ffi_call $other_LIBS"
 		fi
 		LIBS=$save_LIBS
 	fi
@@ -69,9 +69,10 @@ if test x"$have_ffi_pkgconfig" = xno ; then
 	FFI_CFLAGS=
 
 	AC_MSG_RESULT([$have_ffi_h])
-	AC_SUBST(FFI_LIBS)
-	AC_SUBST(FFI_CFLAGS)
 fi
+
+AC_SUBST(FFI_LIBS)
+AC_SUBST(FFI_CFLAGS)
 
 dnl =======================WebKit ContextGroup=================================
 case "$host_os" in
