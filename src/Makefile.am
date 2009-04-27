@@ -23,5 +23,5 @@ seed_LDFLAGS = \
 
 seed_LDADD = \
 	$(SEED_LIBS) \
-	$(LIBFFI_LDFLAGS) \
+	$(LIBFFI_LIBS) \
 	-lseed
