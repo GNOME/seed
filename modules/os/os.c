@@ -994,7 +994,7 @@ seed_static_function os_funcs[] = {
 			    seed_value_from_long (eng->context, value, NULL))
 #define OS_DEFINE_QUICK_ENUM(value)					\
 seed_object_set_property (eng->context, os_namespace, #value,		\
-			  seed_value_from_long (eng->context, value, NULL))
+			  seed_value_from_long (eng->context, value, NULL)) \
 
 SeedObject
 seed_module_init(SeedEngine * eng)
@@ -1015,8 +1015,13 @@ seed_module_init(SeedEngine * eng)
   OS_DEFINE_QUICK_ENUM (O_EXCL);
   OS_DEFINE_QUICK_ENUM (O_TRUNC);
 
+#if defined (O_DSYNC)
   OS_DEFINE_QUICK_ENUM (O_DSYNC);
+#endif
+#if defined (O_RSYNC)
   OS_DEFINE_QUICK_ENUM (O_RSYNC);
+#endif
+
   OS_DEFINE_QUICK_ENUM (O_SYNC);
   OS_DEFINE_QUICK_ENUM (O_NDELAY);
   OS_DEFINE_QUICK_ENUM (O_NONBLOCK);
@@ -1025,11 +1030,14 @@ seed_module_init(SeedEngine * eng)
   //  OS_DEFINE_QUICK_ENUM (O_EXLOCK);
 
   OS_DEFINE_QUICK_ENUM (O_ASYNC);
+#if defined (O_DIRECT)
   OS_DEFINE_QUICK_ENUM (O_DIRECT);
+#endif
   OS_DEFINE_QUICK_ENUM (O_DIRECTORY);
   OS_DEFINE_QUICK_ENUM (O_NOFOLLOW);
+#if defined (O_NOATIME)
   OS_DEFINE_QUICK_ENUM (O_NOATIME);
-
+#endif
 
   OS_DEFINE_QUICK_ENUM (SEEK_SET);
   OS_DEFINE_QUICK_ENUM (SEEK_CUR);
