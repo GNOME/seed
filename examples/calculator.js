@@ -8,30 +8,25 @@ Gtk.init(null, null);
 
 var calc_val = "";
 
-function update_display()
-{
+function update_display(){
     label.set_markup("<span size='30000'>" + calc_val + "</span>");
-
-    if(calc_val === "")
-    {
+    
+    if(calc_val === ""){
 	label.set_markup("<span size='30000'>0</span>");
     }
 }
 
-function clear(button)
-{
+function clear(button){
     calc_val = "";
     update_display();
 }
 
-function backspace(button)
-{
+function backspace(button){
     calc_val = calc_val.substring(0, calc_val.length - 1);
     update_display();
 }
 
-function pressed_equals(button)
-{
+function pressed_equals(button){
     calc_val = calc_val.replace("sin", "Math.sin");
     calc_val = calc_val.replace("cos", "Math.cos");
     calc_val = calc_val.replace("tan", "Math.tan");
@@ -44,54 +39,46 @@ function pressed_equals(button)
     label.set_markup("<span size='30000'>" + calc_val + "</span>");
 }
 
-function pressed_operator(button)
-{
+function pressed_operator(button){
     calc_val += button.label;
     update_display();
 }
 
-function pressed_number(button)
-{
+function pressed_number(button){
     calc_val = (((calc_val === 0) ? "" : calc_val) + button.label);
     update_display();
 }
 
-function swap_sign(button)
-{
+function swap_sign(button){
     calc_val = ((calc_val[0] == "-") ?
 		calc_val.substring(1) : "-" + calc_val);
     update_display();
 }
 
-function random_num()
-{
+function random_num(){
     calc_val = Math.floor(Math.random() * 1000) + "";
     update_display();
 }
 
-function pack_buttons(buttons, vbox)
-{
+function pack_buttons(buttons, vbox){
     var hbox = new Gtk.HBox();
 
     hbox.homogeneous = true;
 
     vbox.pack_start(hbox, true, true, 2);
 
-    for(i = 0; i <= 4; i++)
-    {
+    for(i = 0; i <= 4; i++){
 	hbox.pack_start(buttons[i], true, true, 1);
     }
 }
 
-function create_button(str, func)
-{
+function create_button(str, func){
     var btn = new Gtk.Button({label:str});
     btn.signal.clicked.connect(func);
     return btn;
 }
 
-function create_buttons()
-{
+function create_buttons(){
     var vbox = new Gtk.VBox();
 
     vbox.homogeneous = true;
@@ -133,7 +120,7 @@ function create_buttons()
 var window = new Gtk.Window({title: "Calculator", resizable: false});
 
 window.resize(250, 250);
-window.signal.hide.connect(function () {Gtk.main_quit(0);});
+window.signal.hide.connect(Gtk.main_quit());
 window.opacity = 0.95;
 
 var label = new Gtk.Label({label: ""});
