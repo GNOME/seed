@@ -49,7 +49,7 @@ function destroy_actor(actor){
 }
 
 function circle_paint (actor){
-    var radius = Clutter.cogl_double_to_fixed(actor.width/2);
+    var radius = Clutter.double_to_fixed(actor.width/2);
     
     actor.fill_color.alpha = actor.opacity;
     
@@ -116,7 +116,7 @@ stage.show();
 
 function random_ripple(){
     ripple(stage, Math.random()*SCREEN_W, Math.random()*SCREEN_H);
-    GLib.timeout_add(Math.random()*RIPPLE_MAXD+RIPPLE_MIND, random_ripple);
+    GLib.timeout_add(0, Math.random()*RIPPLE_MAXD+RIPPLE_MIND, random_ripple);
     
     return false;
 }
