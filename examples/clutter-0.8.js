@@ -17,8 +17,7 @@ colors = [	"blanched almond",
 		"LemonChiffon2",
 		"RosyBrown3"];
 
-function alpha_func(alpha)
-{
+function alpha_func(alpha){
     var timeline = alpha.get_timeline();
     var frame = timeline.get_current_frame();
     var n_frames = timeline.num_frames;
@@ -55,8 +54,7 @@ Clutter.color_parse("White", white);
 
 stage.color = black;
 
-for (var i = 0; i < colors.length; i++)
-{
+for (var i = 0; i < colors.length; i++){
     var c = new Clutter.Color();
     Clutter.color_parse(colors[i],c);
 
@@ -76,18 +74,15 @@ for (var i = 0; i < colors.length; i++)
 // custom animations at 60fps. Turns out to be fine, serves as an example now.
 
 timeline.signal.new_frame.connect(
-    function(timeline, frame_num)
-    {
-	for (var i = 0; i < colors.length; i++)
-	{
+    function(timeline, frame_num){
+	for (var i = 0; i < colors.length; i++){
 	    rectangles[i].x += width / 600;
 	    rectangles[i].rotation_angle_z += 1;
 	}
     });
 
 timeline.signal.completed.connect(
-    function(timeline)
-    {
+    function(timeline){
 
 	var text = new Clutter.Label({text:"Congratulations!",
 				      font_name:"Bitstream Vera Sans 40"});
@@ -109,8 +104,7 @@ timeline.signal.completed.connect(
 			    text.x,
 			    stage.height / 2);
 
-	for (i in rectangles)
-	{
+	for (i in rectangles){
 	    Clutter.effect_fade(effect, rectangles[i], 0);
 	    Clutter.effect_move(effect, rectangles[i],
 				Math.random() * stage.width,
