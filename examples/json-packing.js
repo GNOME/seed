@@ -27,7 +27,7 @@ var packing = [
 ];
 
 window = new Gtk.Window();
-window.signal.hide.connect(function () { Gtk.main_quit(); });
+window.signal.hide.connect(Gtk.main_quit);
 vbox = new Gtk.VBox();
 
 vbox.pack(packing);
