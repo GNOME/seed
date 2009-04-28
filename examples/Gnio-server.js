@@ -1,6 +1,6 @@
 #!/usr/bin/env seed
-Seed.import_namespace("Gnio");
-Seed.import_namespace("Gio");
+Gnio = imports.gi.Gnio;
+Gio = imports.gi.Gio;
 
 // I don't think this is the right way of doing things.
 var r = new Gnio.Resolver();
@@ -24,12 +24,10 @@ ds = Gio.DataInputStream._new(new Gnio.SocketInputStream({socket: client}));
 os = Gio.DataOutputStream._new(new Gnio.SocketOutputStream({socket: client}));
 os.put_string("Seed echo server. Type quit to quit.\n");
 
-while(1)
-{
+while(1){
     var line = ds.read_line(null);
     var cowsay = Seed.spawn("cowsay " + line);
-    if (line.search("quit") > -1)
-    {
+    if (line.search("quit") > -1){
 	client.close();
 	Seed.quit();
     }
