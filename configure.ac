@@ -155,6 +155,17 @@ AC_SUBST(BUILD_EXAMPLE_MODULE)
 dnl ==== dbus? ====
 want_dbus_modules="yes"
 
+dnl ==== os ====
+AC_ARG_ENABLE(os-module,
+			  AC_HELP_STRING([--enable-os-module],
+							 [enable the os Seed module. [default=yes]]),
+			  [want_os_module=$enableval],[want_os_module="yes"])
+
+
+AM_CONDITIONAL(BUILD_OS_MODULE, test "x$want_os_module" = "xyes")
+AC_SUBST(BUILD_OS_MODULE)
+
+
 dnl =========================turtle example====================================
 AC_ARG_ENABLE(turtle-example,
 			  AC_HELP_STRING([--enable-turtle-example],

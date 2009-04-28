@@ -1,3 +1,5 @@
+if BUILD_OS_MODULE
+
 seedlibdir = ${exec_prefix}/lib/seed
 
 seedlib_LTLIBRARIES = \
@@ -18,3 +20,4 @@ libos_la_LDFLAGS = \
         $(SEED_DEBUG_LDFLAGS) \
         $(SEED_PROFILE_LIBS)
 
+endif
