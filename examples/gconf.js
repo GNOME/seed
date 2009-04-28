@@ -1,5 +1,5 @@
 #!/usr/bin/env seed
-Seed.import_namespace("GConf");
+GConf = imports.gi.GConf;
 
 GConf.init(null, null);
 
