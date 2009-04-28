@@ -20,10 +20,8 @@ colors = [	"blanched almond",
 		"LemonChiffon2",
 		"RosyBrown3"];
 
-function create_rectangles(rectangles, colors)
-{
-    for(var i in colors)
-    {
+function create_rectangles(rectangles, colors){
+    for (var i in colors){
 	var c = new Clutter.Color();
 	var r = new Clutter.Rectangle();
 	
@@ -41,10 +39,8 @@ function create_rectangles(rectangles, colors)
     }
 }
 
-function animate_rectangles(rectangles)
-{
-    for (var i in rectangles)
-    {
+function animate_rectangles(rectangles){
+    for (var i in rectangles){
 	rectangles[i].anim = rectangles[i].animate(Clutter.AnimationMode.LINEAR, 5000,
 						   {
 						       x: [GObject.TYPE_INT, stage.width / 2],
@@ -74,8 +70,7 @@ function animate_rectangles(rectangles)
 				     });
 	    text.anim.timeline.start();
 
-	    for (var i in rectangles)
-	    {
+	    for (var i in rectangles){
 		rectangles[i].anim = 
 		    rectangles[i].animate(Clutter.AnimationMode.EASE_OUT_BOUNCE, 3000,
 					  {
@@ -92,21 +87,18 @@ function animate_rectangles(rectangles)
 	});
 }
 
-function main()
-{
-    stage = new Clutter.Stage();
-    var rectangles = new Array(colors.length);
-    stage.signal.hide.connect(function(){Clutter.main_quit();});
+var stage = new Clutter.Stage();
+var rectangles = new Array(colors.length);
+stage.signal.hide.connect(function(){Clutter.main_quit();});
 
-    create_rectangles(rectangles, colors);
+create_rectangles(rectangles, colors);
 
-    stage.color = new Clutter.Color({alpha:255});
-    stage.show_all();
+stage.color = new Clutter.Color({alpha:255});
+stage.show_all();
 
-    animate_rectangles(rectangles);
+animate_rectangles(rectangles);
 
-    Clutter.main();
-}
+Clutter.main();
 
-main();
+
 
