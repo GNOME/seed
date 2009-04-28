@@ -1,6 +1,6 @@
 #!/usr/bin/env seed
-Seed.import_namespace("Gio");
-Seed.import_namespace("Gnio");
+Gio = imports.gi.Gio;
+Gnio = imports.gi.Gnio;
 
 r = new Gnio.Resolver();
 
