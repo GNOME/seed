@@ -8,8 +8,7 @@ var pipes = new Multiprocessing.Pipe();
 
 var child_pid = Seed.fork();
 
-if (child_pid === 0)
-{
+if (child_pid === 0){
     Gtk.init(null, null);
 
     var id = parseInt(pipes[0].read(), 10);
