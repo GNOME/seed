@@ -1,7 +1,8 @@
 #!/usr/bin/env seed
 
-Seed.import_namespace("Clutter", "0.8");
-Seed.import_namespace("GLib");
+imports.gi.versions.Clutter = "0.8";
+Clutter = imports.gi.Clutter;
+GLib = imports.gi.GLib;
 
 const RIPPLE_S = 2000;
 const RIPPLE_W = 8;
@@ -14,13 +15,11 @@ const RIPPLE_WX = Clutter.double_to_fixed(RIPPLE_W);
 const SCREEN_W = 640;
 const SCREEN_H = 480;
 
-function deg_to_rad(x)
-{
+function deg_to_rad(x){
     return (((x) * 1024.0) / 360.0);
 }
 
-function alpha_func(alpha)
-{
+function alpha_func(alpha){
     var timeline = alpha.get_timeline();
     var frame = timeline.get_current_frame();
     var n_frames = timeline.num_frames;
@@ -45,13 +44,11 @@ Clutter.init(null, null);
 
 var template = new Clutter.EffectTemplate.for_duration(RIPPLE_S, alpha_func);
 
-function destroy_actor(actor)
-{
+function destroy_actor(actor){
     actor.destroy();
 }
 
-function circle_paint (actor)
-{
+function circle_paint (actor){
     var radius = Clutter.cogl_double_to_fixed(actor.width/2);
     
     actor.fill_color.alpha = actor.opacity;
@@ -70,14 +67,12 @@ function circle_paint (actor)
     Clutter.cogl_path_fill();	
 }
 
-function ripple(stage, x, y)
-{
+function ripple(stage, x, y){
     var transp = new Clutter.Color();
     
     var n = parseInt(Math.random()*RIPPLE_N , 10) + 1;
     
-    for (i = 0; i < n; i++)
-    {
+    for (i = 0; i < n; i++){
 	var actor = new Clutter.Rectangle({color: transp});
 	
 	actor.fill_color = new Clutter.Color({red: 0xff,
@@ -111,8 +106,7 @@ stage.height = SCREEN_H;
 stage.color = {};
 
 stage.signal["button_press_event"].connect(
-    function(stage, event)
-    {
+    function(stage, event){
 	ripple(stage, event.button.x, event.button.y);
 	
 	return true;
@@ -120,10 +114,9 @@ stage.signal["button_press_event"].connect(
 
 stage.show();
 
-function random_ripple()
-{
+function random_ripple(){
     ripple(stage, Math.random()*SCREEN_W, Math.random()*SCREEN_H);
-    GLib.timeout_add(Math.random()*RIPPLE_MAXD + RIPPLE_MIND, random_ripple);
+    GLib.timeout_add(Math.random()*RIPPLE_MAXD+RIPPLE_MIND, random_ripple);
     
     return false;
 }
