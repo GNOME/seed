@@ -239,6 +239,8 @@ esac
 AC_SUBST(SEED_OSX_CFLAGS)
 AC_SUBST(SEED_OSX_LDFLAGS)
 
+AC_CHECK_HEADERS(pty.h)
+
 dnl =============================gtk-doc=======================================
 GTK_DOC_CHECK(1.9)
 

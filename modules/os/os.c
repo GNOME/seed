@@ -1,4 +1,7 @@
 #define _GNU_SOURCE
+
+#include "../../config.h"
+
 #include <unistd.h>
 #include <stdio.h>
 #include <errno.h>
@@ -10,7 +13,9 @@
 
 #include <fcntl.h>
 
+#ifdef HAVE_PTY_H
 #include <pty.h>
+#endif
 
 #include <seed.h>
 
