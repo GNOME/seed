@@ -1,8 +1,11 @@
 #!/usr/bin/env seed
 
-Seed.import_namespace("Canvas");
-Seed.import_namespace("Clutter", "0.8");
-Seed.import_namespace("ClutterCairo", "0.8");
+Canvas = imports.canvas;
+imports.gi.versions.Clutter = "0.8"
+imports.gi.versions.ClutterCairo = "0.8"
+
+Clutter = imports.gi.Clutter;
+ClutterCairo = imports.gi.ClutterCairo;
 
 Clutter.init(null, null);
 
@@ -23,7 +26,7 @@ c.x = c.y = 100;
 ctx.destroy();
 
 s = new Clutter.Stage();
-s.signal.hide.connect(function () { Clutter.main_quit(); });
+s.signal.hide.connect(Clutter.main_quit);
 
 s.add_actor(c);
 
