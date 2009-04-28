@@ -10,7 +10,7 @@ BrowserView = new GType({
     {
         // Private
         var tab;
-
+	
         var update_title = function (web_view, web_frame, title)
         {
             if(title.length > 25)

@@ -85,10 +85,6 @@ case "$host_os" in
 		;;
 esac
 
-PKG_CHECK_MODULES(WEBKIT, webkit-1.0)
-AC_SUBST(WEBKIT_CFLAGS)
-AC_SUBST(WEBKIT_LDFLAGS)
-
 dnl =========================Introspection=====================================
 PKG_CHECK_MODULES(GOBJECT_INTROSPECTION, gobject-introspection-1.0 >= 0.6.3)
 AC_SUBST(GOBJECT_INTROSPECTION_CFLAGS)
@@ -232,6 +228,13 @@ case "$host_os" in
 		SEED_OSX_CFLAGS="-F/Applications/WebKit.app/Contents/Frameworks/10.5 -framework JavaScriptCore"
 		SEED_OSX_LDFLAGS="-F/Applications/WebKit.app/Contents/Frameworks/10.5 -framework JavaScriptCore"
 		;;
+	*)
+		PKG_CHECK_MODULES(WEBKIT, webkit-1.0)
+		AC_SUBST(WEBKIT_CFLAGS)
+		AC_SUBST(WEBKIT_LDFLAGS)
+	;;
+
+
 esac
 AC_SUBST(SEED_OSX_CFLAGS)
 AC_SUBST(SEED_OSX_LDFLAGS)
