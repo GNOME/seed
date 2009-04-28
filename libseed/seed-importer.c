@@ -736,9 +736,9 @@ seed_importer_get_property (JSContextRef ctx,
 
 static JSValueRef
 seed_importer_dir_get_property (JSContextRef ctx,
-			    JSObjectRef object,
-			    JSStringRef property_name, 
-			    JSValueRef *exception)
+				JSObjectRef object,
+				JSStringRef property_name, 
+				JSValueRef *exception)
 {
   GError *e = NULL;
   GDir *dir;

@@ -1,6 +1,6 @@
 #!/usr/bin/env seed
-Seed.import_namespace("GL");
-Seed.import_namespace("GLUT");
+GL = imports.gi.GL;
+GLUT = imports.gi.GLUT;
 
 
 var mat_specular = [1.0,1.0,1.0,1.0];
@@ -17,25 +17,24 @@ GLUT.InitWindowSize(640, 480);
 GLUT.CreateWindow("Oh dear god");
 
 
-GLUT.DisplayFunc(function()
-					 {
-						 with (GL)
-						 {
-							 Clear(DEPTH_BUFFER_BIT | COLOR_BUFFER_BIT);
-							 PushMatrix();
-							  Begin(TRIANGLES);
-							   Color3f(1,0,0);
-							   Vertex3f(-1,-1,0);
-							   Color3f(0,1,0);
-							   Vertex3f(1,-1,0);
-							   Color3f(0,0,1);
-							   Vertex3f(0,1,0);
-							  End();		
-							 PopMatrix();
-						 }
-						 GLUT.SolidTeapot(0.5);
-						 GLUT.SwapBuffers();
-					 });
+GLUT.DisplayFunc(
+    function(){
+	with (GL){
+	    Clear(DEPTH_BUFFER_BIT | COLOR_BUFFER_BIT);
+	    PushMatrix();
+	    Begin(TRIANGLES);
+	    Color3f(1,0,0);
+	    Vertex3f(-1,-1,0);
+	    Color3f(0,1,0);
+	    Vertex3f(1,-1,0);
+	    Color3f(0,0,1);
+	    Vertex3f(0,1,0);
+	    End();		
+	    PopMatrix();
+	}
+	GLUT.SolidTeapot(0.5);
+	GLUT.SwapBuffers();
+    });
 
 
 GL.ClearColor(0.0,0.0,0.0,0.0);
