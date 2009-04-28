@@ -944,6 +944,33 @@ seed_os_tcsetpgrp (SeedContext ctx,
   return seed_value_from_int (ctx, tcsetpgrp (fd, pgrp), exception);
 }
 
+SeedValue
+seed_os_access (SeedContext ctx,
+		SeedObject function,
+		SeedObject this_object,
+		size_t argument_count,
+		const SeedValue arguments[], 
+		SeedException * exception)
+{
+  int ret;
+  gchar *path;
+  int amd;
+
+  if (argument_count != 2)
+    {
+      EXPECTED_EXCEPTION ("os.access", "2 arguments");
+    }
+  path = seed_value_to_string (ctx, arguments[0], exception);
+  amd = seed_value_to_int (ctx, arguments[1], exception);
+  
+  ret = access (path, amd);
+  
+  if (ret == 0)
+    return seed_value_from_boolean (ctx, TRUE, exception);
+  else
+    return seed_value_from_boolean (ctx, FALSE, exception);
+}
+
 seed_static_function os_funcs[] = {
   {"chdir", seed_os_chdir, 0},
   {"fchdir", seed_os_fchdir, 0},
@@ -986,7 +1013,8 @@ seed_static_function os_funcs[] = {
   {"write", seed_os_write, 0},
   {"ttyname", seed_os_ttyname, 0},
   {"tcgetpgrp", seed_os_tcgetpgrp, 0},
-  {"tcsetpgrp", seed_os_tcsetpgrp, 0}
+  {"tcsetpgrp", seed_os_tcsetpgrp, 0},
+  {"access", seed_os_access, 0}
 };
 
 #define OS_DEFINE_ENUM(name, value) \
@@ -1042,6 +1070,11 @@ seed_module_init(SeedEngine * eng)
   OS_DEFINE_QUICK_ENUM (SEEK_SET);
   OS_DEFINE_QUICK_ENUM (SEEK_CUR);
   OS_DEFINE_QUICK_ENUM (SEEK_END);
+  
+  OS_DEFINE_QUICK_ENUM (F_OK);
+  OS_DEFINE_QUICK_ENUM (R_OK);
+  OS_DEFINE_QUICK_ENUM (W_OK);
+  OS_DEFINE_QUICK_ENUM (X_OK);
 
 
   return os_namespace;
