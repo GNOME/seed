@@ -4,8 +4,7 @@ GLib = imports.gi.GLib;
 
 count = 0;
 
-function test()
-{
+function test(){
 	count++;
 	Seed.print("Hello from timeout number " + count);
 	if (count == 5)
@@ -13,8 +12,7 @@ function test()
 	return true;
 }
 
-GLib.timeout_add(500,
-test,null);
+GLib.timeout_add(0, 500, test);
 
 // No offset/size data for GLib.MainLoop, not our fault. Have to use context right now, because mainloop has a bad typelib info.
 context = GLib.main_context_default();
