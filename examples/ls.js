@@ -13,7 +13,6 @@ else
 
 enumerator = file.enumerate_children("standard::name,standard::size");
 
-while ((child = enumerator.next_file()))
-{
+while ((child = enumerator.next_file())){
     Seed.printf("%s\t%d",child.get_name(), child.get_size());
 }
