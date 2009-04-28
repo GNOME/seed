@@ -10,9 +10,13 @@ test_SOURCES =					\
 EXTRA_DIST =					\
 	test-common.h
 	
-test_CFLAGS = -g -Wall				\
-	 $(SEED_CFLAGS)
+test_CFLAGS = \
+	-Wall \
+	$(GOBJECT_INTROSPECTION_CFLAGS)
 
-test_LDADD = $(SEED_LIBS) -lseed
-test_LDFLAGS = -L../../libseed/.libs -lseed
+test_LDFLAGS = \
+	$(GOBJECT_INTROSPECTION_LIBS)
+
+test_LDADD = \
+	../../libseed/libseed.la
 

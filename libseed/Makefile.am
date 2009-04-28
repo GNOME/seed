@@ -24,12 +24,24 @@ libseed_la_SOURCES = \
 	seed-importer.c \
 	seed-importer.h 
 
-libseed_la_LIBADD = $(LIBSEED_LIBS) $(LIBFFI_LDFLAGS)
-libseed_la_CPPFLAGS = -lgmodule-2.0 $(LIBSEED_CFLAGS) $(SEED_OSX_CFLAGS) $(FFI_CFLAGS) -Wall
-libseed_la_LDFLAGS = -no-undefined $(SEED_PROFILE_LDFLAGS) $(SEED_OSX_LDFLAGS) $(FFI_LDFLAGS)
+libseed_la_CFLAGS = \
+	-Wall \
+	$(GOBJECT_INTROSPECTION_CFLAGS) \
+        $(WEBKIT_CFLAGS) \
+        $(SEED_OSX_CFLAGS) \
+        $(SEED_DEBUG_CFLAGS) \
+        $(SEED_PROFILE_CFLAGS) \
+        $(FFI_CFLAGS)
+
+libseed_la_LDFLAGS = \
+        -no-undefined \
+        $(GOBJECT_INTROSPECTION_LIBS) \
+	$(WEBKIT_LIBS) \
+        $(SEED_PROFILE_LIBS) \
+        $(SEED_OSX_LIBS) \
+        $(FFI_LDFLAGS)
 
 seedheaders_HEADERS = seed.h
 
 seedheadersdir = $(pkgincludedir)
 
-LIBSEED_CFLAGS += $(SEED_DEBUG_CFLAGS) $(SEED_PROFILE_CFLAGS)

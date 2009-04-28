@@ -1,30 +1,25 @@
 if BUILD_CANVAS_MODULE
 
-lib_LTLIBRARIES = \
+seedlibdir = ${exec_prefix}/lib/seed
+EXTRA_DIST=run-tests.js
+
+seedlib_LTLIBRARIES = \
 	libcanvas.la
 
 libcanvas_la_SOURCES = \
 	seed-canvas.c
 
+libcanvas_la_CFLAGS = \
+        $(GOBJECT_INTROSPECTION_CFLAGS) \
+	-I@top_srcdir@/libseed/ \
+	$(CAIRO_CFLAGS) \
+	$(SEED_DEBUG_CFLAGS) \
+	$(SEED_PROFILE_CFLAGS)
+
 libcanvas_la_LDFLAGS = \
-	`pkg-config --libs seed cairo`
-
-AM_CPPFLAGS = \
-	-I../../libseed/ \
-	`pkg-config --cflags seed` \
-	`pkg-config --cflags glib-2.0` -g \
-	`pkg-config --cflags gobject-introspection-1.0` \
-	`pkg-config --cflags cairo` \
-	$(SEED_DEBUG_CFLAGS)
-
-AM_LDFLAGS =
-
-if PROFILE_MODULES
-	AM_CPPFLAGS += $(SEED_PROFILE_CFLAGS)
-	AM_LDFLAGS = $(SEED_PROFILE_LDFLAGS)
-endif
+        $(GOBJECT_INTROSPECTION_LDFLAGS) \
+	$(CAIRO_LDFLAGS) \
+	$(SEED_PROFILE_LIBS)
 
 endif
 
-libdir = ${exec_prefix}/lib/seed
-EXTRA_DIST=run-tests.js

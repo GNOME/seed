@@ -87,82 +87,79 @@ case "$host_os" in
 		;;
 esac
 
-dnl ==============================readline=====================================
-AC_MSG_CHECKING(for readline)
-AC_TRY_CPP([#include <readline/readline.h>],
-			have_readline_h=yes,
-			have_readline_h=no)
-AC_MSG_RESULT([$have_readline_h])
+PKG_CHECK_MODULES(WEBKIT, webkit-1.0)
+AC_SUBST(WEBKIT_CFLAGS)
+AC_SUBST(WEBKIT_LDFLAGS)
 
-dnl ==============================cairo========================================
-AC_MSG_CHECKING(for cairo)
-AC_TRY_CPP([#include <cairo/cairo.h>], have_cairo_h=yes, have_cairo_h=no)
-AC_MSG_RESULT([$have_cairo_h])
-
-dnl ============================sqlite3========================================
-AC_MSG_CHECKING(for sqlite3)
-AC_TRY_CPP([#include <sqlite3.h>], have_sqlite3_h=yes, have_sqlite3_h=no)
-AC_MSG_RESULT([$have_sqlite3_h])
-
-dnl =============================gtk+-2.0======================================
-AC_MSG_CHECKING(for gtk+-2.0)
-PKG_CHECK_EXISTS(gtk+-2.0, have_gtk=yes, have_gtk=no)
-AC_MSG_RESULT([$have_gtk])
+dnl =========================Introspection=====================================
+PKG_CHECK_MODULES(GOBJECT_INTROSPECTION, gobject-introspection-1.0 >= 0.6.3)
+AC_SUBST(GOBJECT_INTROSPECTION_CFLAGS)
+AC_SUBST(GOBJECT_INTROSPECTION_LDFLAGS)
 
 dnl =============================Modules=======================================
+dnl ==== canvas ====
 AC_ARG_ENABLE(canvas-module,
 			  AC_HELP_STRING([--enable-canvas-module],
 							 [enable the canvas Seed module. [default=yes]]),
 			  [want_canvas_module=$enableval],[want_canvas_module="yes"])
 
-AC_ARG_ENABLE(example-module,
-			  AC_HELP_STRING([--enable-example-module],
-							 [enable the example Seed module. [default=yes]]),
-			  [want_example_module=$enableval],[want_example_module="yes"])
+if test x"$want_canvas_module" == x"yes" ; then
+	PKG_CHECK_MODULES(CAIRO, cairo)
+	AC_SUBST(CAIRO_CFLAGS)
+	AC_SUBST(CAIRO_LDFLAGS)
+fi
 
+AM_CONDITIONAL(BUILD_CANVAS_MODULE, test "x$want_canvas_module" = "xyes")
+AC_SUBST(BUILD_CANVAS_MODULE)
+
+dnl ==== readline ====
+AC_ARG_ENABLE(readline-module,
+			  AC_HELP_STRING([--enable-readline-module],
+							 [enable the readline Seed module. [default=yes]]),
+			  [want_readline_module=$enableval],[want_readline_module="yes"])
+if test x"$want_readline_module" != x"yes" ; then
+	AC_CHECK_HEADER([readline/readline.h])
+fi
+
+AM_CONDITIONAL(BUILD_READLINE_MODULE, test "x$want_readline_module" = "xyes")
+AC_SUBST(BUILD_READLINE_MODULE)
+
+dnl ==== multiprocessing ====
 AC_ARG_ENABLE(multiprocessing-module,
 			  AC_HELP_STRING([--enable-multiprocessing-module],
 							 [enable the multiprocessing Seed module. [default=yes]]),
 			  [want_multiprocessing_module=$enableval],
 			  [want_multiprocessing_module="yes"])
 
-AC_ARG_ENABLE(readline-module,
-			  AC_HELP_STRING([--enable-readline-module],
-							 [enable the readline Seed module. [default=yes]]),
-			  [want_readline_module=$enableval],[want_readline_module="yes"])
+AM_CONDITIONAL(BUILD_MULTIPROCESSING_MODULE, test "x$want_multiprocessing_module" = "xyes")
+AC_SUBST(BUILD_MULTIPROCESSING_MODULE)
 
+dnl ==== sqlite ====
 AC_ARG_ENABLE(sqlite-module,
 			  AC_HELP_STRING([--enable-sqlite-module],
 							 [enable the sqlite Seed module. [default=yes]]),
 			  [want_sqlite_module=$enableval],[want_sqlite_module="yes"])
 
-dnl --- Special Cases ---
-
-if test x"$have_cairo_h" != x"yes" ; then
-	want_canvas_module="no"
+if test x"$want_sqlite_module" == x"yes" ; then
+	PKG_CHECK_MODULES(SQLITE, sqlite3)
+	AC_SUBST(SQLITE_CFLAGS)
+	AC_SUBST(SQLITE_LDFLAGS)
 fi
 
-if test x"$have_readline_h" != x"yes" ; then
-	want_readline_module="no"
-fi
-
-if test x"$have_sqlite3_h" != x"yes" ; then
-	want_sqlite_module="no"
-fi
-
-want_dbus_modules="yes"
-
-AM_CONDITIONAL(BUILD_CANVAS_MODULE, test "x$want_canvas_module" = "xyes")
-AM_CONDITIONAL(BUILD_EXAMPLE_MODULE, test "x$want_example_module" = "xyes")
-AM_CONDITIONAL(BUILD_MULTIPROCESSING_MODULE, test "x$want_multiprocessing_module" = "xyes")
-AM_CONDITIONAL(BUILD_READLINE_MODULE, test "x$want_readline_module" = "xyes")
 AM_CONDITIONAL(BUILD_SQLITE_MODULE, test "x$want_sqlite_module" = "xyes")
-
-AC_SUBST(BUILD_CANVAS_MODULE)
-AC_SUBST(BUILD_EXAMPLE_MODULE)
-AC_SUBST(BUILD_MULTIPROCESSING_MODULE)
-AC_SUBST(BUILD_READLINE_MODULE)
 AC_SUBST(BUILD_SQLITE_MODULE)
+
+dnl ==== Example ====
+AC_ARG_ENABLE(example-module,
+			  AC_HELP_STRING([--enable-example-module],
+							 [enable the example Seed module. [default=yes]]),
+			  [want_example_module=$enableval],[want_example_module="yes"])
+
+AM_CONDITIONAL(BUILD_EXAMPLE_MODULE, test "x$want_example_module" = "xyes")
+AC_SUBST(BUILD_EXAMPLE_MODULE)
+
+dnl ==== dbus? ====
+want_dbus_modules="yes"
 
 dnl =========================turtle example====================================
 AC_ARG_ENABLE(turtle-example,
@@ -170,8 +167,10 @@ AC_ARG_ENABLE(turtle-example,
 							 [enable the turtle graphics example. [default=yes]]),
 			  [want_turtle_example=$enableval],[want_turtle_example="yes"])
 
-if test x"$have_gtk" != x"yes" ; then
-	want_turtle_example="no"
+if test x"$want_turtle_example" == x"yes" ; then
+	PKG_CHECK_MODULES(GTK, gtk+-2.0)
+	AC_SUBST(GTK_CFLAGS)
+	AC_SUBST(GTK_LIBS)
 fi
 
 AM_CONDITIONAL(BUILD_TURTLE_EXAMPLE, test "x$want_turtle_example" = "xyes")
@@ -213,7 +212,7 @@ AC_ARG_ENABLE(profile-modules,
 
 if test "x$enable_profile" = "xyes"; then
 	SEED_PROFILE_CFLAGS="-fprofile-arcs -ftest-coverage"
-	SEED_PROFILE_LDFLAGS="-lgcov"
+	SEED_PROFILE_LIBS="-lgcov"
 	CFLAGS="-O0"
 fi
 
@@ -222,7 +221,7 @@ if test "x$enable_profile" = "xno"; then
 fi
 
 AC_SUBST(SEED_PROFILE_CFLAGS)
-AC_SUBST(SEED_PROFILE_LDFLAGS)
+AC_SUBST(SEED_PROFILE_LIBS)
 
 AM_CONDITIONAL(PROFILE_MODULES, test "x$enable_profile_modules" = "xyes")
 
@@ -234,12 +233,6 @@ case "$host_os" in
 	darwin*)
 		SEED_OSX_CFLAGS="-F/Applications/WebKit.app/Contents/Frameworks/10.5 -framework JavaScriptCore"
 		SEED_OSX_LDFLAGS="-F/Applications/WebKit.app/Contents/Frameworks/10.5 -framework JavaScriptCore"
-		PKG_CHECK_MODULES(SEED, gobject-introspection-1.0 >= 0.6.3)
-		PKG_CHECK_MODULES(LIBSEED, gobject-introspection-1.0 >= 0.6.3)
-		;;
-	*)
-		PKG_CHECK_MODULES(SEED, webkit-1.0 gobject-introspection-1.0 >= 0.6.3)
-		PKG_CHECK_MODULES(LIBSEED, webkit-1.0 gobject-introspection-1.0  >= 0.6.3)
 		;;
 esac
 AC_SUBST(SEED_OSX_CFLAGS)
