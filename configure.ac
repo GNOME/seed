@@ -14,8 +14,6 @@ AM_PROG_CC_C_O
 AC_PROG_LIBTOOL
 PKG_PROG_PKG_CONFIG
 
-CFLAGS="-O3"
-
 changequote(,)dnl
 ensureflag() {
   flag="$1"; shift
