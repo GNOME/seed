@@ -10,16 +10,16 @@ var child_pid = Seed.fork();
 
 if (child_pid === 0)
 {
-	Gtk.init(null, null);
+    Gtk.init(null, null);
 
-	var id = parseInt(pipes[0].read(), 10);
+    var id = parseInt(pipes[0].read(), 10);
 
-	var label = new Gtk.Label({label: "Hello GtkPlug World"});
-	var plug = new Gtk.Plug.c_new(id);
+    var label = new Gtk.Label({label: "Hello GtkPlug World"});
+    var plug = new Gtk.Plug.c_new(id);
 
-	plug.add(label);
-	plug.show_all();
-	Gtk.main();
+    plug.add(label);
+    plug.show_all();
+    Gtk.main();
 }
 
 Gtk.init(null, null);

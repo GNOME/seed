@@ -9,7 +9,7 @@ function file_changed(monitor, child, other, event)
 {
     var notification =
 	new Notify.Notification({summary: "File Notification",
-                             body : "It's not clear what notification system this file is providing an example of." });
+				 body : "It's not clear what notification system this file is providing an example of." });
     notification.set_timeout(5000);
     notification.show();
 }
@@ -23,4 +23,5 @@ monitor = file.monitor_directory();
 monitor.signal.changed.connect(file_changed);
 
 Gtk.main();
+
 

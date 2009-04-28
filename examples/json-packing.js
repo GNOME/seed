@@ -9,22 +9,22 @@ var button = new Gtk.Button({label: "Bye"});
 var entry = new Gtk.Entry();
 
 var packing = [
-	{
-		child: label,
-		fill: false,
-		padding: 10,
-		position: Gtk.PackType.END
-	},
-	{
-		child: button,
-		fill: false,
-		padding: 100,
-		expand: true
-	},
-	{
-		child:entry
-	}
-	];
+    {
+	child: label,
+	fill: false,
+	padding: 10,
+	position: Gtk.PackType.END
+    },
+    {
+	child: button,
+	fill: false,
+	padding: 100,
+	expand: true
+    },
+    {
+	child:entry
+    }
+];
 
 window = new Gtk.Window();
 window.signal.hide.connect(function () { Gtk.main_quit(); });
