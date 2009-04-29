@@ -555,12 +555,9 @@ seed_gi_make_argument (JSContextRef ctx,
 	    arg->v_long = seed_value_to_long (ctx, value, exception);
 	    if (!(interface_type == GI_INFO_TYPE_FLAGS) && !seed_validate_enum ((GIEnumInfo *)interface, arg->v_long))
 	      {
-		gchar *message = 
-		  g_strdup_printf ("Enum value: %ld is out of range", 
-				   arg->v_long);
-		
 		seed_make_exception (ctx, exception, "EnumRange",
-				     message);
+				     "Enum value: %ld is out of range", 
+				     arg->v_long);
 		g_base_info_unref (interface);
 		
 		return FALSE;

@@ -104,7 +104,7 @@ seed_make_exception_from_gerror (JSContextRef ctx,
 	g_string_truncate (string, i - 1);
 
     }
-  seed_make_exception (ctx, exception, string->str, error->message);
+  seed_make_exception (ctx, exception, string->str, error->message, NULL);
 
   g_string_free (string, TRUE);
 }

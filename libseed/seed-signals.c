@@ -125,12 +125,11 @@ seed_gobject_signal_connect_by_name (JSContextRef ctx,
 
   if (argumentCount < 2 || argumentCount > 3)
     {
-      gchar *mes = g_strdup_printf ("Signal connection expected"
-				    " 2 or 3 arguments. Got " "%Zd",
-				    argumentCount);
-      seed_make_exception (ctx, exception, "ArgumentError", mes);
+      seed_make_exception (ctx, exception, "ArgumentError", 
+			   "Signal connection expected"
+			   " 2 or 3 arguments. Got " "%Zd",
+			   argumentCount);
 
-      g_free (mes);
       return JSValueMakeNull (ctx);
     }
 
@@ -265,14 +264,14 @@ seed_gobject_signal_emit (JSContextRef ctx,
 
   if (argumentCount != query.n_params)
     {
-      gchar *mes = g_strdup_printf ("Signal: %s for type %s expected %u "
-				    "arguments, got %Zd",
-				    query.signal_name,
-				    g_type_name (query.itype),
-				    query.n_params,
-				    argumentCount);
-      seed_make_exception (ctx, exception, "ArgumentError", mes);
-      g_free (mes);
+      seed_make_exception (ctx, exception, "ArgumentError", 
+			   "Signal: %s for type %s expected %u "
+			   "arguments, got %Zd",
+			   query.signal_name,
+			   g_type_name (query.itype),
+			   query.n_params,
+			   argumentCount);
+
       return JSValueMakeNull (ctx);
     }
 
@@ -323,12 +322,11 @@ seed_gobject_signal_connect_on_property (JSContextRef ctx,
 
   if ((argumentCount > 2) || (argumentCount == 0))
     {
-      gchar *mes = g_strdup_printf ("Signal connection expected"
-				    " 1, or 2 arguments. Got "
-				    "%Zd", argumentCount);
-      seed_make_exception (ctx, exception, "ArgumentError", mes);
+      seed_make_exception (ctx, exception, "ArgumentError",
+			   "Signal connection expected"
+			   " 1, or 2 arguments. Got "
+			   "%Zd", argumentCount);
 
-      g_free (mes);
       return JSValueMakeNull (ctx);
     }
 
