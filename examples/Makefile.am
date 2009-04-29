@@ -16,6 +16,7 @@ examples_DATA = \
     Gnio.js \
     gdkpixbufloader.js \
     gtktreeview.js \
+    gtktextview.js \
     async-quine.js \
     clutter-cogl.js \
     Gnio-server.js \
@@ -52,6 +53,7 @@ EXTRA_DIST = \
     clutter-cairo.js \
     async-quine.js \
     gconf.js \
+    gtktextview.js \
     video.js \
     accelgroup.js \
     Gnio.js \
