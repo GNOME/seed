@@ -42,7 +42,7 @@ EXTRA_DIST = \
     property-glib-exception.js \
     quit2.js \
     quit.js \
-    readline_bind.js \
+    readline-bind.js \
     readline.js \
     signal-connect.js \
     signal-exception.js \
