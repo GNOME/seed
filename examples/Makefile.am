@@ -28,7 +28,6 @@ examples_DATA = \
     accelgroup.js \
     clutter-0.8.js \
     clutter-0.9.js \
-    introspect.js \
     poppler.js \
     json-packing.js \
     ls.js \
@@ -59,7 +58,6 @@ EXTRA_DIST = \
     Gnio-server.js \
     clutter-0.8.js \
     clutter-0.9.js \
-    introspect.js \
     poppler.js \
     json-packing.js \
     gtkplug.js \
