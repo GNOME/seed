@@ -120,10 +120,9 @@ seed_gobject_constructor_invoked (JSContextRef ctx,
 
   if (argumentCount > 1)
     {
-      gchar *mes = g_strdup_printf ("Constructor expects"
-				    " 1 argument, got %Zd", argumentCount);
-      seed_make_exception (ctx, exception, "ArgumentError", mes);
-      g_free (mes);
+      seed_make_exception (ctx, exception, "ArgumentError", 
+			   "Constructor expects"
+			   " 1 argument, got %Zd", argumentCount);
 
       return (JSObjectRef) JSValueMakeNull (ctx);
     }
@@ -159,12 +158,10 @@ seed_gobject_constructor_invoked (JSContextRef ctx,
       param_spec = g_object_class_find_property (oclass, prop_name);
       if (param_spec == NULL)
 	{
-	  gchar *mes =
-	    g_strdup_printf ("Invalid property for construction: %s",
-			     prop_name);
-	  seed_make_exception (ctx, exception, "PropertyError", mes);
+	  seed_make_exception (ctx, exception, "PropertyError", 
+			       "Invalid property for construction: %s",
+			       prop_name);
 
-	  g_free (mes);
 	  g_free (params);
 
 	  JSPropertyNameArrayRelease (jsprops);
@@ -233,10 +230,9 @@ seed_gobject_equals (JSContextRef ctx,
 
   if (argumentCount != 1)
     {
-      gchar *mes = g_strdup_printf ("GObject equals comparison expected"
-				    " 1 argument, got %Zd", argumentCount);
-      seed_make_exception (ctx, exception, "ArgumentError", mes);
-      g_free (mes);
+      seed_make_exception (ctx, exception, "ArgumentError", 
+			   "GObject equals comparison expected"
+			   " 1 argument, got %Zd", argumentCount);
 
       return JSValueMakeNull (ctx);
     }
@@ -329,14 +325,13 @@ seed_gobject_method_invoked (JSContextRef ctx,
 				      type_info,
 				      &in_args[n_in_args++], exception))
 	    {
-	      gchar *mes =
-		g_strdup_printf
-		("Unable to make argument %d for" " function: %s. \n",
-		 i + 1,
-		 g_base_info_get_name ((GIBaseInfo *) info));
-	      seed_make_exception (ctx, exception, "ArgumentError", mes);
+	      seed_make_exception (ctx, exception, 
+				   "ArgumentError", 
+				   "Unable to make argument %d for" 
+				   " function: %s. \n",
+				   i + 1,
+				   g_base_info_get_name ((GIBaseInfo *) info));
 
-	      g_free (mes);
 	      g_base_info_unref ((GIBaseInfo *) type_info);
 	      g_base_info_unref ((GIBaseInfo *) arg_info);
 	      g_free (in_args);
@@ -850,7 +845,8 @@ seed_gobject_set_property (JSContextRef context,
   g_object_set_property (obj, cproperty_name, &gval);
   if (glib_message != 0)
     {
-      seed_make_exception (context, exception, "PropertyError", glib_message);
+      seed_make_exception (context, exception, "PropertyError", 
+			   glib_message, NULL);
 
       return FALSE;
     }

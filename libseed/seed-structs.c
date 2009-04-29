@@ -726,12 +726,10 @@ seed_construct_struct_type_with_parameters (JSContextRef ctx,
 	field = seed_union_find_field ((GIUnionInfo *) info, prop_name);
       if (!field)
 	{
-	  gchar *mes =
-	    g_strdup_printf ("Invalid property for construction: %s",
-			     prop_name);
-	  seed_make_exception (ctx, exception, "PropertyError", mes);
+	  seed_make_exception (ctx, exception, "PropertyError", 
+			       "Invalid property for construction: %s",
+			       prop_name);
 
-	  g_free (mes);
 	  JSPropertyNameArrayRelease (jsprops);
 	  return (JSObjectRef) JSValueMakeNull (ctx);
 	}

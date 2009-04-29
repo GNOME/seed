@@ -38,11 +38,9 @@ seed_include (JSContextRef ctx,
 
   if (argumentCount != 1)
     {
-      gchar *mes =
-	g_strdup_printf ("Seed.include expected 1 argument, "
-			 "got %Zd", argumentCount);
-      seed_make_exception (ctx, exception, "ArgumentError", mes);
-      g_free (mes);
+      seed_make_exception (ctx, exception, "ArgumentError", 
+			   "Seed.include expected 1 argument, "
+			   "got %Zd", argumentCount);
       return JSValueMakeNull (ctx);
     }
 
@@ -76,12 +74,11 @@ seed_include (JSContextRef ctx,
 
   if (!buffer)
     {
-      gchar *mes = g_strdup_printf ("File not found: %s", import_file);
-      seed_make_exception (ctx, exception, "FileNotFound", mes);
+      seed_make_exception (ctx, exception, "FileNotFound", 
+			   "File not found: %s", import_file);
 
       g_free (import_file);
       g_free (buffer);
-      g_free (mes);
       return JSValueMakeNull (ctx);
     }
 
@@ -128,11 +125,9 @@ seed_scoped_include (JSContextRef ctx,
 
   if (argumentCount != 1)
     {
-      gchar *mes =
-	g_strdup_printf ("Seed.include expected 1 argument, "
-			 "got %Zd", argumentCount);
-      seed_make_exception (ctx, exception, "ArgumentError", mes);
-      g_free (mes);
+      seed_make_exception (ctx, exception, "ArgumentError", 
+			   "Seed.include expected 1 argument, "
+			   "got %Zd", argumentCount);
       return JSValueMakeNull (ctx);
     }
 
@@ -166,12 +161,11 @@ seed_scoped_include (JSContextRef ctx,
 
   if (!buffer)
     {
-      gchar *mes = g_strdup_printf ("File not found: %s", import_file);
-      seed_make_exception (ctx, exception, "FileNotFound", mes);
-
+      seed_make_exception (ctx, exception, "FileNotFound", 
+			   "File not found: %s", import_file);
+      
       g_free (import_file);
       g_free (buffer);
-      g_free (mes);
       return JSValueMakeNull (ctx);
     }
 
@@ -217,11 +211,9 @@ seed_print (JSContextRef ctx,
 {
   if (argumentCount != 1)
     {
-      gchar *mes =
-	g_strdup_printf ("Seed.print expected 1 argument," " got %Zd",
-			 argumentCount);
-      seed_make_exception (ctx, exception, "ArgumentError", mes);
-      g_free (mes);
+      seed_make_exception (ctx, exception, "ArgumentError", 
+			   "Seed.print expected 1 argument, got %d", 
+			   argumentCount);
       return JSValueMakeNull (ctx);
     }
 
@@ -268,11 +260,9 @@ seed_introspect (JSContextRef ctx,
 
   if (argumentCount != 1)
     {
-      gchar *mes =
-	g_strdup_printf ("Seed.introspect expected 1 argument, "
-			 "got %Zd", argumentCount);
-      seed_make_exception (ctx, exception, "ArgumentError", mes);
-      g_free (mes);
+      seed_make_exception (ctx, exception, "ArgumentError", 
+			   "Seed.introspect expected 1 argument, "
+			   "got %Zd", argumentCount);
       return JSValueMakeNull (ctx);
     }
 
@@ -335,10 +325,9 @@ seed_check_syntax (JSContextRef ctx,
     }
   else
     {
-      gchar *mes = g_strdup_printf ("Seed.check_syntax expected "
-				    "1 argument, got %Zd", argumentCount);
-      seed_make_exception (ctx, exception, "ArgumentError", mes);
-      g_free (mes);
+      seed_make_exception (ctx, exception, "ArgumentError",
+			   "Seed.check_syntax expected "
+			   "1 argument, got %Zd", argumentCount);
     }
   return JSValueMakeNull (ctx);
 }
@@ -412,11 +401,9 @@ seed_quit (JSContextRef ctx,
     }
   else if (argumentCount > 1)
     {
-      gchar *mes =
-	g_strdup_printf ("Seed.quit expected " "1 argument, got %Zd",
-			 argumentCount);
-      seed_make_exception (ctx, exception, "ArgumentError", mes);
-      g_free (mes);
+      seed_make_exception (ctx, exception, "ArgumentError", 
+			   "Seed.quit expected " "1 argument, got %Zd",
+			   argumentCount);
     }
 
   exit (EXIT_SUCCESS);

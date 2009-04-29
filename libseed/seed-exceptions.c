@@ -17,6 +17,7 @@
 
 #include "seed-private.h"
 #include <string.h>
+#include <stdarg.h>
 
 /**
  * seed_make_exception:
@@ -34,15 +35,20 @@
 void
 seed_make_exception (JSContextRef ctx,
 		     JSValueRef * exception,
-		     const gchar * name, const gchar * message)
+		     const gchar * name, 
+		     const gchar * message,
+		     ...)
 {
   JSStringRef js_name = 0;
   JSStringRef js_message = 0;
   JSValueRef js_name_ref = 0, js_message_ref = 0;
   JSObjectRef exception_obj;
-
+  va_list args;
+  
   if (!exception)
     return;
+  
+  va_start (args, message);
 
   if (name)
     {
@@ -51,8 +57,10 @@ seed_make_exception (JSContextRef ctx,
     }
   if (message)
     {
-      js_message = JSStringCreateWithUTF8CString (message);
+      gchar *mes = g_strdup_vprintf (message, args);
+      js_message = JSStringCreateWithUTF8CString (mes);
       js_message_ref = JSValueMakeString (ctx, js_message);
+      g_free (mes);
     }
 
   exception_obj = JSObjectMake (ctx, 0, NULL);
@@ -63,6 +71,8 @@ seed_make_exception (JSContextRef ctx,
 
   JSStringRelease (js_name);
   JSStringRelease (js_message);
+  
+  va_end (args);
 }
 
 /**

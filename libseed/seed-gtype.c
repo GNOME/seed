@@ -52,11 +52,9 @@ seed_property_method_invoked (JSContextRef ctx,
 
   if (argumentCount != 1)
     {
-      gchar *mes =
-	g_strdup_printf ("Property installation expected 1 argument"
-			 " got %Zd \n", argumentCount);
-      seed_make_exception (ctx, exception, "ArgumentError", mes);
-      g_free (mes);
+      seed_make_exception (ctx, exception, "ArgumentError", 
+			   "Property installation expected 1 argument"
+			   " got %Zd \n", argumentCount);
 
       return JSValueMakeNull (ctx);
     }
@@ -105,10 +103,9 @@ seed_gsignal_method_invoked (JSContextRef ctx,
   /* Sanity check */
   if (argumentCount != 1)
     {
-      gchar *mes = g_strdup_printf ("Signal constructor expected 1 argument"
-				    " got %Zd \n", argumentCount);
-      seed_make_exception (ctx, exception, "ArgumentError", mes);
-      g_free (mes);
+      seed_make_exception (ctx, exception, "ArgumentError", 
+			   "Signal constructor expected 1 argument"
+			   " got %Zd \n", argumentCount);
       return (JSObjectRef) JSValueMakeNull (ctx);
     }
   if (JSValueIsNull (ctx, arguments[0])
@@ -510,11 +507,9 @@ seed_gtype_constructor_invoked (JSContextRef ctx,
 
   if (argumentCount != 1)
     {
-      gchar *mes =
-	g_strdup_printf ("GType constructor expected 1 "
-			 "argument, got %Zd \n", argumentCount);
-      seed_make_exception (ctx, exception, "ArgumentError", mes);
-      g_free (mes);
+      seed_make_exception (ctx, exception, "ArgumentError", 
+			   "GType constructor expected 1 "
+			   "argument, got %Zd \n", argumentCount);
       return (JSObjectRef) JSValueMakeNull (ctx);
     }
   if (!JSValueIsObject (ctx, arguments[0]))
@@ -608,10 +603,9 @@ seed_param_getter_invoked (JSContextRef ctx,
 
   if (argumentCount != 1)
     {
-      gchar *mes = g_strdup_printf ("ParamSpec.get expected "
-				    "1 argument, got %Zd", argumentCount);
-      seed_make_exception (ctx, exception, "ArgumentError", mes);
-      g_free (mes);
+      seed_make_exception (ctx, exception, "ArgumentError", 
+			   "ParamSpec.get expected "
+			   "1 argument, got %Zd", argumentCount);
 
       return JSValueMakeNull (ctx);
     }
@@ -642,10 +636,9 @@ seed_param_setter_invoked (JSContextRef ctx,
 
   if (argumentCount != 1)
     {
-      gchar *mes = g_strdup_printf ("ParamSpec.set expected "
-				    "1 argument, got %Zd", argumentCount);
-      seed_make_exception (ctx, exception, "ArgumentError", mes);
-      g_free (mes);
+      seed_make_exception (ctx, exception, "ArgumentError", 
+			   "ParamSpec.set expected "
+			   "1 argument, got %Zd", argumentCount);
 
       return JSValueMakeNull (ctx);
     }

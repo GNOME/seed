@@ -528,14 +528,12 @@ seed_importer_handle_native_module (JSContextRef ctx,
   
   if (!module)
     {
-      gchar *mes = g_strdup_printf ("Error loading native module at %s: %s",
-				    file_path,
-				    g_module_error());
       // Could be a better exception
       seed_make_exception (ctx, exception, "ModuleError",
-			   mes);
+			   "Error loading native module at %s: %s",
+			   file_path,
+			   g_module_error());
       g_free (file_path);
-      g_free (mes);
       
       return NULL;
     }
