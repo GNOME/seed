@@ -11,6 +11,8 @@
 #include <sys/stat.h>
 #include <sys/utsname.h>
 
+#include <sys/types.h>
+
 #include <fcntl.h>
 
 #ifdef HAVE_PTY_H
@@ -1075,7 +1077,6 @@ seed_module_init(SeedEngine * eng)
   OS_DEFINE_QUICK_ENUM (R_OK);
   OS_DEFINE_QUICK_ENUM (W_OK);
   OS_DEFINE_QUICK_ENUM (X_OK);
-
 
   return os_namespace;
 }
