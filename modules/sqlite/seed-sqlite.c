@@ -139,7 +139,8 @@ SeedValue seed_sqlite_exec(SeedContext ctx,
     {
       if (sqlite_error)
 	{
-	  seed_make_exception(ctx, exception, "SqliteError", sqlite_error);
+		seed_make_exception(ctx, exception, "SqliteError", 
+				    sqlite_error, NULL);
 	  sqlite3_free(sqlite_error);
 	}
       return seed_make_null(ctx);

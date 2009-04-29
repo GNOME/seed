@@ -56,11 +56,9 @@ seed_readline_bind(SeedContext ctx,
 
   if (argumentCount != 2)
     {
-      gchar *mes =
-	g_strdup_printf("Seed.readline_bind expected 2 arguments, "
-			"got %Zd", argumentCount);
-      seed_make_exception(ctx, exception, "ArgumentError", mes);
-      g_free(mes);
+      seed_make_exception(ctx, exception, "ArgumentError", 
+			  "Seed.readline_bind expected 2 arguments, "
+			  "got %Zd", argumentCount);
       return seed_make_null(ctx);
     }
 
@@ -95,11 +93,9 @@ seed_readline(SeedContext ctx,
 
   if (argumentCount != 1)
     {
-      gchar *mes =
-	g_strdup_printf("Seed.readline expected 1 argument, "
-			"got %Zd", argumentCount);
-      seed_make_exception(ctx, exception, "ArgumentError", mes);
-      g_free(mes);
+      seed_make_exception(ctx, exception, "ArgumentError", 
+			  "Seed.readline expected 1 argument, "
+			  "got %Zd", argumentCount);
       return seed_make_null(ctx);
     }
 

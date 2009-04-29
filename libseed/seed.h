@@ -86,7 +86,7 @@ SeedScript *seed_make_script (SeedContext ctx,
 SeedScript *seed_script_new_from_file (SeedContext ctx, gchar * file);
 SeedException seed_script_exception (SeedScript * s);
 void seed_make_exception (SeedContext ctx, SeedException exception,
-			  const gchar * name, const gchar * message, ...);
+			  const gchar * name, const gchar * message, ...) G_GNUC_PRINTF (4,5);
 gchar *seed_exception_get_name (SeedContext ctx, SeedException exception);
 gchar *seed_exception_get_message (SeedContext ctx, SeedException exception);
 guint seed_exception_get_line (SeedContext ctx, SeedException exception);
