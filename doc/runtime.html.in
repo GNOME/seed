@@ -85,12 +85,10 @@ Seed.import_namespace("Gtk", "2.0");
 Behaviour when loading a namespace which has already been loaded is undefined and most likely unwanted. To work around this, a try/catch block can be used:
 </p>
 <pre class="sh_javascript">
-try
-{
+try{
     Clutter;
 }
-catch(e)
-{
+catch(e){
     Seed.import_namespace("Clutter");
 }
 </pre>
@@ -134,12 +132,10 @@ var my_name = Seed.printf("[%s] is %d characters long!\n",
 Examines a segment of Javascript, looking for syntax errors. If errors are found, an exception is thrown, which can be caught with a try/catch block. You can examine the location of the syntax error with the <i>line</i> property of the returned exception.
 </p>
 <pre class="sh_javascript">
-try
-{
+try{
     Seed.check_syntax("234[asdf");
 }
-catch(e)
-{
+catch(e){
     Seed.print("Something horrible happened on line " + e.line);
 }
 </pre>
@@ -151,15 +147,13 @@ Creates a new process which is an exact copy of the current one, starting from t
 <pre class="sh_javascript">
 var pid = Seed.fork();
 
-if(pid)
-{
+if(pid){
     // Parent
     
     while(1)
         Seed.print("From Parent");
 }
-else
-{
+else{
     // Child
 
     while(1)
@@ -189,8 +183,7 @@ object.<b>connect</b>(signame, function, <i>user_data</i>)</div>
 Connects <i>function</i> to the signal, <i>signame</i>, on <i>object</i>. Any GObject signal will work. If present, user_data is passed as the last argument to the callback.
 </p>
 <pre class="sh_javascript">
-function button_clicked()
-{
+function button_clicked(){
     Seed.print("You pushed me!!");
 }
 
@@ -201,8 +194,7 @@ button.signal.clicked.connect(button_clicked);
 The second form is useful if you want to connect to detailed signals; for example, <b>notify::</b> signals on an object's properties:
 </p>
 <pre class="sh_javascript">
-function handle_opacity_change(obj, gobject, user_data)
-{
+function handle_opacity_change(obj, gobject, user_data){
     Seed.print("Window " + obj + "'s opacity was changed!");
 }
 
@@ -224,13 +216,11 @@ Seed throws Javascript exceptions for errors in the GObject layer; our custom ex
 </ul>
 <p>Exceptions are caught with the <code>try/catch</code> construct:</p>
 <pre class="sh_javascript">
-try
-{
+try{
     var window = new Gtk.Window();
     window.opacity = "hello!";
 }
-catch(e)
-{
+catch(e){
     Seed.print("An exception occurred!");
 }
 </pre>
@@ -246,13 +236,11 @@ catch(e)
 Just as in Javascript, you can throw an exception manually with the <b>throw</b> function, passing it an object - either a new object, with the properties listed above (for consistency), or an arbitrary object:
 </p>
 <pre class="sh_javascript">
-try
-{
+try{
     if(!http.connect("http://google.com"))
         throw { name: "HTTPConnectionError", message: "404 File Not Found" }
 }
-catch(e)
-{
+catch(e){
     // e.message = "404 File Not Found"
 }
 </pre>
@@ -268,11 +256,9 @@ To implement a new GType, an object describing the type is required.
 NewType = {
     parent: ParentTypeConstructor,
     name: "NewTypeName",
-    class_init: function(klass, prototype)
-    {
+    class_init: function(klass, prototype){
     },
-    instance_init: function(klass)
-    {
+    instance_init: function(){
     }
 }
 </pre>
@@ -283,16 +269,13 @@ Indicates that the new type derives from ParentType, i.e. Gtk.Window, with name 
 HelloLabel = new GType({
     parent: Gtk.Label,
     name: "HelloLabel",
-    class_init: function(klass, prototype)
-    {
+    class_init: function(klass, prototype){
         prototype.say_goodbye = 
-                             function()
-                             {
+                             function(){
                                  this.label = "Goodbye";
                              }
     },
-    instance_init: function(klass)
-    {
+    instance_init: function(){
         this.label = "Hello"; // Hello Labels Always Say Hello.
     }
 });
@@ -335,21 +318,15 @@ For example:
 HelloWindow = new GType({       
     parent: Gtk.Window.type,
     name: "HelloWindow",
-    class_init: function(klass, prototype)
-    {
-        var HelloSignalDefinition = {name: "hello",
-                                     parameters: [GObject.TYPE_INT,
-                                                  GObject.TYPE_STRING],
-                                     return_type: Gtk.Window.type};
-
-        hello_signal_id = klass.install_signal(HelloSignalDefinition);
-    },
+    signals: [{name: "hello",
+               parameters: [GObject.TYPE_INT,
+                            GObject.TYPE_STRING],
+               return_type: Gtk.Window.type}];
 });
 
 w = new HelloWindow();
 
-w.signal.hello.connect(function(object, number, string)
-                       {
+w.signal.hello.connect(function(object, number, string){
                            Seed.print(number + " " + string);
                            return new Gtk.Window()
                        });
