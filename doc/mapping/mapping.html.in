@@ -150,8 +150,8 @@ Once again <code><namespace>soup</namespace>_<type>date</type>_<member>new</memb
 <p>
 Non static methods are directly accessible from the object, i.e.
 <pre class="javascript">
-c = new <namespace>Clutter</namespace>.<type>Color</type> ({red: 0xff, alpha: 0xff});
-c.<member>from_string</member> ("purple");
+c = new <namespace>Clutter</namespace>.<type>Color</type>({red: 0xff, alpha: 0xff});
+c.<member>from_string</member>("purple");
 </pre>
 </p>
 <b>TODO: Static methods</b>
