@@ -9,21 +9,18 @@ Gtk.init(null, null);
 Browser = new GType({
     parent: Gtk.VBox.type,
     name: "Browser",
-    init: function (klass)
-    {
+    init: function (){
         // Private
         var toolbar = new BrowserToolbar();
         var web_view = new BrowserView();
         var scroll_view = new Gtk.ScrolledWindow();
 
         // Public
-        this.get_toolbar = function ()
-        {
+        this.get_toolbar = function (){
             return toolbar;
         };
 
-        this.get_web_view = function ()
-        {
+        this.get_web_view = function (){
             return web_view;
         };
 
@@ -42,11 +39,9 @@ Browser = new GType({
 BrowserView = new GType({
     parent: WebKit.WebView.type,
     name: "BrowserView",
-    init: function (klass)
-    {
+    init: function (){
         // Private
-        var update_url = function (web_view, web_frame)
-        {
+        var update_url = function (web_view, web_frame){
             var toolbar = browser.get_toolbar();
 
             toolbar.set_url(web_frame.get_uri());
@@ -55,8 +50,7 @@ BrowserView = new GType({
         };
 
         // Public
-        this.browse = function (url)
-        {
+        this.browse = function (url){
             if(url.search("://") < 0)
                 url = "http://" + url;
 
@@ -72,8 +66,7 @@ BrowserView = new GType({
 BrowserToolbar = new GType({
     parent: Gtk.HBox.type,
     name: "BrowserToolbar",
-    init: function (klass)
-    {
+    init: function (){
         // Private
         var url_bar = new Gtk.Entry();
 
@@ -81,39 +74,32 @@ BrowserToolbar = new GType({
         var forward_button = new Gtk.ToolButton({stock_id:"gtk-go-forward"});
         var refresh_button = new Gtk.ToolButton({stock_id:"gtk-refresh"});
 
-        var back = function ()
-        {
+        var back = function (){
             browser.get_web_view().go_back();
         };
 
-        var forward = function ()
-        {
+        var forward = function (){
             browser.get_web_view().go_forward();
         };
 
-        var refresh = function ()
-        {
+        var refresh = function (){
             browser.get_web_view().reload();
         };
 
-        var browse = function (url)
-        {
+        var browse = function (url){
             browser.get_web_view().browse(url.text);
         };
 
         // Public
-        this.set_url = function (url)
-        {
+        this.set_url = function (url){
             url_bar.text = url;
         };
 
-        this.set_can_go_back = function (can_go_back)
-        {
+        this.set_can_go_back = function (can_go_back){
             back_button.sensitive = can_go_back;
         };
 
-        this.set_can_go_forward = function (can_go_forward)
-        {
+        this.set_can_go_forward = function (can_go_forward){
             forward_button.sensitive = can_go_forward;
         };
 
@@ -132,7 +118,7 @@ BrowserToolbar = new GType({
 
 window = new Gtk.Window({title: "Browser"});
 window.resize(800, 600);
-window.signal.hide.connect(function () { Gtk.main_quit(); });
+window.signal.hide.connect(Gtk.main_quit);
 
 browser = new Browser();
 browser.get_web_view().browse(home_page);

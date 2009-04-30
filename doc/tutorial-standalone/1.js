@@ -6,8 +6,7 @@ Gtk.init(null, null);
 BrowserToolbar = new GType({
     parent: Gtk.HBox.type,
     name: "BrowserToolbar",
-    init: function (klass)
-    {
+    init: function (){
         // Private
         var url_bar = new Gtk.Entry();
 
@@ -15,23 +14,19 @@ BrowserToolbar = new GType({
         var forward_button = new Gtk.ToolButton({stock_id:"gtk-go-forward"});
         var refresh_button = new Gtk.ToolButton({stock_id:"gtk-refresh"});
 
-        var back = function ()
-        {
+        var back = function (){
             Seed.print("Go Back");
         };
 
-        var forward = function ()
-        {
+        var forward = function (){
             Seed.print("Go Forward");
         };
 
-        var refresh = function ()
-        {
+        var refresh = function (){
             Seed.print("Refresh");
         };
 
-        var browse = function (url)
-        {
+        var browse = function (url){
             Seed.print("Navigate to: " + url.text);
         };
 
@@ -49,7 +44,7 @@ BrowserToolbar = new GType({
 });
 
 window = new Gtk.Window({title: "Browser"});
-window.signal.hide.connect(function () { Gtk.main_quit(); });
+window.signal.hide.connect(Gtk.main_quit);
 
 toolbar = new BrowserToolbar();
 window.add(toolbar);
