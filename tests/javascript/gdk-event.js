@@ -1,7 +1,7 @@
 #!/usr/bin/env seed
 // Returns: 0
 // STDIN:
-// STDOUT:\[object GdkWindow\]\n\[object GdkWindow\]\n1\.000000\n200\.000000
+// STDOUT:\[object GdkWindow\]\n\[object GdkWindow\]\n1\n200
 // STDERR:
 
 Gtk = imports.gi.Gtk;

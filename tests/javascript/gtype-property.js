@@ -1,7 +1,7 @@
 #!/usr/bin/env seed
 // Returns: 0
 // STDIN:
-// STDOUT:1\.000000\n0\.000000
+// STDOUT:1\n0
 // STDERR:
 
 Gtk = imports.gi.Gtk;

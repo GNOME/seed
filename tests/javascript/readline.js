@@ -1,7 +1,7 @@
 #!/usr/bin/env seed
 // Returns: 0
 // STDIN:2+2
-// STDOUT:4.000000
+// STDOUT:4
 // STDERR:
 
 readline = imports.readline;

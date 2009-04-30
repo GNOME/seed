@@ -1773,7 +1773,7 @@ seed_value_to_string (JSContextRef ctx,
     }
   else if (JSValueIsBoolean (ctx, val) || JSValueIsNumber (ctx, val))
     {
-      buf = g_strdup_printf ("%lf", JSValueToNumber (ctx, val, NULL));
+      buf = g_strdup_printf ("%lg", JSValueToNumber (ctx, val, NULL));
     }
   else
     {

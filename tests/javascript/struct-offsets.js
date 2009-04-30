@@ -1,7 +1,7 @@
 #!/usr/bin/env seed
 // Returns: 0
 // STDIN:
-// STDOUT:17\.000000\n0\.000000
+// STDOUT:17\n0
 // STDERR:
 
 Pango = imports.gi.Pango;
