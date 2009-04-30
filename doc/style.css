@@ -66,3 +66,18 @@ code
 {
     font-weight: bold;
 }
+
+namespace
+{
+    color:#ef2929;
+}
+
+type
+{
+    color:#73d216;
+}
+
+member
+{
+    color:#729fcf;
+}
