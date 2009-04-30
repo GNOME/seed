@@ -40,7 +40,7 @@ seed_include (JSContextRef ctx,
     {
       seed_make_exception (ctx, exception, "ArgumentError", 
 			   "Seed.include expected 1 argument, "
-			   "got %Zd", argumentCount);
+			   "got %zd", argumentCount);
       return JSValueMakeNull (ctx);
     }
 
@@ -127,7 +127,7 @@ seed_scoped_include (JSContextRef ctx,
     {
       seed_make_exception (ctx, exception, "ArgumentError", 
 			   "Seed.include expected 1 argument, "
-			   "got %Zd", argumentCount);
+			   "got %zd", argumentCount);
       return JSValueMakeNull (ctx);
     }
 
@@ -262,7 +262,7 @@ seed_introspect (JSContextRef ctx,
     {
       seed_make_exception (ctx, exception, "ArgumentError", 
 			   "Seed.introspect expected 1 argument, "
-			   "got %Zd", argumentCount);
+			   "got %zd", argumentCount);
       return JSValueMakeNull (ctx);
     }
 
@@ -327,7 +327,7 @@ seed_check_syntax (JSContextRef ctx,
     {
       seed_make_exception (ctx, exception, "ArgumentError",
 			   "Seed.check_syntax expected "
-			   "1 argument, got %Zd", argumentCount);
+			   "1 argument, got %zd", argumentCount);
     }
   return JSValueMakeNull (ctx);
 }
@@ -402,7 +402,7 @@ seed_quit (JSContextRef ctx,
   else if (argumentCount > 1)
     {
       seed_make_exception (ctx, exception, "ArgumentError", 
-			   "Seed.quit expected " "1 argument, got %Zd",
+			   "Seed.quit expected " "1 argument, got %zd",
 			   argumentCount);
     }
 

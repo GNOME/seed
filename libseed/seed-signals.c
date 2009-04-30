@@ -127,7 +127,7 @@ seed_gobject_signal_connect_by_name (JSContextRef ctx,
     {
       seed_make_exception (ctx, exception, "ArgumentError", 
 			   "Signal connection expected"
-			   " 2 or 3 arguments. Got " "%Zd",
+			   " 2 or 3 arguments. Got " "%zd",
 			   argumentCount);
 
       return JSValueMakeNull (ctx);
@@ -266,7 +266,7 @@ seed_gobject_signal_emit (JSContextRef ctx,
     {
       seed_make_exception (ctx, exception, "ArgumentError", 
 			   "Signal: %s for type %s expected %u "
-			   "arguments, got %Zd",
+			   "arguments, got %zd",
 			   query.signal_name,
 			   g_type_name (query.itype),
 			   query.n_params,
@@ -325,7 +325,7 @@ seed_gobject_signal_connect_on_property (JSContextRef ctx,
       seed_make_exception (ctx, exception, "ArgumentError",
 			   "Signal connection expected"
 			   " 1, or 2 arguments. Got "
-			   "%Zd", argumentCount);
+			   "%zd", argumentCount);
 
       return JSValueMakeNull (ctx);
     }

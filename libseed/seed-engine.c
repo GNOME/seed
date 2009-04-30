@@ -122,7 +122,7 @@ seed_gobject_constructor_invoked (JSContextRef ctx,
     {
       seed_make_exception (ctx, exception, "ArgumentError", 
 			   "Constructor expects"
-			   " 1 argument, got %Zd", argumentCount);
+			   " 1 argument, got %zd", argumentCount);
 
       return (JSObjectRef) JSValueMakeNull (ctx);
     }
@@ -232,7 +232,7 @@ seed_gobject_equals (JSContextRef ctx,
     {
       seed_make_exception (ctx, exception, "ArgumentError", 
 			   "GObject equals comparison expected"
-			   " 1 argument, got %Zd", argumentCount);
+			   " 1 argument, got %zd", argumentCount);
 
       return JSValueMakeNull (ctx);
     }
