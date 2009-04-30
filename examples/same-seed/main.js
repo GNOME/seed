@@ -11,11 +11,11 @@ var max_colors = 3;
 var fly_score = true;
 
 imports.gi.versions.Clutter = "0.9";
-imports.gi.versions.GtkClutter = "0.9";
+//imports.gi.versions.GtkClutter = "0.9";
 
 Gtk = imports.gi.Gtk;
 Clutter = imports.gi.Clutter;
-GtkClutter = imports.gi.GtkClutter;
+//GtkClutter = imports.gi.GtkClutter;
 GdkPixbuf = imports.gi.GdkPixbuf;
 GConf = imports.gi.GConf;
 GLib = imports.gi.GLib;
@@ -37,7 +37,7 @@ var timelines = [];
 
 //var window = new Gtk.Window
 
-var stage = new Clutter.Stage;
+var stage = new Clutter.Stage();
 
 //var window = gb.get_object("main_window");
 //var clutter = gb.get_object("clutter");
