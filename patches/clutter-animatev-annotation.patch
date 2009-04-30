@@ -1,0 +1,13 @@
+diff --git a/clutter/clutter-animation.c b/clutter/clutter-animation.c
+index 24b9c3f..98c49b3 100644
+--- a/clutter/clutter-animation.c
++++ b/clutter/clutter-animation.c
+@@ -1848,7 +1848,7 @@ clutter_actor_animate (ClutterActor *actor,
+  * @mode: an animation mode logical id
+  * @duration: duration of the animation, in milliseconds
+  * @n_properties: number of property names and values
+- * @properties: (array length=n_properties): a vector containing the
++ * @properties: (array) (element-type utf8): a vector containing the
+  *    property names to set
+  * @values: (array length=n_properies): a vector containing the
+  *    property values to set
