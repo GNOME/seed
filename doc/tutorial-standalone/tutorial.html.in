@@ -67,23 +67,19 @@ Seed.print(output);
 </pre>
 <p>When something goes <em>wrong</em> in a piece of JavaScript code, the program will exit, most likely leaving the user in a confused state. For example, if you try to access a variable that doesn't exist: <code>Seed.print(asdf);</code> Seed will exit with the message: <code>ReferenceError Can't find variable: asdf</code>. It is possible to catch this sort of error, or exception, inside of your JavaScript program, ensuring that it doesn't terminate your program - or that if it does, it prints a useful error message. The <code>try/catch</code> construct provides a way to <em>try</em> to execute a segment of JavaScript, and, if it fails, run a second segment, without exiting the program. The second segment could print a user-friendly error message, ignore the exception entirely, or try to work around the problem. A quick example of <code>try/catch</code>:</p>
 <pre class="sh_javascript">
-try
-{
+try{
     Seed.print(asdf);
 }
-catch(e)
-{
+catch(e){
     Seed.print("Something went wrong!");
 }
 </pre>
 <p>It's also possible to determine what, exactly, went wrong. The '<code>e</code>' in the <code>catch</code> statement (which, by the way, you <em>cannot</em> omit) is actually an object containing information about the exception! We can access some of the basic properties of this object:</p>
 <pre class="sh_javascript">
-try
-{
+try{
     Seed.print(asdf);
 }
-catch(e)
-{
+catch(e){
     Seed.print("Something went wrong!");
     Seed.print(e.name);
     Seed.print(e.message);
@@ -97,14 +93,11 @@ catch(e)
 
 readline = imports.readline;
 
-while(1)
-{
-    try
-    {
+while(1){
+    try{
         Seed.print(eval(readline.readline("> ")));
     }
-    catch(e)
-    {
+    catch(e){
         Seed.print(e.name + " " + e.message);
     }
 }
@@ -152,9 +145,7 @@ window.signal.hide.connect(function () { Gtk.main_quit(); });
 BrowserToolbar = new GType({
     parent: Gtk.HBox.type,
     name: "BrowserToolbar",
-    init: function (klass)
-    {
-
+    init: function (){
     }
 });
 </pre>
@@ -167,8 +158,7 @@ You'll notice that the GType takes a JavaScript object. The three most important
 <span class="unchanged">BrowserToolbar = new GType({
     parent: Gtk.HBox.type,
     name: "BrowserToolbar",
-    init: function (klass)
-    {</span>
+    init: function (){</span>
         // Private
         var url_bar = new Gtk.Entry();
 
@@ -193,8 +183,7 @@ You'll notice that the GType takes a JavaScript object. The three most important
 <span class="unchanged">BrowserToolbar = new GType({
     parent: Gtk.HBox.type,
     name: "BrowserToolbar",
-    init: function (klass)
-    {
+    init: function (){
         // Private
         var url_bar = new Gtk.Entry();
 
@@ -202,23 +191,19 @@ You'll notice that the GType takes a JavaScript object. The three most important
         var forward_button = new Gtk.ToolButton({stock_id:"gtk-go-forward"});
         var refresh_button = new Gtk.ToolButton({stock_id:"gtk-refresh"});
 </span>
-        var back = function ()
-        {
+        var back = function (){
             Seed.print("Go Back");
         };
 
-        var forward = function ()
-        {
+        var forward = function (){
             Seed.print("Go Forward");
         };
 
-        var refresh = function ()
-        {
+        var refresh = function (){
             Seed.print("Refresh");
         };
 
-        var browse = function (url)
-        {
+        var browse = function (url){
             Seed.print("Navigate to: " + url.text);
         };
 
@@ -252,11 +237,9 @@ window.add(toolbar);
 BrowserView = new GType({
     parent: WebKit.WebView.type,
     name: "BrowserView",
-    init: function (klass)
-    {
+    init: function (){
         // Private
-        var update_url = function (web_view, web_frame)
-        {
+        var update_url = function (web_view, web_frame){
             var toolbar = browser.get_toolbar();
 
             toolbar.set_url(web_frame.get_uri());
@@ -265,8 +248,7 @@ BrowserView = new GType({
         };
 
         // Public
-        this.browse = function (url)
-        {
+        this.browse = function (url){
             if(url.search("://") &lt; 0)
                 url = "http://" + url;
 
@@ -290,8 +272,7 @@ window.resize(600,600);
 <span class="unchanged">BrowserToolbar = new GType({
     parent: Gtk.HBox.type,
     name: "BrowserToolbar",
-    init: function (klass)
-    {
+    init: function (){
         // Private
         var url_bar = new Gtk.Entry();
 
@@ -299,39 +280,32 @@ window.resize(600,600);
         var forward_button = new Gtk.ToolButton({stock_id:"gtk-go-forward"});
         var refresh_button = new Gtk.ToolButton({stock_id:"gtk-refresh"});
 
-        var back = function ()
-        {</span>
+        var back = function (){</span>
             browser.get_web_view().go_back();
         <span class="unchanged">};
 
-        var forward = function ()
-        {</span>
+        var forward = function (){</span>
             browser.get_web_view().go_forward();
         <span class="unchanged">};
 
-        var refresh = function ()
-        {</span>
+        var refresh = function (){</span>
             browser.get_web_view().reload();
         <span class="unchanged">};
 
-        var browse = function (url)
-        {</span>
+        var browse = function (url){</span>
             browser.get_web_view().browse(url.text);
         <span class="unchanged">};
 
         </span>// Public
-        this.set_url = function (url)
-        {
+        this.set_url = function (url){
             url_bar.text = url;
         };
 
-        this.set_can_go_back = function (can_go_back)
-        {
+        this.set_can_go_back = function (can_go_back){
             back_button.sensitive = can_go_back;
         };
 
-        this.set_can_go_forward = function (can_go_forward)
-        {
+        this.set_can_go_forward = function (can_go_forward){
             forward_button.sensitive = can_go_forward;
         };
 
@@ -353,21 +327,18 @@ window.resize(600,600);
 Browser = new GType({
     parent: Gtk.VBox.type,
     name: "Browser",
-    init: function (klass)
-    {
+    init: function (){
         // Private
         var toolbar = new BrowserToolbar();
         var web_view = new BrowserView();
         var scroll_view = new Gtk.ScrolledWindow();
 
         // Public
-        this.get_toolbar = function ()
-        {
+        this.get_toolbar = function (){
             return toolbar;
         };
 
-        this.get_web_view = function ()
-        {
+        this.get_web_view = function (){
             return web_view;
         };
 
