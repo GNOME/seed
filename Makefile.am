@@ -18,8 +18,7 @@ seeddoc_DATA = \
 	AUTHORS \
 	ChangeLog \
 	INSTALL \
-	INSTALL.osx \
-	NEWS
+	INSTALL.osx
 
 pkgconfig_DATA = seed.pc 
 
