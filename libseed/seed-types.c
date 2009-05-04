@@ -1766,14 +1766,17 @@ seed_value_to_string (JSContextRef ctx,
 
   if (val == NULL)
     return NULL;
-
-  else if (JSValueIsNull (ctx, val) || JSValueIsUndefined (ctx, val))
+  else if (JSValueIsUndefined (ctx, val))
+    {
+      buf = g_strdup ("[undefined]");
+    }
+  else if (JSValueIsNull (ctx, val))
     {
       buf = g_strdup ("[null]");
     }
   else if (JSValueIsBoolean (ctx, val) || JSValueIsNumber (ctx, val))
     {
-      buf = g_strdup_printf ("%g", JSValueToNumber (ctx, val, NULL));
+      buf = g_strdup_printf ("%.15g", JSValueToNumber (ctx, val, NULL));
     }
   else
     {
