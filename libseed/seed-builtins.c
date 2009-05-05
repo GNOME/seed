@@ -19,7 +19,8 @@
 #include "seed-private.h"
 #include <sys/mman.h>
 #include <stdio.h>
-
+#include <stdlib.h>
+#include <string.h>
 #include <signal.h>
 
 static JSValueRef
@@ -420,12 +421,62 @@ seed_breakpoint (JSContextRef ctx,
   return JSValueMakeNull(ctx);
 }
 
+typedef struct _SeedArgvPrivates {
+  gchar ** argv;
+  gint argc;
+} SeedArgvPrivates;
+
+static JSValueRef
+seed_argv_get_property (JSContextRef ctx,
+			   JSObjectRef object,
+			   JSStringRef property_name, 
+			   JSValueRef * exception)
+{
+  SeedArgvPrivates *priv;
+  gchar *cproperty_name;
+  gint length;
+  gint index;
+  
+  priv = JSObjectGetPrivate (object);
+  length = JSStringGetMaximumUTF8CStringSize (property_name);
+  cproperty_name = g_alloca (length * sizeof (gchar));
+  JSStringGetUTF8CString (property_name, cproperty_name, length);
+  
+  if (!strcmp (cproperty_name, "length"))
+    {
+      return seed_value_from_int (ctx, priv->argc, exception);
+    }
+  index = atoi (cproperty_name);
+  return seed_value_from_string (ctx, priv->argv[index], exception);  
+}
+
+JSClassDefinition seed_argv_def = {
+  0,				/* Version, always 0 */
+  kJSClassAttributeNoAutomaticPrototype,	/* JSClassAttributes */
+  "argv_array",			/* Class Name */
+  NULL,				/* Parent Class */
+  NULL,				/* Static Values */
+  NULL,
+  NULL,
+  NULL,
+  NULL,				/* Has Property */
+  seed_argv_get_property,	/* Get Property */
+  NULL,
+  NULL,				/* Delete Property */
+  NULL,				/* Get Property Names */
+  NULL,				/* Call As Function */
+  NULL,				/* Call As Constructor */
+  NULL,				/* Has Instance */
+  NULL				/* Convert To Type */
+};
+
+JSClassRef seed_argv_class;
+
 void
 seed_init_builtins (SeedEngine * local_eng, gint * argc, gchar *** argv)
 {
-  guint i;
+  SeedArgvPrivates *priv;
   JSObjectRef arrayObj;
-  JSValueRef argcref;
   JSObjectRef obj =
     (JSObjectRef) seed_object_get_property (local_eng->context,
 					    local_eng->global,
@@ -444,28 +495,14 @@ seed_init_builtins (SeedEngine * local_eng, gint * argc, gchar *** argv)
   seed_create_function (local_eng->context, "quit", &seed_quit, obj);
   seed_create_function (local_eng->context, "breakpoint",
 			&seed_breakpoint, obj);
+  
+  priv = g_new0 (SeedArgvPrivates, 1);
+  priv->argv = *argv;
+  priv->argc = *argc;
 
-  arrayObj = JSObjectMake (local_eng->context, NULL, NULL);
+  seed_argv_class = JSClassCreate (&seed_argv_def);
+  arrayObj = JSObjectMake (local_eng->context, seed_argv_class, priv);
 
-  if (argc)
-    {
-      for (i = 0; i < *argc; ++i)
-	{
-	  // TODO: exceptions!
-
-	  JSObjectSetPropertyAtIndex (local_eng->context, arrayObj, i,
-				      seed_value_from_string
-				      (local_eng->context, (*argv)[i], 0),
-				      NULL);
-	}
-
-      argcref = seed_value_from_int (local_eng->context, *argc, 0);
-    }
-  else
-    {
-      argcref = seed_value_from_int (local_eng->context, 0, 0);
-    }
-
-  seed_object_set_property (local_eng->context, arrayObj, "length", argcref);
   seed_object_set_property (local_eng->context, obj, "argv", arrayObj);
+  
 }
