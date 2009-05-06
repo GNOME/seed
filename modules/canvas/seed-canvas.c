@@ -427,6 +427,7 @@ seed_canvas_set_miterlimit (SeedContext ctx,
   GET_CR;
 
   cairo_set_miter_limit (cr, seed_value_to_double (ctx, value, e));
+  return TRUE;
 }
 
 gboolean
@@ -447,7 +448,7 @@ seed_canvas_set_linecap (SeedContext ctx,
   g_free (line_cap);
 
   cairo_set_line_cap (cr, cap);
-
+  return TRUE;
 }
 
 gboolean
@@ -468,6 +469,7 @@ seed_canvas_set_linejoin (SeedContext ctx,
   g_free (line_join);
 
   cairo_set_line_join (cr, join);
+  return TRUE;
 }
 
 void
@@ -767,6 +769,8 @@ seed_canvas_line_to (SeedContext ctx,
   y = seed_value_to_double (ctx, arguments[1], exception);
 
   cairo_line_to (cr, x, y);
+
+  return seed_make_null (ctx);
 }
 
 SeedValue
