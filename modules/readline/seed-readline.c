@@ -85,6 +85,17 @@ seed_rl_done(SeedContext ctx,
 }
 
 static SeedValue
+seed_rl_buffer(SeedContext ctx,
+	     SeedObject function,
+	     SeedObject this_object,
+	     size_t argumentCount,
+	     const SeedValue arguments[], 
+	     SeedValue * exception)
+{
+  return seed_value_from_string (ctx, rl_line_buffer, exception);
+}
+
+static SeedValue
 seed_readline(SeedContext ctx,
 	      SeedObject function,
 	      SeedObject this_object,
@@ -155,6 +166,11 @@ seed_module_init(SeedEngine * local_eng)
   seed_create_function(eng->context,
 		       "rl_done",
 		       (SeedFunctionCallback) seed_rl_done,
+		       (SeedObject) namespace_ref);
+
+  seed_create_function(eng->context,
+		       "buffer",
+		       (SeedFunctionCallback) seed_rl_buffer,
 		       (SeedObject) namespace_ref);
 
   return namespace_ref;
