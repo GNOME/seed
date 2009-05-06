@@ -73,6 +73,18 @@ seed_readline_bind(SeedContext ctx,
 }
 
 static SeedValue
+seed_rl_done(SeedContext ctx,
+	     SeedObject function,
+	     SeedObject this_object,
+	     size_t argumentCount,
+	     const SeedValue arguments[], 
+	     SeedValue * exception)
+{
+  rl_done = 1;
+  return seed_make_null (ctx);
+}
+
+static SeedValue
 seed_readline(SeedContext ctx,
 	      SeedObject function,
 	      SeedObject this_object,
@@ -138,6 +150,11 @@ seed_module_init(SeedEngine * local_eng)
   seed_create_function(eng->context,
 		       "bind",
 		       (SeedFunctionCallback) seed_readline_bind,
+		       (SeedObject) namespace_ref);
+
+  seed_create_function(eng->context,
+		       "rl_done",
+		       (SeedFunctionCallback) seed_rl_done,
 		       (SeedObject) namespace_ref);
 
   return namespace_ref;
