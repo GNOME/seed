@@ -2,14 +2,22 @@
 
 readline = imports.readline;
 
+var lastLastLength = '-1';
+
 bind_cr = function(){
+    var buffer = readline.buffer();
+    if (buffer.length == lastLastLength)
+	readline.rl_done();
     try {
-	Seed.check_syntax(readline.buffer());
+	Seed.check_syntax(buffer);
 	readline.rl_done();
     }
     catch (e){
+	if (buffer[buffer.length] == '\n' || buffer[buffer.length] == '\r')
+	    readline.rl_done();
     }
     Seed.print("");
+    lastLastLength = buffer.length;
 }
 
 readline.bind('\n', bind_cr);
