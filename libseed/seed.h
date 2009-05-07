@@ -78,7 +78,7 @@ SeedEngine *seed_init (gint *argc, gchar ***argv);
 SeedEngine *seed_init_with_context_group (gint *argc, gchar ***argv,
 					  SeedContextGroup group);
 
-SeedValue seed_simple_evaluate (SeedContext ctx, gchar * source);
+SeedValue seed_simple_evaluate (SeedContext ctx, gchar * source, SeedException *exception);
 
 SeedScript *seed_make_script (SeedContext ctx,
 			      const gchar * js, const gchar * source_url,

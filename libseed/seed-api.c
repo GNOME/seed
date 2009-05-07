@@ -276,6 +276,7 @@ seed_evaluate (JSContextRef ctx,
  * seed_simple_evaluate:
  * @ctx: A #SeedContext.
  * @source: A string representing the JavaScript to evaluate.
+ * @exception: A #SeedException pointer to store an exception in.
  *
  * Evaluates a string of JavaScript.
  *
@@ -284,12 +285,13 @@ seed_evaluate (JSContextRef ctx,
  */
 JSValueRef
 seed_simple_evaluate (JSContextRef ctx, 
-		      const gchar * source)
+		      const gchar * source,
+		      JSValueRef *exception)
 {
   JSValueRef ret;
   JSStringRef script = JSStringCreateWithUTF8CString (source);
 
-  ret = JSEvaluateScript (ctx, script, NULL, NULL, 0, NULL);
+  ret = JSEvaluateScript (ctx, script, NULL, NULL, 0, exception);
 
   JSStringRelease (script);
   return ret;
@@ -566,7 +568,7 @@ seed_signal_connect (JSContextRef ctx,
 {
   JSValueRef func;
   
-  func = seed_simple_evaluate(ctx, script);
+  func = seed_simple_evaluate(ctx, script, NULL);
   seed_signal_connect_full(ctx, object, signal, (JSObjectRef)func,
 			   NULL);
 }
