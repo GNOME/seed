@@ -111,8 +111,8 @@ AC_ARG_ENABLE(readline-module,
 			  AC_HELP_STRING([--enable-readline-module],
 							 [enable the readline Seed module. [default=yes]]),
 			  [want_readline_module=$enableval],[want_readline_module="yes"])
-if test x"$want_readline_module" != x"yes" ; then
-	AC_CHECK_HEADER([readline/readline.h])
+if test x"$want_readline_module" == x"yes" ; then
+	AC_CHECK_HEADER([readline/readline.h],,AC_MSG_ERROR([the readline library is not installed.]))
 fi
 
 AM_CONDITIONAL(BUILD_READLINE_MODULE, test "x$want_readline_module" = "xyes")
