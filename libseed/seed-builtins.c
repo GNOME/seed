@@ -213,7 +213,7 @@ seed_print (JSContextRef ctx,
   if (argumentCount != 1)
     {
       seed_make_exception (ctx, exception, "ArgumentError", 
-			   "Seed.print expected 1 argument, got %d", 
+			   "Seed.print expected 1 argument, got %zd", 
 			   argumentCount);
       return JSValueMakeNull (ctx);
     }
