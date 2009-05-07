@@ -19,7 +19,7 @@ if(Gtk.Entry.prototype.set_progress_fraction)
 
 window = new Gtk.Window({title: "Browser"});
 window.resize(800, 600);
-window.signal.hide.connect(function () { Gtk.main_quit(); });
+window.signal.hide.connect(Gtk.main_quit);
 
 TabbedBrowser.browser = new TabbedBrowser.TabbedBrowser();
 window.add(TabbedBrowser.browser);

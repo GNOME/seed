@@ -43,7 +43,7 @@ var stage = new Clutter.Stage();
 //var clutter = gb.get_object("clutter");
 //var stage = clutter.get_stage();
 
-//window.signal.hide.connect(function () { Gtk.main_quit(); });
+//window.signal.hide.connect(Gtk.main_quit);
 
 stage.color = {alpha: 0};
 stage.set_size((tiles_w * tile_size),(tiles_h * tile_size));
@@ -51,8 +51,8 @@ stage.set_size((tiles_w * tile_size),(tiles_h * tile_size));
 var board = new Board();
 stage.add_actor(board);
 
-//gb.get_object("new_game_item").signal.activate.connect(function () { board.new_game(); });
-//gb.get_object("quit_item").signal.activate.connect(function () { Gtk.main_quit(); });
+//gb.get_object("new_game_item").signal.activate.connect(board.new_game);
+//gb.get_object("quit_item").signal.activate.connect(Gtk.main_quit);
 
 //clutter.set_size_request(stage.width, stage.height);
 //window.show_all();

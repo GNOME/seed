@@ -24,7 +24,7 @@ if (child_pid === 0){
 Gtk.init(null, null);
 
 var window = new Gtk.Window();
-window.signal.hide.connect(function () { Gtk.main_quit(); });
+window.signal.hide.connect(Gtk.main_quit);
 
 var socket = new Gtk.Socket();
 var pipe = pipes[1];

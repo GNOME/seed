@@ -145,7 +145,7 @@ window.add(main_vbox);
 main_vbox.pack_start(toolbar);
 main_vbox.pack_start(drawing_area, true, true);
 
-window.signal.hide.connect(function () {Gtk.main_quit();});
+window.signal.hide.connect(Gtk.main_quit);
 
 window.show_all();
 window.resize(600,800);
