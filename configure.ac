@@ -69,7 +69,7 @@ if test x"$have_ffi_pkgconfig" = xno ; then
 	AC_MSG_RESULT([$have_ffi_h])
 fi
 
-AC_SUBST(FFI_LIBS)
+AC_SUBST(FFI_LDFLAGS)
 AC_SUBST(FFI_CFLAGS)
 
 dnl =======================WebKit ContextGroup=================================
