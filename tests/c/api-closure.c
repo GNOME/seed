@@ -28,7 +28,7 @@ void closures(TestSimpleFixture * fixture, gconstpointer _data)
 						 (SeedObject) state->eng->global);
 
 	SeedValue *val = seed_simple_evaluate(state->eng->context,
-										  "do_some_math(5, 8.66, -2, 'a')");
+										  "do_some_math(5, 8.66, -2, 'a')", NULL);
 	g_assert(seed_value_to_double(state->eng->context, val, NULL) == -6.5);
 
 	SeedObject *dsm_obj = seed_object_get_property(state->eng->context,

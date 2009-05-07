@@ -34,7 +34,7 @@ void js_signal_from_c(TestSimpleFixture * fixture, gconstpointer _data)
 					      "    {"
 					      "    }};"
 					      "HelloWindow = new GType(HelloWindowType);"
-					      "w = new HelloWindow();");
+					      "w = new HelloWindow();", NULL);
 
 	GObject *obj = seed_value_to_object(state->eng->context, val, NULL);
 
@@ -42,7 +42,7 @@ void js_signal_from_c(TestSimpleFixture * fixture, gconstpointer _data)
 
 	val =
 		seed_simple_evaluate(state->eng->context,
-				     "g = w.signal.hello.emit(2,'Test')");
+				     "g = w.signal.hello.emit(2,'Test')", NULL);
 
 	g_assert(seed_value_to_double(state->eng->context, val, NULL) == 5.12);
 }
