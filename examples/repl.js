@@ -1,8 +1,12 @@
 #!/usr/bin/env seed
 
 readline = imports.readline;
+sandbox = imports.sandbox;
 
 var lastLastLength = '-1';
+
+context = new sandbox.Context();
+context.add_globals();
 
 bind_cr = function(){
     var buffer = readline.buffer();
@@ -20,13 +24,18 @@ bind_cr = function(){
     lastLastLength = buffer.length;
 }
 
+bind_tab = function(){
+    os.write(1, "\t");
+}
+
 readline.bind('\n', bind_cr);
 readline.bind('\r', bind_cr);
+readline.bind('\t', bind_tab);
 
 while(1){
     try{
 	item = readline.readline("> ");
-	Seed.print(eval(item));
+	Seed.print(context.eval(item));
     }
     catch(e){
 	Seed.print(e.name + " " + e.message);
