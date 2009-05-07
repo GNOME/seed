@@ -96,6 +96,30 @@ seed_rl_buffer(SeedContext ctx,
 }
 
 static SeedValue
+seed_rl_insert(SeedContext ctx,
+	       SeedObject function,
+	       SeedObject this_object,
+	       size_t argumentCount,
+	       const SeedValue arguments[], 
+	       SeedValue * exception)
+{
+  gchar *ins;
+  gint ret;
+  if (argumentCount != 1)
+    {
+      seed_make_exception (ctx, exception, "ArgumentError", 
+			   "readline.insert expected 1 argument, got %d", 
+			   argumentCount);
+      return seed_make_null (ctx);
+    }
+  ins = seed_value_to_string (ctx, arguments[0], exception);
+  ret = rl_insert_text (ins);
+  g_free (ins);
+  
+  return seed_value_from_int (ctx, ret, exception);
+}
+
+static SeedValue
 seed_readline(SeedContext ctx,
 	      SeedObject function,
 	      SeedObject this_object,
@@ -164,13 +188,18 @@ seed_module_init(SeedEngine * local_eng)
 		       (SeedObject) namespace_ref);
 
   seed_create_function(eng->context,
-		       "rl_done",
+		       "done",
 		       (SeedFunctionCallback) seed_rl_done,
 		       (SeedObject) namespace_ref);
 
   seed_create_function(eng->context,
 		       "buffer",
 		       (SeedFunctionCallback) seed_rl_buffer,
+		       (SeedObject) namespace_ref);
+
+  seed_create_function(eng->context,
+		       "insert",
+		       (SeedFunctionCallback) seed_rl_insert,
 		       (SeedObject) namespace_ref);
 
   return namespace_ref;

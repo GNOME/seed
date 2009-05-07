@@ -2,6 +2,7 @@
 
 readline = imports.readline;
 sandbox = imports.sandbox;
+os = imports.os;
 
 var lastLastLength = '-1';
 
@@ -11,26 +12,25 @@ context.add_globals();
 bind_cr = function(){
     var buffer = readline.buffer();
     if (buffer.length == lastLastLength)
-	readline.rl_done();
+	readline.done();
     try {
 	Seed.check_syntax(buffer);
-	readline.rl_done();
+	readline.done();
     }
     catch (e){
-	if (buffer[buffer.length] == '\n' || buffer[buffer.length] == '\r')
-	    readline.rl_done();
+	os.write(1, "\n..");
+	lastLastLength = buffer.length;
+	return;
     }
-    Seed.print("");
+    os.write(1, "\n");
     lastLastLength = buffer.length;
-}
-
-bind_tab = function(){
-    os.write(1, "\t");
 }
 
 readline.bind('\n', bind_cr);
 readline.bind('\r', bind_cr);
-readline.bind('\t', bind_tab);
+readline.bind('\t', function(){
+    readline.insert("\t");
+});
 
 while(1){
     try{
