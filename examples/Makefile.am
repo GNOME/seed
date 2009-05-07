@@ -9,6 +9,9 @@ SUBDIRS = \
     pong \
     same-seed
 
+repldir = $(datadir)/seed
+repl_DATA = repl.js
+
 if BUILD_SEED_EXAMPLES
 examplesdir=$(datadir)/doc/seed/examples
 examples_DATA = \
