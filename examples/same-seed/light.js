@@ -62,7 +62,6 @@ Light = new GType({
 				y: [GObject.TYPE_INT, new_y]
 			});
 			
-			//Seed.print(this.anim);
 			this.anim.timeline.start();
 			
 			GLib.main_context_iteration();

@@ -257,7 +257,7 @@ Board = new GType({
 					var new_y = (tiles_h - y - 1) * tile_size + offset;
 					
 					if(!li.get_closed() && ((new_x != li.x) ||
-												 (new_y != li.y)))
+										    (new_y != li.y)))
 					{
 						timeline = li.animate_to(new_x, new_y, timeline);
 						
@@ -327,7 +327,7 @@ Board = new GType({
 					li.set_position(x * tile_size + offset,
 									(tiles_h - y - 1) * tile_size + offset);
 					this.add_actor(li);
-					li.on.signal.button_press_event.connect(this.remove_region);
+					li.on.signal.button_release_event.connect(this.remove_region);
 				
 					lights[x][y] = li;
 					all_lights.push(lights[x][y]);
