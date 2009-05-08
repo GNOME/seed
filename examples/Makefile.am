@@ -20,6 +20,7 @@ examples_DATA = \
     gdkpixbufloader.js \
     gtktreeview.js \
     gtktextview.js \
+    pango-fontset.js \
     async-quine.js \
     clutter-cogl.js \
     Gnio-server.js \
@@ -61,6 +62,7 @@ EXTRA_DIST = \
     accelgroup.js \
     Gnio.js \
     Gnio-server.js \
+    pango-fontset.js \
     clutter-0.8.js \
     clutter-0.9.js \
     poppler.js \
