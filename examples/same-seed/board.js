@@ -262,12 +262,12 @@ Board = new GType({
 						timeline = li.animate_to(new_x, new_y, timeline);
 						
 						// This might go away after we can pass timelines around
-						var nullize_anim = function (asdf, li)
+						/*var nullize_anim = function (asdf, li)
 						{
 							li.anim = null;
 						};
 						
-						timeline.signal.completed.connect(nullize_anim, li);
+						timeline.signal.completed.connect(nullize_anim, li);*/
 					}
 					
 					if(!li.get_closed())
