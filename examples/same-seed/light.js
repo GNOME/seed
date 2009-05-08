@@ -31,25 +31,22 @@ Light = new GType({
 			return state;
 		};
 		
-		this.animate_out = function ()
+		this.animate_out = function (timeline)
 		{
-			this.on.anim = this.on.animate(Clutter.AnimationMode.LINEAR,500,
+			this.on.anim = this.on.animate_with_timeline(Clutter.AnimationMode.LINEAR, timeline,
 			{
 				height: [GObject.TYPE_INT, tile_size * 2],
 				width: [GObject.TYPE_INT, tile_size * 2],
 				x: [GObject.TYPE_INT, -tile_size/2],
 				y: [GObject.TYPE_INT, -tile_size/2]
 			});
-			this.on.anim.timeline.start();
 			
-			this.on.anim.timeline.signal.completed.connect(this.hide_light, this);
-			
-			this.anim = this.animate(Clutter.AnimationMode.LINEAR,500,
+			this.anim = this.animate_with_timeline(Clutter.AnimationMode.LINEAR, timeline,
 			{
 				opacity: [GObject.TYPE_UCHAR, 0]
 			});
 			
-			this.anim.timeline.start();
+			timeline.signal.completed.connect(this.hide_light, this);
 			
 			GLib.main_context_iteration();
 		};
@@ -74,10 +71,10 @@ Light = new GType({
 			return closed;
 		};
 		
-		this.close_tile = function ()
+		this.close_tile = function (timeline)
 		{
 			closed = true;
-			this.animate_out();
+			this.animate_out(timeline);
 		};
 		
 		this.hide_light = function (timeline, light)

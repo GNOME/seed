@@ -217,8 +217,12 @@ Board = new GType({
 			if(cl.length < 2)
 				return false;
 			
+			var close_timeline = new Clutter.Timeline({duration: 500});
+			
 			for(var i in cl)
-				cl[i].close_tile();
+				cl[i].close_tile(close_timeline);
+			
+			close_timeline.start();
 			
 			var real_x = 0, timeline = 0;
 			
