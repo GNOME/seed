@@ -277,14 +277,12 @@ Board = new GType({
 				if(!empty_col)
 					real_x++;
 			}
-			
-			anim_timeline.start();
-			
-			if(anim_timeline && li.anim)
-						// This needs to be changed when we get the ability
-						// to pass timelines around.... will fix bugs on
-						// slower machines / boards with many tiles
+
+			if(anim_timeline)
+            {
 				anim_timeline.signal.completed.connect(done_animating);
+				anim_timeline.start();
+			}
 			else
 				animating = false;
 			
