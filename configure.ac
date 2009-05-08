@@ -153,7 +153,20 @@ AM_CONDITIONAL(BUILD_EXAMPLE_MODULE, test "x$want_example_module" = "xyes")
 AC_SUBST(BUILD_EXAMPLE_MODULE)
 
 dnl ==== dbus? ====
-want_dbus_modules="yes"
+AC_ARG_ENABLE(dbus-module,
+			  AC_HELP_STRING([--enable-dbus-module],
+							 [enable the dbus Seed module. [default=yes]]),
+			  [want_dbus_module=$enableval],[want_dbus_module="yes"])
+
+
+AM_CONDITIONAL(BUILD_DBUS_MODULE, test "x$want_dbus_module" = "xyes")
+AC_SUBST(BUILD_DBUS_MODULE)
+
+if test x"$want_dbus_module" == x"yes" ; then
+	PKG_CHECK_MODULES(DBUS, dbus-1)
+	AC_SUBST(DBUS_CFLAGS)
+	AC_SUBST(DBUS_LDFLAGS)
+fi
 
 dnl ==== os ====
 AC_ARG_ENABLE(os-module,
@@ -304,6 +317,7 @@ modules/readline/Makefile
 modules/Multiprocessing/Makefile
 modules/sandbox/Makefile
 modules/os/Makefile
+modules/dbus/Makefile
 ])
 AC_OUTPUT
 
