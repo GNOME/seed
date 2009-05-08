@@ -53,17 +53,13 @@ Light = new GType({
 		
 		this.animate_to = function (new_x, new_y, timeline)
 		{
-			this.anim = this.animate(Clutter.AnimationMode.EASE_OUT_BOUNCE, 500,
+			this.anim = this.animate_with_timeline(Clutter.AnimationMode.EASE_OUT_BOUNCE, timeline,
 			{
 				x: [GObject.TYPE_INT, new_x],
 				y: [GObject.TYPE_INT, new_y]
 			});
 			
-			this.anim.timeline.start();
-			
 			GLib.main_context_iteration();
-			
-			return this.anim.timeline;
 		};
 		
 		this.get_closed = function ()

@@ -228,7 +228,7 @@ Board = new GType({
 			
 			animating = true;
 			
-			//timeline = new Clutter.Timeline({duration: 500});
+			var anim_timeline = new Clutter.Timeline({duration: 500});
 			
 			for(var x in lights)
 			{
@@ -263,15 +263,7 @@ Board = new GType({
 					if(!li.get_closed() && ((new_x != li.x) ||
 										    (new_y != li.y)))
 					{
-						timeline = li.animate_to(new_x, new_y, timeline);
-						
-						// This might go away after we can pass timelines around
-						/*var nullize_anim = function (asdf, li)
-						{
-							li.anim = null;
-						};
-						
-						timeline.signal.completed.connect(nullize_anim, li);*/
+						li.animate_to(new_x, new_y, anim_timeline);
 					}
 					
 					if(!li.get_closed())
@@ -286,13 +278,13 @@ Board = new GType({
 					real_x++;
 			}
 			
-			//timeline.start();
+			anim_timeline.start();
 			
-			if(timeline && li.anim)
+			if(anim_timeline && li.anim)
 						// This needs to be changed when we get the ability
 						// to pass timelines around.... will fix bugs on
 						// slower machines / boards with many tiles
-				timeline.signal.completed.connect(done_animating);
+				anim_timeline.signal.completed.connect(done_animating);
 			else
 				animating = false;
 			
