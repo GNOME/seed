@@ -134,9 +134,9 @@ window.set_title("Browser");
 </pre>
 <p>You can set any number of properties this way, by separating them by commas (<code>{"title": "Browser", "default-height": 500}</code>, etc.). This method should work for any GObject constructor.</p>
 <div class="section">Signals</div>
-<p>You'll notice that our program, as it stands, fails to quit when you click the 'Close' button. You can, of course, quit it with Ctrl-C, but this is certainly unacceptable behaviour. To fix it, we'll connect a JavaScript closure to the signal that gets emitted when the 'Close' button is clicked:</p>
+<p>You'll notice that our program, as it stands, fails to quit when you click the 'Close' button. You can, of course, quit it with Ctrl-C, but this is certainly unacceptable behaviour. To fix it, we'll connect a C function to the signal that gets emitted when the 'Close' button is clicked:</p>
 <pre class="sh_javascript">
-window.signal.hide.connect(function () { Gtk.main_quit(); });
+window.signal.hide.connect(Gtk.main_quit);
 </pre>
 <p>The signal names are the same as in the <a href="http://library.gnome.org/devel/gtk/stable/">GTK documentation</a>, except using underscores instead of dashes between words. </p>
 <div class="section">GObject Subclassing</div>

@@ -292,7 +292,7 @@ Board = new GType({
 			else
 				animating = false;
 			
-			for(;real_x < tiles_w; real_x++)
+			for(; real_x < tiles_w; real_x++)
 				lights[real_x] = null;
 			
 			update_score(cl.length);

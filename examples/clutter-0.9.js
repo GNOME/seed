@@ -89,7 +89,7 @@ function animate_rectangles(rectangles){
 
 var stage = new Clutter.Stage();
 var rectangles = new Array(colors.length);
-stage.signal.hide.connect(function(){Clutter.main_quit();});
+stage.signal.hide.connect(Clutter.main_quit);
 
 create_rectangles(rectangles, colors);
 

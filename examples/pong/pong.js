@@ -263,7 +263,7 @@ var black = new Clutter.Color();
 Clutter.color_parse("Black", black);
 
 var stage = new Clutter.Stage();
-stage.signal.hide.connect(function(){Clutter.main_quit();});
+stage.signal.hide.connect(Clutter.main_quit);
 stage.set_size(500,500);
 stage.color = black;
 

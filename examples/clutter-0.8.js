@@ -39,7 +39,7 @@ function alpha_func(alpha){
 }
 
 var stage = new Clutter.Stage();
-stage.signal.hide.connect(function(){Clutter.main_quit();});
+stage.signal.hide.connect(Clutter.main_quit);
 var timeline = new Clutter.Timeline({fps:60, num_frames:300});
 stage.show_all();
 
