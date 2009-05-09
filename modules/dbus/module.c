@@ -46,7 +46,7 @@ seed_js_dbus_signature_length (SeedContext ctx,
   if (argument_count < 1) 
     {
       seed_make_exception (ctx, exception, "ArgumentError", 
-			   "dbus.signatureLength expected 1 argument, got %d", argument_count);
+			   "dbus.signatureLength expected 1 argument, got %zd", argument_count);
       return seed_make_null (ctx);
     }
   

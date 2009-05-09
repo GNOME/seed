@@ -108,7 +108,7 @@ seed_rl_insert(SeedContext ctx,
   if (argumentCount != 1)
     {
       seed_make_exception (ctx, exception, "ArgumentError", 
-			   "readline.insert expected 1 argument, got %d", 
+			   "readline.insert expected 1 argument, got %zd", 
 			   argumentCount);
       return seed_make_null (ctx);
     }
