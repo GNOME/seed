@@ -369,7 +369,7 @@ seed_gobject_method_invoked (JSContextRef ctx,
       type_info = g_callable_info_get_return_type ((GICallableInfo *) info);
       tag = g_type_info_get_tag (type_info);
       if (tag == GI_TYPE_TAG_VOID)
-	retval_ref = JSValueMakeNull (ctx);
+	retval_ref = JSValueMakeUndefined (ctx);
       else
 	{
 	  GIBaseInfo *interface;

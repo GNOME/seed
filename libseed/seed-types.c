@@ -733,7 +733,7 @@ seed_gi_argument_make_js (JSContextRef ctx,
   switch (gi_tag)
     {
     case GI_TYPE_TAG_VOID:
-      return 0;
+      return JSValueMakeUndefined (ctx);
     case GI_TYPE_TAG_BOOLEAN:
       return seed_value_from_boolean (ctx, arg->v_boolean, exception);
     case GI_TYPE_TAG_INT8:
