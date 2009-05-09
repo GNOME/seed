@@ -932,6 +932,106 @@ on_name_lost(DBusConnection *connection,
     seed_context_unref (ctx);
 }
 
+static void
+owner_closure_invalidated(gpointer  data,
+                          GClosure *closure)
+{
+    BigJSDBusNameOwner *owner;
+
+    owner = (BigJSDBusNameOwner*)data;
+
+    if (owner) {
+        big_dbus_release_name(owner->bus_type,
+                              &owner->funcs,
+                              owner);
+
+        g_closure_unref(owner->acquired_closure);
+        g_closure_unref(owner->lost_closure);
+
+        g_slice_free(BigJSDBusNameOwner, owner);
+    }
+
+}
+
+static SeedValue
+seed_js_dbus_acquire_name(SeedContext ctx,
+			  SeedObject function,
+			  SeedObject this_object,
+			  size_t argument_count,
+			  const SeedValue arguments[],
+			  SeedException * exception)
+{
+    const char *bus_name;
+    SeedObject acquire_func;
+    SeedObject lost_func;
+    BigJSDBusNameOwner *owner;
+    DBusBusType bus_type;
+    BigDBusNameType name_type;
+    unsigned int id;
+
+    if (argument_count < 4) 
+      {
+	seed_make_exception (ctx, exception, "ArgumentError", 
+			     "Not enough args, need bus name, name type, acquired_func, lost_func");
+	return seed_make_null (ctx);
+      }
+
+    bus_type = get_bus_type_from_object (ctx, this_object, exception);
+
+    bus_name = seed_value_to_string (ctx, arguments[0], exception);
+
+    name_type = (BigDBusNameType)seed_value_to_int (ctx, arguments[1], exception);
+
+    if (!seed_value_is_object (ctx, arguments[2]) || 
+	!seed_value_is_function (ctx, arguments[2])) 
+      {
+        seed_make_exception (ctx, exception, "ArgumentError",
+			     "Third arg is a callback to invoke on acquiring the name");
+        return seed_make_null (ctx);
+      }
+
+    acquire_func = arguments[2];
+
+    if (!seed_value_is_object (ctx, arguments[3]) || 
+	!seed_value_is_function (ctx, arguments[3])) 
+      {
+        seed_make_exception (ctx, exception, "ArgumentError",
+			     "Fourth arg is a callback to invoke on acquiring the name");
+        return seed_make_null (ctx);
+      }
+
+    lost_func = arguments[4];
+
+    owner = g_slice_new0(BigJSDBusNameOwner);
+
+    owner->funcs.name = g_strdup(bus_name);
+    owner->funcs.type = name_type;
+    owner->funcs.acquired = on_name_acquired;
+    owner->funcs.lost = on_name_lost;
+    owner->bus_type = bus_type;
+
+    owner->acquired_closure = seed_make_gclosure (ctx, acquire_func, NULL);
+
+    g_closure_ref(owner->acquired_closure);
+    g_closure_sink(owner->acquired_closure);
+
+    owner->lost_closure = seed_make_gclosure (ctx, lost_func, NULL);
+
+    g_closure_ref(owner->lost_closure);
+    g_closure_sink(owner->lost_closure);
+
+    /* Only add the invalidate notifier to one of the closures, should
+     * be enough */
+    g_closure_add_invalidate_notifier(owner->acquired_closure, owner,
+                                      owner_closure_invalidated);
+
+    id = big_dbus_acquire_name(bus_type,
+                               &owner->funcs,
+                               owner);
+
+    return seed_value_from_int (ctx, id, exception);
+}
+
 static SeedValue
 seed_js_dbus_signature_length (SeedContext ctx,
 			       SeedObject function,
