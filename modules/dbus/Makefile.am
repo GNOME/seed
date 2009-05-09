@@ -14,6 +14,7 @@ libdbusnative_la_SOURCES = \
 
 
 libdbusnative_la_CFLAGS = \
+	-Wall \
 	-I@top_srcdir@/libseed/ \
 	$(GOBJECT_INTROSPECTION_CFLAGS) \
 	$(DBUS_CFLAGS) \

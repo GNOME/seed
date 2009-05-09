@@ -124,6 +124,7 @@ gboolean seed_string_is_equal (SeedString a, SeedString b);
 gboolean seed_string_is_equal_utf8 (SeedString a, const gchar * b);
 
 gboolean seed_value_is_null (SeedContext ctx, SeedValue value);
+gboolean seed_value_is_undefined (SeedContext ctx, SeedValue value);
 gboolean seed_value_is_object (SeedContext ctx, SeedValue value);
 gboolean seed_value_is_function (SeedContext ctx, SeedObject value);
 

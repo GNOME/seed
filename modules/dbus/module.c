@@ -1,6 +1,7 @@
 #include <seed.h>
 
 #include "util/dbus.h"
+#include "dbus-values.h"
 
 #define DBUS_CONNECTION_FROM_TYPE(type) ((type) == DBUS_BUS_SESSION ? session_bus : system_bus)
 
@@ -211,7 +212,7 @@ complete_call(SeedContext ctx,
 
     g_array_free (ret_values, TRUE);    
 
-    seed_js_add_dbus_props(ctx, reply, *retval);
+    seed_js_add_dbus_props(ctx, reply, retval, exception);
 
     return TRUE;
 }
@@ -370,6 +371,228 @@ fill_with_null_or_string(SeedContext ctx, const char **string_p, SeedValue value
     else 
       *string_p = seed_value_to_string (ctx, value, exception);
 }
+
+typedef struct {
+    int refcount;
+    DBusBusType bus_type;
+    int connection_id;
+    GClosure *closure;
+} SignalHandler;
+/* allow removal by passing in the callable
+ * FIXME don't think we ever end up using this,
+ * could get rid of it, it predates having an ID
+ * to remove by
+ */
+static GHashTable *signal_handlers_by_callable = NULL;
+
+static void signal_on_closure_invalidated (void          *data,
+                                           GClosure      *closure);
+static void signal_handler_ref            (SignalHandler *handler);
+static void signal_handler_unref          (SignalHandler *handler);
+
+static SignalHandler*
+signal_handler_new(SeedContext ctx,
+                   SeedValue      callable,
+		   SeedException *exception)
+{
+    SignalHandler *handler;
+
+    if (signal_handlers_by_callable &&
+        g_hash_table_lookup(signal_handlers_by_callable,
+                            callable) != NULL) 
+      {
+        /* To fix this, get rid of signal_handlers_by_callable
+         * and just require removal by id. Not sure we ever use
+         * removal by callable anyway.
+         */
+	seed_make_exception(ctx, exception, "ArgumentError",
+			    "For now, same callback cannot be the handler for two dbus signal connections");
+        return NULL;
+      }
+
+    handler = g_slice_new0(SignalHandler);
+    handler->refcount = 1;
+
+    /* We cheat a bit here and use a closure to store a JavaScript function
+     * and deal with the GC root and other issues, even though we
+     * won't ever marshal via GValue
+     */
+    handler->closure = seed_make_gclosure(ctx,
+					  callable,
+					  NULL);
+    if (handler->closure == NULL) {
+        g_free(handler);
+        return NULL;
+    }
+
+    g_closure_ref(handler->closure);
+    g_closure_sink(handler->closure);
+
+    g_closure_add_invalidate_notifier(handler->closure, handler,
+                                      signal_on_closure_invalidated);
+
+    if (!signal_handlers_by_callable) {
+        signal_handlers_by_callable =
+            g_hash_table_new_full(g_direct_hash,
+                                  g_direct_equal,
+                                  NULL,
+                                  NULL);
+    }
+
+    /* We keep a weak reference on the closure in a table indexed
+     * by the object, so we can retrieve it when removing the signal
+     * watch. The signal_handlers_by_callable owns one ref to the SignalHandler.
+     */
+    signal_handler_ref(handler);
+    g_hash_table_replace(signal_handlers_by_callable,
+                         callable,
+                         handler);
+
+    return handler;
+}
+
+static void
+signal_handler_ref(SignalHandler *handler)
+{
+    g_assert(handler->refcount > 0);
+    handler->refcount += 1;
+}
+
+static void
+signal_handler_dispose(SignalHandler *handler)
+{
+    g_assert(handler->refcount > 0);
+
+    signal_handler_ref(handler);
+
+    if (handler->closure) {
+        /* invalidating closure could dispose
+         * re-entrantly, so set handler->closure
+         * NULL before we invalidate
+         */
+        GClosure *closure = handler->closure;
+        handler->closure = NULL;
+
+        g_hash_table_remove(signal_handlers_by_callable,
+                            seed_closure_get_callable(closure));
+        if (g_hash_table_size(signal_handlers_by_callable) == 0) {
+            g_hash_table_destroy(signal_handlers_by_callable);
+            signal_handlers_by_callable = NULL;
+        }
+        /* the hash table owned 1 ref */
+        signal_handler_unref(handler);
+
+        g_closure_invalidate(closure);
+        g_closure_unref(closure);
+    }
+
+    /* remove signal if it hasn't been */
+    if (handler->connection_id != 0) {
+        int id = handler->connection_id;
+        handler->connection_id = 0;
+
+        /* this should clear another ref off the
+         * handler by calling signal_on_watch_removed
+         */
+        big_dbus_unwatch_signal_by_id(handler->bus_type,
+                                      id);
+    }
+
+    signal_handler_unref(handler);
+}
+
+static void
+signal_handler_unref(SignalHandler *handler)
+{
+    g_assert(handler->refcount > 0);
+
+    if (handler->refcount == 1) {
+        signal_handler_dispose(handler);
+    }
+
+    handler->refcount -= 1;
+    if (handler->refcount == 0) {
+        g_assert(handler->closure == NULL);
+        g_assert(handler->connection_id == 0);
+        g_slice_free(SignalHandler, handler);
+    }
+}
+
+static void
+signal_on_watch_removed(void *data)
+{
+    SignalHandler *handler = data;
+
+    handler->connection_id = 0; /* don't re-remove it */
+
+    /* The watch owns a ref; removing it
+     * also forces dispose, which invalidates
+     * the closure if that hasn't been done.
+     */
+    signal_handler_dispose(handler);
+    signal_handler_unref(handler);
+}
+
+static void
+signal_on_closure_invalidated(void     *data,
+                              GClosure *closure)
+{
+    SignalHandler *handler;
+
+    handler = data;
+
+    /* this removes the watch if it has not been */
+    signal_handler_dispose(handler);
+}
+
+static void
+signal_handler_callback(DBusConnection *connection,
+                        DBusMessage    *message,
+                        void           *data)
+{
+  SeedContext ctx;
+  SignalHandler *handler;
+  SeedValue ret_val;
+  DBusMessageIter arg_iter;
+  GArray *arguments;
+  SeedException exception;
+
+  //    big_debug(BIG_DEBUG_JS_DBUS,
+  //          "Signal handler called");
+
+    handler = data;
+
+    if (handler->closure == NULL) {
+      //        big_debug(BIG_DEBUG_JS_DBUS, "dbus signal handler invalidated, ignoring");
+        return;
+    }
+
+    ctx = seed_context_create (group, NULL);
+    seed_prepare_global_context (ctx);
+
+    dbus_message_iter_init(message, &arg_iter);
+    if (!seed_js_values_from_dbus(ctx, &arg_iter, &arguments, &exception)) {
+      //        big_debug(BIG_DEBUG_JS_DBUS, "Failed to marshal dbus signal to JS");
+        return;
+    }
+
+    signal_handler_ref(handler); /* for safety, in case handler removes itself */
+
+    g_assert(arguments != NULL);
+
+    //    big_debug(BIG_DEBUG_JS_DBUS,
+    //        "Invoking closure on signal received, %d args",
+    //        gjs_rooted_array_get_length(context, arguments));
+    ret_val = seed_closure_invoke_with_context(ctx, handler->closure,
+					       (SeedValue *)arguments->data,
+					       arguments->len,
+					       &exception);
+
+    g_array_free (arguments, TRUE);
+
+    signal_handler_unref(handler); /* for safety */
+}
+
 
 static SeedValue
 seed_js_dbus_signature_length (SeedContext ctx,

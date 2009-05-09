@@ -680,7 +680,7 @@ append_dict (SeedContext ctx,
 	  SeedValue signature_value;
           
           signature_value = seed_object_get_property (ctx, prop_signatures, name);
-	  if (!JSValueIsNull (ctx, signature_value))
+	  if (!seed_value_is_undefined (ctx, signature_value))
 	    {
               value_signature = seed_value_to_string (ctx, signature_value, exception);
 	      if (value_signature == NULL)

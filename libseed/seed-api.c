@@ -484,6 +484,12 @@ seed_value_is_null (JSContextRef ctx, JSValueRef value)
   return JSValueIsNull (ctx, value);
 }
 
+gboolean
+seed_value_is_undefined (JSContextRef ctx, JSValueRef value)
+{
+  return JSValueIsUndefined (ctx, value);
+}
+
 /**
  * seed_value_is_object:
  * @ctx: A #SeedContext.
