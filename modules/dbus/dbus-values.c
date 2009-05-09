@@ -18,7 +18,7 @@ seed_js_one_value_from_dbus (SeedContext ctx,
 {
   int arg_type;
 
-  *value_p = seed_make_unefined (ctx);
+  *value_p = seed_make_undefined (ctx);
 
   arg_type = dbus_message_iter_get_arg_type (iter);
 
@@ -46,7 +46,7 @@ seed_js_one_value_from_dbus (SeedContext ctx,
 	    prop_value = seed_make_undefined (ctx);
 
 	    if (!seed_js_one_value_from_dbus
-		(context, &struct_iter, &prop_value, exception))
+		(ctx, &struct_iter, &prop_value, exception))
 	      {
                 return FALSE;
 	      }
@@ -84,11 +84,11 @@ seed_js_one_value_from_dbus (SeedContext ctx,
 		if (dbus_message_iter_get_arg_type (&entry_iter) !=
 		    DBUS_TYPE_STRING)
 		  {
-		    seed_make_exception (ctx,
+                      seed_make_exception (ctx, exception, "ArgumentError",
                                          "Dictionary keys are not strings,"
-                                         "can't convert to JavaScript",
-                                         exception);
-                    return FALSE;
+                                           "can't convert to JavaScript");
+
+                      return FALSE;
 		  }
 
 		dbus_message_iter_get_basic (&entry_iter, &key);
@@ -146,14 +146,13 @@ seed_js_one_value_from_dbus (SeedContext ctx,
 		prop_value = seed_make_undefined (ctx);
 
 		if (!seed_js_one_value_from_dbus
-		    (context, &array_iter, &prop_value, exception))
+		    (ctx, &array_iter, &prop_value, exception))
 		  {
                     return FALSE;
 		  }
                 
                 seed_object_set_property_at_index (ctx, obj, index, prop_value, exception);
 
-		JS_RemoveRoot (context, &prop_value);
 		dbus_message_iter_next (&array_iter);
 		index++;
 	      }
@@ -213,7 +212,7 @@ seed_js_one_value_from_dbus (SeedContext ctx,
     case DBUS_TYPE_OBJECT_PATH:
     case DBUS_TYPE_STRING:
       {
-	const char *v_STRING;
+	char *v_STRING;
 
 	dbus_message_iter_get_basic (iter, &v_STRING);
 
@@ -227,7 +226,7 @@ seed_js_one_value_from_dbus (SeedContext ctx,
 
 	dbus_message_iter_recurse (iter, &variant_iter);
 
-	return seed_js_one_value_from_dbus (context, &variant_iter, value_p, exception);
+	return seed_js_one_value_from_dbus (ctx, &variant_iter, value_p, exception);
       }
       break;
 
@@ -239,7 +238,7 @@ seed_js_one_value_from_dbus (SeedContext ctx,
       big_debug (BIG_DEBUG_JS_DBUS,
 		 "Don't know how to convert dbus type %c to JavaScript",
 		 arg_type);
-      gjs_throw (context,
+      gjs_throw (ctx,
 		 "Don't know how to convert dbus type %c to JavaScript",
 		 arg_type);*/
       return FALSE;
@@ -266,7 +265,7 @@ seed_js_values_from_dbus (SeedContext ctx,
   // Wheee.
   do
     {
-      if (!seed_js_one_value_from_dbus (context, iter, &value))
+        if (!seed_js_one_value_from_dbus (ctx, iter, &value, exception))
 	{
           g_array_free (array, TRUE);
           return FALSE;
@@ -368,14 +367,14 @@ append_string (SeedContext ctx,
 	}
       else
 	{
-	  seed_make_exception (ctx, exception,
+            seed_make_exception (ctx, exception, "ArgumentError",
 		     "JavaScript string can't be converted to dbus array with elements of type '%c'",
 		     forced_signature[1]);
 	  return FALSE;
 	}
       break;
     default:
-      seed_make_exception (ctx, exception,
+        seed_make_exception (ctx, exception, "ArgumentError",
 		 "JavaScript string can't be converted to dbus type '%c'",
 		 forced_type);
       return FALSE;
@@ -421,9 +420,9 @@ append_int32 (SeedContext ctx,
       }
       break;
     default:
-      seed_make_exception_exception (ctx, exception,
-		 "JavaScript Integer can't be converted to dbus type '%c'",
-		 forced_type);
+        seed_make_exception (ctx, exception, "ArgumentError",
+                             "JavaScript Integer can't be converted to dbus type '%c'",
+                             forced_type);
       return FALSE;
     }
 
@@ -459,7 +458,7 @@ append_double (SeedContext ctx,
       }
       break;
     default:
-      seed_make_exception (ctx, exception,
+      seed_make_exception (ctx, exception, "ArgumentError",
                            "JavaScript Number can't be converted to dbus type '%c'",
                            forced_type);
       return FALSE;
@@ -487,7 +486,7 @@ append_boolean (SeedContext ctx,
 				     TRUE);
       break;
     default:
-      seed_make_exception (ctx, exception,
+      seed_make_exception (ctx, exception, "ArgumentError",
                            "JavaScript Boolean can't be converted to dbus type '%c'",
                            forced_type);
       return FALSE;
@@ -520,8 +519,8 @@ append_array (SeedContext ctx,
       dbus_message_iter_open_container (iter, DBUS_TYPE_VARIANT,
 					"av", &variant_iter);
       dbus_signature_iter_init (&variant_sig_iter, "av");
-      if (!append_array (context, &variant_iter,
-			 &variant_sig_iter, array, length))
+      if (!append_array (ctx, &variant_iter,
+			 &variant_sig_iter, array, length, exception))
 	return FALSE;
       dbus_message_iter_close_container (iter, &variant_iter);
 
@@ -529,9 +528,9 @@ append_array (SeedContext ctx,
     }
   else if (forced_type != DBUS_TYPE_ARRAY)
     {
-      seed_make_exception (ctx, exception,
-		 "JavaScript Array can't be converted to dbus type %c",
-		 forced_type);
+        seed_make_exception (ctx, exception, "ArgumentError",
+                             "JavaScript Array can't be converted to dbus type %c",
+                             forced_type);
       return FALSE;
     }
 
@@ -546,12 +545,12 @@ append_array (SeedContext ctx,
   for (i = 0; i < length; i++)
     {
       element = seed_object_get_property_at_index (ctx, array, i, exception);
-
+      
       //      big_debug_marshal (BIG_DEBUG_JS_DBUS, " Adding array element %u", i);
-
-      if (!seed_js_one_value_to_dbus (context, element, &array_iter,
-				      &element_sig_iter))
-	return FALSE;
+      
+      if (!seed_js_one_value_to_dbus (ctx, element, &array_iter,
+                                      &element_sig_iter, exception))
+          return FALSE;
     }
 
   dbus_message_iter_close_container (iter, &array_iter);
@@ -569,7 +568,8 @@ append_dict (SeedContext ctx,
   DBusSignatureIter element_sig_iter;
   int forced_type;
   DBusMessageIter variant_iter;
-  SeedObject props_iter;
+  gchar **prop_names;
+  guint num_props, i;
   DBusMessageIter dict_iter;
   DBusSignatureIter dict_value_sig_iter;
   char *sig;
@@ -584,7 +584,7 @@ append_dict (SeedContext ctx,
       dbus_message_iter_open_container (iter, DBUS_TYPE_VARIANT,
 					"a{sv}", &variant_iter);
       dbus_signature_iter_init (&variant_sig_iter, "a{sv}");
-      if (!append_dict (context, &variant_iter, &variant_sig_iter, props))
+      if (!append_dict (ctx, &variant_iter, &variant_sig_iter, props, exception))
 	return FALSE;
       dbus_message_iter_close_container (iter, &variant_iter);
 
@@ -592,7 +592,7 @@ append_dict (SeedContext ctx,
     }
   else if (forced_type != DBUS_TYPE_ARRAY)
     {
-      seed_make_exception (ctx, exception,
+      seed_make_exception (ctx, exception, "ArgumentError",
                            "JavaScript Object can't be converted to dbus type %c",
                            forced_type);
       return FALSE;
@@ -605,7 +605,7 @@ append_dict (SeedContext ctx,
   if (dbus_signature_iter_get_current_type (&element_sig_iter) !=
       DBUS_TYPE_DICT_ENTRY)
     {
-      seed_make_exception (ctx, exception,
+      seed_make_exception (ctx, exception, "ArgumentError",
                            "Objects must be marshaled as array of dict entry not of %c",
                            dbus_signature_iter_get_current_type (&element_sig_iter));
       return FALSE;
@@ -642,7 +642,7 @@ append_dict (SeedContext ctx,
 
   if (!seed_value_is_undefined (ctx, prop_signatures) && !seed_value_is_object (ctx, prop_signatures))
     {
-      seed_make_exception (ctx, exception, "_dbus_signatures prop must be an object");
+      seed_make_exception (ctx, exception, "ArgumentError", "_dbus_signatures prop must be an object");
       return FALSE;
     }
 
@@ -650,36 +650,22 @@ append_dict (SeedContext ctx,
       dbus_signature_iter_get_current_type (&dict_value_sig_iter) !=
       DBUS_TYPE_VARIANT)
     {
-      seed_make_exception (ctx, exception,
+      seed_make_exception (ctx, exception, "ArgumentError",
                            "Specifying _dbus_signatures for a dictionary with non-variant values is useless");
       return FALSE;
     }
+  
+  prop_names = seed_object_copy_property_names (ctx, props);
+  num_props = g_strv_length (prop_names);
 
-  props_iter = JS_NewPropertyIterator (context, props);
-  if (props_iter == NULL)
+  for (i = 0; i < num_props; i++)
     {
-      gjs_throw (context,
-		 "Failed to create property iterator for object props");
-      return FALSE;
-    }
-
-  prop_id = JSVAL_VOID;
-  if (!JS_NextProperty (context, props_iter, &prop_id))
-    return FALSE;
-
-  while (prop_id != JSVAL_VOID)
-    {
-      SeedValue nameval;
       char *name;
       SeedValue propval;
       DBusMessageIter entry_iter;
       const char *value_signature;
 
-      if (!JS_IdToValue (context, prop_id, &nameval))
-	return FALSE;
-
-      if (!gjs_string_to_utf8 (context, nameval, &name))
-	return FALSE;
+      name = prop_names[i];
 
       if (strcmp (name, "_dbus_signatures") == 0)
 	{
@@ -689,17 +675,14 @@ append_dict (SeedContext ctx,
 
       /* see if this prop has a forced signature */
       value_signature = NULL;
-      if (prop_signatures != JSVAL_VOID)
+      if (!seed_value_is_undefined (ctx, prop_signatures))
 	{
 	  SeedValue signature_value;
-	  signature_value = JSVAL_VOID;
-	  gjs_object_get_property (context,
-				   JSVAL_TO_OBJECT (prop_signatures),
-				   name, &signature_value);
-	  if (signature_value != JSVAL_VOID)
+          
+          signature_value = seed_object_get_property (ctx, prop_signatures, name);
+	  if (!JSValueIsNull (ctx, signature_value))
 	    {
-	      value_signature = gjs_string_get_ascii_checked (context,
-							      signature_value);
+              value_signature = seed_value_to_string (ctx, signature_value, exception);
 	      if (value_signature == NULL)
 		{
 		  return FALSE;
@@ -707,20 +690,21 @@ append_dict (SeedContext ctx,
 	    }
 	}
 
-      if (!gjs_object_require_property
-	  (context, props, "DBus append_dict", name, &propval))
-	return FALSE;
+      //      if (!gjs_object_require_property
+      //  (ctx, props, "DBus append_dict", name, &propval))
+      //return FALSE;
+      propval = seed_object_get_property (ctx, props, name);
 
-      big_debug_marshal (BIG_DEBUG_JS_DBUS, " Adding property %s", name);
+      //      big_debug_marshal (BIG_DEBUG_JS_DBUS, " Adding property %s", name);
 
       /* seed_js_one_value_to_dbus() would check this also, but would not
        * print the property name, which is often useful
        */
-      if (JSVAL_IS_NULL (propval))
+      if (seed_value_is_null (ctx, propval))
 	{
-	  gjs_throw (context,
-		     "Property '%s' has a null value, can't send over dbus",
-		     name);
+	  seed_make_exception (ctx, exception, "ArgumentError",
+                               "Property '%s' has a null value, can't send over dbus",
+                               name);
 	  return FALSE;
 	}
 
@@ -744,26 +728,25 @@ append_dict (SeedContext ctx,
 
 	  dbus_signature_iter_init (&forced_signature_iter, value_signature);
 
-	  if (!seed_js_one_value_to_dbus (context, propval, &variant_iter,
-					  &forced_signature_iter))
+	  if (!seed_js_one_value_to_dbus (ctx, propval, &variant_iter,
+					  &forced_signature_iter, exception))
 	    return FALSE;
 
 	  dbus_message_iter_close_container (&entry_iter, &variant_iter);
 	}
       else
 	{
-	  if (!seed_js_one_value_to_dbus (context, propval, &entry_iter,
-					  &dict_value_sig_iter))
+	  if (!seed_js_one_value_to_dbus (ctx, propval, &entry_iter,
+					  &dict_value_sig_iter, exception))
 	    return FALSE;
 	}
 
       dbus_message_iter_close_container (&dict_iter, &entry_iter);
-
+ 
     next:
-      prop_id = JSVAL_VOID;
-      if (!JS_NextProperty (context, props_iter, &prop_id))
-	return FALSE;
+      continue;
     }
+  g_strfreev (prop_names);
 
   dbus_message_iter_close_container (iter, &dict_iter);
 
@@ -774,27 +757,30 @@ gboolean
 seed_js_one_value_to_dbus (SeedContext ctx,
 			   SeedValue value,
 			   DBusMessageIter * iter,
-			   DBusSignatureIter * sig_iter)
+			   DBusSignatureIter * sig_iter,
+                           SeedException *exception)
 {
+  SeedType type;
   int forced_type;
 
   forced_type = dbus_signature_iter_get_current_type (sig_iter);
 
-  big_debug_marshal (BIG_DEBUG_JS_DBUS,
-		     "Converting dbus type '%c' from SeedValue",
-		     forced_type != DBUS_TYPE_INVALID ? forced_type : '0');
+  //  big_debug_marshal (BIG_DEBUG_JS_DBUS,
+  //		     "Converting dbus type '%c' from SeedValue",
+  //		     forced_type != DBUS_TYPE_INVALID ? forced_type : '0');
 
   /* Don't write anything on the bus if the signature is empty */
   if (forced_type == DBUS_TYPE_INVALID)
     return TRUE;
+  
+  type = seed_value_get_type (ctx, value);
 
-  if (SEEDVALUE_IS_NULL (value))
+  if (seed_value_is_null (ctx, value))
     {
-      big_debug (BIG_DEBUG_JS_DBUS, "Can't send null values over dbus");
-      gjs_throw (context, "Can't send null values over dbus");
+      seed_make_exception (ctx, exception, "ArgumentError", "Can't send null values over dbus");
       return FALSE;
     }
-  else if (SEEDVALUE_IS_STRING (value))
+  else if (type == SEED_TYPE_STRING)
     {
       char *data;
       gsize len;
@@ -811,19 +797,21 @@ seed_js_one_value_to_dbus (SeedContext ctx,
 
       data = NULL;
       len = 0;
+      // FIX?
       if (buf[1] == DBUS_TYPE_BYTE)
 	{
-	  if (!gjs_string_get_binary_data (context, value, &data, &len))
-	    return FALSE;
+          data = seed_value_to_string (ctx, value, exception);
+          len = strlen (data);
+          //	  if (!gjs_string_get_binary_data (ctx, value, &data, &len))
+          //return FALSE;
 	}
       else
 	{
-	  if (!gjs_string_to_utf8 (context, value, &data))
-	    return FALSE;
+          data = seed_value_to_string (ctx, value, exception);
 	  len = strlen (data);
 	}
 
-      if (!append_string (context, iter, buf, data, len))
+      if (!append_string (ctx, iter, buf, data, len, exception))
 	{
 	  g_free (data);
 	  return FALSE;
@@ -831,76 +819,68 @@ seed_js_one_value_to_dbus (SeedContext ctx,
 
       g_free (data);
     }
-  else if (SEEDVALUE_IS_INT (value))
+/*  else if (type == SEED_TYPE_NUMBER)
     {
       dbus_int32_t v_INT32;
-      if (!JS_ValueToInt32 (context, value, &v_INT32))
-	return FALSE;
+      v_INT32 = seed_value_to_int (ctx, value, exception);
 
-      if (!append_int32 (context, iter, forced_type, v_INT32))
+      if (!append_int32 (ctx, iter, forced_type, v_INT32, exception))
 	return FALSE;
-    }
-  else if (SEEDVALUE_IS_DOUBLE (value))
+    }*/
+  else if (type == SEED_TYPE_NUMBER)
     {
       double v_DOUBLE;
-      if (!JS_ValueToNumber (context, value, &v_DOUBLE))
-	return FALSE;
+      v_DOUBLE = seed_value_to_double (ctx, value, exception);
 
-      if (!append_double (context, iter, forced_type, v_DOUBLE))
+      if (!append_double (ctx, iter, forced_type, v_DOUBLE, exception))
 	return FALSE;
     }
-  else if (SEEDVALUE_IS_BOOLEAN (value))
+  else if (type == SEED_TYPE_BOOLEAN)
     {
-      gboolean v_JS_BOOLEAN;
       dbus_bool_t v_BOOLEAN;
-      if (!JS_ValueToBoolean (context, value, &v_JS_BOOLEAN))
-	return FALSE;
-      v_BOOLEAN = v_JS_BOOLEAN != FALSE;
+      v_BOOLEAN = seed_value_to_boolean (ctx, value, exception);
 
-      if (!append_boolean (context, iter, forced_type, v_BOOLEAN))
+      if (!append_boolean (ctx, iter, forced_type, v_BOOLEAN, exception))
 	return FALSE;
     }
-  else if (SEEDVALUE_IS_OBJECT (value))
+  else if (type == SEED_TYPE_OBJECT)
     {
-      JSObject *obj;
       SeedValue lengthval;
 
-      obj = SEEDVALUE_TO_OBJECT (value);
-
       /* see if there's a length property */
-      gjs_object_get_property (context, obj, "length", &lengthval);
+      lengthval = seed_object_get_property (ctx, value, "length");
 
-      if (SEEDVALUE_IS_INT (lengthval))
+      if (seed_value_get_type (ctx, lengthval) == SEED_TYPE_NUMBER)
 	{
 	  guint length;
 
-	  length = SEEDVALUE_TO_INT (lengthval);
+	  length = seed_value_to_int (ctx, lengthval, exception);
 
-	  big_debug_marshal (BIG_DEBUG_JS_DBUS,
-			     "Looks like an array length %u", length);
-	  if (!append_array (context, iter, sig_iter, obj, length))
+          //	  big_debug_marshal (BIG_DEBUG_JS_DBUS,
+          //		     "Looks like an array length %u", length);
+	  if (!append_array (ctx, iter, sig_iter, value, length, exception))
 	    return FALSE;
 	}
       else
 	{
-	  big_debug_marshal (BIG_DEBUG_JS_DBUS, "Looks like a dictionary");
-	  if (!append_dict (context, iter, sig_iter, obj))
+          //	  big_debug_marshal (BIG_DEBUG_JS_DBUS, "Looks like a dictionary");
+	  if (!append_dict (ctx, iter, sig_iter, value, exception))
 	    return FALSE;
 	}
     }
-  else if (value == SEEDVALUE_VOID)
+  else if (type == SEED_TYPE_UNDEFINED)
     {
-      big_debug (BIG_DEBUG_JS_DBUS,
-		 "Can't send void (undefined) values over dbus");
-      gjs_throw (context, "Can't send void (undefined) values over dbus");
+      //      big_debug (BIG_DEBUG_JS_DBUS,
+      //	 "Can't send void (undefined) values over dbus");
+      seed_make_exception (ctx, exception, "ArgumentError", "Can't send void (undefined) values over dbus");
       return FALSE;
     }
   else
     {
-      big_debug (BIG_DEBUG_JS_DBUS,
-		 "Don't know how to convert this jsval to dbus type");
-      gjs_throw (context,
-		 "Don't know how to convert this jsval to dbus type");
+      //      big_debug (BIG_DEBUG_JS_DBUS,
+      //	 "Don't know how to convert this jsval to dbus type");
+      seed_make_exception (ctx, exception, "ArgumentError",
+                           "Don't know how to convert this jsval to dbus type");
       return FALSE;
     }
 
@@ -910,44 +890,40 @@ seed_js_one_value_to_dbus (SeedContext ctx,
 gboolean
 seed_js_values_to_dbus (SeedContext ctx,
 			int index,
-			jsval values,
-			DBusMessageIter * iter, DBusSignatureIter * sig_iter)
+			SeedObject values,
+			DBusMessageIter * iter, 
+                        DBusSignatureIter * sig_iter,
+                        SeedException *exception)
 {
-  jsval value;
-  jsuint length;
+  SeedValue value;
+  guint length;
 
-  if (!JS_GetArrayLength (context, JSVAL_TO_OBJECT (values), &length))
-    {
-      gjs_throw (context, "Error retrieving length property of args array");
-      return FALSE;
-    }
-
+  length = seed_value_to_int (ctx, 
+                              seed_object_get_property (ctx, values, "length"),
+                              exception);
   if (index > (int) length)
     {
-      gjs_throw (context, "Index %d is bigger than array length %d", index,
-		 length);
+      seed_make_exception (ctx, exception, "ArgumentError", 
+                           "Index %d is bigger than array length %d", index,
+                           length);
       return FALSE;
     }
 
   if (index == (int) length)
     return TRUE;
+  
+  value = seed_object_get_property_at_index (ctx, values, index, exception);
 
-  if (!JS_GetElement (context, JSVAL_TO_OBJECT (values), index, &value))
+  if (!seed_js_one_value_to_dbus (ctx, value, iter, sig_iter, exception))
     {
-      gjs_throw (context, "Error accessing element %d of args array", index);
-      return FALSE;
-    }
-
-  if (!seed_js_one_value_to_dbus (context, value, iter, sig_iter))
-    {
-      gjs_throw (context, "Error marshalling js value to dbus");
+      seed_make_exception (ctx, exception, "ArgumentError", "Error marshalling js value to dbus");
       return FALSE;
     }
 
   if (dbus_signature_iter_next (sig_iter))
     {
-      return seed_js_values_to_dbus (context, index + 1, values, iter,
-				     sig_iter);
+      return seed_js_values_to_dbus (ctx, index + 1, values, iter,
+				     sig_iter, exception);
     }
 
   return TRUE;
@@ -957,21 +933,18 @@ seed_js_values_to_dbus (SeedContext ctx,
  * sender. If jsval is not an object, do nothing.
  */
 gboolean
-seed_js_add_dbus_props (SeedContext ctx, DBusMessage * message, jsval value)
+seed_js_add_dbus_props (SeedContext ctx, DBusMessage * message, SeedValue value,
+                        SeedException *exception)
 {
-  const char *sender;
+  gchar *sender;
 
-  if (!JSVAL_IS_OBJECT (value))
+  if (!seed_value_is_object (ctx, value))
     return TRUE;
 
-  sender = dbus_message_get_sender (message);
-
-  if (!JS_DefineProperty (context, JSVAL_TO_OBJECT (value),
-			  "_dbus_sender",
-			  STRING_TO_JSVAL (JS_NewStringCopyZ
-					   (context, sender)), NULL, NULL,
-			  JSPROP_ENUMERATE))
-    return FALSE;
+  sender = (gchar *)dbus_message_get_sender (message);
+  
+  seed_object_set_property (ctx, value, "_dbus_sender",
+                            seed_value_from_string (ctx, sender, exception));
 
   return TRUE;
 }

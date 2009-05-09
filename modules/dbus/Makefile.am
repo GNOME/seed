@@ -9,7 +9,8 @@ libdbusnative_la_SOURCES = \
 	module.c \
 	util/dbus.c \
 	util/dbus-proxy.c \
-	util/dbus-signals.c
+	util/dbus-signals.c \
+	dbus-values.c 
 
 
 libdbusnative_la_CFLAGS = \

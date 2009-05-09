@@ -150,6 +150,15 @@ seed_object_set_property_at_index (JSContextRef ctx,
   JSObjectSetPropertyAtIndex (ctx, object, index, value, exception);
 }
 
+JSValueRef
+seed_object_get_property_at_index (JSContextRef ctx,
+				   JSObjectRef object,
+				   gint index,
+				   JSValueRef * exception)
+{
+  return JSObjectGetPropertyAtIndex (ctx, object, index, exception);
+}
+
 /**
  * seed_object_call
  * @ctx: A #SeedContext.
