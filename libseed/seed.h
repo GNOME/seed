@@ -390,5 +390,15 @@ seed_value_from_binary_string (SeedContext ctx,
 			       gint n_bytes,
 			       SeedException *exception);
 
+GClosure *seed_make_gclosure (SeedContext ctx,
+			      SeedObject function, 
+			      SeedObject user_data);
+
+SeedObject
+seed_closure_get_callable (GClosure *c);
+
+SeedValue
+seed_closure_invoke (GClosure *closure, SeedValue *args, guint argc, SeedException *exception);
+
 
 #endif

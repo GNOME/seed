@@ -52,10 +52,16 @@ SeedNativeClosure *seed_make_native_closure (JSContextRef ctx,
 					     GICallableInfo * info,
 					     JSValueRef function);
 GClosure *seed_make_gclosure (JSContextRef ctx,
-				 JSObjectRef function, JSObjectRef user_data);
+			      JSObjectRef function, 
+			      JSObjectRef user_data);
+
+
 
 JSObjectRef
 seed_closure_get_callable (GClosure *c);
+
+JSValueRef
+seed_closure_invoke (GClosure *closure, JSValueRef *args, guint argc, JSValueRef *exception);
 
 
 
