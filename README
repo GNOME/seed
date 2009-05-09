@@ -23,3 +23,4 @@ Recommended Dependencies (Ubuntu package name):
    * clutter-cairo (libclutter-cairo-0.8-dev)
    * cairo (libcairo-dev)
    * gtk-doc (gtk-doc-tools)
+   * dbus (libdbus-1-dev)
