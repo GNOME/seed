@@ -105,6 +105,7 @@ SeedGlobalContext seed_context_ref (SeedGlobalContext ctx);
 void seed_context_unref (SeedGlobalContext ctx);
 
 SeedValue seed_make_null (SeedContext ctx);
+SeedValue seed_make_undefined (SeedContext ctx);
 
 SeedObject seed_make_object (SeedContext ctx, SeedClass class,
 			     gpointer private);

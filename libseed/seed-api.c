@@ -588,3 +588,9 @@ seed_make_array (JSContextRef ctx,
 {
   return JSObjectMakeArray (ctx, num_elements, elements, exception);
 }
+
+JSValueRef
+seed_make_undefined (JSContextRef ctx)
+{
+  return JSValueMakeUndefined (ctx);
+}
