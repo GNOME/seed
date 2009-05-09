@@ -750,6 +750,75 @@ seed_js_dbus_unwatch_signal (SeedContext ctx,
 }
 
 static SeedValue
+seed_js_dbus_emit_signal(SeedContext ctx,
+			 SeedObject function,
+			 SeedObject this_object,
+			 size_t argument_count,
+			 const SeedValue arguments[],
+			 SeedException * exception)
+{
+    DBusConnection *bus_connection;
+    DBusMessage *message;
+    DBusMessageIter arg_iter;
+    DBusSignatureIter sig_iter;
+    const char *object_path;
+    const char *iface;
+    const char *signal;
+    const char *in_signature;
+    DBusBusType bus_type;
+
+    if (argument_count < 4) 
+    {
+      seed_make_exception(ctx, exception, "ArgumentError", "Not enough args, need object path, interface and signal and the arguments");
+      return seed_make_null (ctx);
+    }
+
+    if (!seed_value_is_object (ctx, arguments[4]))
+      {
+	seed_make_exception(ctx, exception, "ArgumentError", "5th argument should be an array of arguments");
+	return seed_make_null (ctx);
+      }
+
+    bus_type = get_bus_type_from_object (ctx, this_object, exception);
+
+    object_path = seed_value_to_string(ctx, arguments[0], exception);
+    iface = seed_value_to_string(ctx, arguments[1], exception);
+    signal = seed_value_to_string(ctx, arguments[2], exception);
+    in_signature = seed_value_to_string(ctx, arguments[3], exception);
+
+    if (!bus_check(ctx, bus_type, exception))
+      return seed_make_null (ctx);
+
+    //    big_debug(BIG_DEBUG_JS_DBUS,
+    //        "Emitting signal %s %s %s",
+    //        object_path,
+    //        iface,
+    //        signal);
+
+    bus_connection = DBUS_CONNECTION_FROM_TYPE(bus_type);
+
+    message = dbus_message_new_signal(object_path,
+                                      iface,
+                                      signal);
+
+    dbus_message_iter_init_append(message, &arg_iter);
+
+    dbus_signature_iter_init(&sig_iter, in_signature);
+
+    if (!seed_js_values_to_dbus(ctx, 0, arguments[4], &arg_iter, &sig_iter, exception)) 
+      {
+        dbus_message_unref(message);
+	return seed_make_null (ctx);
+      }
+
+    dbus_connection_send(bus_connection, message, NULL);
+
+    dbus_message_unref(message);
+
+    return seed_make_undefined (ctx);
+}
+
+static SeedValue
 seed_js_dbus_signature_length (SeedContext ctx,
 			       SeedObject function,
 			       SeedObject this_object,
