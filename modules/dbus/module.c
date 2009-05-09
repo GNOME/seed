@@ -677,6 +677,68 @@ seed_js_dbus_unwatch_signal_by_id(SeedContext ctx,
 }
 
 static SeedValue
+seed_js_dbus_unwatch_signal(SeedContext ctx,
+			   SeedObject function,
+			   SeedObject this_object,
+			   size_t argument_count,
+			   const SeedValue arguments[],
+			   SeedException *exception)
+{
+    const char *bus_name;
+    const char *object_path;
+    const char *iface;
+    const char *signal;
+    SignalHandler *handler;
+    DBusBusType bus_type;
+
+    if (argument_count < 5) 
+      {
+	seed_make_exception (ctx, exception, "ArgumentError",  "Not enough args, need bus name, object path, interface, signal and callback");
+	return seed_make_null (ctx);
+      }
+
+    bus_type = get_bus_type_from_object (ctx, this_object, exception);
+
+    if (!seed_value_is_object (ctx, arguments[4]) || !seed_value_is_function (ctx, arguments[4]))
+      {
+        seed_make_exception (ctx, exception, "ArgumentError", "arg 5 must be a callback to invoke when call completes");
+	return seed_make_null (ctx);
+      }
+
+    fill_with_null_or_string(ctx, &bus_name, arguments[0], exception);
+    fill_with_null_or_string(ctx, &object_path, arguments[1], exception);
+    fill_with_null_or_string(ctx, &iface, arguments[2], exception);
+    fill_with_null_or_string(ctx, &signal, arguments[3], exception);
+    
+    /* we don't complain if the signal seems to have been already removed
+     * or to never have been watched, to match g_signal_handler_disconnect
+     */
+    if (!signal_handlers_by_callable)
+      return seed_make_undefined (ctx);
+
+    handler = g_hash_table_lookup(signal_handlers_by_callable, arguments[4]);
+
+    if (!handler)
+      return seed_make_undefined (ctx);
+
+    /* This should dispose the handler which should in turn
+     * remove it from the handler table
+     */
+    big_dbus_unwatch_signal(bus_type,
+                            bus_name,
+                            object_path,
+                            iface,
+                            signal,
+                            signal_handler_callback,
+                            handler);
+
+    g_assert(g_hash_table_lookup(signal_handlers_by_callable,
+                                 arguments[4]) == NULL);
+
+    return seed_make_undefined (ctx);
+}
+
+static SeedValue
 seed_js_dbus_signature_length (SeedContext ctx,
 			       SeedObject function,
 			       SeedObject this_object,
