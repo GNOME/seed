@@ -37,21 +37,7 @@ seed_signal_finalize (JSObjectRef object)
 }
 
 
-static void
-closure_invalidated (gpointer data, GClosure * c)
-{
-  JSContextRef ctx = JSGlobalContextCreateInGroup (context_group,
-						   0);
-  SeedClosure *closure = (SeedClosure *) c;
-  
-  SEED_NOTE (FINALIZATION, "Finalizing closure.");
-  if (closure->user_data && !JSValueIsUndefined(ctx, closure->user_data))
-    JSValueUnprotect(ctx, closure->user_data);
-  if (!JSValueIsUndefined (ctx, closure->function))
-    JSValueUnprotect (ctx, closure->function);
 
-  JSGlobalContextRelease ((JSGlobalContextRef) ctx);
-}
 
 void
 seed_gobject_signal_connect (JSContextRef ctx,
@@ -81,32 +67,9 @@ seed_gobject_signal_connect (JSContextRef ctx,
   }
 #endif
 
-  closure = g_closure_new_simple (sizeof (SeedClosure), 0);
-  g_closure_add_finalize_notifier (closure, 0, closure_invalidated);
-  g_closure_set_marshal (closure, seed_signal_marshal_func);
-
-  JSValueProtect (ctx, func);
-  ((SeedClosure *) closure)->function = func;
-
-  //((SeedClosure *) closure)->object = on_obj;
+  closure = seed_make_gclosure (ctx, func, user_data);
+  // This seems wrong...
   ((SeedClosure *) closure)->return_type = query.return_type;
-
-  if (this_obj && !JSValueIsNull (ctx, this_obj))
-    {
-      JSValueProtect (ctx, this_obj);
-//      ((SeedClosure *) closure)->this = this_obj;
-    }
-  else
-    {
-      ((SeedClosure *) closure)->this = 0;
-    }
-
-  if (user_data && !JSValueIsNull (ctx, user_data))
-    {
-      ((SeedClosure *) closure)->user_data = user_data;
-      JSValueProtect(ctx, user_data);
-    }
-
   g_signal_connect_closure (on_obj, signal_name, closure, FALSE);
 }
 

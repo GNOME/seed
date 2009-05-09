@@ -51,8 +51,13 @@ extern JSClassRef seed_native_callback_class;
 SeedNativeClosure *seed_make_native_closure (JSContextRef ctx,
 					     GICallableInfo * info,
 					     JSValueRef function);
-SeedClosure *seed_make_gclosure (JSContextRef ctx,
-				 JSObjectRef function, JSObjectRef this);
+GClosure *seed_make_gclosure (JSContextRef ctx,
+				 JSObjectRef function, JSObjectRef user_data);
+
+JSObjectRef
+seed_closure_get_callable (GClosure *c);
+
+
 
 void seed_closures_init ();
 

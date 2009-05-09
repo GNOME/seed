@@ -318,27 +318,51 @@ seed_make_native_closure (JSContextRef ctx,
   return privates;
 }
 
-SeedClosure *
-seed_make_gclosure (JSContextRef ctx, JSObjectRef function, JSObjectRef this)
+static void
+closure_invalidated (gpointer data, GClosure * c)
+{
+  JSContextRef ctx = JSGlobalContextCreateInGroup (context_group,
+						   0);
+  SeedClosure *closure = (SeedClosure *) c;
+  
+  SEED_NOTE (FINALIZATION, "Finalizing closure.");
+  if (closure->user_data && !JSValueIsUndefined(ctx, closure->user_data))
+    JSValueUnprotect(ctx, closure->user_data);
+  if (!JSValueIsUndefined (ctx, closure->function))
+    JSValueUnprotect (ctx, closure->function);
+
+  JSGlobalContextRelease ((JSGlobalContextRef) ctx);
+}
+
+JSObjectRef
+seed_closure_get_callable (GClosure *c)
+{
+  return ((SeedClosure *)c)->function;
+}
+
+
+GClosure *
+seed_make_gclosure (JSContextRef ctx, JSObjectRef function, JSObjectRef user_data)
 {
   GClosure *closure;
 
   closure = g_closure_new_simple (sizeof (SeedClosure), 0);
+  g_closure_add_finalize_notifier (closure, 0, closure_invalidated);
   g_closure_set_marshal (closure, seed_signal_marshal_func);
 
   ((SeedClosure *) closure)->function = function;
   ((SeedClosure *) closure)->object = 0;
-  if (this && !JSValueIsNull (ctx, this))
+  if (user_data && !JSValueIsNull (ctx, user_data))
     {
-      JSValueProtect (ctx, this);
-      ((SeedClosure *) closure)->this = this;
+      ((SeedClosure *) closure)->user_data = user_data;
+      JSValueProtect(ctx, user_data);
     }
   else
-    ((SeedClosure *) closure)->this = 0;
-
+    ((SeedClosure *) closure)->user_data = NULL;
+  
   JSValueProtect (ctx, function);
 
-  return (SeedClosure *) closure;
+  return closure;
 }
 
 JSClassDefinition seed_native_callback_def = {
