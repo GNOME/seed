@@ -218,7 +218,7 @@ SeedValue seed_value_from_double (SeedContext ctx,
 gchar *seed_value_to_string (SeedContext ctx,
 			     SeedValue val, SeedException * exception);
 SeedValue seed_value_from_string (SeedContext ctx,
-				  gchar * val, SeedException * exception);
+				  const gchar * val, SeedException * exception);
 
 gchar *seed_value_to_filename (SeedContext ctx,
 			       SeedValue val, SeedValue * exception);

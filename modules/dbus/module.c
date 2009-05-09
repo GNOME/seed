@@ -860,6 +860,78 @@ seed_js_dbus_call(SeedContext ctx,
     return retval;
 }
 
+typedef struct {
+    BigDBusNameOwnerFuncs funcs;
+    GClosure *acquired_closure;
+    GClosure *lost_closure;
+    DBusBusType bus_type;
+} BigJSDBusNameOwner;
+
+static void
+on_name_acquired(DBusConnection *connection,
+                 const char     *name,
+                 void           *data)
+{
+    int argc;
+    SeedValue argv[1];
+    SeedContext ctx;
+    BigJSDBusNameOwner *owner;
+    SeedException exception; // TODO: Do something with this...
+
+    owner = data;
+
+    ctx = seed_context_create (group, NULL);
+    seed_prepare_global_context (ctx);
+    if (ctx == NULL)
+      {
+	//        big_debug(BIG_DEBUG_JS_DBUS,
+	//          "Closure destroyed before we could notify name acquired");
+        return;
+      }
+
+    argc = 1;
+
+    argv[0] = seed_value_from_string (ctx, name, &exception);
+
+    seed_closure_invoke_with_context(ctx, owner->acquired_closure,
+				     argv, argc, &exception);
+    
+    seed_context_unref (ctx);
+}
+
+
+static void
+on_name_lost(DBusConnection *connection,
+                 const char     *name,
+                 void           *data)
+{
+    int argc;
+    SeedValue argv[1];
+    SeedContext ctx;
+    BigJSDBusNameOwner *owner;
+    SeedException exception; // TODO: Do something with this...
+
+    owner = data;
+
+    ctx = seed_context_create (group, NULL);
+    seed_prepare_global_context (ctx);
+    if (ctx == NULL)
+      {
+	//        big_debug(BIG_DEBUG_JS_DBUS,
+	//          "Closure destroyed before we could notify name acquired");
+        return;
+      }
+
+    argc = 1;
+
+    argv[0] = seed_value_from_string (ctx, name, &exception);
+
+    seed_closure_invoke_with_context(ctx, owner->lost_closure,
+				     argv, argc, &exception);
+    
+    seed_context_unref (ctx);
+}
+
 static SeedValue
 seed_js_dbus_signature_length (SeedContext ctx,
 			       SeedObject function,
