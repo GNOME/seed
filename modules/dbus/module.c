@@ -15,6 +15,17 @@ static DBusConnection *system_bus = NULL;
 
 SeedObject bus_proto;
 
+static DBusBusType
+get_bus_type_from_object (SeedContext ctx,
+			  SeedObject object,
+			  SeedException *exception)
+{
+  SeedValue jsbus_type = seed_object_get_property (ctx, object, "_dbusBusType");
+  
+  return seed_value_to_int (ctx, jsbus_type, exception);
+}
+			  
+
 static SeedValue
 seed_js_dbus_get_machine_id (SeedContext ctx,
 			     SeedObject object,
