@@ -375,5 +375,9 @@ void seed_importer_set_search_path (SeedContext ctx,
 
 void seed_prepare_global_context (SeedContext ctx);
 
+SeedType seed_value_get_type (SeedContext ctx, SeedType type);
+
+gchar **seed_object_copy_property_names(SeedContext ctx, SeedObject object); 
+
 
 #endif

@@ -594,3 +594,39 @@ seed_make_undefined (JSContextRef ctx)
 {
   return JSValueMakeUndefined (ctx);
 }
+
+JSType
+seed_value_get_type (JSContextRef ctx,
+		     JSValueRef value)
+{
+  return JSValueGetType (ctx, value);
+}
+
+gchar **
+seed_object_copy_property_names(JSContextRef ctx,
+				JSObjectRef object)
+{
+  JSPropertyNameArrayRef names;
+  guint i, length;
+  gchar **ret;
+  
+  names = JSObjectCopyPropertyNames (ctx, object);
+  length = JSPropertyNameArrayGetCount (names);
+  ret = g_malloc((length+1)*sizeof(gchar *));
+  for (i = 0; i < length; i++)
+    {
+      JSStringRef name = JSPropertyNameArrayGetNameAtIndex (names, i);
+      guint max_length;
+      gchar *c_name;
+      
+      max_length = JSStringGetMaximumUTF8CStringSize (name);
+      c_name = g_malloc (max_length * sizeof (gchar));
+      JSStringGetUTF8CString (name, c_name, length);
+      ret[i] = c_name;
+      
+    }
+  ret[length] = NULL;
+  JSPropertyNameArrayRelease (names);
+  
+  return ret;  
+}
