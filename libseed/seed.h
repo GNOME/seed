@@ -379,5 +379,11 @@ SeedType seed_value_get_type (SeedContext ctx, SeedType type);
 
 gchar **seed_object_copy_property_names(SeedContext ctx, SeedObject object); 
 
+SeedValue
+seed_value_from_binary_string (SeedContext ctx,
+			       const gchar *bytes,
+			       gint n_bytes,
+			       SeedException *exception);
+
 
 #endif

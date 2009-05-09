@@ -144,4 +144,10 @@ void seed_toggle_ref (gpointer data, GObject * object, gboolean is_last_ref);
 
 gboolean seed_validate_enum (GIEnumInfo *info, long val);
 
+JSValueRef
+seed_value_from_binary_string (JSContextRef ctx,
+			       const gchar *bytes,
+			       gint n_bytes,
+			       JSValueRef *exception);
+
 #endif
