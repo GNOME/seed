@@ -359,6 +359,22 @@ seed_closure_invoke (GClosure *closure, JSValueRef *args, guint argc, JSValueRef
   return ret;
 }
 
+JSValueRef
+seed_closure_invoke_with_context (JSContextRef ctx, GClosure *closure, JSValueRef *args, guint argc, JSValueRef *exception)
+{
+  JSValueRef *real_args = g_newa (JSValueRef, argc +1);
+  JSValueRef ret;
+  guint i;
+  
+  for (i = 0; i < argc; i++)
+    real_args[i] = args[i];
+  args[argc] = ((SeedClosure *)closure)->user_data ? ((SeedClosure *)closure)->user_data : JSValueMakeNull (ctx);
+  
+  ret = JSObjectCallAsFunction (ctx, ((SeedClosure *)closure)->function, NULL, argc+1, real_args, exception);
+  
+  return ret;
+}
+
 GClosure *
 seed_make_gclosure (JSContextRef ctx, JSObjectRef function, JSObjectRef user_data)
 {

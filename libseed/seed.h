@@ -400,5 +400,8 @@ seed_closure_get_callable (GClosure *c);
 SeedValue
 seed_closure_invoke (GClosure *closure, SeedValue *args, guint argc, SeedException *exception);
 
+SeedValue
+seed_closure_invoke_with_context (SeedContext ctx, GClosure *closure, SeedValue *args, guint argc, SeedException *exception);
+
 
 #endif

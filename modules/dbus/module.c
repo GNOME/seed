@@ -214,6 +214,63 @@ complete_call(SeedContext ctx,
     return TRUE;
 }
 
+static void
+pending_notify(DBusPendingCall *pending,
+               void            *user_data)
+{
+  SeedException exception;
+  SeedContext ctx;
+  GClosure *closure;
+  SeedValue argv[2];
+  DBusMessage *reply;
+  DBusError derror;
+  
+  closure = user_data;
+
+//    big_debug(BIG_DEBUG_JS_DBUS,
+    //            "Notified of reply to async call closure %p context %p",
+    //        closure, context);
+
+//    if (context == NULL) {
+    //      big_debug(BIG_DEBUG_JS_DBUS,
+    //            "Closure destroyed before we could complete pending call");
+    //  return;
+//    }
+
+    /* reply may be NULL if none received? I think it may never be if
+     * we've already been notified, but be safe here.
+     */
+  
+  ctx = seed_context_create (group, NULL);
+  seed_prepare_global_context (ctx);
+  reply = dbus_pending_call_steal_reply(pending);
+  
+  dbus_error_init(&derror);
+  /* argv[0] will be the return value if any, argv[1] we fill with exception if any */
+  complete_call(ctx, &argv[0], reply, &derror, &exception);
+  g_assert(!dbus_error_is_set(&derror)); /* not supposed to be left set by complete_call() */
+  
+  if (reply)
+    dbus_message_unref(reply);
+  
+  seed_closure_invoke_with_context(ctx, closure, &argv[0], 2, &exception);
+  seed_context_unref (ctx);
+  // TODO: Do something with exception
+}
+
+static void
+pending_free_closure(void *data)
+{
+    GClosure *closure;
+
+    closure = data;
+
+    g_closure_invalidate(data);
+    g_closure_unref(data);
+}
+
+
+
 			  
 
 static SeedValue
