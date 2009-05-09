@@ -6,9 +6,13 @@
 	* gnome-common
 	* glib2
 	* libtool
-	* pkg-config
+	* pkgconfig
 	* intltool
 	* libffi
+
+This can be done in a single line:
+
+sudo port install automake autoconf gtk-doc gnome-common glib2 libtool pkgconfig intltool libffi
 
 2. Install the following optional packages from MacPorts:
 
@@ -17,11 +21,10 @@
 	* libsoup
 	* sqlite3
 	* gtk2
-	* 
 
 3. Optionally, download and install:
 
-	* clutter 0.8
+	* clutter 0.9
 
 4. Download a WebKit nightly from http://nightly.webkit.org, and
    install it to /Applications/WebKit.app
