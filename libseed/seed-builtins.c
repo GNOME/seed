@@ -438,6 +438,8 @@ seed_argv_get_property (JSContextRef ctx,
   gint index;
   
   priv = JSObjectGetPrivate (object);
+  if (!priv->argc)
+    return JSValueMakeUndefined (ctx);
   length = JSStringGetMaximumUTF8CStringSize (property_name);
   cproperty_name = g_alloca (length * sizeof (gchar));
   JSStringGetUTF8CString (property_name, cproperty_name, length);
@@ -497,8 +499,8 @@ seed_init_builtins (SeedEngine * local_eng, gint * argc, gchar *** argv)
 			&seed_breakpoint, obj);
   
   priv = g_new0 (SeedArgvPrivates, 1);
-  priv->argv = *argv;
-  priv->argc = *argc;
+  priv->argv = argv ? *argv : 0;
+  priv->argc = argc ? *argc : 0;
 
   seed_argv_class = JSClassCreate (&seed_argv_def);
   arrayObj = JSObjectMake (local_eng->context, seed_argv_class, priv);
