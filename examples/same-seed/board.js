@@ -298,10 +298,10 @@ Board = new GType({
 		
 		this.new_game = function ()
 		{
-			var children = this.get_children();
+			var children = board.get_children();
 			
 			for(var i in children)
-				this.remove_actor(children[i]);
+				board.remove_actor(children[i]);
 			
 			if(final_score)
 				final_score.hide_score();
@@ -320,8 +320,8 @@ Board = new GType({
 				
 					li.set_position(x * tile_size + offset,
 									(tiles_h - y - 1) * tile_size + offset);
-					this.add_actor(li);
-					li.on.signal.button_release_event.connect(this.remove_region);
+					board.add_actor(li);
+					li.on.signal.button_release_event.connect(board.remove_region);
 				
 					lights[x][y] = li;
 					all_lights.push(lights[x][y]);
@@ -330,8 +330,6 @@ Board = new GType({
 		};
 		
 		// Implementation
-		this.new_game();
-		
 		this.signal.motion_event.connect(enter_tile);
 		this.reactive = true;
 	}
