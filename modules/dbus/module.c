@@ -819,6 +819,48 @@ seed_js_dbus_emit_signal(SeedContext ctx,
 }
 
 static SeedValue
+seed_js_dbus_call(SeedContext ctx,
+		  SeedObject function,
+		  SeedObject this_object,
+		  size_t argument_count,
+		  const SeedValue arguments[],
+		  SeedException * exception)
+{
+    DBusMessage *message;
+    DBusError derror;
+    DBusMessage *reply;
+    DBusConnection *bus_connection;
+    DBusBusType bus_type;
+    SeedValue retval;
+
+    if (argument_count < 8) 
+      {
+	seed_make_exception(ctx, exception, "ArgumentError",
+			    "Not enough args, need bus name, object path, interface, method, out signature, in signature, autostart flag, and args");
+        return seed_make_null (ctx);
+      }
+
+    bus_type = get_bus_type_from_object (ctx, this_object, exception);
+
+    message = prepare_call(ctx, this_object, argument_count, arguments, bus_type, exception);
+
+    bus_connection = DBUS_CONNECTION_FROM_TYPE(bus_type);
+
+    /* send_with_reply_and_block() returns NULL if error was set. */
+    dbus_error_init(&derror);
+    reply = dbus_connection_send_with_reply_and_block(bus_connection, message, -1, &derror);
+
+    dbus_message_unref(message);
+
+    complete_call(ctx, &retval, reply, &derror, exception);
+
+    if (reply)
+        dbus_message_unref(reply);
+
+    return retval;
+}
+
+static SeedValue
 seed_js_dbus_signature_length (SeedContext ctx,
 			       SeedObject function,
 			       SeedObject this_object,
