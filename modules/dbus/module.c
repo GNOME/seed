@@ -650,6 +650,32 @@ seed_js_dbus_watch_signal (SeedContext ctx,
     return seed_value_from_int (ctx, id, exception);
 }
 
+/* Args are handler id */
+static SeedValue
+seed_js_dbus_unwatch_signal_by_id(SeedContext ctx,
+				 SeedObject function,
+				 SeedObject this_object,
+				 size_t argument_count,
+				 const SeedValue arguments[],
+				 SeedException *exception)
+{
+    int id;
+    DBusBusType bus_type;
+
+    if (argument_count < 1) 
+      {
+	seed_make_exception (ctx, exception, "ArgumentError", "Not enough args, need handler id");
+	return seed_make_null (ctx);
+      }
+
+    bus_type = get_bus_type_from_object (ctx, this_object, exception);
+    id = seed_value_to_int (ctx, arguments[0], exception);
+
+    big_dbus_unwatch_signal_by_id(bus_type,
+                                  id);
+    return seed_make_undefined (ctx);
+}
+
 static SeedValue
 seed_js_dbus_signature_length (SeedContext ctx,
 			       SeedObject function,
