@@ -2,6 +2,8 @@
 
 #include "util/dbus.h"
 
+#define DBUS_CONNECTION_FROM_TYPE(type) ((type) == DBUS_BUS_SESSION ? session_bus : system_bus)
+
 SeedContext ctx;
 SeedContextGroup group;
 
@@ -61,7 +63,7 @@ static DBusMessage*
 prepare_call(SeedContext ctx,
 	     SeedObject obj,
              guint        argc,
-             SeedValue *argv,
+             const SeedValue *argv,
              DBusBusType  bus_type,
 	     SeedException *exception)
 {
@@ -270,6 +272,77 @@ pending_free_closure(void *data)
 }
 
 
+static SeedValue
+seed_js_dbus_call_async(SeedContext ctx,
+			SeedObject function,
+			SeedObject this_object,
+			size_t argument_count,
+			const SeedValue arguments[],
+			SeedException *exception)
+{
+    GClosure *closure;
+    DBusMessage *message;
+    DBusPendingCall *pending;
+    DBusConnection  *bus_connection;
+    DBusBusType bus_type;
+    int timeout;
+
+    if (argument_count < 10) {
+      seed_make_exception (ctx, exception, "ArgmuentError",
+			   "Not enough args, need bus name, object path, interface, method, out signature, in signature, autostart flag, timeout limit, args, and callback");
+      return seed_make_null (ctx);
+    }
+
+    if (!seed_value_is_object (ctx, arguments[9])  || !seed_value_is_function (ctx, arguments[9]))
+      {
+	seed_make_exception(ctx, exception, "ArgumentError", "arg 10 must be a callback to invoke when call completes");
+	return FALSE;
+      }
+
+    timeout = seed_value_to_int (ctx, arguments[7], exception);
+
+    bus_type = get_bus_type_from_object (ctx, this_object, exception);
+
+    message = prepare_call(ctx, this_object, argument_count, arguments, bus_type, exception);
+
+    if (message == NULL)
+      return seed_make_null (ctx);
+
+    bus_connection = DBUS_CONNECTION_FROM_TYPE(bus_type);
+
+    pending = NULL;
+    if (!dbus_connection_send_with_reply(bus_connection, message, &pending, timeout) ||
+        pending == NULL) 
+      {
+	//        big_debug(BIG_DEBUG_JS_DBUS, "Failed to send async dbus message");
+	seed_make_exception(ctx, exception, "DBusError", "Failed to send dbus message");
+        dbus_message_unref(message);
+        return seed_make_null (ctx);
+      }
+
+    g_assert(pending != NULL);
+
+    dbus_message_unref(message);
+
+    /* We cheat a bit here and use a closure to store a JavaScript function
+     * and deal with the GC root and other issues, even though we
+     * won't ever marshal via GValue
+     */
+    closure = seed_make_gclosure (ctx, arguments[9], NULL);
+    if (closure == NULL) {
+        dbus_pending_call_unref(pending);
+	return seed_make_null (ctx);
+    }
+
+    g_closure_ref(closure);
+    g_closure_sink(closure);
+    dbus_pending_call_set_notify(pending, pending_notify, closure,
+                                 pending_free_closure);
+
+    dbus_pending_call_unref(pending); /* DBusConnection should still hold a ref until it's completed */
+
+    return seed_value_from_boolean (ctx, TRUE, exception);
+}
 
 			  
 
@@ -287,6 +360,15 @@ seed_js_dbus_get_machine_id (SeedContext ctx,
   dbus_free (id);
   
   return ret;
+}
+
+static void
+fill_with_null_or_string(SeedContext ctx, const char **string_p, SeedValue value, SeedException *exception)
+{
+  if (seed_value_is_null (ctx, value))
+        *string_p = NULL;
+    else 
+      *string_p = seed_value_to_string (ctx, value, exception);
 }
 
 static SeedValue
