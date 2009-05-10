@@ -29,9 +29,6 @@ typedef struct _SeedClosure
   GClosure closure;
 
   JSObjectRef function;
-  JSObjectRef object;
-  JSObjectRef this;
-
   JSValueRef user_data;
 
   GType return_type;

@@ -172,7 +172,7 @@ seed_signal_marshal_func (GClosure * closure,
     args[i] = JSValueMakeNull (ctx);
 
   ret = JSObjectCallAsFunction (ctx, seed_closure->function,
-				seed_closure->this,
+				NULL,
 				n_param_values + 1, args, &exception);
 
   if (exception)

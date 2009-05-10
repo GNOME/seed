@@ -384,17 +384,13 @@ seed_make_gclosure (JSContextRef ctx, JSObjectRef function, JSObjectRef user_dat
   g_closure_add_finalize_notifier (closure, 0, closure_invalidated);
   g_closure_set_marshal (closure, seed_signal_marshal_func);
 
+  JSValueProtect (ctx, function);
   ((SeedClosure *) closure)->function = function;
-  ((SeedClosure *) closure)->object = 0;
   if (user_data && !JSValueIsNull (ctx, user_data))
     {
       ((SeedClosure *) closure)->user_data = user_data;
       JSValueProtect(ctx, user_data);
     }
-  else
-    ((SeedClosure *) closure)->user_data = NULL;
-  
-  JSValueProtect (eng->context, function);
 
   return closure;
 }
