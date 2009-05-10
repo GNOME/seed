@@ -975,6 +975,8 @@ seed_gvalue_from_seed_value (JSContextRef ctx,
 			     JSValueRef val,
 			     GType type, GValue * ret, JSValueRef * exception)
 {
+  if (G_IS_VALUE (ret))
+    g_value_unset (ret);
   switch (type)
     {
     case G_TYPE_BOOLEAN:
