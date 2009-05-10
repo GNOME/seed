@@ -17,6 +17,7 @@ examplesdir=$(datadir)/doc/seed/examples
 examples_DATA = \
     actions.js \
     Gnio.js \
+    dbus-banshee.js \
     gdkpixbufloader.js \
     gtktreeview.js \
     gtktextview.js \
@@ -50,6 +51,7 @@ endif
 EXTRA_DIST = \
     COPYING \
     actions.js \
+    dbus-banshee.js \
     clutter-cogl.js \
     gtktreeview.js \
     gdkpixbufloader.js \

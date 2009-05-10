@@ -938,7 +938,7 @@ seed_js_add_dbus_props (SeedContext ctx, DBusMessage * message, SeedValue value,
 {
   gchar *sender;
 
-  if (!seed_value_is_object (ctx, value))
+  if (seed_value_is_null (ctx, value) || !seed_value_is_object (ctx, value))
     return TRUE;
 
   sender = (gchar *)dbus_message_get_sender (message);

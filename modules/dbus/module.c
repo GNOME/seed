@@ -123,7 +123,6 @@ prepare_call (SeedContext ctx,
   /* FIXME should validate the bus_name, path, interface, method really, but
    * we should just not write buggy JS ;-)
    */
-
   message = dbus_message_new_method_call (bus_name, path, interface, method);
   if (message == NULL)
     {
@@ -219,7 +218,7 @@ complete_call (SeedContext ctx,
 
   g_array_free (ret_values, TRUE);
 
-  seed_js_add_dbus_props (ctx, reply, retval, exception);
+  seed_js_add_dbus_props (ctx, reply, *retval, exception);
 
   return TRUE;
 }
@@ -227,7 +226,7 @@ complete_call (SeedContext ctx,
 static void
 pending_notify (DBusPendingCall * pending, void *user_data)
 {
-  SeedException exception;
+  SeedException exception = NULL;
   SeedContext ctx;
   GClosure *closure;
   SeedValue argv[2];
@@ -256,12 +255,16 @@ pending_notify (DBusPendingCall * pending, void *user_data)
 
   dbus_error_init (&derror);
   /* argv[0] will be the return value if any, argv[1] we fill with exception if any */
+  argv[0] = seed_make_null (ctx);
+  argv[1] = seed_make_null (ctx);
   complete_call (ctx, &argv[0], reply, &derror, &exception);
   g_assert (!dbus_error_is_set (&derror));	/* not supposed to be left set by complete_call() */
 
   if (reply)
     dbus_message_unref (reply);
 
+  if (exception)
+	  argv[1] = exception;
   seed_closure_invoke_with_context (ctx, closure, &argv[0], 2, &exception);
   seed_context_unref (ctx);
   // TODO: Do something with exception

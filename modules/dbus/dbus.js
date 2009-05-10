@@ -92,6 +92,7 @@ function _logReply(result, exc) {
         log("Ignored reply to dbus method: " + result.toSource());
     }
     if (exc != null) {
+	Seed.print(exc);
         log("Ignored exception from dbus method: " + exc.toString());
     }
 }

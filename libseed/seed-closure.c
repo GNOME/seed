@@ -394,7 +394,7 @@ seed_make_gclosure (JSContextRef ctx, JSObjectRef function, JSObjectRef user_dat
   else
     ((SeedClosure *) closure)->user_data = NULL;
   
-  JSValueProtect (ctx, function);
+  JSValueProtect (eng->context, function);
 
   return closure;
 }
