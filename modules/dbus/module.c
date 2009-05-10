@@ -1229,6 +1229,67 @@ seed_js_dbus_watch_name(SeedContext ctx,
 }
 
 static SeedValue
+unique_name_getter (SeedContext ctx,
+		    SeedObject object,
+		    SeedString property_name,
+		    SeedException *exception)
+{
+  DBusConnection *bus_connection;
+  DBusBusType bus_type;
+  
+  bus_type = get_bus_type_from_object (ctx, object, exception);
+  
+  bus_check (ctx, bus_type, exception);
+  
+  bus_connection = DBUS_CONNECTION_FROM_TYPE (bus_type);
+  
+  if (bus_connection == NULL)
+    {
+      return seed_make_null (ctx);
+    }
+  else
+    {
+      const gchar *unique_name;
+
+      unique_name = dbus_bus_get_unique_name (bus_connection);
+      return seed_value_from_string (ctx, unique_name, exception);
+    }
+}
+
+static SeedValue
+seed_js_dbus_start_service(SeedContext ctx,
+			  SeedObject function,
+			  SeedObject this_object,
+			  size_t argument_count,
+			  const SeedValue arguments[],
+			  SeedException * exception)
+{
+    const char     *name;
+    DBusBusType     bus_type;
+    DBusConnection *bus_connection;
+
+    if (argument_count != 1) 
+      {
+        seed_make_exception (ctx, exception, "ArgumentError",
+			     "Wrong number of arguments, expected service name");
+	return seed_make_null (ctx);
+      }
+
+    name = seed_value_to_string (ctx, arguments[0], exception);
+
+    bus_type = get_bus_type_from_object (ctx, this_object, exception);
+
+    if (!bus_check(ctx, bus_type, exception))
+      return seed_make_null (ctx);
+
+    bus_connection = DBUS_CONNECTION_FROM_TYPE(bus_type);
+
+    big_dbus_start_service(bus_connection, name);
+
+    return seed_make_undefined (ctx);
+}
+
+static SeedValue
 seed_js_dbus_signature_length (SeedContext ctx,
 			       SeedObject function,
 			       SeedObject this_object,
