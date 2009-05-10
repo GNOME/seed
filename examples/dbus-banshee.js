@@ -21,7 +21,7 @@ var PlayerEngineIface = {
 DBus.proxifyPrototype (PlayerEngine.prototype, PlayerEngineIface);
 
 proxy = new PlayerEngine();
-proxy.OpenRemote("file:///home/racarr/morning.mp3");
+proxy.OpenRemote(Seed.argv[2]);
 proxy.PlayRemote(function(){
     Seed.print("proxy.PlayRemote returned");
 });
