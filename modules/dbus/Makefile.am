@@ -1,5 +1,8 @@
 if BUILD_DBUS_MODULE
 
+moduledir = ${seeddir}/share/seed
+module_DATA = dbus.js
+
 seedlibdir = ${exec_prefix}/lib/seed
 
 seedlib_LTLIBRARIES = \
