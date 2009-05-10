@@ -321,17 +321,14 @@ seed_make_native_closure (JSContextRef ctx,
 static void
 closure_invalidated (gpointer data, GClosure * c)
 {
-  JSContextRef ctx = JSGlobalContextCreateInGroup (context_group,
-						   0);
   SeedClosure *closure = (SeedClosure *) c;
   
   SEED_NOTE (FINALIZATION, "Finalizing closure.");
-  if (closure->user_data && !JSValueIsUndefined(ctx, closure->user_data))
-    JSValueUnprotect(ctx, closure->user_data);
-  if (!JSValueIsUndefined (ctx, closure->function))
-    JSValueUnprotect (ctx, closure->function);
+  if (closure->user_data && !JSValueIsUndefined(eng->context, closure->user_data))
+    JSValueUnprotect(eng->context, closure->user_data);
+  if (!JSValueIsUndefined (eng->context, closure->function))
+    JSValueUnprotect (eng->context, closure->function);
 
-  JSGlobalContextRelease ((JSGlobalContextRef) ctx);
 }
 
 JSObjectRef
