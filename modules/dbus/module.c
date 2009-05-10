@@ -10,6 +10,7 @@ SeedContextGroup group;
 
 SeedObject namespace_ref;
 SeedClass dbus_namespace_class;
+SeedClass dbus_bus_class;
 
 static gboolean session_bus_weakref_added = FALSE;
 static DBusConnection *session_bus = NULL;
@@ -1331,6 +1332,25 @@ seed_js_dbus_signature_length (SeedContext ctx,
   return seed_value_from_int (ctx, length, exception);
 }
 
+seed_static_value bus_values[] = {
+  {"unique_name", unique_name_getter, 0, 0},
+  {0,0,0, 0}
+};
+
+seed_static_function bus_funcs[] = {
+  {"call", seed_js_dbus_call, 0},
+  {"call_async", seed_js_dbus_call_async, 0},
+  {"acquire_name", seed_js_dbus_acquire_name, 0},
+  {"release_name_by_id", seed_js_dbus_release_name_by_id, 0},
+  {"watch_name", seed_js_dbus_watch_name, 0},
+  {"watch_signal", seed_js_dbus_watch_signal, 0},
+  {"unwatch_signal_by_id", seed_js_dbus_unwatch_signal_by_id, 0},
+  {"unwatch_signal", seed_js_dbus_unwatch_signal, 0},
+  {"emit_signal", seed_js_dbus_emit_signal, 0},
+  {"start_service", seed_js_dbus_start_service, 0},
+  {0, 0, 0}
+};
+
 seed_static_function dbus_funcs[] = {
   {"signatureLength", seed_js_dbus_signature_length, 0}
   ,
@@ -1344,17 +1364,33 @@ seed_static_value dbus_values[] = {
 };
 
 static void
+define_bus_object (SeedContext ctx,
+		   DBusBusType which_bus)
+{
+  SeedObject bus_obj;
+  const gchar *bus_name;
+  
+  bus_name = BIG_DBUS_NAME_FROM_TYPE(which_bus);
+  bus_obj = seed_make_object (ctx, dbus_bus_class, NULL);
+  seed_object_set_property (ctx, bus_obj, "_dbusBusType",
+			    seed_value_from_int (ctx, which_bus, NULL));
+  //TODO: Define exports
+  seed_object_set_property (ctx, namespace_ref, bus_name, bus_obj);
+}
+
+    /*static void
 seed_define_bus_proto (SeedContext ctx)
 {
   bus_proto = seed_make_object (ctx, NULL, NULL);
 
   seed_value_protect (ctx, bus_proto);
-}
+  }*/
 
 SeedObject
 seed_module_init (SeedEngine * eng)
 {
   seed_class_definition dbus_namespace_class_def = seed_empty_class;
+  seed_class_definition dbus_bus_class_def = seed_empty_class;
 
   ctx = eng->context;
   group = eng->group;
@@ -1362,8 +1398,13 @@ seed_module_init (SeedEngine * eng)
   dbus_namespace_class_def.class_name = "dbusnative";
   dbus_namespace_class_def.static_functions = dbus_funcs;
   dbus_namespace_class_def.static_values = dbus_values;
+  
+  dbus_bus_class_def.class_name = "dbusbus";
+  dbus_bus_class_def.static_functions = bus_funcs;
+  dbus_bus_class_def.static_values = bus_values;
 
   dbus_namespace_class = seed_create_class (&dbus_namespace_class_def);
+  dbus_bus_class = seed_create_class (&dbus_bus_class_def);
 
   namespace_ref = seed_make_object (eng->context, dbus_namespace_class, NULL);
 
@@ -1380,7 +1421,8 @@ seed_module_init (SeedEngine * eng)
 			(SeedFunctionCallback) seed_js_dbus_signature_length,
 			namespace_ref);
 
-  seed_define_bus_proto (ctx);
+  define_bus_object (ctx, DBUS_BUS_SESSION);
+  define_bus_object (ctx, DBUS_BUS_SYSTEM);
 
   return namespace_ref;
 }
