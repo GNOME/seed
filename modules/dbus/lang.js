@@ -21,38 +21,25 @@
 // Utilities that are "meta-language" things like manipulating object props
 
 function countProperties(obj) {
-    let count = 0;
-    for (let property in obj) {
+    var count = 0;
+    for (var property in obj) {
         count += 1;
     }
     return count;
 }
 
 function _copyProperty(source, dest, property) {
-    let getterFunc = source.__lookupGetter__(property);
-    let setterFunc = source.__lookupSetter__(property);
-
-    if (getterFunc) {
-        dest.__defineGetter__(property, getterFunc);
-    }
-
-    if (setterFunc) {
-        dest.__defineSetter__(property, setterFunc);
-    }
-
-    if (!setterFunc && !getterFunc) {
-        dest[property] = source[property];
-    }
+    dest[property] = source[property];
 }
 
 function copyProperties(source, dest) {
-    for (let property in source) {
+    for (var property in source) {
         _copyProperty(source, dest, property);
     }
 }
 
 function copyPublicProperties(source, dest) {
-    for (let property in source) {
+    for (var property in source) {
         if (typeof(property) == 'string' &&
             property.substring(0, 1) == '_') {
             continue;
@@ -63,7 +50,7 @@ function copyPublicProperties(source, dest) {
 }
 
 function copyPropertiesNoOverwrite(source, dest) {
-    for (let property in source) {
+    for (var property in source) {
         if (!(property in dest)) {
             _copyProperty(source, dest, property);
         }
@@ -71,7 +58,7 @@ function copyPropertiesNoOverwrite(source, dest) {
 }
 
 function removeNullProperties(obj) {
-    for (let property in obj) {
+    for (var property in obj) {
         if (obj[property] == null)
             delete obj[property];
         else if (typeof(obj[property]) == 'object')
@@ -89,8 +76,8 @@ function removeNullProperties(obj) {
  * @type: function
  */
 function bind(obj, callback) {
-    let me = obj;
-    let bindArguments = Array.prototype.slice.call(arguments, 2);
+    var me = obj;
+    var bindArguments = Array.prototype.slice.call(arguments, 2);
 
     if (typeof(obj) != 'object') {
         throw new Error(
@@ -105,7 +92,7 @@ function bind(obj, callback) {
     }
 
     return function() {
-        let args = Array.prototype.slice.call(arguments);
+        var args = Array.prototype.slice.call(arguments);
         args = args.concat(bindArguments);
         return callback.apply(me, args);
     };

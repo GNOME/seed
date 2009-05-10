@@ -1,6 +1,6 @@
 // Copyright 2008 litl, LLC. All Rights Reserved.
 
-const Lang = imports.lang;
+Lang = imports.lang;
 //const StringUtil = imports.stringUtil;
 //const ArrayUtil = imports.arrayUtil;
 
@@ -13,7 +13,8 @@ const NO_START_IF_NOT_FOUND = false;
 const START_IF_NOT_FOUND    = true;
 
 // Merge stuff defined in native code
-Lang.copyProperties(imports.dbusnative, this);
+dbusnative = imports.dbusnative;
+Lang.copyProperties(dbusnative, this);
 
 var Introspectable = {
     name: 'org.freedesktop.DBus.Introspectable',
@@ -282,7 +283,7 @@ function proxifyPrototype(proto, iface) {
 
 // convert any object to a dbus proxy ... assumes its prototype is
 // also proxified
-this._busProto.proxifyObject = function(obj, busName, path) {
+this.system.proxifyObject = this.session.proxifyObject = function(obj, busName, path) {
     if (!busName) {
         throw new Error('missing bus name proxifying object');
     }
@@ -312,7 +313,7 @@ var _addExports = function(node, path, object) {
         _addExports(node[head], tail, object);
     }
 };
-
+// Fiiix
 // remove any implementation from exports at the given path.
 var _removeExportsPath = function(node, path) {
     if (path == '') {
@@ -324,13 +325,14 @@ var _removeExportsPath = function(node, path) {
         // recursively delete next component
         _removeExportsPath(node[head], tail);
         // are we empty now?  if so, clean us up.
-        if ([x for (x in node[head])].length == 0) {
-            delete node[head];
-        }
+	// If we had destructuring assignment, this would be cool
+//        if ([x for (x in node[head])].length == 0) {
+//            delete node[head];
+  //      }
     }
 };
 
-
+this._busProto = this.session.__proto__
 // export the object at the specified object path
 this._busProto.exportObject = function(path, object) {
     if (path.slice(0,1) != '/')
@@ -409,21 +411,36 @@ function _eatSCT(acc, s) {
 }
 
 // parse signature string, generating a list of "single complete types"
-function _parseDBusSigs(sig) {
+//function _parseDBusSigs(sig) {
+   // while (sig.length > 0) {
+  //    var one = [];
+    //    sig = _eatSCT(one, sig);
+      //  yield one.join('');
+//    }
+//}
+
+function _parseDBusSigs(sig){
+    var sigs = [];
     while (sig.length > 0) {
-        var one = [];
-        sig = _eatSCT(one, sig);
-        yield one.join('');
+	sig = _eatSCT(sigs, sig);
     }
+    return sigs.join('');
+}
+
+function getIfaces(ifaces) {
+    var a = new Array();
+    for (i in ifaces)
+	a.push(i);
+    return a;
 }
 
 // given a "this" with _dbusInterfaces, returns DBus Introspection
 // format XML giving interfaces and methods implemented.
-function _getInterfaceXML() {
+/*function _getInterfaceXML() {
     var result = '';
     // iterate through defined interfaces
     var ifaces = ('_dbusInterfaces' in this) ? this._dbusInterfaces : {};
-    ifaces = [i for each (i in ifaces)]; // convert to array
+    ifaces = getIfaces(ifaces);
     // add introspectable and properties
     ifaces.push(Introspectable);
     ifaces.push(Properties);
@@ -471,7 +488,7 @@ function _getInterfaceXML() {
         result += '  </interface>\n';
     }
     return result;
-}
+}*/
 
 // Verifies that a given object conforms to a given interface,
 // and stores meta-info from the interface in the object as

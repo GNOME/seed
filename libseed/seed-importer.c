@@ -618,7 +618,7 @@ seed_importer_handle_file (JSContextRef ctx,
   g_hash_table_insert (file_imports, canonical, global);
   g_free (file_path);
 
-  JSEvaluateScript (nctx, file_contents, c_global, file_name, 0, exception);
+  JSEvaluateScript (nctx, file_contents, NULL, file_name, 0, exception);
 
   // Does leak...but it's a debug statement.
   SEED_NOTE (IMPORTER, "Evaluated file, exception: %s", 
@@ -639,7 +639,7 @@ seed_importer_search (JSContextRef ctx,
 		      JSValueRef *exception)
 {
   GSList *path, *walk;
-  gchar *prop_as_lib = g_strconcat ("lib", prop, NULL);
+  gchar *prop_as_lib = g_strconcat ("lib", prop, ".", G_MODULE_SUFFIX, NULL);
   
   path = seed_importer_get_search_path (ctx, exception);
   
@@ -681,7 +681,7 @@ seed_importer_search (JSContextRef ctx,
 
 	      return ret;
 	    }
-	  else if (g_str_has_prefix (mentry, prop_as_lib) && g_str_has_suffix (entry, G_MODULE_SUFFIX))
+	  else if (!strcmp(entry, prop_as_lib))
 	    {
 	      JSObjectRef ret;
 	      

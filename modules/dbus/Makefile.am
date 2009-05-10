@@ -1,6 +1,6 @@
 if BUILD_DBUS_MODULE
 
-moduledir = ${seeddir}/share/seed
+moduledir = $(datadir)/seed
 module_DATA = dbus.js lang.js
 
 seedlibdir = ${exec_prefix}/lib/seed
