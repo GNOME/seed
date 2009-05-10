@@ -1059,6 +1059,103 @@ seed_js_dbus_release_name_by_id (SeedContext ctx,
     return seed_make_undefined (ctx);
 }
 
+typedef struct {
+    GClosure *appeared_closure;
+    GClosure *vanished_closure;
+    char *bus_name;
+    DBusBusType bus_type;
+} BigJSDBusNameWatcher;
+
+static void
+on_name_appeared(DBusConnection *connection,
+                 const char     *name,
+                 const char     *owner_unique_name,
+                 void           *data)
+{
+    int argc;
+    SeedValue argv[2];
+    SeedValue rval;
+    SeedContext ctx;
+    BigJSDBusNameWatcher *watcher;
+    SeedException exception;
+
+    watcher = data;
+
+    ctx = seed_make_context (group, NULL);
+    seed_prepare_global_context (ctx);
+
+    argc = 2;
+
+    argv[0] = seed_value_from_string (ctx, name, &exception);
+    argv[1] = seed_value_from_string (ctx, owner_unique_name, &exception);
+
+    seed_closure_invoke_with_context (ctx, watcher->appeared_closure,
+				      argc, argv, &exception);
+    // TODO: Do something with exception.
+    
+    seed_context_unref (ctx);
+
+}
+
+static void
+on_name_vanished(DBusConnection *connection,
+                 const char     *name,
+                 const char     *owner_unique_name,
+                 void           *data)
+{
+    int argc;
+    SeedValue argv[2];
+    SeedValue rval;
+    SeedContext ctx;
+    BigJSDBusNameWatcher *watcher;
+    SeedException exception;
+
+    watcher = data;
+
+    ctx = seed_make_context (group, NULL);
+    seed_prepare_global_context (ctx);
+
+    argc = 2;
+
+    argv[0] = seed_value_from_string (ctx, name, &exception);
+    argv[1] = seed_value_from_string (ctx, owner_unique_name, &exception);
+
+    seed_closure_invoke_with_context (ctx, watcher->vanished_closure,
+				      argc, argv, &exception);
+    // TODO: Do something with exception.
+    
+    seed_context_unref (ctx);
+
+}
+
+static const BigDBusWatchNameFuncs watch_name_funcs = {
+    on_name_appeared,
+    on_name_vanished
+};
+
+static void
+watch_closure_invalidated(gpointer  data,
+                          GClosure *closure)
+{
+    BigJSDBusNameWatcher *watcher;
+
+    watcher = (BigJSDBusNameWatcher*)data;
+
+    if (watcher) {
+        big_dbus_unwatch_name(watcher->bus_type,
+                              watcher->bus_name,
+                              &watch_name_funcs,
+                              watcher);
+
+        g_free(watcher->bus_name);
+        g_closure_unref(watcher->appeared_closure);
+        g_closure_unref(watcher->vanished_closure);
+
+        g_slice_free(BigJSDBusNameWatcher, watcher);
+    }
+
+}
+
 static SeedValue
 seed_js_dbus_signature_length (SeedContext ctx,
 			       SeedObject function,
