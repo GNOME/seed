@@ -1074,14 +1074,13 @@ on_name_appeared(DBusConnection *connection,
 {
     int argc;
     SeedValue argv[2];
-    SeedValue rval;
     SeedContext ctx;
     BigJSDBusNameWatcher *watcher;
     SeedException exception;
 
     watcher = data;
 
-    ctx = seed_make_context (group, NULL);
+    ctx = seed_context_create (group, NULL);
     seed_prepare_global_context (ctx);
 
     argc = 2;
@@ -1090,7 +1089,7 @@ on_name_appeared(DBusConnection *connection,
     argv[1] = seed_value_from_string (ctx, owner_unique_name, &exception);
 
     seed_closure_invoke_with_context (ctx, watcher->appeared_closure,
-				      argc, argv, &exception);
+				      argv, argc, &exception);
     // TODO: Do something with exception.
     
     seed_context_unref (ctx);
@@ -1105,14 +1104,13 @@ on_name_vanished(DBusConnection *connection,
 {
     int argc;
     SeedValue argv[2];
-    SeedValue rval;
     SeedContext ctx;
     BigJSDBusNameWatcher *watcher;
     SeedException exception;
 
     watcher = data;
 
-    ctx = seed_make_context (group, NULL);
+    ctx = seed_context_create (group, NULL);
     seed_prepare_global_context (ctx);
 
     argc = 2;
@@ -1121,7 +1119,7 @@ on_name_vanished(DBusConnection *connection,
     argv[1] = seed_value_from_string (ctx, owner_unique_name, &exception);
 
     seed_closure_invoke_with_context (ctx, watcher->vanished_closure,
-				      argc, argv, &exception);
+				      argv, argc, &exception);
     // TODO: Do something with exception.
     
     seed_context_unref (ctx);
@@ -1154,6 +1152,80 @@ watch_closure_invalidated(gpointer  data,
         g_slice_free(BigJSDBusNameWatcher, watcher);
     }
 
+}
+
+static SeedValue
+seed_js_dbus_watch_name(SeedContext ctx,
+			SeedObject function,
+			SeedObject this_object,
+			size_t argument_count,
+			const SeedValue arguments[],
+			SeedException * exception)
+{
+    const char *bus_name;
+    gboolean start_if_not_found;
+    SeedObject appeared_func;
+    SeedObject vanished_func;
+    BigJSDBusNameWatcher *watcher;
+    DBusBusType bus_type;
+
+    if (argument_count < 4) 
+      {
+        seed_make_exception (ctx, exception, 
+			     "ArgumentError", "Not enough args, need bus name, acquired_func, lost_func");
+	return seed_make_null (ctx);
+      }
+
+    bus_type = get_bus_type_from_object(ctx, this_object, exception);
+
+    bus_name = seed_value_to_string (ctx, arguments[0], exception);
+
+    start_if_not_found = seed_value_to_boolean (ctx, arguments[1], exception);
+
+    if (!seed_value_is_object (ctx, arguments[2]) || !seed_value_is_function (ctx, arguments[2]))
+      {
+        seed_make_exception (ctx, exception, "ArgumentError", "Third arg is a callback to invoke on seeing the name");
+	return seed_make_null (ctx);
+      }
+
+    appeared_func = arguments[2];
+
+    if (!seed_value_is_object (ctx, arguments[3]) || !seed_value_is_function (ctx, arguments[3]))
+      {
+        seed_make_exception (ctx, exception, "ArgumentError", "Fourth arg is a callback to invoke on seeing the name");
+	return seed_make_null (ctx);
+      }
+
+    vanished_func = arguments[3];
+
+    watcher = g_slice_new0(BigJSDBusNameWatcher);
+
+    watcher->appeared_closure = seed_make_gclosure (ctx, appeared_func, NULL);
+
+    g_closure_ref(watcher->appeared_closure);
+    g_closure_sink(watcher->appeared_closure);
+
+    watcher->vanished_closure = seed_make_gclosure (ctx, vanished_func, NULL);
+
+    g_closure_ref(watcher->vanished_closure);
+    g_closure_sink(watcher->vanished_closure);
+
+    watcher->bus_type = bus_type;
+    watcher->bus_name = g_strdup(bus_name);
+
+    /* Only add the invalidate notifier to one of the closures, should
+     * be enough */
+    g_closure_add_invalidate_notifier(watcher->appeared_closure, watcher,
+                                      watch_closure_invalidated);
+
+    big_dbus_watch_name(bus_type,
+                        bus_name,
+                        start_if_not_found ?
+                        BIG_DBUS_NAME_START_IF_NOT_FOUND : 0,
+                        &watch_name_funcs,
+                        watcher);
+
+    return seed_make_undefined (ctx);
 }
 
 static SeedValue
