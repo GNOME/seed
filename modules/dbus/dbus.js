@@ -16,6 +16,14 @@ const START_IF_NOT_FOUND    = true;
 dbusnative = imports.dbusnative;
 Lang.copyProperties(dbusnative, this);
 
+function propsToArray(obj) {
+    var a = new Array();
+    for (i in ifaces)
+	a.push(i);
+    return a;
+}
+
+
 var Introspectable = {
     name: 'org.freedesktop.DBus.Introspectable',
     methods: [
@@ -327,9 +335,9 @@ var _removeExportsPath = function(node, path) {
         _removeExportsPath(node[head], tail);
         // are we empty now?  if so, clean us up.
 	// If we had destructuring assignment, this would be cool
-//        if ([x for (x in node[head])].length == 0) {
-//            delete node[head];
-  //      }
+        if (propsToArray(node[head]).length == 0) {
+            delete node[head];
+	}
     }
 };
 
@@ -428,39 +436,33 @@ function _parseDBusSigs(sig){
     return sigs.join('');
 }
 
-function getIfaces(ifaces) {
-    var a = new Array();
-    for (i in ifaces)
-	a.push(i);
-    return a;
-}
 
 // given a "this" with _dbusInterfaces, returns DBus Introspection
 // format XML giving interfaces and methods implemented.
-/*function _getInterfaceXML() {
+function _getInterfaceXML() {
     var result = '';
     // iterate through defined interfaces
     var ifaces = ('_dbusInterfaces' in this) ? this._dbusInterfaces : {};
-    ifaces = getIfaces(ifaces);
+    ifaces = propsToArray(ifaces);
     // add introspectable and properties
     ifaces.push(Introspectable);
     ifaces.push(Properties);
 
     for (var i = 0; i < ifaces.length; i++) {
         var iface = ifaces[i];
-        result += StringUtil.sprintf('  <interface name="%s">\n', iface.name);
+        result += Seed.sprintf('  <interface name="%s">\n', iface.name);
         // describe methods.
         var methods = ('methods' in iface) ? iface.methods : [];
         for (var j = 0; j < methods.length; j++) {
             var method = methods[j];
-            result += StringUtil.sprintf(
+            result += Seed.sprintf(
                 '    <method name="%s">\n', method.name);
-            for each (var sig in _parseDBusSigs(method.inSignature)) {
-                result += StringUtil.sprintf(
+            for (var sig in _parseDBusSigs(method.inSignature)) {
+                result += Seed.sprintf(
                     '      <arg type="%s" direction="in"/>\n', sig);
             }
-            for each (var sig in _parseDBusSigs(method.outSignature)) {
-                result += StringUtil.sprintf(
+            for (var sig in _parseDBusSigs(method.outSignature)) {
+                result += Seed.sprintf(
                     '      <arg type="%s" direction="out"/>\n', sig);
             }
             result += '    </method>\n';
@@ -469,10 +471,10 @@ function getIfaces(ifaces) {
         var signals = ('signals' in iface) ? iface.signals : [];
         for (var j = 0; j < signals.length; j++) {
             var signal = signals[j];
-            result += StringUtil.sprintf(
+            result += Seed.sprintf(
                 '    <signal name="%s">\n', signal.name);
-            for each (var sig in _parseDBusSigs(signal.inSignature)) {
-                result += StringUtil.sprintf(
+            for (var sig in _parseDBusSigs(signal.inSignature)) {
+                result += Seed.sprintf(
                     '      <arg type="%s"/>\n', sig);
             }
             result += '    </signal>\n';
@@ -481,7 +483,7 @@ function getIfaces(ifaces) {
         var properties = ('properties' in iface) ? iface.properties : [];
         for (var j = 0; j < properties.length; j++) {
             var property = properties[j];
-            result += StringUtil.sprintf(
+            result += Seed.sprintf(
                 '    <property name="%s" type="%s" access="%s"/>\n',
                 property.name, property.signature, property.access);
         }
@@ -489,7 +491,7 @@ function getIfaces(ifaces) {
         result += '  </interface>\n';
     }
     return result;
-}*/
+}
 
 // Verifies that a given object conforms to a given interface,
 // and stores meta-info from the interface in the object as
