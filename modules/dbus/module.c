@@ -1033,6 +1033,33 @@ seed_js_dbus_acquire_name(SeedContext ctx,
 }
 
 static SeedValue
+seed_js_dbus_release_name_by_id (SeedContext ctx,
+				 SeedObject function,
+				 SeedObject this_object,
+				 size_t argument_count,
+				 const SeedValue arguments[],
+				 SeedException * exception)
+{
+    DBusBusType bus_type;
+    unsigned int id;
+
+    if (argument_count < 1) 
+      {
+        seed_make_exception (ctx, exception, 
+			     "ArgumentError", "Not enough args, need name owner monitor id");
+	return seed_make_null (ctx);
+      }
+    
+    bus_type = get_bus_type_from_object(ctx, this_object, exception);
+
+    id = seed_value_to_int (ctx, arguments[0], exception);
+
+    big_dbus_release_name_by_id(bus_type,
+                                id);
+    return seed_make_undefined (ctx);
+}
+
+static SeedValue
 seed_js_dbus_signature_length (SeedContext ctx,
 			       SeedObject function,
 			       SeedObject this_object,
