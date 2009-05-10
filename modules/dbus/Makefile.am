@@ -30,6 +30,7 @@ libdbusnative_la_LDFLAGS = \
 	-L/lib \
 	-ldbus-1 \
 	$(DBUS_LDFLAGS) \
+	-ldbus-glib-1 \
 	$(SEED_PROFILE_LIBS)
 
 

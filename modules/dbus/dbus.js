@@ -1,5 +1,5 @@
 // Copyright 2008 litl, LLC. All Rights Reserved.
-
+log = Seed.print
 Lang = imports.lang;
 //const StringUtil = imports.stringUtil;
 //const ArrayUtil = imports.arrayUtil;
@@ -87,6 +87,7 @@ function _proxyInvoker(obj, ifaceName, methodName, outSignature, inSignature, ti
 }
 
 function _logReply(result, exc) {
+    Seed.print("Reply!");
     if (result != null) {
         log("Ignored reply to dbus method: " + result.toSource());
     }

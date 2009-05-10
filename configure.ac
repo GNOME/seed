@@ -166,6 +166,9 @@ if test x"$want_dbus_module" == x"yes" ; then
 	PKG_CHECK_MODULES(DBUS, dbus-1)
 	AC_SUBST(DBUS_CFLAGS)
 	AC_SUBST(DBUS_LDFLAGS)
+	PKG_CHECK_MODULES(DBUSGLIB, dbus-glib-1)
+	AC_SUBST(DBUSGLIB_CFLAGS)
+	AC_SUBST(DBUSGLIB_LDFLAGS)
 fi
 
 dnl ==== os ====
