@@ -24,6 +24,7 @@ proxy = new PlayerEngine();
 proxy.OpenRemote(Seed.argv[2]);
 proxy.PlayRemote(function(){
     Seed.print("proxy.PlayRemote returned");
+    Seed.quit();
 });
 
 mainloop = GLib.main_loop_new();
