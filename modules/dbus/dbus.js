@@ -1,8 +1,8 @@
 // Copyright 2008 litl, LLC. All Rights Reserved.
 
 const Lang = imports.lang;
-const StringUtil = imports.stringUtil;
-const ArrayUtil = imports.arrayUtil;
+//const StringUtil = imports.stringUtil;
+//const ArrayUtil = imports.arrayUtil;
 
 // Parameters for acquire_name, keep in sync with
 // enum in util/dbus.h
@@ -13,7 +13,7 @@ const NO_START_IF_NOT_FOUND = false;
 const START_IF_NOT_FOUND    = true;
 
 // Merge stuff defined in native code
-Lang.copyProperties(imports.dbusNative, this);
+Lang.copyProperties(imports.dbusnative, this);
 
 var Introspectable = {
     name: 'org.freedesktop.DBus.Introspectable',
@@ -39,7 +39,7 @@ var Properties = {
 };
 
 function _proxyInvoker(obj, ifaceName, methodName, outSignature, inSignature, timeout, arg_array) {
-    let replyFunc;
+    var replyFunc;
 
     /* Note: "this" in here is the module, "obj" is the proxy object
      */
@@ -53,7 +53,7 @@ function _proxyInvoker(obj, ifaceName, methodName, outSignature, inSignature, ti
     /* The default replyFunc only logs the responses */
     replyFunc = _logReply;
 
-    let expectedNumberArgs = this.signatureLength(inSignature);
+    var expectedNumberArgs = this.signatureLength(inSignature);
 
     if (arg_array.length < expectedNumberArgs) {
         throw new Error("Not enough arguments passed for method: " + methodName +
@@ -133,9 +133,9 @@ function _getInterface() {
 }
 
 function _invokeSignalWatchCallback(callback, emitter, argsFromDBus) {
-    let argArray = [emitter];
-    let length = argsFromDBus.length;
-    for (let i = 0; i < length; ++i) {
+    var argArray = [emitter];
+    var length = argsFromDBus.length;
+    for (var i = 0; i < length; ++i) {
         argArray.push(argsFromDBus[i]);
     }
     callback.apply(null, argArray);
@@ -145,7 +145,7 @@ function _connect(signalName, callback) {
     if (!this._signalNames || !(signalName in this._signalNames))
         throw new Error("Signal " + signalName + " not defined in this object");
 
-    let me = this;
+    var me = this;
     return this._dbusBus.watch_signal(this._dbusBusName,
                                       this._dbusPath,
                                       this._dbusInterface,
@@ -163,7 +163,7 @@ function _disconnectByID(ID) {
 
 function _getRemote(propName) {
     // convert arguments to regular array
-    let argArray = [].splice.call(arguments, 0);
+    var argArray = [].splice.call(arguments, 0);
     // prepend iface the property is on
     argArray.splice(0, 0, this._dbusInterface);
 
@@ -177,7 +177,7 @@ function _getRemote(propName) {
 
 function _setRemote(propName, value) {
     // convert arguments to regular array
-    let argArray = [].splice.call(arguments, 0);
+    var argArray = [].splice.call(arguments, 0);
     // prepend iface the property is on
     argArray.splice(0, 0, this._dbusInterface);
 
@@ -191,7 +191,7 @@ function _setRemote(propName, value) {
 
 function _getAllRemote() {
     // convert arguments to regular array
-    let argArray = [].splice.call(arguments, 0);
+    var argArray = [].splice.call(arguments, 0);
     // prepend iface the properties are on
     argArray.splice(0, 0, this._dbusInterface);
 
@@ -217,10 +217,10 @@ function proxifyPrototype(proto, iface) {
         proto._dbusInterface = null;
 
     if ('methods' in iface) {
-        let methods = iface.methods;
+        var methods = iface.methods;
 
-        for (let i = 0; i < methods.length; ++i) {
-            let method = methods[i];
+        for (var i = 0; i < methods.length; ++i) {
+            var method = methods[i];
 
             if (!('name' in method))
                 throw new Error("Method definition must have a name");
@@ -229,7 +229,7 @@ function proxifyPrototype(proto, iface) {
              * Foo will just log a warning so we can catch people using the
              * old naming system. FooRemote is the actual proxy method.
              */
-            let methodName = method.name + "Remote";
+            var methodName = method.name + "Remote";
             proto[methodName] = _makeProxyMethod(method);
             proto[method.name] = function() {
                 log("PROXY-ERROR: " + method.name + " called, you should be using " +
@@ -239,16 +239,16 @@ function proxifyPrototype(proto, iface) {
     }
 
     if ('signals' in iface) {
-        let signals = iface.signals;
-        let signalNames = {};
+        var signals = iface.signals;
+        var signalNames = {};
 
-        for (let i = 0; i < signals.length; i++) {
-            let signal = signals[i];
+        for (var i = 0; i < signals.length; i++) {
+            var signal = signals[i];
 
             if (!('name' in signal))
                 throw new Error("Signal definition must have a name");
 
-            let name = signal.name;
+            var name = signal.name;
 
             /* This is a bit silly, but we might want to add more information
              * later and it still beats an Array in checking if the object has
@@ -298,15 +298,15 @@ this._busProto.proxifyObject = function(obj, busName, path) {
 };
 
 // add 'object' to the exports object at the given path
-let _addExports = function(node, path, object) {
+var _addExports = function(node, path, object) {
     if (path == '') {
         if ('-impl-' in node)
             throw new Error("Object already registered for path.");
         node['-impl-'] = object;
     } else {
-        let idx = path.indexOf('/');
-        let head = (idx >= 0) ? path.slice(0, idx) : path;
-        let tail = (idx >= 0) ? path.slice(idx+1) : '';
+        var idx = path.indexOf('/');
+        var head = (idx >= 0) ? path.slice(0, idx) : path;
+        var tail = (idx >= 0) ? path.slice(idx+1) : '';
         if (!(head in node))
             node[head] = {};
         _addExports(node[head], tail, object);
@@ -314,13 +314,13 @@ let _addExports = function(node, path, object) {
 };
 
 // remove any implementation from exports at the given path.
-let _removeExportsPath = function(node, path) {
+var _removeExportsPath = function(node, path) {
     if (path == '') {
         delete node['-impl-'];
     } else {
-        let idx = path.indexOf('/');
-        let head = (idx >= 0) ? path.slice(0, idx) : path;
-        let tail = (idx >= 0) ? path.slice(idx+1) : '';
+        var idx = path.indexOf('/');
+        var head = (idx >= 0) ? path.slice(0, idx) : path;
+        var tail = (idx >= 0) ? path.slice(idx+1) : '';
         // recursively delete next component
         _removeExportsPath(node[head], tail);
         // are we empty now?  if so, clean us up.
@@ -336,7 +336,7 @@ this._busProto.exportObject = function(path, object) {
     if (path.slice(0,1) != '/')
         throw new Error("Bad path!  Must start with /");
     // keep session and system paths separate, just in case we register on both
-    let pathProp = '_dbusPaths' + this._dbusBusType;
+    var pathProp = '_dbusPaths' + this._dbusBusType;
     // optimize for the common one-path case by using a colon-delimited
     // string rather than an array.
     if (!(pathProp in object)) {
@@ -350,12 +350,12 @@ this._busProto.exportObject = function(path, object) {
 // unregister this object from all its paths
 this._busProto.unexportObject = function(object) {
     // keep session and system paths separate, just in case we register on both
-    let pathProp = '_dbusPaths' + this._dbusBusType;
+    var pathProp = '_dbusPaths' + this._dbusBusType;
     if (!(pathProp in object))
         return; // already or never registered.
-    let dbusPaths = object[pathProp].split(':');
-    for (let i = 0; i < dbusPaths.length; ++i) {
-        let path = dbusPaths[i];
+    var dbusPaths = object[pathProp].split(':');
+    for (var i = 0; i < dbusPaths.length; ++i) {
+        var path = dbusPaths[i];
         _removeExportsPath(this.exports, path.slice(1));
     }
     delete object[pathProp];
@@ -366,14 +366,14 @@ this._busProto.unexportObject = function(object) {
 // names to property signatures. Used as value of _dbus_signatures
 // when passing around a dict of properties.
 function _getPropertySignatures(ifaceName) {
-    let iface = this._dbusInterfaces[ifaceName];
+    var iface = this._dbusInterfaces[ifaceName];
     if (!iface)
         throw new Error("Object has no interface " + ifaceName);
     if (!('_dbusPropertySignaturesCache' in iface)) {
-        let signatures = {};
+        var signatures = {};
         if ('properties' in iface) {
-            let properties = iface.properties;
-            for (let i = 0; i < properties.length; ++i) {
+            var properties = iface.properties;
+            for (var i = 0; i < properties.length; ++i) {
                 signatures[properties[i].name] =
                     properties[i].signature;
             }
@@ -387,7 +387,7 @@ function _getPropertySignatures(ifaceName) {
 // Returns the tail, and the head is added to acc.
 function _eatSCT(acc, s) {
     // eat the first character
-    let c = s.charAt(0);
+    var c = s.charAt(0);
     s = s.slice(1);
     acc.push(c);
     // if this is a compound type, loop eating until we reach the close paren
@@ -411,7 +411,7 @@ function _eatSCT(acc, s) {
 // parse signature string, generating a list of "single complete types"
 function _parseDBusSigs(sig) {
     while (sig.length > 0) {
-        let one = [];
+        var one = [];
         sig = _eatSCT(one, sig);
         yield one.join('');
     }
@@ -420,49 +420,49 @@ function _parseDBusSigs(sig) {
 // given a "this" with _dbusInterfaces, returns DBus Introspection
 // format XML giving interfaces and methods implemented.
 function _getInterfaceXML() {
-    let result = '';
+    var result = '';
     // iterate through defined interfaces
-    let ifaces = ('_dbusInterfaces' in this) ? this._dbusInterfaces : {};
+    var ifaces = ('_dbusInterfaces' in this) ? this._dbusInterfaces : {};
     ifaces = [i for each (i in ifaces)]; // convert to array
     // add introspectable and properties
     ifaces.push(Introspectable);
     ifaces.push(Properties);
 
-    for (let i = 0; i < ifaces.length; i++) {
-        let iface = ifaces[i];
+    for (var i = 0; i < ifaces.length; i++) {
+        var iface = ifaces[i];
         result += StringUtil.sprintf('  <interface name="%s">\n', iface.name);
         // describe methods.
-        let methods = ('methods' in iface) ? iface.methods : [];
-        for (let j = 0; j < methods.length; j++) {
-            let method = methods[j];
+        var methods = ('methods' in iface) ? iface.methods : [];
+        for (var j = 0; j < methods.length; j++) {
+            var method = methods[j];
             result += StringUtil.sprintf(
                 '    <method name="%s">\n', method.name);
-            for each (let sig in _parseDBusSigs(method.inSignature)) {
+            for each (var sig in _parseDBusSigs(method.inSignature)) {
                 result += StringUtil.sprintf(
                     '      <arg type="%s" direction="in"/>\n', sig);
             }
-            for each (let sig in _parseDBusSigs(method.outSignature)) {
+            for each (var sig in _parseDBusSigs(method.outSignature)) {
                 result += StringUtil.sprintf(
                     '      <arg type="%s" direction="out"/>\n', sig);
             }
             result += '    </method>\n';
         }
         // describe signals
-        let signals = ('signals' in iface) ? iface.signals : [];
-        for (let j = 0; j < signals.length; j++) {
-            let signal = signals[j];
+        var signals = ('signals' in iface) ? iface.signals : [];
+        for (var j = 0; j < signals.length; j++) {
+            var signal = signals[j];
             result += StringUtil.sprintf(
                 '    <signal name="%s">\n', signal.name);
-            for each (let sig in _parseDBusSigs(signal.inSignature)) {
+            for each (var sig in _parseDBusSigs(signal.inSignature)) {
                 result += StringUtil.sprintf(
                     '      <arg type="%s"/>\n', sig);
             }
             result += '    </signal>\n';
         }
         // describe properties
-        let properties = ('properties' in iface) ? iface.properties : [];
-        for (let j = 0; j < properties.length; j++) {
-            let property = properties[j];
+        var properties = ('properties' in iface) ? iface.properties : [];
+        for (var j = 0; j < properties.length; j++) {
+            var property = properties[j];
             result += StringUtil.sprintf(
                 '    <property name="%s" type="%s" access="%s"/>\n',
                 property.name, property.signature, property.access);
@@ -495,10 +495,10 @@ function conformExport(object, iface) {
         object.getDBusInterfaceXML = _getInterfaceXML;
 
     if ('methods' in iface) {
-        let methods = iface.methods;
+        var methods = iface.methods;
 
-        for (let i = 0; i < methods.length; ++i) {
-            let method = methods[i];
+        for (var i = 0; i < methods.length; ++i) {
+            var method = methods[i];
 
             if (!('name' in method))
                 throw new Error("Method definition must have a name");
@@ -506,10 +506,10 @@ function conformExport(object, iface) {
             if (!('outSignature' in method))
                 method.outSignature = "a{sv}";
 
-            let name = method.name;
-            let asyncName = name +"Async";
+            var name = method.name;
+            var asyncName = name +"Async";
 
-            let missing = [];
+            var missing = [];
             if (!(name in object) &&
                 !(asyncName in object)) {
                 missing.push(name);
@@ -527,10 +527,10 @@ function conformExport(object, iface) {
     }
 
     if ('properties' in iface) {
-        let properties = iface.properties;
+        var properties = iface.properties;
 
-        let missing = [];
-        for (let i = 0; i < properties.length; ++i) {
+        var missing = [];
+        for (var i = 0; i < properties.length; ++i) {
             if (!(properties[i].name in object)) {
                 missing += properties[i];
             }
@@ -543,10 +543,10 @@ function conformExport(object, iface) {
 
     // sanity-check signals
     if ('signals' in iface) {
-        let signals = iface.signals;
+        var signals = iface.signals;
 
-        for (let i = 0; i < signals.length; ++i) {
-            let signal = signals[i];
+        for (var i = 0; i < signals.length; ++i) {
+            var signal = signals[i];
             if (signal.name.indexOf('-') >= 0)
                 throw new Error("dbus signals cannot have a hyphen in them, use camelCase");
         }
