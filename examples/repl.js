@@ -32,10 +32,15 @@ readline.bind('\t', function(){
     readline.insert("\t");
 });
 
+var re = /[^=<>*-^/]=[^=<>*-^/]\s*(\s*new\s*)?[^:punct:]|'|"+$/
+
 while(1){
     try{
 	item = readline.readline("> ");
-	Seed.print(context.eval(item));
+	result = context.eval(item);
+	if (!re.exec(item) && (result != undefined))
+	    Seed.print(result)
+
     }
     catch(e){
 	Seed.print(e.name + " " + e.message);
