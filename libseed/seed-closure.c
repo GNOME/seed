@@ -408,7 +408,7 @@ seed_closure_warn_exception (GClosure *c,
 				      NULL);
   gchar *mes = seed_exception_to_string (ctx, exception);
 
-  g_warning("Exception in closure (%p %s). %s", c, name, mes);
+  g_warning("Exception in closure (%p) for %s (handler %s). %s", c, ((SeedClosure *)c)->description, *name == '\0' ? "[anonymous]" : name, mes);
   
   g_free (name);
   g_free (mes);   
