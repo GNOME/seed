@@ -27,6 +27,7 @@ examples_DATA = \
     Gnio-server.js \
     clutter-cairo.js \
     threaded-repl.js \
+    clutter-pad.js \
     gtkplug.js \
     calculator.js \
     gconf.js \
@@ -60,6 +61,7 @@ EXTRA_DIST = \
     async-quine.js \
     gconf.js \
     gtktextview.js \
+    clutter-pad.js \
     video.js \
     accelgroup.js \
     Gnio.js \
