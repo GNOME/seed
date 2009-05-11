@@ -392,6 +392,23 @@ seed_make_gclosure (JSContextRef ctx, JSObjectRef function, JSObjectRef user_dat
   return closure;
 }
 
+void
+seed_closure_warn_exception (GClosure *c,
+			     JSContextRef ctx,
+			     JSValueRef exception)
+{
+  JSObjectRef callable = seed_closure_get_callable (c);
+  gchar *name = seed_value_to_string (ctx, 
+				      seed_object_get_property (ctx, callable, "name"),
+				      NULL);
+  gchar *mes = seed_exception_to_string (ctx, exception);
+
+  g_warning("Exception in closure (%p %s). %s", c, name, mes);
+  
+  g_free (name);
+  g_free (mes);   
+}
+
 JSClassDefinition seed_native_callback_def = {
   0,				/* Version, always 0 */
   0,

@@ -404,5 +404,8 @@ seed_closure_invoke (GClosure *closure, SeedValue *args, guint argc, SeedExcepti
 SeedValue
 seed_closure_invoke_with_context (SeedContext ctx, GClosure *closure, SeedValue *args, guint argc, SeedException *exception);
 
+void
+seed_closure_warn_exception (GClosure *c, SeedContext ctx, SeedException exception);
+
 
 #endif

@@ -62,6 +62,11 @@ seed_closure_invoke (GClosure *closure, JSValueRef *args, guint argc, JSValueRef
 JSValueRef
 seed_closure_invoke_with_context (JSContextRef ctx, GClosure *closure, JSValueRef *args, guint argc, JSValueRef *exception);
 
+void
+seed_closure_warn_exception (GClosure *c,
+			     JSContextRef ctx,
+			     JSValueRef exception);
+
 
 
 void seed_closures_init ();
