@@ -27,6 +27,7 @@ examples_DATA = \
     Gnio-server.js \
     clutter-cairo.js \
     threaded-repl.js \
+    dbus-consolekit.js \
     clutter-pad.js \
     gtkplug.js \
     calculator.js \
@@ -81,5 +82,6 @@ EXTRA_DIST = \
     vte-test.js \
     threaded-repl.js \
     json-reddit.js \
+    dbus-consolekit.js \
     HACKING
 
