@@ -265,7 +265,10 @@ pending_notify (DBusPendingCall * pending, void *user_data)
 
   if (exception)
 	  argv[1] = exception;
+  exception = NULL;
   seed_closure_invoke_with_context (ctx, closure, &argv[0], 2, &exception);
+  if (exception)
+    seed_closure_warn_exception(closure, ctx, exception);
   seed_context_unref (ctx);
   // TODO: Do something with exception
 }
