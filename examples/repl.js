@@ -32,7 +32,7 @@ readline.bind('\t', function(){
     readline.insert("\t");
 });
 
-var re = /[^=<>*-^/]=[^=<>*-^/]\s*(\s*new\s*)?[^:punct:]|'|"+$/
+var re = /[^=<>*-^/]=[^=<>*-^/]\s*(new\s*)?[^:punct:]|'|"+$/
 
 while(1){
     try{
