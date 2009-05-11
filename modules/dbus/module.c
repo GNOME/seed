@@ -347,7 +347,7 @@ seed_js_dbus_call_async (SeedContext ctx,
    * and deal with the GC root and other issues, even though we
    * won't ever marshal via GValue
    */
-  closure = seed_make_gclosure (ctx, arguments[9], NULL);
+  closure = seed_closure_new (ctx, arguments[9], NULL, "async DBus reply");
   if (closure == NULL)
     {
       dbus_pending_call_unref (pending);
@@ -435,7 +435,7 @@ signal_handler_new (SeedContext ctx,
    * and deal with the GC root and other issues, even though we
    * won't ever marshal via GValue
    */
-  handler->closure = seed_make_gclosure (ctx, callable, NULL);
+  handler->closure = seed_closure_new (ctx, callable, NULL, "DBus signal handler");
   if (handler->closure == NULL)
     {
       g_free (handler);
@@ -1017,12 +1017,12 @@ seed_js_dbus_acquire_name(SeedContext ctx,
     owner->funcs.lost = on_name_lost;
     owner->bus_type = bus_type;
 
-    owner->acquired_closure = seed_make_gclosure (ctx, acquire_func, NULL);
+    owner->acquired_closure = seed_closure_new (ctx, acquire_func, NULL, "DBus name acquired handler");
 
     g_closure_ref(owner->acquired_closure);
     g_closure_sink(owner->acquired_closure);
 
-    owner->lost_closure = seed_make_gclosure (ctx, lost_func, NULL);
+    owner->lost_closure = seed_closure_new (ctx, lost_func, NULL, "DBus name lost handler");
 
     g_closure_ref(owner->lost_closure);
     g_closure_sink(owner->lost_closure);
@@ -1207,12 +1207,12 @@ seed_js_dbus_watch_name(SeedContext ctx,
 
     watcher = g_slice_new0(BigJSDBusNameWatcher);
 
-    watcher->appeared_closure = seed_make_gclosure (ctx, appeared_func, NULL);
+    watcher->appeared_closure = seed_closure_new (ctx, appeared_func, NULL, "DBus name appeared handler");
 
     g_closure_ref(watcher->appeared_closure);
     g_closure_sink(watcher->appeared_closure);
 
-    watcher->vanished_closure = seed_make_gclosure (ctx, vanished_func, NULL);
+    watcher->vanished_closure = seed_closure_new (ctx, vanished_func, NULL, "DBus name vanished handler");
 
     g_closure_ref(watcher->vanished_closure);
     g_closure_sink(watcher->vanished_closure);
