@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+	<title>Seed sandbox Module Documentation</title>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<link rel="stylesheet" href="../style.css" type="text/css" charset="utf-8" />
+	<script type="text/javascript" src="../sh.js"></script>
+    <script type="text/javascript" src="../sh_js.js"></script>
+    <link type="text/css" rel="stylesheet" href="../sh.css" />
+</head>
+<body onload="sh_highlightDocument();">
+<div id="header">Seed <i>sqlite</i> Module</div>
+<div id="subheader">v.@VERSION@</div>
+<div class="section"><b>Usage</b></div>
+<p>
+In order to use functions from the sandbox module, you must first import it.
+</p>
+<pre class="sh_javascript">
+sandbox = imports.sandbox;
+</pre>
+<div class="section"><b>new sandbox.Context</b>()</div>
+<p>
+Creates a new sandbox context object, which wraps a Seed JavaScript context with it's own global object. By default this global object contains only default JSCore globals (Array, Object, etc..) and has no ability to interact with the outside system. Note the context must be manually destroyed with the <b>destroy</b> method (due to the finer points of garbage collection).
+</p>
+<pre class="sh_javascript">
+var context = new sandbox.Context();
+// Do things.
+context.destroy();
+</pre>
+<div class="section">context.<b>eval</b>(source)</div>
+Evaluates a string <i>source</i> with <i>context</i>, returns the result.
+<pre class="sh_javascript">
+context = new sandbox.Context();
+result = context.eval("2+2");
+</pre>
+<div class="section">context.<b>add_globals</b>()</div>
+<p>
+Adds the default Seed globals to the context, including the "Seed" global object, and the imports object.
+</p>
+<pre class="sh_javascript">
+context.add_globals();
+</pre>
+
+<div class="section">context.<b>destroy</b>()</div>
+<p>
+Destroys the internal context object, and any further usage of the wrapper is an exception.
+</p>
+<pre class="sh_javascript">
+context.destroy();
+</pre>
+<div class="section">context.<b>global</b></div>
+<p>
+A property representing the literal global object of the context. May be freely read from and assigned to.
+</p>
+<pre class="sh_javascript">
+context = new sandbox.Context();
+context.global.WindowType = Gtk.WindowType;
+
+context.eval("b = WindowType.NORMAL;");
+if (context.global.b == Gtk.WindowType.NORMAL){
+   Seed.print("Everything works!");
+}
+</pre>
+</body>
+</html>

@@ -284,6 +284,7 @@ doc/modules/canvas.html
 doc/modules/multiprocessing.html
 doc/modules/readline.html
 doc/modules/sqlite.html
+doc/modules/sandbox.html
 
 doc/mapping/mapping.html
 
