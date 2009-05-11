@@ -182,6 +182,7 @@ complete_call (SeedContext ctx,
 
   if (dbus_message_get_type (reply) == DBUS_MESSAGE_TYPE_ERROR)
     {
+      dbus_set_error_from_message (derror, reply);
       seed_make_exception (ctx, exception, "DBusError",
 			   "DBus error: %s: %s",
 			   derror->name, derror->message);
