@@ -328,6 +328,8 @@ closure_invalidated (gpointer data, GClosure * c)
     JSValueUnprotect(eng->context, closure->user_data);
   if (!JSValueIsUndefined (eng->context, closure->function))
     JSValueUnprotect (eng->context, closure->function);
+  
+  g_free (closure->description);
 
 }
 
@@ -373,7 +375,7 @@ seed_closure_invoke_with_context (JSContextRef ctx, GClosure *closure, JSValueRe
 }
 
 GClosure *
-seed_make_gclosure (JSContextRef ctx, JSObjectRef function, JSObjectRef user_data)
+seed_closure_new (JSContextRef ctx, JSObjectRef function, JSObjectRef user_data, const gchar *description)
 {
   GClosure *closure;
 
@@ -388,6 +390,9 @@ seed_make_gclosure (JSContextRef ctx, JSObjectRef function, JSObjectRef user_dat
       ((SeedClosure *) closure)->user_data = user_data;
       JSValueProtect(ctx, user_data);
     }
+  
+  if (description)
+    ((SeedClosure *) closure)->description = g_strdup (description);
 
   return closure;
 }

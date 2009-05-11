@@ -32,6 +32,7 @@ typedef struct _SeedClosure
   JSValueRef user_data;
 
   GType return_type;
+  gchar *description;
 } SeedClosure;
 
 typedef struct _SeedNativeClosure
@@ -48,11 +49,10 @@ extern JSClassRef seed_native_callback_class;
 SeedNativeClosure *seed_make_native_closure (JSContextRef ctx,
 					     GICallableInfo * info,
 					     JSValueRef function);
-GClosure *seed_make_gclosure (JSContextRef ctx,
-			      JSObjectRef function, 
-			      JSObjectRef user_data);
-
-
+GClosure *seed_closure_new (JSContextRef ctx,
+			    JSObjectRef function, 
+			    JSObjectRef user_data,
+			    const gchar *description);
 
 JSObjectRef
 seed_closure_get_callable (GClosure *c);

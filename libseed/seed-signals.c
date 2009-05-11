@@ -67,7 +67,7 @@ seed_gobject_signal_connect (JSContextRef ctx,
   }
 #endif
 
-  closure = seed_make_gclosure (ctx, func, user_data);
+  closure = seed_closure_new (ctx, func, user_data, "signal handler");
   // This seems wrong...
   ((SeedClosure *) closure)->return_type = query.return_type;
   g_signal_connect_closure (on_obj, signal_name, closure, FALSE);

@@ -600,7 +600,7 @@ seed_gi_make_argument (JSContextRef ctx,
 		    if (JSObjectIsFunction (ctx, (JSObjectRef) value))
 		      {
 			arg->v_pointer =
-			  seed_make_gclosure (ctx, (JSObjectRef) value, 0);
+				seed_closure_new (ctx, (JSObjectRef) value, NULL, NULL);
 		      }
 		  }
 		else
