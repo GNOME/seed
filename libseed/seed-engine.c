@@ -902,6 +902,29 @@ seed_gi_import_namespace (JSContextRef ctx,
   return JSValueMakeNull (ctx);
 }
 
+static JSValueRef
+seed_gobject_constructor_convert_to_type (JSContextRef ctx,
+					  JSObjectRef object,
+					  JSType type,
+					  JSValueRef *exception)
+{
+  GType gtype;
+  
+  if (type == kJSTypeString)
+    {
+      JSValueRef ret;
+      gchar *as_string;
+      gtype = (GType) JSObjectGetPrivate (object);
+      
+      as_string = g_strdup_printf("[gobject_constructor %s]", g_type_name (gtype));
+      ret = seed_value_from_string (ctx, as_string, exception);
+      g_free (as_string);
+      
+      return ret;
+    }
+  return FALSE;
+}
+
 JSStaticFunction gobject_static_funcs[] = {
   {"equals", seed_gobject_equals, 0}
   ,
@@ -987,7 +1010,7 @@ JSClassDefinition gobject_constructor_def = {
   NULL,				/* Call As Function */
   seed_gobject_constructor_invoked,	/* Call As Constructor */
   NULL,				/* Has Instance */
-  NULL				/* Convert To Type */
+  seed_gobject_constructor_convert_to_type
 };
 
 JSClassDefinition gobject_named_constructor_def = {
@@ -1007,7 +1030,7 @@ JSClassDefinition gobject_named_constructor_def = {
   NULL,				/* Call As Function */
   seed_gobject_named_constructor_invoked,	/* Call As Constructor */
   NULL,				/* Has Instance */
-  NULL				/* Convert To Type */
+  seed_gobject_constructor_convert_to_type
 };
 
 JSClassDefinition struct_constructor_def = {
