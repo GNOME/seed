@@ -33,6 +33,13 @@ seed_context_eval (SeedContext ctx,
   SeedContext c = seed_object_get_private (this_object);
   SeedValue ret;
   gchar *s;
+
+  if (!c)
+    {
+      seed_make_exception (ctx, exception, 
+			   "ArgumentError", "Context is destroyed");
+      return seed_make_undefined (ctx);
+    }
   
   s = seed_value_to_string (ctx, arguments[0], exception);
   ret = seed_simple_evaluate (c, s, exception);
@@ -50,24 +57,39 @@ seed_sandbox_context_add_globals (SeedContext ctx,
 				  SeedException * exception)
 {
   SeedContext c = seed_object_get_private (this_object);
+  if (!c)
+    {
+      seed_make_exception (ctx, exception, 
+			   "ArgumentError", "Context is destroyed");
+      return seed_make_undefined (ctx);
+    }
   seed_prepare_global_context (c);
-  
+
+  return seed_make_null (ctx);
+}
+
+
+static SeedValue
+seed_sandbox_context_destroy (SeedContext ctx,
+			      SeedObject function,
+			      SeedObject this_object,
+			      size_t argument_count,
+			      const SeedValue arguments[], 
+			      SeedException * exception)
+{
+  SeedContext c = seed_object_get_private (this_object);
+   
+  seed_context_unref (c);
+  seed_object_set_private (this_object, NULL);
   return seed_make_null (ctx);
 }
 
 seed_static_function context_funcs[] = {
   {"eval", seed_context_eval, 0},
   {"add_globals", seed_sandbox_context_add_globals, 0},
+  {"destroy", seed_sandbox_context_destroy, 0},
   {0, 0, 0}
 };
-
-static void
-context_finalize (SeedObject object)
-{
-  SeedContext *c = seed_object_get_private (object);
-  
-  seed_context_unref (c);
-}
 
 SeedObject
 seed_module_init(SeedEngine * eng)
@@ -81,7 +103,6 @@ seed_module_init(SeedEngine * eng)
   
   context_class_def.class_name = "Context";
   context_class_def.static_functions = context_funcs;
-  context_class_def.finalize = context_finalize;
   
   context_class = seed_create_class (&context_class_def);
   
