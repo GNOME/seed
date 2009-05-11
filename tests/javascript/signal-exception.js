@@ -2,7 +2,7 @@
 // Returns: 0
 // STDIN:
 // STDOUT:
-// STDERR:\n\*\* \(seed:[0-9]+\): WARNING \*\*: Exception in signal handler. Line 11 in .*\/signal-exception.js: ReferenceError Left side of assignment is not a reference\.
+// STDERR:\n\*\* \(seed:[0-9]+\): WARNING \*\*: Exception in closure .*
 
 Gtk = imports.gi.Gtk;
 Gtk.init(null, null);

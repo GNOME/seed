@@ -177,11 +177,8 @@ seed_signal_marshal_func (GClosure * closure,
 
   if (exception)
     {
-      gchar *mes = seed_exception_to_string (ctx,
-					     exception);
-      g_warning ("Exception in signal handler. %s \n", mes);
-      g_free (mes);
-      exception = 0;
+      seed_closure_warn_exception (closure, ctx, exception);
+      exception = NULL;
     }
 
   if (ret && !JSValueIsNull (ctx, ret)
