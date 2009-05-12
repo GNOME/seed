@@ -30,11 +30,26 @@ seed_make_xml_node (SeedContext ctx,
 		xmlNodePtr node)
 {
   SeedObject ret;
+  if (node == NULL)
+    return seed_make_null (ctx);
   if (node->_private)
     return (SeedObject) node->_private;
   ret = seed_make_object (ctx, xml_node_class, node);
   node->_private = ret;
   return ret;
+}
+
+static gchar *
+seed_xml_element_type_to_string (xmlElementType type)
+{
+  if (type == XML_ELEMENT_NODE)
+    return "element";
+  else if (type == XML_ATTRIBUTE_NODE)
+    return "attribute";
+  else if (type == XML_TEXT_NODE)
+    return "text";
+  else
+    return "Implement more types! racarr is lazy.";	   
 }
 
 static SeedValue 
@@ -79,20 +94,6 @@ seed_xml_doc_get_root (SeedContext ctx,
   xmlDocPtr doc = XML_DOC_PRIV (object);
   return seed_make_xml_node (ctx, xmlDocGetRootElement (doc));
 }
-
-static SeedValue
-seed_xml_doc_get_children (SeedContext ctx,
-			   SeedObject object,
-			   SeedString property_name,
-			   SeedException *exception)
-{
-  xmlDocPtr doc = XML_DOC_PRIV (object);
- 
-  return seed_make_xml_node (ctx, 
-			     xmlDocGetRootElement (doc)->children);
-
-}
-
 
 static void
 seed_xml_doc_finalize (SeedObject object)
@@ -195,13 +196,40 @@ seed_xml_node_get_content (SeedContext ctx,
   return ret;
 }
 
+static SeedValue
+seed_xml_node_get_type (SeedContext ctx,
+			SeedObject object,
+			SeedString property_name,
+			SeedException *exception)
+{
+  xmlNodePtr node = XML_NODE_PRIV (object);
+  
+  return seed_value_from_string (ctx, 
+				 seed_xml_element_type_to_string 
+				 (node->type), exception);
+}
+
+static void
+seed_xml_node_finalize (SeedObject object)
+{
+  xmlNodePtr node = XML_NODE_PRIV (object);
+  node->_private = NULL;
+}
+
 seed_static_function doc_funcs[] = {
   {0, 0, 0}
 };
 
 seed_static_value doc_values[] = {
   {"root", seed_xml_doc_get_root, 0, 0},
-  {"children", seed_xml_doc_get_children, 0, 0},
+  {"name", seed_xml_node_get_name, 0, 0},
+  {"children", seed_xml_node_get_children, 0, 0},
+  {"parent", seed_xml_node_get_parent, 0, 0},
+  {"next", seed_xml_node_get_next, 0, 0},
+  {"prev", seed_xml_node_get_prev, 0, 0},
+  {"last", seed_xml_node_get_last, 0, 0},
+  {"doc", seed_xml_node_get_doc, 0, 0},
+  {"type", seed_xml_node_get_type, 0, 0},
   {0, 0, 0, 0}
 };
 
@@ -218,6 +246,7 @@ seed_static_value node_values[] = {
   {"content", seed_xml_node_get_content, 0, 0},
   {"last", seed_xml_node_get_last, 0, 0},
   {"doc", seed_xml_node_get_doc, 0, 0},
+  {"type", seed_xml_node_get_type, 0, 0},
   {0, 0, 0, 0}
 };
 
@@ -236,6 +265,7 @@ seed_libxml_define_stuff ()
   xml_node_class_def.class_name="XMLNode";
   xml_node_class_def.static_functions = node_funcs;
   xml_node_class_def.static_values = node_values;
+  xml_node_class_def.finalize = seed_xml_node_finalize;
   xml_node_class = seed_create_class (&xml_node_class_def);
   
   seed_create_function (eng->context, "parseFile", 
