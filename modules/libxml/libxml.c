@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <libxml/xmlmemory.h>
 #include <libxml/parser.h>
+#include <libxml/xpath.h>
 
 SeedObject namespace_ref;
 SeedEngine *eng;
@@ -11,9 +12,11 @@ SeedEngine *eng;
 SeedClass xml_doc_class;
 SeedClass xml_node_class;
 SeedClass xml_attr_class;
+SeedClass xml_xpath_class;
 
 #define XML_DOC_PRIV(obj) ((xmlDocPtr)seed_object_get_private(obj))
 #define XML_NODE_PRIV(obj) ((xmlNodePtr)seed_object_get_private(obj))
+#define XML_XPATH_PRIV(obj) ((xmlXPathContextPtr)seed_object_get_private (obj))
 
 static SeedObject
 seed_make_xml_doc (SeedContext ctx, 
@@ -255,6 +258,42 @@ seed_xml_node_finalize (SeedObject object)
     seed_value_unprotect (eng->context, node->doc->_private);
 }
 
+static SeedObject
+seed_xml_construct_xpath_context (SeedContext ctx,
+				  SeedObject function,
+				  SeedObject this_object,
+				  gsize argument_count,
+				  const SeedValue arguments[],
+				  SeedException * exception)
+{
+  xmlXPathContextPtr xpath;
+  xmlDocPtr doc;
+  
+  if (argument_count != 1)
+    {
+      seed_make_exception (ctx, exception, "ArgumentError", "XPathContext constructor expects"
+			   "1 argument, got %d", argument_count);
+      return seed_make_null (ctx);
+    }
+  if (!seed_value_is_object (ctx, arguments[0]))
+    {
+      seed_make_exception (ctx, exception, "ArgumentError", "XPathContext constructor expects"
+			   " XMLDocument object as argument");
+      return seed_make_null (ctx);
+    }
+  doc = XML_DOC_PRIV (arguments[0]);
+  xpath = xmlXPathNewContext (arguments[0]);
+  
+  return seed_make_object (ctx, xml_xpath_class, xpath);
+}
+
+static void
+seed_xml_xpath_finalize (SeedObject object)
+{
+  xmlXPathContextPtr xpath = XML_XPATH_PRIV (object);
+  xmlXPathFreeContext (xpath);
+}
+
 seed_static_function doc_funcs[] = {
   {0, 0, 0}
 };
@@ -306,14 +345,14 @@ seed_static_value attr_values[] = {
   {0, 0, 0, 0}
 };
 
-
-
 static void
 seed_libxml_define_stuff ()
 {
+  SeedObject xpath_constructor;
   seed_class_definition xml_doc_class_def = seed_empty_class;
   seed_class_definition xml_node_class_def = seed_empty_class;
   seed_class_definition xml_attr_class_def = seed_empty_class;
+  seed_class_definition xml_xpath_class_def = seed_empty_class;
 
   xml_doc_class_def.class_name="XMLDocument";
   xml_doc_class_def.static_functions = doc_funcs;
@@ -335,8 +374,16 @@ seed_libxml_define_stuff ()
   xml_attr_class_def.initialize = seed_xml_node_init;
   xml_attr_class = seed_create_class (&xml_attr_class_def);
   
+  xml_xpath_class_def.class_name = "XMLXPathContext";
+  xml_xpath_class_def.finalize = seed_xml_xpath_finalize;
+  xml_xpath_class = seed_create_class (&xml_xpath_class_def);
+  
   seed_create_function (eng->context, "parseFile", 
 			(SeedFunctionCallback) seed_xml_parse_file,
+			namespace_ref);
+  
+  seed_create_function (eng->context, "xpathNewContext",
+			(SeedFunctionCallback) seed_xml_construct_xpath_context,
 			namespace_ref);
 }
 
