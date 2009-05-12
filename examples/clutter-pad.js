@@ -10,8 +10,8 @@ GtkSource = imports.gi.GtkSource;
 GLib = imports.gi.GLib;
 sandbox = imports.sandbox;
 
-Gtk.init(null, null);
-GtkClutter.init(null, null);
+Gtk.init(Seed.argv);
+GtkClutter.init(Seed.argv);
 
 var window = new Gtk.Window();
 window.signal.destroy.connect(function(o) {Gtk.main_quit()});

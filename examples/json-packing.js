@@ -2,7 +2,7 @@
 
 Gtk = imports.gi.Gtk;
 
-Gtk.init(null, null);
+Gtk.init(Seed.argv);
 
 var label = new Gtk.Label({label: "Hi!"});
 var button = new Gtk.Button({label: "Bye"});

@@ -3,7 +3,7 @@
 Gtk = imports.gi.Gtk;
 GLib = imports.gi.GLib;
 
-Gtk.init(null, null);
+Gtk.init(Seed.argv);
 var w = new Gtk.Window();
 
 //Can interact with window at threaded repl.

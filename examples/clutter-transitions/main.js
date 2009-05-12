@@ -5,7 +5,7 @@ imports.gi.versions.Clutter = "0.8";
 Clutter = imports.gi.Clutter;
 GLib = imports.gi.GLib;
 
-Clutter.init(null, null);
+Clutter.init(Seed.argv);
 
 Seed.include("transition-library.js");
 

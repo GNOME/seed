@@ -7,7 +7,7 @@ imports.gi.versions.ClutterCairo = "0.8"
 Clutter = imports.gi.Clutter;
 ClutterCairo = imports.gi.ClutterCairo;
 
-Clutter.init(null, null);
+Clutter.init(Seed.argv);
 
 c = new ClutterCairo.ClutterCairo.c_new(100, 100);
 cr = c.create();

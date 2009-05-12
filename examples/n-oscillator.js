@@ -2,8 +2,8 @@
 Gtk = imports.gi.Gtk;
 Gst = imports.gi.Gst;
 
-Gst.init(null, null);
-Gtk.init(null, null);
+Gst.init(Seed.argv);
+Gtk.init(Seed.argv);
 
 // This is a really ugly program. Please fix it.
 

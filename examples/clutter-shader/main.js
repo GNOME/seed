@@ -9,8 +9,8 @@ GtkClutter = imports.gi.GtkClutter;
 Gio = imports.gi.Gio;
 ShaderView = imports.ShaderView;
 
-Gtk.init(null, null);
-GtkClutter.init(null, null);
+Gtk.init(Seed.argv);
+GtkClutter.init(Seed.argv);
 
 var window = new Gtk.Window();
 var gtkstage = new GtkClutter.Embed();

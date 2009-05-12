@@ -1,7 +1,7 @@
 #!/usr/bin/env seed
 
 Gtk = imports.gi.Gtk;
-Gtk.init(null, null);
+Gtk.init(Seed.argv);
 
 var window = new Gtk.Window();
 window.signal.hide.connect(Gtk.main_quit);

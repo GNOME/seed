@@ -3,7 +3,7 @@
 Gtk = imports.gi.Gtk;
 WebKit = imports.gi.WebKit;
 
-Gtk.init(null, null);
+Gtk.init(Seed.argv);
 
 TabbedBrowser = imports.TabbedBrowser;
 BrowserSettings = imports.BrowserSettings;

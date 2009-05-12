@@ -20,9 +20,9 @@ GLib = imports.gi.GLib;
 Pango = imports.gi.Pango;
 GObject = imports.gi.GObject;
 
-Gtk.init(null, null);
-Clutter.init(null, null);
-GConf.init(null, null);
+Gtk.init(Seed.argv);
+Clutter.init(Seed.argv);
+GConf.init(Seed.argv);
 
 Seed.include("light.js");
 Seed.include("board.js");

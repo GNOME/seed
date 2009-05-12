@@ -5,7 +5,7 @@ Gdk = imports.gi.Gdk;
 Gtk = imports.gi.Gtk;
 Poppler = imports.gi.Poppler;
 
-Gtk.init(null, null);
+Gtk.init(Seed.argv);
 
 var current_document = null;
 var drawing_area = null;

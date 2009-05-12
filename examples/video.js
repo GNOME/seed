@@ -3,8 +3,8 @@ Gtk = imports.gi.Gtk;
 Gst = imports.gi.Gst;
 GstVideo = imports.gi.GstVideo;
 
-Gtk.init(null, null);
-Gst.init(null, null);
+Gtk.init(Seed.argv);
+Gst.init(Seed.argv);
 
 pipeline = new Gst.Pipeline({name: "VideoTest"});
 

@@ -4,7 +4,7 @@ Gdk = imports.gi.Gdk;
 Gtk = imports.gi.Gtk;
 GLib = imports.gi.GLib;
 
-Gtk.init(null, null);
+Gtk.init(Seed.argv);
 
 var calc_val = "";
 

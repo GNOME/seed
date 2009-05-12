@@ -3,7 +3,7 @@ Gtk = imports.gi.Gtk;
 Gio = imports.gi.Gio;
 Notify = imports.gi.Notify;
 
-Gtk.init(null, null);
+Gtk.init(Seed.argv);
 
 function file_changed(monitor, child, other, event){
     var notification =

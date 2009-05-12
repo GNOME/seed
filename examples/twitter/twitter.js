@@ -13,7 +13,7 @@ GLib = imports.gi.GLib;
 Pretty = imports.pretty;
 
 // Initialize GTK+
-Gtk.init(null, null);
+Gtk.init(Seed.argv);
 
 // Create the main application window and set the title
 var window = new Gtk.Window({"title": "Twitter Search", "border-width": 5});

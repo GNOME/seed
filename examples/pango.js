@@ -9,8 +9,8 @@ GtkClutter = imports.gi.GtkClutter;
 Pango = imports.gi.Pango;
 PangoFT2 = imports.gi.PangoFT2;
 
-Gtk.init(null, null);
-GtkClutter.init(null, null);
+Gtk.init(Seed.argv);
+GtkClutter.init(Seed.argv);
 
 PangoWidget = new GType({
 	parent: Clutter.Text.type,

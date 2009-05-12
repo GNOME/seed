@@ -1,7 +1,7 @@
 #!/usr/bin/env seed
 GConf = imports.gi.GConf;
 
-GConf.init(null, null);
+GConf.init(Seed.argv);
 
 // client = new GConf.Client() makes GConf segfault, don't think it's our fault.
 client = GConf.Client.get_default();

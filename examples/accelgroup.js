@@ -3,7 +3,7 @@
 Gtk = imports.gi.Gtk;
 Gdk = imports.gi.Gdk;
 
-Gtk.init(null, null);
+Gtk.init(Seed.argv);
 
 var w = new Gtk.Window();
 w.signal.hide.connect(Gtk.main_quit);

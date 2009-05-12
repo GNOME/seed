@@ -2,7 +2,7 @@
 imports.gi.versions.Clutter = "0.8";
 Clutter = imports.gi.Clutter;
 
-Clutter.init(null, null);
+Clutter.init(Seed.argv);
 
 colors = [	"blanched almond",
 		"OldLace",
