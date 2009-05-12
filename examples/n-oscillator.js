@@ -19,10 +19,10 @@ OscillatorWidget = new GType({
 					 GObject.ParamFlags.READABLE |
 					 GObject.ParamFlags.WRITABLE);
 		
-		var ps = GObject.param_spec_int("frequency",
-										"Oscillator Frequency",
-										"The frequency of the audiotestsrc.",
-										0, 3000, 1000, flags);
+		var ps = GObject.param_spec_float("frequency",
+										  "Oscillator Frequency",
+										  "The frequency of the audiotestsrc.",
+										  0, 3000, 1000, flags);
 		
 		klass.c_install_property(ps);
 	},
@@ -67,7 +67,7 @@ OscillatorWidget = new GType({
 		audiosrc.freq = frequency_slider.adjustment.value = this.frequency;
 		
 		volume_slider.adjustment.upper = 10;
-		volume_slider.adjustment.value = 1;
+		volume_slider.adjustment.value = 0.5;
 		volume.volume = 0;
 		
 		pipeline.add(audiosrc);
