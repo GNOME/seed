@@ -247,7 +247,7 @@ seed_xml_node_init (SeedContext ctx,
 		    SeedObject object)
 {
   xmlNodePtr node = XML_NODE_PRIV (object);
-  if (node->doc->_private)
+  if (node && node->doc->_private)
     seed_value_protect (ctx, node->doc->_private);
 }
 
@@ -255,6 +255,8 @@ static void
 seed_xml_node_finalize (SeedObject object)
 {
   xmlNodePtr node = XML_NODE_PRIV (object);
+  if (!node)
+    return;
   node->_private = NULL;
   // This might be invalid.
   if (node->doc->_private)
@@ -470,7 +472,13 @@ seed_libxml_define_stuff ()
   seed_create_function (eng->context, "parseFile", 
 			(SeedFunctionCallback) seed_xml_parse_file,
 			namespace_ref);
-  
+
+  node_proto = seed_object_get_prototype (eng->context,
+					  seed_make_object (eng->context, 
+							    xml_node_class, 
+							    NULL));
+  seed_make_object (eng->context, xml_node_class, NULL);
+  seed_object_set_property (eng->context, namespace_ref, "_nodeProto", node_proto);
   seed_simple_evaluate (eng->context, "imports.extensions.xml", NULL);
 }
 
@@ -479,6 +487,7 @@ seed_module_init(SeedEngine *local_eng)
 {
   eng = local_eng;
   namespace_ref = seed_make_object (eng->context, NULL, NULL);
+  seed_value_protect (eng->context, namespace_ref);
   
   seed_libxml_define_stuff();
 
