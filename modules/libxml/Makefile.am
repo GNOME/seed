@@ -21,6 +21,9 @@ liblibxml_la_LDFLAGS = \
 	$(GOBJECT_INTROSPECTION_LDFLAGS) \
 	$(SEED_PROFILE_LIBS)
 
+extensionsdir=$(datadir)/seed/extensions
+extensions_DATA=xml.js
+
 endif
 
 

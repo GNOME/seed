@@ -429,6 +429,8 @@ static void
 seed_libxml_define_stuff ()
 {
   SeedObject xpath_constructor;
+  SeedObject node_proto;
+
   seed_class_definition xml_doc_class_def = seed_empty_class;
   seed_class_definition xml_node_class_def = seed_empty_class;
   seed_class_definition xml_attr_class_def = seed_empty_class;
@@ -469,6 +471,7 @@ seed_libxml_define_stuff ()
 			(SeedFunctionCallback) seed_xml_parse_file,
 			namespace_ref);
   
+  seed_simple_evaluate (eng->context, "imports.extensions.xml", NULL);
 }
 
 SeedObject
