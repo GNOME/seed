@@ -302,7 +302,7 @@ seed_xml_construct_xpath_context (SeedContext ctx,
   xmlDocPtr doc;
   
   doc = XML_DOC_PRIV (this_object);
-  xpath = xmlXPathNewContext (arguments[0]);
+  xpath = xmlXPathNewContext (doc);
   
   return seed_make_object (ctx, xml_xpath_class, xpath);
 }
@@ -320,6 +320,45 @@ seed_xml_xpathobj_finalize (SeedObject object)
   xmlXPathObjectPtr xpath = XML_XPATHOBJ_PRIV (object);
   xmlXPathFreeObject (xpath);
 }
+
+static SeedValue
+seed_xml_array_from_nodeset (SeedContext ctx,
+			     xmlNodeSetPtr nodeset,
+			     SeedException *exception)
+{
+  SeedValue *ary = g_alloca (nodeset->nodeNr * sizeof (SeedValue));
+  int i;
+
+  for (i = 0; i < nodeset->nodeNr; i++)
+    {
+      ary[i] = seed_make_xml_node (ctx, nodeset->nodeTab[i]);
+    }
+  return seed_make_array (ctx, ary, nodeset->nodeNr, exception);
+}
+
+static SeedValue
+seed_xml_xpathobj_get_value (SeedContext ctx,
+			     SeedObject object,
+			     SeedString property_name,
+			     SeedException *exception)
+{
+  xmlXPathObjectPtr xpath = XML_XPATHOBJ_PRIV (object);
+
+  switch (xpath->type)
+    {
+/*    case XPATH_BOOLEAN:
+      return seed_value_from_boolean (ctx, xpath->boolval, exception);
+    case XPATH_NUMBER:
+      return seed_value_from_double (ctx, xpath->floatval, exception);
+    case XPATH_STRING:
+    return seed_value_from_string (ctx, xpath->stringval, exception);*/
+    case XPATH_NODESET:
+      return seed_xml_array_from_nodeset (ctx, xpath->nodesetval, exception);
+    default:
+      return seed_make_null (ctx);
+    }
+}
+
 
 seed_static_function doc_funcs[] = {
   {"xpathNewContext", seed_xml_construct_xpath_context, 0}
@@ -377,6 +416,11 @@ seed_static_function xpath_funcs[] = {
   {0, 0, 0}
 };
 
+seed_static_value xpathobj_values[] = {
+  {"value", seed_xml_xpathobj_get_value, 0, 0},
+  {0, 0, 0, 0}
+};
+
 static void
 seed_libxml_define_stuff ()
 {
@@ -414,6 +458,7 @@ seed_libxml_define_stuff ()
   
   xml_xpathobj_class_def.class_name = "XMLXPathObj";
   xml_xpathobj_class_def.finalize = seed_xml_xpathobj_finalize;
+  xml_xpathobj_class_def.static_values = xpathobj_values;
   xml_xpathobj_class = seed_create_class (&xml_xpathobj_class_def);
   
   seed_create_function (eng->context, "parseFile", 
