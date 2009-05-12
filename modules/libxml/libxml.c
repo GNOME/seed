@@ -261,7 +261,36 @@ seed_xml_node_finalize (SeedObject object)
     seed_value_unprotect (eng->context, node->doc->_private);
 }
 
-static SeedObject
+static SeedValue
+seed_xml_xpath_eval (SeedContext ctx,
+		     SeedObject function,
+		     SeedObject this_object,
+		     gsize argument_count,
+		     const SeedValue arguments[],
+		     SeedException * exception)
+{
+  xmlXPathObjectPtr xpath_obj;
+  xmlXPathContextPtr xpath_ctx;
+  gchar *xpath;
+  
+  xpath_ctx = XML_XPATH_PRIV (this_object);
+  
+  if (argument_count != 1)
+    {
+      seed_make_exception (ctx, exception, 
+			   "ArgumentError",
+			   "xpathEval expected 1 argument, got %d",
+			   argument_count);
+      return seed_make_null (ctx);
+    }
+  xpath = seed_value_to_string (ctx, arguments[0], exception);
+  xpath_obj = xmlXPathEval (xpath, xpath_ctx);
+  g_free (xpath);
+  
+  return seed_make_object (ctx, xml_xpathobj_class, xpath_obj);
+}
+
+static SeedValue
 seed_xml_construct_xpath_context (SeedContext ctx,
 				  SeedObject function,
 				  SeedObject this_object,
@@ -272,19 +301,7 @@ seed_xml_construct_xpath_context (SeedContext ctx,
   xmlXPathContextPtr xpath;
   xmlDocPtr doc;
   
-  if (argument_count != 1)
-    {
-      seed_make_exception (ctx, exception, "ArgumentError", "XPathContext constructor expects"
-			   "1 argument, got %d", argument_count);
-      return seed_make_null (ctx);
-    }
-  if (!seed_value_is_object (ctx, arguments[0]))
-    {
-      seed_make_exception (ctx, exception, "ArgumentError", "XPathContext constructor expects"
-			   " XMLDocument object as argument");
-      return seed_make_null (ctx);
-    }
-  doc = XML_DOC_PRIV (arguments[0]);
+  doc = XML_DOC_PRIV (this_object);
   xpath = xmlXPathNewContext (arguments[0]);
   
   return seed_make_object (ctx, xml_xpath_class, xpath);
@@ -305,7 +322,7 @@ seed_xml_xpathobj_finalize (SeedObject object)
 }
 
 seed_static_function doc_funcs[] = {
-  {0, 0, 0}
+  {"xpathNewContext", seed_xml_construct_xpath_context, 0}
 };
 
 seed_static_value doc_values[] = {
@@ -355,6 +372,11 @@ seed_static_value attr_values[] = {
   {0, 0, 0, 0}
 };
 
+seed_static_function xpath_funcs[] = {
+  {"xpathEval", seed_xml_xpath_eval, 0},
+  {0, 0, 0}
+};
+
 static void
 seed_libxml_define_stuff ()
 {
@@ -387,6 +409,7 @@ seed_libxml_define_stuff ()
   
   xml_xpath_class_def.class_name = "XMLXPathContext";
   xml_xpath_class_def.finalize = seed_xml_xpath_finalize;
+  xml_xpath_class_def.static_functions = xpath_funcs;
   xml_xpath_class = seed_create_class (&xml_xpath_class_def);
   
   xml_xpathobj_class_def.class_name = "XMLXPathObj";
@@ -397,9 +420,6 @@ seed_libxml_define_stuff ()
 			(SeedFunctionCallback) seed_xml_parse_file,
 			namespace_ref);
   
-  seed_create_function (eng->context, "xpathNewContext",
-			(SeedFunctionCallback) seed_xml_construct_xpath_context,
-			namespace_ref);
 }
 
 SeedObject
