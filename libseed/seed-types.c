@@ -23,6 +23,7 @@ JSClassRef gobject_class;
 JSClassRef gobject_method_class;
 JSClassRef gobject_constructor_class;
 JSClassRef seed_callback_class;
+JSClassRef gobject_init_method_class;
 SeedEngine *eng;
 
 static gboolean

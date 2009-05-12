@@ -40,7 +40,7 @@ function alpha_func(alpha){
 					(time-=(2.625/2.75))*time+0.984375);
 }
 
-Clutter.init(null, null);
+Clutter.init(Seed.argv);
 
 var template = new Clutter.EffectTemplate.for_duration(RIPPLE_S, alpha_func);
 

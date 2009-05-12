@@ -267,6 +267,55 @@ seed_gobject_method_finalize (JSObjectRef method)
     g_base_info_unref (info);
 }
 
+typedef void (*InitMethodCallback) (gint *argc, gchar ***argv);
+
+static JSValueRef
+seed_gobject_init_method_invoked (JSContextRef ctx,
+				  JSObjectRef function,
+				  JSObjectRef this_object,
+				  size_t argumentCount,
+				  const JSValueRef arguments[],
+				  JSValueRef * exception)
+{
+  GIBaseInfo *info;
+  GTypelib *typelib;
+  InitMethodCallback c;
+  SeedArgvPrivates *priv;
+  if (argumentCount != 1 && argumentCount != 2)
+    {
+      seed_make_exception (ctx, exception, 
+			   "ArgumentError", "init method expects 1 argument, got %d", 
+			   argumentCount);
+      return JSValueMakeUndefined (ctx);
+    }
+
+  // TODO: In future support all arrays.Through a seperate code path.
+  if (!argumentCount == 2)
+    {
+      if (JSValueIsNull (ctx, arguments[0]) || !JSValueIsObject (ctx, arguments[0]) ||
+	  !JSValueIsObjectOfClass (ctx, arguments[0], seed_argv_class))
+	{
+	  seed_make_exception (ctx, exception,
+			       "ArgumentError", "init method expects an argv object as argument");
+	}
+    }
+  
+  info = JSObjectGetPrivate (function);
+  typelib = g_base_info_get_typelib (info);
+  g_typelib_symbol (typelib, g_function_info_get_symbol ((GIFunctionInfo *)info), (gpointer *)&c);
+  // Backwards compatibility
+  if (argumentCount == 2)
+    {
+      c(NULL, NULL);
+      return JSValueMakeUndefined (ctx);
+    }
+
+  priv = JSObjectGetPrivate ((JSObjectRef)arguments[0]);
+  c(&priv->argc, &priv->argv);
+    
+  return JSValueMakeUndefined (ctx);
+}
+
 static JSValueRef
 seed_gobject_method_invoked (JSContextRef ctx,
 			     JSObjectRef function,
@@ -973,6 +1022,26 @@ JSClassDefinition gobject_method_def = {
   NULL				/* Convert To Type */
 };
 
+JSClassDefinition gobject_init_method_def = {
+  0,				/* Version, always 0 */
+  0,
+  "init_method",		/* Class Name */
+  NULL,				/* Parent Class */
+  NULL,				/* Static Values */
+  NULL,				/* Static Functions */
+  NULL,
+  seed_gobject_method_finalize,	/* Finalize */
+  NULL,				/* Has Property */
+  NULL,				/* Get Property */
+  NULL,				/* Set Property */
+  NULL,				/* Delete Property */
+  NULL,				/* Get Property Names */
+  seed_gobject_init_method_invoked,	/* Call As Function */
+  NULL,				/* Call As Constructor */
+  NULL,				/* Has Instance */
+  NULL				/* Convert To Type */
+};
+
 JSClassDefinition seed_callback_def = {
   0,				/* Version, always 0 */
   0,
@@ -1244,6 +1313,8 @@ seed_init (gint * argc, gchar *** argv)
   JSClassRetain (seed_callback_class);
   seed_struct_constructor_class = JSClassCreate (&struct_constructor_def);
   JSClassRetain (seed_struct_constructor_class);
+  gobject_init_method_class = JSClassCreate (&gobject_init_method_def);
+  JSClassRetain (gobject_init_method_class);
 
   g_type_set_qdata (G_TYPE_OBJECT, qname, gobject_class);
 
@@ -1327,6 +1398,8 @@ seed_init_with_context_group (gint * argc,
   JSClassRetain (seed_callback_class);
   seed_struct_constructor_class = JSClassCreate (&struct_constructor_def);
   JSClassRetain (seed_struct_constructor_class);
+  gobject_init_method_class = JSClassCreate (&gobject_init_method_def);
+  JSClassRetain (gobject_init_method_class);
 
   g_type_set_qdata (G_TYPE_OBJECT, qname, gobject_class);
 

@@ -421,10 +421,6 @@ seed_breakpoint (JSContextRef ctx,
   return JSValueMakeNull(ctx);
 }
 
-typedef struct _SeedArgvPrivates {
-  gchar ** argv;
-  gint argc;
-} SeedArgvPrivates;
 
 static JSValueRef
 seed_argv_get_property (JSContextRef ctx,

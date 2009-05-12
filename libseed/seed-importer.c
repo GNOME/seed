@@ -62,9 +62,17 @@ seed_gi_importer_handle_function (JSContextRef ctx,
 				  GIFunctionInfo *info,
 				  JSValueRef *exception)
 {
-  seed_gobject_define_property_from_function_info (ctx, (GIFunctionInfo *) info,
-						   namespace_ref, FALSE);
-  g_base_info_ref ((GIBaseInfo *) info);
+  if (strcmp(g_base_info_get_name ((GIBaseInfo *)info), "init"))
+    seed_gobject_define_property_from_function_info (ctx, (GIFunctionInfo *) info,
+						     namespace_ref, FALSE);
+  else
+    {
+      JSObjectRef init_method;
+      
+      init_method = JSObjectMake(ctx, gobject_init_method_class, 
+				 g_base_info_ref ((GIBaseInfo *)info));
+      seed_object_set_property (ctx, namespace_ref, "init", init_method);
+    }
 }
 
 /*

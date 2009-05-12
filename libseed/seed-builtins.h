@@ -26,4 +26,11 @@
 
 void seed_init_builtins (SeedEngine * local_eng, gint * argc, gchar *** argv);
 
+extern JSClassRef seed_argv_class;
+typedef struct _SeedArgvPrivates {
+  gchar ** argv;
+  gint argc;
+} SeedArgvPrivates;
+
+
 #endif
