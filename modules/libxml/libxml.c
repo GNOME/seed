@@ -7,8 +7,10 @@
 
 SeedObject namespace_ref;
 SeedEngine *eng;
+
 SeedClass xml_doc_class;
 SeedClass xml_node_class;
+SeedClass xml_attr_class;
 
 #define XML_DOC_PRIV(obj) ((xmlDocPtr)seed_object_get_private(obj))
 #define XML_NODE_PRIV(obj) ((xmlNodePtr)seed_object_get_private(obj))
@@ -36,6 +38,20 @@ seed_make_xml_node (SeedContext ctx,
     return (SeedObject) node->_private;
   ret = seed_make_object (ctx, xml_node_class, node);
   node->_private = ret;
+  return ret;
+}
+
+static SeedObject
+seed_make_xml_attr (SeedContext ctx,
+		    xmlAttrPtr attr)
+{
+ SeedObject ret;
+  if (attr == NULL)
+    return seed_make_null (ctx);
+  if (attr->_private)
+    return (SeedObject) attr->_private;
+  ret = seed_make_object (ctx, xml_attr_class, attr);
+  attr->_private = ret;
   return ret;
 }
 
@@ -208,6 +224,18 @@ seed_xml_node_get_type (SeedContext ctx,
 				 seed_xml_element_type_to_string 
 				 (node->type), exception);
 }
+
+static SeedValue
+seed_xml_node_get_properties (SeedContext ctx,
+			      SeedObject object,
+			      SeedString property_name,
+			      SeedException *exception)
+{
+  xmlNodePtr node = XML_NODE_PRIV (object);
+  
+  return seed_make_xml_attr (ctx, node->properties);
+}
+
 static void
 seed_xml_node_init (SeedContext ctx,
 		    SeedObject object)
@@ -241,6 +269,7 @@ seed_static_value doc_values[] = {
   {"last", seed_xml_node_get_last, 0, 0},
   {"doc", seed_xml_node_get_doc, 0, 0},
   {"type", seed_xml_node_get_type, 0, 0},
+  {"properties", seed_xml_node_get_properties, 0, 0},
   {0, 0, 0, 0}
 };
 
@@ -261,11 +290,30 @@ seed_static_value node_values[] = {
   {0, 0, 0, 0}
 };
 
+seed_static_function attr_funcs[] = {
+  {0, 0, 0}
+};
+
+seed_static_value attr_values[] = {
+  {"name", seed_xml_node_get_name, 0, 0},
+  {"children", seed_xml_node_get_children, 0, 0},
+  {"parent", seed_xml_node_get_parent, 0, 0},
+  {"next", seed_xml_node_get_next, 0, 0},
+  {"prev", seed_xml_node_get_prev, 0, 0},
+  {"last", seed_xml_node_get_last, 0, 0},
+  {"doc", seed_xml_node_get_doc, 0, 0},
+  {"type", seed_xml_node_get_type, 0, 0},
+  {0, 0, 0, 0}
+};
+
+
+
 static void
 seed_libxml_define_stuff ()
 {
   seed_class_definition xml_doc_class_def = seed_empty_class;
   seed_class_definition xml_node_class_def = seed_empty_class;
+  seed_class_definition xml_attr_class_def = seed_empty_class;
 
   xml_doc_class_def.class_name="XMLDocument";
   xml_doc_class_def.static_functions = doc_funcs;
@@ -279,6 +327,13 @@ seed_libxml_define_stuff ()
   xml_node_class_def.finalize = seed_xml_node_finalize;
   xml_node_class_def.initialize = seed_xml_node_init;
   xml_node_class = seed_create_class (&xml_node_class_def);
+
+  xml_attr_class_def.class_name="XMLAttribute";
+  xml_attr_class_def.static_functions = attr_funcs;
+  xml_attr_class_def.static_values = attr_values;
+  xml_attr_class_def.finalize = seed_xml_node_finalize;
+  xml_attr_class_def.initialize = seed_xml_node_init;
+  xml_attr_class = seed_create_class (&xml_attr_class_def);
   
   seed_create_function (eng->context, "parseFile", 
 			(SeedFunctionCallback) seed_xml_parse_file,
