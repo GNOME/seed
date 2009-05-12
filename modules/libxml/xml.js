@@ -10,3 +10,12 @@ xml._nodeProto.getElementsByTagName = function(name){
     }
     return ret;
 }
+
+xml._nodeProto.getAttribute = function(name){
+    properties = this.properties;
+    while (properties){
+	if (properties.name == name)
+	    return properties.children.content;
+    }
+    return null;
+}
