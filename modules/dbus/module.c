@@ -67,9 +67,11 @@ bus_check (SeedContext ctx, DBusBusType bus_type, SeedException * exception)
 static DBusMessage *
 prepare_call (SeedContext ctx,
 	      SeedObject obj,
+	      SeedObject arg_array,
 	      guint argc,
 	      const SeedValue * argv,
-	      DBusBusType bus_type, SeedException * exception)
+	      DBusBusType bus_type, 
+	      SeedException * exception)
 {
   DBusMessage *message;
   const char *bus_name;
@@ -141,7 +143,7 @@ prepare_call (SeedContext ctx,
     dbus_signature_iter_init (&sig_iter, "a{sv}");
 
   if (!seed_js_values_to_dbus
-      (ctx, 0, argv[8], &arg_iter, &sig_iter, exception))
+      (ctx, 0, arg_array, &arg_iter, &sig_iter, exception))
     {
       //  big_debug(BIG_DEBUG_JS_DBUS, "Failed to marshal call from JS to dbus");
       dbus_message_unref (message);
@@ -320,7 +322,7 @@ seed_js_dbus_call_async (SeedContext ctx,
   bus_type = get_bus_type_from_object (ctx, this_object, exception);
 
   message =
-    prepare_call (ctx, this_object, argument_count, arguments, bus_type,
+	  prepare_call (ctx, this_object, arguments[8], argument_count, arguments, bus_type,
 		  exception);
 
   if (message == NULL)
@@ -849,7 +851,7 @@ seed_js_dbus_call(SeedContext ctx,
 
     bus_type = get_bus_type_from_object (ctx, this_object, exception);
 
-    message = prepare_call(ctx, this_object, argument_count, arguments, bus_type, exception);
+    message = prepare_call(ctx, this_object, arguments[7], argument_count, arguments, bus_type, exception);
 
     bus_connection = DBUS_CONNECTION_FROM_TYPE(bus_type);
 

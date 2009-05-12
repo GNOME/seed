@@ -94,6 +94,38 @@ function _proxyInvoker(obj, ifaceName, methodName, outSignature, inSignature, ti
                             replyFunc);
 }
 
+function _proxyInvokerSync(obj, ifaceName, methodName, outSignature, inSignature, timeout, arg_array) {
+    if (ifaceName == null)
+        ifaceName = obj._dbusInterface;
+
+    /* Convert arg_array to a *real* array */
+    arg_array = Array.prototype.slice.call(arg_array);
+
+    var expectedNumberArgs = this.signatureLength(inSignature);
+
+    if (arg_array.length < expectedNumberArgs) {
+        throw new Error("Not enough arguments passed for method: " + methodName +
+                       ". Expected " + expectedNumberArgs + ", got " + arg_array.length);
+    } else if (arg_array.length > expectedNumberArgs) {
+        throw new Error("Too many arguments passed for method: " + methodName +
+                       ". Maximum is " + expectedNumberArgs);
+    }
+
+    /* Auto-start on method calls is too unpredictable; in particular if
+     * something crashes we want to cleanly restart it, not have it
+     * come back next time someone tries to use it.
+     */
+    return obj._dbusBus.call(obj._dbusBusName,
+			     obj._dbusPath,
+			     ifaceName,
+			     methodName,
+			     outSignature,
+			     inSignature,
+			     NO_START_IF_NOT_FOUND,
+			     arg_array);
+
+}
+
 function _logReply(result, exc) {
     if (result != null) {
         log("Ignored reply to dbus method: " + result.toSource());
@@ -118,6 +150,24 @@ function _makeProxyMethod(member) {
         _proxyInvoker(this, null, member.name,
                       member.outSignature, member.inSignature,
                       member.timeout, arguments);
+    };
+}
+
+function _makeProxyMethodSync(member) {
+    return function() {
+        /* JSON methods are the default */
+        if (!("outSignature" in member))
+            member.outSignature = "a{sv}";
+
+        if (!("inSignature" in member))
+            member.inSignature = "a{sv}";
+
+        if (!("timeout" in member))
+            member.timeout = -1;
+
+        return _proxyInvokerSync(this, null, member.name,
+				 member.outSignature, member.inSignature,
+				 member.timeout, arguments);
     };
 }
 
@@ -240,6 +290,7 @@ function proxifyPrototype(proto, iface) {
              */
             var methodName = method.name + "Remote";
             proto[methodName] = _makeProxyMethod(method);
+	    proto[methodName+"Sync"] = _makeProxyMethodSync(method);
             proto[method.name] = function() {
                 log("PROXY-ERROR: " + method.name + " called, you should be using " +
                     methodName + " instead");
