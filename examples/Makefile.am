@@ -1,13 +1,13 @@
 SUBDIRS = \
+    browser \
     clutter-shader \
     clutter-transitions \
     glib \
-    browser \
     opengl \
-    twitter \
-    turtle \
     pong \
-    same-seed
+    same-seed \
+    turtle \
+    twitter
 
 repldir = $(datadir)/seed
 repl_DATA = repl.js
@@ -15,73 +15,77 @@ repl_DATA = repl.js
 if BUILD_SEED_EXAMPLES
 examplesdir=$(datadir)/doc/seed/examples
 examples_DATA = \
-    actions.js \
-    Gnio.js \
-    dbus-banshee.js \
-    gdkpixbufloader.js \
-    gtktreeview.js \
-    gtktextview.js \
-    pango-fontset.js \
-    async-quine.js \
-    clutter-cogl.js \
-    Gnio-server.js \
-    clutter-cairo.js \
-    threaded-repl.js \
-    dbus-consolekit.js \
-    clutter-pad.js \
-    gtkplug.js \
-    calculator.js \
-    gconf.js \
-    video.js \
     accelgroup.js \
+    actions.js \
+    async-quine.js \
+    calculator.js \
     clutter-0.8.js \
     clutter-0.9.js \
-    poppler.js \
+    clutter-cairo.js \
+    clutter-cogl-0.8.js \
+    clutter-cogl-0.9.js \
+    clutter-pad.js \
+    dbus-banshee.js \
+    dbus-consolekit.js \
+    gconf.js \
+    gdkpixbufloader.js \
+    Gnio.js \
+    Gnio-server.js \
+    gtkplug.js \
+    gtktextview.js \
+    gtktreeview.js \
     json-packing.js \
+    json-reddit.js \
     ls.js \
     n-oscillator.js \
     notify-test.js \
+    pango-fontset.js \
+    pango.js \
+    poppler.js \
     quine.js \
     repl.js \
     soup.js \
-    vte-test.js \
     threaded-repl.js \
-    json-reddit.js \
+    threaded-repl.js \
+    video.js \
+    vte-test.js \
     HACKING
 endif
 
 EXTRA_DIST = \
-    COPYING \
-    actions.js \
-    dbus-banshee.js \
-    clutter-cogl.js \
-    gtktreeview.js \
-    gdkpixbufloader.js \
-    calculator.js \
-    clutter-cairo.js \
-    async-quine.js \
-    gconf.js \
-    gtktextview.js \
-    clutter-pad.js \
-    video.js \
     accelgroup.js \
-    Gnio.js \
-    Gnio-server.js \
-    pango-fontset.js \
+    actions.js \
+    async-quine.js \
+    calculator.js \
     clutter-0.8.js \
     clutter-0.9.js \
-    poppler.js \
-    json-packing.js \
+    clutter-cairo.js \
+    clutter-cogl-0.8.js \
+    clutter-cogl-0.9.js \
+    clutter-pad.js \
+    COPYING \
+    dbus-banshee.js \
+    dbus-consolekit.js \
+    gconf.js \
+    gdkpixbufloader.js \
+    Gnio.js \
+    Gnio-server.js \
     gtkplug.js \
+    gtktextview.js \
+    gtktreeview.js \
+    json-packing.js \
+    json-reddit.js \
     ls.js \
     n-oscillator.js \
     notify-test.js \
+    pango-fontset.js \
+    pango.js \
+    poppler.js \
     quine.js \
     repl.js \
     soup.js \
-    vte-test.js \
     threaded-repl.js \
-    json-reddit.js \
-    dbus-consolekit.js \
+    video.js \
+    vte-test.js \
     HACKING
 
