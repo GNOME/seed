@@ -44,7 +44,13 @@ manager = new ConsoleKitManager();
 manager.GetCurrentSessionRemote(
     function(result, exception){
 	session = new ConsoleKitSession(result);
-	Seed.print (session.IsLocalRemoteSync());
+	session.IsLocalRemote (function (result){
+	    if (result)
+		Seed.print ("Session is local");
+	    else
+		Seed.print ("Session is remote");
+	    Seed.quit();
+	});
     });
 
 mainloop = GLib.main_loop_new();
