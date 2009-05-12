@@ -304,6 +304,8 @@ seed_xml_construct_xpath_context (SeedContext ctx,
   doc = XML_DOC_PRIV (this_object);
   xpath = xmlXPathNewContext (doc);
   
+  seed_value_protect (ctx, this_object);
+  
   return seed_make_object (ctx, xml_xpath_class, xpath);
 }
 
@@ -311,6 +313,8 @@ static void
 seed_xml_xpath_finalize (SeedObject object)
 {
   xmlXPathContextPtr xpath = XML_XPATH_PRIV (object);
+  // Maybe unsafe. Seems to work.
+  seed_value_unprotect (eng->context, xpath->doc->_private);
   xmlXPathFreeContext (xpath);
 }
 
