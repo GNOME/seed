@@ -181,6 +181,21 @@ AC_ARG_ENABLE(os-module,
 AM_CONDITIONAL(BUILD_OS_MODULE, test "x$want_os_module" = "xyes")
 AC_SUBST(BUILD_OS_MODULE)
 
+dnl ==== libxml ====
+AC_ARG_ENABLE(libxml-module,
+			  AC_HELP_STRING([--enable-libxml-module],
+							 [enable the libxml Seed module. [default=yes]]),
+			  [want_libxml_module=$enableval],[want_libxml_module="yes"])
+
+if test x"$want_libxml_module" == x"yes" ; then
+   PKG_CHECK_MODULES(LIBXML, libxml-2.0)
+   AC_SUBST(LIBXML_CFLAGS)
+   AC_SUBST(LIBXML_LDFLAGS)
+fi
+
+AM_CONDITIONAL(BUILD_LIBXML_MODULE, test "x$want_libxml_module" = "xyes")
+AC_SUBST(BUILD_LIBXML_MODULE)
+
 
 dnl =========================turtle example====================================
 AC_ARG_ENABLE(turtle-example,
@@ -322,6 +337,7 @@ modules/Multiprocessing/Makefile
 modules/sandbox/Makefile
 modules/os/Makefile
 modules/dbus/Makefile
+modules/libxml/Makefile
 ])
 AC_OUTPUT
 
@@ -342,6 +358,8 @@ Modules:
    multiprocessing............$want_multiprocessing_module
    readline...................$want_readline_module
    SQLite.....................$want_sqlite_module
+   DBus.......................$want_dbus_module
+   libxml.....................$want_libxml_module
 
 Examples:
    Turtle.....................$want_turtle_example

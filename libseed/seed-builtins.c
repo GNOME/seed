@@ -105,7 +105,7 @@ seed_include (JSContextRef ctx,
   g_free (import_file);
   g_free (walk);
 
-  return JSValueMakeNull (ctx);
+  return JSValueMakeUndefined (ctx);
 }
 
 static JSValueRef
@@ -222,7 +222,7 @@ seed_print (JSContextRef ctx,
   puts (buf);
   g_free (buf);
 
-  return JSValueMakeNull (ctx);
+  return JSValueMakeUndefined (ctx);
 }
 
 const gchar *
@@ -418,7 +418,7 @@ seed_breakpoint (JSContextRef ctx,
 		 const JSValueRef arguments[], JSValueRef * exception)
 {
   G_BREAKPOINT();
-  return JSValueMakeNull(ctx);
+  return JSValueMakeUndefined (ctx);
 }
 
 
