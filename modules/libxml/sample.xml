@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
-<story>
+<story attribute="test">
   <storyinfo>
     <author>John Fleck</author>
     <datewritten>June 2, 2002</datewritten>
-    <keyword>example keyword</keyword>
+    <keyword example="yes">example keyword</keyword>
   </storyinfo>
   <body>
     <headline>This is the headline</headline>

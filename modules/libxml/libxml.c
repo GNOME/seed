@@ -269,7 +269,6 @@ seed_static_value doc_values[] = {
   {"last", seed_xml_node_get_last, 0, 0},
   {"doc", seed_xml_node_get_doc, 0, 0},
   {"type", seed_xml_node_get_type, 0, 0},
-  {"properties", seed_xml_node_get_properties, 0, 0},
   {0, 0, 0, 0}
 };
 
@@ -287,6 +286,7 @@ seed_static_value node_values[] = {
   {"last", seed_xml_node_get_last, 0, 0},
   {"doc", seed_xml_node_get_doc, 0, 0},
   {"type", seed_xml_node_get_type, 0, 0},
+  {"properties", seed_xml_node_get_properties, 0, 0},
   {0, 0, 0, 0}
 };
 
