@@ -645,3 +645,9 @@ seed_object_copy_property_names(JSContextRef ctx,
   
   return ret;  
 }
+
+JSObjectRef
+seed_object_get_prototype (JSContextRef ctx, JSObjectRef obj)
+{
+  return (JSObjectRef) JSObjectGetPrototype (ctx, obj);
+}

@@ -408,5 +408,8 @@ seed_closure_invoke_with_context (SeedContext ctx, GClosure *closure, SeedValue 
 void
 seed_closure_warn_exception (GClosure *c, SeedContext ctx, SeedException exception);
 
+SeedObject
+seed_object_get_prototype (SeedContext ctx, SeedObject obj);
+
 
 #endif
