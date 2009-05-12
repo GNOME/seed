@@ -71,30 +71,6 @@ seed_xml_parse_file (SeedContext ctx,
 }
 
 static SeedValue
-seed_xml_node_make_child_array (SeedContext ctx,
-				xmlNodePtr node,
-				SeedException exception)
-{
-  SeedValue ret;
-  xmlNodePtr child;
-  GArray *a;
-  
-  child = node->xmlChildrenNode;
-
-  a = g_array_new (FALSE, FALSE, sizeof (SeedValue));
-  while (child != NULL) {
-    SeedObject jsnode = seed_make_xml_node (ctx, child);
-    g_array_append_val (a, jsnode);
-    
-    child = child->next;
-  }
-  ret = seed_make_array (ctx, (SeedValue)a->data, a->len, exception);
-  g_array_free (a, TRUE);
-  
-  return ret;
-}
-
-static SeedValue
 seed_xml_doc_get_root (SeedContext ctx,
 		       SeedObject object,
 		       SeedString property_name,
@@ -112,9 +88,9 @@ seed_xml_doc_get_children (SeedContext ctx,
 {
   xmlDocPtr doc = XML_DOC_PRIV (object);
  
-  return seed_xml_node_make_child_array (ctx, 
-					 xmlDocGetRootElement (doc), 
-					 exception);
+  return seed_make_xml_node (ctx, 
+			     xmlDocGetRootElement (doc)->children);
+
 }
 
 
@@ -143,9 +119,8 @@ seed_xml_node_get_children (SeedContext ctx,
 {
   xmlNodePtr node = XML_NODE_PRIV (object);
  
-  return seed_xml_node_make_child_array (ctx, 
-					 node,
-					 exception);
+  return seed_make_xml_node (ctx, node->children);
+
 }
 
 static SeedValue
