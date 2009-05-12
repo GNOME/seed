@@ -6,7 +6,7 @@
 
 Gtk = imports.gi.Gtk;
 
-Gtk.init(null, null);
+Gtk.init(Seed.argv);
 
 w = new Gtk.Window();
 

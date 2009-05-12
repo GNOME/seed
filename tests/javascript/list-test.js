@@ -6,7 +6,7 @@
 
 Gtk = imports.gi.Gtk;
 
-Gtk.init(null, null);
+Gtk.init(Seed.argv);
 
 b1 = new Gtk.Button();
 b2 = new Gtk.Button();

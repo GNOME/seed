@@ -5,7 +5,7 @@
 // STDERR:\n\*\* \(seed:[0-9]+\): WARNING \*\*: Exception in closure .*
 
 Gtk = imports.gi.Gtk;
-Gtk.init(null, null);
+Gtk.init(Seed.argv);
 
 w = new Gtk.Window();
 

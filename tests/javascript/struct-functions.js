@@ -6,6 +6,6 @@
 
 Seed.import_namespace("GConf");
 
-GConf.init(null, null);
+GConf.init(Seed.argv);
 
 client = GConf.Client.get_default();

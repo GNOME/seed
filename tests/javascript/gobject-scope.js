@@ -6,7 +6,7 @@
 
 Gtk = imports.gi.Gtk;
 
-Gtk.init(null, null);
+Gtk.init(Seed.argv);
 
 for(var i = 0; i < 100; i++)
 {

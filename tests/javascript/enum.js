@@ -5,7 +5,7 @@
 // STDERR:
  
 Gtk = imports.gi.Gtk;
-Gtk.init(null, null);
+Gtk.init(Seed.argv);
 
 b = new Gtk.Button();
 b.relief = Gtk.ReliefStyle.NONE;

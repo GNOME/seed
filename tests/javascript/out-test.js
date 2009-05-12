@@ -5,7 +5,7 @@
 // STDERR:
 
 Gtk = imports.gi.Gtk;
-Gtk.init(null, null);
+Gtk.init(Seed.argv);
 
 w = new Gtk.Window({width_request: 5, height_request: 100});
 o1 = { };

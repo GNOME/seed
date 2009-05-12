@@ -5,7 +5,7 @@
 // STDERR:
 
 Gtk = imports.gi.Gtk;
-Gtk.init(null, null);
+Gtk.init(Seed.argv);
 
 window = new Gtk.Window();
 window.title="HI";

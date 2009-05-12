@@ -5,7 +5,7 @@
 // STDERR:\n\*\* \(seed:[0-9]+\): WARNING \*\*: Exception in closure marshal\. Line 12 in .*\/native-closure-exception\.js: ReferenceError Can't find variable: a
 
 Gtk = imports.gi.Gtk;
-Gtk.init(null, null);
+Gtk.init(Seed.argv);
 
 w = new Gtk.Window();
 vbox = new Gtk.VBox();

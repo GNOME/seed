@@ -6,7 +6,7 @@
 
 Gtk = imports.gi.Gtk;
 Gdk = imports.gi.Gdk;
-Gtk.init(null, null);
+Gtk.init(Seed.argv);
 
 function paint(wdg, evt)
 {

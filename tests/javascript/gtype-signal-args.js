@@ -6,7 +6,7 @@
 
 Gtk = imports.gi.Gtk;
 GObject = imports.gi.GObject;
-Gtk.init(null, null);
+Gtk.init(Seed.argv);
 
 HelloWindow = new GType({
     parent: Gtk.Window.type,
