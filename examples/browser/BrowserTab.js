@@ -19,7 +19,7 @@ BrowserTab = new GType({
                                  GObject.ParamFlags.READABLE |
                                      GObject.ParamFlags.WRITABLE));*/
     },
-    init: function (klass)
+    init: function ()
     {
         // Private
         var toolbar = new BrowserToolbar.BrowserToolbar();

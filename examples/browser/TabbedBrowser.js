@@ -8,7 +8,7 @@ BrowserTab = imports.BrowserTab;
 TabbedBrowser = new GType({
     parent: Gtk.Notebook.type,
     name: "TabbedBrowser",
-    init: function (klass)
+    init: function ()
     {
         // Public
         this.close_tab = function (tab)

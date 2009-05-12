@@ -15,7 +15,7 @@ GtkClutter.init(Seed.argv);
 PangoWidget = new GType({
 	parent: Clutter.Text.type,
 	name: "PangoWidget",
-	init: function(klass)
+	init: function()
 	{
 		// Private
 		
@@ -52,7 +52,7 @@ PangoWidget = new GType({
 ContainerWidget = new GType({
 	parent: GtkClutter.Embed.type,
 	name: "ContainerWidget",
-	init: function(klass)
+	init: function()
 	{
 		
 	}
@@ -61,7 +61,7 @@ ContainerWidget = new GType({
 /*FontSelector = new GType({
 	parent: Gtk.ComboBox.type,
 	name: "FontSelector",
-	init: function(klass)
+	init: function()
 	{
 		var font_list = [];
 		var context = new Pango.Context();
@@ -90,7 +90,7 @@ ContainerWidget = new GType({
 PropertyEditor = new GType({
 	parent: Gtk.HBox.type,
 	name: "PropertyEditor",
-	init: function(klass)
+	init: function()
 	{
 		// Private
 		var text = new Gtk.Entry();

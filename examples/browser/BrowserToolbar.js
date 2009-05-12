@@ -5,7 +5,7 @@ BrowserSettings = imports.BrowserSettings;
 BrowserToolbar = new GType({
     parent: Gtk.HBox.type,
     name: "BrowserToolbar",
-    init: function (klass)
+    init: function ()
     {
         // Private
         var url_bar = new Gtk.Entry();

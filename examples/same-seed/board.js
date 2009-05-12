@@ -1,7 +1,7 @@
 Board = new GType({
 	parent: Clutter.Group.type,
 	name: "Board",
-	init: function(klass)
+	init: function()
 	{
 		// Private
 		var lights = [], all_lights = [];

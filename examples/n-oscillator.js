@@ -26,7 +26,7 @@ OscillatorWidget = new GType({
 		
 		klass.c_install_property(ps);
 	},
-	init: function(klass)
+	init: function()
 	{
 		// Private
 		

@@ -4,7 +4,7 @@ WebKit = imports.gi.WebKit;
 BrowserStatusbar = new GType({
     parent: Gtk.Statusbar.type,
     name: "BrowserStatusbar",
-    init: function (klass)
+    init: function ()
     {
         // Private
         var transient_status_group = this.get_context_id("transient");

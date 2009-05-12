@@ -12,7 +12,7 @@ var winning_animation = 1;
 Paddle = new GType({
 	parent: Clutter.Group.type,
 	name: "Paddle",
-	init: function(klass)
+	init: function()
 	{
 		// Private
 		var velocity = 0;
@@ -110,7 +110,7 @@ Paddle = new GType({
 AIPaddle = new GType({
 	parent: Paddle.type,
 	name: "AIPaddle",
-	init: function(klass)
+	init: function()
 	{
 		// Public
 		this.update_velocity = function ()
@@ -135,7 +135,7 @@ AIPaddle = new GType({
 Ball = new GType({
 	parent: Clutter.Group.type,
 	name: "Ball",
-	init: function(klass)
+	init: function()
 	{
 		// Private
 		var v_x = -2;

@@ -13,7 +13,7 @@ var colors = [load_svg("blue.svg"), load_svg("green.svg"),
 Light = new GType({
 	parent: Clutter.Group.type,
 	name: "Light",
-	init: function(klass)
+	init: function()
 	{
 		// Private
 		var closed = false;

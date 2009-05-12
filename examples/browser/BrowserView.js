@@ -6,7 +6,7 @@ TabbedBrowser = imports.TabbedBrowser;
 BrowserView = new GType({
     parent: WebKit.WebView.type,
     name: "BrowserView",
-    init: function (klass)
+    init: function ()
     {
         // Private
         var tab;

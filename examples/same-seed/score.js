@@ -1,7 +1,7 @@
 Score = new GType({
 	parent: Clutter.Group.type,
 	name: "Score",
-	init: function(klass)
+	init: function()
 	{
 		// Private
 		var label;
