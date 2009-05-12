@@ -208,12 +208,23 @@ seed_xml_node_get_type (SeedContext ctx,
 				 seed_xml_element_type_to_string 
 				 (node->type), exception);
 }
+static void
+seed_xml_node_init (SeedContext ctx,
+		    SeedObject object)
+{
+  xmlNodePtr node = XML_NODE_PRIV (object);
+  if (node->doc->_private)
+    seed_value_protect (ctx, node->doc->_private);
+}
 
 static void
 seed_xml_node_finalize (SeedObject object)
 {
   xmlNodePtr node = XML_NODE_PRIV (object);
   node->_private = NULL;
+  // This might be invalid.
+  if (node->doc->_private)
+    seed_value_unprotect (eng->context, node->doc->_private);
 }
 
 seed_static_function doc_funcs[] = {
@@ -266,6 +277,7 @@ seed_libxml_define_stuff ()
   xml_node_class_def.static_functions = node_funcs;
   xml_node_class_def.static_values = node_values;
   xml_node_class_def.finalize = seed_xml_node_finalize;
+  xml_node_class_def.initialize = seed_xml_node_init;
   xml_node_class = seed_create_class (&xml_node_class_def);
   
   seed_create_function (eng->context, "parseFile", 
