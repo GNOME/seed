@@ -26,6 +26,9 @@ opengl/
 	- Examples which use OpenGL-GLib. Includes the classic GLUT teapot, a Seed
 	  port of glxgears, and a simple colored triangle.
 
+pong/
+	- An incomplete implementation of Pong in Clutter.
+
 same-seed/
 	- An in-progress Clutter port of Same Gnome. Makes heavy use of the new 
 	  Clutter 0.9 API, which is signficantly different from our older examples,
@@ -49,18 +52,24 @@ clutter-cairo.js: Draws into a Clutter context using our Canvas extension.
 clutter-cogl.js: Draw ripples from the mouse, using Clutter's COGL library.
 clutter-0.[8,9].js: Clutter, implementing custom Clutter animations, using 
                     Clutter effects (animations in 0.9), ClutterColor.
+clutter-pad.js: A scratchpad for Seed+Clutter scripts, using GtkSourceView.
+dbus-banshee.js: Plays the song specified as an argument in Banshee, over DBUS.
+dbus-consolekit.js: Queries ConsoleKit over DBUS to determine if the invoking
+                    session is either local or remote.
 gconf.js: Getting a key out of gconf.
 gdkpixbufloader.js: Uses async network Gio to show a large picture from NASA.
 Gnio.js: Simple use of Gnio, performs an HTTP request.
 Gnio-server.js: Uses Gnio to run a cowsay server.
 gtkplug.js: Use of GtkPlug, to embed one process' GtkLabel in another's window.
+gtktextview.js: Demonstrates a simple use of the GtkTextView widget.
 gtktreeview.js: A quick example of using GtkTreeView from Seed.
-introspect.js: Introspecting GObject methods (useful at REPL for example).
 json-packing.js: Simple example of using JSON for Gtk packing.
 json-reddit.js: Loads Reddit JSON feed, prints out top stories.
 ls.js: A simple 'ls' implementation utilizing Gio, and Seed.argv.
-n-oscillator.js: gstreamer, Gtk.VScale
+n-oscillator.js: GStreamer, Gtk.VScale
 notify-test.js: Demonstrates use of both libnotify and Gio file monitoring.
+pango-fontset.js: Lists all of the fonts available to Pango.
+pango.js: Quick manipulation of many Pango properties; Pango+Clutter.
 poppler.js: GtkDrawingArea, GtkToolbar, Poppler for rendering pdfs. GDK/Cairo.
 quine.js: Gio.simple_read (added in extensions/Gio.js)
 repl.js: Exceptions, Readline.
