@@ -1,5 +1,7 @@
 if BUILD_DBUS_MODULE
 
+EXTRA_DIST = dbus2js.py
+
 moduledir = $(datadir)/seed
 module_DATA = dbus.js lang.js
 
