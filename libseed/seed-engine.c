@@ -284,7 +284,7 @@ seed_gobject_init_method_invoked (JSContextRef ctx,
   if (argumentCount != 1 && argumentCount != 2)
     {
       seed_make_exception (ctx, exception, 
-			   "ArgumentError", "init method expects 1 argument, got %d", 
+			   "ArgumentError", "init method expects 1 argument, got %zd", 
 			   argumentCount);
       return JSValueMakeUndefined (ctx);
     }
