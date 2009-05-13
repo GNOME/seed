@@ -7,10 +7,8 @@ Clutter = imports.gi.Clutter;
 Gtk = imports.gi.Gtk;
 GtkSource = imports.gi.GtkSource;
 GtkClutter = imports.gi.GtkClutter;
-GLib = imports.gi.GLib;
 sandbox = imports.sandbox;
 Gio = imports.gi.Gio;
-GObject = imports.gi.GObject;
 
 Gtk.init(Seed.argv);
 GtkClutter.init(Seed.argv);
