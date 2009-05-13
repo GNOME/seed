@@ -15,7 +15,21 @@ Gio = imports.gi.Gio;
 Gtk.init(Seed.argv);
 GtkClutter.init(Seed.argv);
 
-var current_filename = "";
+var gb = new Gtk.Builder();
+gb.add_from_file("clutter-pad.ui");
+
+var window = gb.get_object("window");
+var clutter = gb.get_object("clutter");
+var stage = clutter.get_stage();
+
+stage.color = {red:255, alpha: 255};
+
+window.resize(800, 600);
+window.show_all();
+
+Gtk.main();
+
+/*var current_filename = "";
 var stage, gtkstage = null;
 var stage_manager = Clutter.StageManager.get_default();
 
@@ -236,4 +250,4 @@ new_file();
 
 window.show_all();
 
-Gtk.main();
+Gtk.main();*/
