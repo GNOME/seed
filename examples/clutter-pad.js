@@ -66,6 +66,11 @@ function new_file()
 	
 	// TODO: cleanse the stage (or make a new one!) each time around...
 	
+	var children = stage.get_children();
+				
+	for(var id in children)
+		stage.remove_actor(children[id]);
+	
 	//if(gtkstage)
 		//pane.remove(gtkstage);
 	
