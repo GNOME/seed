@@ -17,42 +17,6 @@ seed
 <!-- ##### SECTION Stability_Level ##### -->
 
 
-<!-- ##### TYPEDEF SeedClass ##### -->
-<para>
-
-</para>
-
-
-<!-- ##### ENUM SeedType ##### -->
-<para>
-
-</para>
-
-@SEED_TYPE_UNDEFINED: 
-@SEED_TYPE_NULL: 
-@SEED_TYPE_BOOLEAN: 
-@SEED_TYPE_NUMBER: 
-@SEED_TYPE_STRING: 
-@SEED_TYPE_OBJECT: 
-
-<!-- ##### ENUM SeedPropertyAttributes ##### -->
-<para>
-
-</para>
-
-@SEED_PROPERTY_ATTRIBUTE_NONE: 
-@SEED_PROPERTY_ATTRIBUTE_READ_ONLY: 
-@SEED_PROPERTY_ATTRIBUTE_DONT_ENUM: 
-@SEED_PROPERTY_ATTRIBUTE_DONT_DELETE: 
-
-<!-- ##### ENUM SeedClassAttributes ##### -->
-<para>
-
-</para>
-
-@SEED_CLASS_ATTRIBUTE_NONE: 
-@SEED_CLASS_ATTRIBUTE_NO_SHARED_PROTOTYPE: 
-
 <!-- ##### FUNCTION seed_init ##### -->
 <para>
 
@@ -78,60 +42,6 @@ seed
 </para>
 
 @eng: 
-@Returns: 
-
-
-<!-- ##### TYPEDEF SeedContext ##### -->
-<para>
-
-</para>
-
-
-<!-- ##### TYPEDEF SeedGlobalContext ##### -->
-<para>
-
-</para>
-
-
-<!-- ##### TYPEDEF SeedContextGroup ##### -->
-<para>
-
-</para>
-
-
-<!-- ##### FUNCTION seed_context_create ##### -->
-<para>
-
-</para>
-
-@group: 
-@global_class: 
-@Returns: 
-
-
-<!-- ##### FUNCTION seed_context_ref ##### -->
-<para>
-
-</para>
-
-@ctx: 
-@Returns: 
-
-
-<!-- ##### FUNCTION seed_context_unref ##### -->
-<para>
-
-</para>
-
-@ctx: 
-
-
-<!-- ##### FUNCTION seed_context_get_global_object ##### -->
-<para>
-
-</para>
-
-@ctx: 
 @Returns: 
 
 
