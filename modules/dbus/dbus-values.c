@@ -56,6 +56,8 @@ seed_js_one_value_from_dbus (SeedContext ctx,
               dbus_message_iter_next (&struct_iter);
               index++;
 	  }
+        seed_object_set_property (ctx, obj, "length",
+                                  seed_value_from_int (ctx, index, exception));
 	*value_p = (SeedValue) obj;
       }
       break;
@@ -156,6 +158,9 @@ seed_js_one_value_from_dbus (SeedContext ctx,
 		dbus_message_iter_next (&array_iter);
 		index++;
 	      }
+            seed_object_set_property (ctx, obj, "length",
+                                      seed_value_from_int (ctx, 
+                                                           index, exception));
 	    *value_p = (SeedValue) obj;
 	  }
       }
