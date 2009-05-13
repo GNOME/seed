@@ -191,11 +191,6 @@ PropertyEditor = new GType({
 	}
 });
 
-function update_font()
-{
-    //current_actor.font_name = font_list[properties.font_combo.get_active()] + " " + parseFloat(properties.size_entry.text,10);
-}
-
 function clear_selected(stg, evt)
 {
     if(stg.equals(stage.get_actor_at_pos(evt.button.x, evt.button.y)))
@@ -213,80 +208,6 @@ function clear_selected(stg, evt)
 	
 	return false;
 }
-
-/*
-function select_actor(actor)
-{
-    timeline.rewind();
-    
-    if(current_actor)
-        current_actor.opacity = 255;
-    
-    current_actor = actor;
-    
-    if(!current_actor)
-    {
-        // defaults
-        properties.text.text = "";
-        properties.font_combo.set_active(font_list.indexOf("DejaVu Sans"));
-        return;
-    }
-    
-    properties.text.text = actor.text;
-    var pfd = Pango.Font.description_from_string(actor.get_font_name());
-
-    properties.size_entry.text = pfd.to_string().match(new RegExp("[0-9]+$"),"");
-    properties.font_combo.set_active(font_list.indexOf(pfd.to_string().replace(new RegExp(" [0-9]+$"),"")));
-}
-
-function mouse_click(actor, evt)
-{
-	dx = evt.mouse.x - actor.x;
-	dy = evt.mouse.y - actor.y;
-	
-	select_actor(actor);
-
-	dragging = true;
-	
-	return true;
-}
-
-function mouse_release()
-{
-    dragging = false;
-    
-    return false;
-}
-
-function mouse_moved(win, evt)
-{
-    if(!dragging)
-        return false;
-    
-    current_actor.x = evt.mouse.x - dx;
-    current_actor.y = evt.mouse.y - dy;
-    
-    return false;
-}
-
-function pango_actor(label, font)
-{
-    this.label = new Clutter.Text({text:label, font_name:font});
-    this.label.reactive = true;
-    this.label.signal.button_press_event.connect(mouse_click);
-    
-    stage.add_actor(this.label);
-}
-
-function pulser()
-{
-    timeline = new Clutter.Timeline({fps:30, num_frames:628, loop:true});
-
-    timeline.signal.new_frame.connect(function(timeline, frame_num)
-	{ current_actor.opacity = ((Math.sin(frame_num/7)+1) * 67) + 120; });
-
-    timeline.start();
-}*/
 
 function ui_setup()
 {
