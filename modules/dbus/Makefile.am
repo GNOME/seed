@@ -1,5 +1,7 @@
 if BUILD_DBUS_MODULE
 
+SUBDIRS = util
+
 EXTRA_DIST = dbus2js.py \
 			 dbus.js \
 			 dbus-values.h \
