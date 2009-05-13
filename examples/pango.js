@@ -9,6 +9,7 @@ GtkClutter = imports.gi.GtkClutter;
 Pango = imports.gi.Pango;
 PangoFT2 = imports.gi.PangoFT2;
 GObject = imports.gi.GObject;
+Gdk = imports.gi.Gdk;
 
 Gtk.init(Seed.argv);
 GtkClutter.init(Seed.argv);
@@ -27,6 +28,12 @@ PangoWidget = new GType({
 		
 		var widget_clicked = function (actor, event)
 		{
+			if(event.button.click_count > 1)
+			{
+				actor.editable = true;
+				return true;
+			}
+			
 			dx = event.button.x - actor.x;
 			dy = event.button.y - actor.y;
 			dragging = true;
@@ -57,6 +64,8 @@ PangoWidget = new GType({
 		
 		this.set_selected = function (selected)
 		{
+			this.editable = false;
+			
 			if(selected)
 			{
 				var children = stage.get_children();
@@ -95,6 +104,7 @@ PangoWidget = new GType({
 		this.signal.button_press_event.connect(widget_clicked);
 		this.signal.button_release_event.connect(widget_unclicked);
 		this.signal.motion_event.connect(widget_dragged);
+		this.color = {red: 0, green: 0, blue: 0, alpha: 255};
 	}
 });
 
@@ -106,10 +116,10 @@ PropertyEditor = new GType({
 		// Private
 		
 		var loading = false;
-		var text = new Gtk.Entry();
 		var new_button = new Gtk.ToolButton({stock_id:"gtk-add"});
 		var font_combo = new Gtk.ComboBox.text();
 		var size_scale = new Gtk.HScale();
+		var color_button = new Gtk.ColorButton();
 		
 		var add_widget = function ()
 		{
@@ -148,18 +158,31 @@ PropertyEditor = new GType({
 		{
 			if(!actor)
 			{
-				text.text = "";
+				size_scale.sensitive = font_combo.sensitive = color_button.sensitive = false;
+			
+			
 				size_scale.set_value(8);
 				font_combo.set_active(font_list.indexOf("DejaVu Sans"));
+				color_button.color = {red: 0, green: 0, blue: 0};
+				
 				return;
 			}
 			
+			size_scale.sensitive = font_combo.sensitive = color_button.sensitive = true;
+			
 			loading = true;
 			
-			text.text = actor.text;
+			var aclr = new Clutter.Color();
+			actor.get_color(aclr);
+			
+			var clr = new Gdk.Color();
+			clr.red = (aclr.red / 255) * 65535;
+			clr.green = (aclr.green / 255) * 65535;
+			clr.blue = (aclr.blue / 255) * 65535;
+			
+			color_button.set_color(clr);
 			
 			var pfd = Pango.Font.description_from_string(actor.get_font_name());
-			
 			size_scale.set_value(parseFloat(pfd.to_string().match(new RegExp("[0-9\.]+$"),""), 10));
 			font_combo.set_active(font_list.indexOf(pfd.to_string().replace(new RegExp(" [0-9\.]+$"),"")));
 			
@@ -171,14 +194,21 @@ PropertyEditor = new GType({
 			if(loading || !selected_actor)
 				return;
 			
-			selected_actor.text = text.text;
 			selected_actor.font_name = font_list[font_combo.get_active()] + " " + size_scale.get_value();
+			
+			var clr = new Gdk.Color();
+			color_button.get_color(clr);
+
+			selected_actor.color = {red: (255*clr.red) / 65535,
+									green: (255*clr.green) / 65535,
+									blue: (255*clr.blue) / 65535,
+									alpha: 255};
 		};
 		
-		text.signal.changed.connect(this.commit_to_selected_actor);
 		new_button.signal.clicked.connect(add_widget);
 		font_combo.signal.changed.connect(this.commit_to_selected_actor);
 		size_scale.signal.value_changed.connect(this.commit_to_selected_actor);
+		color_button.signal.color_set.connect(this.commit_to_selected_actor);
 
 		// Implementation
 		
@@ -189,8 +219,9 @@ PropertyEditor = new GType({
 		size_scale.set_draw_value(false);
 		
 		populate_font_selector(font_combo);
+		this.load_from_actor(null);
 		
-		this.pack_start(text, true, true);
+		this.pack_start(color_button);
 		this.pack_start(font_combo);
 		this.pack_start(size_scale, true, true);
 		this.pack_start(new_button);
