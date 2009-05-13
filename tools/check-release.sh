@@ -23,7 +23,7 @@ cd ..
 rm -rf /tmp/seed
 
 tar -xzf "seed-$version.tar.gz"
-diff -rq seed-svn "seed-$version" | grep -v "Common subdirectories" | grep -v "Only in seed-0.5" | grep -v "Files .* differ" | grep -v ".git*" | grep -v ".cvs*" | grep -v "autogen.sh" | grep -v "debian" | grep -v "MAINTAINERS" | grep -v "OPEN_QUESTIONS" | grep -v "tools" | less
+diff -rq seed-svn "seed-$version" | grep -v "Common subdirectories" | grep -v "Only in seed-$version" | grep -v "Files .* differ" | grep -v ".git*" | grep -v ".cvs*" | grep -v "autogen.sh" | grep -v "debian" | grep -v "MAINTAINERS" | grep -v "OPEN_QUESTIONS" | grep -v "tools" | less
 
 echo "Attempting to build and test..."
 
