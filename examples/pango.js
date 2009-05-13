@@ -17,6 +17,8 @@ GtkClutter.init(Seed.argv);
 var font_list = [];
 selected_actor = null;
 
+// The PangoActor Clutter widget provides a draggable, in-place editable 
+// text widget which provides evidence of its selection by pulsing.
 PangoActor = new GType({
 	parent: Clutter.Text.type,
 	name: "PangoActor",
@@ -28,6 +30,7 @@ PangoActor = new GType({
 		
 		var actor_clicked = function (actor, event)
 		{
+			// A double click allows the user to edit the text
 			if(event.button.click_count > 1)
 			{
 				actor.editable = true;
@@ -39,6 +42,7 @@ PangoActor = new GType({
 			dragging = true;
 	
 			actor.set_selected(true);
+			
 			return false;
 		};
 		
@@ -64,17 +68,16 @@ PangoActor = new GType({
 		
 		this.set_selected = function (selected)
 		{
-			this.editable = false;
-			
 			if(selected)
 			{
 				var children = stage.get_children();
 				
+				// Deselect all actors (except ourself)
 				for(var id in children)
-				{
-					children[id].set_selected(false);
-				}
+					if(children[id] != this)
+						children[id].set_selected(false);
 				
+				// Start a pulsing effect to indicate that this actor is selected
 				this.timeline = new Clutter.Timeline({fps:30, num_frames:628, loop:true});
 				this.timeline.signal.new_frame.connect(function(timeline, frame_num, ud)
 				{
@@ -83,6 +86,7 @@ PangoActor = new GType({
 			
 				this.timeline.start();
 				
+				// Raise selected actor to the top in z-order
 				stage.raise_child(this, null);
 				
 				selected_actor = this;
@@ -92,8 +96,10 @@ PangoActor = new GType({
 			{
 				if(this.timeline)
 				{
+					// Stop the pulsing effect
 					this.timeline.stop();
 					this.opacity = 255;
+					this.editable = false;
 				}
 			}
 		};
@@ -109,6 +115,8 @@ PangoActor = new GType({
 	}
 });
 
+// The PropertyEditor Gtk widget provides adjustments for various properties
+// related to the currently selected PangoActor.
 PropertyEditor = new GType({
 	parent: Gtk.HBox.type,
 	name: "PropertyEditor",
@@ -128,7 +136,7 @@ PropertyEditor = new GType({
 		
 		var add_actor = function ()
 		{
-			stage.add_actor(new PangoActor({text: "New Text...",
+			stage.add_actor(new PangoActor({text: "Play with me!",
     								 font_name: "DejaVu Sans 24"}));
     		stage.show_all();
 		};
@@ -150,6 +158,8 @@ PropertyEditor = new GType({
 		
 		var populate_font_selector = function (combo_box)
 		{
+			// List all of the fonts available to Pango, and populate the
+			// font selection combo box with their names. 
 			var context = new Pango.Context();
 			var description = new Pango.FontDescription.c_new();
 			description.set_family("");
@@ -167,43 +177,42 @@ PropertyEditor = new GType({
 			font_list = font_list.sort();
 	
 			for(var i in font_list)
-			{
 				combo_box.append_text(font_list[i]);
-			}
 		}
 		
 		// Public
 		
 		this.load_from_actor = function (actor)
 		{
+			// If there is no selection, reset everything to defaults and 
+			// prevent the user from editing the properties.
 			if(!actor)
 			{
 				delete_button.sensitive = size_scale.sensitive =
 					font_combo.sensitive = color_button.sensitive = false;
 			
 			
-				size_scale.set_value(8);
-				font_combo.set_active(font_list.indexOf("DejaVu Sans"));
+				size_scale.set_value(0);
+				font_combo.set_active(-1);
 				color_button.color = {red: 0, green: 0, blue: 0};
 				
 				return;
 			}
 			
+			// Make all of the properties editable
 			delete_button.sensitive = size_scale.sensitive =
 				font_combo.sensitive = color_button.sensitive = true;
 			
 			loading = true;
 			
+			// Convert the actor's ClutterColor to a GdkColor
 			var aclr = new Clutter.Color();
 			actor.get_color(aclr);
+			color_button.set_color({red: (aclr.red / 255) * 65535,
+									green: (aclr.green / 255) * 65535,
+									blue: (aclr.blue / 255) * 65535});
 			
-			var clr = new Gdk.Color();
-			clr.red = (aclr.red / 255) * 65535;
-			clr.green = (aclr.green / 255) * 65535;
-			clr.blue = (aclr.blue / 255) * 65535;
-			
-			color_button.set_color(clr);
-			
+			// Parse and display the actor's font face and size
 			var pfd = Pango.Font.description_from_string(actor.get_font_name());
 			size_scale.set_value(parseFloat(pfd.to_string().match(new RegExp("[0-9\.]+$"),""), 10));
 			font_combo.set_active(font_list.indexOf(pfd.to_string().replace(new RegExp(" [0-9\.]+$"),"")));
@@ -216,16 +225,22 @@ PropertyEditor = new GType({
 			if(loading || !selected_actor)
 				return;
 			
-			selected_actor.font_name = font_list[font_combo.get_active()] + " " + size_scale.get_value();
+			// Combine the selected font face and size, apply them to the actor
+			selected_actor.font_name = font_list[font_combo.get_active()] +
+									   " " + size_scale.get_value();
 			
+			// Convert ColorButton's GdkColor to a ClutterColor for the actor
 			var clr = new Gdk.Color();
 			color_button.get_color(clr);
-
 			selected_actor.color = {red: (255*clr.red) / 65535,
 									green: (255*clr.green) / 65535,
 									blue: (255*clr.blue) / 65535,
 									alpha: 255};
 		};
+		
+		// Implementation
+
+		populate_font_selector(font_combo);
 		
 		new_button.signal.clicked.connect(add_actor);
 		delete_button.signal.clicked.connect(delete_actor);
@@ -233,8 +248,6 @@ PropertyEditor = new GType({
 		font_combo.signal.changed.connect(this.commit_to_selected_actor);
 		size_scale.signal.value_changed.connect(this.commit_to_selected_actor);
 		color_button.signal.color_set.connect(this.commit_to_selected_actor);
-
-		// Implementation
 		
 		size_scale.adjustment.lower = 8;
 		size_scale.adjustment.upper = 200;
@@ -242,74 +255,37 @@ PropertyEditor = new GType({
 		size_scale.set_digits(0);
 		size_scale.set_draw_value(false);
 		
-		populate_font_selector(font_combo);
-		this.load_from_actor(null);
-		
 		this.pack_start(color_button);
 		this.pack_start(font_combo);
 		this.pack_start(size_scale, true, true);
 		this.pack_start(delete_button);
 		this.pack_start(clear_button);
-		
 		this.pack_start(new_button);
+		
+		// Initially display default values and prevent editing of properties
+		this.load_from_actor(null);
 	}
 });
 
-function clear_selected(stg, evt)
+function clear_selected(actor, event)
 {
-    if(stg.equals(stage.get_actor_at_pos(evt.button.x, evt.button.y)))
-    {
-    	var children = stage.get_children();
-				
-		for(var id in children)
-		{
-			children[id].set_selected(false);
-		}
-	}
+	// If the stage is clicked, deselect all actors
+
+	var children = stage.get_children();
+			
+	for(var id in children)
+		children[id].set_selected(false);
 	
 	selected_actor = null;
 	properties.load_from_actor(null);
-	
+
 	return false;
-}
-
-function ui_setup()
-{
-    var window = new Gtk.Window();
-    window.signal.hide.connect(Gtk.main_quit);
-    
-    var gtkstage = new GtkClutter.Embed();
-
-    properties = new PropertyEditor();
-    
-    var vbox = new Gtk.VBox();
-    vbox.pack_start(gtkstage, true, true);
-    vbox.pack_start(properties);
-
-    window.resize(600, 600);
-    window.add(vbox);
-    window.show_all();
-    
-    return gtkstage;
-}
-
-function pangotest_init()
-{
-    stage = ui_setup().get_stage();
-    
-    stage.signal.button_press_event.connect(clear_selected);
-    
-    Clutter.set_motion_events_frequency(60);
-    
-    create_default_actors();
-
-    stage.show_all();
-
-    Gtk.main();
 }
 
 function create_default_actors()
 {
+	// Add a few initial actors to explain the operation of the program
+	
     stage.add_actor(new PangoActor({text: "Welcome to the wild world of Seed+Clutter+Pango!",
     								 font_name: "DejaVu Sans 16",
     								 x: 20, y: 200}));
@@ -340,4 +316,27 @@ function create_default_actors()
     								 color: {green: 255, alpha:255}}));
 }
 
-pangotest_init();
+var window = new Gtk.Window();
+window.signal.hide.connect(Gtk.main_quit);
+
+var gtkstage = new GtkClutter.Embed();
+var stage = gtkstage.get_stage();
+stage.signal.button_press_event.connect(clear_selected);
+
+var properties = new PropertyEditor();
+
+var vbox = new Gtk.VBox();
+vbox.pack_start(gtkstage, true, true);
+vbox.pack_start(properties);
+
+window.resize(600, 600);
+window.add(vbox);
+window.show_all();
+    
+// Ask Clutter to return motion events at 60Hz to help make dragging smoother
+Clutter.set_motion_events_frequency(60);
+
+create_default_actors();
+stage.show_all();
+
+Gtk.main();
