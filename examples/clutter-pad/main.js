@@ -13,8 +13,13 @@ Gio = imports.gi.Gio;
 Gtk.init(Seed.argv);
 GtkClutter.init(Seed.argv);
 
+var context;
+
 function reset_stage()
 {
+	context = new sandbox.Context();
+	context.add_globals();
+
 	var children = stage.get_children();
 				
 	for(var id in children)
@@ -150,8 +155,6 @@ var js_file_filter = new Gtk.FileFilter();
 js_file_filter.add_mime_type("text/javascript");
 var source_lang_mgr = new GtkSource.SourceLanguageManager();
 var js_lang = source_lang_mgr.get_language("js");
-var context = new sandbox.Context();
-context.add_globals();
 
 var ui = new Gtk.Builder();
 ui.add_from_file("clutter-pad.ui");
