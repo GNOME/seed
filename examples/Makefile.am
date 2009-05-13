@@ -1,5 +1,6 @@
 SUBDIRS = \
     browser \
+    clutter-pad-examples \
     clutter-shader \
     clutter-transitions \
     dbus \

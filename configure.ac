@@ -322,6 +322,7 @@ doc/tutorial-standalone/Makefile
 doc/reference/Makefile
 doc/mapping/Makefile
 examples/Makefile
+examples/clutter-pad-examples/Makefile
 examples/clutter-shader/Makefile
 examples/clutter-transitions/Makefile
 examples/glib/Makefile
