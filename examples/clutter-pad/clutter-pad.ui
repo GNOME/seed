@@ -59,7 +59,8 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkComboBox" id="example_chooser">
+                  <object class="GtkComboBox" id="example_selector">
+                    <property name="model">liststore1</property>
                     <property name="visible">True</property>
                   </object>
                   <packing>
@@ -129,5 +130,11 @@
         </child>
       </object>
     </child>
+  </object>
+  <object class="GtkListStore" id="liststore1">
+    <columns>
+      <!-- column-name str -->
+      <column type="gchararray"/>
+    </columns>
   </object>
 </interface>
