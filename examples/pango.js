@@ -105,6 +105,7 @@ PropertyEditor = new GType({
 	{
 		// Private
 		
+		var loading = false;
 		var text = new Gtk.Entry();
 		var new_button = new Gtk.ToolButton({stock_id:"gtk-add"});
 		var font_combo = new Gtk.ComboBox.text();
@@ -145,17 +146,33 @@ PropertyEditor = new GType({
 		
 		this.load_from_actor = function (actor)
 		{
+			loading = true;
+			
+			if(!actor)
+			{
+				text.text = "";
+				size_entry.text = "";
+				font_combo.set_active(font_list.indexOf("DejaVu Sans"));
+				return;
+			}
+			
 			text.text = actor.text;
 			
 			var pfd = Pango.Font.description_from_string(actor.get_font_name());
 
 			size_entry.text = pfd.to_string().match(new RegExp("[0-9]+$"),"");
 			font_combo.set_active(font_list.indexOf(pfd.to_string().replace(new RegExp(" [0-9]+$"),"")));
+			
+			loading = false;
 		};
 		
 		this.commit_to_selected_actor = function ()
 		{
+			if(loading)
+				return;
+			
 			selected_actor.text = text.text;
+			selected_actor.font_name = font_list[font_combo.get_active()] + " " + parseFloat(size_entry.text,10);
 		};
 		
 		text.signal.changed.connect(this.commit_to_selected_actor);
@@ -192,6 +209,7 @@ function clear_selected(stg, evt)
 	}
 	
 	selected_actor = null;
+	properties.load_from_actor(null);
 	
 	return false;
 }
