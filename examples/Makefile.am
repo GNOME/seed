@@ -63,8 +63,6 @@ EXTRA_DIST = \
     clutter-cogl-0.9.js \
     clutter-pad.js \
     COPYING \
-    dbus-banshee.js \
-    dbus-consolekit.js \
     gconf.js \
     gdkpixbufloader.js \
     Gnio.js \
