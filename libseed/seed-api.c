@@ -588,12 +588,28 @@ seed_signal_connect (JSContextRef ctx,
 			   NULL);
 }
 
+/**
+ * seed_context_get_global_objects:
+ * @ctx: A valid #SeedContext
+ *
+ * Return value: The global object for @ctx.
+ */
 JSObjectRef
 seed_context_get_global_object (JSGlobalContextRef ctx)
 {
   return JSContextGetGlobalObject(ctx);
 }
 
+
+/**
+ * seed_make_array:
+ * @ctx: A valid #SeedContext
+ * @elements: An array of #SeedValue's with which to populate the array.
+ * @num_elements: The number of values, in @elements
+ * @exception: A #SeedException in which to store an exception. Pass %NULL to ignore exceptions.
+ *
+ * Return value: A new array object, populated with @elements.
+ */
 
 JSObjectRef
 seed_make_array (JSContextRef ctx, 
@@ -604,12 +620,29 @@ seed_make_array (JSContextRef ctx,
   return JSObjectMakeArray (ctx, num_elements, elements, exception);
 }
 
+/**
+ * seed_make_undefined:
+ * @ctx: A valid #SeedContext
+ *
+ * Note that this function returns a valid SeedValue, 
+ * representing the undefined javascript value, and not an
+ * undefined SeedValue.
+ *
+ * Return value: A #SeedValue of the 'undefined' type.
+ */
 JSValueRef
 seed_make_undefined (JSContextRef ctx)
 {
   return JSValueMakeUndefined (ctx);
 }
 
+/**
+ * seed_value_get_type:
+ * @ctx: A valid #SeedContext
+ * @value: A #SeedValue
+ *
+ * Return value: The type of @value
+ */
 JSType
 seed_value_get_type (JSContextRef ctx,
 		     JSValueRef value)
@@ -617,6 +650,13 @@ seed_value_get_type (JSContextRef ctx,
   return JSValueGetType (ctx, value);
 }
 
+/**
+ * seed_object_copy_property_names:
+ * @ctx: A valid #SeedContext
+ * @object: An object from which to copy property names.
+ *
+ * Return value: A %NULL terminated array containing the property names of @object
+ */
 gchar **
 seed_object_copy_property_names(JSContextRef ctx,
 				JSObjectRef object)
@@ -646,6 +686,13 @@ seed_object_copy_property_names(JSContextRef ctx,
   return ret;  
 }
 
+/**
+ * seed_object_get_prototype:
+ * @ctx: A valid #SeedContext
+ * @obj: A #SeedObject
+ *
+ * Return value: The prototype of @obj.
+ */
 JSObjectRef
 seed_object_get_prototype (JSContextRef ctx, JSObjectRef obj)
 {
