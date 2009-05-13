@@ -96,6 +96,17 @@ seed_gobject_signal_connect_by_name (JSContextRef ctx,
       return JSValueMakeNull (ctx);
     }
 
+  if (JSValueIsNull (ctx, arguments[1]) || 
+      !JSValueIsObject (ctx, arguments[1]) || 
+      !JSObjectIsFunction (ctx, (JSObjectRef) arguments[1]))
+    {
+      seed_make_exception (ctx, exception, "ArgumentError",
+			   "Signal connection by name "
+			   "requires a function"
+			   " as second argument");
+      return JSValueMakeNull (ctx);
+    }
+
   if (argumentCount == 3)
     {
       user_data = (JSObjectRef) arguments[2];
@@ -287,6 +298,16 @@ seed_gobject_signal_connect_on_property (JSContextRef ctx,
 			   " 1, or 2 arguments. Got "
 			   "%zd", argumentCount);
 
+      return JSValueMakeNull (ctx);
+    }
+  
+  if (JSValueIsNull (ctx, arguments[0]) || 
+      !JSValueIsObject (ctx, arguments[0]) || 
+      !JSObjectIsFunction (ctx, (JSObjectRef) arguments[0]))
+    {
+      seed_make_exception (ctx, exception, "ArgumentError",
+			   "Signal connection requires a function"
+			   " as first argument");
       return JSValueMakeNull (ctx);
     }
 
