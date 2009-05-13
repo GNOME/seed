@@ -62,6 +62,8 @@ function new_file()
 {
 	current_filename = "";
 	
+	source_buf.text = "Clutter = imports.gi.Clutter;\nstage = Clutter.Stage.get_default();\n";
+	
 	// TODO: cleanse the stage (or make a new one!) each time around...
 	
 	//if(gtkstage)
