@@ -9,6 +9,7 @@ SUBDIRS = \
     pong \
     same-seed \
     turtle \
+    xml \
     twitter
 
 repldir = $(datadir)/seed
