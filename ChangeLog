@@ -1,24 +1,56 @@
-== Seed 0.5.5, Beatles for Sale ==
+== Seed 0.7, ?? (2009.05.13) ==
+
+ROBB: this is just a framework, from scanning through git log.
+
+* The REPL now supports multi-line entry.
+
+* Signal disconnection.
+
+* Significant Gtk-Doc reorganization.
+
+* New C modules:
+	* sandbox - provides sandboxed JavaScriptCore contexts.
+	* DBus - access to the DBus! (Robb, elaborate)
+	* libxml - XML parsing, XPath, etc.
+
+* Examples:
+	* New: ClutterPad (initially by Johan Euphrosine).
+	* New: dbus-banshee, dbus-consolekit, dbus-networkmanager
+	* Pango example has returned.
+	* Same Seed performance is increased significantly.
+	* Many examples now use "recent" style; some were completely rewritten
+
+== Seed 0.6, Beatles for Sale (2009.04.29) ==
+
 * Significant build fixes and cleanups. Should build on more distros
   with weird libffis now.
+
 * Depend on GObject-introspection from GIT.
+
 * Some API additions.
+
 * Reimplement Seed.import_namespace in terms of the new imports system,
   will be entirely deprecated for 0.6.
+
 * Improve memory management in signals and closures.
+
 * Rewrite the GType subclassing to avoid using FFI, 
   saves memory and improves performance.
+
 * GType "init" now means "constructor" and not "instance init".
+
 * Signal installation, is now handled by an array on the type definition
   rather than in class_init (which was clunky and C-like).
+
 * Lots of new documentation, including a documentation index, a description
   of the mapping from C to JavaScript, an example index, and updates to
   the rest of the documentation.
+
 * Significant cleanup of all of the examples, a lot of them had bit
   rotted a bit, being written months ago.
 	
  
-== Seed 0.5, Transformer (2009.02.xx) ==
+== Seed 0.5, Transformer (2009.04.16) ==
 
 * Many, many crash fixes.
 
