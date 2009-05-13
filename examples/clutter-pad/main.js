@@ -37,9 +37,12 @@ function load_file(filename)
 	execute_file();
 }
 
-function new_file()
+function new_file(button)
 {
 	reset_stage();
+	
+	if(button)
+		ui.get_object("example_selector").set_active(-1);
 	
 	window.title = "ClutterPad";
 	current_filename = "";
@@ -50,8 +53,8 @@ function open_file()
 {
 	file_chooser = ui.get_object("open_file_dialog");
 	file_chooser.set_filter(js_file_filter);
-
-	if(file_chooser.run())
+	
+	if(file_chooser.run() > 0)
 	{
 		load_file(file_chooser.get_filename());
 	}
@@ -66,7 +69,7 @@ function save_file(filename)
 		file_chooser = ui.get_object("save_file_dialog");
 		file_chooser.set_filter(js_file_filter);
 
-		if(file_chooser.run())
+		if(file_chooser.run() > 0)
 		{
 			current_filename = file_chooser.get_filename();
 			window.title = "ClutterPad - " + current_filename;
