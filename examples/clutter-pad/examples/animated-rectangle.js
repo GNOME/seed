@@ -1,7 +1,6 @@
 GObject = imports.gi.GObject;
 Clutter = imports.gi.Clutter;
 stage = Clutter.Stage.get_default();
-stage.color = {alpha: 255};
 
 rect = new Clutter.Rectangle();
 rect.color = {red: 255, alpha: 255};
