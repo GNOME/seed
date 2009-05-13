@@ -79,6 +79,12 @@ PangoActor = new GType({
 				for(var id in children)
 					if(children[id] != this)
 						children[id].set_selected(false);
+					else
+					{
+						if(this.timeline)
+							this.timeline.stop();
+						this.opacity = 255;
+					}
 				
 				// Start a pulsing effect to indicate that this actor is selected
 				this.timeline = new Clutter.Timeline({fps:30, num_frames:628, loop:true});
