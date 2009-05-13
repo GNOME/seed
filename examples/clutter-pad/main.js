@@ -37,16 +37,10 @@ function new_file()
 
 function open_file()
 {
-	var file_chooser = new Gtk.FileChooserDialog();
-	var file_filter = new Gtk.FileFilter();
-	
-	file_filter.add_mime_type("text/javascript");
-	file_chooser.set_filter(file_filter);
-	file_chooser.add_button(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL);
-	file_chooser.add_button(Gtk.STOCK_OPEN, Gtk.ResponseType.ACCEPT);
-	file_chooser.set_action(Gtk.FileChooserAction.OPEN);
+	file_chooser = ui.get_object("open_file_dialog");
+	file_chooser.set_filter(js_file_filter);
 
-	if(file_chooser.run() == Gtk.ResponseType.ACCEPT)
+	if(file_chooser.run())
 	{
 		load_file(file_chooser.get_filename());
 	}
@@ -58,16 +52,10 @@ function save_file(filename)
 {
 	if(current_filename == "")
 	{
-		var file_chooser = new Gtk.FileChooserDialog();
-		var file_filter = new Gtk.FileFilter();
-		
-		file_filter.add_mime_type("text/javascript");
-		file_chooser.set_filter(file_filter);
-		file_chooser.add_button(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL);
-		file_chooser.add_button(Gtk.STOCK_OPEN, Gtk.ResponseType.ACCEPT);
-		file_chooser.set_action(Gtk.FileChooserAction.SAVE);
+		file_chooser = ui.get_object("save_file_dialog");
+		file_chooser.set_filter(js_file_filter);
 
-		if(file_chooser.run() == Gtk.ResponseType.ACCEPT)
+		if(file_chooser.run())
 		{
 			current_filename = file_chooser.get_filename();
 			window.title = "ClutterPad - " + current_filename;
@@ -146,6 +134,8 @@ function execute_file(button)
 
 var current_filename = "";
 var stage_manager = Clutter.StageManager.get_default();
+var js_file_filter = new Gtk.FileFilter();
+js_file_filter.add_mime_type("text/javascript");
 var source_lang_mgr = new GtkSource.SourceLanguageManager();
 var js_lang = source_lang_mgr.get_language("js");
 var context = new sandbox.Context();
@@ -155,6 +145,8 @@ var ui = new Gtk.Builder();
 ui.add_from_file("clutter-pad.ui");
 
 var window = ui.get_object("window");
+window.signal.hide.connect(Gtk.main_quit);
+
 var clutter = ui.get_object("clutter");
 var stage = clutter.get_stage();
 stage_manager.set_default_stage(stage);
