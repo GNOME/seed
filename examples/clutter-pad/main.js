@@ -21,6 +21,7 @@ function reset_stage()
 		stage.remove_actor(children[id]);
 	
 	stage.color = {alpha: 255};
+	stage.show_cursor();
 }
 
 function load_file(filename)
@@ -101,8 +102,9 @@ function populate_example_selector(selector)
 	while((child = enumerator.next_file()))
 	{
 		var fname = child.get_name();
+		
 		if(fname.match(/\.js$/))
-			selector.append_text(child.get_name());
+			selector.append_text(fname);
 	}
 }
 
