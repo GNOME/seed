@@ -109,7 +109,7 @@ PropertyEditor = new GType({
 		var text = new Gtk.Entry();
 		var new_button = new Gtk.ToolButton({stock_id:"gtk-add"});
 		var font_combo = new Gtk.ComboBox.text();
-		var size_entry = new Gtk.Entry();
+		var size_scale = new Gtk.HScale();
 		
 		var add_widget = function ()
 		{
@@ -151,7 +151,7 @@ PropertyEditor = new GType({
 			if(!actor)
 			{
 				text.text = "";
-				size_entry.text = "";
+				size_scale.set_value(8);
 				font_combo.set_active(font_list.indexOf("DejaVu Sans"));
 				return;
 			}
@@ -160,7 +160,7 @@ PropertyEditor = new GType({
 			
 			var pfd = Pango.Font.description_from_string(actor.get_font_name());
 
-			size_entry.text = pfd.to_string().match(new RegExp("[0-9]+$"),"");
+			size_scale.set_value(parseFloat(pfd.to_string().match(new RegExp("[0-9]+$"),""), 10));
 			font_combo.set_active(font_list.indexOf(pfd.to_string().replace(new RegExp(" [0-9]+$"),"")));
 			
 			loading = false;
@@ -168,25 +168,29 @@ PropertyEditor = new GType({
 		
 		this.commit_to_selected_actor = function ()
 		{
-			if(loading)
+			if(loading || !selected_actor)
 				return;
 			
 			selected_actor.text = text.text;
-			selected_actor.font_name = font_list[font_combo.get_active()] + " " + parseFloat(size_entry.text,10);
+			selected_actor.font_name = font_list[font_combo.get_active()] + " " + size_scale.get_value();
 		};
 		
 		text.signal.changed.connect(this.commit_to_selected_actor);
 		new_button.signal.clicked.connect(add_widget);
 		font_combo.signal.changed.connect(this.commit_to_selected_actor);
-		size_entry.signal.activate.connect(this.commit_to_selected_actor);
+		size_scale.signal.value_changed.connect(this.commit_to_selected_actor);
 
 		// Implementation
+		
+		size_scale.adjustment.lower = 8;
+		size_scale.adjustment.upper = 200;
+		size_scale.adjustment.step = 1;
 		
 		populate_font_selector(font_combo);
 		
 		this.pack_start(text, true, true);
-		this.pack_start(font_combo, true, true);
-		this.pack_start(size_entry);
+		this.pack_start(font_combo);
+		this.pack_start(size_scale, true, true);
 		this.pack_start(new_button);
 	}
 });
@@ -247,9 +251,11 @@ function pangotest_init()
 function create_default_actors()
 {
     stage.add_actor(new PangoWidget({text: "Hello, world!",
-    								 font_name: "DejaVu Sans 24"}));
+    								 font_name: "DejaVu Sans 24",
+    								 x: 20, y: 20}));
 	stage.add_actor(new PangoWidget({text: "Oh hi!",
-    								 font_name: "DejaVu Serif 32"}));
+    								 font_name: "DejaVu Serif 32",
+    								 x: 100, y: 100}));
 }
 
 pangotest_init();
