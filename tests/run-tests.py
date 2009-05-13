@@ -15,48 +15,50 @@ failed = []
 
 mcwd = os.getcwd()
 
-for f in os.listdir("javascript"):
-	if f.endswith(".js") and not f.endswith("_.js"):
-		try:
-			rfile = open(mcwd + "/javascript/"+f, "r")
-			test_code = rfile.readlines()
-			test_retval = int(test_code[1].replace("// Returns:","").rstrip().replace("\\n","\n"));
-			test_in = test_code[2].replace("// STDIN:","").rstrip().replace("\\n","\n");
-			test_out = "^" + test_code[3].replace("// STDOUT:","").rstrip().replace("\\n","\n") + "$";
-			test_err = "^" + test_code[4].replace("// STDERR:","").rstrip().replace("\\n","\n") + "$";
-		
-			p = subprocess.Popen(mcwd + "/javascript/" + f, shell=True,
-								 stdin=subprocess.PIPE, stdout=subprocess.PIPE,
-								 stderr=subprocess.PIPE, close_fds=True,
-								 cwd=mcwd+"/javascript/")
-			(out,err)=(p.stdout, p.stderr)
-		
-			(run_out,run_err)=p.communicate(test_in + "\004")
-			run_out = run_out.rstrip()
-			run_err = run_err.rstrip()
-		
-			out.close()
-			err.close()
-	
-			if not re.match(test_out,run_out):
-				failed.append([f,test_out,run_out,0,run_err])
-				sys.stdout.write("x")
-			elif not re.match(test_err,run_err):
-				failed.append([f,test_err,run_err,1])
-				sys.stdout.write("x")
-			elif p.returncode != test_retval:
-				failed.append([f,test_retval,p.returncode,2]);
-				sys.stdout.write("x")
-			else:
-				passed.append([f])
-				sys.stdout.write(".")
-			sys.stdout.flush()
-		except:
-			print "WARNING: Strange error in " + f + "\n\n"
+for root, dirs, files in os.walk(os.path.join(mcwd,"javascript")):
+	for f in files:
+		f = os.path.join(root, f)
+		if f.endswith(".js") and not f.endswith("_.js"):
+			try:
+				rfile = open(f, "r")
+				test_code = rfile.readlines()
+				test_retval = int(test_code[1].replace("// Returns:","").rstrip().replace("\\n","\n"));
+				test_in = test_code[2].replace("// STDIN:","").rstrip().replace("\\n","\n");
+				test_out = "^" + test_code[3].replace("// STDOUT:","").rstrip().replace("\\n","\n") + "$";
+				test_err = "^" + test_code[4].replace("// STDERR:","").rstrip().replace("\\n","\n") + "$";
+				
+				p = subprocess.Popen(f, shell=True,
+						     stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+						     stderr=subprocess.PIPE, close_fds=True,
+						     cwd=mcwd+"/javascript/")
+				(out,err)=(p.stdout, p.stderr)
+				
+				(run_out,run_err)=p.communicate(test_in + "\004")
+				run_out = run_out.rstrip()
+				run_err = run_err.rstrip()
+				
+				out.close()
+				err.close()
+				
+				if not re.match(test_out,run_out):
+					failed.append([f,test_out,run_out,0,run_err])
+					sys.stdout.write("x")
+				elif not re.match(test_err,run_err):
+					failed.append([f,test_err,run_err,1])
+					sys.stdout.write("x")
+				elif p.returncode != test_retval:
+					failed.append([f,test_retval,p.returncode,2]);
+					sys.stdout.write("x")
+				else:
+					passed.append([f])
+					sys.stdout.write(".")
+					sys.stdout.flush()
+			except:
+				print "WARNING: Strange error in " + f + "\n\n"
 
-p = subprocess.Popen(mcwd + "/c/test", shell=True,
-					 stdin=subprocess.PIPE, stdout=subprocess.PIPE,
-					 stderr=subprocess.PIPE, close_fds=True);
+p = subprocess.Popen(os.path.join(mcwd, "c/test"), shell=True,
+		     stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+		     stderr=subprocess.PIPE, close_fds=True);
 (c_out, c_err) = p.communicate()
 
 for c_test in c_out.rstrip().split("\n"):
@@ -78,15 +80,15 @@ for fail in failed:
 	print "Name: %s" % fail[0]
 	if fail[3] == 1:
 		for line in difflib.unified_diff(fail[1].replace("\\","").replace("^","").replace("$","").split("\n"),
-										 fail[2].split("\n"),
-										 fromfile="Expected Error",
-										 tofile="Actual Error"):
+						 fail[2].split("\n"),
+						 fromfile="Expected Error",
+						 tofile="Actual Error"):
 			print line.rstrip()
 	elif fail[3] == 0:
 		for line in difflib.unified_diff(fail[1].replace("\\","").replace("^","").replace("$","").split("\n"),
-										 fail[2].split("\n"),
-										 fromfile="Expected Output",
-										 tofile="Actual Output"):
+						 fail[2].split("\n"),
+						 fromfile="Expected Output",
+						 tofile="Actual Output"):
 			print line.rstrip()
 		print "  Error Output:\t\t" + fail[4]
 	elif fail[3] == 2:
