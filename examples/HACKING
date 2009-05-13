@@ -10,6 +10,9 @@ The Lights Off example now lives in the gnome-games module. It uses Clutter,
 browser/
 	- An incomplete WebKit-based web browser. Uses much of Gtk and WebKit.
 
+clutter-pad/
+	- A scratchpad for Seed+Clutter scripts, using GtkSourceView and GtkBuilder.
+
 clutter-shader/
 	- A GLSL shader example. Utilizes Gtk with Clutter, GtkSourceView,
 	  ClutterTexture, and Clutter Shader.
@@ -42,6 +45,10 @@ twitter/
 	- A simple Gtk Twitter client which was introduced in Ars Technica's article
 	  on Seed. Uses async network access, John Resig's pretty.js, etc.
 
+xml/
+	- Various examples that use the libxml C module to walk the DOM, perform
+	  XPath queries, etc.
+
 == Smaller Examples ==
 
 accelgroup.js: Proper use of Gtk key accelerators.
@@ -52,7 +59,6 @@ clutter-cairo.js: Draws into a Clutter context using our Canvas extension.
 clutter-cogl.js: Draw ripples from the mouse, using Clutter's COGL library.
 clutter-0.[8,9].js: Clutter, implementing custom Clutter animations, using 
                     Clutter effects (animations in 0.9), ClutterColor.
-clutter-pad.js: A scratchpad for Seed+Clutter scripts, using GtkSourceView.
 dbus-banshee.js: Plays the song specified as an argument in Banshee, over DBUS.
 dbus-consolekit.js: Queries ConsoleKit over DBUS to determine if the invoking
                     session is either local or remote.
