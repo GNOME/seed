@@ -328,6 +328,7 @@ examples/opengl/Makefile
 examples/twitter/Makefile
 examples/pong/Makefile
 examples/same-seed/Makefile
+examples/dbus/Makefile
 modules/Makefile
 modules/example/Makefile
 modules/sqlite/Makefile

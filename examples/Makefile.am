@@ -2,6 +2,7 @@ SUBDIRS = \
     browser \
     clutter-shader \
     clutter-transitions \
+    dbus \
     glib \
     opengl \
     pong \
@@ -25,8 +26,6 @@ examples_DATA = \
     clutter-cogl-0.8.js \
     clutter-cogl-0.9.js \
     clutter-pad.js \
-    dbus-banshee.js \
-    dbus-consolekit.js \
     gconf.js \
     gdkpixbufloader.js \
     Gnio.js \
