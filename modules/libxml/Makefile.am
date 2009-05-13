@@ -1,5 +1,7 @@
 if BUILD_LIBXML_MODULE
 
+EXTRA_DIST = sample.xml xml.js
+
 seedlibdir = ${exec_prefix}/lib/seed
 
 seedlib_LTLIBRARIES = \
@@ -7,7 +9,6 @@ seedlib_LTLIBRARIES = \
 
 liblibxml_la_SOURCES = \
 	libxml.c
-
 
 AM_CPPFLAGS = \
 	-I@top_srcdir@/libseed/ \

@@ -4,6 +4,7 @@ shader_DATA = \
 	bob.jpg \
 	default.glsl \
 	main.js \
+	ShaderEditor.js \
 	ShaderView.js
 endif
 
@@ -11,6 +12,7 @@ EXTRA_DIST = \
 	bob.jpg \
 	default.glsl \
 	main.js \
+	ShaderEditor.js \
 	ShaderView.js
 
 
