@@ -46,7 +46,7 @@ function connect_signal(builder, object, signal, handler, connect_obj, flags)
 window.resize(800, 600);
 window.show_all();
 
-gb.connect_signals_full(connect_signal);
+//gb.connect_signals_full(connect_signal);
 
 Gtk.main();
 
