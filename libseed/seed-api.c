@@ -589,7 +589,7 @@ seed_signal_connect (JSContextRef ctx,
 }
 
 /**
- * seed_context_get_global_objects:
+ * seed_context_get_global_object:
  * @ctx: A valid #SeedContext
  *
  * Return value: The global object for @ctx.

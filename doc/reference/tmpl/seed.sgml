@@ -126,6 +126,15 @@ seed
 @ctx: 
 
 
+<!-- ##### FUNCTION seed_context_get_global_object ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@Returns: 
+
+
 <!-- ##### STRUCT SeedScript ##### -->
 <para>
 
@@ -286,6 +295,91 @@ seed
 @object: 
 @name: 
 @value: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_object_get_prototype ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@obj: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_object_copy_property_names ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@object: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_closure_new ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@function: 
+@user_data: 
+@description: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_closure_get_callable ##### -->
+<para>
+
+</para>
+
+@c: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_closure_invoke ##### -->
+<para>
+
+</para>
+
+@closure: 
+@args: 
+@argc: 
+@exception: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_closure_invoke_with_context ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@closure: 
+@args: 
+@argc: 
+@exception: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_closure_warn_exception ##### -->
+<para>
+
+</para>
+
+@c: 
+@ctx: 
+@exception: 
+
+
+<!-- ##### FUNCTION seed_make_undefined ##### -->
+<para>
+
+</para>
+
+@ctx: 
 @Returns: 
 
 

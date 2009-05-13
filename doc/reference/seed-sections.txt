@@ -36,6 +36,7 @@ seed_value_to_object
 seed_value_from_object
 seed_value_to_filename
 seed_value_from_filename
+seed_value_get_type
 </SECTION>
 
 <SECTION>
@@ -83,6 +84,7 @@ SeedContextGroup
 seed_context_create
 seed_context_ref
 seed_context_unref
+seed_context_get_global_object
 <SUBSECTION>
 SeedScript
 seed_make_script
@@ -102,7 +104,16 @@ seed_object_get_private
 seed_object_set_private
 seed_object_get_property
 seed_object_set_property
+seed_object_get_prototype
+seed_object_copy_property_names
 <SUBSECTION>
+seed_closure_new
+seed_closure_get_callable
+seed_closure_invoke
+seed_closure_invoke_with_context
+seed_closure_warn_exception
+<SUBSECTION>
+seed_make_undefined
 seed_make_null
 seed_make_object
 <SUBSECTION>
@@ -126,3 +137,4 @@ SeedObjectCallAsConstructorCallback
 seed_signal_connect
 seed_signal_connect_full
 </SECTION>
+
