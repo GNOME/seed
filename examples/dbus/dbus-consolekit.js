@@ -5,20 +5,22 @@ GLib = imports.gi.GLib;
 function ConsoleKitManager() {
     this._init();
 }
-
 ConsoleKitManager.prototype = {
     _init: function() {
-	DBus.system.proxifyObject (this, 'org.freedesktop.ConsoleKit','/org/freedesktop/ConsoleKit/Manager');
+	DBus.system.proxifyObject (this, 
+				   'org.freedesktop.ConsoleKit',
+				   '/org/freedesktop/ConsoleKit/Manager');
     }
 };
 
 function ConsoleKitSession(path) {
     this._init(path);
 }
-
 ConsoleKitSession.prototype = {
     _init: function(path) {
-	DBus.system.proxifyObject (this, 'org.freedesktop.ConsoleKit', path);
+	DBus.system.proxifyObject (this, 
+				   'org.freedesktop.ConsoleKit',
+				   path);
     }
 };
 
@@ -28,7 +30,6 @@ var ManagerIface = {
 	{ name: 'GetCurrentSession', inSignature: '', outSignature: 'o' },
     ]
 };
-
 var SessionIFace = {
     name: 'org.freedesktop.ConsoleKit.Session',
     methods: [

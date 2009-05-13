@@ -8,10 +8,11 @@ function PlayerEngine() {
 
 PlayerEngine.prototype = {
     _init: function() {
-	DBus.session.proxifyObject (this, 'org.bansheeproject.Banshee','/org/bansheeproject/Banshee/PlayerEngine');
+	DBus.session.proxifyObject (this, 
+				    x'org.bansheeproject.Banshee',
+				    '/org/bansheeproject/Banshee/PlayerEngine');
     }
 };
-
 var PlayerEngineIface = {
     name: 'org.bansheeproject.Banshee.PlayerEngine',
     methods: [
@@ -37,20 +38,18 @@ var PlayerEngineIface = {
 	{ name: 'Length', signature: 'u', access: 'read' }
     ]
 };
-
-
 DBus.proxifyPrototype (PlayerEngine.prototype, PlayerEngineIface);
 
-proxy = new PlayerEngine();
-proxy.OpenRemote(Seed.argv[2]);
-proxy.PlayRemote(function(){
-    Seed.print("proxy.PlayRemote returned");
+engine = new PlayerEngine();
+engine.OpenRemote(Seed.argv[2]);
+engine.PlayRemote(function(){
+    Seed.print("engine.PlayRemote returned");
 });
 
-proxy.connect("StateChanged", 
-	      function(emitter, state){
-		  Seed.print("Banshee state changed: " + state);
-	      });
+engine.connect("StateChanged", 
+	       function(emitter, state){
+		   Seed.print("Banshee state changed: " + state);
+	       });
 
 mainloop = GLib.main_loop_new();
 GLib.main_loop_run(mainloop);
