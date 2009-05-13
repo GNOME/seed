@@ -21,6 +21,11 @@ var stage_manager = Clutter.StageManager.get_default();
 
 function evaluate(button)
 {
+	var children = stage.get_children();
+				
+	for(var id in children)
+		stage.remove_actor(children[id]);
+	
     try
     {
 		error_buf.text = '';
@@ -62,14 +67,10 @@ function new_file()
 {
 	current_filename = "";
 	
-	source_buf.text = "Clutter = imports.gi.Clutter;\nstage = Clutter.Stage.get_default();\n";
+	source_buf.text = "GObject = imports.gi.GObject;\nClutter = imports.gi.Clutter;\nstage = Clutter.Stage.get_default();\n";
 	
 	// TODO: cleanse the stage (or make a new one!) each time around...
-	
-	var children = stage.get_children();
-				
-	for(var id in children)
-		stage.remove_actor(children[id]);
+	// really should be done in evaluate, though
 	
 	//if(gtkstage)
 		//pane.remove(gtkstage);
