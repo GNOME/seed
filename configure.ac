@@ -312,6 +312,9 @@ src/Makefile
 extensions/Makefile
 tests/Makefile
 tests/javascript/Makefile
+tests/javascript/gtypes/Makefile
+tests/javascript/signals/Makefile
+tests/javascript/structs/Makefile
 tests/c/Makefile
 doc/Makefile
 doc/modules/Makefile

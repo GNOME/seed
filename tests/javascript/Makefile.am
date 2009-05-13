@@ -1,7 +1,9 @@
+SUBDIRS = gtypes signals structs
+
 EXTRA_DIST = \
     COPYING \
     argv.js \
-    signal-nofunc.js \
+    array-gtype.js \
     builtin-argument-length.js \
     check-syntax.js \
     closure-finalization.js \
@@ -12,21 +14,11 @@ EXTRA_DIST = \
     enum.js \
     everything.js \
     fork.js \
-    array-gtype.js \
     function-info.js \
     gdk-event.js \
     gerror.js \
     gobject-scope.js \
     gvalue-argument.js \
-    gtype-class-init-exception.js \
-    gtype.js \
-    gtype-property.js \
-    signal-invalid.js \
-    gtype-property-construct.js \
-    gtype-signal-args.js \
-    gtype-signal.js \
-    gtype-typerror.js \
-    signal-disconnect.js \
     include.js \
     include-syntax.js \
     introspect.js \
@@ -47,20 +39,8 @@ EXTRA_DIST = \
     quit.js \
     readline-bind.js \
     readline.js \
-    signal-connect.js \
-    signal-exception.js \
-    signal-expects.js \
-    signal.js \
-    signal-userdata.js \
     spawn.js \
     sqlite.js \
-    struct-constructor.js \
-    struct-enumerate.js \
-    struct-functions.js \
-    struct-nested-set.js \
-    struct-offsets.js \
-    struct-set-member.js \
-    struct-union-enumerate.js \
     syntax-test.js \
     type-conversion.js
 
