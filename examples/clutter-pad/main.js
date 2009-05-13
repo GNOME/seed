@@ -54,8 +54,8 @@ function open_file()
 	{
 		load_file(file_chooser.get_filename());
 	}
-
-	file_chooser.destroy();
+	
+	file_chooser.hide();
 }
 
 function save_file(filename)
@@ -70,8 +70,8 @@ function save_file(filename)
 			current_filename = file_chooser.get_filename();
 			window.title = "ClutterPad - " + current_filename;
 		}
-
-		file_chooser.destroy();
+		
+		file_chooser.hide();
 	}
 
 	if(current_filename != "")
