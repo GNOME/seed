@@ -30,6 +30,9 @@ PangoActor = new GType({
 		
 		var actor_clicked = function (actor, event)
 		{
+			// Steal keyboard focus
+			gtkstage.has_focus = true;
+					
 			// A double click allows the user to edit the text
 			if(event.button.click_count > 1)
 			{
