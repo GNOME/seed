@@ -168,11 +168,11 @@ var source_buf = new GtkSource.SourceBuffer({language: js_lang});
 
 populate_example_selector(ui.get_object("example_selector"));
 
-ui.get_object("new_button").signal.clicked.connect(new_file);
-ui.get_object("open_button").signal.clicked.connect(open_file);
-ui.get_object("save_button").signal.clicked.connect(save_file);
+ui.get_object("new_action").signal.activate.connect(new_file);
+ui.get_object("open_action").signal.activate.connect(open_file);
+ui.get_object("save_action").signal.activate.connect(save_file);
 ui.get_object("example_selector").signal.changed.connect(select_example);
-ui.get_object("execute_button").signal.clicked.connect(execute_file);
+ui.get_object("execute_action").signal.activate.connect(execute_file);
 
 ui.get_object("source_view").set_buffer(source_buf);
 

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <interface>
-  <requires lib="gtk+" version="2.16"/>
+  <requires lib="gtk+" version="2.14"/>
   <!-- interface-naming-policy project-wide -->
   <object class="GtkWindow" id="window">
     <child>
@@ -20,11 +20,12 @@
                 <property name="visible">True</property>
                 <child>
                   <object class="GtkToolButton" id="new_button">
-                    <property name="stock_id">gtk-new</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <signal name="clicked" handler="new_file"/>
+                    <property name="use_action_appearance">True</property>
+        			<property name="related_action">new_action</property>
+                    <!--<signal name="clicked" handler="new_file"/>-->
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -34,10 +35,11 @@
                 </child>
                 <child>
                   <object class="GtkToolButton" id="open_button">
-                    <property name="stock_id">gtk-open</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <property name="use_action_appearance">True</property>
+        			<property name="related_action">open_action</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -47,10 +49,11 @@
                 </child>
                 <child>
                   <object class="GtkToolButton" id="save_button">
-                    <property name="stock_id">gtk-save</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <property name="use_action_appearance">True</property>
+        			<property name="related_action">save_action</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -69,10 +72,11 @@
                 </child>
                 <child>
                   <object class="GtkToolButton" id="execute_button">
-                    <property name="stock_id">gtk-execute</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <property name="use_action_appearance">True</property>
+        			<property name="related_action">execute_action</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -248,5 +252,17 @@
       <action-widget response="0">save_cancel_button</action-widget>
       <action-widget response="1">save_accept_button</action-widget>
     </action-widgets>
+  </object>
+  <object class="GtkAction" id="new_action">
+    <property name="stock_id">gtk-new</property>
+  </object>
+  <object class="GtkAction" id="open_action">
+    <property name="stock_id">gtk-open</property>
+  </object>
+  <object class="GtkAction" id="save_action">
+    <property name="stock_id">gtk-save</property>
+  </object>
+  <object class="GtkAction" id="execute_action">
+    <property name="stock_id">gtk-execute</property>
   </object>
 </interface>
