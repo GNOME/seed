@@ -26,7 +26,6 @@ PangoWidget = new GType({
 		
 		var widget_clicked = function (actor, event)
 		{
-			//Seed.print(event.mouse);
 			dx = event.button.x - actor.x;
 			dy = event.button.y - actor.y;
 			dragging = true;
@@ -75,6 +74,8 @@ PangoWidget = new GType({
 				this.timeline.start();
 				
 				selected_actor = this;
+				
+				properties.load_from_actor(this);
 			}
 			else
 			{
@@ -140,6 +141,7 @@ PropertyEditor = new GType({
 	init: function()
 	{
 		// Private
+		
 		var text = new Gtk.Entry();
 		var new_button = new Gtk.ToolButton({stock_id:"gtk-add"});
 		//var font_combo = new FontSelector.text();
@@ -152,7 +154,19 @@ PropertyEditor = new GType({
     		stage.show_all();
 		};
 		
-		//text.signal.changed.connect(update_text);
+		// Public
+		
+		this.load_from_actor = function (actor)
+		{
+			text.text = actor.text;
+		};
+		
+		this.commit_to_selected_actor = function ()
+		{
+			selected_actor.text = text.text;
+		};
+		
+		text.signal.changed.connect(this.commit_to_selected_actor);
 		new_button.signal.clicked.connect(add_widget);
 		//font_combo.signal.changed.connect(update_font);
 		//size_entry.signal.activate.connect(update_font);
@@ -274,7 +288,7 @@ function ui_setup()
     vbox.pack_start(gtkstage, true, true);
     vbox.pack_start(properties);
 
-    window.resize(600,600);
+    window.resize(600, 600);
     window.add(vbox);
     window.show_all();
     
