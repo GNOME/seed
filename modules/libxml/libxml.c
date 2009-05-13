@@ -88,7 +88,7 @@ seed_xml_parse_file (SeedContext ctx,
   if (argument_count != 1)
     {
       seed_make_exception (ctx, exception, "ArgumentError",
-			   "parseFile expected 1 argument, got %d",
+			   "parseFile expected 1 argument, got %zd",
 			   argument_count);
       return seed_make_null (ctx);
     }
@@ -121,7 +121,7 @@ seed_xml_parse_string (SeedContext ctx,
   if (argument_count != 1)
     {
       seed_make_exception (ctx, exception, "ArgumentError",
-			   "parseString expected 1 argument, got %d",
+			   "parseString expected 1 argument, got %zd",
 			   argument_count);
       return seed_make_null (ctx);
     }
@@ -314,7 +314,7 @@ seed_xml_xpath_eval (SeedContext ctx,
     {
       seed_make_exception (ctx, exception, 
 			   "ArgumentError",
-			   "xpathEval expected 1 argument, got %d",
+			   "xpathEval expected 1 argument, got %zd",
 			   argument_count);
       return seed_make_null (ctx);
     }

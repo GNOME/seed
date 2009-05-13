@@ -191,9 +191,10 @@ _big_dbus_get_weak_ref(DBusBusType which_bus)
         return session_bus_weak_ref;
     } else if (which_bus == DBUS_BUS_SYSTEM) {
         return system_bus_weak_ref;
-    } else {
-        g_assert_not_reached();
     }
+    
+    g_assert_not_reached();
+    return NULL;
 }
 
 static DBusHandlerResult

@@ -295,7 +295,7 @@ seed_gobject_signal_connect_on_property (JSContextRef ctx,
 					 const JSValueRef arguments[],
 					 JSValueRef * exception)
 {
-  gulong id;
+  gulong id = 0;
   JSObjectRef this_obj;
   signal_privates *privates;
 
