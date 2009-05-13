@@ -3,6 +3,7 @@ are available under the MIT license.
 
 In addition the following subdirectories are under MIT license:
 	glib
+	clutter-pad
 	clutter-shader
 	turtle
 	opengl

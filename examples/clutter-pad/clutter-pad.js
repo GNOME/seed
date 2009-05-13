@@ -52,7 +52,7 @@ function evaluate(button)
 
 function populate_example_selector()
 {
-	file = Gio.file_new_for_path("clutter-pad-examples");
+	file = Gio.file_new_for_path("examples");
 	enumerator = file.enumerate_children("standard::name");
 
 	while((child = enumerator.next_file()))
@@ -155,7 +155,7 @@ function save_file(filename)
 
 function select_example(selector, ud)
 {
-	load_file("clutter-pad-examples/" + selector.get_active_text());
+	load_file("examples/" + selector.get_active_text());
 }
 
 var window = new Gtk.Window({title:"ClutterPad"});

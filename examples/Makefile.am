@@ -1,6 +1,6 @@
 SUBDIRS = \
     browser \
-    clutter-pad-examples \
+    clutter-pad \
     clutter-shader \
     clutter-transitions \
     dbus \
@@ -26,7 +26,6 @@ examples_DATA = \
     clutter-cairo.js \
     clutter-cogl-0.8.js \
     clutter-cogl-0.9.js \
-    clutter-pad.js \
     gconf.js \
     gdkpixbufloader.js \
     Gnio.js \
@@ -62,7 +61,6 @@ EXTRA_DIST = \
     clutter-cairo.js \
     clutter-cogl-0.8.js \
     clutter-cogl-0.9.js \
-    clutter-pad.js \
     COPYING \
     gconf.js \
     gdkpixbufloader.js \
