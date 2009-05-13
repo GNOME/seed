@@ -1,4 +1,4 @@
-uniform float radius = 30;
+uniform float radius = 50;
 uniform sampler2D rectTexture;
 uniform float x_step = 0.0001, y_step = 0.0001;
         

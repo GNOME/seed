@@ -1,59 +1,42 @@
 #!/usr/bin/env seed
-imports.gi.versions.Clutter = "0.8";
-imports.gi.versions.GtkClutter = "0.8";
+
+imports.gi.versions.Clutter = "0.9";
+imports.gi.versions.GtkClutter = "0.9";
 
 Clutter = imports.gi.Clutter;
 Gtk = imports.gi.Gtk;
 GtkSource = imports.gi.GtkSource;
 GtkClutter = imports.gi.GtkClutter;
 Gio = imports.gi.Gio;
+ShaderEditor = imports.ShaderEditor;
 ShaderView = imports.ShaderView;
 
 Gtk.init(Seed.argv);
 GtkClutter.init(Seed.argv);
 
 var window = new Gtk.Window();
+window.signal.hide.connect(Gtk.main_quit);
+
 var gtkstage = new GtkClutter.Embed();
 var stage = gtkstage.get_stage();
-var texture = new Clutter.Texture({filename:"bob.jpg"});
-var reflection = new Clutter.CloneTexture({parent_texture: texture});
-ShaderView.shader = new Clutter.Shader();
-var shaderfield = new ShaderView.ShaderView("fragment_source", texture,reflection);
-var vbox = new Gtk.VBox();
-var notebook = new Gtk.Notebook();
-var c = new Clutter.Color();
-Clutter.color_parse("Black",c);
-
-notebook.append_page(shaderfield.hbox, new Gtk.Label({label:"Fragment"}));
-reflection.width = reflection.height = texture.width = texture.height = 300;
-
-var pane = new Gtk.VPaned();
-
-pane.add1(gtkstage);
-pane.add2(notebook);
-
-pane.set_position(400);
 
 gtkstage.set_size_request(500,500);
-vbox.pack_start(pane, true, true);
+stage.color = {alpha: 1};
 
-window.add(vbox);
-stage.add_actor(texture);
-stage.add_actor(reflection);
+var shader_view = new ShaderView.ShaderView();
+
+var editor = new ShaderEditor.ShaderEditor();
+editor.connect_shader_view(shader_view);
+
+var pane = new Gtk.VPaned({position: 400});
+pane.add1(gtkstage);
+pane.add2(editor);
+window.add(pane);
+
+stage.add_actor(shader_view);
 
 window.show_all();
-stage.show_all();
 
-reflection.anchor_x = texture.anchor_x = texture.width/2;
-reflection.anchor_y = texture.anchor_y = texture.height/2;
-texture.x = stage.width/2;
-texture.y = stage.height/2;
-
-reflection.x = stage.width/2;
-reflection.y = stage.height/2+texture.height;
-reflection.rotation_angle_z = 180;
-reflection.opacity = 80;
-
-stage.color = c;
+shader_view.resize(stage.width, stage.height);
 
 Gtk.main();

@@ -1,50 +1,57 @@
 #!/usr/bin/env seed
+
+imports.gi.versions.Clutter = "0.9";
+
 Gtk = imports.gi.Gtk;
 Clutter = imports.gi.Clutter;
 GtkSource = imports.gi.GtkSource;
 Gio = imports.gi.Gio;
 
-function ShaderView(source_type, actor, reflection)
-{
-	this.hbox = new Gtk.HBox();
+ShaderView = new GType({
+	parent: Clutter.Group.type,
+	name: "ShaderView",
+	init: function()
+	{
+		// Private
 
-	var source_lang_mgr = new GtkSource.SourceLanguageManager();
-	var js_lang = source_lang_mgr.get_language("c");
+		var texture = new Clutter.Texture({filename: "bob.jpg"});
+		var reflection = new Clutter.Clone({source: texture});
+		var shader = new Clutter.Shader();
+		
+		// Public
+		
+		this.resize = function (width, height)
+		{
+			texture.x = width / 2;
+			texture.y = height / 2;
 
-	var source_buf = new GtkSource.SourceBuffer({language: js_lang});
-	source_buf.text = Gio.simple_read("default.glsl");
-	var source_view = new GtkSource.SourceView.with_buffer(source_buf);
-	source_view.set_show_line_numbers(true);
-	source_view.set_show_right_margin(true);
-	source_view.set_highlight_current_line(true);
-	source_view.set_right_margin_position(80);
-
-	this.source_type = source_type;
-
-	var compile = new Gtk.Button({label: "Compile"});
-
-	var scrolled_window = new Gtk.ScrolledWindow(
-												 {vscrollbar_policy: Gtk.PolicyType.AUTOMATIC,
-												  hscrollbar_policy: Gtk.PolicyType.AUTOMATIC});
-	scrolled_window.add(source_view);
-
-	this.hbox.pack_start(scrolled_window, true, true);
-	this.hbox.pack_start(compile);
-	this.actor = actor;
-	this.reflection = reflection;
-
-	this.make_shader = function(button, that)
+			reflection.x = width / 2;
+			reflection.y = (height / 2) + texture.height;
+		};
+				
+		this.run_shader = function(button, editor)
 		{
 			shader.enabled = false;
-			if (that.source_type == "fragment_source")
-				shader.fragment_source = source_buf.text;
-			else
-				shader.vertex_source = source_buf.text;
+			shader.fragment_source = editor.text;
 			shader.compile();
 			shader.enabled = true;
-			that.actor.set_shader(shader);
-			that.reflection.set_shader(shader);
+			
+			texture.set_shader(shader);
+			reflection.set_shader(shader);
 		};
+		
+		// Implementation
+		
+		reflection.width = reflection.height = texture.width = texture.height = 300;
+		
+		reflection.anchor_x = texture.anchor_x = texture.width / 2;
+		reflection.anchor_y = texture.anchor_y = texture.height / 2;
+		
+		reflection.rotation_angle_z = 180;
+		reflection.opacity = 80;
+		
+		this.add_actor(texture);
+		this.add_actor(reflection);
+	}
+});
 
-	compile.signal.clicked.connect(this.make_shader, this);
-}
