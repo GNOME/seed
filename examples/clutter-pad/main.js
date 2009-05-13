@@ -25,10 +25,28 @@ var window = gb.get_object("window");
 var clutter = gb.get_object("clutter");
 var stage = clutter.get_stage();
 
+function new_file()
+{
+	Seed.print("asdf");
+}
 
+/*(GtkBuilder *builder,
+ GObject *object,
+ const gchar *signal_name,
+ const gchar *handler_name,
+ GObject *connect_object,
+ GConnectFlags flags,
+ gpointer user_data);*/
+
+function connect_signal(builder, object, signal, handler, connect_obj, flags)
+{
+	Seed.print(signal);
+}
 
 window.resize(800, 600);
 window.show_all();
+
+gb.connect_signals_full(connect_signal);
 
 Gtk.main();
 

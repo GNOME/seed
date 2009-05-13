@@ -24,7 +24,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-
+                    <signal name="clicked" handler="new_file"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -88,7 +88,7 @@
             <child>
               <object class="GtkFrame" id="frame1">
                 <child>
-                  <object class="GtkScrolledWindow" id="scrolledwindow">
+                  <object class="GtkScrolledWindow" id="scrolledwindow1">
                     <property name="hscrollbar_policy">automatic</property>
                     <property name="vscrollbar_policy">automatic</property>
                     <child>
@@ -101,7 +101,7 @@
             <child>
               <object class="GtkFrame" id="frame2">
                 <child>
-                  <object class="GtkScrolledWindow" id="scrolledwindow">
+                  <object class="GtkScrolledWindow" id="scrolledwindow2">
                     <property name="hscrollbar_policy">automatic</property>
                     <property name="vscrollbar_policy">automatic</property>
                     <child>
