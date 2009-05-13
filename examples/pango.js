@@ -116,7 +116,11 @@ PropertyEditor = new GType({
 		// Private
 		
 		var loading = false;
+		
 		var new_button = new Gtk.ToolButton({stock_id:"gtk-add"});
+		var delete_button = new Gtk.ToolButton({stock_id:"gtk-delete"});
+		var clear_button = new Gtk.ToolButton({stock_id:"gtk-clear"});
+		
 		var font_combo = new Gtk.ComboBox.text();
 		var size_scale = new Gtk.HScale();
 		var color_button = new Gtk.ColorButton();
@@ -126,6 +130,21 @@ PropertyEditor = new GType({
 			stage.add_actor(new PangoWidget({text: "New Text...",
     								 font_name: "DejaVu Sans 24"}));
     		stage.show_all();
+		};
+		
+		var clear_widgets = function ()
+		{
+			var children = stage.get_children();
+				
+			for(var id in children)
+				stage.remove_actor(children[id]);
+		};
+		
+		var delete_widget = function ()
+		{
+			stage.remove_actor(selected_actor);
+			selected_actor = null;
+			properties.load_from_actor(null);
 		};
 		
 		var populate_font_selector = function (combo_box)
@@ -206,6 +225,8 @@ PropertyEditor = new GType({
 		};
 		
 		new_button.signal.clicked.connect(add_widget);
+		delete_button.signal.clicked.connect(delete_widget);
+		clear_button.signal.clicked.connect(clear_widgets);
 		font_combo.signal.changed.connect(this.commit_to_selected_actor);
 		size_scale.signal.value_changed.connect(this.commit_to_selected_actor);
 		color_button.signal.color_set.connect(this.commit_to_selected_actor);
@@ -225,6 +246,8 @@ PropertyEditor = new GType({
 		this.pack_start(font_combo);
 		this.pack_start(size_scale, true, true);
 		this.pack_start(new_button);
+		this.pack_start(delete_button);
+		this.pack_start(clear_button);
 	}
 });
 
@@ -283,12 +306,34 @@ function pangotest_init()
 
 function create_default_actors()
 {
-    stage.add_actor(new PangoWidget({text: "Hello, world!",
-    								 font_name: "DejaVu Sans 24",
-    								 x: 20, y: 20}));
-	stage.add_actor(new PangoWidget({text: "Oh hi!",
-    								 font_name: "DejaVu Serif 32",
-    								 x: 100, y: 100}));
+    stage.add_actor(new PangoWidget({text: "Welcome to the wild world of Seed+Clutter+Pango!",
+    								 font_name: "DejaVu Sans 16",
+    								 x: 20, y: 200}));
+	stage.add_actor(new PangoWidget({text: "Each text element is draggable,",
+    								 font_name: "DejaVu Sans 12",
+    								 x: 100, y: 230}));
+    stage.add_actor(new PangoWidget({text: "resizable,",
+    								 font_name: "DejaVu Sans 48",
+    								 x: 200, y: 245}));
+    stage.add_actor(new PangoWidget({text: "editable, (double click me to edit!)",
+    								 font_name: "DejaVu Serif 14",
+    								 x: 150, y: 315}));
+    stage.add_actor(new PangoWidget({text: "styleable,",
+    								 font_name: "FreeMono 24",
+    								 x: 220, y: 335}));
+    
+    stage.add_actor(new PangoWidget({text: "and",
+    								 font_name: "DejaVu Sans 20",
+    								 x: 100, y: 370,
+    								 color: {red: 255, alpha: 255}}));
+    stage.add_actor(new PangoWidget({text: "even",
+    								 font_name: "DejaVu Sans 20",
+    								 x: 160, y: 370,
+    								 color: {blue: 255, alpha: 255}}));
+    stage.add_actor(new PangoWidget({text: "colorable!",
+    								 font_name: "DejaVu Sans 20",
+    								 x: 235, y: 370,
+    								 color: {green: 255, alpha:255}}));
 }
 
 pangotest_init();
