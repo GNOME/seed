@@ -19,41 +19,46 @@ for root, dirs, files in os.walk(os.path.join(mcwd,"javascript")):
 	for f in files:
 		f = os.path.join(root, f)
 		if f.endswith(".js") and not f.endswith("_.js"):
-			try:
-				rfile = open(f, "r")
-				test_code = rfile.readlines()
-				test_retval = int(test_code[1].replace("// Returns:","").rstrip().replace("\\n","\n"));
-				test_in = test_code[2].replace("// STDIN:","").rstrip().replace("\\n","\n");
-				test_out = "^" + test_code[3].replace("// STDOUT:","").rstrip().replace("\\n","\n") + "$";
-				test_err = "^" + test_code[4].replace("// STDERR:","").rstrip().replace("\\n","\n") + "$";
+			attempts = 0
+			while attempts < 10:
+				try:
+					rfile = open(f, "r")
+					test_code = rfile.readlines()
+					test_retval = int(test_code[1].replace("// Returns:","").rstrip().replace("\\n","\n"));
+					test_in = test_code[2].replace("// STDIN:","").rstrip().replace("\\n","\n");
+					test_out = "^" + test_code[3].replace("// STDOUT:","").rstrip().replace("\\n","\n") + "$";
+					test_err = "^" + test_code[4].replace("// STDERR:","").rstrip().replace("\\n","\n") + "$";
 				
-				p = subprocess.Popen(f, shell=True,
-						     stdin=subprocess.PIPE, stdout=subprocess.PIPE,
-						     stderr=subprocess.PIPE, close_fds=True,
-						     cwd=os.path.join(mcwd,"javascript"))
-				(out,err)=(p.stdout, p.stderr)
+					p = subprocess.Popen(f, shell=True,
+								 stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+								 stderr=subprocess.PIPE, close_fds=True,
+								 cwd=os.path.join(mcwd,"javascript"))
+					(out,err)=(p.stdout, p.stderr)
 				
-				(run_out,run_err)=p.communicate(test_in + "\004")
-				run_out = run_out.rstrip()
-				run_err = run_err.rstrip()
+					(run_out,run_err)=p.communicate(test_in + "\004")
+					run_out = run_out.rstrip()
+					run_err = run_err.rstrip()
 				
-				out.close()
-				err.close()
+					out.close()
+					err.close()
 				
-				if not re.match(test_out,run_out):
-					failed.append([f,test_out,run_out,0,run_err])
-					sys.stdout.write("x")
-				elif not re.match(test_err,run_err):
-					failed.append([f,test_err,run_err,1])
-					sys.stdout.write("x")
-				elif p.returncode != test_retval:
-					failed.append([f,test_retval,p.returncode,2]);
-					sys.stdout.write("x")
-				else:
-					passed.append([f])
-					sys.stdout.write(".")
-					sys.stdout.flush()
-			except:
+					if not re.match(test_out,run_out):
+						failed.append([f,test_out,run_out,0,run_err])
+						sys.stdout.write("x")
+					elif not re.match(test_err,run_err):
+						failed.append([f,test_err,run_err,1])
+						sys.stdout.write("x")
+					elif p.returncode != test_retval:
+						failed.append([f,test_retval,p.returncode,2]);
+						sys.stdout.write("x")
+					else:
+						passed.append([f])
+						sys.stdout.write(".")
+						sys.stdout.flush()
+					break
+				except:
+					attempts += 1
+			if attempts == 10:
 				print "WARNING: Strange error in " + f + "\n\n"
 
 p = subprocess.Popen(os.path.join(mcwd, "c", "test"), shell=True,
