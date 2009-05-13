@@ -37,9 +37,16 @@ seed_signal_finalize (JSObjectRef object)
 }
 
 
+static JSValueRef
+seed_gobject_signal_disconnect (JSContextRef ctx,
+				JSObjectRef function,
+				JSObjectRef thisObject,
+				size_t argumentCount,
+				const JSValueRef arguments[],
+				JSValueRef * exception);
 
 
-void
+gulong
 seed_gobject_signal_connect (JSContextRef ctx,
 			     const gchar * signal_name,
 			     GObject * on_obj,
@@ -70,7 +77,7 @@ seed_gobject_signal_connect (JSContextRef ctx,
   closure = seed_closure_new (ctx, func, user_data, "signal handler");
   // This seems wrong...
   ((SeedClosure *) closure)->return_type = query.return_type;
-  g_signal_connect_closure (on_obj, signal_name, closure, FALSE);
+  return g_signal_connect_closure (on_obj, signal_name, closure, FALSE);
 }
 
 static JSValueRef
@@ -85,6 +92,7 @@ seed_gobject_signal_connect_by_name (JSContextRef ctx,
   JSObjectRef user_data = NULL;
   gchar *signal_name;
   GObject *obj;
+  gulong id;
 
   if (argumentCount < 2 || argumentCount > 3)
     {
@@ -116,12 +124,12 @@ seed_gobject_signal_connect_by_name (JSContextRef ctx,
   obj = (GObject *) JSObjectGetPrivate (thisObject);
   obj_type = G_OBJECT_TYPE (obj);
 
-  seed_gobject_signal_connect (ctx, signal_name, obj,
+  id = seed_gobject_signal_connect (ctx, signal_name, obj,
 			       (JSObjectRef) arguments[1], NULL, user_data);
 
   g_free (signal_name);
 
-  return seed_value_from_boolean (ctx, TRUE, exception);
+  return seed_value_from_ulong (ctx, id, exception);
 }
 
 void
@@ -129,7 +137,7 @@ seed_add_signals_to_object (JSContextRef ctx,
 			    JSObjectRef object_ref, GObject * obj)
 {
   GType type;
-  JSObjectRef signals_ref, connect_func;
+  JSObjectRef signals_ref, connect_func, disconnect_func;
 
   g_assert (obj);
 
@@ -142,8 +150,12 @@ seed_add_signals_to_object (JSContextRef ctx,
   connect_func = 
     JSObjectMakeFunctionWithCallback (ctx, NULL,
 				      &seed_gobject_signal_connect_by_name);
+  disconnect_func =
+    JSObjectMakeFunctionWithCallback (ctx, NULL,
+				      &seed_gobject_signal_disconnect);
   
   seed_object_set_property (ctx, signals_ref, "connect", connect_func);
+  seed_object_set_property (ctx, signals_ref, "disconnect", disconnect_func);
 }
 
 void
@@ -273,6 +285,31 @@ seed_gobject_signal_emit (JSContextRef ctx,
 }
 
 static JSValueRef
+seed_gobject_signal_disconnect (JSContextRef ctx,
+				JSObjectRef function,
+				JSObjectRef thisObject,
+				size_t argumentCount,
+				const JSValueRef arguments[],
+				JSValueRef * exception)
+{
+  gulong id;
+  signal_privates *privates;
+  
+  if (argumentCount != 1)
+    {
+      seed_make_exception (ctx, exception, "ArgumentError",
+			   "Signal disconnection expects 1 argument"
+			   " got %zd", argumentCount);
+      return JSValueMakeUndefined (ctx);
+    }
+  privates = (signal_privates *) JSObjectGetPrivate (thisObject);
+  id = seed_value_to_ulong (ctx, arguments[0], exception);
+  g_signal_handler_disconnect (privates->object, id);
+  
+  return JSValueMakeUndefined(ctx);
+}
+
+static JSValueRef
 seed_gobject_signal_connect_on_property (JSContextRef ctx,
 					 JSObjectRef function,
 					 JSObjectRef thisObject,
@@ -280,6 +317,7 @@ seed_gobject_signal_connect_on_property (JSContextRef ctx,
 					 const JSValueRef arguments[],
 					 JSValueRef * exception)
 {
+  gulong id;
   JSObjectRef this_obj;
   signal_privates *privates;
 
@@ -312,27 +350,25 @@ seed_gobject_signal_connect_on_property (JSContextRef ctx,
     }
 
   if (argumentCount == 1)
-    seed_gobject_signal_connect (ctx, privates->signal_name,
-				 privates->object,
-				 (JSObjectRef) arguments[0], this_obj, NULL);
+    id = seed_gobject_signal_connect (ctx, privates->signal_name,
+				      privates->object,
+				      (JSObjectRef) arguments[0], this_obj, NULL);
 
   if (argumentCount == 2)
     {
-      seed_gobject_signal_connect (ctx, privates->signal_name,
-				   privates->object,
-				   (JSObjectRef) arguments[0],
-				   this_obj, (JSObjectRef) arguments[1]);
+      id = seed_gobject_signal_connect (ctx, privates->signal_name,
+					privates->object,
+					(JSObjectRef) arguments[0],
+					this_obj, (JSObjectRef) arguments[1]);
     }
 
-  return JSValueMakeNull (ctx);
+  return seed_value_from_ulong (ctx, id, exception);
 }
 
-JSStaticFunction signal_static_functions[] =
-  { {"connect", seed_gobject_signal_connect_on_property, 0}
-,
-    {"emit", seed_gobject_signal_emit, 0}
-,
-{0, 0, 0}
+JSStaticFunction signal_static_functions[] = { 
+  {"connect", seed_gobject_signal_connect_on_property, 0},
+  {"emit", seed_gobject_signal_emit, 0},
+  {0, 0, 0}
 };
 
 JSClassDefinition gobject_signal_def = {
@@ -369,7 +405,7 @@ seed_signal_holder_get_property (JSContextRef ctx,
 
   JSStringGetUTF8CString (property_name, signal_name, length);
   
-  if (!strcmp (signal_name, "connect"))
+  if (!strcmp (signal_name, "connect") || !strcmp (signal_name, "disconnect"))
     return 0;
 
   priv->object = gobj;
