@@ -1,6 +1,7 @@
 EXTRA_DIST = \
     COPYING \
     argv.js \
+    signal-nofunc.js \
     builtin-argument-length.js \
     check-syntax.js \
     closure-finalization.js \
