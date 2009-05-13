@@ -51,7 +51,11 @@ function populate_example_selector()
 	enumerator = file.enumerate_children("standard::name");
 
 	while((child = enumerator.next_file()))
-		example_selector.append_text(child.get_name());
+	{
+		var fname = child.get_name();
+		if(fname.match(/\.js$/))
+			example_selector.append_text(child.get_name());
+	}
 }
 
 function new_file()
