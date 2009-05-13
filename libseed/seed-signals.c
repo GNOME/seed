@@ -385,7 +385,7 @@ seed_signal_holder_get_property (JSContextRef ctx,
 				 JSValueRef *exception)
 {
   GObject *gobj = JSObjectGetPrivate (object);
-  signal_privates *priv = g_slice_alloc (sizeof (signal_privates));
+  signal_privates *priv;
   guint length = JSStringGetMaximumUTF8CStringSize (property_name);
   gchar *signal_name = g_malloc (length * sizeof (gchar));
   JSObjectRef signal_ref;
@@ -393,7 +393,18 @@ seed_signal_holder_get_property (JSContextRef ctx,
   JSStringGetUTF8CString (property_name, signal_name, length);
   
   if (!strcmp (signal_name, "connect") || !strcmp (signal_name, "disconnect"))
-    return NULL;
+    {
+      g_free (signal_name);
+      return NULL;
+    }
+  
+  if (!g_signal_lookup (signal_name, G_OBJECT_TYPE (gobj)))
+    {
+      g_free (signal_name);
+      return NULL;
+    }
+  
+  priv = g_slice_alloc (sizeof (signal_privates));
 
   priv->object = gobj;
   priv->signal_name = signal_name;
