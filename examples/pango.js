@@ -17,16 +17,16 @@ GtkClutter.init(Seed.argv);
 var font_list = [];
 selected_actor = null;
 
-PangoWidget = new GType({
+PangoActor = new GType({
 	parent: Clutter.Text.type,
-	name: "PangoWidget",
+	name: "PangoActor",
 	init: function()
 	{
 		// Private
 		
 		var dx, dy, dragging;
 		
-		var widget_clicked = function (actor, event)
+		var actor_clicked = function (actor, event)
 		{
 			if(event.button.click_count > 1)
 			{
@@ -42,7 +42,7 @@ PangoWidget = new GType({
 			return false;
 		};
 		
-		var widget_dragged = function (actor, event)
+		var actor_dragged = function (actor, event)
 		{
 			if(!dragging)
 				return false;
@@ -53,7 +53,7 @@ PangoWidget = new GType({
 			return false;
 		};
 		
-		var widget_unclicked = function ()
+		var actor_unclicked = function ()
 		{
 			dragging = false;
 			
@@ -102,9 +102,9 @@ PangoWidget = new GType({
 		
 		this.text = "Hello, world!";
 		this.reactive = true;
-		this.signal.button_press_event.connect(widget_clicked);
-		this.signal.button_release_event.connect(widget_unclicked);
-		this.signal.motion_event.connect(widget_dragged);
+		this.signal.button_press_event.connect(actor_clicked);
+		this.signal.button_release_event.connect(actor_unclicked);
+		this.signal.motion_event.connect(actor_dragged);
 		this.color = {red: 0, green: 0, blue: 0, alpha: 255};
 	}
 });
@@ -126,14 +126,14 @@ PropertyEditor = new GType({
 		var size_scale = new Gtk.HScale();
 		var color_button = new Gtk.ColorButton();
 		
-		var add_widget = function ()
+		var add_actor = function ()
 		{
-			stage.add_actor(new PangoWidget({text: "New Text...",
+			stage.add_actor(new PangoActor({text: "New Text...",
     								 font_name: "DejaVu Sans 24"}));
     		stage.show_all();
 		};
 		
-		var clear_widgets = function ()
+		var clear_actors = function ()
 		{
 			var children = stage.get_children();
 				
@@ -141,7 +141,7 @@ PropertyEditor = new GType({
 				stage.remove_actor(children[id]);
 		};
 		
-		var delete_widget = function ()
+		var delete_actor = function ()
 		{
 			stage.remove_actor(selected_actor);
 			selected_actor = null;
@@ -227,9 +227,9 @@ PropertyEditor = new GType({
 									alpha: 255};
 		};
 		
-		new_button.signal.clicked.connect(add_widget);
-		delete_button.signal.clicked.connect(delete_widget);
-		clear_button.signal.clicked.connect(clear_widgets);
+		new_button.signal.clicked.connect(add_actor);
+		delete_button.signal.clicked.connect(delete_actor);
+		clear_button.signal.clicked.connect(clear_actors);
 		font_combo.signal.changed.connect(this.commit_to_selected_actor);
 		size_scale.signal.value_changed.connect(this.commit_to_selected_actor);
 		color_button.signal.color_set.connect(this.commit_to_selected_actor);
@@ -310,31 +310,31 @@ function pangotest_init()
 
 function create_default_actors()
 {
-    stage.add_actor(new PangoWidget({text: "Welcome to the wild world of Seed+Clutter+Pango!",
+    stage.add_actor(new PangoActor({text: "Welcome to the wild world of Seed+Clutter+Pango!",
     								 font_name: "DejaVu Sans 16",
     								 x: 20, y: 200}));
-	stage.add_actor(new PangoWidget({text: "Each text element is draggable,",
+	stage.add_actor(new PangoActor({text: "Each text element is draggable,",
     								 font_name: "DejaVu Sans 12",
     								 x: 100, y: 230}));
-    stage.add_actor(new PangoWidget({text: "resizable,",
+    stage.add_actor(new PangoActor({text: "resizable,",
     								 font_name: "DejaVu Sans 48",
     								 x: 200, y: 245}));
-    stage.add_actor(new PangoWidget({text: "editable, (double click me to edit!)",
+    stage.add_actor(new PangoActor({text: "editable, (double click me to edit!)",
     								 font_name: "DejaVu Serif 14",
     								 x: 150, y: 315}));
-    stage.add_actor(new PangoWidget({text: "styleable,",
+    stage.add_actor(new PangoActor({text: "styleable,",
     								 font_name: "FreeMono 24",
     								 x: 220, y: 335}));
     
-    stage.add_actor(new PangoWidget({text: "and",
+    stage.add_actor(new PangoActor({text: "and",
     								 font_name: "DejaVu Sans 20",
     								 x: 100, y: 370,
     								 color: {red: 255, alpha: 255}}));
-    stage.add_actor(new PangoWidget({text: "even",
+    stage.add_actor(new PangoActor({text: "even",
     								 font_name: "DejaVu Sans 20",
     								 x: 160, y: 370,
     								 color: {blue: 255, alpha: 255}}));
-    stage.add_actor(new PangoWidget({text: "colorable!",
+    stage.add_actor(new PangoActor({text: "colorable!",
     								 font_name: "DejaVu Sans 20",
     								 x: 235, y: 370,
     								 color: {green: 255, alpha:255}}));
