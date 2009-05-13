@@ -83,8 +83,9 @@ PangoWidget = new GType({
 			
 				this.timeline.start();
 				
-				selected_actor = this;
+				stage.raise_child(this, null);
 				
+				selected_actor = this;
 				properties.load_from_actor(this);
 			}
 			else
@@ -177,7 +178,8 @@ PropertyEditor = new GType({
 		{
 			if(!actor)
 			{
-				size_scale.sensitive = font_combo.sensitive = color_button.sensitive = false;
+				delete_button.sensitive = size_scale.sensitive =
+					font_combo.sensitive = color_button.sensitive = false;
 			
 			
 				size_scale.set_value(8);
@@ -187,7 +189,8 @@ PropertyEditor = new GType({
 				return;
 			}
 			
-			size_scale.sensitive = font_combo.sensitive = color_button.sensitive = true;
+			delete_button.sensitive = size_scale.sensitive =
+				font_combo.sensitive = color_button.sensitive = true;
 			
 			loading = true;
 			
@@ -245,9 +248,10 @@ PropertyEditor = new GType({
 		this.pack_start(color_button);
 		this.pack_start(font_combo);
 		this.pack_start(size_scale, true, true);
-		this.pack_start(new_button);
 		this.pack_start(delete_button);
 		this.pack_start(clear_button);
+		
+		this.pack_start(new_button);
 	}
 });
 
