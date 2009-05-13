@@ -13,6 +13,7 @@ GObject = imports.gi.GObject;
 Gtk.init(Seed.argv);
 GtkClutter.init(Seed.argv);
 
+var font_list = [];
 selected_actor = null;
 
 PangoWidget = new GType({
@@ -97,44 +98,6 @@ PangoWidget = new GType({
 	}
 });
 
-ContainerWidget = new GType({
-	parent: GtkClutter.Embed.type,
-	name: "ContainerWidget",
-	init: function()
-	{
-		
-	}
-});
-
-/*FontSelector = new GType({
-	parent: Gtk.ComboBox.type,
-	name: "FontSelector",
-	init: function()
-	{
-		var font_list = [];
-		var context = new Pango.Context();
-		var description = new Pango.FontDescription.c_new();
-		description.set_family("");
-
-		var fontmap = new PangoFT2.FontMap();
-		var fontset = fontmap.load_fontset(context, 
-					       				   description, 
-					       				   Pango.language_get_default());
-		
-		fontset.foreach(function(fontset, font)
-		{
-			font_list.push(font.describe().to_string().replace(" 0", ""));
-		});
-	
-		font_list = font_list.sort();
-		
-		for(var i in font_list)
-		{
-		    this.append_text(font_list[i]);
-		}
-	}
-});*/
-
 PropertyEditor = new GType({
 	parent: Gtk.HBox.type,
 	name: "PropertyEditor",
@@ -144,7 +107,7 @@ PropertyEditor = new GType({
 		
 		var text = new Gtk.Entry();
 		var new_button = new Gtk.ToolButton({stock_id:"gtk-add"});
-		//var font_combo = new FontSelector.text();
+		var font_combo = new Gtk.ComboBox.text();
 		var size_entry = new Gtk.Entry();
 		
 		var add_widget = function ()
@@ -154,11 +117,40 @@ PropertyEditor = new GType({
     		stage.show_all();
 		};
 		
+		var populate_font_selector = function (combo_box)
+		{
+			var context = new Pango.Context();
+			var description = new Pango.FontDescription.c_new();
+			description.set_family("");
+
+			var fontmap = new PangoFT2.FontMap();
+			var fontset = fontmap.load_fontset(context, 
+							   				   description, 
+							   				   Pango.language_get_default());
+	
+			fontset.foreach(function(fontset, font)
+			{
+				font_list.push(font.describe().to_string().replace(" 0", ""));
+			});
+
+			font_list = font_list.sort();
+	
+			for(var i in font_list)
+			{
+				combo_box.append_text(font_list[i]);
+			}
+		}
+		
 		// Public
 		
 		this.load_from_actor = function (actor)
 		{
 			text.text = actor.text;
+			
+			var pfd = Pango.Font.description_from_string(actor.get_font_name());
+
+			size_entry.text = pfd.to_string().match(new RegExp("[0-9]+$"),"");
+			font_combo.set_active(font_list.indexOf(pfd.to_string().replace(new RegExp(" [0-9]+$"),"")));
 		};
 		
 		this.commit_to_selected_actor = function ()
@@ -168,12 +160,15 @@ PropertyEditor = new GType({
 		
 		text.signal.changed.connect(this.commit_to_selected_actor);
 		new_button.signal.clicked.connect(add_widget);
-		//font_combo.signal.changed.connect(update_font);
-		//size_entry.signal.activate.connect(update_font);
+		font_combo.signal.changed.connect(this.commit_to_selected_actor);
+		size_entry.signal.activate.connect(this.commit_to_selected_actor);
 
 		// Implementation
+		
+		populate_font_selector(font_combo);
+		
 		this.pack_start(text, true, true);
-		//this.pack_start(font_combo, true, true);
+		this.pack_start(font_combo, true, true);
 		this.pack_start(size_entry);
 		this.pack_start(new_button);
 	}
@@ -280,7 +275,7 @@ function ui_setup()
     var window = new Gtk.Window();
     window.signal.hide.connect(Gtk.main_quit);
     
-    var gtkstage = new ContainerWidget();
+    var gtkstage = new GtkClutter.Embed();
 
     properties = new PropertyEditor();
     
