@@ -338,6 +338,7 @@ modules/Multiprocessing/Makefile
 modules/sandbox/Makefile
 modules/os/Makefile
 modules/dbus/Makefile
+modules/dbus/util/Makefile
 modules/libxml/Makefile
 ])
 AC_OUTPUT
