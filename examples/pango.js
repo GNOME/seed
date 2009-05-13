@@ -146,8 +146,6 @@ PropertyEditor = new GType({
 		
 		this.load_from_actor = function (actor)
 		{
-			loading = true;
-			
 			if(!actor)
 			{
 				text.text = "";
@@ -156,12 +154,14 @@ PropertyEditor = new GType({
 				return;
 			}
 			
+			loading = true;
+			
 			text.text = actor.text;
 			
 			var pfd = Pango.Font.description_from_string(actor.get_font_name());
-
-			size_scale.set_value(parseFloat(pfd.to_string().match(new RegExp("[0-9]+$"),""), 10));
-			font_combo.set_active(font_list.indexOf(pfd.to_string().replace(new RegExp(" [0-9]+$"),"")));
+			
+			size_scale.set_value(parseFloat(pfd.to_string().match(new RegExp("[0-9\.]+$"),""), 10));
+			font_combo.set_active(font_list.indexOf(pfd.to_string().replace(new RegExp(" [0-9\.]+$"),"")));
 			
 			loading = false;
 		};
@@ -184,7 +184,9 @@ PropertyEditor = new GType({
 		
 		size_scale.adjustment.lower = 8;
 		size_scale.adjustment.upper = 200;
-		size_scale.adjustment.step = 1;
+		size_scale.adjustment.step_increment = 1;
+		size_scale.set_digits(0);
+		size_scale.set_draw_value(false);
 		
 		populate_font_selector(font_combo);
 		
