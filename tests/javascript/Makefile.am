@@ -21,10 +21,12 @@ EXTRA_DIST = \
     gtype-class-init-exception.js \
     gtype.js \
     gtype-property.js \
+    signal-invalid.js \
     gtype-property-construct.js \
     gtype-signal-args.js \
     gtype-signal.js \
     gtype-typerror.js \
+    signal-disconnect.js \
     include.js \
     include-syntax.js \
     introspect.js \

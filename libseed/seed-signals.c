@@ -274,8 +274,6 @@ seed_gobject_signal_disconnect (JSContextRef ctx,
 				JSValueRef * exception)
 {
   gulong id;
-  signal_privates *privates;
-  
   if (argumentCount != 1)
     {
       seed_make_exception (ctx, exception, "ArgumentError",
@@ -283,9 +281,8 @@ seed_gobject_signal_disconnect (JSContextRef ctx,
 			   " got %zd", argumentCount);
       return JSValueMakeUndefined (ctx);
     }
-  privates = (signal_privates *) JSObjectGetPrivate (thisObject);
   id = seed_value_to_ulong (ctx, arguments[0], exception);
-  g_signal_handler_disconnect (privates->object, id);
+  g_signal_handler_disconnect (JSObjectGetPrivate (thisObject), id);
   
   return JSValueMakeUndefined(ctx);
 }
