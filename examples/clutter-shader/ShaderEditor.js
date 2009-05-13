@@ -8,7 +8,7 @@ GtkSource = imports.gi.GtkSource;
 Gio = imports.gi.Gio;
 
 var source_lang_mgr = new GtkSource.SourceLanguageManager();
-var js_lang = source_lang_mgr.get_language("c"); // JavaScript!?
+var js_lang = source_lang_mgr.get_language("c");
 
 ShaderEditor = new GType({
 	parent: Gtk.HBox.type,
