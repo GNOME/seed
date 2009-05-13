@@ -13,6 +13,16 @@ Gio = imports.gi.Gio;
 Gtk.init(Seed.argv);
 GtkClutter.init(Seed.argv);
 
+function reset_stage()
+{
+	var children = stage.get_children();
+				
+	for(var id in children)
+		stage.remove_actor(children[id]);
+	
+	stage.color = {alpha: 255};
+}
+
 function load_file(filename)
 {
 	new_file();
@@ -28,6 +38,8 @@ function load_file(filename)
 
 function new_file()
 {
+	reset_stage();
+	
 	window.title = "ClutterPad";
 	current_filename = "";
 	source_buf.text = "GObject = imports.gi.GObject;\nClutter = imports.gi.Clutter;\nstage = Clutter.Stage.get_default();\n";
@@ -101,10 +113,7 @@ function select_example(selector, ud)
 
 function execute_file(button)
 {
-	var children = stage.get_children();
-				
-	for(var id in children)
-		stage.remove_actor(children[id]);
+	reset_stage();
 	
     try
     {
@@ -164,6 +173,8 @@ ui.get_object("source_view").set_buffer(source_buf);
 
 window.resize(800, 600);
 window.show_all();
+
+new_file();
 
 Gtk.main();
 
