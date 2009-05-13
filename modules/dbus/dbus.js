@@ -248,6 +248,34 @@ function _setRemote(propName, value) {
                   argArray);
 }
 
+function _getRemoteSync(propName) {
+    // convert arguments to regular array
+    var argArray = [].splice.call(arguments, 0);
+    // prepend iface the property is on
+    argArray.splice(0, 0, this._dbusInterface);
+
+    return _proxyInvokerSync(this, "org.freedesktop.DBus.Properties",
+			     "Get",
+			     "v",
+			     "ss",
+			     -1,
+			     argArray);
+}
+
+function _setRemoteSync(propName, value) {
+    // convert arguments to regular array
+    var argArray = [].splice.call(arguments, 0);
+    // prepend iface the property is on
+    argArray.splice(0, 0, this._dbusInterface);
+
+    _proxyInvokerSync(this, "org.freedesktop.DBus.Properties",
+                  "Set",
+                  "",
+                  "ssv",
+                  -1,
+                  argArray);
+}
+
 function _getAllRemote() {
     // convert arguments to regular array
     var argArray = [].splice.call(arguments, 0);
@@ -328,6 +356,8 @@ function proxifyPrototype(proto, iface) {
         iface.properties.length > 0) {
         proto['GetRemote'] = _getRemote;
         proto['SetRemote'] = _setRemote;
+        proto['GetRemoteSync'] = _getRemoteSync;
+        proto['SetRemoteSync'] = _setRemoteSync;
         proto['GetAllRemote'] = _getAllRemote;
     }
 
