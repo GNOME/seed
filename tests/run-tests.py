@@ -16,8 +16,8 @@ failed = []
 mcwd = os.getcwd()
 
 for root, dirs, files in os.walk(os.path.join(mcwd,"javascript")):
-	for f in files:
-		f = os.path.join(root, f)
+	for filename in files:
+		f = os.path.join(root, filename)
 		if f.endswith(".js") and not f.endswith("_.js"):
 			attempts = 0
 			while attempts < 10:
@@ -43,16 +43,16 @@ for root, dirs, files in os.walk(os.path.join(mcwd,"javascript")):
 					err.close()
 				
 					if not re.match(test_out,run_out):
-						failed.append([f,test_out,run_out,0,run_err])
+						failed.append([filename,test_out,run_out,0,run_err])
 						sys.stdout.write("x")
 					elif not re.match(test_err,run_err):
-						failed.append([f,test_err,run_err,1])
+						failed.append([filename,test_err,run_err,1])
 						sys.stdout.write("x")
 					elif p.returncode != test_retval:
-						failed.append([f,test_retval,p.returncode,2]);
+						failed.append([filename,test_retval,p.returncode,2]);
 						sys.stdout.write("x")
 					else:
-						passed.append([f])
+						passed.append([filename])
 						sys.stdout.write(".")
 						sys.stdout.flush()
 					break
