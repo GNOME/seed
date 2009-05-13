@@ -123,8 +123,6 @@ function select_example(selector, ud)
 
 function execute_file(button)
 {
-	reset_stage();
-	
     try
     {
 		error_buf.text = '';
@@ -133,6 +131,7 @@ function execute_file(button)
 		var slice = source_buf.get_slice(a, b);
 		if (slice == '')
 		{
+			reset_stage();
 			context.destroy();
 			context = new sandbox.Context();
 			context.add_globals();
@@ -149,6 +148,13 @@ function execute_file(button)
     }
 };
 
+function load_accelerator(action, accel)
+{
+	action.set_accel_group(accels);
+	actions.add_action_with_accel(action, accel);
+	action.connect_accelerator();
+}
+
 var current_filename = "";
 var stage_manager = Clutter.StageManager.get_default();
 var js_file_filter = new Gtk.FileFilter();
@@ -159,8 +165,11 @@ var js_lang = source_lang_mgr.get_language("js");
 var ui = new Gtk.Builder();
 ui.add_from_file("clutter-pad.ui");
 
+var actions = new Gtk.ActionGroup({name: "toolbar"});
+var accels = new Gtk.AccelGroup();
 var window = ui.get_object("window");
 window.signal.hide.connect(Gtk.main_quit);
+window.add_accel_group(accels);
 
 var clutter = ui.get_object("clutter");
 var stage = clutter.get_stage();
@@ -170,6 +179,11 @@ var error_buf = ui.get_object("error_view").get_buffer();
 var source_buf = new GtkSource.SourceBuffer({language: js_lang});
 
 populate_example_selector(ui.get_object("example_selector"));
+
+load_accelerator(ui.get_object("new_action"), null);
+load_accelerator(ui.get_object("open_action"), null);
+load_accelerator(ui.get_object("save_action"), null);
+load_accelerator(ui.get_object("execute_action"), "<Ctrl>r");
 
 ui.get_object("new_action").signal.activate.connect(new_file);
 ui.get_object("open_action").signal.activate.connect(open_file);
