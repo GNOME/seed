@@ -107,6 +107,39 @@ seed_xml_parse_file (SeedContext ctx,
   return ret;
 }
 
+static SeedValue 
+seed_xml_parse_string (SeedContext ctx,
+		       SeedObject function,
+		       SeedObject this_object,
+		       gsize argument_count,
+		       const SeedValue arguments[],
+		       SeedException * exception)
+{
+  SeedObject ret;
+  xmlDocPtr doc;
+  gchar *string;
+  if (argument_count != 1)
+    {
+      seed_make_exception (ctx, exception, "ArgumentError",
+			   "parseString expected 1 argument, got %d",
+			   argument_count);
+      return seed_make_null (ctx);
+    }
+  string = seed_value_to_string (ctx, arguments[0], exception);
+  doc = xmlParseMemory (string, strlen (string));
+  if (!doc)
+    {
+      seed_make_exception (ctx, exception, "XMLError",
+			   "Document not parsed successfully");
+      g_free (string);
+      return seed_make_null (ctx);
+    }
+  ret = seed_make_xml_doc (ctx, doc);
+
+  g_free (string);
+  return ret;
+}
+
 static SeedValue
 seed_xml_doc_get_root (SeedContext ctx,
 		       SeedObject object,
@@ -471,6 +504,9 @@ seed_libxml_define_stuff ()
   
   seed_create_function (eng->context, "parseFile", 
 			(SeedFunctionCallback) seed_xml_parse_file,
+			namespace_ref);
+  seed_create_function (eng->context, "parseString", 
+			(SeedFunctionCallback) seed_xml_parse_string,
 			namespace_ref);
 
   node_proto = seed_object_get_prototype (eng->context,
