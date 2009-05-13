@@ -37,15 +37,6 @@ seed_signal_finalize (JSObjectRef object)
 }
 
 
-static JSValueRef
-seed_gobject_signal_disconnect (JSContextRef ctx,
-				JSObjectRef function,
-				JSObjectRef thisObject,
-				size_t argumentCount,
-				const JSValueRef arguments[],
-				JSValueRef * exception);
-
-
 gulong
 seed_gobject_signal_connect (JSContextRef ctx,
 			     const gchar * signal_name,
@@ -137,7 +128,7 @@ seed_add_signals_to_object (JSContextRef ctx,
 			    JSObjectRef object_ref, GObject * obj)
 {
   GType type;
-  JSObjectRef signals_ref, connect_func, disconnect_func;
+  JSObjectRef signals_ref;
 
   g_assert (obj);
 
@@ -146,16 +137,6 @@ seed_add_signals_to_object (JSContextRef ctx,
   signals_ref = JSObjectMake (ctx, signal_holder_class, obj);
 
   seed_object_set_property (ctx, object_ref, "signal", signals_ref);
-  
-  connect_func = 
-    JSObjectMakeFunctionWithCallback (ctx, NULL,
-				      &seed_gobject_signal_connect_by_name);
-  disconnect_func =
-    JSObjectMakeFunctionWithCallback (ctx, NULL,
-				      &seed_gobject_signal_disconnect);
-  
-  seed_object_set_property (ctx, signals_ref, "connect", connect_func);
-  seed_object_set_property (ctx, signals_ref, "disconnect", disconnect_func);
 }
 
 void
@@ -371,6 +352,12 @@ JSStaticFunction signal_static_functions[] = {
   {0, 0, 0}
 };
 
+JSStaticFunction signal_holder_static_functions [] = {
+  {"connect", seed_gobject_signal_connect_by_name, 0},
+  {"disconnect", seed_gobject_signal_disconnect, 0},
+  {0, 0, 0}
+};
+
 JSClassDefinition gobject_signal_def = {
   0,				/* Version, always 0 */
   kJSClassAttributeNoAutomaticPrototype,
@@ -406,7 +393,7 @@ seed_signal_holder_get_property (JSContextRef ctx,
   JSStringGetUTF8CString (property_name, signal_name, length);
   
   if (!strcmp (signal_name, "connect") || !strcmp (signal_name, "disconnect"))
-    return 0;
+    return NULL;
 
   priv->object = gobj;
   priv->signal_name = signal_name;
@@ -423,6 +410,7 @@ seed_get_signal_class (void)
 
   signal_holder.className = "gobject_signals";
   signal_holder.getProperty = seed_signal_holder_get_property;
+  signal_holder.staticFunctions = signal_holder_static_functions;
   signal_holder_class = JSClassCreate (&signal_holder);
   JSClassRetain (signal_holder_class);
 
