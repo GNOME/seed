@@ -93,25 +93,35 @@ seed_cairo_construct_context (SeedContext ctx,
 SeedObject
 seed_module_init(SeedEngine * local_eng)
 {
+  SeedClass context_constructor_class;
+  //SeedObject context_constructor_ref;
   SeedObject namespace_ref;
-  SeedObject context_constructor_ref;
+  seed_class_definition context_constructor_class_def = seed_empty_class;
   seed_class_definition cairo_def = seed_empty_class;
   eng = local_eng;
   namespace_ref = seed_make_object (eng->context, NULL, NULL);
   
   // Temporary hack until API changes.
   seed_value_protect (eng->context, namespace_ref);
-//  seed_define_cairo_enums (eng->context, namespace_ref);
+  seed_define_cairo_enums (eng->context, namespace_ref);
   seed_define_cairo_surface (eng->context, namespace_ref);
   
   cairo_def.class_name = "CairoContext";
   cairo_def.finalize = seed_cairo_context_finalize;
   seed_cairo_context_class = seed_create_class (&cairo_def);
 
-  context_constructor_ref = seed_make_constructor (eng->context,
-						   seed_cairo_context_class,
-						   seed_cairo_construct_context);
-  seed_object_set_property (eng->context, namespace_ref, "Context", context_constructor_ref);
+// Hack around WebKit GC bug.m
+//  context_constructor_ref = seed_make_constructor (eng->context,
+//						   seed_cairo_context_class,
+//						   seed_cairo_construct_context);
+
+  context_constructor_class_def.class_name = "CairoContextConstructor";
+  context_constructor_class_def.call_as_constructor = seed_cairo_construct_context;
+  
+  context_constructor_class = seed_create_class(&context_constructor_class_def);
+  seed_object_set_property (eng->context, namespace_ref, "Context", seed_make_object (eng->context, context_constructor_class, NULL));
+
+  //  seed_object_set_property (eng->context, namespace_ref, "Context", context_constructor_ref);
   
   return namespace_ref;
 }
