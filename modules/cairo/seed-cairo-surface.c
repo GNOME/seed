@@ -2,6 +2,7 @@
 #include <cairo/cairo.h>
 
 #include "seed-cairo.h"
+#include "seed-cairo-image-surface.h"
 
 #define CAIRO_SURFACE_PRIV(obj) ((cairo_surface_t *)seed_object_get_private(obj))
 
@@ -322,7 +323,7 @@ seed_cairo_surface_has_show_text_glyphs(SeedContext ctx,
 {
   CHECK_THIS(null);
   return seed_value_from_boolean (ctx, 
-				  cairo_surface_has_show_text_glpys (seed_object_to_cairo_surface(ctx, this_object, exception)), exception);
+				  cairo_surface_has_show_text_glyphs (seed_object_to_cairo_surface(ctx, this_object, exception)), exception);
 }
 
 

@@ -20,6 +20,8 @@
       return seed_make_##res (ctx);}
 
 SeedClass seed_cairo_image_surface_class;
+SeedObject image_surface_constructor_ref;
+
 
 static SeedObject
 seed_object_from_cairo_image_surface (SeedContext ctx, cairo_surface_t *surf)
@@ -119,7 +121,6 @@ void
 seed_define_cairo_image_surface (SeedContext ctx,
 				 SeedObject namespace_ref)
 {
-  SeedObject constructor_ref;
   seed_class_definition image_def = seed_empty_class;
   
   image_def.class_name = "CairoImageSurface";
@@ -127,8 +128,7 @@ seed_define_cairo_image_surface (SeedContext ctx,
   image_def.parent_class = seed_get_cairo_surface_class ();
   seed_cairo_image_surface_class = seed_create_class (&image_def);
   
-  constructor_ref = seed_make_constructor (ctx,
+  image_surface_constructor_ref = seed_make_constructor (ctx,
 					   seed_cairo_image_surface_class,
 					   seed_cairo_construct_image_surface);
-  seed_object_set_property (ctx, namespace_ref, "ImageSurface", constructor_ref);
 }

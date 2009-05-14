@@ -13,6 +13,7 @@ libcairo_la_SOURCES = \
 	seed-cairo-enums.c 
 
 libcairo_la_CFLAGS = \
+	-Wall \
         $(GOBJECT_INTROSPECTION_CFLAGS) \
 	-I@top_srcdir@/libseed/ \
 	$(CAIRO_CFLAGS) \
