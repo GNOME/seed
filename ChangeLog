@@ -1,24 +1,28 @@
-== Seed 0.7, ?? (2009.05.13) ==
-
-ROBB: this is just a framework, from scanning through git log.
-
+== Seed 0.7, "Another Side of Bob Dylan" (2009.05.13) ==
+* Support for library init methods.
 * The REPL now supports multi-line entry.
-
 * Signal disconnection.
-
 * Significant Gtk-Doc reorganization.
-
 * New C modules:
 	* sandbox - provides sandboxed JavaScriptCore contexts.
-	* DBus - access to the DBus! (Robb, elaborate)
+	* DBus - Client side DBus bindings.
 	* libxml - XML parsing, XPath, etc.
 
 * Examples:
 	* New: ClutterPad (initially by Johan Euphrosine).
 	* New: dbus-banshee, dbus-consolekit, dbus-networkmanager
-	* Pango example has returned.
+	* New: xml-dom.js xml-tree.js, xml-xpath.js.
+	* Pango examples have returned.
 	* Same Seed performance is increased significantly.
 	* Many examples now use "recent" style; some were completely rewritten
+* Improvements to test system, and quite a few more tests.
+* Improvements to error checking/handling in signal code.
+* Reorganization of API related to GClosure handling, much cleaner and easier now.
+* Several new API methods.
+* GC related crash fixes.
+* Improvements to seed_value_to_string (mostly formatting improvements).
+* Void methods now properly return undefined instead of null.
+* seed_make_exception takes format strings now.
 
 == Seed 0.6, Beatles for Sale (2009.04.29) ==
 
