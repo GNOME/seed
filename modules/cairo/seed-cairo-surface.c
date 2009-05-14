@@ -324,6 +324,33 @@ seed_cairo_surface_has_show_text_glyphs(SeedContext ctx,
 				  cairo_surface_has_show_text_glyphs (seed_object_to_cairo_surface(ctx, this_object, exception)), exception);
 }
 
+static SeedValue
+seed_cairo_surface_write_to_png (SeedContext ctx,
+				 SeedObject function,
+				 SeedObject this_object,
+				 gsize argument_count,
+				 const SeedValue arguments[],
+				 SeedException *exception)
+{
+  cairo_status_t ret;
+  cairo_surface_t *surf;
+  gchar *filename;
+  CHECK_THIS();
+  
+  if (argument_count != 1)
+    {
+      EXPECTED_EXCEPTION("write_to_png", "1 argument");
+    }
+  
+  surf = seed_object_get_private (this_object);
+  filename = seed_value_to_string (ctx, arguments[0], exception);
+  
+  ret = cairo_surface_write_to_png (surf, filename);
+  g_free (filename);
+  
+  return seed_value_from_long (ctx, ret, exception);
+}
+
 
 seed_static_function surface_funcs[] = {
   {"create_similar", seed_cairo_surface_create_similar, 0},
@@ -335,6 +362,7 @@ seed_static_function surface_funcs[] = {
   {"copy_page", seed_cairo_surface_copy_page, 0},
   {"show_page", seed_cairo_surface_show_page, 0},
   {"has_show_text_glyphs", seed_cairo_surface_has_show_text_glyphs, 0},
+  {"write_to_png", seed_cairo_surface_write_to_png, 0},
   {0,0,0}
 };
 
