@@ -1,6 +1,6 @@
 if BUILD_LIBXML_MODULE
 
-EXTRA_DIST = sample.xml xml.js
+EXTRA_DIST = xml.js
 
 seedlibdir = ${exec_prefix}/lib/seed
 
