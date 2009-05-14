@@ -25,7 +25,6 @@ EXTRA_DIST = \
     json-constructor.js \
     json.js \
     list-test.js \
-    namespace-exception-test.js \
     native-closure-exception.js \
     native-closure.js \
     object-info.js \
