@@ -5,7 +5,7 @@
 #include "seed-cairo-image-surface.h"
 #include "seed-cairo-enums.h"
 #include "seed-cairo-matrix.h"
-
+#include "seed-cairo-pattern.h"
 
 SeedEngine *eng;
 
@@ -1652,9 +1652,11 @@ seed_module_init(SeedEngine * local_eng)
   
   // Temporary hack until API changes.
   seed_value_protect (eng->context, namespace_ref);
+
   seed_define_cairo_enums (eng->context, namespace_ref);
   seed_define_cairo_surface (eng->context, namespace_ref);
   seed_define_cairo_matrix (eng->context, namespace_ref);
+  seed_define_cairo_pattern (eng->context, namespace_ref);
   
   cairo_def.class_name = "CairoContext";
   cairo_def.static_functions = cairo_funcs;

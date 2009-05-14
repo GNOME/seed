@@ -11,6 +11,7 @@ libcairo_la_SOURCES = \
 	seed-cairo-surface.c \
 	seed-cairo-image-surface.c \
 	seed-cairo-matrix.c \
+	seed-cairo-pattern.c \
 	seed-cairo-enums.c 
 
 libcairo_la_CFLAGS = \
