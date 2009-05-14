@@ -10,10 +10,13 @@ Pango = imports.gi.Pango;
 PangoFT2 = imports.gi.PangoFT2;
 GObject = imports.gi.GObject;
 Gdk = imports.gi.Gdk;
+Gio = imports.gi.Gio;
+GLib = imports.gi.GLib;
 
 Gtk.init(Seed.argv);
 GtkClutter.init(Seed.argv);
 
+var filename = GLib.build_filenamev([GLib.get_home_dir(),".pangojsrc"]);
 var font_list = [];
 selected_actor = null;
 
@@ -112,6 +115,26 @@ PangoActor = new GType({
 				}
 			}
 		};
+		
+		this.serialize = function ()
+		{
+			var serobj = {};
+			serobj.text = this.text;
+			serobj.x = this.x;
+			serobj.y = this.y;
+			serobj.font_name = this.font_name;
+			
+			//var icolor = this.get_color();
+			
+			/*serobj.color = {red: icolor.red + 0,
+							green: icolor.green + 0,
+							blue: icolor.blue + 0,
+							alpha: 255};*/
+			
+			//Seed.print(this.color.red);
+			
+			return serobj;
+		}
 		
 		// Implementation
 		
@@ -325,8 +348,37 @@ function create_default_actors()
     								 color: {green: 255, alpha:255}}));
 }
 
+function save_and_quit()
+{
+	var output = [];
+	var children = stage.get_children();
+			
+	for(var id in children)
+		output.push(children[id].serialize());
+	
+	Gio.simple_write(filename, JSON.stringify(output));
+	
+	Gtk.main_quit();
+}
+
+function load_actors()
+{
+	try
+	{
+		var file = Gio.file_new_for_path(filename);
+		var input = JSON.parse(file.read().get_contents());
+		
+		for(var id in input)
+			stage.add_actor(new PangoActor(input[id]));
+	}
+	catch (e)
+	{
+		create_default_actors();
+	}
+}
+
 var window = new Gtk.Window();
-window.signal.hide.connect(Gtk.main_quit);
+window.signal.hide.connect(save_and_quit);
 
 var gtkstage = new GtkClutter.Embed();
 var stage = gtkstage.get_stage();
@@ -345,7 +397,7 @@ window.show_all();
 // Ask Clutter to return motion events at 60Hz to help make dragging smoother
 Clutter.set_motion_events_frequency(60);
 
-create_default_actors();
+load_actors();
 stage.show_all();
 
 Gtk.main();
