@@ -322,6 +322,93 @@ seed_cairo_get_antialias (SeedContext ctx,
   
   return seed_value_from_long (ctx, antialias, exception);
 }
+
+static SeedValue
+seed_cairo_set_dash(SeedContext ctx,
+		    SeedObject function,
+		    SeedObject this_object,
+		    gsize argument_count,
+		    const SeedValue arguments[],
+		    SeedException *exception)
+{
+  SeedValue length;
+  cairo_t *cr;
+  gdouble *dashes, offset;
+  gint num_dashes, i;
+
+  CHECK_THIS();
+  cr = seed_object_get_private (this_object);
+  
+  if (argument_count != 2)
+    {
+      EXPECTED_EXCEPTION("set_dash", "2 arguments");
+    }
+  length = seed_object_get_property (ctx, arguments[0], "length");
+  num_dashes = seed_value_to_int (ctx, length, exception);
+  dashes = g_alloca (num_dashes * sizeof(gdouble));
+  for (i = 0; i < num_dashes; i++)
+    {
+      dashes[i] = seed_value_to_double(ctx,
+				       seed_object_get_property_at_index (ctx,
+									  arguments[0],
+									  i,
+									  exception),
+				       exception);
+
+    }
+  offset = seed_value_to_double (ctx, arguments[1], exception);
+  cairo_set_dash (cr, dashes, num_dashes, offset);
+  
+  return seed_make_undefined (ctx);
+}
+
+static SeedValue
+seed_cairo_get_dash_count (SeedContext ctx,
+			   SeedObject function,
+			   SeedObject this_object,
+			   gsize argument_count,
+			   const SeedValue arguments[],
+			   SeedException *exception)
+{
+  cairo_t *cr;
+  gint dash_count;
+  CHECK_THIS();
+  
+  cr = seed_object_get_private (this_object);
+  dash_count = cairo_get_dash_count (cr);
+  
+  return seed_value_from_int (ctx, dash_count, exception);
+}
+
+static SeedValue
+seed_cairo_get_dash (SeedContext ctx,
+		     SeedObject function,
+		     SeedObject this_object,
+		     gsize argument_count,
+		     const SeedValue arguments[],
+		     SeedException *exception)
+{
+  SeedValue ret[2], *jsdashes;
+  cairo_t *cr;
+  gint dash_count, i;
+  gdouble *dashes, offset;
+  
+  CHECK_THIS();
+  cr = seed_object_get_private (this_object);
+  dash_count = cairo_get_dash_count (cr);
+  dashes = g_alloca (dash_count * sizeof(gdouble));
+  jsdashes = g_alloca (dash_count * sizeof(SeedValue));
+  
+  cairo_get_dash (cr, dashes, &offset);
+  for (i = 0; i < dash_count; i++)
+    {
+      jsdashes[i] = seed_value_from_double (ctx, dashes[i], exception);
+    }
+  ret[0] = seed_make_array (ctx, jsdashes, dash_count, exception);
+  ret[1] = seed_value_from_double (ctx, offset, exception);
+  
+  return seed_make_array (ctx, ret, 2, exception);
+}
   
 seed_static_function cairo_funcs[] = {
   {"save", seed_cairo_save, 0},
@@ -339,6 +426,9 @@ seed_static_function cairo_funcs[] = {
 //  {"get_source", seed_cairo_get_source, 0},
   {"set_antialias", seed_cairo_set_antialias, 0},
   {"get_antialias", seed_cairo_get_antialias, 0},
+  {"set_dash", seed_cairo_set_dash, 0},
+  {"get_dash_count", seed_cairo_get_dash_count, 0},
+  {"get_dash", seed_cairo_get_dash, 0},  
   {0, 0, 0}
 };
 
