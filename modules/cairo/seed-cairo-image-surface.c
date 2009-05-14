@@ -95,7 +95,7 @@ seed_cairo_construct_image_surface (SeedContext ctx,
   cairo_format_t format;
   if (argument_count != 3)
     {
-      EXPECTED_EXCEPTION("ImageSurface", "3 arguments", null);
+      EXPECTED_EXCEPTION("ImageSurface", "3 arguments");
     }
   
   format = seed_value_to_long (ctx, arguments[0], exception);

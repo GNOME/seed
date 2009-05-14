@@ -32,7 +32,8 @@ static void
 seed_cairo_surface_finalize (SeedObject obj)
 {
   cairo_surface_t *s = CAIRO_SURFACE_PRIV(obj);
-  cairo_surface_destroy (s);
+  if (s)
+    cairo_surface_destroy (s);
 }
 
 cairo_surface_t *
@@ -72,10 +73,12 @@ seed_cairo_surface_create_similar (SeedContext ctx,
   CHECK_THIS(null);
   if (argument_count != 3)
     {
-      EXPECTED_EXCEPTION("create_similar", "3 arguments", null);
+      EXPECTED_EXCEPTION("create_similar", "3 arguments");
     }
   
   surface = seed_object_to_cairo_surface (ctx, this_object, exception);
+  if (!surface)
+    return seed_make_undefined (ctx);
   content = seed_value_to_long (ctx, arguments[0], exception);
   width = seed_value_to_int (ctx, arguments[1], exception);
   height = seed_value_to_int (ctx, arguments[2], exception);
@@ -147,7 +150,7 @@ seed_cairo_surface_mark_dirty_rectangle(SeedContext ctx,
   CHECK_THIS(undefined);
   if (argument_count != 4)
     {
-      EXPECTED_EXCEPTION("mark_dirty_rectangle", "4 arguments", undefined);
+      EXPECTED_EXCEPTION("mark_dirty_rectangle", "4 arguments");
     }
   surf = seed_object_to_cairo_surface (ctx, this_object, exception);
   x = seed_value_to_int (ctx, arguments[0], exception);
@@ -186,7 +189,7 @@ seed_cairo_surface_set_device_offset(SeedContext ctx,
   CHECK_THIS(null);
   if (argument_count != 2)
     {
-      EXPECTED_EXCEPTION("set_device_offset", "2 arguments", undefined);
+      EXPECTED_EXCEPTION("set_device_offset", "2 arguments");
     }
   surf = seed_object_to_cairo_surface (ctx, this_object, exception);
   x = seed_value_to_double (ctx, arguments[0], exception);
@@ -211,7 +214,7 @@ seed_cairo_surface_get_device_offset(SeedContext ctx,
   CHECK_THIS(null);
   if (argument_count != 0)
     {
-      EXPECTED_EXCEPTION("get_device_offset", "no arguments", null);
+      EXPECTED_EXCEPTION("get_device_offset", "no arguments");
     }
   surf = seed_object_to_cairo_surface (ctx, this_object, exception);
   cairo_surface_get_device_offset (surf, &x, &y);
@@ -235,7 +238,7 @@ seed_cairo_surface_set_fallback_resolution(SeedContext ctx,
   CHECK_THIS(null);
   if (argument_count != 2)
     {
-      EXPECTED_EXCEPTION("set_fallback_resolution", "2 arguments", undefined);
+      EXPECTED_EXCEPTION("set_fallback_resolution", "2 arguments");
     }
   surf = seed_object_to_cairo_surface (ctx, this_object, exception);
   x = seed_value_to_double (ctx, arguments[0], exception);
@@ -260,7 +263,7 @@ seed_cairo_surface_get_fallback_resolution(SeedContext ctx,
   CHECK_THIS(null);
   if (argument_count != 0)
     {
-      EXPECTED_EXCEPTION("get_fallback_resolution", "no arguments", null);
+      EXPECTED_EXCEPTION("get_fallback_resolution", "no arguments");
     }
   surf = seed_object_to_cairo_surface (ctx, this_object, exception);
   cairo_surface_get_fallback_resolution (surf, &x, &y);
