@@ -1658,7 +1658,7 @@ seed_module_init(SeedEngine * local_eng)
   seed_define_cairo_matrix (eng->context, namespace_ref);
   seed_define_cairo_pattern (eng->context, namespace_ref);
   
-  cairo_def.class_name = "CairoContext";
+  cairo_def.class_name = "Context";
   cairo_def.static_functions = cairo_funcs;
   cairo_def.static_values = cairo_values;
   cairo_def.finalize = seed_cairo_context_finalize;

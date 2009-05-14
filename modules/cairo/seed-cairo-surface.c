@@ -381,7 +381,7 @@ seed_define_cairo_surface (SeedContext ctx,
 {
   seed_class_definition surface_def = seed_empty_class;
   
-  surface_def.class_name = "CairoSurface";
+  surface_def.class_name = "Surface";
   surface_def.finalize = seed_cairo_surface_finalize;
   surface_def.static_functions = surface_funcs;
   surface_def.static_values = surface_values;

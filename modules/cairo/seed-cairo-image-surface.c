@@ -119,7 +119,7 @@ seed_define_cairo_image_surface (SeedContext ctx,
   // TODO: FIX
   seed_static_function webkit_fail = {0,0,0};
   
-  image_def.class_name = "CairoImageSurface";
+  image_def.class_name = "ImageSurface";
   image_def.static_values = image_surface_values;
   image_def.parent_class = seed_get_cairo_surface_class ();
   // FAIL
