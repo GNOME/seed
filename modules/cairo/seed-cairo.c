@@ -521,6 +521,202 @@ seed_cairo_set_line_join (SeedContext ctx,
   
   return seed_make_undefined (ctx);
 }
+
+
+static SeedValue
+seed_cairo_get_line_width (SeedContext ctx,
+			  SeedObject function,
+			  SeedObject this_object,
+			  gsize argument_count,
+			  const SeedValue arguments[],
+			  SeedException *exception)
+{
+  cairo_t *cr;
+  CHECK_THIS();
+  
+  cr = seed_object_get_private (this_object);
+  return seed_value_from_double (ctx, cairo_get_line_width (cr), exception);
+}
+
+static SeedValue
+seed_cairo_set_line_width (SeedContext ctx,
+			  SeedObject function,
+			  SeedObject this_object,
+			  gsize argument_count,
+			  const SeedValue arguments[],
+			  SeedException *exception)
+{
+  cairo_t *cr;
+  CHECK_THIS();
+  
+  if (argument_count != 1)
+    {
+      EXPECTED_EXCEPTION("line_width", "1 argument");
+    }
+  
+  cr = seed_object_get_private (this_object);
+  cairo_set_line_width (cr, seed_value_to_double (ctx, arguments[0], exception));
+  
+  return seed_make_undefined (ctx);
+}
+
+static SeedValue
+seed_cairo_get_miter_limit (SeedContext ctx,
+			  SeedObject function,
+			  SeedObject this_object,
+			  gsize argument_count,
+			  const SeedValue arguments[],
+			  SeedException *exception)
+{
+  cairo_t *cr;
+  CHECK_THIS();
+  
+  cr = seed_object_get_private (this_object);
+  return seed_value_from_double (ctx, cairo_get_miter_limit (cr), exception);
+}
+
+static SeedValue
+seed_cairo_set_miter_limit (SeedContext ctx,
+			  SeedObject function,
+			  SeedObject this_object,
+			  gsize argument_count,
+			  const SeedValue arguments[],
+			  SeedException *exception)
+{
+  cairo_t *cr;
+  CHECK_THIS();
+  
+  if (argument_count != 1)
+    {
+      EXPECTED_EXCEPTION("miter_limit", "1 argument");
+    }
+  
+  cr = seed_object_get_private (this_object);
+  cairo_set_miter_limit (cr, seed_value_to_double (ctx, arguments[0], exception));
+  
+  return seed_make_undefined (ctx);
+}
+
+static SeedValue
+seed_cairo_get_operator (SeedContext ctx,
+			  SeedObject function,
+			  SeedObject this_object,
+			  gsize argument_count,
+			  const SeedValue arguments[],
+			  SeedException *exception)
+{
+  cairo_t *cr;
+  CHECK_THIS();
+  
+  cr = seed_object_get_private (this_object);
+  return seed_value_from_long (ctx, cairo_get_operator (cr), exception);
+}
+
+static SeedValue
+seed_cairo_set_operator (SeedContext ctx,
+			  SeedObject function,
+			  SeedObject this_object,
+			  gsize argument_count,
+			  const SeedValue arguments[],
+			  SeedException *exception)
+{
+  cairo_t *cr;
+  CHECK_THIS();
+  
+  if (argument_count != 1)
+    {
+      EXPECTED_EXCEPTION("operator", "1 argument");
+    }
+  
+  cr = seed_object_get_private (this_object);
+  cairo_set_operator (cr, seed_value_to_long (ctx, arguments[0], exception));
+  
+  return seed_make_undefined (ctx);
+}
+
+static SeedValue
+seed_cairo_get_tolerance (SeedContext ctx,
+			  SeedObject function,
+			  SeedObject this_object,
+			  gsize argument_count,
+			  const SeedValue arguments[],
+			  SeedException *exception)
+{
+  cairo_t *cr;
+  CHECK_THIS();
+  
+  cr = seed_object_get_private (this_object);
+  return seed_value_from_double (ctx, cairo_get_tolerance (cr), exception);
+}
+
+static SeedValue
+seed_cairo_set_tolerance (SeedContext ctx,
+			  SeedObject function,
+			  SeedObject this_object,
+			  gsize argument_count,
+			  const SeedValue arguments[],
+			  SeedException *exception)
+{
+  cairo_t *cr;
+  CHECK_THIS();
+  
+  if (argument_count != 1)
+    {
+      EXPECTED_EXCEPTION("tolerance", "1 argument");
+    }
+  
+  cr = seed_object_get_private (this_object);
+  cairo_set_tolerance (cr, seed_value_to_double (ctx, arguments[0], exception));
+  
+  return seed_make_undefined (ctx);
+}
+
+static SeedValue 
+seed_cairo_clip (SeedContext ctx,
+		 SeedObject function,
+		 SeedObject this_object,
+		 gsize argument_count,
+		 const SeedValue arguments[],
+		 SeedException *exception)
+{
+  CHECK_THIS();
+  cairo_t *cr = seed_object_get_private (this_object);
+  
+  cairo_clip(cr);
+  return seed_make_undefined (ctx);
+}
+
+
+static SeedValue 
+seed_cairo_clip_preserve (SeedContext ctx,
+		 SeedObject function,
+		 SeedObject this_object,
+		 gsize argument_count,
+		 const SeedValue arguments[],
+		 SeedException *exception)
+{
+  CHECK_THIS();
+  cairo_t *cr = seed_object_get_private (this_object);
+  
+  cairo_clip_preserve(cr);
+  return seed_make_undefined (ctx);
+}
+
+static SeedValue 
+seed_cairo_reset_clip (SeedContext ctx,
+		 SeedObject function,
+		 SeedObject this_object,
+		 gsize argument_count,
+		 const SeedValue arguments[],
+		 SeedException *exception)
+{
+  CHECK_THIS();
+  cairo_t *cr = seed_object_get_private (this_object);
+  
+  cairo_reset_clip(cr);
+  return seed_make_undefined (ctx);
+}
+
   
 seed_static_function cairo_funcs[] = {
   {"save", seed_cairo_save, 0},
@@ -547,6 +743,17 @@ seed_static_function cairo_funcs[] = {
   {"set_line_cap", seed_cairo_set_line_cap, 0},  
   {"get_line_join", seed_cairo_get_line_join, 0},  
   {"set_line_join", seed_cairo_set_line_join, 0},  
+  {"get_line_width", seed_cairo_get_line_width, 0},  
+  {"set_line_width", seed_cairo_set_line_width, 0},  
+  {"get_miter_limit", seed_cairo_get_miter_limit, 0},  
+  {"set_miter_limit", seed_cairo_set_miter_limit, 0},  
+  {"get_operator", seed_cairo_get_operator, 0},  
+  {"set_operator", seed_cairo_set_operator, 0},  
+  {"get_tolerance", seed_cairo_get_tolerance, 0},  
+  {"set_tolerance", seed_cairo_set_tolerance, 0},  
+  {"clip", seed_cairo_clip, 0},
+  {"clip_preserve", seed_cairo_clip_preserve, 0},
+  {"reset_clip", seed_cairo_reset_clip, 0},
   {0, 0, 0}
 };
 
