@@ -1,5 +1,3 @@
-GLib = imports.gi.GLib;
-GObject = imports.gi.GObject;
 Clutter = imports.gi.Clutter;
 stage = Clutter.Stage.get_default();
 

@@ -21,10 +21,7 @@ function reset_stage()
 	context = new sandbox.Context();
 	context.add_globals();
 
-	var children = stage.get_children();
-				
-	for(var id in children)
-		stage.remove_actor(children[id]);
+	stage.remove_all();
 	
 	stage.color = {alpha: 255};
 	stage.show_cursor();

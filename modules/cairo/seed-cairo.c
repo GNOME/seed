@@ -1008,11 +1008,11 @@ seed_cairo_show_page (SeedContext ctx,
 
 static SeedValue 
 seed_cairo_has_current_point (SeedContext ctx,
-		      SeedObject function,
-		      SeedObject this_object,
-		      gsize argument_count,
-		      const SeedValue arguments[],
-		      SeedException *exception)
+			      SeedObject function,
+			      SeedObject this_object,
+			      gsize argument_count,
+			      const SeedValue arguments[],
+			      SeedException *exception)
 {
   CHECK_THIS();
   cairo_t *cr = seed_object_get_private (this_object);
@@ -1022,11 +1022,11 @@ seed_cairo_has_current_point (SeedContext ctx,
 
 static SeedValue 
 seed_cairo_get_current_point (SeedContext ctx,
-		      SeedObject function,
-		      SeedObject this_object,
-		      gsize argument_count,
-		      const SeedValue arguments[],
-		      SeedException *exception)
+			      SeedObject function,
+			      SeedObject this_object,
+			      gsize argument_count,
+			      const SeedValue arguments[],
+			      SeedException *exception)
 {
   SeedValue points[2];
   gdouble x, y;
@@ -1042,11 +1042,11 @@ seed_cairo_get_current_point (SeedContext ctx,
 
 static SeedValue 
 seed_cairo_new_path (SeedContext ctx,
-		      SeedObject function,
-		      SeedObject this_object,
-		      gsize argument_count,
-		      const SeedValue arguments[],
-		      SeedException *exception)
+		     SeedObject function,
+		     SeedObject this_object,
+		     gsize argument_count,
+		     const SeedValue arguments[],
+		     SeedException *exception)
 {
   CHECK_THIS();
   cairo_t *cr = seed_object_get_private (this_object);
@@ -1057,11 +1057,11 @@ seed_cairo_new_path (SeedContext ctx,
 
 static SeedValue 
 seed_cairo_new_sub_path (SeedContext ctx,
-		      SeedObject function,
-		      SeedObject this_object,
-		      gsize argument_count,
-		      const SeedValue arguments[],
-		      SeedException *exception)
+			 SeedObject function,
+			 SeedObject this_object,
+			 gsize argument_count,
+			 const SeedValue arguments[],
+			 SeedException *exception)
 {
   CHECK_THIS();
   cairo_t *cr = seed_object_get_private (this_object);
@@ -1072,11 +1072,11 @@ seed_cairo_new_sub_path (SeedContext ctx,
 
 static SeedValue 
 seed_cairo_close_path (SeedContext ctx,
-		      SeedObject function,
-		      SeedObject this_object,
-		      gsize argument_count,
-		      const SeedValue arguments[],
-		      SeedException *exception)
+		       SeedObject function,
+		       SeedObject this_object,
+		       gsize argument_count,
+		       const SeedValue arguments[],
+		       SeedException *exception)
 {
   CHECK_THIS();
   cairo_t *cr = seed_object_get_private (this_object);
@@ -1113,11 +1113,11 @@ seed_cairo_arc (SeedContext ctx,
 
 static SeedValue 
 seed_cairo_arc_negative (SeedContext ctx,
-		SeedObject function,
-		SeedObject this_object,
-		gsize argument_count,
-		const SeedValue arguments[],
-		SeedException *exception)
+			 SeedObject function,
+			 SeedObject this_object,
+			 gsize argument_count,
+			 const SeedValue arguments[],
+			 SeedException *exception)
 {
   gdouble xc, yc, radius, angle1, angle2;
   CHECK_THIS();
@@ -1139,11 +1139,11 @@ seed_cairo_arc_negative (SeedContext ctx,
 
 static SeedValue 
 seed_cairo_curve_to (SeedContext ctx,
-		SeedObject function,
-		SeedObject this_object,
-		gsize argument_count,
-		const SeedValue arguments[],
-		SeedException *exception)
+		     SeedObject function,
+		     SeedObject this_object,
+		     gsize argument_count,
+		     const SeedValue arguments[],
+		     SeedException *exception)
 {
   gdouble x1,y1,x2,y2,x3,y3;
   CHECK_THIS();
@@ -1166,11 +1166,11 @@ seed_cairo_curve_to (SeedContext ctx,
 
 static SeedValue 
 seed_cairo_rel_curve_to (SeedContext ctx,
-		SeedObject function,
-		SeedObject this_object,
-		gsize argument_count,
-		const SeedValue arguments[],
-		SeedException *exception)
+			 SeedObject function,
+			 SeedObject this_object,
+			 gsize argument_count,
+			 const SeedValue arguments[],
+			 SeedException *exception)
 {
   gdouble x1,y1,x2,y2,x3,y3;
   CHECK_THIS();
@@ -1193,11 +1193,11 @@ seed_cairo_rel_curve_to (SeedContext ctx,
 
 static SeedValue 
 seed_cairo_line_to (SeedContext ctx,
-		SeedObject function,
-		SeedObject this_object,
-		gsize argument_count,
-		const SeedValue arguments[],
-		SeedException *exception)
+		    SeedObject function,
+		    SeedObject this_object,
+		    gsize argument_count,
+		    const SeedValue arguments[],
+		    SeedException *exception)
 {
   gdouble x1,y1;
   CHECK_THIS();
@@ -1216,11 +1216,11 @@ seed_cairo_line_to (SeedContext ctx,
 
 static SeedValue 
 seed_cairo_rel_line_to (SeedContext ctx,
-		SeedObject function,
-		SeedObject this_object,
-		gsize argument_count,
-		const SeedValue arguments[],
-		SeedException *exception)
+			SeedObject function,
+			SeedObject this_object,
+			gsize argument_count,
+			const SeedValue arguments[],
+			SeedException *exception)
 {
   gdouble x1,y1;
   CHECK_THIS();
@@ -1239,11 +1239,11 @@ seed_cairo_rel_line_to (SeedContext ctx,
 
 static SeedValue 
 seed_cairo_move_to (SeedContext ctx,
-		SeedObject function,
-		SeedObject this_object,
-		gsize argument_count,
-		const SeedValue arguments[],
-		SeedException *exception)
+		    SeedObject function,
+		    SeedObject this_object,
+		    gsize argument_count,
+		    const SeedValue arguments[],
+		    SeedException *exception)
 {
   gdouble x1,y1;
   CHECK_THIS();
@@ -1262,11 +1262,11 @@ seed_cairo_move_to (SeedContext ctx,
 
 static SeedValue 
 seed_cairo_rel_move_to (SeedContext ctx,
-		SeedObject function,
-		SeedObject this_object,
-		gsize argument_count,
-		const SeedValue arguments[],
-		SeedException *exception)
+			SeedObject function,
+			SeedObject this_object,
+			gsize argument_count,
+			const SeedValue arguments[],
+			SeedException *exception)
 {
   gdouble x1,y1;
   CHECK_THIS();
@@ -1285,11 +1285,11 @@ seed_cairo_rel_move_to (SeedContext ctx,
 
 static SeedValue 
 seed_cairo_rectangle (SeedContext ctx,
-		SeedObject function,
-		SeedObject this_object,
-		gsize argument_count,
-		const SeedValue arguments[],
-		SeedException *exception)
+		      SeedObject function,
+		      SeedObject this_object,
+		      gsize argument_count,
+		      const SeedValue arguments[],
+		      SeedException *exception)
 {
   gdouble x1,y1, width, height;
   CHECK_THIS();
@@ -1357,6 +1357,75 @@ seed_cairo_path_extents (SeedContext ctx,
   jsextents[3] = seed_value_from_double (ctx, extents[3], exception);
 
   return seed_make_array (ctx, jsextents, 4, exception);
+}
+
+static SeedValue 
+seed_cairo_translate (SeedContext ctx,
+		      SeedObject function,
+		      SeedObject this_object,
+		      gsize argument_count,
+		      const SeedValue arguments[],
+		      SeedException *exception)
+{
+  gdouble x1,y1;
+  CHECK_THIS();
+  cairo_t *cr = seed_object_get_private (this_object);
+  
+  if (argument_count != 2)
+    {
+      EXPECTED_EXCEPTION ("translate", "2 arguments");
+    }
+  x1 = seed_value_to_double (ctx, arguments[0], exception);
+  y1 = seed_value_to_double (ctx, arguments[1], exception);
+  
+  cairo_translate (cr, x1, y1);
+  return seed_make_undefined (ctx);
+}
+
+static SeedValue 
+seed_cairo_scale (SeedContext ctx,
+		  SeedObject function,
+		  SeedObject this_object,
+		  gsize argument_count,
+		  const SeedValue arguments[],
+		  SeedException *exception)
+{
+  gdouble x1,y1;
+  CHECK_THIS();
+  cairo_t *cr = seed_object_get_private (this_object);
+  
+  if (argument_count != 2)
+    {
+      EXPECTED_EXCEPTION ("scale", "2 arguments");
+    }
+  x1 = seed_value_to_double (ctx, arguments[0], exception);
+  y1 = seed_value_to_double (ctx, arguments[1], exception);
+  
+  cairo_scale (cr, x1, y1);
+  return seed_make_undefined (ctx);
+}
+
+static SeedValue 
+seed_cairo_rotate (SeedContext ctx,
+		   SeedObject function,
+		   SeedObject this_object,
+		   gsize argument_count,
+		   const SeedValue arguments[],
+		   SeedException *exception)
+{
+  gdouble angle;
+  CHECK_THIS();
+  cairo_t *cr = seed_object_get_private (this_object);
+  
+  if (argument_count != 2)
+    {
+      EXPECTED_EXCEPTION ("rotate", "1 arguments");
+    }
+  angle = seed_value_to_double (ctx, arguments[0], exception);
+
+  
+  cairo_rotate (cr, angle);
+  return seed_make_undefined (ctx);
 }
 
   
@@ -1429,6 +1498,9 @@ seed_static_function cairo_funcs[] = {
   {"rel_line_to", seed_cairo_rel_line_to, 0},
   {"rel_move_to", seed_cairo_rel_move_to, 0},
   {"path_extents", seed_cairo_path_extents, 0},
+  {"translate", seed_cairo_translate, 0},
+  {"scale", seed_cairo_scale, 0},
+  {"rotate", seed_cairo_rotate, 0},
   {0, 0, 0}
 };
 
