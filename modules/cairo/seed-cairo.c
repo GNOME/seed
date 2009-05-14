@@ -89,6 +89,129 @@ seed_cairo_construct_context (SeedContext ctx,
   return seed_object_from_cairo_context (ctx, cairo_create (surf));
 }
 
+static SeedValue 
+seed_cairo_save (SeedContext ctx,
+		 SeedObject function,
+		 SeedObject this_object,
+		 gsize argument_count,
+		 const SeedValue arguments[],
+		 SeedException *exception)
+{
+  CHECK_THIS();
+  cairo_t *cr = seed_object_get_private (this_object);
+  
+  cairo_save(cr);
+  return seed_make_undefined (ctx);
+}
+
+static SeedValue 
+seed_cairo_restore (SeedContext ctx,
+		 SeedObject function,
+		 SeedObject this_object,
+		 gsize argument_count,
+		 const SeedValue arguments[],
+		 SeedException *exception)
+{
+  CHECK_THIS();
+  cairo_t *cr = seed_object_get_private (this_object);
+  
+  cairo_restore(cr);
+  return seed_make_undefined (ctx);
+}
+
+static SeedValue 
+seed_cairo_get_target (SeedContext ctx,
+		 SeedObject function,
+		 SeedObject this_object,
+		 gsize argument_count,
+		 const SeedValue arguments[],
+		 SeedException *exception)
+{
+  CHECK_THIS();
+  cairo_t *cr = seed_object_get_private (this_object);
+  
+  return seed_object_from_cairo_surface (ctx, cairo_get_target (cr));
+}
+
+static SeedValue 
+seed_cairo_push_group (SeedContext ctx,
+		       SeedObject function,
+		       SeedObject this_object,
+		       gsize argument_count,
+		       const SeedValue arguments[],
+		       SeedException *exception)
+{
+  CHECK_THIS();
+  cairo_t *cr = seed_object_get_private (this_object);
+  
+  cairo_push_group(cr);
+  return seed_make_undefined (ctx);
+}
+
+static SeedValue 
+seed_cairo_push_group_with_content (SeedContext ctx,
+				    SeedObject function,
+				    SeedObject this_object,
+				    gsize argument_count,
+				    const SeedValue arguments[],
+				    SeedException *exception)
+{
+  cairo_content_t content;
+  cairo_t *cr;
+  if (argument_count != 1)
+    {
+      EXPECTED_EXCEPTION("push_group_with_content", "1 argument");
+    }
+    
+  CHECK_THIS();  
+  cr = seed_object_get_private (this_object);
+  content = seed_value_to_long (ctx, arguments[0], exception);
+  cairo_push_group_with_content(cr, content);
+
+  return seed_make_undefined (ctx);
+}
+
+static SeedValue 
+seed_cairo_pop_group_to_source (SeedContext ctx,
+		       SeedObject function,
+		       SeedObject this_object,
+		       gsize argument_count,
+		       const SeedValue arguments[],
+		       SeedException *exception)
+{
+  CHECK_THIS();
+  cairo_t *cr = seed_object_get_private (this_object);
+  
+  cairo_pop_group_to_source(cr);
+  return seed_make_undefined (ctx);
+}
+
+static SeedValue 
+seed_cairo_get_group_target (SeedContext ctx,
+		 SeedObject function,
+		 SeedObject this_object,
+		 gsize argument_count,
+		 const SeedValue arguments[],
+		 SeedException *exception)
+{
+  CHECK_THIS();
+  cairo_t *cr = seed_object_get_private (this_object);
+  
+  return seed_object_from_cairo_surface (ctx, cairo_get_group_target (cr));
+}
+
+
+seed_static_function cairo_funcs[] = {
+  {"save", seed_cairo_save, 0},
+  {"restore", seed_cairo_restore, 0},
+  {"get_target", seed_cairo_get_target, 0},
+  {"push_group", seed_cairo_push_group, 0},
+  {"push_group_with_content", seed_cairo_push_group_with_content, 0},
+  //  {"pop_group", seed_cairo_pop_group, 0},
+  {"pop_group_to_source", seed_cairo_pop_group_to_source, 0},
+  {"get_group_target", seed_cairo_get_group_target, 0},
+  {0, 0, 0}
+};
 
 SeedObject
 seed_module_init(SeedEngine * local_eng)
