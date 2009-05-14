@@ -1,15 +1,35 @@
 #include <seed.h>
 #include <cairo/cairo.h>
+#include "seed-cairo.h"
 
-#define ENUM_MEMBER(holder, name, value)		\
+#define ENUM_MEMBER(holder, name, value)				\
   seed_object_set_property (ctx, holder, name, seed_value_from_long (ctx, value, NULL))
+
+SeedValue
+seed_cairo_status_to_string (SeedContext ctx,
+			     SeedObject function,
+			     SeedObject this_object,
+			     gsize argument_count,
+			     const SeedValue arguments[],
+			     SeedException *exception)
+{
+  cairo_status_t status;
+  
+  if (argument_count != 1)
+    {
+      EXPECTED_EXCEPTION("status_to_string", "1 argument");
+    }
+  status = seed_value_to_long (ctx, arguments[0], exception);
+  
+  return seed_value_from_string (ctx, cairo_status_to_string (status), exception);
+}
 
 void
 seed_define_cairo_enums (SeedContext ctx,
 			 SeedObject namespace_ref)
 {
   SeedObject content_holder, format_holder, antialias_holder, fillrule_holder,
-    linecap_holder, linejoin_holder, operator_holder;
+    linecap_holder, linejoin_holder, operator_holder, status_holder;
   
   content_holder = seed_make_object (ctx, NULL, NULL);
   seed_object_set_property (ctx, namespace_ref, "Content", content_holder);
@@ -65,7 +85,41 @@ seed_define_cairo_enums (SeedContext ctx,
   ENUM_MEMBER(operator_holder, "XOR", CAIRO_OPERATOR_XOR);
   ENUM_MEMBER(operator_holder, "ADD", CAIRO_OPERATOR_ADD);
   ENUM_MEMBER(operator_holder, "SATURATE", CAIRO_OPERATOR_SATURATE);
-
   
+  status_holder = seed_make_object (ctx, NULL, NULL);
+  seed_object_set_property (ctx, namespace_ref, "Status", status_holder);
+  ENUM_MEMBER(status_holder, "SUCCESS", CAIRO_STATUS_SUCCESS);
+  ENUM_MEMBER(status_holder, "NO_MEMORY", CAIRO_STATUS_NO_MEMORY);
+  ENUM_MEMBER(status_holder, "INVALID_RESTORE", CAIRO_STATUS_INVALID_RESTORE);
+  ENUM_MEMBER(status_holder, "INVALID_POP_GROUP", CAIRO_STATUS_INVALID_POP_GROUP);
+  ENUM_MEMBER(status_holder, "NO_CURRENT_POINT", CAIRO_STATUS_NO_CURRENT_POINT);
+  ENUM_MEMBER(status_holder, "INVALID_MATRIX", CAIRO_STATUS_INVALID_MATRIX);
+  ENUM_MEMBER(status_holder, "INVALID_STATUS", CAIRO_STATUS_INVALID_STATUS);
+  ENUM_MEMBER(status_holder, "NULL_POINTER", CAIRO_STATUS_NULL_POINTER);
+  ENUM_MEMBER(status_holder, "INVALID_STRING", CAIRO_STATUS_INVALID_STRING);
+  ENUM_MEMBER(status_holder, "INVALID_PATH_DATA", CAIRO_STATUS_INVALID_PATH_DATA);
+  ENUM_MEMBER(status_holder, "READ_ERROR", CAIRO_STATUS_READ_ERROR);
+  ENUM_MEMBER(status_holder, "WRITE_ERROR", CAIRO_STATUS_WRITE_ERROR);
+  ENUM_MEMBER(status_holder, "SURFACE_FINISHED", CAIRO_STATUS_SURFACE_FINISHED);
+  ENUM_MEMBER(status_holder, "SURFACE_TYPE_MISMATCH", CAIRO_STATUS_SURFACE_TYPE_MISMATCH);
+  ENUM_MEMBER(status_holder, "PATTERN_TYPE_MISMATCH", CAIRO_STATUS_PATTERN_TYPE_MISMATCH);
+  ENUM_MEMBER(status_holder, "INVALID_CONTENT", CAIRO_STATUS_INVALID_CONTENT);
+  ENUM_MEMBER(status_holder, "INVALID_FORMAT", CAIRO_STATUS_INVALID_FORMAT);
+  ENUM_MEMBER(status_holder, "INVALID_VISUAL", CAIRO_STATUS_INVALID_VISUAL);
+  ENUM_MEMBER(status_holder, "FILE_NOT_FOUND", CAIRO_STATUS_FILE_NOT_FOUND);
+  ENUM_MEMBER(status_holder, "INVALID_DASH", CAIRO_STATUS_INVALID_DASH);
+  ENUM_MEMBER(status_holder, "INVALID_DSC_COMMENT", CAIRO_STATUS_INVALID_DSC_COMMENT);
+  ENUM_MEMBER(status_holder, "INVALID_INDEX", CAIRO_STATUS_INVALID_INDEX);
+  ENUM_MEMBER(status_holder, "CLIP_NOT_REPRESENTABLE", CAIRO_STATUS_CLIP_NOT_REPRESENTABLE);
+  ENUM_MEMBER(status_holder, "TEMP_FILE_ERROR", CAIRO_STATUS_TEMP_FILE_ERROR);
+  ENUM_MEMBER(status_holder, "INVALID_STRIDE", CAIRO_STATUS_INVALID_STRIDE);
+  ENUM_MEMBER(status_holder, "FONT_TYPE_MISMATCH", CAIRO_STATUS_FONT_TYPE_MISMATCH);
+  ENUM_MEMBER(status_holder, "USER_FONT_IMMUTABLE", CAIRO_STATUS_USER_FONT_IMMUTABLE);
+  ENUM_MEMBER(status_holder, "USER_FONT_ERROR", CAIRO_STATUS_USER_FONT_ERROR);
+  ENUM_MEMBER(status_holder, "NEGATIVE_COUNT", CAIRO_STATUS_NEGATIVE_COUNT);
+  ENUM_MEMBER(status_holder, "INVALID_CLUSTERS", CAIRO_STATUS_INVALID_CLUSTERS);
+  ENUM_MEMBER(status_holder, "INVALID_SLANT", CAIRO_STATUS_INVALID_SLANT);
+  ENUM_MEMBER(status_holder, "INVALID_WEIGHT", CAIRO_STATUS_INVALID_WEIGHT);
   
+  seed_create_function (ctx, "to_string", seed_cairo_status_to_string, status_holder);
 }

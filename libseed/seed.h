@@ -233,12 +233,12 @@ SeedValue seed_value_from_object (SeedContext ctx,
 
 gpointer seed_pointer_get_pointer (SeedContext ctx, SeedValue pointer);
 
-typedef void (*SeedFunctionCallback) (SeedContext ctx,
-				      SeedObject function,
-				      SeedObject this_object,
-				      gsize argument_count,
-				      const SeedValue arguments[],
-				      SeedException * exception);
+typedef SeedValue (*SeedFunctionCallback) (SeedContext ctx,
+					   SeedObject function,
+					   SeedObject this_object,
+					   gsize argument_count,
+					   const SeedValue arguments[],
+					   SeedException * excecption);
 
 void seed_create_function (SeedContext ctx,
 			   gchar * name, SeedFunctionCallback callback,
