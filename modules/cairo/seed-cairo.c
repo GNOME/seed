@@ -1006,6 +1006,359 @@ seed_cairo_show_page (SeedContext ctx,
   return seed_make_undefined (ctx);
 }
 
+static SeedValue 
+seed_cairo_has_current_point (SeedContext ctx,
+		      SeedObject function,
+		      SeedObject this_object,
+		      gsize argument_count,
+		      const SeedValue arguments[],
+		      SeedException *exception)
+{
+  CHECK_THIS();
+  cairo_t *cr = seed_object_get_private (this_object);
+  
+  return seed_value_from_boolean (ctx, cairo_has_current_point(cr), exception);
+}
+
+static SeedValue 
+seed_cairo_get_current_point (SeedContext ctx,
+		      SeedObject function,
+		      SeedObject this_object,
+		      gsize argument_count,
+		      const SeedValue arguments[],
+		      SeedException *exception)
+{
+  SeedValue points[2];
+  gdouble x, y;
+  CHECK_THIS();
+  cairo_t *cr = seed_object_get_private (this_object);
+
+  cairo_get_current_point (cr, &x, &y);
+  points[0] = seed_value_from_double (ctx, x, exception);
+  points[1] = seed_value_from_double (ctx, y, exception);
+  
+  return seed_make_array (ctx, points, 2, exception);
+}
+
+static SeedValue 
+seed_cairo_new_path (SeedContext ctx,
+		      SeedObject function,
+		      SeedObject this_object,
+		      gsize argument_count,
+		      const SeedValue arguments[],
+		      SeedException *exception)
+{
+  CHECK_THIS();
+  cairo_t *cr = seed_object_get_private (this_object);
+  
+  cairo_new_path(cr);
+  return seed_make_undefined (ctx);
+}
+
+static SeedValue 
+seed_cairo_new_sub_path (SeedContext ctx,
+		      SeedObject function,
+		      SeedObject this_object,
+		      gsize argument_count,
+		      const SeedValue arguments[],
+		      SeedException *exception)
+{
+  CHECK_THIS();
+  cairo_t *cr = seed_object_get_private (this_object);
+  
+  cairo_new_sub_path(cr);
+  return seed_make_undefined (ctx);
+}
+
+static SeedValue 
+seed_cairo_close_path (SeedContext ctx,
+		      SeedObject function,
+		      SeedObject this_object,
+		      gsize argument_count,
+		      const SeedValue arguments[],
+		      SeedException *exception)
+{
+  CHECK_THIS();
+  cairo_t *cr = seed_object_get_private (this_object);
+  
+  cairo_close_path(cr);
+  return seed_make_undefined (ctx);
+}
+
+static SeedValue 
+seed_cairo_arc (SeedContext ctx,
+		SeedObject function,
+		SeedObject this_object,
+		gsize argument_count,
+		const SeedValue arguments[],
+		SeedException *exception)
+{
+  gdouble xc, yc, radius, angle1, angle2;
+  CHECK_THIS();
+  cairo_t *cr = seed_object_get_private (this_object);
+  
+  if (argument_count != 5)
+    {
+      EXPECTED_EXCEPTION ("arc", "5 arguments");
+    }
+  xc = seed_value_to_double (ctx, arguments[0], exception);
+  yc = seed_value_to_double (ctx, arguments[1], exception);
+  radius = seed_value_to_double (ctx, arguments[2], exception);
+  angle1 = seed_value_to_double (ctx, arguments[3], exception);
+  angle2 = seed_value_to_double (ctx, arguments[4], exception);
+  
+  cairo_arc (cr, xc, yc, radius, angle1, angle2);
+  return seed_make_undefined (ctx);
+}
+
+static SeedValue 
+seed_cairo_arc_negative (SeedContext ctx,
+		SeedObject function,
+		SeedObject this_object,
+		gsize argument_count,
+		const SeedValue arguments[],
+		SeedException *exception)
+{
+  gdouble xc, yc, radius, angle1, angle2;
+  CHECK_THIS();
+  cairo_t *cr = seed_object_get_private (this_object);
+  
+  if (argument_count != 5)
+    {
+      EXPECTED_EXCEPTION ("arc_negative", "5 arguments");
+    }
+  xc = seed_value_to_double (ctx, arguments[0], exception);
+  yc = seed_value_to_double (ctx, arguments[1], exception);
+  radius = seed_value_to_double (ctx, arguments[2], exception);
+  angle1 = seed_value_to_double (ctx, arguments[3], exception);
+  angle2 = seed_value_to_double (ctx, arguments[4], exception);
+  
+  cairo_arc_negative (cr, xc, yc, radius, angle1, angle2);
+  return seed_make_undefined (ctx);
+}
+
+static SeedValue 
+seed_cairo_curve_to (SeedContext ctx,
+		SeedObject function,
+		SeedObject this_object,
+		gsize argument_count,
+		const SeedValue arguments[],
+		SeedException *exception)
+{
+  gdouble x1,y1,x2,y2,x3,y3;
+  CHECK_THIS();
+  cairo_t *cr = seed_object_get_private (this_object);
+  
+  if (argument_count != 6)
+    {
+      EXPECTED_EXCEPTION ("curve_to", "6 arguments");
+    }
+  x1 = seed_value_to_double (ctx, arguments[0], exception);
+  y1 = seed_value_to_double (ctx, arguments[1], exception);
+  x2 = seed_value_to_double (ctx, arguments[2], exception);
+  y2 = seed_value_to_double (ctx, arguments[3], exception);
+  x3 = seed_value_to_double (ctx, arguments[4], exception);
+  y3 = seed_value_to_double (ctx, arguments[5], exception);
+  
+  cairo_curve_to (cr, x1, y2, x2, y2, x3, y3);
+  return seed_make_undefined (ctx);
+}
+
+static SeedValue 
+seed_cairo_rel_curve_to (SeedContext ctx,
+		SeedObject function,
+		SeedObject this_object,
+		gsize argument_count,
+		const SeedValue arguments[],
+		SeedException *exception)
+{
+  gdouble x1,y1,x2,y2,x3,y3;
+  CHECK_THIS();
+  cairo_t *cr = seed_object_get_private (this_object);
+  
+  if (argument_count != 6)
+    {
+      EXPECTED_EXCEPTION ("rel_curve_to", "6 arguments");
+    }
+  x1 = seed_value_to_double (ctx, arguments[0], exception);
+  y1 = seed_value_to_double (ctx, arguments[1], exception);
+  x2 = seed_value_to_double (ctx, arguments[2], exception);
+  y2 = seed_value_to_double (ctx, arguments[3], exception);
+  x3 = seed_value_to_double (ctx, arguments[4], exception);
+  y3 = seed_value_to_double (ctx, arguments[5], exception);
+  
+  cairo_rel_curve_to (cr, x1, y2, x2, y2, x3, y3);
+  return seed_make_undefined (ctx);
+}
+
+static SeedValue 
+seed_cairo_line_to (SeedContext ctx,
+		SeedObject function,
+		SeedObject this_object,
+		gsize argument_count,
+		const SeedValue arguments[],
+		SeedException *exception)
+{
+  gdouble x1,y1;
+  CHECK_THIS();
+  cairo_t *cr = seed_object_get_private (this_object);
+  
+  if (argument_count != 2)
+    {
+      EXPECTED_EXCEPTION ("line_to", "2 arguments");
+    }
+  x1 = seed_value_to_double (ctx, arguments[0], exception);
+  y1 = seed_value_to_double (ctx, arguments[1], exception);
+  
+  cairo_line_to (cr, x1, y1);
+  return seed_make_undefined (ctx);
+}
+
+static SeedValue 
+seed_cairo_rel_line_to (SeedContext ctx,
+		SeedObject function,
+		SeedObject this_object,
+		gsize argument_count,
+		const SeedValue arguments[],
+		SeedException *exception)
+{
+  gdouble x1,y1;
+  CHECK_THIS();
+  cairo_t *cr = seed_object_get_private (this_object);
+  
+  if (argument_count != 2)
+    {
+      EXPECTED_EXCEPTION ("rel_line_to", "2 arguments");
+    }
+  x1 = seed_value_to_double (ctx, arguments[0], exception);
+  y1 = seed_value_to_double (ctx, arguments[1], exception);
+  
+  cairo_rel_line_to (cr, x1, y1);
+  return seed_make_undefined (ctx);
+}
+
+static SeedValue 
+seed_cairo_move_to (SeedContext ctx,
+		SeedObject function,
+		SeedObject this_object,
+		gsize argument_count,
+		const SeedValue arguments[],
+		SeedException *exception)
+{
+  gdouble x1,y1;
+  CHECK_THIS();
+  cairo_t *cr = seed_object_get_private (this_object);
+  
+  if (argument_count != 2)
+    {
+      EXPECTED_EXCEPTION ("move_to", "2 arguments");
+    }
+  x1 = seed_value_to_double (ctx, arguments[0], exception);
+  y1 = seed_value_to_double (ctx, arguments[1], exception);
+  
+  cairo_move_to (cr, x1, y1);
+  return seed_make_undefined (ctx);
+}
+
+static SeedValue 
+seed_cairo_rel_move_to (SeedContext ctx,
+		SeedObject function,
+		SeedObject this_object,
+		gsize argument_count,
+		const SeedValue arguments[],
+		SeedException *exception)
+{
+  gdouble x1,y1;
+  CHECK_THIS();
+  cairo_t *cr = seed_object_get_private (this_object);
+  
+  if (argument_count != 2)
+    {
+      EXPECTED_EXCEPTION ("rel_move_to", "2 arguments");
+    }
+  x1 = seed_value_to_double (ctx, arguments[0], exception);
+  y1 = seed_value_to_double (ctx, arguments[1], exception);
+  
+  cairo_rel_move_to (cr, x1, y1);
+  return seed_make_undefined (ctx);
+}
+
+static SeedValue 
+seed_cairo_rectangle (SeedContext ctx,
+		SeedObject function,
+		SeedObject this_object,
+		gsize argument_count,
+		const SeedValue arguments[],
+		SeedException *exception)
+{
+  gdouble x1,y1, width, height;
+  CHECK_THIS();
+  cairo_t *cr = seed_object_get_private (this_object);
+  
+  if (argument_count != 4)
+    {
+      EXPECTED_EXCEPTION ("rectangle", "2 arguments");
+    }
+  x1 = seed_value_to_double (ctx, arguments[0], exception);
+  y1 = seed_value_to_double (ctx, arguments[1], exception);
+  width = seed_value_to_double (ctx, arguments[2], exception);
+  height = seed_value_to_double (ctx, arguments[3], exception);
+  
+  cairo_rectangle (cr, x1, y1, width, height);
+  return seed_make_undefined (ctx);
+}
+
+static SeedValue
+seed_cairo_text_path (SeedContext ctx,
+		      SeedObject function,
+		      SeedObject this_object,
+		      gsize argument_count,
+		      const SeedValue arguments[],
+		      SeedException *exception)
+{
+  cairo_t *cr;
+  gchar *text;
+  CHECK_THIS();
+  cr = seed_object_get_private (this_object);
+  
+  if (argument_count != 1)
+    {
+      EXPECTED_EXCEPTION("text_path", "1 argument");
+    }
+  text = seed_value_to_string (ctx, arguments[0], exception);
+  cairo_text_path (cr, text);
+  g_free (text);
+  
+  return seed_make_undefined (ctx);
+}
+
+static SeedValue 
+seed_cairo_path_extents (SeedContext ctx,
+			 SeedObject function,
+			 SeedObject this_object,
+			 gsize argument_count,
+			 const SeedValue arguments[],
+			 SeedException *exception)
+{
+  SeedValue jsextents[4];
+  gdouble extents[4];
+  CHECK_THIS();
+  cairo_t *cr = seed_object_get_private (this_object);
+  
+  if (argument_count != 4)
+    {
+      EXPECTED_EXCEPTION("path_extents", "4 arguments");
+    }
+  
+  cairo_path_extents (cr, &extents[0], &extents[1], &extents[2], &extents[3]);
+  jsextents[0] = seed_value_from_double (ctx, extents[0], exception);
+  jsextents[1] = seed_value_from_double (ctx, extents[1], exception);
+  jsextents[2] = seed_value_from_double (ctx, extents[2], exception);
+  jsextents[3] = seed_value_from_double (ctx, extents[3], exception);
+
+  return seed_make_array (ctx, jsextents, 4, exception);
+}
+
   
 seed_static_function cairo_funcs[] = {
   {"save", seed_cairo_save, 0},
@@ -1059,6 +1412,23 @@ seed_static_function cairo_funcs[] = {
   {"in_stroke", seed_cairo_in_stroke, 0},
   {"copy_page", seed_cairo_copy_page, 0},
   {"show_page", seed_cairo_show_page, 0},
+  {"has_current_point", seed_cairo_has_current_point, 0},
+  {"get_current_point", seed_cairo_get_current_point, 0},
+  {"new_path", seed_cairo_new_path, 0},
+  {"new_sub_path", seed_cairo_new_sub_path, 0},
+  {"close_path", seed_cairo_close_path, 0},
+  {"arc", seed_cairo_arc, 0},
+  {"arc_negative", seed_cairo_arc_negative, 0},
+  {"curve_to", seed_cairo_curve_to, 0},
+  {"line_to", seed_cairo_line_to, 0},
+  {"move_to", seed_cairo_move_to, 0},
+  {"rectangle", seed_cairo_rectangle, 0},
+  //{"cairo_glpyh_path", seed_cairo_glyph_path, 0},
+  {"text_path", seed_cairo_text_path, 0},
+  {"rel_curve_to", seed_cairo_rel_curve_to, 0},
+  {"rel_line_to", seed_cairo_rel_line_to, 0},
+  {"rel_move_to", seed_cairo_rel_move_to, 0},
+  {"path_extents", seed_cairo_path_extents, 0},
   {0, 0, 0}
 };
 
