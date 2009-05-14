@@ -9,7 +9,8 @@ seedlib_LTLIBRARIES = \
 libcairo_la_SOURCES = \
 	seed-cairo.c \
 	seed-cairo-surface.c \
-	seed-cairo-image-surface.c
+	seed-cairo-image-surface.c \
+	seed-cairo-enums.c 
 
 libcairo_la_CFLAGS = \
         $(GOBJECT_INTROSPECTION_CFLAGS) \

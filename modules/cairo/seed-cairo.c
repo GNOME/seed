@@ -28,6 +28,7 @@ seed_module_init(SeedEngine * local_eng)
   // Temporary hack until API changes.
   seed_value_protect (eng->context, namespace_ref);
   seed_define_cairo_surface (eng->context, namespace_ref);
+  seed_define_cairo_enums (eng->context, namespace_ref);
   
   return namespace_ref;
 }
