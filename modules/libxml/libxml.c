@@ -308,8 +308,6 @@ seed_xml_xpath_eval (SeedContext ctx,
   xmlXPathContextPtr xpath_ctx;
   gchar *xpath;
   
-  xpath_ctx = XML_XPATH_PRIV (this_object);
-  
   if (argument_count != 1)
     {
       seed_make_exception (ctx, exception, 
@@ -318,11 +316,42 @@ seed_xml_xpath_eval (SeedContext ctx,
 			   argument_count);
       return seed_make_null (ctx);
     }
+  xpath_ctx = XML_XPATH_PRIV (this_object);
+
   xpath = seed_value_to_string (ctx, arguments[0], exception);
   xpath_obj = xmlXPathEval (xpath, xpath_ctx);
   g_free (xpath);
   
   return seed_make_object (ctx, xml_xpathobj_class, xpath_obj);
+}
+
+static SeedValue
+seed_xml_xpath_register_ns (SeedContext ctx,
+			    SeedObject function,
+			    SeedObject this_object,
+			    gsize argument_count,
+			    const SeedValue arguments[],
+			    SeedException * exception)
+{
+  xmlXPathContextPtr xpath;
+  gchar *prefix;
+  gchar *ns_uri;
+  if (argument_count != 2)
+    {
+      seed_make_exception (ctx, exception, "ArgumentError",
+			   "xpathRegisterNs expects 2 arguments, got %zd",
+			   argument_count);
+      return seed_make_undefined (ctx);
+    }
+  ctx = XML_XPATH_PRIV (this_object);
+  prefix = seed_value_to_string (ctx, arguments[0], exception);
+  ns_uri = seed_value_to_string (ctx, arguments[1], exception);
+  
+  xmlXPathRegisterNs (xpath, prefix, ns_uri);
+  g_free (prefix);
+  g_free (ns_uri);
+  
+  return seed_make_undefined (ctx);  
 }
 
 static SeedValue
@@ -452,6 +481,7 @@ seed_static_value attr_values[] = {
 
 seed_static_function xpath_funcs[] = {
   {"xpathEval", seed_xml_xpath_eval, 0},
+  {"xpathRegisterNs", seed_xml_xpath_register_ns, 0},
   {0, 0, 0}
 };
 
