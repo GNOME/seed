@@ -131,4 +131,5 @@ seed_define_cairo_image_surface (SeedContext ctx,
   image_surface_constructor_ref = seed_make_constructor (ctx,
 					   seed_cairo_image_surface_class,
 					   seed_cairo_construct_image_surface);
+  seed_object_set_property (ctx, namespace_ref, "ImageSurface", image_surface_constructor_ref);
 }
