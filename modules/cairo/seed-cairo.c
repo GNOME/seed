@@ -23,6 +23,10 @@ SeedEngine *eng;
     seed_make_exception (ctx, exception, "ArgumentError", "Cairo Context has been destroyed"); \
     return seed_make_undefined (ctx);}
 
+#define CHECK_THIS_BOOL() if (!seed_object_get_private (this_object)){	\
+    seed_make_exception (ctx, exception, "ArgumentError", "Cairo Context has been destroyed"); \
+    return FALSE;}
+
 SeedClass seed_cairo_context_class;
 
 cairo_user_data_key_t *
@@ -282,35 +286,28 @@ seed_cairo_set_source_surface (SeedContext ctx,
   return seed_make_undefined (ctx);
 }
 
-static SeedValue
+static gboolean
 seed_cairo_set_antialias (SeedContext ctx,
-			  SeedObject function,
 			  SeedObject this_object,
-			  gsize argument_count,
-			  const SeedValue arguments[],
+			  SeedString property_name,
+			  SeedValue value,
 			  SeedException *exception)
 {
   cairo_t *cr;
   cairo_antialias_t antialias;
   
-  CHECK_THIS();
-  if (argument_count != 1)
-    {
-      EXPECTED_EXCEPTION("set_antialias", "1 argument");
-    }
+  CHECK_THIS_BOOL();
   cr = seed_object_get_private (this_object);
-  antialias = seed_value_to_long (ctx, arguments[0], exception);
+  antialias = seed_value_to_long (ctx, value, exception);
 
   cairo_set_antialias (cr, antialias);
-  return seed_make_undefined (ctx);
+  return TRUE;
 }
 
 static SeedValue
 seed_cairo_get_antialias (SeedContext ctx,
-			  SeedObject function,
 			  SeedObject this_object,
-			  gsize argument_count,
-			  const SeedValue arguments[],
+			  SeedString property_name,
 			  SeedException *exception)
 {
   cairo_antialias_t antialias;
@@ -412,10 +409,8 @@ seed_cairo_get_dash (SeedContext ctx,
 
 static SeedValue
 seed_cairo_get_fill_rule (SeedContext ctx,
-			  SeedObject function,
 			  SeedObject this_object,
-			  gsize argument_count,
-			  const SeedValue arguments[],
+			  SeedString property_name,
 			  SeedException *exception)
 {
   cairo_t *cr;
@@ -425,35 +420,27 @@ seed_cairo_get_fill_rule (SeedContext ctx,
   return seed_value_from_long (ctx, cairo_get_fill_rule (cr), exception);
 }
 
-static SeedValue
+static gboolean
 seed_cairo_set_fill_rule (SeedContext ctx,
-			  SeedObject function,
 			  SeedObject this_object,
-			  gsize argument_count,
-			  const SeedValue arguments[],
+			  SeedString property_name,
+			  SeedValue value,
 			  SeedException *exception)
 {
   cairo_t *cr;
-  CHECK_THIS();
-  
-  if (argument_count != 1)
-    {
-      EXPECTED_EXCEPTION("fill_rule", "1 argument");
-    }
+  CHECK_THIS_BOOL();
   
   cr = seed_object_get_private (this_object);
-  cairo_set_fill_rule (cr, seed_value_to_long (ctx, arguments[0], exception));
+  cairo_set_fill_rule (cr, seed_value_to_long (ctx, value, exception));
 
-  return seed_make_undefined (ctx);
+  return TRUE;
 }
 
 
 static SeedValue
 seed_cairo_get_line_cap (SeedContext ctx,
-			 SeedObject function,
 			 SeedObject this_object,
-			 gsize argument_count,
-			 const SeedValue arguments[],
+			 SeedString property_name,
 			 SeedException *exception)
 {
   cairo_t *cr;
@@ -463,34 +450,26 @@ seed_cairo_get_line_cap (SeedContext ctx,
   return seed_value_from_long (ctx, cairo_get_line_cap (cr), exception);
 }
 
-static SeedValue
+static gboolean
 seed_cairo_set_line_cap (SeedContext ctx,
-			 SeedObject function,
 			 SeedObject this_object,
-			 gsize argument_count,
-			 const SeedValue arguments[],
+			 SeedString property_name,
+			 SeedValue value,
 			 SeedException *exception)
 {
   cairo_t *cr;
-  CHECK_THIS();
-  
-  if (argument_count != 1)
-    {
-      EXPECTED_EXCEPTION("line_cap", "1 argument");
-    }
+  CHECK_THIS_BOOL();
   
   cr = seed_object_get_private (this_object);
-  cairo_set_line_cap (cr, seed_value_to_long (ctx, arguments[0], exception));
+  cairo_set_line_cap (cr, seed_value_to_long (ctx, value, exception));
 
-  return seed_make_undefined (ctx);
+  return TRUE;
 }
 
 static SeedValue
 seed_cairo_get_line_join (SeedContext ctx,
-			  SeedObject function,
 			  SeedObject this_object,
-			  gsize argument_count,
-			  const SeedValue arguments[],
+			  SeedString property_name,
 			  SeedException *exception)
 {
   cairo_t *cr;
@@ -500,35 +479,27 @@ seed_cairo_get_line_join (SeedContext ctx,
   return seed_value_from_long (ctx, cairo_get_line_join (cr), exception);
 }
 
-static SeedValue
+static gboolean
 seed_cairo_set_line_join (SeedContext ctx,
-			  SeedObject function,
 			  SeedObject this_object,
-			  gsize argument_count,
-			  const SeedValue arguments[],
+			  SeedString property_name,
+			  SeedValue value,
 			  SeedException *exception)
 {
   cairo_t *cr;
-  CHECK_THIS();
-  
-  if (argument_count != 1)
-    {
-      EXPECTED_EXCEPTION("line_join", "1 argument");
-    }
+  CHECK_THIS_BOOL();
   
   cr = seed_object_get_private (this_object);
-  cairo_set_line_join (cr, seed_value_to_long (ctx, arguments[0], exception));
+  cairo_set_line_join (cr, seed_value_to_long (ctx, value, exception));
   
-  return seed_make_undefined (ctx);
+  return TRUE;
 }
 
 
 static SeedValue
 seed_cairo_get_line_width (SeedContext ctx,
-			   SeedObject function,
 			   SeedObject this_object,
-			   gsize argument_count,
-			   const SeedValue arguments[],
+			   SeedString property_name,
 			   SeedException *exception)
 {
   cairo_t *cr;
@@ -538,34 +509,26 @@ seed_cairo_get_line_width (SeedContext ctx,
   return seed_value_from_double (ctx, cairo_get_line_width (cr), exception);
 }
 
-static SeedValue
+static gboolean
 seed_cairo_set_line_width (SeedContext ctx,
-			   SeedObject function,
 			   SeedObject this_object,
-			   gsize argument_count,
-			   const SeedValue arguments[],
+			   SeedString property_name,
+			   SeedValue value,
 			   SeedException *exception)
 {
   cairo_t *cr;
-  CHECK_THIS();
-  
-  if (argument_count != 1)
-    {
-      EXPECTED_EXCEPTION("line_width", "1 argument");
-    }
+  CHECK_THIS_BOOL();
   
   cr = seed_object_get_private (this_object);
-  cairo_set_line_width (cr, seed_value_to_double (ctx, arguments[0], exception));
+  cairo_set_line_width (cr, seed_value_to_double (ctx, value, exception));
   
-  return seed_make_undefined (ctx);
+  return TRUE;
 }
 
 static SeedValue
 seed_cairo_get_miter_limit (SeedContext ctx,
-			    SeedObject function,
 			    SeedObject this_object,
-			    gsize argument_count,
-			    const SeedValue arguments[],
+			    SeedString property_name,
 			    SeedException *exception)
 {
   cairo_t *cr;
@@ -575,34 +538,26 @@ seed_cairo_get_miter_limit (SeedContext ctx,
   return seed_value_from_double (ctx, cairo_get_miter_limit (cr), exception);
 }
 
-static SeedValue
+static gboolean
 seed_cairo_set_miter_limit (SeedContext ctx,
-			    SeedObject function,
 			    SeedObject this_object,
-			    gsize argument_count,
-			    const SeedValue arguments[],
+			    SeedString property_name,
+			    SeedValue value,
 			    SeedException *exception)
 {
   cairo_t *cr;
-  CHECK_THIS();
-  
-  if (argument_count != 1)
-    {
-      EXPECTED_EXCEPTION("miter_limit", "1 argument");
-    }
+  CHECK_THIS_BOOL();
   
   cr = seed_object_get_private (this_object);
-  cairo_set_miter_limit (cr, seed_value_to_double (ctx, arguments[0], exception));
+  cairo_set_miter_limit (cr, seed_value_to_double (ctx, value, exception));
   
-  return seed_make_undefined (ctx);
+  return TRUE;
 }
 
 static SeedValue
 seed_cairo_get_operator (SeedContext ctx,
-			 SeedObject function,
 			 SeedObject this_object,
-			 gsize argument_count,
-			 const SeedValue arguments[],
+			 SeedString property_name,
 			 SeedException *exception)
 {
   cairo_t *cr;
@@ -612,34 +567,26 @@ seed_cairo_get_operator (SeedContext ctx,
   return seed_value_from_long (ctx, cairo_get_operator (cr), exception);
 }
 
-static SeedValue
+static gboolean
 seed_cairo_set_operator (SeedContext ctx,
-			 SeedObject function,
 			 SeedObject this_object,
-			 gsize argument_count,
-			 const SeedValue arguments[],
+			 SeedString property_name,
+			 SeedValue value,
 			 SeedException *exception)
 {
   cairo_t *cr;
-  CHECK_THIS();
-  
-  if (argument_count != 1)
-    {
-      EXPECTED_EXCEPTION("operator", "1 argument");
-    }
+  CHECK_THIS_BOOL();
   
   cr = seed_object_get_private (this_object);
-  cairo_set_operator (cr, seed_value_to_long (ctx, arguments[0], exception));
+  cairo_set_operator (cr, seed_value_to_long (ctx, value, exception));
   
-  return seed_make_undefined (ctx);
+  return TRUE;
 }
 
 static SeedValue
 seed_cairo_get_tolerance (SeedContext ctx,
-			  SeedObject function,
 			  SeedObject this_object,
-			  gsize argument_count,
-			  const SeedValue arguments[],
+			  SeedString property_name,
 			  SeedException *exception)
 {
   cairo_t *cr;
@@ -649,26 +596,20 @@ seed_cairo_get_tolerance (SeedContext ctx,
   return seed_value_from_double (ctx, cairo_get_tolerance (cr), exception);
 }
 
-static SeedValue
+static gboolean
 seed_cairo_set_tolerance (SeedContext ctx,
-			  SeedObject function,
 			  SeedObject this_object,
-			  gsize argument_count,
-			  const SeedValue arguments[],
+			  SeedString property_name,
+			  SeedValue value,
 			  SeedException *exception)
 {
   cairo_t *cr;
-  CHECK_THIS();
-  
-  if (argument_count != 1)
-    {
-      EXPECTED_EXCEPTION("tolerance", "1 argument");
-    }
+  CHECK_THIS_BOOL();
   
   cr = seed_object_get_private (this_object);
-  cairo_set_tolerance (cr, seed_value_to_double (ctx, arguments[0], exception));
+  cairo_set_tolerance (cr, seed_value_to_double (ctx, value, exception));
   
-  return seed_make_undefined (ctx);
+  return TRUE;
 }
 
 static SeedValue 
@@ -1428,6 +1369,17 @@ seed_cairo_rotate (SeedContext ctx,
   return seed_make_undefined (ctx);
 }
 
+seed_static_value cairo_values[] = {
+  {"antialias", seed_cairo_get_antialias, seed_cairo_set_antialias, SEED_PROPERTY_ATTRIBUTE_READ_ONLY | SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
+  {"fill_rule", seed_cairo_get_fill_rule, seed_cairo_set_fill_rule, SEED_PROPERTY_ATTRIBUTE_READ_ONLY | SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
+  {"line_cap", seed_cairo_get_line_cap, seed_cairo_set_line_cap, SEED_PROPERTY_ATTRIBUTE_READ_ONLY | SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
+  {"line_join", seed_cairo_get_line_join, seed_cairo_set_line_join, SEED_PROPERTY_ATTRIBUTE_READ_ONLY | SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
+  {"line_width", seed_cairo_get_line_width, seed_cairo_set_line_width, SEED_PROPERTY_ATTRIBUTE_READ_ONLY | SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
+  {"miter_limit", seed_cairo_get_miter_limit, seed_cairo_set_miter_limit, SEED_PROPERTY_ATTRIBUTE_READ_ONLY | SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
+  {"operator", seed_cairo_get_operator, seed_cairo_set_operator, SEED_PROPERTY_ATTRIBUTE_READ_ONLY | SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
+  {"tolerance", seed_cairo_get_tolerance, seed_cairo_set_tolerance, SEED_PROPERTY_ATTRIBUTE_READ_ONLY | SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
+  {0, 0, 0, 0}
+};
   
 seed_static_function cairo_funcs[] = {
   {"save", seed_cairo_save, 0},
@@ -1435,6 +1387,9 @@ seed_static_function cairo_funcs[] = {
   {"get_target", seed_cairo_get_target, 0},
   {"push_group", seed_cairo_push_group, 0},
   {"push_group_with_content", seed_cairo_push_group_with_content, 0},
+  {"set_dash", seed_cairo_set_dash, 0},
+  {"get_dash_count", seed_cairo_get_dash_count, 0},
+  {"get_dash", seed_cairo_get_dash, 0},  
   //  {"pop_group", seed_cairo_pop_group, 0},
   {"pop_group_to_source", seed_cairo_pop_group_to_source, 0},
   {"get_group_target", seed_cairo_get_group_target, 0},
@@ -1443,25 +1398,6 @@ seed_static_function cairo_funcs[] = {
   //  {"set_source", seed_cairo_set_source, 0},
   {"set_source_surface", seed_cairo_set_source_surface, 0},
   //  {"get_source", seed_cairo_get_source, 0},
-  {"set_antialias", seed_cairo_set_antialias, 0},
-  {"get_antialias", seed_cairo_get_antialias, 0},
-  {"set_dash", seed_cairo_set_dash, 0},
-  {"get_dash_count", seed_cairo_get_dash_count, 0},
-  {"get_dash", seed_cairo_get_dash, 0},  
-  {"get_fill_rule", seed_cairo_get_fill_rule, 0},  
-  {"set_fill_rule", seed_cairo_set_fill_rule, 0},  
-  {"get_line_cap", seed_cairo_get_line_cap, 0},  
-  {"set_line_cap", seed_cairo_set_line_cap, 0},  
-  {"get_line_join", seed_cairo_get_line_join, 0},  
-  {"set_line_join", seed_cairo_set_line_join, 0},  
-  {"get_line_width", seed_cairo_get_line_width, 0},  
-  {"set_line_width", seed_cairo_set_line_width, 0},  
-  {"get_miter_limit", seed_cairo_get_miter_limit, 0},  
-  {"set_miter_limit", seed_cairo_set_miter_limit, 0},  
-  {"get_operator", seed_cairo_get_operator, 0},  
-  {"set_operator", seed_cairo_set_operator, 0},  
-  {"get_tolerance", seed_cairo_get_tolerance, 0},  
-  {"set_tolerance", seed_cairo_set_tolerance, 0},  
   {"clip", seed_cairo_clip, 0},
   {"clip_preserve", seed_cairo_clip_preserve, 0},
   {"reset_clip", seed_cairo_reset_clip, 0},
@@ -1520,6 +1456,7 @@ seed_module_init(SeedEngine * local_eng)
   
   cairo_def.class_name = "CairoContext";
   cairo_def.static_functions = cairo_funcs;
+  cairo_def.static_values = cairo_values;
   cairo_def.finalize = seed_cairo_context_finalize;
   seed_cairo_context_class = seed_create_class (&cairo_def);
   // Hack around WebKit GC bug.
