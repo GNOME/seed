@@ -4,6 +4,7 @@
 #include "seed-cairo-surface.h"
 #include "seed-cairo-image-surface.h"
 #include "seed-cairo-enums.h"
+#include "seed-cairo-matrix.h"
 
 
 SeedEngine *eng;
@@ -1369,41 +1370,8 @@ seed_cairo_rotate (SeedContext ctx,
   return seed_make_undefined (ctx);
 }
 
-static SeedValue
-seed_value_from_cairo_matrix (SeedContext ctx,
-			      const cairo_matrix_t *matrix,
-			      SeedException *exception)
-{
-  SeedValue elems[6];
-  
-  elems[0] = seed_value_from_double(ctx, matrix->xx, exception);
-  elems[1] = seed_value_from_double(ctx, matrix->yx, exception);
-  elems[2] = seed_value_from_double(ctx, matrix->xy, exception);
-  elems[3] = seed_value_from_double(ctx, matrix->yy, exception);
-  elems[4] = seed_value_from_double(ctx, matrix->x0, exception);
-  elems[5] = seed_value_from_double(ctx, matrix->y0, exception);
-  
-  return seed_make_array (ctx, elems, 6, exception);
-}
 
-static gboolean
-seed_value_to_cairo_matrix (SeedContext ctx,
-			    SeedValue value,
-			    cairo_matrix_t *matrix,
-			    SeedException *exception)
-{
-  if (!seed_value_is_object (ctx, value))
-    return FALSE;
-  
-  matrix->xx = seed_value_to_double (ctx, seed_object_get_property_at_index (ctx, (SeedObject) value, 0, exception), exception);
-  matrix->yx = seed_value_to_double (ctx, seed_object_get_property_at_index (ctx, (SeedObject) value, 1, exception), exception);
-  matrix->xy = seed_value_to_double (ctx, seed_object_get_property_at_index (ctx, (SeedObject) value, 2, exception), exception);
-  matrix->yy = seed_value_to_double (ctx, seed_object_get_property_at_index (ctx, (SeedObject) value, 3, exception), exception);
-  matrix->x0 = seed_value_to_double (ctx, seed_object_get_property_at_index (ctx, (SeedObject) value, 4, exception), exception);
-  matrix->y0 = seed_value_to_double (ctx, seed_object_get_property_at_index (ctx, (SeedObject) value, 5, exception), exception);
-  
-  return TRUE;
-}
+
 
 static SeedValue
 seed_cairo_transform (SeedContext ctx,
@@ -1688,6 +1656,7 @@ seed_module_init(SeedEngine * local_eng)
   seed_value_protect (eng->context, namespace_ref);
   seed_define_cairo_enums (eng->context, namespace_ref);
   seed_define_cairo_surface (eng->context, namespace_ref);
+  seed_define_cairo_matrix (eng->context, namespace_ref);
   
   cairo_def.class_name = "CairoContext";
   cairo_def.static_functions = cairo_funcs;
