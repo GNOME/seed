@@ -73,7 +73,10 @@ seed_cairo_context_finalize (SeedObject obj)
 {
   cairo_t *cr = CAIRO_CONTEXT_PRIV (obj);
   if (cr)
-    cairo_destroy (cr);
+    {
+      cairo_set_user_data (cr, seed_get_cairo_key(), NULL, NULL);
+      cairo_destroy (cr);
+    }
 }
 
 static SeedObject
@@ -1563,6 +1566,51 @@ seed_cairo_device_to_user_distance (SeedContext ctx,
   return seed_make_array (ctx, out, 2, exception);
 }
 
+static SeedValue
+seed_cairo_set_source (SeedContext ctx,
+		       SeedObject function,
+		       SeedObject this_object,
+		       gsize argument_count,
+		       const SeedValue arguments[],
+		       SeedException *exception)
+{
+  cairo_t *cr;
+  cairo_pattern_t *pat;
+  
+  CHECK_THIS();
+  if (argument_count != 1)
+    {
+      EXPECTED_EXCEPTION("set_source", "1 argument");
+    }
+  pat = seed_object_to_cairo_pattern (ctx, arguments[0], exception);
+  if (!pat)
+    {
+      seed_make_exception (ctx, exception, "ArgumentError", "set_source needs a Cairo Pattern  as argument");
+      return seed_make_undefined (ctx);
+    }
+  
+  cr = seed_object_get_private (this_object);
+  cairo_set_source (cr,pat);
+  
+  return seed_make_undefined (ctx);
+}
+
+static SeedValue
+seed_cairo_get_source (SeedContext ctx,
+		       SeedObject function,
+		       SeedObject this_object,
+		       gsize argument_count,
+		       const SeedValue arguments[],
+		       SeedException *exception)
+{
+  cairo_t *cr;
+  CHECK_THIS();
+  
+  cr = seed_object_get_private (this_object);
+  
+  return seed_object_from_cairo_pattern (ctx, cairo_get_source(cr));
+}
+
 seed_static_value cairo_values[] = {
   {"antialias", seed_cairo_get_antialias, seed_cairo_set_antialias, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
   {"fill_rule", seed_cairo_get_fill_rule, seed_cairo_set_fill_rule, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
@@ -1590,9 +1638,9 @@ seed_static_function cairo_funcs[] = {
   {"get_group_target", seed_cairo_get_group_target, 0},
   {"set_source_rgb", seed_cairo_set_source_rgb, 0},
   {"set_source_rgba", seed_cairo_set_source_rgba, 0},
-  //  {"set_source", seed_cairo_set_source, 0},
+  {"set_source", seed_cairo_set_source, 0},
   {"set_source_surface", seed_cairo_set_source_surface, 0},
-  //  {"get_source", seed_cairo_get_source, 0},
+  {"get_source", seed_cairo_get_source, 0},
   {"clip", seed_cairo_clip, 0},
   {"clip_preserve", seed_cairo_clip_preserve, 0},
   {"reset_clip", seed_cairo_reset_clip, 0},

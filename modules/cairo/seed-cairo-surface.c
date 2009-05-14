@@ -38,7 +38,10 @@ seed_cairo_surface_finalize (SeedObject obj)
 {
   cairo_surface_t *s = CAIRO_SURFACE_PRIV(obj);
   if (s)
-    cairo_surface_destroy (s);
+    {
+      cairo_surface_set_user_data (s, seed_get_cairo_key(), NULL, NULL);
+      cairo_surface_destroy (s);
+  }
 }
 
 cairo_surface_t *

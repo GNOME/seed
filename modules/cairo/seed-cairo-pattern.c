@@ -38,7 +38,10 @@ seed_cairo_pattern_finalize (SeedObject obj)
 {
   cairo_pattern_t *s = CAIRO_PATTERN_PRIV(obj);
   if (s)
-    cairo_pattern_destroy (s);
+    {
+      cairo_pattern_set_user_data (s, seed_get_cairo_key(), NULL, NULL);
+      cairo_pattern_destroy (s);
+    }
 }
 
 cairo_pattern_t *
