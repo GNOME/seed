@@ -208,6 +208,71 @@ seed_cairo_matrix_rotate (SeedContext ctx,
   return seed_value_from_cairo_matrix (ctx, &m, exception);  
 }
 
+
+static SeedValue
+seed_cairo_matrix_transform_distance (SeedContext ctx,
+				      SeedObject function,
+				      SeedObject this_object,
+				      gsize argument_count,
+				      const SeedValue arguments[],
+				      SeedException *exception)
+{
+  SeedValue ret[2];
+  gdouble x, y;
+  cairo_matrix_t m;
+  
+  if (argument_count != 3)
+    {
+      EXPECTED_EXCEPTION("transform_distance", "3 arguments");
+    }
+  
+  if (!seed_value_to_cairo_matrix (ctx, arguments[0], &m, exception))
+    {
+      seed_make_exception (ctx, exception, "ArgumentError", "transform_distance needs an array [xx, yx, xy, yy, x0, y0]");
+    }
+  x = seed_value_to_double (ctx, arguments[1], exception);
+  y = seed_value_to_double (ctx, arguments[2], exception);
+  
+  cairo_matrix_transform_distance (&m, &x, &y);
+  
+  ret[0] = seed_value_from_double (ctx, x, exception);
+  ret[1] = seed_value_from_double (ctx, y, exception);
+  
+  return seed_make_array (ctx, ret, 2, exception);
+}
+
+static SeedValue
+seed_cairo_matrix_transform_point (SeedContext ctx,
+				      SeedObject function,
+				      SeedObject this_object,
+				      gsize argument_count,
+				      const SeedValue arguments[],
+				      SeedException *exception)
+{
+  SeedValue ret[2];
+  gdouble x, y;
+  cairo_matrix_t m;
+  
+  if (argument_count != 3)
+    {
+      EXPECTED_EXCEPTION("transform_point", "3 arguments");
+    }
+  
+  if (!seed_value_to_cairo_matrix (ctx, arguments[0], &m, exception))
+    {
+      seed_make_exception (ctx, exception, "ArgumentError", "transform_point needs an array [xx, yx, xy, yy, x0, y0]");
+    }
+  x = seed_value_to_double (ctx, arguments[1], exception);
+  y = seed_value_to_double (ctx, arguments[2], exception);
+  
+  cairo_matrix_transform_point (&m, &x, &y);
+  
+  ret[0] = seed_value_from_double (ctx, x, exception);
+  ret[1] = seed_value_from_double (ctx, y, exception);
+  
+  return seed_make_array (ctx, ret, 2, exception);
+}
+
 seed_static_function matrix_funcs[] = {
   {"init_identity", seed_cairo_matrix_init_identity, 0},
   {"init_translate", seed_cairo_matrix_init_translate, 0},
@@ -216,6 +281,8 @@ seed_static_function matrix_funcs[] = {
   {"translate", seed_cairo_matrix_translate, 0},
   {"scale", seed_cairo_matrix_scale, 0},
   {"rotate", seed_cairo_matrix_rotate, 0},
+  {"transform_point", seed_cairo_matrix_transform_point, 0},
+  {"transform_distance", seed_cairo_matrix_transform_distance, 0},
   {0, 0, 0}
 };
 
