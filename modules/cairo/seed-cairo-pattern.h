@@ -11,7 +11,7 @@ cairo_pattern_t *
 seed_object_to_cairo_pattern (SeedContext ctx, SeedObject obj, SeedException *exception);
 
 SeedObject
-seed_object_from_cairo_pattern (SeedContext ctx, cairo_pattern_t *surf);
+seed_object_from_cairo_pattern (SeedContext ctx, cairo_pattern_t *pat);
 
 void
 seed_define_cairo_pattern (SeedContext ctx,

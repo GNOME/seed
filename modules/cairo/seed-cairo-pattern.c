@@ -51,27 +51,81 @@ seed_object_to_cairo_pattern (SeedContext ctx, SeedObject obj, SeedException *ex
 }
 
 SeedObject
-seed_object_from_cairo_pattern (SeedContext ctx, cairo_pattern_t *surf)
+seed_object_from_cairo_pattern (SeedContext ctx, cairo_pattern_t *pat)
 {
   SeedObject jsobj;
   
-  jsobj = cairo_pattern_get_user_data (surf, seed_get_cairo_key());
+  jsobj = cairo_pattern_get_user_data (pat, seed_get_cairo_key());
   if (jsobj)
     return jsobj;
   
-  jsobj = seed_make_object (ctx, seed_cairo_pattern_class, surf);
-  cairo_pattern_set_user_data (surf, seed_get_cairo_key(), jsobj, seed_cairo_destroy_func);
+  jsobj = seed_make_object (ctx, seed_cairo_pattern_class, pat);
+  cairo_pattern_set_user_data (pat, seed_get_cairo_key(), jsobj, seed_cairo_destroy_func);
   return jsobj;
+}
+
+static SeedObject
+seed_cairo_construct_linear_gradient (SeedContext ctx,
+				      SeedObject constructor,
+				      size_t argument_count,
+				      const SeedValue arguments[],
+				      SeedException * exception)
+{
+  gdouble x0,y0,x1,y1;
+
+  if (argument_count != 4)
+    {
+      EXPECTED_EXCEPTION("LinearGradient constructor", "4 arguments");
+    }
+  
+  x0 = seed_value_to_double (ctx, arguments[0], exception);
+  y0 = seed_value_to_double (ctx, arguments[1], exception);
+  x1 = seed_value_to_double (ctx, arguments[2], exception);
+  y1 = seed_value_to_double (ctx, arguments[3], exception);
+  
+  return seed_object_from_cairo_pattern (ctx, cairo_pattern_create_linear (x0, y0, x1, y1));
+}
+
+static SeedObject
+seed_cairo_construct_radial_gradient (SeedContext ctx,
+				      SeedObject constructor,
+				      size_t argument_count,
+				      const SeedValue arguments[],
+				      SeedException * exception)
+{
+  gdouble cx0, cy0, r0, cx1, cy1, r1;
+
+  if (argument_count != 6)
+    {
+      EXPECTED_EXCEPTION("RadialGradient constructor", "6 arguments");
+    }
+  
+  cx0 = seed_value_to_double (ctx, arguments[0], exception);
+  cy0 = seed_value_to_double (ctx, arguments[1], exception);
+  r0 = seed_value_to_double (ctx, arguments[2], exception);
+  cx1 = seed_value_to_double (ctx, arguments[3], exception);
+  cy1 = seed_value_to_double (ctx, arguments[4], exception);
+  r1 = seed_value_to_double (ctx, arguments[5], exception);
+
+  
+  return seed_object_from_cairo_pattern (ctx, cairo_pattern_create_radial (cx0, cy0, r0, cx1, cy1, r1));
 }
 
 void
 seed_define_cairo_pattern (SeedContext ctx,
 			   SeedObject namespace_ref)
 {
+  SeedObject linear_constructor, radial_constructor;
   seed_class_definition pattern_def = seed_empty_class;
   
   pattern_def.class_name = "Pattern";
   pattern_def.finalize = seed_cairo_pattern_finalize;
   
   seed_cairo_pattern_class = seed_create_class (&pattern_def);
+  
+  linear_constructor = seed_make_constructor (ctx, NULL, seed_cairo_construct_linear_gradient);
+  seed_object_set_property(ctx, namespace_ref, "LinearGradient", linear_constructor);
+
+  radial_constructor = seed_make_constructor (ctx, NULL, seed_cairo_construct_radial_gradient);
+  seed_object_set_property(ctx, namespace_ref, "RadialGradient", radial_constructor);
 }
