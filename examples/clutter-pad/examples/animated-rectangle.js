@@ -17,10 +17,10 @@ for (i = 0; i < 4; i++){
     
    rect.anim = rect.animate(Clutter.AnimationMode.EASE_OUT_BOUNCE, 1500+500*i,
 		     {
-			 height: [GObject.TYPE_INT, 100],
-			 width: [GObject.TYPE_INT, 100],
-			 x: [GObject.TYPE_INT, stage.width - 100*(i+1)],
-			 y: [GObject.TYPE_INT, stage.height - 100],
-			rotation_angle_z: [GObject.TYPE_DOUBLE, 360],
+			 height: 100,
+			 width: 100,
+			 x: stage.width - 100*(i+1),
+			 y: stage.height - 100,
+			 rotation_angle_z: 360,
 		     });
 }

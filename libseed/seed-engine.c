@@ -246,6 +246,35 @@ seed_gobject_equals (JSContextRef ctx,
 }
 
 static JSValueRef
+seed_gobject_property_type (JSContextRef ctx,
+			    JSObjectRef function,
+			    JSObjectRef this_object,
+			    size_t argumentCount,
+			    const JSValueRef arguments[], 
+			    JSValueRef * exception)
+{
+  GParamSpec *spec;
+  gchar *name;
+  GObject *this;
+  
+  if (argumentCount != 1)
+    {
+      seed_make_exception (ctx, exception, "ArgumentError",
+			   "__property_type expects 1 argument"
+			   "got %zd", argumentCount);
+      return JSValueMakeNull (ctx);
+    }
+  
+  this = seed_value_to_object (ctx, this_object, exception);
+  name = seed_value_to_string (ctx, arguments[0], exception);
+  
+  spec = g_object_class_find_property (G_OBJECT_GET_CLASS (this), name);
+  g_free (name);
+  
+  return seed_value_from_long (ctx, spec->value_type, exception);
+}
+
+static JSValueRef
 seed_gobject_ref_count (JSContextRef ctx,
 			JSObjectRef function,
 			JSObjectRef this_object,
@@ -975,10 +1004,9 @@ seed_gobject_constructor_convert_to_type (JSContextRef ctx,
 }
 
 JSStaticFunction gobject_static_funcs[] = {
-  {"equals", seed_gobject_equals, 0}
-  ,
-  {"__debug_ref_count", seed_gobject_ref_count, 0}
-  ,
+  {"equals", seed_gobject_equals, 0},
+  {"__debug_ref_count", seed_gobject_ref_count, 0},
+  {"__property_type", seed_gobject_property_type, 0},
   {0, 0, 0}
 };
 
