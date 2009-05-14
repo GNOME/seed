@@ -532,7 +532,7 @@ seed_importer_handle_native_module (JSContextRef ctx,
       return module_obj;
     }
   
-  module = g_module_open (file_path, G_MODULE_BIND_LAZY);
+  module = g_module_open (file_path, 0);
   
   if (!module)
     {
