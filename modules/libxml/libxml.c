@@ -343,7 +343,7 @@ seed_xml_xpath_register_ns (SeedContext ctx,
 			   argument_count);
       return seed_make_undefined (ctx);
     }
-  ctx = XML_XPATH_PRIV (this_object);
+  xpath = XML_XPATH_PRIV (this_object);
   prefix = seed_value_to_string (ctx, arguments[0], exception);
   ns_uri = seed_value_to_string (ctx, arguments[1], exception);
   
