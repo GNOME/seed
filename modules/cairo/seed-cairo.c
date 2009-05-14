@@ -1369,6 +1369,107 @@ seed_cairo_rotate (SeedContext ctx,
   return seed_make_undefined (ctx);
 }
 
+static SeedValue
+seed_value_from_cairo_matrix (SeedContext ctx,
+			      const cairo_matrix_t *matrix,
+			      SeedException *exception)
+{
+  SeedValue elems[6];
+  
+  elems[0] = seed_value_from_double(ctx, matrix->xx, exception);
+  elems[1] = seed_value_from_double(ctx, matrix->yx, exception);
+  elems[2] = seed_value_from_double(ctx, matrix->xy, exception);
+  elems[3] = seed_value_from_double(ctx, matrix->yy, exception);
+  elems[4] = seed_value_from_double(ctx, matrix->x0, exception);
+  elems[5] = seed_value_from_double(ctx, matrix->y0, exception);
+  
+  return seed_make_array (ctx, elems, 6, exception);
+}
+
+static gboolean
+seed_value_to_cairo_matrix (SeedContext ctx,
+			    SeedValue value,
+			    cairo_matrix_t *matrix,
+			    SeedException *exception)
+{
+  if (!seed_value_is_object (ctx, value))
+    return FALSE;
+  
+  matrix->xx = seed_value_to_double (ctx, seed_object_get_property_at_index (ctx, (SeedObject) value, 0, exception), exception);
+  matrix->yx = seed_value_to_double (ctx, seed_object_get_property_at_index (ctx, (SeedObject) value, 1, exception), exception);
+  matrix->xy = seed_value_to_double (ctx, seed_object_get_property_at_index (ctx, (SeedObject) value, 2, exception), exception);
+  matrix->yy = seed_value_to_double (ctx, seed_object_get_property_at_index (ctx, (SeedObject) value, 3, exception), exception);
+  matrix->x0 = seed_value_to_double (ctx, seed_object_get_property_at_index (ctx, (SeedObject) value, 4, exception), exception);
+  matrix->y0 = seed_value_to_double (ctx, seed_object_get_property_at_index (ctx, (SeedObject) value, 5, exception), exception);
+  
+  return TRUE;
+}
+
+static SeedValue
+seed_cairo_transform (SeedContext ctx,
+		      SeedObject function,
+		      SeedObject this_object,
+		      gsize argument_count,
+		      const SeedValue arguments[],
+		      SeedException *exception)
+{
+  cairo_matrix_t matrix;
+  cairo_t *cr;
+  CHECK_THIS();
+
+  if (argument_count != 1)
+    {
+      EXPECTED_EXCEPTION("transform", "1 argument");
+    }
+  if (!seed_value_to_cairo_matrix (ctx, arguments[0], &matrix, exception))
+    {
+      seed_make_exception (ctx, exception, "ArgumentError", "transform expects an array [xx,yx,xy,yy,x0,y0]");
+      return seed_make_undefined (ctx);
+    }
+  cr = seed_object_get_private (this_object);
+
+  cairo_transform (cr, &matrix);
+  return seed_make_undefined (ctx);
+}
+
+static SeedValue
+seed_cairo_get_matrix (SeedContext ctx,
+			  SeedObject this_object,
+			  SeedString property_name,
+			  SeedException *exception)
+{
+  cairo_t *cr;
+  cairo_matrix_t m;
+  CHECK_THIS();
+  
+  cr = seed_object_get_private (this_object);
+  cairo_get_matrix (cr, &m);
+  return seed_value_from_cairo_matrix (ctx, &m, exception);
+}
+
+static gboolean
+seed_cairo_set_matrix (SeedContext ctx,
+			  SeedObject this_object,
+			  SeedString property_name,
+			  SeedValue value,
+			  SeedException *exception)
+{
+  cairo_matrix_t m;
+  cairo_t *cr;
+  CHECK_THIS_BOOL();
+  
+  cr = seed_object_get_private (this_object);
+  if (!seed_value_to_cairo_matrix (ctx, value, &m, exception))
+    {
+      seed_make_exception (ctx, exception, "ArgumentError", "matrix must be an array [xx,yx,xy,yy,x0,y0]");
+      return FALSE;
+    }
+  cairo_set_matrix (cr, &m);
+  
+  return TRUE;
+}
+
+
 seed_static_value cairo_values[] = {
   {"antialias", seed_cairo_get_antialias, seed_cairo_set_antialias, SEED_PROPERTY_ATTRIBUTE_READ_ONLY | SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
   {"fill_rule", seed_cairo_get_fill_rule, seed_cairo_set_fill_rule, SEED_PROPERTY_ATTRIBUTE_READ_ONLY | SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
@@ -1378,6 +1479,7 @@ seed_static_value cairo_values[] = {
   {"miter_limit", seed_cairo_get_miter_limit, seed_cairo_set_miter_limit, SEED_PROPERTY_ATTRIBUTE_READ_ONLY | SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
   {"operator", seed_cairo_get_operator, seed_cairo_set_operator, SEED_PROPERTY_ATTRIBUTE_READ_ONLY | SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
   {"tolerance", seed_cairo_get_tolerance, seed_cairo_set_tolerance, SEED_PROPERTY_ATTRIBUTE_READ_ONLY | SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
+  {"matrix", seed_cairo_get_matrix, seed_cairo_set_matrix, SEED_PROPERTY_ATTRIBUTE_READ_ONLY | SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
   {0, 0, 0, 0}
 };
   
@@ -1437,6 +1539,7 @@ seed_static_function cairo_funcs[] = {
   {"translate", seed_cairo_translate, 0},
   {"scale", seed_cairo_scale, 0},
   {"rotate", seed_cairo_rotate, 0},
+  {"transform", seed_cairo_transform, 0},
   {0, 0, 0}
 };
 
