@@ -8,7 +8,7 @@ void
 seed_define_cairo_enums (SeedContext ctx,
 			 SeedObject namespace_ref)
 {
-  SeedObject content_holder, format_holder;
+  SeedObject content_holder, format_holder, antialias_holder;
   
   content_holder = seed_make_object (ctx, NULL, NULL);
   seed_object_set_property (ctx, namespace_ref, "Content", content_holder);
@@ -22,4 +22,11 @@ seed_define_cairo_enums (SeedContext ctx,
   ENUM_MEMBER(format_holder, "RGB23", CAIRO_FORMAT_RGB24);
   ENUM_MEMBER(format_holder, "A8", CAIRO_FORMAT_A8);
   ENUM_MEMBER(format_holder, "A1", CAIRO_FORMAT_A1);
+
+  antialias_holder = seed_make_object (ctx, NULL, NULL);
+  seed_object_set_property (ctx, namespace_ref, "Antialias", antialias_holder);
+  ENUM_MEMBER(antialias_holder, "DEFAULT", CAIRO_ANTIALIAS_DEFAULT);
+  ENUM_MEMBER(antialias_holder, "NONE", CAIRO_ANTIALIAS_NONE);
+  ENUM_MEMBER(antialias_holder, "GRAY", CAIRO_ANTIALIAS_GRAY);
+  ENUM_MEMBER(antialias_holder, "SUBPIXEL", CAIRO_ANTIALIAS_SUBPIXEL);
 }
