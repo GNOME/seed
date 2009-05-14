@@ -13,7 +13,7 @@ SUBDIRS = \
     twitter
 
 repldir = $(datadir)/seed
-repl_DATA = repl.js
+repl_SCRIPTS = repl.js
 
 if BUILD_SEED_EXAMPLES
 examplesdir=$(datadir)/doc/seed/examples

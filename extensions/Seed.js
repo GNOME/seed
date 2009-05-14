@@ -1,5 +1,3 @@
-#!/usr/bin/env seed
-
 Seed.sprintf = function ()
 {
     if (typeof arguments == "undefined") { return null; }
