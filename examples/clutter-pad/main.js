@@ -18,9 +18,6 @@ var context;
 
 function reset_stage()
 {
-	context = new sandbox.Context();
-	context.add_globals();
-
 	stage.remove_all();
 	
 	stage.color = {alpha: 255};
@@ -130,18 +127,20 @@ function execute_file(button)
 		if (slice == '')
 		{
 			reset_stage();
-			context.destroy();
+			if (context)
+				context.destroy();
 			context = new sandbox.Context();
 			context.add_globals();
 			context.eval(source_buf.text)
 		}
 		else
 		{
-			context.eval(slice)
+			context.eval(slice);
 		}
     }
     catch (e)
     {
+		Seed.print(e.message);
 		error_buf.text = e.message;
     }
 };
