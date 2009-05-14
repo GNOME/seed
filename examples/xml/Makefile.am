@@ -4,12 +4,14 @@ xml_DATA = \
 	sample.xml \
 	xml-dom.js \
 	xml-tree.js \
-	xml-xpath.js
+	xml-xpath.js \
+	weather.js
 endif
 
 EXTRA_DIST = \
 	sample.xml \
 	xml-dom.js \
 	xml-tree.js \
-	xml-xpath.js
+	xml-xpath.js \
+	weather.js
 
