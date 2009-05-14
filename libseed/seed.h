@@ -411,5 +411,8 @@ seed_closure_warn_exception (GClosure *c, SeedContext ctx, SeedException excepti
 SeedObject
 seed_object_get_prototype (SeedContext ctx, SeedObject obj);
 
+gboolean
+seed_object_is_of_class (SeedContext ctx, SeedObject obj, SeedClass class);
+
 
 #endif

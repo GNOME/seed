@@ -698,3 +698,9 @@ seed_object_get_prototype (JSContextRef ctx, JSObjectRef obj)
 {
   return (JSObjectRef) JSObjectGetPrototype (ctx, obj);
 }
+
+gboolean
+seed_object_is_of_class (JSContextRef ctx, JSObjectRef obj, JSClassRef class)
+{
+  return JSValueIsObjectOfClass (ctx, obj, class);
+}

@@ -23,9 +23,9 @@
 
 SeedObject os_namespace;
 
-#define EXPECTED_EXCEPTION(name, argnum) \
+#define EXPECTED_EXCEPTION(name, argnum, res)				\
   seed_make_exception (ctx, exception, "ArgumentError", name " expected " argnum " got %Zd", argument_count); \
-  return seed_make_null (ctx);
+  return seed_make_##res (ctx);
 
 SeedValue
 seed_os_chdir (SeedContext ctx,

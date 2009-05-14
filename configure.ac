@@ -106,6 +106,8 @@ fi
 AM_CONDITIONAL(BUILD_CANVAS_MODULE, test "x$want_canvas_module" = "xyes")
 AC_SUBST(BUILD_CANVAS_MODULE)
 
+
+
 dnl ==== readline ====
 AC_ARG_ENABLE(readline-module,
 			  AC_HELP_STRING([--enable-readline-module],
@@ -195,6 +197,22 @@ fi
 
 AM_CONDITIONAL(BUILD_LIBXML_MODULE, test "x$want_libxml_module" = "xyes")
 AC_SUBST(BUILD_LIBXML_MODULE)
+
+dnl ==== cairo ====
+AC_ARG_ENABLE(cairo-module,
+			  AC_HELP_STRING([--enable-cairo-module],
+							 [enable the cairo Seed module. [default=yes]]),
+			  [want_cairo_module=$enableval],[want_cairo_module="yes"])
+
+if test x"$want_cairo_module" == x"yes" ; then
+	PKG_CHECK_MODULES(CAIRO, cairo)
+	AC_SUBST(CAIRO_CFLAGS)
+	AC_SUBST(CAIRO_LDFLAGS)
+fi
+
+AM_CONDITIONAL(BUILD_CAIRO_MODULE, test "x$want_cairo_module" = "xyes")
+AC_SUBST(BUILD_CAIRO_MODULE)
+
 
 
 dnl =========================turtle example====================================
@@ -346,6 +364,7 @@ modules/os/Makefile
 modules/dbus/Makefile
 modules/dbus/util/Makefile
 modules/libxml/Makefile
+modules/cairo/Makefile
 ])
 AC_OUTPUT
 
@@ -368,6 +387,7 @@ Modules:
    SQLite.....................$want_sqlite_module
    DBus.......................$want_dbus_module
    libxml.....................$want_libxml_module
+   cairo......................$want_cairo_module
 
 Examples:
    Turtle.....................$want_turtle_example

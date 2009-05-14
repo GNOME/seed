@@ -1,1 +1,1 @@
-SUBDIRS = example sqlite canvas Multiprocessing readline os sandbox dbus libxml
+SUBDIRS = example sqlite canvas Multiprocessing readline os sandbox dbus libxml cairo
