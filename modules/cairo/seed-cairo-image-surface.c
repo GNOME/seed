@@ -6,18 +6,18 @@
 
 #define CAIRO_SURFACE_PRIV(obj) ((cairo_surface_t *)seed_object_get_private(obj))
 
-#define CHECK_SURFACE(obj, res) ({						\
-    if (!seed_object_is_of_class (ctx, obj, seed_cairo_image_surface_class)){	\
-      seed_make_exception (ctx, exception, "ArgumentError", "Object is not a Cairo Surface"); \
-      return seed_make_##res (ctx);\
-    }									\
-    if (!seed_object_get_private (obj)){				\
-      seed_make_exception (ctx, exception, "ArgumentError", "Cairo surface has been destroyed"); \
-      return seed_make_##res (ctx);}})
+#define CHECK_SURFACE(obj) ({					\
+      if (!seed_object_is_of_class (ctx, obj, seed_cairo_image_surface_class)){	\
+	seed_make_exception (ctx, exception, "ArgumentError", "Object is not a Cairo Surface"); \
+	return seed_make_undefined (ctx);					\
+      }									\
+      if (!seed_object_get_private (obj)){				\
+	seed_make_exception (ctx, exception, "ArgumentError", "Cairo surface has been destroyed"); \
+	return seed_make_undefined (ctx);}})
 
-#define CHECK_THIS(res) if (!seed_object_get_private (this_object)){	\
+#define CHECK_THIS() if (!seed_object_get_private (this_object)){	\
     seed_make_exception (ctx, exception, "ArgumentError", "Cairo surface has been destroyed"); \
-      return seed_make_##res (ctx);}
+    return seed_make_undefined (ctx);}
 
 SeedClass seed_cairo_image_surface_class;
 SeedObject image_surface_constructor_ref;
@@ -39,49 +39,41 @@ seed_object_from_cairo_image_surface (SeedContext ctx, cairo_surface_t *surf)
 
 static SeedValue
 seed_cairo_image_surface_get_format (SeedContext ctx,
-				SeedObject function,
-				SeedObject this_object,
-				gsize argument_count,
-				const SeedValue arguments[],
-				SeedException *exception)
+				     SeedObject this_object,
+				     SeedString property_name,
+				     SeedException *exception)
 {
-  CHECK_THIS(null);
+  CHECK_THIS();
   return seed_value_from_long (ctx, cairo_image_surface_get_format (seed_object_to_cairo_surface(ctx, this_object, exception)), exception);
 }
 
 static SeedValue
 seed_cairo_image_surface_get_width (SeedContext ctx,
-				SeedObject function,
-				SeedObject this_object,
-				gsize argument_count,
-				const SeedValue arguments[],
-				SeedException *exception)
+				    SeedObject this_object,
+				    SeedString property_name,
+				    SeedException *exception)
 {
-  CHECK_THIS(null);
+  CHECK_THIS();
   return seed_value_from_int (ctx, cairo_image_surface_get_width (seed_object_to_cairo_surface(ctx, this_object, exception)), exception);
 }
 
 static SeedValue
 seed_cairo_image_surface_get_height (SeedContext ctx,
-				SeedObject function,
-				SeedObject this_object,
-				gsize argument_count,
-				const SeedValue arguments[],
-				SeedException *exception)
+				     SeedObject this_object,
+				     SeedString property_name,
+				     SeedException *exception)
 {
-  CHECK_THIS(null);
+  CHECK_THIS();
   return seed_value_from_int (ctx, cairo_image_surface_get_height (seed_object_to_cairo_surface(ctx, this_object, exception)), exception);
 }
 
 static SeedValue
 seed_cairo_image_surface_get_stride (SeedContext ctx,
-				SeedObject function,
-				SeedObject this_object,
-				gsize argument_count,
-				const SeedValue arguments[],
-				SeedException *exception)
+				     SeedObject this_object,
+				     SeedString property_name,
+				     SeedException *exception)
 {
-  CHECK_THIS(null);
+  CHECK_THIS();
   return seed_value_from_int (ctx, cairo_image_surface_get_stride (seed_object_to_cairo_surface(ctx, this_object, exception)), exception);
 }
 
@@ -108,14 +100,16 @@ seed_cairo_construct_image_surface (SeedContext ctx,
   return seed_object_from_cairo_image_surface (ctx, ret);
 }
 
-seed_static_function image_surface_funcs[] = {
-  //  {"get_data", seed_cairo_image_surface_get_data, 0},
-  {"get_format", seed_cairo_image_surface_get_format, 0},
-  {"get_width", seed_cairo_image_surface_get_width, 0},
-  {"get_height", seed_cairo_image_surface_get_height, 0},
-  {"get_stride", seed_cairo_image_surface_get_stride, 0},
-  {0, 0, 0}
+seed_static_value image_surface_values[] = {
+  {"format", seed_cairo_image_surface_get_format, 0, SEED_PROPERTY_ATTRIBUTE_READ_ONLY | SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
+  {"width", seed_cairo_image_surface_get_width, 0, SEED_PROPERTY_ATTRIBUTE_READ_ONLY | SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
+  {"height", seed_cairo_image_surface_get_height, 0, SEED_PROPERTY_ATTRIBUTE_READ_ONLY | SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
+  {"stride", seed_cairo_image_surface_get_stride, 0, SEED_PROPERTY_ATTRIBUTE_READ_ONLY | SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
+  {0, 0, 0, 0}
 };
+  
+   
+	
 
 void
 seed_define_cairo_image_surface (SeedContext ctx,
@@ -124,12 +118,12 @@ seed_define_cairo_image_surface (SeedContext ctx,
   seed_class_definition image_def = seed_empty_class;
   
   image_def.class_name = "CairoImageSurface";
-  image_def.static_functions = image_surface_funcs;
+  image_def.static_values = image_surface_values;
   image_def.parent_class = seed_get_cairo_surface_class ();
   seed_cairo_image_surface_class = seed_create_class (&image_def);
   
   image_surface_constructor_ref = seed_make_constructor (ctx,
-					   seed_cairo_image_surface_class,
-					   seed_cairo_construct_image_surface);
+							 seed_cairo_image_surface_class,
+							 seed_cairo_construct_image_surface);
   seed_object_set_property (ctx, namespace_ref, "ImageSurface", image_surface_constructor_ref);
 }
