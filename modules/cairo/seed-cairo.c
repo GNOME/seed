@@ -1469,6 +1469,133 @@ seed_cairo_set_matrix (SeedContext ctx,
   return TRUE;
 }
 
+static SeedValue 
+seed_cairo_identity_matrix (SeedContext ctx,
+		 SeedObject function,
+		 SeedObject this_object,
+		 gsize argument_count,
+		 const SeedValue arguments[],
+		 SeedException *exception)
+{
+  CHECK_THIS();
+  cairo_t *cr = seed_object_get_private (this_object);
+  
+  cairo_identity_matrix(cr);
+  return seed_make_undefined (ctx);
+}
+
+static SeedValue
+seed_cairo_user_to_device (SeedContext ctx,
+			   SeedObject function,
+			   SeedObject this_object,
+			   gsize argument_count,
+			   const SeedValue arguments[],
+			   SeedException *exception)
+{
+  SeedValue out[2];
+  cairo_t *cr;
+  double ix, iy;
+  
+  CHECK_THIS();
+  if (argument_count != 2)
+    {
+      EXPECTED_EXCEPTION("user_to_device", "2 arguments");
+    }
+  cr = seed_object_get_private (this_object);
+  ix = seed_value_to_double (ctx, arguments[0], exception);
+  iy = seed_value_to_double (ctx, arguments[1], exception);
+  
+  cairo_user_to_device (cr, &ix, &iy);
+  out[0] = seed_value_from_double (ctx, ix, exception);
+  out[1] = seed_value_from_double (ctx, iy, exception);
+  
+  return seed_make_array (ctx, out, 2, exception);
+}
+
+
+static SeedValue
+seed_cairo_user_to_device_distance (SeedContext ctx,
+			   SeedObject function,
+			   SeedObject this_object,
+			   gsize argument_count,
+			   const SeedValue arguments[],
+			   SeedException *exception)
+{
+  SeedValue out[2];
+  cairo_t *cr;
+  double ix, iy;
+  
+  CHECK_THIS();
+  if (argument_count != 2)
+    {
+      EXPECTED_EXCEPTION("user_to_device_distance", "2 arguments");
+    }
+  cr = seed_object_get_private (this_object);
+  ix = seed_value_to_double (ctx, arguments[0], exception);
+  iy = seed_value_to_double (ctx, arguments[1], exception);
+  
+  cairo_user_to_device_distance (cr, &ix, &iy);
+  out[0] = seed_value_from_double (ctx, ix, exception);
+  out[1] = seed_value_from_double (ctx, iy, exception);
+  
+  return seed_make_array (ctx, out, 2, exception);
+}
+
+static SeedValue
+seed_cairo_device_to_user (SeedContext ctx,
+			   SeedObject function,
+			   SeedObject this_object,
+			   gsize argument_count,
+			   const SeedValue arguments[],
+			   SeedException *exception)
+{
+  SeedValue out[2];
+  cairo_t *cr;
+  double ix, iy;
+  
+  CHECK_THIS();
+  if (argument_count != 2)
+    {
+      EXPECTED_EXCEPTION("device_to_user", "2 arguments");
+    }
+  cr = seed_object_get_private (this_object);
+  ix = seed_value_to_double (ctx, arguments[0], exception);
+  iy = seed_value_to_double (ctx, arguments[1], exception);
+  
+  cairo_device_to_user (cr, &ix, &iy);
+  out[0] = seed_value_from_double (ctx, ix, exception);
+  out[1] = seed_value_from_double (ctx, iy, exception);
+  
+  return seed_make_array (ctx, out, 2, exception);
+}
+
+static SeedValue
+seed_cairo_device_to_user_distance (SeedContext ctx,
+			   SeedObject function,
+			   SeedObject this_object,
+			   gsize argument_count,
+			   const SeedValue arguments[],
+			   SeedException *exception)
+{
+  SeedValue out[2];
+  cairo_t *cr;
+  double ix, iy;
+  
+  CHECK_THIS();
+  if (argument_count != 2)
+    {
+      EXPECTED_EXCEPTION("device_to_user_distance", "2 arguments");
+    }
+  cr = seed_object_get_private (this_object);
+  ix = seed_value_to_double (ctx, arguments[0], exception);
+  iy = seed_value_to_double (ctx, arguments[1], exception);
+  
+  cairo_device_to_user_distance (cr, &ix, &iy);
+  out[0] = seed_value_from_double (ctx, ix, exception);
+  out[1] = seed_value_from_double (ctx, iy, exception);
+  
+  return seed_make_array (ctx, out, 2, exception);
+}
 
 seed_static_value cairo_values[] = {
   {"antialias", seed_cairo_get_antialias, seed_cairo_set_antialias, SEED_PROPERTY_ATTRIBUTE_READ_ONLY | SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
@@ -1540,6 +1667,11 @@ seed_static_function cairo_funcs[] = {
   {"scale", seed_cairo_scale, 0},
   {"rotate", seed_cairo_rotate, 0},
   {"transform", seed_cairo_transform, 0},
+  {"identify_matrix", seed_cairo_identity_matrix, 0},
+  {"user_to_device", seed_cairo_user_to_device, 0},
+  {"user_to_device_distance", seed_cairo_user_to_device_distance, 0},
+  {"device_to_user", seed_cairo_device_to_user, 0},
+  {"device_to_user_distance", seed_cairo_device_to_user_distance, 0},
   {0, 0, 0}
 };
 
