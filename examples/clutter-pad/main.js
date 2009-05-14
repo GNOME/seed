@@ -9,6 +9,7 @@ GtkSource = imports.gi.GtkSource;
 GtkClutter = imports.gi.GtkClutter;
 sandbox = imports.sandbox;
 Gio = imports.gi.Gio;
+Pango = imports.gi.Pango;
 
 Gtk.init(Seed.argv);
 GtkClutter.init(Seed.argv);
@@ -192,6 +193,7 @@ ui.get_object("example_selector").signal.changed.connect(select_example);
 ui.get_object("execute_action").signal.activate.connect(execute_file);
 
 ui.get_object("source_view").set_buffer(source_buf);
+ui.get_object("source_view").modify_font(Pango.Font.description_from_string("monospace 10"));
 
 window.resize(800, 600);
 window.show_all();

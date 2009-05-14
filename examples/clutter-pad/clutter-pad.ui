@@ -97,7 +97,10 @@
                     <property name="hscrollbar_policy">automatic</property>
                     <property name="vscrollbar_policy">automatic</property>
                     <child>
-                      <object class="GtkSourceView" id="source_view" />
+                      <object class="GtkSourceView" id="source_view">
+                        <property name="indent_width">-1</property>
+                        <property name="tab_width">4</property>
+                      </object>
                     </child>
                   </object>
                 </child>

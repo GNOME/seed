@@ -3,9 +3,9 @@ Clutter = imports.gi.Clutter;
 stage = Clutter.Stage.get_default();
 
 colors = [{red: 255, alpha: 255},
-                {green: 255, alpha: 255},
-                {blue: 255, alpha: 255},
-                {red: 255, green: 255, alpha: 255}]
+          {green: 255, alpha: 255},
+          {blue: 255, alpha: 255},
+          {red: 255, green: 255, alpha: 255}]
 
 for (i = 0; i < 4; i++)
 {
