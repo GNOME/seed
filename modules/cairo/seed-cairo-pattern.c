@@ -111,6 +111,67 @@ seed_cairo_construct_radial_gradient (SeedContext ctx,
   return seed_object_from_cairo_pattern (ctx, cairo_pattern_create_radial (cx0, cy0, r0, cx1, cy1, r1));
 }
 
+static SeedValue
+seed_cairo_pattern_add_color_stop_rgb (SeedContext ctx,
+				       SeedObject function,
+				       SeedObject this_object,
+				       gsize argument_count,
+				       const SeedValue arguments[],
+				       SeedException *exception)
+{
+  gdouble offset, r, g, b;
+  cairo_pattern_t *pat;
+  CHECK_THIS();
+  if (argument_count != 4)
+    {
+      EXPECTED_EXCEPTION("add_color_stop_rgb", "4 arguments");
+    }
+  
+  pat = seed_object_get_private (this_object);
+  offset = seed_value_to_double (ctx, arguments[0], exception);
+  r = seed_value_to_double (ctx, arguments[1], exception);
+  g = seed_value_to_double (ctx, arguments[2], exception);
+  b = seed_value_to_double (ctx, arguments[3], exception);
+  
+  cairo_pattern_add_color_stop_rgb (pat, offset, r, g, b);
+  
+  return seed_make_undefined (ctx);
+}
+
+static SeedValue
+seed_cairo_pattern_add_color_stop_rgba (SeedContext ctx,
+				       SeedObject function,
+				       SeedObject this_object,
+				       gsize argument_count,
+				       const SeedValue arguments[],
+				       SeedException *exception)
+{
+  gdouble offset, r, g, b, a;
+  cairo_pattern_t *pat;
+  CHECK_THIS();
+  if (argument_count != 5)
+    {
+      EXPECTED_EXCEPTION("add_color_stop_rgba", "5 arguments");
+    }
+  
+  pat = seed_object_get_private (this_object);
+  offset = seed_value_to_double (ctx, arguments[0], exception);
+  r = seed_value_to_double (ctx, arguments[1], exception);
+  g = seed_value_to_double (ctx, arguments[2], exception);
+  b = seed_value_to_double (ctx, arguments[3], exception);
+  a = seed_value_to_double (ctx, arguments[4], exception);
+  
+  cairo_pattern_add_color_stop_rgba (pat, offset, r, g, b, a);
+  
+  return seed_make_undefined (ctx);
+}
+
+seed_static_function pattern_funcs[] = {
+  {"add_color_stop_rgb", seed_cairo_pattern_add_color_stop_rgb, 0},
+  {"add_color_stop_rgba", seed_cairo_pattern_add_color_stop_rgba, 0},
+  {0,0,0}
+};
+
 void
 seed_define_cairo_pattern (SeedContext ctx,
 			   SeedObject namespace_ref)
@@ -120,6 +181,7 @@ seed_define_cairo_pattern (SeedContext ctx,
   
   pattern_def.class_name = "Pattern";
   pattern_def.finalize = seed_cairo_pattern_finalize;
+  pattern_def.static_functions = pattern_funcs;
   
   seed_cairo_pattern_class = seed_create_class (&pattern_def);
   
