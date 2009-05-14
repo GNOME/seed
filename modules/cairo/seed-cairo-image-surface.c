@@ -44,7 +44,7 @@ seed_cairo_image_surface_get_format (SeedContext ctx,
 				SeedException *exception)
 {
   CHECK_THIS(null);
-  return seed_value_from_long (ctx, cairo_image_surface_get_format (seed_object_to_cairo_surface(ctx, this_object)), exception);
+  return seed_value_from_long (ctx, cairo_image_surface_get_format (seed_object_to_cairo_surface(ctx, this_object, exception)), exception);
 }
 
 static SeedValue
@@ -56,7 +56,7 @@ seed_cairo_image_surface_get_width (SeedContext ctx,
 				SeedException *exception)
 {
   CHECK_THIS(null);
-  return seed_value_from_int (ctx, cairo_image_surface_get_width (seed_object_to_cairo_surface(ctx, this_object)), exception);
+  return seed_value_from_int (ctx, cairo_image_surface_get_width (seed_object_to_cairo_surface(ctx, this_object, exception)), exception);
 }
 
 static SeedValue
@@ -68,7 +68,7 @@ seed_cairo_image_surface_get_height (SeedContext ctx,
 				SeedException *exception)
 {
   CHECK_THIS(null);
-  return seed_value_from_int (ctx, cairo_image_surface_get_height (seed_object_to_cairo_surface(ctx, this_object)), exception);
+  return seed_value_from_int (ctx, cairo_image_surface_get_height (seed_object_to_cairo_surface(ctx, this_object, exception)), exception);
 }
 
 static SeedValue
@@ -80,7 +80,7 @@ seed_cairo_image_surface_get_stride (SeedContext ctx,
 				SeedException *exception)
 {
   CHECK_THIS(null);
-  return seed_value_from_int (ctx, cairo_image_surface_get_stride (seed_object_to_cairo_surface(ctx, this_object)), exception);
+  return seed_value_from_int (ctx, cairo_image_surface_get_stride (seed_object_to_cairo_surface(ctx, this_object, exception)), exception);
 }
 
 static SeedObject
