@@ -409,6 +409,118 @@ seed_cairo_get_dash (SeedContext ctx,
   
   return seed_make_array (ctx, ret, 2, exception);
 }
+
+static SeedValue
+seed_cairo_get_fill_rule (SeedContext ctx,
+			  SeedObject function,
+			  SeedObject this_object,
+			  gsize argument_count,
+			  const SeedValue arguments[],
+			  SeedException *exception)
+{
+  cairo_t *cr;
+  CHECK_THIS();
+  
+  cr = seed_object_get_private (this_object);
+  return seed_value_from_long (ctx, cairo_get_fill_rule (cr), exception);
+}
+
+static SeedValue
+seed_cairo_set_fill_rule (SeedContext ctx,
+			  SeedObject function,
+			  SeedObject this_object,
+			  gsize argument_count,
+			  const SeedValue arguments[],
+			  SeedException *exception)
+{
+  cairo_t *cr;
+  CHECK_THIS();
+  
+  if (argument_count != 1)
+    {
+      EXPECTED_EXCEPTION("fill_rule", "1 argument");
+    }
+  
+  cr = seed_object_get_private (this_object);
+  cairo_set_fill_rule (cr, seed_value_to_long (ctx, arguments[0], exception));
+
+  return seed_make_undefined (ctx);
+}
+
+
+static SeedValue
+seed_cairo_get_line_cap (SeedContext ctx,
+			  SeedObject function,
+			  SeedObject this_object,
+			  gsize argument_count,
+			  const SeedValue arguments[],
+			  SeedException *exception)
+{
+  cairo_t *cr;
+  CHECK_THIS();
+  
+  cr = seed_object_get_private (this_object);
+  return seed_value_from_long (ctx, cairo_get_line_cap (cr), exception);
+}
+
+static SeedValue
+seed_cairo_set_line_cap (SeedContext ctx,
+			  SeedObject function,
+			  SeedObject this_object,
+			  gsize argument_count,
+			  const SeedValue arguments[],
+			  SeedException *exception)
+{
+  cairo_t *cr;
+  CHECK_THIS();
+  
+  if (argument_count != 1)
+    {
+      EXPECTED_EXCEPTION("line_cap", "1 argument");
+    }
+  
+  cr = seed_object_get_private (this_object);
+  cairo_set_line_cap (cr, seed_value_to_long (ctx, arguments[0], exception));
+
+  return seed_make_undefined (ctx);
+}
+
+static SeedValue
+seed_cairo_get_line_join (SeedContext ctx,
+			  SeedObject function,
+			  SeedObject this_object,
+			  gsize argument_count,
+			  const SeedValue arguments[],
+			  SeedException *exception)
+{
+  cairo_t *cr;
+  CHECK_THIS();
+  
+  cr = seed_object_get_private (this_object);
+  return seed_value_from_long (ctx, cairo_get_line_join (cr), exception);
+}
+
+static SeedValue
+seed_cairo_set_line_join (SeedContext ctx,
+			  SeedObject function,
+			  SeedObject this_object,
+			  gsize argument_count,
+			  const SeedValue arguments[],
+			  SeedException *exception)
+{
+  cairo_t *cr;
+  CHECK_THIS();
+  
+  if (argument_count != 1)
+    {
+      EXPECTED_EXCEPTION("line_join", "1 argument");
+    }
+  
+  cr = seed_object_get_private (this_object);
+  cairo_set_line_join (cr, seed_value_to_long (ctx, arguments[0], exception));
+  
+  return seed_make_undefined (ctx);
+}
   
 seed_static_function cairo_funcs[] = {
   {"save", seed_cairo_save, 0},
@@ -429,6 +541,12 @@ seed_static_function cairo_funcs[] = {
   {"set_dash", seed_cairo_set_dash, 0},
   {"get_dash_count", seed_cairo_get_dash_count, 0},
   {"get_dash", seed_cairo_get_dash, 0},  
+  {"get_fill_rule", seed_cairo_get_fill_rule, 0},  
+  {"set_fill_rule", seed_cairo_set_fill_rule, 0},  
+  {"get_line_cap", seed_cairo_get_line_cap, 0},  
+  {"set_line_cap", seed_cairo_set_line_cap, 0},  
+  {"get_line_join", seed_cairo_get_line_join, 0},  
+  {"set_line_join", seed_cairo_set_line_join, 0},  
   {0, 0, 0}
 };
 
