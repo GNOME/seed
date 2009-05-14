@@ -11,17 +11,17 @@ SeedEngine *eng;
 #define CAIRO_CONTEXT_PRIV(obj) ((cairo_t *)seed_object_get_private(obj))
 
 #define CHECK_CAIRO(obj) ({						\
-    if (!seed_object_is_of_class (ctx, obj, seed_cairo_class)){	\
-      seed_make_exception (ctx, exception, "ArgumentError", "Object is not a Cairo Context"); \
-      return seed_make_undefined (ctx);\
-    }									\
-    if (!seed_object_get_private (obj)){				\
-      seed_make_exception (ctx, exception, "ArgumentError", "Cairo Context has been destroyed"); \
-      return seed_make_undefined (ctx);}})
+      if (!seed_object_is_of_class (ctx, obj, seed_cairo_class)){	\
+	seed_make_exception (ctx, exception, "ArgumentError", "Object is not a Cairo Context"); \
+	return seed_make_undefined (ctx);				\
+      }									\
+      if (!seed_object_get_private (obj)){				\
+	seed_make_exception (ctx, exception, "ArgumentError", "Cairo Context has been destroyed"); \
+	return seed_make_undefined (ctx);}})
 
 #define CHECK_THIS() if (!seed_object_get_private (this_object)){	\
     seed_make_exception (ctx, exception, "ArgumentError", "Cairo Context has been destroyed"); \
-      return seed_make_undefined (ctx);}
+    return seed_make_undefined (ctx);}
 
 SeedClass seed_cairo_context_class;
 
@@ -106,11 +106,11 @@ seed_cairo_save (SeedContext ctx,
 
 static SeedValue 
 seed_cairo_restore (SeedContext ctx,
-		 SeedObject function,
-		 SeedObject this_object,
-		 gsize argument_count,
-		 const SeedValue arguments[],
-		 SeedException *exception)
+		    SeedObject function,
+		    SeedObject this_object,
+		    gsize argument_count,
+		    const SeedValue arguments[],
+		    SeedException *exception)
 {
   CHECK_THIS();
   cairo_t *cr = seed_object_get_private (this_object);
@@ -121,11 +121,11 @@ seed_cairo_restore (SeedContext ctx,
 
 static SeedValue 
 seed_cairo_get_target (SeedContext ctx,
-		 SeedObject function,
-		 SeedObject this_object,
-		 gsize argument_count,
-		 const SeedValue arguments[],
-		 SeedException *exception)
+		       SeedObject function,
+		       SeedObject this_object,
+		       gsize argument_count,
+		       const SeedValue arguments[],
+		       SeedException *exception)
 {
   CHECK_THIS();
   cairo_t *cr = seed_object_get_private (this_object);
@@ -173,11 +173,11 @@ seed_cairo_push_group_with_content (SeedContext ctx,
 
 static SeedValue 
 seed_cairo_pop_group_to_source (SeedContext ctx,
-		       SeedObject function,
-		       SeedObject this_object,
-		       gsize argument_count,
-		       const SeedValue arguments[],
-		       SeedException *exception)
+				SeedObject function,
+				SeedObject this_object,
+				gsize argument_count,
+				const SeedValue arguments[],
+				SeedException *exception)
 {
   CHECK_THIS();
   cairo_t *cr = seed_object_get_private (this_object);
@@ -188,11 +188,11 @@ seed_cairo_pop_group_to_source (SeedContext ctx,
 
 static SeedValue 
 seed_cairo_get_group_target (SeedContext ctx,
-		 SeedObject function,
-		 SeedObject this_object,
-		 gsize argument_count,
-		 const SeedValue arguments[],
-		 SeedException *exception)
+			     SeedObject function,
+			     SeedObject this_object,
+			     gsize argument_count,
+			     const SeedValue arguments[],
+			     SeedException *exception)
 {
   CHECK_THIS();
   cairo_t *cr = seed_object_get_private (this_object);
@@ -450,11 +450,11 @@ seed_cairo_set_fill_rule (SeedContext ctx,
 
 static SeedValue
 seed_cairo_get_line_cap (SeedContext ctx,
-			  SeedObject function,
-			  SeedObject this_object,
-			  gsize argument_count,
-			  const SeedValue arguments[],
-			  SeedException *exception)
+			 SeedObject function,
+			 SeedObject this_object,
+			 gsize argument_count,
+			 const SeedValue arguments[],
+			 SeedException *exception)
 {
   cairo_t *cr;
   CHECK_THIS();
@@ -465,11 +465,11 @@ seed_cairo_get_line_cap (SeedContext ctx,
 
 static SeedValue
 seed_cairo_set_line_cap (SeedContext ctx,
-			  SeedObject function,
-			  SeedObject this_object,
-			  gsize argument_count,
-			  const SeedValue arguments[],
-			  SeedException *exception)
+			 SeedObject function,
+			 SeedObject this_object,
+			 gsize argument_count,
+			 const SeedValue arguments[],
+			 SeedException *exception)
 {
   cairo_t *cr;
   CHECK_THIS();
@@ -525,11 +525,11 @@ seed_cairo_set_line_join (SeedContext ctx,
 
 static SeedValue
 seed_cairo_get_line_width (SeedContext ctx,
-			  SeedObject function,
-			  SeedObject this_object,
-			  gsize argument_count,
-			  const SeedValue arguments[],
-			  SeedException *exception)
+			   SeedObject function,
+			   SeedObject this_object,
+			   gsize argument_count,
+			   const SeedValue arguments[],
+			   SeedException *exception)
 {
   cairo_t *cr;
   CHECK_THIS();
@@ -540,11 +540,11 @@ seed_cairo_get_line_width (SeedContext ctx,
 
 static SeedValue
 seed_cairo_set_line_width (SeedContext ctx,
-			  SeedObject function,
-			  SeedObject this_object,
-			  gsize argument_count,
-			  const SeedValue arguments[],
-			  SeedException *exception)
+			   SeedObject function,
+			   SeedObject this_object,
+			   gsize argument_count,
+			   const SeedValue arguments[],
+			   SeedException *exception)
 {
   cairo_t *cr;
   CHECK_THIS();
@@ -562,11 +562,11 @@ seed_cairo_set_line_width (SeedContext ctx,
 
 static SeedValue
 seed_cairo_get_miter_limit (SeedContext ctx,
-			  SeedObject function,
-			  SeedObject this_object,
-			  gsize argument_count,
-			  const SeedValue arguments[],
-			  SeedException *exception)
+			    SeedObject function,
+			    SeedObject this_object,
+			    gsize argument_count,
+			    const SeedValue arguments[],
+			    SeedException *exception)
 {
   cairo_t *cr;
   CHECK_THIS();
@@ -577,11 +577,11 @@ seed_cairo_get_miter_limit (SeedContext ctx,
 
 static SeedValue
 seed_cairo_set_miter_limit (SeedContext ctx,
-			  SeedObject function,
-			  SeedObject this_object,
-			  gsize argument_count,
-			  const SeedValue arguments[],
-			  SeedException *exception)
+			    SeedObject function,
+			    SeedObject this_object,
+			    gsize argument_count,
+			    const SeedValue arguments[],
+			    SeedException *exception)
 {
   cairo_t *cr;
   CHECK_THIS();
@@ -599,11 +599,11 @@ seed_cairo_set_miter_limit (SeedContext ctx,
 
 static SeedValue
 seed_cairo_get_operator (SeedContext ctx,
-			  SeedObject function,
-			  SeedObject this_object,
-			  gsize argument_count,
-			  const SeedValue arguments[],
-			  SeedException *exception)
+			 SeedObject function,
+			 SeedObject this_object,
+			 gsize argument_count,
+			 const SeedValue arguments[],
+			 SeedException *exception)
 {
   cairo_t *cr;
   CHECK_THIS();
@@ -614,11 +614,11 @@ seed_cairo_get_operator (SeedContext ctx,
 
 static SeedValue
 seed_cairo_set_operator (SeedContext ctx,
-			  SeedObject function,
-			  SeedObject this_object,
-			  gsize argument_count,
-			  const SeedValue arguments[],
-			  SeedException *exception)
+			 SeedObject function,
+			 SeedObject this_object,
+			 gsize argument_count,
+			 const SeedValue arguments[],
+			 SeedException *exception)
 {
   cairo_t *cr;
   CHECK_THIS();
@@ -689,11 +689,11 @@ seed_cairo_clip (SeedContext ctx,
 
 static SeedValue 
 seed_cairo_clip_preserve (SeedContext ctx,
-		 SeedObject function,
-		 SeedObject this_object,
-		 gsize argument_count,
-		 const SeedValue arguments[],
-		 SeedException *exception)
+			  SeedObject function,
+			  SeedObject this_object,
+			  gsize argument_count,
+			  const SeedValue arguments[],
+			  SeedException *exception)
 {
   CHECK_THIS();
   cairo_t *cr = seed_object_get_private (this_object);
@@ -704,6 +704,50 @@ seed_cairo_clip_preserve (SeedContext ctx,
 
 static SeedValue 
 seed_cairo_reset_clip (SeedContext ctx,
+		       SeedObject function,
+		       SeedObject this_object,
+		       gsize argument_count,
+		       const SeedValue arguments[],
+		       SeedException *exception)
+{
+  CHECK_THIS();
+  cairo_t *cr = seed_object_get_private (this_object);
+  
+  cairo_reset_clip(cr);
+  return seed_make_undefined (ctx);
+}
+
+
+static SeedValue 
+seed_cairo_clip_extents (SeedContext ctx,
+			 SeedObject function,
+			 SeedObject this_object,
+			 gsize argument_count,
+			 const SeedValue arguments[],
+			 SeedException *exception)
+{
+  SeedValue jsextents[4];
+  gdouble extents[4];
+  CHECK_THIS();
+  cairo_t *cr = seed_object_get_private (this_object);
+  
+  if (argument_count != 4)
+    {
+      EXPECTED_EXCEPTION("clip_extents", "4 arguments");
+    }
+  
+  cairo_clip_extents (cr, &extents[0], &extents[1], &extents[2], &extents[3]);
+  jsextents[0] = seed_value_from_double (ctx, extents[0], exception);
+  jsextents[1] = seed_value_from_double (ctx, extents[1], exception);
+  jsextents[2] = seed_value_from_double (ctx, extents[2], exception);
+  jsextents[3] = seed_value_from_double (ctx, extents[3], exception);
+
+  return seed_make_array (ctx, jsextents, 4, exception);
+}
+
+
+static SeedValue 
+seed_cairo_fill (SeedContext ctx,
 		 SeedObject function,
 		 SeedObject this_object,
 		 gsize argument_count,
@@ -713,7 +757,252 @@ seed_cairo_reset_clip (SeedContext ctx,
   CHECK_THIS();
   cairo_t *cr = seed_object_get_private (this_object);
   
-  cairo_reset_clip(cr);
+  cairo_fill(cr);
+  return seed_make_undefined (ctx);
+}
+
+
+static SeedValue 
+seed_cairo_fill_preserve (SeedContext ctx,
+			  SeedObject function,
+			  SeedObject this_object,
+			  gsize argument_count,
+			  const SeedValue arguments[],
+			  SeedException *exception)
+{
+  CHECK_THIS();
+  cairo_t *cr = seed_object_get_private (this_object);
+  
+  cairo_fill_preserve(cr);
+  return seed_make_undefined (ctx);
+}
+
+static SeedValue 
+seed_cairo_fill_extents (SeedContext ctx,
+			 SeedObject function,
+			 SeedObject this_object,
+			 gsize argument_count,
+			 const SeedValue arguments[],
+			 SeedException *exception)
+{
+  SeedValue jsextents[4];
+  gdouble extents[4];
+  CHECK_THIS();
+  cairo_t *cr = seed_object_get_private (this_object);
+  
+  if (argument_count != 4)
+    {
+      EXPECTED_EXCEPTION("clip_extents", "4 arguments");
+    }
+  
+  cairo_fill_extents (cr, &extents[0], &extents[1], &extents[2], &extents[3]);
+  jsextents[0] = seed_value_from_double (ctx, extents[0], exception);
+  jsextents[1] = seed_value_from_double (ctx, extents[1], exception);
+  jsextents[2] = seed_value_from_double (ctx, extents[2], exception);
+  jsextents[3] = seed_value_from_double (ctx, extents[3], exception);
+
+  return seed_make_array (ctx, jsextents, 4, exception);
+}
+
+static SeedValue
+seed_cairo_in_fill (SeedContext ctx,
+		    SeedObject function,
+		    SeedObject this_object,
+		    gsize argument_count,
+		    const SeedValue arguments[],
+		    SeedException *exception)
+{
+  gdouble x, y;
+  cairo_t *cr;
+  CHECK_THIS();
+  cr = seed_object_get_private (this_object);
+  
+  if (argument_count != 2)
+    {
+      EXPECTED_EXCEPTION("in_fill", "2 arguments");
+    }
+  
+  x = seed_value_to_double (ctx, arguments[0], exception);
+  y = seed_value_to_double (ctx, arguments[1], exception);
+  
+  return seed_value_from_boolean (ctx, cairo_in_fill (cr, x, y), exception);
+}
+
+static SeedValue
+seed_cairo_mask_surface (SeedContext ctx,
+			 SeedObject function,
+			 SeedObject this_object,
+			 gsize argument_count,
+			 const SeedValue arguments[],
+			 SeedException *exception)
+{
+  gdouble x,y;
+  cairo_surface_t *surface;
+  cairo_t *cr;
+  
+  CHECK_THIS();
+  if (argument_count != 3)
+    {
+      EXPECTED_EXCEPTION("mask_surface", "3 arguments");
+    }
+  cr = seed_object_get_private (this_object);
+  surface = seed_object_to_cairo_surface (ctx, arguments[0], exception);
+  if (!surface)
+    return seed_make_undefined (ctx);
+  
+  x = seed_value_to_double (ctx, arguments[1], exception);
+  y = seed_value_to_double (ctx, arguments[2], exception);
+  cairo_mask_surface (cr, surface, x, y);
+  
+  return seed_make_undefined (ctx);
+}
+
+static SeedValue 
+seed_cairo_paint (SeedContext ctx,
+		  SeedObject function,
+		  SeedObject this_object,
+		  gsize argument_count,
+		  const SeedValue arguments[],
+		  SeedException *exception)
+{
+  CHECK_THIS();
+  cairo_t *cr = seed_object_get_private (this_object);
+  
+  cairo_paint(cr);
+  return seed_make_undefined (ctx);
+}
+
+static SeedValue
+seed_cairo_paint_with_alpha (SeedContext ctx,
+			     SeedObject function,
+			     SeedObject this_object,
+			     gsize argument_count,
+			     const SeedValue arguments[],
+			     SeedException *exception)
+{
+  cairo_t *cr;
+  CHECK_THIS();
+  
+  if (argument_count != 1)
+    {
+      EXPECTED_EXCEPTION("paint_with_alpha", "1 argument");
+    }
+  
+  cr = seed_object_get_private (this_object);
+  cairo_paint_with_alpha (cr, seed_value_to_double (ctx, arguments[0], exception));
+  
+  return seed_make_undefined (ctx);
+}
+
+static SeedValue 
+seed_cairo_stroke (SeedContext ctx,
+		   SeedObject function,
+		   SeedObject this_object,
+		   gsize argument_count,
+		   const SeedValue arguments[],
+		   SeedException *exception)
+{
+  CHECK_THIS();
+  cairo_t *cr = seed_object_get_private (this_object);
+  
+  cairo_stroke(cr);
+  return seed_make_undefined (ctx);
+}
+
+
+static SeedValue 
+seed_cairo_stroke_preserve (SeedContext ctx,
+			    SeedObject function,
+			    SeedObject this_object,
+			    gsize argument_count,
+			    const SeedValue arguments[],
+			    SeedException *exception)
+{
+  CHECK_THIS();
+  cairo_t *cr = seed_object_get_private (this_object);
+  
+  cairo_stroke_preserve(cr);
+  return seed_make_undefined (ctx);
+}
+
+static SeedValue 
+seed_cairo_stroke_extents (SeedContext ctx,
+			   SeedObject function,
+			   SeedObject this_object,
+			   gsize argument_count,
+			   const SeedValue arguments[],
+			   SeedException *exception)
+{
+  SeedValue jsextents[4];
+  gdouble extents[4];
+  CHECK_THIS();
+  cairo_t *cr = seed_object_get_private (this_object);
+  
+  if (argument_count != 4)
+    {
+      EXPECTED_EXCEPTION("clip_extents", "4 arguments");
+    }
+  
+  cairo_stroke_extents (cr, &extents[0], &extents[1], &extents[2], &extents[3]);
+  jsextents[0] = seed_value_from_double (ctx, extents[0], exception);
+  jsextents[1] = seed_value_from_double (ctx, extents[1], exception);
+  jsextents[2] = seed_value_from_double (ctx, extents[2], exception);
+  jsextents[3] = seed_value_from_double (ctx, extents[3], exception);
+
+  return seed_make_array (ctx, jsextents, 4, exception);
+}
+
+static SeedValue
+seed_cairo_in_stroke (SeedContext ctx,
+		      SeedObject function,
+		      SeedObject this_object,
+		      gsize argument_count,
+		      const SeedValue arguments[],
+		      SeedException *exception)
+{
+  gdouble x, y;
+  cairo_t *cr;
+  CHECK_THIS();
+  cr = seed_object_get_private (this_object);
+  
+  if (argument_count != 2)
+    {
+      EXPECTED_EXCEPTION("in_stroke", "2 arguments");
+    }
+  
+  x = seed_value_to_double (ctx, arguments[0], exception);
+  y = seed_value_to_double (ctx, arguments[1], exception);
+  
+  return seed_value_from_boolean (ctx, cairo_in_stroke (cr, x, y), exception);
+}
+
+static SeedValue 
+seed_cairo_copy_page (SeedContext ctx,
+		      SeedObject function,
+		      SeedObject this_object,
+		      gsize argument_count,
+		      const SeedValue arguments[],
+		      SeedException *exception)
+{
+  CHECK_THIS();
+  cairo_t *cr = seed_object_get_private (this_object);
+  
+  cairo_copy_page(cr);
+  return seed_make_undefined (ctx);
+}
+
+static SeedValue 
+seed_cairo_show_page (SeedContext ctx,
+		      SeedObject function,
+		      SeedObject this_object,
+		      gsize argument_count,
+		      const SeedValue arguments[],
+		      SeedException *exception)
+{
+  CHECK_THIS();
+  cairo_t *cr = seed_object_get_private (this_object);
+  
+  cairo_show_page(cr);
   return seed_make_undefined (ctx);
 }
 
@@ -731,7 +1020,7 @@ seed_static_function cairo_funcs[] = {
   {"set_source_rgba", seed_cairo_set_source_rgba, 0},
   //  {"set_source", seed_cairo_set_source, 0},
   {"set_source_surface", seed_cairo_set_source_surface, 0},
-//  {"get_source", seed_cairo_get_source, 0},
+  //  {"get_source", seed_cairo_get_source, 0},
   {"set_antialias", seed_cairo_set_antialias, 0},
   {"get_antialias", seed_cairo_get_antialias, 0},
   {"set_dash", seed_cairo_set_dash, 0},
@@ -754,6 +1043,22 @@ seed_static_function cairo_funcs[] = {
   {"clip", seed_cairo_clip, 0},
   {"clip_preserve", seed_cairo_clip_preserve, 0},
   {"reset_clip", seed_cairo_reset_clip, 0},
+  {"clip_extents", seed_cairo_clip_extents, 0},
+  // Rectangle list stuff?
+  {"fill", seed_cairo_fill, 0},
+  {"fill_preserve", seed_cairo_fill_preserve, 0},
+  {"fill_extents", seed_cairo_fill_extents, 0},
+  //{"mask", seed_cairo_mask, 0},
+  {"in_fill", seed_cairo_in_fill, 0},
+  {"mask_surface", seed_cairo_mask_surface, 0},
+  {"paint", seed_cairo_paint, 0},
+  {"paint_with_alpha", seed_cairo_paint_with_alpha, 0},
+  {"stroke", seed_cairo_stroke, 0},
+  {"stroke_preserve", seed_cairo_stroke_preserve, 0},
+  {"stroke_extents", seed_cairo_stroke_extents, 0},
+  {"in_stroke", seed_cairo_in_stroke, 0},
+  {"copy_page", seed_cairo_copy_page, 0},
+  {"show_page", seed_cairo_show_page, 0},
   {0, 0, 0}
 };
 
@@ -772,12 +1077,13 @@ seed_module_init(SeedEngine * local_eng)
   seed_define_cairo_surface (eng->context, namespace_ref);
   
   cairo_def.class_name = "CairoContext";
+  cairo_def.static_functions = cairo_funcs;
   cairo_def.finalize = seed_cairo_context_finalize;
   seed_cairo_context_class = seed_create_class (&cairo_def);
-// Hack around WebKit GC bug.
+  // Hack around WebKit GC bug.
   context_constructor_ref = seed_make_constructor (eng->context,
 						   NULL,
-//				   seed_cairo_context_class,
+						   //				   seed_cairo_context_class,
 						   seed_cairo_construct_context);
 
   seed_object_set_property (eng->context, namespace_ref, "Context", context_constructor_ref);
