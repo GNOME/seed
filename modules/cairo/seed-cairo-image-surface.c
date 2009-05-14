@@ -116,10 +116,14 @@ seed_define_cairo_image_surface (SeedContext ctx,
 				 SeedObject namespace_ref)
 {
   seed_class_definition image_def = seed_empty_class;
+  // TODO: FIX
+  seed_static_function webkit_fail = {0,0,0};
   
   image_def.class_name = "CairoImageSurface";
   image_def.static_values = image_surface_values;
   image_def.parent_class = seed_get_cairo_surface_class ();
+  // FAIL
+  image_def.static_functions = &webkit_fail;
   seed_cairo_image_surface_class = seed_create_class (&image_def);
   
   image_surface_constructor_ref = seed_make_constructor (ctx,

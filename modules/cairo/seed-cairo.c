@@ -126,10 +126,8 @@ seed_cairo_restore (SeedContext ctx,
 
 static SeedValue 
 seed_cairo_get_target (SeedContext ctx,
-		       SeedObject function,
 		       SeedObject this_object,
-		       gsize argument_count,
-		       const SeedValue arguments[],
+		       SeedString property_name,
 		       SeedException *exception)
 {
   CHECK_THIS();
@@ -1566,22 +1564,22 @@ seed_cairo_device_to_user_distance (SeedContext ctx,
 }
 
 seed_static_value cairo_values[] = {
-  {"antialias", seed_cairo_get_antialias, seed_cairo_set_antialias, SEED_PROPERTY_ATTRIBUTE_READ_ONLY | SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
-  {"fill_rule", seed_cairo_get_fill_rule, seed_cairo_set_fill_rule, SEED_PROPERTY_ATTRIBUTE_READ_ONLY | SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
-  {"line_cap", seed_cairo_get_line_cap, seed_cairo_set_line_cap, SEED_PROPERTY_ATTRIBUTE_READ_ONLY | SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
-  {"line_join", seed_cairo_get_line_join, seed_cairo_set_line_join, SEED_PROPERTY_ATTRIBUTE_READ_ONLY | SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
-  {"line_width", seed_cairo_get_line_width, seed_cairo_set_line_width, SEED_PROPERTY_ATTRIBUTE_READ_ONLY | SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
-  {"miter_limit", seed_cairo_get_miter_limit, seed_cairo_set_miter_limit, SEED_PROPERTY_ATTRIBUTE_READ_ONLY | SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
-  {"operator", seed_cairo_get_operator, seed_cairo_set_operator, SEED_PROPERTY_ATTRIBUTE_READ_ONLY | SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
-  {"tolerance", seed_cairo_get_tolerance, seed_cairo_set_tolerance, SEED_PROPERTY_ATTRIBUTE_READ_ONLY | SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
-  {"matrix", seed_cairo_get_matrix, seed_cairo_set_matrix, SEED_PROPERTY_ATTRIBUTE_READ_ONLY | SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
+  {"antialias", seed_cairo_get_antialias, seed_cairo_set_antialias, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
+  {"fill_rule", seed_cairo_get_fill_rule, seed_cairo_set_fill_rule, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
+  {"line_cap", seed_cairo_get_line_cap, seed_cairo_set_line_cap, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
+  {"line_join", seed_cairo_get_line_join, seed_cairo_set_line_join, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
+  {"line_width", seed_cairo_get_line_width, seed_cairo_set_line_width, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
+  {"miter_limit", seed_cairo_get_miter_limit, seed_cairo_set_miter_limit, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
+  {"operator", seed_cairo_get_operator, seed_cairo_set_operator, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
+  {"tolerance", seed_cairo_get_tolerance, seed_cairo_set_tolerance, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
+  {"matrix", seed_cairo_get_matrix, seed_cairo_set_matrix, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
+  {"target", seed_cairo_get_target, 0, SEED_PROPERTY_ATTRIBUTE_READ_ONLY | SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
   {0, 0, 0, 0}
 };
   
 seed_static_function cairo_funcs[] = {
   {"save", seed_cairo_save, 0},
   {"restore", seed_cairo_restore, 0},
-  {"get_target", seed_cairo_get_target, 0},
   {"push_group", seed_cairo_push_group, 0},
   {"push_group_with_content", seed_cairo_push_group_with_content, 0},
   {"set_dash", seed_cairo_set_dash, 0},

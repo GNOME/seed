@@ -370,8 +370,8 @@ seed_static_value surface_values[] = {
   {"type", seed_cairo_surface_get_type, 0, SEED_PROPERTY_ATTRIBUTE_READ_ONLY | SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
   {"content", seed_cairo_surface_get_content, 0,  SEED_PROPERTY_ATTRIBUTE_READ_ONLY | SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
   {"status", seed_cairo_surface_status, 0, SEED_PROPERTY_ATTRIBUTE_READ_ONLY | SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
-  {"device_offset", seed_cairo_surface_get_device_offset, seed_cairo_surface_set_device_offset, SEED_PROPERTY_ATTRIBUTE_READ_ONLY | SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
-  {"fallback_resolution", seed_cairo_surface_get_fallback_resolution, seed_cairo_surface_set_fallback_resolution, SEED_PROPERTY_ATTRIBUTE_READ_ONLY | SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
+  {"device_offset", seed_cairo_surface_get_device_offset, seed_cairo_surface_set_device_offset, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
+  {"fallback_resolution", seed_cairo_surface_get_fallback_resolution, seed_cairo_surface_set_fallback_resolution, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
   {0, 0, 0, 0}
 };
 
