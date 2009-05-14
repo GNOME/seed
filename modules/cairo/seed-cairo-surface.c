@@ -6,7 +6,7 @@
 #define CAIRO_SURFACE_PRIV(obj) ((cairo_surface_t *)seed_object_get_private(obj))
 
 #define CHECK_SURFACE(obj, res) ({						\
-    if (!seed_is_object_of_class (ctx, obj, seed_cairo_surface_class)){	\
+    if (!seed_object_is_of_class (ctx, obj, seed_cairo_surface_class)){	\
       seed_make_exception (ctx, exception, "ArgumentError", "Object is not a Cairo Surface"); \
       return seed_make_##res (ctx);\
     }									\
@@ -22,6 +22,12 @@
 
 SeedClass seed_cairo_surface_class;
 
+SeedClass
+seed_get_cairo_surface_class ()
+{
+  return seed_cairo_surface_class;
+}
+
 static void
 seed_cairo_surface_finalize (SeedObject obj)
 {
@@ -32,7 +38,7 @@ seed_cairo_surface_finalize (SeedObject obj)
 cairo_surface_t *
 seed_object_to_cairo_surface (SeedContext ctx, SeedObject obj)
 {
-  if (seed_is_object_of_class (ctx, obj, seed_cairo_surface_class))
+  if (seed_object_is_of_class (ctx, obj, seed_cairo_surface_class))
     return CAIRO_SURFACE_PRIV (obj);
   return NULL;
 }
@@ -347,4 +353,6 @@ seed_define_cairo_surface (SeedContext ctx,
   surface_def.static_functions = surface_funcs;
 
   seed_cairo_surface_class = seed_create_class (&surface_def);
+  
+  seed_define_cairo_image_surface (ctx, namespace_ref);
 }
