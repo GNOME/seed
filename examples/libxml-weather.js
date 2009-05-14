@@ -17,6 +17,6 @@ var data = request.response_body.data;
 var doc = libxml.parseString(data);
 var ctx = doc.xpathNewContext()
 
-Seed.print(data);
-Seed.print(ctx.xpathEval("//condition").value[0].content);
+ctx.xpathRegisterNs("yweather", "http://xml.weather.yahoo.com/ns/rss/1.0");
+Seed.print(ctx.xpathEval("//yweather:condition/@temp").value[0].content);
 
