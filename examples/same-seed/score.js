@@ -30,8 +30,8 @@ Score = new GType({
 			
 			this.anim = this.animate(Clutter.AnimationMode.EASE_OUT_SINE,400,
 			{
-				depth: [GObject.TYPE_INT, 500],
-				opacity: [GObject.TYPE_UCHAR, 0]
+			    depth:  500,
+			    opacity: 0,
 			});
 			this.anim.timeline.start();
 			
@@ -55,10 +55,10 @@ Score = new GType({
 			
 			this.anim = this.animate(Clutter.AnimationMode.EASE_OUT_ELASTIC,2000,
 			{
-				scale_x: [GObject.TYPE_DOUBLE, 1],
-				scale_y: [GObject.TYPE_DOUBLE, 1],
+			    scale_x: 1,
+			    scale_y: 1,
 				//y: [GObject.TYPE_INT, stage.width / 2],
-				opacity: [GObject.TYPE_UCHAR, 255]
+			    opacity: 255,
 			});
 			this.anim.timeline.start();
 			

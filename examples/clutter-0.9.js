@@ -41,11 +41,12 @@ function create_rectangles(rectangles, colors){
 
 function animate_rectangles(rectangles){
     for (var i in rectangles){
-	rectangles[i].anim = rectangles[i].animate(Clutter.AnimationMode.LINEAR, 5000,
-						   {
-						       x: [GObject.TYPE_INT, stage.width / 2],
-						       rotation_angle_z: [GObject.TYPE_DOUBLE, 500]
-						   });
+	rectangles[i].anim = 
+	    rectangles[i].animate(Clutter.AnimationMode.LINEAR, 5000,
+				  {
+				      x: stage.width / 2,
+				      rotation_angle_z: 500
+				  });
 	rectangles[i].anim.timeline.start();
     }
     rectangles[i].anim.timeline.signal.completed.connect(
@@ -64,20 +65,21 @@ function animate_rectangles(rectangles){
 	    text.y = -text.height;	// Off-stage
 	    stage.add_actor(text);
 	    text.show();
-	    text.anim = text.animate(Clutter.AnimationMode.EASE_OUT_BOUNCE, 3000,
-				     {
-					 y: [GObject.TYPE_INT, stage.height / 2]
-				     });
+	    text.anim = 
+		text.animate(Clutter.AnimationMode.EASE_OUT_BOUNCE, 3000,
+			     {
+				 y: stage.height / 2
+			     });
 	    text.anim.timeline.start();
 
 	    for (var i in rectangles){
 		rectangles[i].anim = 
 		    rectangles[i].animate(Clutter.AnimationMode.EASE_OUT_BOUNCE, 3000,
 					  {
-					      x: [GObject.TYPE_INT, Math.random() * stage.width],
-					      y: [GObject.TYPE_INT, Math.random() * stage.height / 2 + stage.height / 2],
-					      rotation_angle_z: [GObject.TYPE_DOUBLE, rectangles[i].rotation_angle_z],
-					      opacity: [GObject.TYPE_UCHAR, 0 ]
+					      x: Math.random() * stage.width,
+					      y: Math.random() * stage.height / 2 + stage.height / 2,
+					      rotation_angle_z: rectangles[i].rotation_angle_z,
+					      opacity: 0 
 					  });
 		//rotation_angle change makes it stop spinning. don't know why it's still
 		//spinning here, it really should have stopped when the timeline did. 
