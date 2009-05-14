@@ -59,6 +59,3 @@ stage.add_actor(box2d);
 box2d.simulating = true;
 
 stage.show_all();
-
-
-
