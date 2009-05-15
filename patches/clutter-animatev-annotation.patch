@@ -1,8 +1,8 @@
 diff --git a/clutter/clutter-animation.c b/clutter/clutter-animation.c
-index 24b9c3f..8bc3fcd 100644
+index 6eb7d85..a56e2e9 100644
 --- a/clutter/clutter-animation.c
 +++ b/clutter/clutter-animation.c
-@@ -1848,7 +1848,7 @@ clutter_actor_animate (ClutterActor *actor,
+@@ -1850,7 +1850,7 @@ clutter_actor_animate (ClutterActor *actor,
   * @mode: an animation mode logical id
   * @duration: duration of the animation, in milliseconds
   * @n_properties: number of property names and values
@@ -11,7 +11,7 @@ index 24b9c3f..8bc3fcd 100644
   *    property names to set
   * @values: (array length=n_properies): a vector containing the
   *    property values to set
-@@ -1923,7 +1923,7 @@ clutter_actor_animatev (ClutterActor        *actor,
+@@ -1925,7 +1925,7 @@ clutter_actor_animatev (ClutterActor        *actor,
   * @mode: an animation mode logical id
   * @timeline: a #ClutterTimeline
   * @n_properties: number of property names and values
