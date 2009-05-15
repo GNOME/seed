@@ -1,5 +1,6 @@
 #include <seed.h>
 #include <cairo/cairo.h>
+#include <gdk/gdk.h>
 #include "seed-cairo.h"
 #include "seed-cairo-surface.h"
 #include "seed-cairo-image-surface.h"
@@ -95,6 +96,28 @@ seed_cairo_construct_context (SeedContext ctx,
   if (!surf)
     return seed_make_undefined (ctx);
   return seed_object_from_cairo_context (ctx, cairo_create (surf));
+}
+
+static SeedObject
+seed_cairo_construct_context_from_drawable (SeedContext ctx,
+					    SeedObject constructor,
+					    size_t argument_count,
+					    const SeedValue arguments[],
+					    SeedException * exception)
+{
+  GObject *obj;
+  if (argument_count != 1)
+    {
+      EXPECTED_EXCEPTION ("Context", "1 argument");
+    }
+  obj = seed_value_to_object (ctx, arguments[0], exception);
+  if (!GDK_IS_DRAWABLE(obj))
+    {
+      seed_make_exception (ctx, exception, "ArgumentError", "Context.from_drawable requires a GdkDrawable argument");
+      return seed_make_null (ctx);
+    }
+
+  return seed_object_from_cairo_context (ctx, gdk_cairo_create (GDK_DRAWABLE (obj)));
 }
 
 static SeedValue 
@@ -1693,6 +1716,7 @@ SeedObject
 seed_module_init(SeedEngine * local_eng)
 {
   SeedObject context_constructor_ref;
+  SeedObject gdk_context_constructor_ref;
   SeedObject namespace_ref;
   seed_class_definition cairo_def = seed_empty_class;
   eng = local_eng;
@@ -1716,8 +1740,13 @@ seed_module_init(SeedEngine * local_eng)
 						   NULL,
 						   //				   seed_cairo_context_class,
 						   seed_cairo_construct_context);
+  gdk_context_constructor_ref = seed_make_constructor (eng->context,
+						       NULL,
+						       //				   seed_cairo_context_class,
+						       seed_cairo_construct_context_from_drawable);
 
   seed_object_set_property (eng->context, namespace_ref, "Context", context_constructor_ref);
+  seed_object_set_property (eng->context, context_constructor_ref, "from_drawable", gdk_context_constructor_ref);
   
   return namespace_ref;
 }

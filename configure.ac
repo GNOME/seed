@@ -101,6 +101,9 @@ if test x"$want_canvas_module" == x"yes" ; then
 	PKG_CHECK_MODULES(CAIRO, cairo)
 	AC_SUBST(CAIRO_CFLAGS)
 	AC_SUBST(CAIRO_LDFLAGS)
+	PKG_CHECK_MODULES(GDK, gdk-2.0)
+	AC_SUBST(GDK_CFLAGS)
+	AC_SUBST(GDK_LDFLAGS)
 fi
 
 AM_CONDITIONAL(BUILD_CANVAS_MODULE, test "x$want_canvas_module" = "xyes")

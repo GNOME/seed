@@ -19,11 +19,13 @@ libcairo_la_CFLAGS = \
         $(GOBJECT_INTROSPECTION_CFLAGS) \
 	-I@top_srcdir@/libseed/ \
 	$(CAIRO_CFLAGS) \
+	$(GDK_CFLAGS) \
 	$(SEED_DEBUG_CFLAGS) \
 	$(SEED_PROFILE_CFLAGS)
 
 libcairo_la_LDFLAGS = \
         $(GOBJECT_INTROSPECTION_LDFLAGS) \
+	$(GDK_LDFLAGS) \
 	$(CAIRO_LDFLAGS) \
 	$(SEED_PROFILE_LIBS)
 
