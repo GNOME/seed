@@ -1402,7 +1402,7 @@ seed_cairo_rotate (SeedContext ctx,
   CHECK_THIS();
   cairo_t *cr = seed_object_get_private (this_object);
   
-  if (argument_count != 2)
+  if (argument_count != 1)
     {
       EXPECTED_EXCEPTION ("rotate", "1 arguments");
     }
