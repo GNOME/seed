@@ -4,12 +4,14 @@ clutterpadexamples_DATA = \
 	animated-rectangle.js \
 	pink-stage.js \
 	spring.js \
-	box2d.js 
+	box2d.js \
+	cairo.js
 endif
 
 EXTRA_DIST = \
 	animated-rectangle.js \
 	pink-stage.js \
 	spring.js \
-	box2d.js
+	box2d.js \
+	cairo.js
 
