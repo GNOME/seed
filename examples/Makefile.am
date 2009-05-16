@@ -23,6 +23,7 @@ examples_DATA = \
     async-quine.js \
     calculator.js \
     clutter-0.8.js \
+    cairo.js \
     clutter-0.9.js \
     clutter-cairo.js \
     clutter-cogl-0.8.js \
@@ -55,6 +56,7 @@ endif
 EXTRA_DIST = \
     accelgroup.js \
     actions.js \
+    cairo.js \
     async-quine.js \
     calculator.js \
     clutter-0.8.js \
