@@ -1,15 +1,14 @@
 #!/usr/bin/env seed
 
 Canvas = imports.canvas;
-imports.gi.versions.Clutter = "0.8"
-imports.gi.versions.ClutterCairo = "0.8"
+imports.gi.versions.Clutter = "0.9"
 
 Clutter = imports.gi.Clutter;
-ClutterCairo = imports.gi.ClutterCairo;
 
 Clutter.init(Seed.argv);
 
-c = new ClutterCairo.ClutterCairo.c_new(100, 100);
+c = new Clutter.CairoTexture();
+c.set_surface_size(100, 100);
 cr = c.create();
 
 ctx = new Canvas.CairoCanvas(cr);
