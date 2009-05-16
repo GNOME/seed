@@ -120,6 +120,25 @@ seed_cairo_construct_context_from_drawable (SeedContext ctx,
   return seed_object_from_cairo_context (ctx, gdk_cairo_create (GDK_DRAWABLE (obj)));
 }
 
+static SeedObject
+seed_cairo_construct_context_steal (SeedContext ctx,
+				    SeedObject constructor,
+				    size_t argument_count,
+				    const SeedValue arguments[],
+				    SeedException * exception)
+{
+  if (argument_count != 1)
+    {
+      EXPECTED_EXCEPTION ("Context", "1 argument");
+    }
+  cairo_t* cr = seed_pointer_get_pointer(ctx, arguments[0]);
+  if (!cr) {
+    seed_make_exception (ctx, exception, "ArgumentError", "Context.steal requires a cairo context argument");
+	  return seed_make_null (ctx);
+  }
+  return seed_object_from_cairo_context (ctx, cr);
+}
+
 static SeedValue 
 seed_cairo_save (SeedContext ctx,
 		 SeedObject function,
@@ -1634,6 +1653,18 @@ seed_cairo_get_source (SeedContext ctx,
   return seed_object_from_cairo_pattern (ctx, cairo_get_source(cr));
 }
 
+static SeedValue
+seed_cairo_destroy (SeedContext ctx,
+		    SeedObject function,
+		    SeedObject this_object,
+		    gsize argument_count,
+		    const SeedValue arguments[],
+		    SeedException *exception)
+{
+  seed_cairo_context_finalize(this_object);
+  return seed_make_undefined (ctx);
+}
+
 seed_static_value cairo_values[] = {
   {"antialias", seed_cairo_get_antialias, seed_cairo_set_antialias, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
   {"fill_rule", seed_cairo_get_fill_rule, seed_cairo_set_fill_rule, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
@@ -1709,6 +1740,7 @@ seed_static_function cairo_funcs[] = {
   {"user_to_device_distance", seed_cairo_user_to_device_distance, 0},
   {"device_to_user", seed_cairo_device_to_user, 0},
   {"device_to_user_distance", seed_cairo_device_to_user_distance, 0},
+  {"destroy", seed_cairo_destroy, 0},
   {0, 0, 0}
 };
 
@@ -1717,6 +1749,7 @@ seed_module_init(SeedEngine * local_eng)
 {
   SeedObject context_constructor_ref;
   SeedObject gdk_context_constructor_ref;
+  SeedObject steal_context_constructor_ref;
   SeedObject namespace_ref;
   seed_class_definition cairo_def = seed_empty_class;
   eng = local_eng;
@@ -1744,9 +1777,14 @@ seed_module_init(SeedEngine * local_eng)
 						       NULL,
 						       //				   seed_cairo_context_class,
 						       seed_cairo_construct_context_from_drawable);
+  steal_context_constructor_ref = seed_make_constructor (eng->context,
+						       NULL,
+						       //				   seed_cairo_context_class,
+						       seed_cairo_construct_context_steal);
 
   seed_object_set_property (eng->context, namespace_ref, "Context", context_constructor_ref);
   seed_object_set_property (eng->context, context_constructor_ref, "from_drawable", gdk_context_constructor_ref);
+  seed_object_set_property (eng->context, context_constructor_ref, "steal", steal_context_constructor_ref);
   
   return namespace_ref;
 }
