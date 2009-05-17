@@ -20,7 +20,8 @@ libdbusnative_la_SOURCES = \
 	util/dbus.c \
 	util/dbus-proxy.c \
 	util/dbus-signals.c \
-	dbus-values.c 
+	dbus-values.c  \
+	dbus-exports.c 
 
 
 libdbusnative_la_CFLAGS = \
