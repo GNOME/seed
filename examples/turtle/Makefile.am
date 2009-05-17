@@ -1,7 +1,7 @@
 if BUILD_SEED_EXAMPLES
 if BUILD_TURTLE_EXAMPLE
 
-bin_PROGRAMS = seed_turtle
+noinst_PROGRAMS = seed_turtle
 
 seed_turtle_SOURCES = \
 	turtle.c
@@ -20,3 +20,4 @@ seed_turtle_LDADD = \
 
 endif
 endif
+
