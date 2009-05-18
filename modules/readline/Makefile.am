@@ -1,6 +1,6 @@
 if BUILD_READLINE_MODULE
 
-seedlibdir = ${exec_prefix}/lib/seed
+seedlibdir = ${libdir}/seed
 
 seedlib_LTLIBRARIES = \
 	libreadline.la

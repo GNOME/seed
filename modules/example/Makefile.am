@@ -1,6 +1,6 @@
 if BUILD_EXAMPLE_MODULE
 
-seedlibdir = ${exec_prefix}/lib/seed
+seedlibdir = ${libdir}/seed
 
 seedlib_LTLIBRARIES = \
 	libexample.la

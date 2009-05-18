@@ -2,7 +2,7 @@ if BUILD_MULTIPROCESSING_MODULE
 
 EXTRA_DIST = fork.js bi.js
 
-seedlibdir = ${exec_prefix}/lib/seed
+seedlibdir = ${libdir}/seed
 
 seedlib_LTLIBRARIES = \
 	libmultiprocessing.la

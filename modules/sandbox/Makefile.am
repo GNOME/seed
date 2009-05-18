@@ -1,4 +1,4 @@
-seedlibdir = ${exec_prefix}/lib/seed
+seedlibdir = ${libdir}/seed
 
 seedlib_LTLIBRARIES = \
 	libsandbox.la

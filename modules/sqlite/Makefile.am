@@ -1,6 +1,6 @@
 if BUILD_SQLITE_MODULE
 
-seedlibdir = ${exec_prefix}/lib/seed
+seedlibdir = ${libdir}/seed
 EXTRA_DIST = example.js
 
 seedlib_LTLIBRARIES = \

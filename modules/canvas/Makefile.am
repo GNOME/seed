@@ -1,6 +1,6 @@
 if BUILD_CANVAS_MODULE
 
-seedlibdir = ${exec_prefix}/lib/seed
+seedlibdir = ${libdir}/seed
 EXTRA_DIST=run-tests.js
 
 seedlib_LTLIBRARIES = \

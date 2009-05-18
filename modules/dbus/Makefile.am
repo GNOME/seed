@@ -10,7 +10,7 @@ EXTRA_DIST = dbus2js.py \
 moduledir = $(datadir)/seed
 module_DATA = dbus.js lang.js
 
-seedlibdir = ${exec_prefix}/lib/seed
+seedlibdir = ${libdir}/seed
 
 seedlib_LTLIBRARIES = \
 	libdbusnative.la

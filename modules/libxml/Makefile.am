@@ -2,7 +2,7 @@ if BUILD_LIBXML_MODULE
 
 EXTRA_DIST = xml.js
 
-seedlibdir = ${exec_prefix}/lib/seed
+seedlibdir = ${libdir}/seed
 
 seedlib_LTLIBRARIES = \
 	liblibxml.la

@@ -1,6 +1,6 @@
 if BUILD_OS_MODULE
 
-seedlibdir = ${exec_prefix}/lib/seed
+seedlibdir = ${libdir}/seed
 
 seedlib_LTLIBRARIES = \
 	libos.la
