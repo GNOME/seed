@@ -10,18 +10,32 @@
       <ulink role="online-location" url="http://www.gnome.org/~racarr/seed/gtk-doc/index.html">http://www.gnome.org/~racarr/seed/gtk-doc/</ulink>.
     </releaseinfo>
   </bookinfo>
-
-  <chapter>
-    <title>General Seed Functions</title>
-    <xi:include href="xml/seed.xml"/>
-    <xi:include href="xml/seed-context.xml"/>
-    <xi:include href="xml/seed-closure.xml"/>
-    <xi:include href="xml/seed-string.xml"/>
-    <xi:include href="xml/seed-exception.xml"/>
-  </chapter>
-  <chapter>
-    <title>Value and Object manipulation</title>
-    <xi:include href="xml/seed-object.xml"/>
-    <xi:include href="xml/seed-value.xml"/>
-  </chapter>
+  
+  <preface>
+    <title>Introduction</title>
+    <para>
+      This is the documentation for the C API of Seed, used for embedding, and modules. For documentation on the JavaScript interface of Seed, see <ulink role="online-location" url="http://www.gnome.org/~racarr/seed">http://www.gnome.org/~racarr/seed/</ulink>
+    </para>
+  </preface>
+  
+  <part>
+    <title>API Reference</title>
+    <chapter>
+      <title>General Seed Functions</title>
+      <xi:include href="xml/seed.xml"/>
+      <xi:include href="xml/seed-context.xml"/>
+      <xi:include href="xml/seed-closure.xml"/>
+      <xi:include href="xml/seed-string.xml"/>
+      <xi:include href="xml/seed-exception.xml"/>
+    </chapter>
+    <chapter>
+      <title>Value and Object manipulation</title>
+      <xi:include href="xml/seed-object.xml"/>
+      <xi:include href="xml/seed-value.xml"/>
+    </chapter>
+    </part>
+  
+  <index>
+    <title>Index</title>
+  </index>
 </book>
