@@ -319,7 +319,6 @@ doc/tutorial-standalone/tutorial.html
 
 doc/modules/canvas/canvas.html
 doc/modules/multiprocessing/multiprocessing.html
-doc/modules/readline/readline.html
 doc/modules/sqlite/sqlite.html
 doc/modules/sandbox/sandbox.html
 
