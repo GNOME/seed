@@ -624,14 +624,16 @@ info_free(BigDBusInfo *info)
                                                        info->name_ownership_monitors->data);
     }
 
-    while (big_g_hash_table_steal_one(info->name_watches, &key, &value)) {
+    while (value = g_hash_table_lookup(info->name_watches, &key)) 
+    {
         BigNameWatch *watch = value;
-
+        
         while (watch->watchers) {
             name_watch_remove_watcher(watch, watch->watchers->data);
         }
-
+        
         name_watch_free(watch);
+        g_hash_table_steal (info->name_watches, &key);
     }
 
     if (info->signal_watchers_by_unique_sender) {

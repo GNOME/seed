@@ -704,3 +704,20 @@ seed_object_is_of_class (JSContextRef ctx, JSObjectRef obj, JSClassRef class)
 {
   return JSValueIsObjectOfClass (ctx, obj, class);
 }
+
+JSObjectRef
+seed_make_function (JSContextRef ctx,
+		    gpointer func,
+		    gchar *name)
+{
+  JSObjectRef oref;
+  JSStringRef jsname = NULL;
+  if (name)
+    jsname = JSStringCreateWithUTF8CString (name);
+  oref = JSObjectMakeFunctionWithCallback (ctx, NULL, func);
+  
+  if (jsname)
+    JSStringRelease (jsname);
+  
+  return oref;
+}

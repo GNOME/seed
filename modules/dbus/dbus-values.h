@@ -10,6 +10,8 @@
 
 G_BEGIN_DECLS
 
+extern SeedContextGroup group;
+
 gboolean seed_js_values_from_dbus    (SeedContext          ctx,
                                       DBusMessageIter    *iter,
                                       GArray **aray_p,

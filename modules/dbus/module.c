@@ -2,6 +2,7 @@
 
 #include "util/dbus.h"
 #include "dbus-values.h"
+#include "dbus-exports.h"
 
 #define DBUS_CONNECTION_FROM_TYPE(type) ((type) == DBUS_BUS_SESSION ? session_bus : system_bus)
 
@@ -1009,7 +1010,7 @@ seed_js_dbus_acquire_name(SeedContext ctx,
         return seed_make_null (ctx);
       }
 
-    lost_func = arguments[4];
+    lost_func = arguments[3];
 
     owner = g_slice_new0(BigJSDBusNameOwner);
 
@@ -1383,6 +1384,8 @@ define_bus_object (SeedContext ctx,
   seed_object_set_property (ctx, bus_obj, "_dbusBusType",
 			    seed_value_from_int (ctx, which_bus, NULL));
   //TODO: Define exports
+  seed_js_define_dbus_exports (ctx, bus_obj, which_bus);
+
   seed_object_set_property (ctx, namespace_ref, bus_name, bus_obj);
 }
 

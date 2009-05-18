@@ -15,7 +15,7 @@ typedef struct _Exports {
   gboolean filter_was_registered;
 } Exports;
 
-SeedClass seed_js_exports_class;
+SeedClass seed_js_exports_class = NULL;
 
 static void              on_bus_opened        (DBusConnection *connection,
                                                void           *data);
@@ -400,4 +400,345 @@ out:
     }
 
     return retval;
+}
+
+/* returns an error message or NULL */
+static DBusMessage *
+invoke_js_async_from_dbus(SeedContext ctx,
+                          DBusBusType  bus_type,
+                          DBusMessage *method_call,
+			  SeedObject this_obj,
+			  SeedObject method_obj,
+			  SeedException *exception)
+{
+    DBusMessage *reply;
+    int argc;
+    SeedValue *argv;
+    DBusMessageIter arg_iter;
+    GArray *values;
+    SeedObject callback_object;
+    SeedValue sender_string, signature_string;
+    gboolean thrown;
+    SeedValue ignored;
+    const char *signature;
+
+    reply = NULL;
+    thrown = FALSE;
+    argc = 0;
+    argv = NULL;
+
+    if (!seed_js_values_from_dbus(ctx, &arg_iter, &values, exception)) 
+      {
+	if (!dbus_reply_from_exception(ctx, method_call, &reply, exception))
+	  g_warning ("conversion of dbus method arg failed but no exception was set?");
+        return reply;
+      }
+
+    /* we will add an argument, the callback */
+    callback_object = seed_make_function(ctx, async_call_callback,
+					 "" /* anonymous */);
+
+    g_assert(callback_object);
+
+    g_array_append_val(values, callback_object);
+
+    /* We attach the DBus sender and serial as properties to
+     * callback, so we don't need to bother with memory managing them
+     * if the callback is never called and just discarded.*/
+    sender_string = seed_value_from_string (ctx, dbus_message_get_sender (method_call), exception);
+    if (!sender_string) 
+      {
+        thrown = TRUE;
+        goto out;
+      }
+    
+    seed_object_set_property (ctx, callback_object, "_dbusSender", sender_string);
+    seed_object_set_property (ctx, callback_object, "_dbusSerial",
+			      seed_value_from_int (ctx, dbus_message_get_serial (method_call),
+						   exception));
+    seed_object_set_property (ctx, callback_object, "_dbusBusType",
+			      seed_value_from_int (ctx, bus_type, exception));
+
+    if (!signature_from_method(ctx,
+                               method_obj,
+                               &signature,
+			       exception)) 
+      {
+        thrown = TRUE;
+        goto out;
+      }
+    
+    signature_string = seed_value_from_string (ctx, signature, exception);
+    if (!signature_string) 
+      {
+        thrown = TRUE;
+        goto out;
+      }
+    seed_object_set_property (ctx, callback_object, "_dbusOutSignature",
+			      signature_string);
+    argc = values->len;
+    argv = (SeedValue *)values->data;
+
+    seed_object_call (ctx, method_obj, this_obj, argc, 
+		      argv, &ignored);
+out:
+    if (thrown) 
+      {
+        if (!dbus_reply_from_exception(ctx, method_call, &reply, exception))
+	  g_warning("conversion of dbus method arg failed but no exception was set?");
+      }
+
+    g_array_free (values, TRUE);
+
+    return reply;
+}
+
+static SeedObject
+find_js_property_by_path(SeedContext ctx,
+			 SeedObject root_obj,
+                         const gchar *path)
+{
+    gchar **elements;
+    gint i;
+    SeedObject obj;
+
+    elements = g_strsplit(path, "/", -1);
+    obj = root_obj;
+
+    /* g_strsplit returns empty string for the first
+     * '/' so we start with elements[1]
+     */
+    for (i = 1; elements[i] != NULL; ++i) 
+      {
+        obj = seed_object_get_property(ctx, obj, elements[i]);
+
+	if (seed_value_is_undefined (ctx, obj) ||
+	    !seed_value_is_object (ctx, obj))
+	  {
+	    obj = NULL;
+	    break;
+	  }
+      }
+    
+    g_strfreev(elements);
+
+    return obj;
+}
+
+static gboolean
+find_method(SeedContext ctx,
+	    SeedObject obj,
+            const gchar *method_name,
+            SeedValue      *method_value)
+{
+  *method_value = seed_object_get_property (ctx, obj, method_name);
+    if (seed_value_is_undefined (ctx, *method_value) || 
+	!seed_value_is_object (ctx, *method_value))
+      return FALSE;
+
+  return TRUE;
+}
+
+
+static DBusHandlerResult
+on_message(DBusConnection *connection,
+           DBusMessage    *message,
+           void           *user_data)
+{
+  SeedContext ctx;
+  const char *path;
+  DBusHandlerResult result;
+  SeedObject obj;
+  const char *method_name;
+  char *async_method_name;
+  SeedValue method_value;
+  DBusMessage *reply;
+  Exports *priv;
+  
+  priv = user_data;
+  async_method_name = NULL;
+  reply = NULL;
+  
+  ctx = seed_context_create (group, NULL);
+  seed_prepare_global_context (ctx);
+  
+  if (dbus_message_get_type(message) != DBUS_MESSAGE_TYPE_METHOD_CALL)
+    return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
+  
+  method_value = seed_make_undefined (ctx);
+
+  result = DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
+  
+  path = dbus_message_get_path(message);
+  
+  obj = find_js_property_by_path(ctx,
+				 priv->object,
+				 path);
+    if (obj == NULL) 
+      {
+        g_warning("There is no JS object at %s",
+                  path);
+        goto out;
+      }
+
+    method_name = dbus_message_get_member(message);
+
+    async_method_name = g_strdup_printf("%sAsync", method_name);
+
+    /* try first if an async version exists */
+    if (find_method(ctx,
+                    obj,
+                    async_method_name,
+                    &method_value)) {
+
+      g_warning ("Invoking async method %s on JS obj at dbus path %s",
+		 async_method_name, path);
+
+        reply = invoke_js_async_from_dbus(ctx,
+                                          priv->which_bus,
+                                          message,
+                                          obj,
+                                          method_value,
+					  NULL); // Need exception here.
+
+        result = DBUS_HANDLER_RESULT_HANDLED;
+
+    /* otherwise try the sync version */
+    } else if (find_method(ctx,
+                           obj,
+                           method_name,
+                           &method_value)) {
+
+      g_warning("Invoking method %s on JS obj at dbus path %s",
+                  method_name, path);
+
+        reply = invoke_js_from_dbus(ctx,
+                                    message,
+                                    obj,
+				    method_value,
+				    NULL); // Need exception here
+
+        result = DBUS_HANDLER_RESULT_HANDLED;
+    /* otherwise FAIL */
+    } else {
+      g_warning("There is a JS object at %s but it has no method %s",
+                  path, method_name);
+    }
+
+    if (reply != NULL) {
+        dbus_connection_send(connection, reply, NULL);
+        dbus_message_unref(reply);
+    }
+
+out:
+    seed_context_unref (ctx);
+    if (async_method_name)
+        g_free(async_method_name);
+    return result;
+}
+
+static void
+exports_constructor(SeedContext ctx,
+		    SeedObject obj)
+{
+  Exports *priv;
+  
+  priv = g_slice_new0(Exports);
+  
+  seed_object_set_private (obj, priv);
+  priv->object = obj;
+}
+
+static gboolean
+add_connect_funcs(SeedContext ctx,
+		  SeedObject obj,
+                  DBusBusType which_bus)
+{
+   Exports *priv;
+   BigDBusConnectFuncs const *connect_funcs;
+
+   priv = seed_object_get_private (obj);
+   if (priv == NULL)
+       return FALSE;
+
+   if (which_bus == DBUS_BUS_SESSION) {
+       connect_funcs = &session_connect_funcs;
+   } else if (which_bus == DBUS_BUS_SYSTEM) {
+       connect_funcs = &system_connect_funcs;
+   } else
+       g_assert_not_reached();
+
+   priv->which_bus = which_bus;
+   big_dbus_add_connect_funcs_sync_notify(connect_funcs, priv);
+
+   return TRUE;
+}
+
+static void
+exports_finalize (SeedObject obj)
+{
+    Exports *priv;
+    BigDBusConnectFuncs const *connect_funcs;
+
+    priv = seed_object_get_private (obj);
+    if (priv == NULL)
+        return; /* we are the prototype, not a real instance, so constructor never called */
+
+    if (priv->which_bus == DBUS_BUS_SESSION) {
+        connect_funcs = &session_connect_funcs;
+    } else if (priv->which_bus == DBUS_BUS_SYSTEM) {
+        connect_funcs = &system_connect_funcs;
+    } else
+        g_assert_not_reached();
+
+    big_dbus_remove_connect_funcs(connect_funcs, priv);
+
+    if (priv->connection_weak_ref != NULL) {
+        on_bus_closed(priv->connection_weak_ref, priv);
+    }
+
+    g_slice_free(Exports, priv);
+}
+
+
+static SeedObject
+exports_new (SeedContext ctx,
+	     DBusBusType which_bus)
+{
+  SeedObject exports;
+  SeedObject global;
+  
+  global = seed_context_get_global_object (ctx);
+  if (!seed_js_exports_class)
+    {
+      seed_class_definition def = seed_empty_class;
+      def.initialize = exports_constructor;
+      def.finalize = exports_finalize;
+      
+      seed_js_exports_class = seed_create_class (&def);
+    }
+  exports = seed_make_object (ctx, seed_js_exports_class, NULL);
+
+  return exports;
+}
+
+gboolean
+seed_js_define_dbus_exports(SeedContext ctx,
+			    SeedObject on_object,
+			    DBusBusType which_bus)
+{
+  SeedObject exports;
+
+
+    exports = exports_new(ctx, which_bus);
+    if (!exports)
+      return FALSE;
+
+    if (!add_connect_funcs(ctx, exports, which_bus))
+      return FALSE;
+    
+    seed_object_set_property (ctx, on_object, "exports",
+			      exports);
+
+    return TRUE;
 }
