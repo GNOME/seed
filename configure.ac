@@ -316,11 +316,18 @@ Makefile
 doc/conventions.html
 doc/runtime.html
 doc/tutorial-standalone/tutorial.html
-doc/modules/canvas.html
-doc/modules/multiprocessing.html
-doc/modules/readline.html
-doc/modules/sqlite.html
-doc/modules/sandbox.html
+
+doc/modules/canvas/canvas.html
+doc/modules/multiprocessing/multiprocessing.html
+doc/modules/readline/readline.html
+doc/modules/sqlite/sqlite.html
+doc/modules/sandbox/sandbox.html
+
+doc/modules/canvas/Makefile
+doc/modules/multiprocessing/Makefile
+doc/modules/readline/Makefile
+doc/modules/sqlite/Makefile
+doc/modules/sandbox/Makefile
 
 doc/mapping/mapping.html
 
