@@ -1,8 +1,6 @@
 #!/usr/bin/env seed
 Gtk = imports.gi.Gtk;
-Gio = imports.gi.Gio;
 Multiprocessing = imports.multiprocessing;
-
 
 var pipes = new Multiprocessing.Pipe();
 
