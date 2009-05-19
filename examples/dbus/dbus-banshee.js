@@ -9,7 +9,7 @@ function PlayerEngine() {
 PlayerEngine.prototype = {
     _init: function() {
 	DBus.session.proxifyObject (this, 
-				    x'org.bansheeproject.Banshee',
+				    'org.bansheeproject.Banshee',
 				    '/org/bansheeproject/Banshee/PlayerEngine');
     }
 };
