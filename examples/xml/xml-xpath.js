@@ -1,4 +1,4 @@
-#!/usr/local/bin/seed
+#!/usr/bin/env seed
 xml = imports.libxml;
 doc = xml.parseFile("./sample.xml");
 ctx = doc.xpathNewContext();

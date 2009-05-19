@@ -1,4 +1,4 @@
-#!/usr/local/bin/seed
+#!/usr/bin/env seed
 DBus = imports.dbus;
 GLib = imports.gi.GLib;
 

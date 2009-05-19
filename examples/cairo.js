@@ -1,4 +1,4 @@
-#!/usr/local/bin/seed
+#!/usr/bin/env seed
 
 cairo = imports.cairo;
 Gtk = imports.gi.Gtk;

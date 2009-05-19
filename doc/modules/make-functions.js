@@ -1,4 +1,4 @@
-#!/usr/local/bin/seed
+#!/usr/bin/env seed
 Seed.include(Seed.argv[2]);
 
 function output_param (param){
