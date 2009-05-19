@@ -3,6 +3,7 @@ EXTRA_DIST = \
 
 readline-funcs.xml: readline.js
 	../make-functions.js readline.js > readline-funcs.xml
+CLEANFILES=readline-funcs.xml
 
 readlinedocsdir = \
 	$(datadir)/doc/seed/modules/readline/html

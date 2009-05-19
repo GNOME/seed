@@ -3,7 +3,7 @@
  <bookinfo>
     <title>Seed Modules Reference Manual</title>
     <releaseinfo>
-      Documentation for Seed 0.7.
+      Documentation for Seed 0.7 modules.
       The latest version of this documentation can be found on-line at
       <ulink role="online-location" url="http://www.gnome.org/~racarr/seed/gtk-\
 doc/index.html">http://www.gnome.org/~racarr/seed/modules/</ulink>.
@@ -11,5 +11,6 @@ doc/index.html">http://www.gnome.org/~racarr/seed/modules/</ulink>.
   </bookinfo>
  
  <xi:include href="readline/readline.xml"/>
+ <xi:include href="sqlite/sqlite.xml"/>
 
 </book>

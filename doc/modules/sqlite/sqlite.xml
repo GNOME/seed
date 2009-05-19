@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<chapter id="sqlite-module" xmlns:xi="http://www.w3.org/2003/XInclude">
+    <chapterinfo>
+    <author>
+      <firstname>Robert</firstname>
+      <surname>Carr</surname>
+      <affiliation>
+	<address>
+	  <email>racarr@<parameter>gnome.org</parameter></email>
+	</address>
+      </affiliation>
+    </author>
+  </chapterinfo>
+  <title>SQLite module.</title>
+  
+  <section>
+    <title>API Reference</title>
+    <para>
+      The sqlite module allows for manipulation and querying of sqlite databases.
+      <programlisting>
+	sqlite = imports.sqlite;
+      </programlisting>
+    </para>
+    
+    The SQLite module provides a selection of status enums, to be used as the return values of functions. For meanings, consult the SQLite C documentation.
+    <programlisting>
+sqlite.[OK, ERROR, INTERNAL, PERM ABORT, BUSY,
+        LOCKED, NOMEM, READONLY, INTERRUPT, CORRUPT,
+        NOTFOUND, FULL, CANTOPEN, PROTOCOL, EMPTY,
+        SCHEMA, TOOBIG, CONSTRAINT, MISMATCH, MISUSE,
+        NOLFS, AUTH, FORMAT, RANGE, NOTADB, ROW, DONE]
+    </programlisting>
+    <xi:include href="sqlite-funcs.xml"/>
+  </section>
+  <section>
+    <title>Examples</title>
+    <para>Below are several examples of using the Seed sqlite module. For additional resources, consult the examples/ folder of the Seed source</para>
+    <example id="readline-repl-example">
+      <para>This demonstrates creating a new table, populating it, and querying it for results</para>
+      <programlisting>
+sqlite = imports.sqlite;
+var db = new sqlite.Database("people.db");
+db.exec("create table people (key INTEGER PRIMARY KEY, name TEXT," +
+                             "age INTEGER, phone TEXT);");
+db.exec("insert into people(name, age, phone) " + 
+                    "values('John Smith', 24, '555-123-4567');");
+
+function cb_print_phone(results){
+    Seed.print(results.phone);
+}
+
+db.exec("select from people where name='John Smith';", cb_print_phone);
+db.close();
+      </programlisting>
+    </example>
+  </section>
+</chapter>
+
