@@ -1,8 +1,8 @@
 EXTRA_DIST = \
 	sqlite.js
 
-sqlite-funcs.xml: sqlite.js
-	../make-functions.js sqlite.js > sqlite-funcs.xml
+sqlite-funcs.xml: $(top_builddir)/src/seed sqlite.js
+	$(top_builddir)/src/seed ../make-functions.js sqlite.js > sqlite-funcs.xml
 CLEANFILES=sqlite-funcs.xml
 
 sqlitedocsdir = \

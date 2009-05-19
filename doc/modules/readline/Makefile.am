@@ -1,8 +1,8 @@
 EXTRA_DIST = \
 	readline.js
 
-readline-funcs.xml: readline.js
-	../make-functions.js readline.js > readline-funcs.xml
+readline-funcs.xml: $(top_builddir)/src/seed readline.js
+	$(top_builddir)/src/seed ../make-functions.js readline.js > readline-funcs.xml
 CLEANFILES=readline-funcs.xml
 
 readlinedocsdir = \
