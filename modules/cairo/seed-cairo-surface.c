@@ -3,6 +3,7 @@
 
 #include "seed-cairo.h"
 #include "seed-cairo-image-surface.h"
+#include "seed-cairo-pdf-surface.h"
 
 #define CAIRO_SURFACE_PRIV(obj) ((cairo_surface_t *)seed_object_get_private(obj))
 
@@ -392,4 +393,5 @@ seed_define_cairo_surface (SeedContext ctx,
   seed_cairo_surface_class = seed_create_class (&surface_def);
   
   seed_define_cairo_image_surface (ctx, namespace_ref);
+  seed_define_cairo_pdf_surface (ctx, namespace_ref);
 }

@@ -868,7 +868,7 @@ seed_cairo_mask (SeedContext ctx,
   if (argument_count == 3)
     return seed_cairo_mask_surface (ctx, function, this_object, argument_count, arguments, exception);
   cr = seed_object_get_private (this_object);
-  pat = seed_object_to_cairo_pattern (ctx, arguments[0]);
+  pat = seed_object_to_cairo_pattern (ctx, arguments[0], exception);
   if (!pat)
     {
       seed_make_exception (ctx, arguments[0], "ArgumentError", "First argument should be a cairo_pattern"
@@ -876,7 +876,7 @@ seed_cairo_mask (SeedContext ctx,
       return seed_make_undefined (ctx);
     }
   cairo_mask (cr, pat);
-  seed_make_undefined (ctx);  
+  return seed_make_undefined (ctx);  
 }
 
 static SeedValue 
@@ -1743,7 +1743,7 @@ seed_static_function cairo_funcs[] = {
   {"fill", seed_cairo_fill, 0},
   {"fill_preserve", seed_cairo_fill_preserve, 0},
   {"fill_extents", seed_cairo_fill_extents, 0},
-  {"mask", seed_cairo_mask, 0}
+  {"mask", seed_cairo_mask, 0},
   {"in_fill", seed_cairo_in_fill, 0},
   {"paint", seed_cairo_paint, 0},
   {"paint_with_alpha", seed_cairo_paint_with_alpha, 0},

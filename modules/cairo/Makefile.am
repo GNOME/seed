@@ -10,6 +10,7 @@ libcairo_la_SOURCES = \
 	seed-cairo.c \
 	seed-cairo-surface.c \
 	seed-cairo-image-surface.c \
+	seed-cairo-pdf-surface.c \
 	seed-cairo-matrix.c \
 	seed-cairo-pattern.c \
 	seed-cairo-enums.c 
