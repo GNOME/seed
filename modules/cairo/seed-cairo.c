@@ -314,10 +314,6 @@ seed_cairo_set_source_surface (SeedContext ctx,
   cairo_t *cr;
   
   CHECK_THIS();
-  if (argument_count != 3)
-    {
-      EXPECTED_EXCEPTION("set_source_surface", "3 arguments");
-    }
   cr = seed_object_get_private (this_object);
   surface = seed_object_to_cairo_surface (ctx, arguments[0], exception);
   if (!surface)
@@ -401,6 +397,22 @@ seed_cairo_set_dash(SeedContext ctx,
   cairo_set_dash (cr, dashes, num_dashes, offset);
   
   return seed_make_undefined (ctx);
+}
+
+static SeedValue
+seed_cairo_pop_group (SeedContext ctx,
+		      SeedObject function,
+		      SeedObject this_object,
+		      gsize argument_count,
+		      const SeedValue arguments[],
+		      SeedException *exception)
+{
+  cairo_t *cr;
+  CHECK_THIS();
+  
+  cr = seed_object_get_private (this_object);
+  
+  return seed_object_from_cairo_pattern (ctx, cairo_pop_group (cr));
 }
 
 static SeedValue
@@ -825,11 +837,6 @@ seed_cairo_mask_surface (SeedContext ctx,
   cairo_surface_t *surface;
   cairo_t *cr;
   
-  CHECK_THIS();
-  if (argument_count != 3)
-    {
-      EXPECTED_EXCEPTION("mask_surface", "3 arguments");
-    }
   cr = seed_object_get_private (this_object);
   surface = seed_object_to_cairo_surface (ctx, arguments[0], exception);
   if (!surface)
@@ -840,6 +847,36 @@ seed_cairo_mask_surface (SeedContext ctx,
   cairo_mask_surface (cr, surface, x, y);
   
   return seed_make_undefined (ctx);
+}
+
+static SeedValue
+seed_cairo_mask (SeedContext ctx,
+		 SeedObject function,
+		 SeedObject this_object,
+		 gsize argument_count,
+		 const SeedValue arguments[],
+		 SeedException *exception)
+{
+  cairo_t *cr;
+  cairo_pattern_t *pat;
+  
+  CHECK_THIS();
+  if (argument_count != 1 && argument_count != 3)
+    {
+      EXPECTED_EXCEPTION("mask", "1 or 3 arguments");
+    }
+  if (argument_count == 3)
+    return seed_cairo_mask_surface (ctx, function, this_object, argument_count, arguments, exception);
+  cr = seed_object_get_private (this_object);
+  pat = seed_object_to_cairo_pattern (ctx, arguments[0]);
+  if (!pat)
+    {
+      seed_make_exception (ctx, arguments[0], "ArgumentError", "First argument should be a cairo_pattern"
+			   " (or cairo surface if there are three arguments)");
+      return seed_make_undefined (ctx);
+    }
+  cairo_mask (cr, pat);
+  seed_make_undefined (ctx);  
 }
 
 static SeedValue 
@@ -1620,10 +1657,13 @@ seed_cairo_set_source (SeedContext ctx,
   cairo_pattern_t *pat;
   
   CHECK_THIS();
-  if (argument_count != 1)
+  if (argument_count != 1 && argument_count != 3)
     {
-      EXPECTED_EXCEPTION("set_source", "1 argument");
+      EXPECTED_EXCEPTION("set_source", "1 or 3 arguments");
     }
+
+  if (argument_count == 3)
+    return seed_cairo_set_source_surface (ctx, function, this_object, argument_count, arguments, exception);
   pat = seed_object_to_cairo_pattern (ctx, arguments[0], exception);
   if (!pat)
     {
@@ -1687,7 +1727,7 @@ seed_static_function cairo_funcs[] = {
   {"set_dash", seed_cairo_set_dash, 0},
   {"get_dash_count", seed_cairo_get_dash_count, 0},
   {"get_dash", seed_cairo_get_dash, 0},  
-  //  {"pop_group", seed_cairo_pop_group, 0},
+  {"pop_group", seed_cairo_pop_group, 0},
   {"pop_group_to_source", seed_cairo_pop_group_to_source, 0},
   {"get_group_target", seed_cairo_get_group_target, 0},
   {"set_source_rgb", seed_cairo_set_source_rgb, 0},
@@ -1703,9 +1743,8 @@ seed_static_function cairo_funcs[] = {
   {"fill", seed_cairo_fill, 0},
   {"fill_preserve", seed_cairo_fill_preserve, 0},
   {"fill_extents", seed_cairo_fill_extents, 0},
-  //{"mask", seed_cairo_mask, 0},
+  {"mask", seed_cairo_mask, 0}
   {"in_fill", seed_cairo_in_fill, 0},
-  {"mask_surface", seed_cairo_mask_surface, 0},
   {"paint", seed_cairo_paint, 0},
   {"paint_with_alpha", seed_cairo_paint_with_alpha, 0},
   {"stroke", seed_cairo_stroke, 0},
