@@ -196,8 +196,11 @@ seed_gobject_constructor_invoked (JSContextRef ctx,
 
   gobject = g_object_newv (type, nparams, params);
 
-  if (G_IS_INITIALLY_UNOWNED (gobject))
-    g_object_ref_sink (gobject);
+  if (G_IS_INITIALLY_UNOWNED (gobject) && 
+      !g_object_is_floating(gobject))
+    g_object_ref(gobject);
+  else if (g_object_is_floating(gobject))
+    g_object_ref_sink(gobject);
 
   if (!gobject)
     ret = (JSObjectRef) JSValueMakeNull (ctx);
@@ -209,8 +212,7 @@ seed_gobject_constructor_invoked (JSContextRef ctx,
       g_value_unset (&params[i].value);
     }
 
-  if (G_IS_INITIALLY_UNOWNED (gobject))
-    g_object_unref (gobject);
+  g_object_unref (gobject);
 
   g_type_class_unref (oclass);
 
