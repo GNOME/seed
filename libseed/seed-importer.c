@@ -872,6 +872,33 @@ seed_importer_add_global(JSObjectRef global,
   g_hash_table_insert (file_imports, seed_importer_canonicalize_path (name), global);
 }
 
+JSObjectRef
+seed_importer_construct_dir (JSContextRef ctx,
+			     JSObjectRef constructor,
+			     size_t argumentCount,
+			     const JSValueRef arguments[],
+			     JSValueRef *exception)
+{
+  gchar *path;
+  if (argumentCount != 1)
+    {
+      seed_make_exception (ctx, exception, "ArgumentError",
+			   "Directory constructor expects 1 argument");
+      return (JSObjectRef)JSValueMakeUndefined (ctx);
+    }
+  path = seed_value_to_string (ctx, arguments[0], exception);
+  
+  if (!g_file_test (path, G_FILE_TEST_IS_DIR))
+    {
+      seed_make_exception (ctx, exception, "ArgumentError",
+			   "Path (%s) is not a directory", path);
+      g_free (path);
+      return (JSObjectRef)JSValueMakeUndefined (ctx);
+    }
+  
+  return JSObjectMake (ctx, importer_dir_class, path);
+}
+
 void 
 seed_importer_set_search_path(JSContextRef ctx,
 			      gchar **search_path)
@@ -897,6 +924,8 @@ seed_importer_set_search_path(JSContextRef ctx,
 void seed_initialize_importer(JSContextRef ctx,
 			      JSObjectRef global)
 {
+  JSObjectRef dir_constructor;
+
   importer_class = JSClassCreate (&importer_class_def);
   importer = JSObjectMake (ctx, importer_class, NULL);
   
@@ -911,6 +940,11 @@ void seed_initialize_importer(JSContextRef ctx,
   
   gi_imports = g_hash_table_new (g_str_hash, g_str_equal);
   file_imports = g_hash_table_new (g_str_hash, g_str_equal);
+  
+  /* Passing nonnull for class requires a webkit fix that most people wont have yet. It also has minimal benefit */
+  //  dir_constructor = JSObjectMakeConstructor (ctx, importer_dir_class, seed_importer_construct_dir);
+  dir_constructor = JSObjectMakeConstructor (ctx, NULL, seed_importer_construct_dir);
+  seed_object_set_property (ctx, importer, "Directory", dir_constructor);
 					     
   seed_object_set_property (ctx, global, "imports", importer);
 }
