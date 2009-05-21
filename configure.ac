@@ -360,6 +360,7 @@ doc/modules/sandbox/sandbox.html
 doc/modules/canvas/Makefile
 doc/modules/multiprocessing/Makefile
 doc/modules/readline/Makefile
+doc/modules/gtkbuilder/Makefile
 doc/modules/sqlite/Makefile
 doc/modules/sandbox/Makefile
 

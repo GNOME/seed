@@ -12,5 +12,6 @@ doc/index.html">http://www.gnome.org/~racarr/seed/modules/</ulink>.
  
  <xi:include href="readline/readline.xml"/>
  <xi:include href="sqlite/sqlite.xml"/>
+ <xi:include href="gtkbuilder/gtkbuilder.xml"/>
 
 </book>
