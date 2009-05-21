@@ -186,6 +186,16 @@ AC_ARG_ENABLE(os-module,
 AM_CONDITIONAL(BUILD_OS_MODULE, test "x$want_os_module" = "xyes")
 AC_SUBST(BUILD_OS_MODULE)
 
+dnl ==== os ====
+AC_ARG_ENABLE(os-module,
+			  AC_HELP_STRING([--enable-os-module],
+							 [enable the os Seed module. [default=yes]]),
+			  [want_os_module=$enableval],[want_os_module="yes"])
+
+
+AM_CONDITIONAL(BUILD_OS_MODULE, test "x$want_os_module" = "xyes")
+AC_SUBST(BUILD_OS_MODULE)
+
 dnl ==== libxml ====
 AC_ARG_ENABLE(libxml-module,
 			  AC_HELP_STRING([--enable-libxml-module],
@@ -200,6 +210,32 @@ fi
 
 AM_CONDITIONAL(BUILD_LIBXML_MODULE, test "x$want_libxml_module" = "xyes")
 AC_SUBST(BUILD_LIBXML_MODULE)
+
+dnl ==== os ====
+AC_ARG_ENABLE(os-module,
+			  AC_HELP_STRING([--enable-os-module],
+							 [enable the os Seed module. [default=yes]]),
+			  [want_os_module=$enableval],[want_os_module="yes"])
+
+
+AM_CONDITIONAL(BUILD_OS_MODULE, test "x$want_os_module" = "xyes")
+AC_SUBST(BUILD_OS_MODULE)
+
+dnl ==== gtkbuilder ====
+AC_ARG_ENABLE(gtkbuilder-module,
+			  AC_HELP_STRING([--enable-gtkbuilder-module],
+							 [enable the gtkbuilder Seed module. [default=yes]]),
+			  [want_gtkbuilder_module=$enableval],[want_gtkbuilder_module="yes"])
+
+if test x"$want_gtkbuilder_module" == x"yes" ; then
+   PKG_CHECK_MODULES(GTK, gtk+-2.0)
+   AC_SUBST(GTK_CFLAGS)
+   AC_SUBST(GTK_LDFLAGS)
+fi
+
+AM_CONDITIONAL(BUILD_GTKBUILDER_MODULE, test "x$want_gtkbuilder_module" = "xyes")
+AC_SUBST(BUILD_GTKBUILDER_MODULE)
+
 
 dnl ==== cairo ====
 AC_ARG_ENABLE(cairo-module,
@@ -373,6 +409,7 @@ modules/dbus/Makefile
 modules/dbus/util/Makefile
 modules/libxml/Makefile
 modules/cairo/Makefile
+modules/gtkbuilder/Makefile
 ])
 AC_OUTPUT
 
@@ -396,6 +433,7 @@ Modules:
    DBus.......................$want_dbus_module
    libxml.....................$want_libxml_module
    cairo......................$want_cairo_module
+   gtkbuilder.................$want_gtkbuilder_module
 
 Examples:
    Turtle.....................$want_turtle_example

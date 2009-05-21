@@ -78,10 +78,13 @@ SeedEngine *seed_init (gint *argc, gchar ***argv);
 SeedEngine *seed_init_with_context_group (gint *argc, gchar ***argv,
 					  SeedContextGroup group);
 
-SeedValue seed_simple_evaluate (SeedContext ctx, gchar * source, SeedException *exception);
+SeedValue seed_simple_evaluate (SeedContext ctx, 
+				gchar * source, 
+				SeedException *exception);
 
 SeedScript *seed_make_script (SeedContext ctx,
-			      const gchar * js, const gchar * source_url,
+			      const gchar * js, 
+			      const gchar * source_url,
 			      gint line_number);
 SeedScript *seed_script_new_from_file (SeedContext ctx, gchar * file);
 SeedException seed_script_exception (SeedScript * s);
