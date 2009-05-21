@@ -63,6 +63,8 @@ seed_prepare_global_context (JSContextRef ctx)
   seed_object_set_property (ctx, global, "imports", importer);
   seed_object_set_property (ctx, global, "GType", seed_gtype_constructor);
   seed_object_set_property (ctx, global, "Seed", seed_obj_ref);
+
+  JSEvaluateScript (ctx, defaults_script, NULL, NULL, 0, NULL);
 }
 
 static JSObjectRef
@@ -1303,8 +1305,6 @@ seed_parse_args (int *argc, char ***argv)
 SeedEngine *
 seed_init (gint * argc, gchar *** argv)
 {
-  JSStringRef defaults_script;
-
   g_type_init ();
   g_log_set_handler ("GLib-GObject", G_LOG_LEVEL_WARNING, seed_log_handler,
 		     0);
@@ -1373,7 +1373,6 @@ seed_init (gint * argc, gchar *** argv)
 					 "Seed.include(\"/usr/local/share"
 					 "/seed/extensions/Seed.js\");");
   JSEvaluateScript (eng->context, defaults_script, NULL, NULL, 0, NULL);
-  JSStringRelease (defaults_script);
 
   base_info_info =
     g_irepository_find_by_name (0, "GIRepository", "IBaseInfo");
