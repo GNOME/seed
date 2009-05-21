@@ -59,14 +59,34 @@ seed_gobject_destroyed (gpointer object)
   JSObjectSetPrivate ((JSObjectRef) object, 0);
 }
 
+JSObjectRef
+seed_make_wrapper_for_type (JSContextRef ctx, GType type)
+{
+  JSClassRef class;
+  JSObjectRef ret;
+  JSValueRef prototype;
+  
+  class = seed_gobject_get_class_for_gtype (ctx, type);
+  
+  while (!class && (type = g_type_parent (type)))
+    class = seed_gobject_get_class_for_gtype (ctx, type);
+  
+  prototype = seed_gobject_get_prototype_for_gtype (type);
+  ret = JSObjectMake (ctx, class, NULL);
+  if (prototype)
+    JSObjectSetPrototype (ctx, ret, prototype);
+  else
+    g_assert_not_reached();
+  
+  return ret;
+}
+
 static JSValueRef
 seed_wrap_object (JSContextRef ctx, GObject * object)
 {
   JSValueRef user_data;
   JSObjectRef js_ref;
-  JSClassRef class;
   GType type;
-  JSValueRef prototype;
 
   type = G_OBJECT_TYPE (object);
 
@@ -75,21 +95,8 @@ seed_wrap_object (JSContextRef ctx, GObject * object)
   if (user_data)
     return user_data;
 
-  class = seed_gobject_get_class_for_gtype (ctx, type);
-
-  while (!class && (type = g_type_parent (type)))
-    {
-      class = seed_gobject_get_class_for_gtype (ctx, type);
-    }
-
-  prototype = seed_gobject_get_prototype_for_gtype (type);
-  js_ref = JSObjectMake (ctx, class, object);
-  if (prototype)
-    JSObjectSetPrototype (ctx, (JSObjectRef) js_ref, prototype);
-  else
-    {
-      g_assert_not_reached ();
-    }
+  js_ref = seed_make_wrapper_for_type (ctx, type);
+  JSObjectSetPrivate (js_ref, object);
 
   g_object_set_qdata_full (object, js_ref_quark, (gpointer) js_ref,
 			  seed_gobject_destroyed);

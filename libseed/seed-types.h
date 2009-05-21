@@ -150,4 +150,6 @@ seed_value_from_binary_string (JSContextRef ctx,
 			       gint n_bytes,
 			       JSValueRef *exception);
 
+JSObjectRef seed_make_wrapper_for_type (JSContextRef ctx, GType type);
+
 #endif
