@@ -95,7 +95,11 @@ seed_wrap_object (JSContextRef ctx, GObject * object)
   if (user_data)
     return user_data;
 
-  js_ref = seed_make_wrapper_for_type (ctx, type);
+  if (seed_next_gobject_wrapper)
+    js_ref = seed_next_gobject_wrapper;
+  else
+    js_ref = seed_make_wrapper_for_type (ctx, type);
+
   JSObjectSetPrivate (js_ref, object);
 
   g_object_set_qdata_full (object, js_ref_quark, (gpointer) js_ref,
@@ -105,6 +109,8 @@ seed_wrap_object (JSContextRef ctx, GObject * object)
   g_object_add_toggle_ref (object, seed_toggle_ref, (gpointer) js_ref);
   
   seed_add_signals_to_object (ctx, js_ref, object);
+  
+  seed_next_gobject_wrapper = NULL;
 
   return js_ref;
 }

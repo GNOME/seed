@@ -41,6 +41,9 @@ GQuark js_ref_quark;
 
 guint seed_debug_flags = 0;	/* global seed debug flag */
 
+__thread JSObjectRef seed_next_gobject_wrapper = NULL;
+
+
 #ifdef SEED_ENABLE_DEBUG
 static const GDebugKey seed_debug_keys[] = {
   {"misc", SEED_DEBUG_MISC},
@@ -195,8 +198,11 @@ seed_gobject_constructor_invoked (JSContextRef ctx,
 
   if (jsprops)
     JSPropertyNameArrayRelease (jsprops);
+  
+  seed_next_gobject_wrapper = seed_make_wrapper_for_type (ctx, type);
 
   gobject = g_object_newv (type, nparams, params);
+
 
   if (G_IS_INITIALLY_UNOWNED (gobject) && 
       !g_object_is_floating(gobject))
