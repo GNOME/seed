@@ -804,6 +804,94 @@ seed_importer_dir_finalize (JSObjectRef dir)
 }
 
 
+
+void
+seed_importer_add_global(JSObjectRef global,
+			 gchar *name)
+{
+  JSValueProtect (eng->context, global);
+  g_hash_table_insert (file_imports, seed_importer_canonicalize_path (name), global);
+}
+
+static void
+seed_importer_dir_enumerate_properties (JSContextRef ctx,
+					JSObjectRef object,
+					JSPropertyNameAccumulatorRef propertyNames)
+{
+  const gchar *entry;
+  GDir *dir;
+  GError *e = NULL;
+  gchar *path = JSObjectGetPrivate (object);
+
+  
+  dir = g_dir_open (path, 0, &e);
+  if (e)
+    {
+      SEED_NOTE(IMPORTER, "Error in g_dir_open in seed_importer_enumerate_dir_properties: %s", e->message);
+      g_error_free (e);
+      // Not much we can do here.
+      return;
+    }
+  
+  while ((entry = g_dir_read_name (dir)))
+    {
+      JSStringRef jname;
+      
+      jname = JSStringCreateWithUTF8CString (entry);
+      JSPropertyNameAccumulatorAddName (propertyNames, jname);
+      JSStringRelease (jname);
+    }
+  g_dir_close (dir);
+}
+
+JSObjectRef
+seed_importer_construct_dir (JSContextRef ctx,
+			     JSObjectRef constructor,
+			     size_t argumentCount,
+			     const JSValueRef arguments[],
+			     JSValueRef *exception)
+{
+  gchar *path;
+  if (argumentCount != 1)
+    {
+      seed_make_exception (ctx, exception, "ArgumentError",
+			   "Directory constructor expects 1 argument");
+      return (JSObjectRef)JSValueMakeUndefined (ctx);
+    }
+  path = seed_value_to_string (ctx, arguments[0], exception);
+  
+  if (!g_file_test (path, G_FILE_TEST_IS_DIR))
+    {
+      seed_make_exception (ctx, exception, "ArgumentError",
+			   "Path (%s) is not a directory", path);
+      g_free (path);
+      return (JSObjectRef)JSValueMakeUndefined (ctx);
+    }
+  
+  return JSObjectMake (ctx, importer_dir_class, path);
+}
+
+void 
+seed_importer_set_search_path(JSContextRef ctx,
+			      gchar **search_path)
+{
+  JSObjectRef imports, array;
+  JSValueRef *array_elem;
+  guint length = g_strv_length (search_path), i;
+  
+  array_elem = g_alloca (length * sizeof (array_elem));
+  imports = (JSObjectRef) seed_object_get_property (ctx, JSContextGetGlobalObject (ctx), "imports");
+  
+  for (i = 0; i < length; i++)
+    {
+      array_elem[i] = seed_value_from_string (ctx, search_path[i], NULL);
+    }
+  
+  array = JSObjectMakeArray (ctx, length, array_elem, NULL);
+  seed_object_set_property (ctx, imports, "searchPath", array);  
+  
+}
+
 JSClassDefinition importer_class_def = {
   0,				/* Version, always 0 */
   0,
@@ -857,69 +945,12 @@ JSClassDefinition importer_dir_class_def = {
   seed_importer_dir_get_property,	/* Get Property */
   NULL,				/* Set Property */
   NULL,				/* Delete Property */
-  NULL,				/* Get Property Names */
+  seed_importer_dir_enumerate_properties,				/* Get Property Names */
   NULL,				/* Call As Function */
   NULL,	/* Call As Constructor */
   NULL,				/* Has Instance */
   NULL				/* Convert To Type */
 };
-
-void
-seed_importer_add_global(JSObjectRef global,
-			 gchar *name)
-{
-  JSValueProtect (eng->context, global);
-  g_hash_table_insert (file_imports, seed_importer_canonicalize_path (name), global);
-}
-
-JSObjectRef
-seed_importer_construct_dir (JSContextRef ctx,
-			     JSObjectRef constructor,
-			     size_t argumentCount,
-			     const JSValueRef arguments[],
-			     JSValueRef *exception)
-{
-  gchar *path;
-  if (argumentCount != 1)
-    {
-      seed_make_exception (ctx, exception, "ArgumentError",
-			   "Directory constructor expects 1 argument");
-      return (JSObjectRef)JSValueMakeUndefined (ctx);
-    }
-  path = seed_value_to_string (ctx, arguments[0], exception);
-  
-  if (!g_file_test (path, G_FILE_TEST_IS_DIR))
-    {
-      seed_make_exception (ctx, exception, "ArgumentError",
-			   "Path (%s) is not a directory", path);
-      g_free (path);
-      return (JSObjectRef)JSValueMakeUndefined (ctx);
-    }
-  
-  return JSObjectMake (ctx, importer_dir_class, path);
-}
-
-void 
-seed_importer_set_search_path(JSContextRef ctx,
-			      gchar **search_path)
-{
-  JSObjectRef imports, array;
-  JSValueRef *array_elem;
-  guint length = g_strv_length (search_path), i;
-  
-  array_elem = g_alloca (length * sizeof (array_elem));
-  imports = (JSObjectRef) seed_object_get_property (ctx, JSContextGetGlobalObject (ctx), "imports");
-  
-  for (i = 0; i < length; i++)
-    {
-      array_elem[i] = seed_value_from_string (ctx, search_path[i], NULL);
-    }
-  
-  array = JSObjectMakeArray (ctx, length, array_elem, NULL);
-  seed_object_set_property (ctx, imports, "searchPath", array);  
-  
-}
-
 
 void seed_initialize_importer(JSContextRef ctx,
 			      JSObjectRef global)
