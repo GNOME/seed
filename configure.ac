@@ -355,7 +355,6 @@ doc/tutorial-standalone/tutorial.html
 
 doc/modules/canvas/canvas.html
 doc/modules/multiprocessing/multiprocessing.html
-doc/modules/sandbox/sandbox.html
 
 doc/modules/canvas/Makefile
 doc/modules/multiprocessing/Makefile

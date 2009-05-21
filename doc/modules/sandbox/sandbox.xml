@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<chapter id="Sandbox-module" xmlns:xi="http://www.w3.org/2003/XInclude">
+    <chapterinfo>
+    <author>
+      <firstname>Robert</firstname>
+      <surname>Carr</surname>
+      <affiliation>
+	<address>
+	  <email>racarr@<parameter>gnome.org</parameter></email>
+	</address>
+      </affiliation>
+    </author>
+  </chapterinfo>
+  <title>Sandbox module.</title>
+
+  <section>
+    <title>API Reference</title>
+    <para>
+      The sandbox module allows the creation of isolated JSCore contexts with individual global objects. It is useful as a literal "sandbox" or in a variety of other contexts. 
+      <programlisting>
+	sandbox = imports.sandbox;
+      </programlisting>
+    </para>
+    
+    <xi:include href="sandbox-funcs.xml"/>
+  </section>
+  <section>
+    <title>Examples</title>
+    <para>Below are several examples of using the Seed Sandbox module. For additional resources, consult the examples/ folder of the Seed source</para>
+    <example id="sandbox-example">
+      <programlisting>
+sandbox = imports.sandbox;
+
+ctx = new sandbox.Context();
+ctx.eval("b = 2+2");
+Seed.print(ctx.global.b); //4
+ctx.global.b = new Gtk.Window(); // Possible to expose objects to the context.
+ctx.eval("b.show()");
+
+      </programlisting>
+    </example>
+  </section>
+</chapter>
+
