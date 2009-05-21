@@ -705,6 +705,14 @@ seed_object_is_of_class (JSContextRef ctx, JSObjectRef obj, JSClassRef class)
   return JSValueIsObjectOfClass (ctx, obj, class);
 }
 
+/**
+ * seed_make_function:
+ * @ctx: A valid #SeedContext
+ * @func: A #SeedFunctionCallback to implement the function.
+ * @name: The name of the function (used in exceptions).
+ *
+ * Return value: The function
+ */
 JSObjectRef
 seed_make_function (JSContextRef ctx,
 		    gpointer func,
