@@ -1,3 +1,22 @@
+== Seed 0.8, "Third Stage" (2009.05.27) ==
+* Importer now supports constructing directory objects, to avoid manipulation of search path.
+  Importer directory objects now support property enumeration.
+* Fix small leak in GObject wrapper initialization. (and also simplify the process).
+* GtkBuilder module to handle GtkBuilder automatic signal connection.
+* Module documentation rewritten in docbook, and builds one nice manual.
+* New Cairo module, supports most of the cairo API, with automatic memory management
+  and everything you would expect.
+* Fix a reference count leak introduced in the last few releases.
+  in some cases with non INITIALLY_UNOWNED objects.
+* Some work on ClutterPad examples, and writing examples which live inside of it.
+  (lots of fun to play with!, cairo example...fun spring example...ClutterBox2D)
+* Working around a WebKit bug (which is actually fixed in SVN now), should prevent a
+  crash that happened sometimes with C modules.
+* Clutter animatev wrapper looks up property type wrapper now, so as to avoid having to pass
+  [GObject.TYPE_FOO, bar]
+* Implement some varargs functions which can be implemented on top of non vararg variants
+  in JavaScript extensions.
+
 == Seed 0.7, "Another Side of Bob Dylan" (2009.05.13) ==
 * Support for library init methods.
 * The REPL now supports multi-line entry.

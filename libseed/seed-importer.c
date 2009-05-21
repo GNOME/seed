@@ -804,7 +804,6 @@ seed_importer_dir_finalize (JSObjectRef dir)
 }
 
 
-
 void
 seed_importer_add_global(JSObjectRef global,
 			 gchar *name)
