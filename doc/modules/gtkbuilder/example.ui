@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<programlisting>
+&lt;interface&gt;
+  &lt;object class="GtkDialog" id="dialog1"&gt;
+    &lt;child internal-child="vbox"&gt;
+      &lt;object class="GtkVBox" id="vbox1"&gt;
+        &lt;property name="border-width"&gt;10&lt;/property&gt;
+        &lt;child internal-child="action_area"&gt;
+          &lt;object class="GtkHButtonBox" id="hbuttonbox1"&gt;
+            &lt;property name="border-width"&gt;20&lt;/property&gt;
+            &lt;child&gt;
+              &lt;object class="GtkButton" id="ok_button"&gt;
+                &lt;property name="label"&gt;gtk-ok&lt;/property&gt;
+                &lt;property name="use-stock"&gt;TRUE&lt;/property&gt;
+                &lt;signal name="clicked" handler="ok_button_clicked"/&gt;
+              &lt;/object&gt;
+            &lt;/child&gt;
+          &lt;/object&gt;
+        &lt;/child&gt;
+      &lt;/object&gt;
+    &lt;/child&gt;
+  &lt;/object&gt;
+&lt;/interface&gt;
+</programlisting>

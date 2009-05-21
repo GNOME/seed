@@ -27,11 +27,9 @@
   <section>
     <title>Examples</title>
     <para>Below are several examples of using the Seed GtkBuilder module. For additional resources, consult the examples/ folder of the Seed source</para>
-    <example id="GtkBuilder-repl-example">
-      <para>This demonstrates basic usage of GtkBuilder automatic signal connection.</para>
-      <programlisting>
-
-      </programlisting>
+    <example id="GtkBuilder-xml-example">
+      <xi:include href="example.ui"/>
+      <xi:include href="example.js"/>
     </example>
   </section>
 </chapter>
