@@ -751,30 +751,6 @@ seed_gobject_finalize (JSObjectRef object)
   g_object_run_dispose (gobject);
 }
 
-static void
-seed_gobject_initialize (JSContextRef ctx, JSObjectRef object)
-{
-  GObject *gobject;
-  GIBaseInfo *base;
-
-  gobject = seed_value_to_object (ctx, (JSValueRef) object, 0);
-  if (!gobject)
-    return;
-
-  base = g_irepository_find_by_gtype (g_irepository_get_default (),
-				      G_OBJECT_TYPE (gobject));
-
-  
-  seed_add_signals_to_object (ctx,
-			      object,
-			      gobject);
-
-  if (!base)
-    return;
-
-  g_assert (g_base_info_get_type (base) == GI_INFO_TYPE_OBJECT);
-}
-
 static JSValueRef
 seed_gobject_get_property (JSContextRef context,
 			   JSObjectRef object,
@@ -1021,7 +997,7 @@ JSClassDefinition gobject_def = {
   NULL,				/* Parent Class */
   NULL,				/* Static Values */
   gobject_static_funcs,		/* Static Functions */
-  seed_gobject_initialize,	/* Initialize */
+  NULL, 
   seed_gobject_finalize,	/* Finalize */
   NULL,				/* Has Property */
   seed_gobject_get_property,	/* Get Property */

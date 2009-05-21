@@ -63,7 +63,7 @@ static JSValueRef
 seed_wrap_object (JSContextRef ctx, GObject * object)
 {
   JSValueRef user_data;
-  JSValueRef js_ref;
+  JSObjectRef js_ref;
   JSClassRef class;
   GType type;
   JSValueRef prototype;
@@ -96,6 +96,8 @@ seed_wrap_object (JSContextRef ctx, GObject * object)
 
   JSValueProtect (eng->context, js_ref);
   g_object_add_toggle_ref (object, seed_toggle_ref, (gpointer) js_ref);
+  
+  seed_add_signals_to_object (ctx, js_ref, object);
 
   return js_ref;
 }
