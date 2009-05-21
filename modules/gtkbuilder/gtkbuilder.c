@@ -7,7 +7,6 @@ typedef struct _builder_ud {
   SeedObject user_data;
 } builder_ud;
 
-// Need to support connect object.
 static void
 seed_builder_connect_func (GtkBuilder *builder,
 			   GObject *object,
@@ -30,6 +29,8 @@ seed_builder_connect_func (GtkBuilder *builder,
     return;
   
   closure = seed_closure_new (ctx, func, priv->user_data, "signal handler (GtkBuilder)");
+  if (connect_object != NULL)
+    g_object_watch_closure (connect_object, closure);
   
   g_signal_connect_closure (object, signal_name, closure, FALSE);
 }
