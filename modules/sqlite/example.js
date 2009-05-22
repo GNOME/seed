@@ -1,5 +1,7 @@
 #!/usr/bin/env seed
-Seed.import_namespace("sqlite");
+
+sqlite = imports.sqlite;
+
 d = new sqlite.Database(Seed.argv[2]);
 
 d.exec("create table t1 (t1key INTEGER PRIMARY KEY,data TEXT,num double,timeEnter DATE);");
