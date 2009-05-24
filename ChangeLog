@@ -1,8 +1,10 @@
-== Seed 0.8, "Third Stage" (2009.05.27) ==
+== Seed 0.8, "Bringing It All Back Home" (2009.05.27) ==
 * Importer now supports constructing directory objects, to avoid manipulation of search path.
   Importer directory objects now support property enumeration.
 * Fix small leak in GObject wrapper initialization. (and also simplify the process).
 * GtkBuilder module to handle GtkBuilder automatic signal connection.
+* *_init methods now take normal arrays (by value) in addition to the special Seed.argv array.
+* GObject constructors (init methods) now take "self" as a parameter.
 * Module documentation rewritten in docbook, and builds one nice manual.
 * New Cairo module, supports most of the cairo API, with automatic memory management
   and everything you would expect.

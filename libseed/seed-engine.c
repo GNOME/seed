@@ -308,6 +308,34 @@ seed_gobject_method_finalize (JSObjectRef method)
 
 typedef void (*InitMethodCallback) (gint *argc, gchar ***argv);
 
+static gboolean
+seed_gobject_init_build_argv (JSContextRef ctx,
+			      JSObjectRef array,
+			      SeedArgvPrivates *priv,
+			      JSValueRef *exception)
+{
+  guint i,length;
+  JSValueRef jsl;
+  
+  jsl = seed_object_get_property (ctx, array, "length");
+  if (JSValueIsNull (ctx, jsl) || JSValueIsUndefined (ctx, jsl))
+    return FALSE;
+  
+  length = seed_value_to_uint (ctx, jsl, exception);
+  priv->argv = g_new(gchar *, length);
+  priv->argc = length;
+  
+  for (i = 0; i < length; i++)
+    {
+      priv->argv[i] = seed_value_to_string (ctx,
+					    JSObjectGetPropertyAtIndex (ctx, array, i,
+									exception),
+					    exception);
+    }
+  return TRUE;
+
+}
+
 static JSValueRef
 seed_gobject_init_method_invoked (JSContextRef ctx,
 				  JSObjectRef function,
@@ -320,6 +348,8 @@ seed_gobject_init_method_invoked (JSContextRef ctx,
   GTypelib *typelib;
   InitMethodCallback c;
   SeedArgvPrivates *priv;
+  gboolean allocated = FALSE;
+
   if (argumentCount != 1 && argumentCount != 2)
     {
       seed_make_exception (ctx, exception, 
@@ -328,14 +358,33 @@ seed_gobject_init_method_invoked (JSContextRef ctx,
       return JSValueMakeUndefined (ctx);
     }
 
-  // TODO: In future support all arrays.Through a seperate code path.
-  if (!argumentCount == 2)
+  if (argumentCount ==1)
     {
-      if (JSValueIsNull (ctx, arguments[0]) || !JSValueIsObject (ctx, arguments[0]) ||
-	  !JSValueIsObjectOfClass (ctx, arguments[0], seed_argv_class))
+      if (JSValueIsNull (ctx, arguments[0]) || !JSValueIsObject (ctx, arguments[0]))
+	  
 	{
 	  seed_make_exception (ctx, exception,
-			       "ArgumentError", "init method expects an argv object as argument");
+			       "ArgumentError", "init method expects an array object as argument");
+	  return JSValueMakeUndefined (ctx);
+	}
+      if(JSValueIsObjectOfClass (ctx, arguments[0], seed_argv_class))
+	{
+	  priv = JSObjectGetPrivate ((JSObjectRef)arguments[0]);
+	}
+      else
+	{
+	  priv = g_newa (SeedArgvPrivates,1);
+	  if (!seed_gobject_init_build_argv (ctx,
+					     (JSObjectRef)arguments[0],
+					     priv,
+					     exception))
+	    {
+	      seed_make_exception (ctx, exception, "ArgumentError",
+				   "Init method expects an array as argument");
+	      return JSValueMakeUndefined (ctx);
+
+	    }	  
+	  allocated = TRUE;
 	}
     }
   
@@ -349,8 +398,10 @@ seed_gobject_init_method_invoked (JSContextRef ctx,
       return JSValueMakeUndefined (ctx);
     }
 
-  priv = JSObjectGetPrivate ((JSObjectRef)arguments[0]);
   c(&priv->argc, &priv->argv);
+
+  if (allocated)
+    g_free (priv->argv);
     
   return JSValueMakeUndefined (ctx);
 }
