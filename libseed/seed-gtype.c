@@ -297,7 +297,7 @@ seed_gtype_construct (GType type,
 {
   JSContextRef ctx;
   JSObjectRef func, this_object;
-  JSValueRef exception = NULL;
+  JSValueRef exception = NULL, args[1];
   GObject *object;
   GType parent;
   GObjectClass *parent_class;
@@ -318,8 +318,9 @@ seed_gtype_construct (GType type,
       SEED_NOTE (GTYPE, "Handling constructor for: %p with type: %s",
 		 object, g_type_name (type));
       this_object = (JSObjectRef) seed_value_from_object (ctx, object, NULL);
+      args[0] = this_object;
       
-      JSObjectCallAsFunction (ctx, func, this_object, 0, 0, &exception);
+      JSObjectCallAsFunction (ctx, func, this_object, 1, args, &exception);
       if (exception)
 	{
 	  gchar *mes = seed_exception_to_string (ctx, exception);
