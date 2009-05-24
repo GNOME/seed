@@ -5,6 +5,8 @@
 // STDERR:
 
 Gtk = imports.gi.Gtk;
+JSON = imports.JSON;
+
 Gtk.init(Seed.argv);
 
 function userdata_test(widget, user_data)

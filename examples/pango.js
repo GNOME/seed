@@ -13,6 +13,8 @@ Gdk = imports.gi.Gdk;
 Gio = imports.gi.Gio;
 GLib = imports.gi.GLib;
 
+JSON = imports.JSON;
+
 Gtk.init(Seed.argv);
 GtkClutter.init(Seed.argv);
 

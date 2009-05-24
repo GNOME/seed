@@ -7,6 +7,8 @@
 Everything = imports.gi.Everything;
 GObject = imports.gi.GObject;
 
+JSON = imports.JSON;
+
 with(Everything)
 {
 Seed.print(test_boolean(true));

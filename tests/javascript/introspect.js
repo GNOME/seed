@@ -5,6 +5,8 @@
 // STDERR:
 
 Gtk = imports.gi.Gtk;
+JSON = imports.JSON; 
+
 Gtk.init(Seed.argv);
 win = new Gtk.Window();
 Seed.print(JSON.stringify(Seed.introspect(win.set_opacity)));

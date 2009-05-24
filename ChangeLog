@@ -16,8 +16,8 @@
   crash that happened sometimes with C modules.
 * Clutter animatev wrapper looks up property type wrapper now, so as to avoid having to pass
   [GObject.TYPE_FOO, bar]
-* Implement some varargs functions which can be implemented on top of non vararg variants
-  in JavaScript extensions.
+* Implement some varargs functions which can be implemented on top of non vararg variants in JavaScript extensions.
+* JSON stuff (stringify,parse) is now in gnome-js-common.
 
 == Seed 0.7, "Another Side of Bob Dylan" (2009.05.13) ==
 * Support for library init methods.

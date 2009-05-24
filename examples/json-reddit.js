@@ -2,6 +2,8 @@
 
 Gio = imports.gi.Gio;
 
+JSON = imports.JSON;
+
 var redditurl = Gio.file_new_for_uri("http://reddit.com/.json");
 var reddit = JSON.parse(redditurl.read().get_contents());
 

@@ -3,6 +3,7 @@
 // STDIN:
 // STDOUT:
 // STDERR:
+JSON = imports.JSON;
 
 a = {test: 3,
      hello: "Goodbye",
