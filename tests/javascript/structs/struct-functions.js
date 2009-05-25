@@ -4,7 +4,7 @@
 // STDOUT:
 // STDERR:
 
-Seed.import_namespace("GConf");
+GConf = imports.gi.GConf;
 
 GConf.init(Seed.argv);
 
