@@ -972,52 +972,6 @@ seed_gobject_set_property (JSContextRef context,
 }
 
 static JSValueRef
-seed_gi_import_namespace (JSContextRef ctx,
-			  JSObjectRef function,
-			  JSObjectRef this_object,
-			  size_t argumentCount,
-			  const JSValueRef arguments[],
-			  JSValueRef * exception)
-{
-  gchar *namespace;
-  const gchar *version = 0;
-  gchar *jsextension;
-  JSStringRef extension_script;
-
-  ctx = eng->context;
-
-  if (argumentCount == 0)
-    {
-      seed_make_exception (ctx, exception,
-			   "ArgumentError",
-			   "Seed.import_namespace"
-			   " expected 1 or 2 arguments, got 0");
-      return JSValueMakeNull (ctx);
-    }
-
-  namespace = seed_value_to_string (ctx, arguments[0], exception);
-  if (argumentCount == 2)
-    {
-      version = seed_value_to_string (ctx, arguments[1], exception);
-    }
-
-  if (version)
-    jsextension = g_strdup_printf("imports.gi.versions.%s = %s; %s = imports.gi.%s;",
-				  namespace, version, namespace, namespace);
-  else
-    jsextension =
-      g_strdup_printf("%s = imports.gi.%s;", namespace, namespace);
-  extension_script = JSStringCreateWithUTF8CString (jsextension);
-  JSEvaluateScript (ctx, extension_script, NULL, NULL, 0, NULL);
-  JSStringRelease (extension_script);
-
-  g_free ((gchar *) namespace);
-  g_free (jsextension);
-
-  return JSValueMakeNull (ctx);
-}
-
-static JSValueRef
 seed_gobject_constructor_convert_to_type (JSContextRef ctx,
 					  JSObjectRef object,
 					  JSType type,
@@ -1385,9 +1339,6 @@ seed_init (gint * argc, gchar *** argv)
   seed_object_set_property (eng->context, eng->global, "Seed", seed_obj_ref);
   JSValueProtect (eng->context, seed_obj_ref);
 
-  seed_create_function (eng->context, "import_namespace",
-			&seed_gi_import_namespace, seed_obj_ref);
-
   g_irepository_require (g_irepository_get_default (), "GObject", NULL, 0, 0);
   g_irepository_require (g_irepository_get_default (), "GIRepository",
 			 NULL, 0, 0);
@@ -1468,9 +1419,6 @@ seed_init_with_context_group (gint * argc,
   seed_obj_ref = JSObjectMake (eng->context, NULL, NULL);
   seed_object_set_property (eng->context, eng->global, "Seed", seed_obj_ref);
   JSValueProtect (eng->context, seed_obj_ref);
-
-  seed_create_function (eng->context, "import_namespace",
-			&seed_gi_import_namespace, seed_obj_ref);
 
   g_irepository_require (g_irepository_get_default (), "GObject", NULL, 0, 0);
   g_irepository_require (g_irepository_get_default (), "GIRepository",
