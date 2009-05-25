@@ -108,10 +108,9 @@ seed_gobject_constructor_invoked (JSContextRef ctx,
   GParameter *params;
   GObjectClass *oclass;
   GObject *gobject;
-  // Do we free GParamSpecs...? It's not clear.
   GParamSpec *param_spec;
   gchar *prop_name;
-  gint i, nparams = 0, length;
+  gint i, nparams = 0, length, ri;
   JSObjectRef ret;
   JSPropertyNameArrayRef jsprops = 0;
   JSStringRef jsprop_name;
@@ -145,11 +144,13 @@ seed_gobject_constructor_invoked (JSContextRef ctx,
       jsprops = JSObjectCopyPropertyNames (ctx, (JSObjectRef) arguments[0]);
       nparams = JSPropertyNameArrayGetCount (jsprops);
     }
-  i = 0;
+  ri = i = 0;
 
   params = g_new0 (GParameter, nparams + 1);
   SEED_NOTE (INITIALIZATION, "Constructing object of type %s",
 	     g_type_name (type));
+
+  seed_next_gobject_wrapper = seed_make_wrapper_for_type (ctx, type);
 
   while (i < nparams)
     {
@@ -161,21 +162,19 @@ seed_gobject_constructor_invoked (JSContextRef ctx,
       JSStringGetUTF8CString (jsprop_name, prop_name, length);
 
       param_spec = g_object_class_find_property (oclass, prop_name);
-      if (param_spec == NULL)
-	{
-	  seed_make_exception (ctx, exception, "PropertyError", 
-			       "Invalid property for construction: %s",
-			       prop_name);
 
-	  g_free (params);
-
-	  JSPropertyNameArrayRelease (jsprops);
-	  return (JSObjectRef) JSValueMakeNull (ctx);
-	}
-      // TODO: exception handling
       jsprop_value = JSObjectGetProperty (ctx,
 					  (JSObjectRef) arguments[0],
 					  jsprop_name, NULL);
+
+      if (param_spec == NULL)
+	{
+	  JSObjectSetProperty (ctx, seed_next_gobject_wrapper, jsprop_name,
+			       jsprop_value, 0, NULL);
+	  ++i;
+	  continue;
+	}
+      // TODO: exception handling
 
       if (g_type_is_a (param_spec->value_type, G_TYPE_ENUM))
 	type = G_TYPE_INT;
@@ -183,25 +182,26 @@ seed_gobject_constructor_invoked (JSContextRef ctx,
 	type = param_spec->value_type;
 
       seed_gvalue_from_seed_value (ctx, jsprop_value,
-				   type, &params[i].value, exception);
+				   type, &params[ri].value, exception);
 
       if (*exception)
 	{
 	  g_free (params);
 	  JSPropertyNameArrayRelease (jsprops);
+	  seed_next_gobject_wrapper =  NULL;
 	  return 0;
 	}
-      params[i].name = prop_name;
+      params[ri].name = prop_name;
 
       ++i;
+      ++ri;
     }
 
   if (jsprops)
     JSPropertyNameArrayRelease (jsprops);
   
-  seed_next_gobject_wrapper = seed_make_wrapper_for_type (ctx, type);
 
-  gobject = g_object_newv (type, nparams, params);
+  gobject = g_object_newv (type, ri, params);
 
 
   if (G_IS_INITIALLY_UNOWNED (gobject) && 
@@ -215,7 +215,7 @@ seed_gobject_constructor_invoked (JSContextRef ctx,
   else
     ret = (JSObjectRef) seed_value_from_object (ctx, gobject, exception);
 
-  for (i = 0; i < nparams; i++)
+  for (i = 0; i < ri; i++)
     {
       g_value_unset (&params[i].value);
     }
@@ -912,8 +912,9 @@ seed_gobject_set_property (JSContextRef context,
   gchar *cproperty_name;
   gint length;
 
-  if (JSValueIsNull (context, value))
+  if (seed_next_gobject_wrapper || JSValueIsNull (context, value))
     return 0;
+  
 
   obj = seed_value_to_object (context, object, 0);
 
