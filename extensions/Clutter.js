@@ -8,9 +8,16 @@ Clutter.Actor.prototype.animate = function(mode, duration, json)
 	properties.push(prop);
 	endvalues.push(new Array(this.__property_type(prop), json[prop]));
     }
-    return this.animatev(mode, duration, properties.length, 
-			 properties, endvalues);
-
+    
+    var animation =  this.animatev(mode, duration, properties.length, 
+				   properties, endvalues);
+    this.__animation__ = animation;
+    animation.timeline.signal["completed"].connect(
+	function(timeline, obj){
+	    delete obj.__animation__;
+	}, this);
+    
+    return animation;
 }
 
 Clutter.Actor.prototype.animate_with_timeline = function(mode, timeline, json)
@@ -21,7 +28,16 @@ Clutter.Actor.prototype.animate_with_timeline = function(mode, timeline, json)
 	properties.push(prop);
 	endvalues.push(new Array(this.__property_type(prop), json[prop]));
     }
-    return this.animate_with_timelinev(mode, timeline, properties.length, 
-				       properties, endvalues);
 
+    var animation = 
+	this.animate_with_timelinev(mode, timeline, properties.length, 
+				    properties, endvalues);
+    
+    this.__animation__ = animation;
+    animation.timeline.signal["completed"].connect(
+	function(timeline, obj){
+	    delete obj.__animation__;
+	}, this);
+    
+    return animation;
 }
