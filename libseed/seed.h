@@ -418,5 +418,9 @@ seed_object_get_prototype (SeedContext ctx, SeedObject obj);
 gboolean
 seed_object_is_of_class (SeedContext ctx, SeedObject obj, SeedClass class);
 
+gboolean
+seed_value_to_format (SeedContext,
+		      const gchar *format,
+		      ...);
 
 #endif

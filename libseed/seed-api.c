@@ -16,6 +16,7 @@
  */
 
 #include "seed-private.h"
+#include <stdarg.h>
 
 /**
  * seed_value_protect:
@@ -729,3 +730,92 @@ seed_make_function (JSContextRef ctx,
   
   return oref;
 }
+
+/**
+ * seed_value_to_format:
+ * @ctx: A valid #SeedContext
+ * @format: Format string to use.
+ * @exception: Location to store an exception.
+ * @values: The values to convert.
+ * @Varargs: A %NULL-terminated list of locations to store the results of conversion. 
+ *
+ * A convenience API for converting multiple values at once, the format string
+ * is composed of single characters specifying types, for example:
+ * i: gint
+ * u: guint
+ * o: GObject *
+ * s: gchar *
+ * f: gdouble
+ * c: gchar
+ *
+ * and a valid format string could be "iuo". 
+ *
+ * This function may be in particular useful in converting arguments 
+ * in a #SeedFunctionCallback.
+ * Return value: Whether conversion was successful. 
+ */
+gboolean
+seed_value_to_format (JSContextRef ctx,
+		      const gchar *format,
+		      JSValueRef *values,
+		      JSValueRef *exception,
+		      ...)
+{
+  va_list argp;
+  const gchar *c;
+  guint i = 0;
+  
+  c = format;
+  
+  va_start (argp, exception);
+  
+  for (c = format; *c; c++)
+    {
+      JSValueRef val = values[i];
+      gpointer p = va_arg (argp, gpointer);
+      
+      if (!val || !p)
+	{
+	  va_end (argp);
+	  return FALSE;
+	}
+      switch (*c)
+	{
+	case 'i':
+	  {
+	    *((gint *)p) = seed_value_to_int (ctx, val, exception);
+	    break;
+	  }
+	case 'u':
+	  {
+	    *((guint *)p) = seed_value_to_uint (ctx, val, exception);
+	    break;
+	  }
+	case 's':
+	  {
+	    *((gchar **)p) = seed_value_to_string (ctx, val, exception);
+	    break;
+	  }
+	case 'f':
+	  {
+	    *((gdouble *)p) = seed_value_to_int (ctx, val, exception);
+	    break;
+	  }
+	case 'o':
+	  {
+	    *((GObject **)p) = seed_value_to_object (ctx, val, exception);
+	    break;
+	  }
+	case 'c':
+	  {
+	    *((gchar *)c) = seed_value_to_char (ctx, val, exception);
+	    break;
+	  }
+	}
+      i++;
+    }
+  
+  va_end (argp);
+  return TRUE;
+}
+		      

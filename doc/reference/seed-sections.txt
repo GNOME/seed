@@ -87,6 +87,7 @@ seed_value_from_object
 seed_value_to_filename
 seed_value_from_filename
 seed_value_get_type
+seed_value_to_format
 </SECTION>
 <SECTION>
 <TITLE>SeedClosure</TITLE>
