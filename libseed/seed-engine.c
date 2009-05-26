@@ -232,32 +232,6 @@ seed_gobject_constructor_invoked (JSContextRef ctx,
 }
 
 static JSValueRef
-seed_gobject_equals (JSContextRef ctx,
-		     JSObjectRef function,
-		     JSObjectRef this_object,
-		     size_t argumentCount,
-		     const JSValueRef arguments[], JSValueRef * exception)
-{
-  GObject *this, *that;
-
-  if (argumentCount != 1)
-    {
-      seed_make_exception (ctx, exception, "ArgumentError", 
-			   "GObject equals comparison expected"
-			   " 1 argument, got %zd", argumentCount);
-
-      return JSValueMakeNull (ctx);
-    }
-
-  this = seed_value_to_object (ctx, (JSValueRef) this_object, exception);
-  that = seed_value_to_object (ctx, arguments[0], exception);
-
-  if (this == that)
-    return seed_value_from_boolean (ctx, 1, 0);
-  return seed_value_from_boolean (ctx, 0, 0);
-}
-
-static JSValueRef
 seed_gobject_property_type (JSContextRef ctx,
 			    JSObjectRef function,
 			    JSObjectRef this_object,
@@ -998,7 +972,6 @@ seed_gobject_constructor_convert_to_type (JSContextRef ctx,
 }
 
 JSStaticFunction gobject_static_funcs[] = {
-  {"equals", seed_gobject_equals, 0},
   {"__debug_ref_count", seed_gobject_ref_count, 0},
   {"__property_type", seed_gobject_property_type, 0},
   {0, 0, 0}
