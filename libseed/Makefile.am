@@ -22,7 +22,8 @@ libseed_la_SOURCES = \
 	seed-types.c \
 	seed-types.h \
 	seed-importer.c \
-	seed-importer.h 
+	seed-importer.h \
+	seed-path.h
 
 libseed_la_CFLAGS = \
 	-Wall \

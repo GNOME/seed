@@ -90,6 +90,10 @@ PKG_CHECK_MODULES(GOBJECT_INTROSPECTION, gobject-introspection-1.0 >= 0.6.3)
 AC_SUBST(GOBJECT_INTROSPECTION_CFLAGS)
 AC_SUBST(GOBJECT_INTROSPECTION_LDFLAGS)
 
+dnl ========================GNOME-js common====================================
+PKG_CHECK_MODULES(GNOME_JS, gnome-js-common)
+m4_define([gnome-js-dir], [`pkg-config --variable=moduledir gnome-js-common`])
+
 dnl =============================Modules=======================================
 dnl ==== canvas ====
 AC_ARG_ENABLE(canvas-module,
@@ -410,6 +414,8 @@ modules/dbus/util/Makefile
 modules/libxml/Makefile
 modules/cairo/Makefile
 modules/gtkbuilder/Makefile
+
+libseed/seed-path.h
 ])
 AC_OUTPUT
 

@@ -16,6 +16,7 @@
  */
 
 #include "seed-private.h"
+#include "seed-path.h"
 
 #include <sys/types.h>
 #include <sys/wait.h>
@@ -348,7 +349,7 @@ seed_gobject_init_method_invoked (JSContextRef ctx,
   GIBaseInfo *info;
   GTypelib *typelib;
   InitMethodCallback c;
-  SeedArgvPrivates *priv;
+  SeedArgvPrivates *priv = NULL;
   gboolean allocated = FALSE;
 
   if (argumentCount != 1 && argumentCount != 2)
@@ -393,7 +394,7 @@ seed_gobject_init_method_invoked (JSContextRef ctx,
   typelib = g_base_info_get_typelib (info);
   g_typelib_symbol (typelib, g_function_info_get_symbol ((GIFunctionInfo *)info), (gpointer *)&c);
   // Backwards compatibility
-  if (argumentCount == 2)
+  if (!priv)
     {
       c(NULL, NULL);
       return JSValueMakeUndefined (ctx);
@@ -1353,11 +1354,11 @@ seed_init (gint * argc, gchar *** argv)
 
   seed_gtype_init (eng);
 
+
+
   defaults_script =
-	  JSStringCreateWithUTF8CString ("try{Seed.include(\"/usr/share/"
-					 "seed/extensions/Seed.js\");} catch(e){}"
-					 "Seed.include(\"/usr/local/share"
-					 "/seed/extensions/Seed.js\");");
+	  JSStringCreateWithUTF8CString ("Seed.include(\""SEED_PREFIX_PATH"\");");
+
   JSEvaluateScript (eng->context, defaults_script, NULL, NULL, 0, NULL);
 
   base_info_info =
@@ -1435,10 +1436,7 @@ seed_init_with_context_group (gint * argc,
   seed_gtype_init (eng);
 
   defaults_script =
-    JSStringCreateWithUTF8CString ("try{Seed.include(\"/usr/share/"
-				   "seed/extensions/Seed.js\");} catch(e){}"
-				   "Seed.include(\"/usr/local/share"
-				   "/seed/extensions/Seed.js\");");
+	  JSStringCreateWithUTF8CString ("Seed.include(\""SEED_PREFIX_PATH"\");");
   JSEvaluateScript (eng->context, defaults_script, NULL, NULL, 0, NULL);
   JSStringRelease (defaults_script);
 
