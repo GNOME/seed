@@ -92,7 +92,8 @@ AC_SUBST(GOBJECT_INTROSPECTION_LDFLAGS)
 
 dnl ========================GNOME-js common====================================
 PKG_CHECK_MODULES(GNOME_JS, gnome-js-common)
-m4_define([gnome-js-dir], [`pkg-config --variable=moduledir gnome-js-common`])
+GNOME_JS_DIR=`pkg-config --variable=moduledir gnome-js-common`
+AC_SUBST(GNOME_JS_DIR)
 
 dnl =============================Modules=======================================
 dnl ==== canvas ====
@@ -375,6 +376,7 @@ scripts/shave-libtool
 libseed/Makefile
 po/Makefile.in
 src/Makefile
+extensions/Seed.js
 extensions/Makefile
 tests/Makefile
 tests/javascript/Makefile

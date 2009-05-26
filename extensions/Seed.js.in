@@ -170,5 +170,5 @@ Seed.thread_repl = function()
 
 Seed.printf = function () { Seed.print(Seed.sprintf.apply(this, arguments)) };
 
-imports.searchPath = ["/usr/lib/gnome-js", "/usr/local/lib/gnome-js", "/usr/local/lib/seed", "/usr/lib/seed", "/usr/local/share/seed", "/usr/share/seed", "."];
+imports.searchPath = ["@GNOME_JS_DIR@", "@prefix@/lib/seed", "@prefix@/share/seed", "/usr/local/lib/seed","/usr/local/share/seed","/usr/lib/seed","/usr/share/seed","."];
 

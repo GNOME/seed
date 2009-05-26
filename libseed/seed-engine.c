@@ -1357,7 +1357,7 @@ seed_init (gint * argc, gchar *** argv)
 
 
   defaults_script =
-	  JSStringCreateWithUTF8CString ("Seed.include(\""SEED_PREFIX_PATH"\");");
+	  JSStringCreateWithUTF8CString ("Seed.include(\""SEED_PREFIX_PATH"extensions/Seed.js\");");
 
   JSEvaluateScript (eng->context, defaults_script, NULL, NULL, 0, NULL);
 
@@ -1436,7 +1436,7 @@ seed_init_with_context_group (gint * argc,
   seed_gtype_init (eng);
 
   defaults_script =
-	  JSStringCreateWithUTF8CString ("Seed.include(\""SEED_PREFIX_PATH"\");");
+	  JSStringCreateWithUTF8CString ("Seed.include(\""SEED_PREFIX_PATH"extensions/Seed.js\");");
   JSEvaluateScript (eng->context, defaults_script, NULL, NULL, 0, NULL);
   JSStringRelease (defaults_script);
 
