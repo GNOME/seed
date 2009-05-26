@@ -1,4 +1,5 @@
 #include <seed.h>
+#include <seed-debug.h>
 
 #include "util/dbus.h"
 #include "dbus-values.h"
@@ -146,7 +147,7 @@ prepare_call (SeedContext ctx,
   if (!seed_js_values_to_dbus
       (ctx, 0, arg_array, &arg_iter, &sig_iter, exception))
     {
-      //  big_debug(BIG_DEBUG_JS_DBUS, "Failed to marshal call from JS to dbus");
+      SEED_NOTE(MODULE, "Failed to marshal call from JS to dbus");
       dbus_message_unref (message);
       return NULL;
     }
@@ -166,9 +167,9 @@ complete_call (SeedContext ctx,
 
   if (dbus_error_is_set (derror))
     {
-      //        big_debug(BIG_DEBUG_JS_DBUS,
-      //          "Error sending call: %s: %s",
-      //          derror->name, derror->message);
+      SEED_NOTE(MODULE,
+                "Error sending call: %s: %s",
+                derror->name, derror->message);
       seed_make_exception (ctx, exception, "DBusError",
 			   "DBus error: %s: %s",
 			   derror->name, derror->message);
@@ -178,8 +179,8 @@ complete_call (SeedContext ctx,
 
   if (reply == NULL)
     {
-      // big_debug(BIG_DEBUG_JS_DBUS,
-      //        "No reply received to call");
+      SEED_NOTE(MODULE,
+		"No reply received to call");
       return FALSE;
     }
 
@@ -197,7 +198,7 @@ complete_call (SeedContext ctx,
   dbus_message_iter_init (reply, &arg_iter);
   if (!seed_js_values_from_dbus (ctx, &arg_iter, &ret_values, exception))
     {
-      //        big_debug(BIG_DEBUG_JS_DBUS, "Failed to marshal dbus call reply back to JS");
+      SEED_NOTE(MODULE, "Failed to marshal dbus call reply back to JS");
       return FALSE;
     }
 
@@ -239,13 +240,13 @@ pending_notify (DBusPendingCall * pending, void *user_data)
 
   closure = user_data;
 
-//    big_debug(BIG_DEBUG_JS_DBUS,
-  //            "Notified of reply to async call closure %p context %p",
-  //        closure, context);
+  SEED_NOTE(MODULE,
+              "Notified of reply to async call closure %p",
+	    closure);
 
 //    if (context == NULL) {
-  //      big_debug(BIG_DEBUG_JS_DBUS,
-  //            "Closure destroyed before we could complete pending call");
+  SEED_NOTE(MODULE,
+            "Closure destroyed before we could complete pending call");
   //  return;
 //    }
 
@@ -335,7 +336,7 @@ seed_js_dbus_call_async (SeedContext ctx,
   if (!dbus_connection_send_with_reply
       (bus_connection, message, &pending, timeout) || pending == NULL)
     {
-      //        big_debug(BIG_DEBUG_JS_DBUS, "Failed to send async dbus message");
+      SEED_NOTE(MODULE, "Failed to send async dbus message");
       seed_make_exception (ctx, exception, "DBusError",
 			   "Failed to send dbus message");
       dbus_message_unref (message);
@@ -575,14 +576,14 @@ signal_handler_callback (DBusConnection * connection,
   GArray *arguments;
   SeedException exception;
 
-  //    big_debug(BIG_DEBUG_JS_DBUS,
-  //          "Signal handler called");
+  SEED_NOTE(MODULE,
+            "Signal handler called");
 
   handler = data;
 
   if (handler->closure == NULL)
     {
-      //        big_debug(BIG_DEBUG_JS_DBUS, "dbus signal handler invalidated, ignoring");
+      SEED_NOTE(MODULE, "dbus signal handler invalidated, ignoring");
       return;
     }
 
@@ -592,7 +593,7 @@ signal_handler_callback (DBusConnection * connection,
   dbus_message_iter_init (message, &arg_iter);
   if (!seed_js_values_from_dbus (ctx, &arg_iter, &arguments, &exception))
     {
-      //        big_debug(BIG_DEBUG_JS_DBUS, "Failed to marshal dbus signal to JS");
+      SEED_NOTE(MODULE, "Failed to marshal dbus signal to JS");
       return;
     }
 
@@ -600,9 +601,9 @@ signal_handler_callback (DBusConnection * connection,
 
   g_assert (arguments != NULL);
 
-  //    big_debug(BIG_DEBUG_JS_DBUS,
-  //        "Invoking closure on signal received, %d args",
-  //        gjs_rooted_array_get_length(context, arguments));
+  SEED_NOTE(MODULE,
+          "Invoking closure on signal received, %d args",
+	    arguments->len);
   ret_val = seed_closure_invoke_with_context (ctx, handler->closure,
 					      (SeedValue *) arguments->data,
 					      arguments->len, &exception);
@@ -799,11 +800,11 @@ seed_js_dbus_emit_signal(SeedContext ctx,
     if (!bus_check(ctx, bus_type, exception))
       return seed_make_null (ctx);
 
-    //    big_debug(BIG_DEBUG_JS_DBUS,
-    //        "Emitting signal %s %s %s",
-    //        object_path,
-    //        iface,
-    //        signal);
+    SEED_NOTE(MODULE,
+            "Emitting signal %s %s %s",
+            object_path,
+            iface,
+            signal);
 
     bus_connection = DBUS_CONNECTION_FROM_TYPE(bus_type);
 
@@ -894,8 +895,8 @@ on_name_acquired(DBusConnection *connection,
     seed_prepare_global_context (ctx);
     if (ctx == NULL)
       {
-	//        big_debug(BIG_DEBUG_JS_DBUS,
-	//          "Closure destroyed before we could notify name acquired");
+	SEED_NOTE(MODULE,
+	          "Closure destroyed before we could notify name acquired");
         return;
       }
 
@@ -927,8 +928,8 @@ on_name_lost(DBusConnection *connection,
     seed_prepare_global_context (ctx);
     if (ctx == NULL)
       {
-	//        big_debug(BIG_DEBUG_JS_DBUS,
-	//          "Closure destroyed before we could notify name acquired");
+	SEED_NOTE(MODULE,
+	          "Closure destroyed before we could notify name acquired");
         return;
       }
 
