@@ -54,7 +54,8 @@ static const GDebugKey seed_debug_keys[] = {
   {"structs", SEED_DEBUG_STRUCTS},
   {"construction", SEED_DEBUG_CONSTRUCTION},
   {"gtype", SEED_DEBUG_GTYPE},
-  {"importer", SEED_DEBUG_IMPORTER}
+  {"importer", SEED_DEBUG_IMPORTER},
+  {"module", SEED_DEBUG_MODULE}
 };
 #endif /* SEED_ENABLE_DEBUG */
 

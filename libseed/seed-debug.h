@@ -37,7 +37,8 @@ typedef enum
   SEED_DEBUG_SIGNAL = 1 << 6,
   SEED_DEBUG_STRUCTS = 1 << 7,
   SEED_DEBUG_GTYPE = 1 << 8,
-  SEED_DEBUG_IMPORTER = 1 << 9
+  SEED_DEBUG_IMPORTER = 1 << 9,
+  SEED_DEBUG_MODULE = 1 << 10
 } SeedDebugFlag;
 
 #ifdef SEED_ENABLE_DEBUG
