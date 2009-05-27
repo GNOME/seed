@@ -1279,7 +1279,7 @@ gboolean
 seed_value_to_boolean (JSContextRef ctx,
 		       JSValueRef val, JSValueRef * exception)
 {
-  if (!JSValueIsBoolean (ctx, val))
+  if (!JSValueIsBoolean (ctx, val) && !JSValueIsNumber (ctx, val))
     {
       if (!JSValueIsNull (ctx, val))
 	{
