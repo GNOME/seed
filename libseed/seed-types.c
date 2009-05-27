@@ -531,6 +531,9 @@ seed_gi_make_argument (JSContextRef ctx,
     case GI_TYPE_TAG_GTYPE:
       arg->v_int = seed_value_to_int (ctx, value, exception);
       break;
+    case GI_TYPE_TAG_TIME_T:
+      arg->v_long = seed_value_to_time_t (ctx, value, exception);
+      break;
     case GI_TYPE_TAG_INTERFACE:
       {
 	GIBaseInfo *interface;
@@ -788,6 +791,8 @@ seed_gi_argument_make_js (JSContextRef ctx,
       return seed_value_from_filename (ctx, arg->v_string, exception);
     case GI_TYPE_TAG_GTYPE:
       return seed_value_from_int (ctx, arg->v_int, exception);
+    case GI_TYPE_TAG_TIME_T:
+      return seed_value_from_time_t (ctx, arg->v_long, exception);
     case GI_TYPE_TAG_ARRAY:
       {
 	GITypeInfo *param_type;
@@ -1966,3 +1971,53 @@ seed_validate_enum (GIEnumInfo *info,
   
   return FALSE;
 }
+
+JSValueRef
+seed_value_from_time_t (JSContextRef ctx,
+			time_t time,
+			JSValueRef *exception)
+{
+  JSValueRef args[1];
+  
+  args[0] = seed_value_from_double (ctx, ((gdouble)time)*1000, exception);
+  return JSObjectMakeDate(ctx, 1, args, exception);
+}
+
+time_t
+seed_value_to_time_t (JSContextRef ctx,
+		      JSValueRef value,
+		      JSValueRef *exception)
+{
+  if (JSValueIsNumber (ctx, value))
+    {
+      return (unsigned long) seed_value_to_long (ctx, value, exception);
+    }
+  else if (JSValueIsObject (ctx, value))
+    {
+      JSValueRef get_time_method;
+      JSValueRef jstime;
+      gdouble time;
+      
+      get_time_method = seed_object_get_property (ctx, (JSObjectRef)value,
+						  "getTime");
+      if (JSValueIsNull(ctx, get_time_method) ||
+	  !JSValueIsObject(ctx, get_time_method))
+	{
+	  goto out;
+	}
+      jstime = JSObjectCallAsFunction (ctx, 
+				       (JSObjectRef)get_time_method,
+				       (JSObjectRef)value,
+				       0, NULL,
+				       exception);
+      time = seed_value_to_double (ctx, jstime, exception);
+      return (unsigned long)(time/1000);
+    }
+
+ out:
+  seed_make_exception (ctx, exception,
+		       "TypeError",
+		       "Unable to convert JavaScript value to time_t");
+  return 0;
+}
+

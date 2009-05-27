@@ -135,6 +135,14 @@ gchar *seed_value_to_string (JSContextRef ctx,
 JSValueRef seed_value_from_string (JSContextRef ctx,
 				   const gchar * val, JSValueRef * exception);
 
+time_t seed_value_to_time_t (JSContextRef ctx,
+			     JSValueRef val,
+			     JSValueRef *exception);
+
+JSValueRef seed_value_from_time_t (JSContextRef ctx,
+				   time_t time,
+				   JSValueRef *exception);
+
 GObject *seed_value_to_object (JSContextRef ctx,
 			       JSValueRef val, JSValueRef * exception);
 JSValueRef seed_value_from_object (JSContextRef ctx,

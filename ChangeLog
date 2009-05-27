@@ -22,6 +22,7 @@
 * Install seed-debug.h so modules can make use of it.
 * Search path now works in nonstandard prefix, default search path includes
   gnome-js-common moduledir (from pkgconfig).
+* Support to/from Date objects to time_t.
 
 == Seed 0.7, "Another Side of Bob Dylan" (2009.05.13) ==
 * Support for library init methods.
