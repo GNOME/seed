@@ -68,6 +68,8 @@ seed_prepare_global_context (JSContextRef ctx)
   seed_object_set_property (ctx, global, "imports", importer);
   seed_object_set_property (ctx, global, "GType", seed_gtype_constructor);
   seed_object_set_property (ctx, global, "Seed", seed_obj_ref);
+  seed_object_set_property (ctx, global, "print", seed_print_ref);
+
 
   JSEvaluateScript (ctx, defaults_script, NULL, NULL, 0, NULL);
 }

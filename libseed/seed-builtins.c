@@ -23,6 +23,8 @@
 #include <string.h>
 #include <signal.h>
 
+JSValueRef seed_print_ref;
+
 static JSValueRef
 seed_include (JSContextRef ctx,
 	      JSObjectRef function,
@@ -483,7 +485,12 @@ seed_init_builtins (SeedEngine * local_eng, gint * argc, gchar *** argv)
   seed_create_function (local_eng->context, "include", &seed_include, obj);
   seed_create_function (local_eng->context, "scoped_include", 
 			&seed_scoped_include, obj);
-  seed_create_function (local_eng->context, "print", &seed_print, obj);
+
+  seed_print_ref = JSObjectMakeFunctionWithCallback (local_eng->context, NULL, &seed_print);
+  seed_object_set_property (local_eng->context, obj, "print", seed_print_ref);
+  seed_object_set_property (local_eng->context, local_eng->global, "print", seed_print_ref);
+  JSValueProtect (local_eng->context, seed_print_ref);
+  
   seed_create_function (local_eng->context,
 			"check_syntax", &seed_check_syntax, obj);
   seed_create_function (local_eng->context,
