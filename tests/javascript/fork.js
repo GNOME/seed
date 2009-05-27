@@ -3,8 +3,8 @@
 // STDIN:
 // STDOUT:[AB]\n[AB]
 // STDERR:
-
-var a = Seed.fork();
+os = imports.os;
+var a = os.fork();
 
 if(a)
 {

@@ -336,19 +336,6 @@ seed_check_syntax (JSContextRef ctx,
 }
 
 static JSValueRef
-seed_fork (JSContextRef ctx,
-	   JSObjectRef function,
-	   JSObjectRef this_object,
-	   size_t argumentCount,
-	   const JSValueRef arguments[], JSValueRef * exception)
-{
-  pid_t child;
-
-  child = fork ();
-  return seed_value_from_int (ctx, child, exception);
-}
-
-static JSValueRef
 seed_spawn (JSContextRef ctx,
 	    JSObjectRef function,
 	    JSObjectRef this_object,
@@ -495,7 +482,6 @@ seed_init_builtins (SeedEngine * local_eng, gint * argc, gchar *** argv)
 			"check_syntax", &seed_check_syntax, obj);
   seed_create_function (local_eng->context,
 			"introspect", &seed_introspect, obj);
-  seed_create_function (local_eng->context, "fork", &seed_fork, obj);
   seed_create_function (local_eng->context, "spawn", &seed_spawn, obj);
   seed_create_function (local_eng->context, "quit", &seed_quit, obj);
   seed_create_function (local_eng->context, "breakpoint",

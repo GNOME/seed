@@ -971,7 +971,21 @@ seed_os_access (SeedContext ctx,
     return seed_value_from_boolean (ctx, FALSE, exception);
 }
 
+static SeedValue
+seed_os_fork (SeedContext ctx,
+	      SeedObject function,
+	      SeedObject this_object,
+	      gsize argument_count,
+	      const SeedValue arguments[],
+	      SeedException *exception)
+{
+  pid_t t = fork();
+  
+  return seed_value_from_long (ctx, t, exception);
+}
+
 seed_static_function os_funcs[] = {
+  {"fork", seed_os_fork, 0},
   {"chdir", seed_os_chdir, 0},
   {"fchdir", seed_os_fchdir, 0},
   {"getcwd", seed_os_getcwd, 0},

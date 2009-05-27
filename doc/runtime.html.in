@@ -139,27 +139,6 @@ catch(e){
     print("Something horrible happened on line " + e.line);
 }
 </pre>
-<div class="section"><b>Seed.fork</b>()</div>
-<p><i>Returns: pid of child (to parent); 0 (to child)</i></p>
-<p>
-Creates a new process which is an exact copy of the current one, starting from the next instruction in both processes. It works just as <a href="http://www.opengroup.org/onlinepubs/000095399/functions/fork.html">POSIX fork</a> should.
-</p>
-<pre class="sh_javascript">
-var pid = Seed.fork();
-
-if(pid){
-    // Parent
-    
-    while(1)
-        print("From Parent");
-}
-else{
-    // Child
-
-    while(1)
-        print("From Child");
-}
-</pre>
 <div class="section"><b>Seed.stringify</b>(object)</div>
 <p>
 Returns a string representing the entire contents of <i>object</i> in a pretty-printed fashion, like that of JSON.

@@ -1,10 +1,11 @@
 #!/usr/bin/env seed
 Gtk = imports.gi.Gtk;
 Multiprocessing = imports.multiprocessing;
+os = imports.os;
 
 var pipes = new Multiprocessing.Pipe();
 
-var child_pid = Seed.fork();
+var child_pid = os.fork();
 
 if (child_pid === 0){
     Gtk.init(Seed.argv);
