@@ -1326,7 +1326,7 @@ seed_value_from_boolean (JSContextRef ctx,
 guint
 seed_value_to_uint (JSContextRef ctx, JSValueRef val, JSValueRef * exception)
 {
-  if (!JSValueIsNumber (ctx, val))
+  if (!JSValueIsNumber (ctx, val) && !JSValueIsBoolean (ctx, val))
     {
       if (!JSValueIsNull (ctx, val))
 	{
@@ -1371,7 +1371,7 @@ seed_value_from_uint (JSContextRef ctx, guint val, JSValueRef * exception)
 gint
 seed_value_to_int (JSContextRef ctx, JSValueRef val, JSValueRef * exception)
 {
-  if (!JSValueIsNumber (ctx, val))
+  if (!JSValueIsNumber (ctx, val) && !JSValueIsBoolean (ctx, val))
     {
       if (!JSValueIsNull (ctx, val))
 	seed_make_exception (ctx, exception, "ConversionError",
@@ -1519,7 +1519,7 @@ seed_value_from_uchar (JSContextRef ctx, guchar val, JSValueRef * exception)
 glong
 seed_value_to_long (JSContextRef ctx, JSValueRef val, JSValueRef * exception)
 {
-  if (!JSValueIsNumber (ctx, val))
+  if (!JSValueIsNumber (ctx, val) && !JSValueIsBoolean (ctx, val))
     {
       if (!JSValueIsNull (ctx, val))
 	seed_make_exception (ctx, exception, "ConversionError",
@@ -1604,7 +1604,7 @@ seed_value_from_ulong (JSContextRef ctx, gulong val, JSValueRef * exception)
 gint64
 seed_value_to_int64 (JSContextRef ctx, JSValueRef val, JSValueRef * exception)
 {
-  if (!JSValueIsNumber (ctx, val))
+  if (!JSValueIsNumber (ctx, val) && !JSValueIsBoolean (ctx, val))
     {
       if (!JSValueIsNull (ctx, val))
 	seed_make_exception (ctx, exception, "ConversionError",
@@ -1648,7 +1648,7 @@ guint64
 seed_value_to_uint64 (JSContextRef ctx,
 		      JSValueRef val, JSValueRef * exception)
 {
-  if (!JSValueIsNumber (ctx, val))
+  if (!JSValueIsNumber (ctx, val) && !JSValueIsBoolean (ctx, val))
     {
       if (!JSValueIsNull (ctx, val))
 	seed_make_exception (ctx, exception, "ConversionError",
