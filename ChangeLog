@@ -5,6 +5,8 @@
 * GtkBuilder module to handle GtkBuilder automatic signal connection.
 * *_init methods now take normal arrays (by value) in addition to the special Seed.argv array.
 * GObject constructors (init methods) now take "self" as a parameter.
+* Passing non gobject-properties to a GObject constructor will set the properties
+  on the GObject wrapper.
 * Module documentation rewritten in docbook, and builds one nice manual.
 * New Cairo module, supports most of the cairo API, with automatic memory management
   and everything you would expect.
