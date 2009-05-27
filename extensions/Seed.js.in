@@ -168,7 +168,7 @@ Seed.thread_repl = function()
 
 }
 
-printf = function () { print(Seed.sprintf.apply(this, arguments)) };
+Seed.printf = function () { print(Seed.sprintf.apply(this, arguments)) };
 
 imports.searchPath = ["@GNOME_JS_DIR@", "@prefix@/lib/seed", "@prefix@/share/seed", "/usr/local/lib/seed","/usr/local/share/seed","/usr/lib/seed","/usr/share/seed","."];
 
