@@ -12,5 +12,5 @@ fontset = fontmap.load_fontset(context,
 			       Pango.language_get_default());
 fontset.foreach(function(fontset, font){
     description = font.describe();
-    Seed.print(description.to_string());
+    print(description.to_string());
 });

@@ -47,9 +47,9 @@ manager.GetCurrentSessionRemote(
 	session = new ConsoleKitSession(result);
 	session.IsLocalRemote (function (result){
 	    if (result)
-		Seed.print ("Session is local");
+		print ("Session is local");
 	    else
-		Seed.print ("Session is remote");
+		print ("Session is remote");
 	    Seed.quit();
 	});
     });

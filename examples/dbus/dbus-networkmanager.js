@@ -60,7 +60,7 @@ var nm = new NetworkManager();
 function print_access_point (path){
     var ap = new NetworkManagerAccessPoint (path);
     ap.GetAllRemote(function(result){
-	Seed.print ("Access point. SSID: " + result.Ssid 
+	print ("Access point. SSID: " + result.Ssid 
 		    + " Strength: " + result.Strength);
     });
 }

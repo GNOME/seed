@@ -7,7 +7,7 @@ Gtk = imports.gi.Gtk;
 Gtk.init(Seed.argv);
 
 function test(){
-    Seed.print("Signal handler called");
+    print("Signal handler called");
 }
 
 w = new Gtk.Window();

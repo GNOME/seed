@@ -9,5 +9,5 @@ Pango = imports.gi.Pango;
 c = new Pango.Color();
 c.red = 17;
 
-Seed.print(c.red);
-Seed.print(c.blue);
+print(c.red);
+print(c.blue);

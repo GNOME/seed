@@ -101,7 +101,7 @@ function show_about()
 
 function get_up_url()
 {
-	Seed.print("Hey! This function currently causes a segmentation fault,\nso I'm just going to go ahead and do that now. KTHXBYE");
+	print("Hey! This function currently causes a segmentation fault,\nso I'm just going to go ahead and do that now. KTHXBYE");
 	//this has a small, but harmless bug. not really a bug really, 
 	//but more of a tiny behavior inconsistency
 	//in that if you have a basic url like http://www.google.com with a trailing slash

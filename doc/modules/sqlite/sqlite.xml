@@ -46,7 +46,7 @@ db.exec("insert into people(name, age, phone) " +
                     "values('John Smith', 24, '555-123-4567');");
 
 function cb_print_phone(results){
-    Seed.print(results.phone);
+    print(results.phone);
 }
 
 db.exec("select from people where name='John Smith';", cb_print_phone);

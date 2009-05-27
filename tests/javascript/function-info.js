@@ -9,4 +9,4 @@ GIRepository = imports.gi.GIRepository;
 
 f = Gtk.Window.prototype.resize.info;
 
-Seed.print(GIRepository.base_info_get_name(f));
+print(GIRepository.base_info_get_name(f));

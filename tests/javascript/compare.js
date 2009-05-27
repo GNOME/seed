@@ -11,5 +11,5 @@ var a = new Gtk.Button();
 var b = new Gtk.Button();
 var c = a;
 
-Seed.print(a == b);
-Seed.print(c == a);
+print(a == b);
+print(c == a);

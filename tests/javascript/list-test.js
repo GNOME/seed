@@ -15,6 +15,6 @@ vbox.pack_start(b1);
 vbox.pack_start(b2);
 
 children = vbox.get_children();
-Seed.print(children);
-Seed.print(children[0]);
-Seed.print(children[1]);
+print(children);
+print(children[0]);
+print(children[1]);

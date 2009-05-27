@@ -7,4 +7,4 @@ Gtk = imports.gi.Gtk;
 Gtk.init(Seed.argv);
 
 w = new Gtk.Window();
-Seed.print(w.signal.notasignal);
+print(w.signal.notasignal);

@@ -1,5 +1,5 @@
 // Copyright 2008 litl, LLC. All Rights Reserved.
-log = Seed.print
+log = print
 Lang = imports.lang;
 //const StringUtil = imports.stringUtil;
 //const ArrayUtil = imports.arrayUtil;

@@ -11,11 +11,11 @@ stories = reddit.data.children;
 
 for (i in stories){
     var story = stories[i].data;
-    Seed.print("======");
-    Seed.print(story.ups + "/" +
+    print("======");
+    print(story.ups + "/" +
 	       story.downs + " " +
 	       story.title + " (" +
 	       story.domain +")" );
-    Seed.print(story.author);
+    print(story.author);
 }
 

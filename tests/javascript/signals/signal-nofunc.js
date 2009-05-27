@@ -11,5 +11,5 @@ try{
     w.signal.map.connect(3);
 }
 catch (e){
-    Seed.print(e.message);
+    print(e.message);
 }

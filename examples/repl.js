@@ -40,10 +40,10 @@ while(1){
 	result = context.eval(item);
 //	if (!re.exec(item) && (result != undefined))
 	if (result != undefined)
-	    Seed.print(result)
+	    print(result)
 
     }
     catch(e){
-	Seed.print(e.name + " " + e.message);
+	print(e.name + " " + e.message);
     }
 }

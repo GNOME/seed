@@ -10,6 +10,6 @@ Gtk.init(Seed.argv);
 b = new Gtk.Button();
 b.relief = Gtk.ReliefStyle.NONE;
 
-Seed.print(Gtk.ReliefStyle.NONE);
+print(Gtk.ReliefStyle.NONE);
 
 

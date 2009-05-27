@@ -12,5 +12,5 @@ try
 }
 catch (e)
 {
-	Seed.print(e.name+" "+e.message);
+	print(e.name+" "+e.message);
 }

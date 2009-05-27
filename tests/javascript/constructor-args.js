@@ -13,7 +13,7 @@ try
 }
 catch (e)
 {
-	Seed.print(e.message);
+	print(e.message);
 }
 
 try
@@ -22,7 +22,7 @@ try
 }
 catch (e)
 {
-	Seed.print(e.message);
+	print(e.message);
 }
 
 try
@@ -31,5 +31,5 @@ try
 }
 catch (e)
 {
-	Seed.print(e.message);
+	print(e.message);
 }

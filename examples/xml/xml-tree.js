@@ -6,7 +6,7 @@ function print_element (element){
 
     while (child){
 	if (child.type == "element"){
-	    Seed.print(child.name + ": " + child.content);
+	    print(child.name + ": " + child.content);
 	    print_element (child);
 	}
 	child = child.next;

@@ -86,7 +86,7 @@ function save_file(filename)
 		}
 		catch(e)
 		{
-			Seed.print(e.message);
+			print(e.message);
 		}
 	}
 }
@@ -140,7 +140,7 @@ function execute_file(button)
     }
     catch (e)
     {
-		Seed.print(e.message);
+		print(e.message);
 		error_buf.text = e.message;
     }
 };

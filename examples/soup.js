@@ -10,5 +10,5 @@ var request = new Soup.Message({method:"GET", uri:uri});
 
 var status = session.send_message(request);
 
-Seed.print(status);
+print(status);
 

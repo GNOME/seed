@@ -34,8 +34,8 @@ var wind_chill = ctx.xpathEval("//yweather:wind/@chill").value[0].content;
 var wind_speed = ctx.xpathEval("//yweather:wind/@speed").value[0].content;
 var wind_direction = ctx.xpathEval("//yweather:wind/@speed").value[0].content;
 
-Seed.print(title);
-Seed.print("Temperature: " + temperature + " " + temp_unit +
+print(title);
+print("Temperature: " + temperature + " " + temp_unit +
            " (wind chill: " + wind_chill + " " + temp_unit + ")");
-Seed.print("Wind: " + wind_speed + " " + speed_unit +
+print("Wind: " + wind_speed + " " + speed_unit +
            " @ " + wind_direction + " degrees");

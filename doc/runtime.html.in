@@ -70,7 +70,7 @@ test_string = "Hello, world!";
 <p>And another file, which we evaluate with <i>seed</i>:</p>
 <pre class="sh_javascript">
 test_file = imports.test_file;
-Seed.print(test_file.test_string);
+print(test_file.test_string);
 </pre>
 <p>This will print "Hello, world!", as expected. Notice how, unlike in versions of Seed prior to 0.5, the file is not actually evaluated in the context of the importing file, so its toplevel objects are not globally available.</p>
 <div class="section"><b>Seed.import_namespace</b>(namespace, <i>version</i>)</div>
@@ -99,18 +99,18 @@ Evaluates a Javascript <i>file</i> as if it were included in the file at the poi
 <pre class="sh_javascript">
 Seed.include("tabview.js");
 </pre>
-<div class="section"><b>Seed.print</b>(value)</div>
+<div class="section"><b>print</b>(value)</div>
 <p>
 Prints, to standard output, a representation of <i>value</i>. Number types are printed as floating-point values (with 6 decimal places); strings are printed as-is; objects are printed as <code>[object <i>type</i>]</code>.
 </p>
 <pre class="sh_javascript">
-Seed.print(5);
-Seed.print("This is a test!".replace(" is ", " was "));
+print(5);
+print("This is a test!".replace(" is ", " was "));
 
 var win = new Gtk.Window();
-Seed.print(win);
+print(win);
 </pre>
-<div class="section"><b>Seed.printf</b>(format, ...)</div>
+<div class="section"><b>printf</b>(format, ...)</div>
 <div class="section"><b>Seed.sprintf</b>(format, ...)</div>
 <p>
 <code>printf</code> prints, to standard output, a string formatted as specified by <i>format</i>. Following <i>format</i> should be values to substitute, as in C's <code>printf</code>. Most standard printf format strings should work.
@@ -119,12 +119,12 @@ Seed.print(win);
 <code>sprintf</code> returns the string, instead of printing it.
 </p>
 <pre class="sh_javascript">
-Seed.printf("A number: %d\n", 5);
-Seed.printf("One third is approximately %.3f\n", 1/3);
-Seed.printf("%d %s %d\n", 2, " is not ", 5);
+printf("A number: %d\n", 5);
+printf("One third is approximately %.3f\n", 1/3);
+printf("%d %s %d\n", 2, " is not ", 5);
 
 var my_string = Seed.sprintf("%d + %d = %d", 2, 3, 2+3);
-var my_name = Seed.printf("[%s] is %d characters long!\n",
+var my_name = printf("[%s] is %d characters long!\n",
                           my_string, my_string.length);
 </pre>
 <div class="section"><b>Seed.check_syntax</b>(code)</div>
@@ -136,7 +136,7 @@ try{
     Seed.check_syntax("234[asdf");
 }
 catch(e){
-    Seed.print("Something horrible happened on line " + e.line);
+    print("Something horrible happened on line " + e.line);
 }
 </pre>
 <div class="section"><b>Seed.fork</b>()</div>
@@ -151,13 +151,13 @@ if(pid){
     // Parent
     
     while(1)
-        Seed.print("From Parent");
+        print("From Parent");
 }
 else{
     // Child
 
     while(1)
-        Seed.print("From Child");
+        print("From Child");
 }
 </pre>
 <div class="section"><b>Seed.stringify</b>(object)</div>
@@ -167,7 +167,7 @@ Returns a string representing the entire contents of <i>object</i> in a pretty-p
 <pre class="sh_javascript">
 proto = Seed.prototype(Gtk.Window);
 method = Seed.introspect(proto.translate_coordinates);
-Seed.print(Seed.stringify(method));
+print(Seed.stringify(method));
 </pre>
 <div class="section"><b>Seed.argv</b></div>
 <p>
@@ -184,7 +184,7 @@ Connects <i>function</i> to the signal, <i>signame</i>, on <i>object</i>. Any GO
 </p>
 <pre class="sh_javascript">
 function button_clicked(){
-    Seed.print("You pushed me!!");
+    print("You pushed me!!");
 }
 
 var button = new Gtk.Button();
@@ -195,7 +195,7 @@ The second form is useful if you want to connect to detailed signals; for exampl
 </p>
 <pre class="sh_javascript">
 function handle_opacity_change(obj, gobject, user_data){
-    Seed.print("Window " + obj + "'s opacity was changed!");
+    print("Window " + obj + "'s opacity was changed!");
 }
 
 win = new Gtk.Window();
@@ -221,7 +221,7 @@ try{
     window.opacity = "hello!";
 }
 catch(e){
-    Seed.print("An exception occurred!");
+    print("An exception occurred!");
 }
 </pre>
 <p>
@@ -327,11 +327,11 @@ HelloWindow = new GType({
 w = new HelloWindow();
 
 w.signal.hello.connect(function(object, number, string){
-                           Seed.print(number + " " + string);
+                           print(number + " " + string);
                            return new Gtk.Window()
                        });
 
-Seed.print(w.signal.hello.emit(2, "Test"));
+print(w.signal.hello.emit(2, "Test"));
 
 </pre>
 </body>

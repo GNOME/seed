@@ -4,4 +4,4 @@
 // STDOUT:seed
 // STDERR:
 
-Seed.print(Seed.argv[0]);
+print(Seed.argv[0]);

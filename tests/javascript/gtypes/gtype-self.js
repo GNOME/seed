@@ -11,7 +11,7 @@ HelloWindowType = {
     parent: Gtk.Window.type,
     name: "HelloWindow",
     init: function(self){
-	Seed.print(this==self);
+	print(this==self);
     }};
 
 HelloWindow = new GType(HelloWindowType);

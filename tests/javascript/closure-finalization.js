@@ -13,7 +13,7 @@ w = new Gtk.Window();
 // Closure will always be GCed at end of signal.
 signal = function()
 {
-	w.foreach(function(widget){Seed.print(widget);});
+	w.foreach(function(widget){print(widget);});
 };
 
 vbox = new Gtk.VBox();

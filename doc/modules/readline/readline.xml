@@ -36,7 +36,7 @@ while (1){
     eval(readline.readline("> "));
   }
   catch(e) {
-    Seed.print(e.name + " " + e.message);
+    print(e.name + " " + e.message);
   }
 }
       </programlisting>

@@ -32,7 +32,7 @@
 <pre class="sh_javascript">
 #!/usr/bin/env seed
 
-Seed.print("Hello, world!");
+print("Hello, world!");
 </pre>
 <p>If you were to make this script executable (<code>chmod +x hello.js</code>), and run it, you'd hopefully see the following, just as expected (if you don't, for some reason, make sure you have the latest version of Seed installed, then <a href="racarr@svn.gnome.org">email us</a>):</p>
 <pre class="sh_javascript">
@@ -52,37 +52,37 @@ var my_name = readline.readline("Your name? ");
 var my_age = readline.readline("Your age? ");
 var old = 25;
 var old_age = old + parseFloat(my_age);
-Seed.print(my_name + " will be " + old_age + " in " + old + " years!");
+print(my_name + " will be " + old_age + " in " + old + " years!");
 </pre>
 <p>You've probably noticed that the word '<code>var</code>' precedes the first use of every variable in JavaScript. This is important, because it ensures that the memory consumed by the variable is freed to be used elsewhere at the end of the current block of code, when the variable goes <em>out of scope</em>. If, instead, you want to create a variable which is <em>global</em> (available forever, after it is created), you can omit the '<code>var</code>'. Keep in mind that making many global variables is generally considered bad practice, and can be expensive in terms of memory use.</p>
 <div class="section">A JavaScript Shell</div>
 <p>JavaScript, being a scripting language, includes a construct, <code>eval()</code> which allows you to evaluate a <em>string</em> of JavaScript. This allows, for example, a user to input JavaScript with <code>readline</code>, and it to be executed as if it had been part of your source file. In addition, <code>eval()</code>'s return value is the return value of the snippet of code. For example:</p>
 <pre class="sh_javascript">
 var output = eval("2+2");
-Seed.print(output);
+print(output);
 </pre>
 <p>Will output:</p>
 <pre class="sh_javascript">
 4.000000
 </pre>
-<p>When something goes <em>wrong</em> in a piece of JavaScript code, the program will exit, most likely leaving the user in a confused state. For example, if you try to access a variable that doesn't exist: <code>Seed.print(asdf);</code> Seed will exit with the message: <code>ReferenceError Can't find variable: asdf</code>. It is possible to catch this sort of error, or exception, inside of your JavaScript program, ensuring that it doesn't terminate your program - or that if it does, it prints a useful error message. The <code>try/catch</code> construct provides a way to <em>try</em> to execute a segment of JavaScript, and, if it fails, run a second segment, without exiting the program. The second segment could print a user-friendly error message, ignore the exception entirely, or try to work around the problem. A quick example of <code>try/catch</code>:</p>
+<p>When something goes <em>wrong</em> in a piece of JavaScript code, the program will exit, most likely leaving the user in a confused state. For example, if you try to access a variable that doesn't exist: <code>print(asdf);</code> Seed will exit with the message: <code>ReferenceError Can't find variable: asdf</code>. It is possible to catch this sort of error, or exception, inside of your JavaScript program, ensuring that it doesn't terminate your program - or that if it does, it prints a useful error message. The <code>try/catch</code> construct provides a way to <em>try</em> to execute a segment of JavaScript, and, if it fails, run a second segment, without exiting the program. The second segment could print a user-friendly error message, ignore the exception entirely, or try to work around the problem. A quick example of <code>try/catch</code>:</p>
 <pre class="sh_javascript">
 try{
-    Seed.print(asdf);
+    print(asdf);
 }
 catch(e){
-    Seed.print("Something went wrong!");
+    print("Something went wrong!");
 }
 </pre>
 <p>It's also possible to determine what, exactly, went wrong. The '<code>e</code>' in the <code>catch</code> statement (which, by the way, you <em>cannot</em> omit) is actually an object containing information about the exception! We can access some of the basic properties of this object:</p>
 <pre class="sh_javascript">
 try{
-    Seed.print(asdf);
+    print(asdf);
 }
 catch(e){
-    Seed.print("Something went wrong!");
-    Seed.print(e.name);
-    Seed.print(e.message);
+    print("Something went wrong!");
+    print(e.name);
+    print(e.message);
 }
 </pre>
 <p>This will print a message similar to what would be printed if you hadn't caught the exception, but <em>without exiting the program!</em></p>
@@ -95,10 +95,10 @@ readline = imports.readline;
 
 while(1){
     try{
-        Seed.print(eval(readline.readline("> ")));
+        print(eval(readline.readline("> ")));
     }
     catch(e){
-        Seed.print(e.name + " " + e.message);
+        print(e.name + " " + e.message);
     }
 }
 </pre>
@@ -192,19 +192,19 @@ You'll notice that the GType takes a JavaScript object. The three most important
         var refresh_button = new Gtk.ToolButton({stock_id:"gtk-refresh"});
 </span>
         var back = function (){
-            Seed.print("Go Back");
+            print("Go Back");
         };
 
         var forward = function (){
-            Seed.print("Go Forward");
+            print("Go Forward");
         };
 
         var refresh = function (){
-            Seed.print("Refresh");
+            print("Refresh");
         };
 
         var browse = function (url){
-            Seed.print("Navigate to: " + url.text);
+            print("Navigate to: " + url.text);
         };
 
         <span class="unchanged">// Implementation</span>

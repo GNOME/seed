@@ -8,7 +8,7 @@ function threadf()
 	while (count < 100)
 	{
 		while (one){}
-		Seed.print("thread 2 " + count);
+		print("thread 2 " + count);
 		count++;
 		one = true;
 	}
@@ -18,7 +18,7 @@ thread = GLib.thread_create_full(threadf, null, 0, true);
 while(count < 100)
 {
 	while (!one){}
-	Seed.print("thread 1 " + count);
+	print("thread 1 " + count);
 	count ++;
 	one = false;
 }

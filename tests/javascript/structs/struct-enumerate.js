@@ -9,5 +9,5 @@ Gdk = imports.gi.Gdk;
 r = new Gdk.Rectangle();
 for (prop in r)
 {
-	Seed.print(prop);
+	print(prop);
 }

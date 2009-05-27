@@ -12,5 +12,5 @@ json = JSON.stringify(a);
 object = JSON.parse(json);
 json2 = JSON.stringify(object);
 if (json != json2)
-    Seed.print("Failure");
+    print("Failure");
        

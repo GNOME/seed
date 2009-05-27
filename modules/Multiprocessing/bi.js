@@ -23,4 +23,4 @@ if (child_pid == 0)
 mine = pipes[1];
 mine.write("Ping");
 message = JSON.parse(mine.read());
-Seed.print("Parent Got: " + message.type + ": " + message.data);
+print("Parent Got: " + message.type + ": " + message.data);

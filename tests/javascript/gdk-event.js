@@ -10,11 +10,11 @@ Gtk.init(Seed.argv);
 
 function paint(wdg, evt)
 {
-	Seed.print(evt.expose.window);
-	Seed.print(wdg.window);
-	Seed.print(evt.expose.window === wdg.window);
+	print(evt.expose.window);
+	print(wdg.window);
+	print(evt.expose.window === wdg.window);
 	
-	Seed.print(evt.expose.area.width);
+	print(evt.expose.area.width);
 
 	Gtk.main_quit();
 	return false;

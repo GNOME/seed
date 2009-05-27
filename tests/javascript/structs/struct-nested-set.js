@@ -7,12 +7,12 @@
 Gdk = imports.gi.Gdk;
 
 e = new Gdk.Event();
-Seed.print(e);
+print(e);
 
 e.expose.type = Gdk.EventType.EXPOSE;
-Seed.print(e.expose.type);
+print(e.expose.type);
 
 r = new Gdk.Rectangle();
 r.x = 300;
 e.rectangle = r;
-Seed.print(e.rectangle.x);
+print(e.rectangle.x);

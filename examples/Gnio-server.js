@@ -13,12 +13,12 @@ var addr = r.lookup_name("localhost");
 sock.bind(new Gnio.InetSocketAddress({address: addr,
  				      port: 9999}));
 
-Seed.print("Echo server listening on port 9999");
+print("Echo server listening on port 9999");
 sock.listen(true);
 
 var client = sock.accept();
 
-Seed.print("Accepted client");
+print("Accepted client");
 
 ds = Gio.DataInputStream._new(new Gnio.SocketInputStream({socket: client}));
 os = Gio.DataOutputStream._new(new Gnio.SocketOutputStream({socket: client}));

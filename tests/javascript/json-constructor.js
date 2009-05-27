@@ -11,5 +11,5 @@ Gtk.init(Seed.argv);
 window = new Gtk.Window({title: "JSON Win!"});
 window.show_all();
 
-Seed.print(window.title);
+print(window.title);
 

@@ -11,7 +11,7 @@ Gtk.init(Seed.argv);
 
 function userdata_test(widget, user_data)
 {
-    Seed.print(JSON.stringify(user_data));
+    print(JSON.stringify(user_data));
 }
 
 w = new Gtk.Window();

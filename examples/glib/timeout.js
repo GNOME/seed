@@ -6,7 +6,7 @@ count = 0;
 
 function test(){
 	count++;
-	Seed.print("Hello from timeout number " + count);
+	print("Hello from timeout number " + count);
 	if (count == 5)
 		Seed.quit();
 	return true;

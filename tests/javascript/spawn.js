@@ -5,4 +5,4 @@
 // STDERR:
 
 var input = Seed.spawn("seed print.js");
-Seed.print(input.stdout);
+print(input.stdout);

@@ -5,5 +5,5 @@
 // STDERR:
 
 readline = imports.readline;
-readline.bind("a", function () { Seed.print("Got here!"); });
-Seed.print(eval(readline.readline("")));
+readline.bind("a", function () { print("Got here!"); });
+print(eval(readline.readline("")));

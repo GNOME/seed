@@ -21,7 +21,7 @@ class_init: function(klass, prototype)
 },
 init: function()
 {
-  Seed.print(this.test);
+  print(this.test);
 }};
 
 HelloWindow = new GType(HelloWindowType);

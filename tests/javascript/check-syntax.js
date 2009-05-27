@@ -4,9 +4,9 @@
 // STDOUT:ONE\n\[null\]\nTWO\n\[null\]\nTHREE
 // STDERR:\n\*\* \(seed:[0-9]+\): CRITICAL \*\*: SyntaxError\. Parse error in \[undefined\] at line 1
 
-Seed.print("ONE");
-Seed.print(Seed.check_syntax("5+5;"));
-Seed.print("TWO");
-Seed.print(Seed.check_syntax("asdfasdf.jsdf()"));
-Seed.print("THREE");
-Seed.print(Seed.check_syntax("one[)"));
+print("ONE");
+print(Seed.check_syntax("5+5;"));
+print("TWO");
+print(Seed.check_syntax("asdfasdf.jsdf()"));
+print("THREE");
+print(Seed.check_syntax("one[)"));

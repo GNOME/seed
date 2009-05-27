@@ -13,7 +13,7 @@ function file_changed(monitor, child, other, event){
     notification.show();
 }
 
-Seed.print("Monitoring files in current directory");
+print("Monitoring files in current directory");
 Notify.init("Seed Test!");
 
 file = Gio.file_new_for_path(".");

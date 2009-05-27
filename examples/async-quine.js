@@ -11,7 +11,7 @@ file.read_async(0, null,
 		    var dstream = new Gio.DataInputStream.c_new(stream);
 		    var data = dstream.read_until("", 0);
 		    
-		    Seed.print(data);
+		    print(data);
 		    Seed.quit();
 		});
 

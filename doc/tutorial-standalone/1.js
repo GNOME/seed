@@ -15,19 +15,19 @@ BrowserToolbar = new GType({
         var refresh_button = new Gtk.ToolButton({stock_id:"gtk-refresh"});
 
         var back = function (){
-            Seed.print("Go Back");
+            print("Go Back");
         };
 
         var forward = function (){
-            Seed.print("Go Forward");
+            print("Go Forward");
         };
 
         var refresh = function (){
-            Seed.print("Refresh");
+            print("Refresh");
         };
 
         var browse = function (url){
-            Seed.print("Navigate to: " + url.text);
+            print("Navigate to: " + url.text);
         };
 
         // Implementation

@@ -43,12 +43,12 @@ DBus.proxifyPrototype (PlayerEngine.prototype, PlayerEngineIface);
 engine = new PlayerEngine();
 engine.OpenRemote(Seed.argv[2]);
 engine.PlayRemote(function(){
-    Seed.print("engine.PlayRemote returned");
+    print("engine.PlayRemote returned");
 });
 
 engine.connect("StateChanged", 
 	       function(emitter, state){
-		   Seed.print("Banshee state changed: " + state);
+		   print("Banshee state changed: " + state);
 	       });
 
 mainloop = GLib.main_loop_new();

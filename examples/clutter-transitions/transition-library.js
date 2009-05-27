@@ -35,7 +35,7 @@ function bounce_alpha(alpha)
 	}
 	catch (e)
 	{
-		Seed.print(e.message);
+		print(e.message);
 	}
 }
 

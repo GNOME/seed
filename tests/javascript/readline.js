@@ -5,4 +5,4 @@
 // STDERR:
 
 readline = imports.readline;
-Seed.print(eval(readline.readline("")));
+print(eval(readline.readline("")));

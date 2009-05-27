@@ -1160,9 +1160,9 @@ seed_repl_expose (JSContextRef ctx, ...)
   seed_object_set_property (ctx, seed, "debug_argv", arrayObj);
 
   script = JSStringCreateWithUTF8CString ("readline = imports.readline;"
-					  "while(1) { try { Seed.print(eval("
+					  "while(1) { try { print(eval("
 					  "readline.readline(\"> \"))); } catch(e) {"
-					  "Seed.print(e.name + \" \" + e.message);}}");
+					  "print(e.name + \" \" + e.message);}}");
 
   JSEvaluateScript (ctx, script, NULL, NULL, 0, NULL);
 

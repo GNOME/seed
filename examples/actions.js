@@ -23,7 +23,7 @@ actions.add_action_with_accel(new_action);
 new_action.connect_accelerator();
 new_action.signal.activate.connect(
     function (){ 
-	Seed.print("New file");
+	print("New file");
     });
 
 open_action = new Gtk.Action({name:"open", label: "Open",
@@ -34,7 +34,7 @@ actions.add_action_with_accel(open_action);
 open_action.connect_accelerator();
 open_action.signal.activate.connect(
     function (){
-	Seed.print("Open file"); 
+	print("Open file"); 
     });
 
 save_action = new Gtk.Action({name:"save", label: "Save",
@@ -45,7 +45,7 @@ actions.add_action_with_accel(save_action);
 save_action.connect_accelerator();
 save_action.signal.activate.connect(
     function () { 
-	Seed.print("Save file"); 
+	print("Save file"); 
     });
 
 toolbar.insert(save_action.create_tool_item());

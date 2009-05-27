@@ -21,7 +21,7 @@ for ( i in tests )
 	}
 	catch (e)
 	{
-		Seed.print(e.message);
+		print(e.message);
 	}
 	
 }

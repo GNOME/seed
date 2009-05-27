@@ -18,7 +18,7 @@ Board = new GType({
 			
 			var picked = stage.get_actor_at_pos(x.value, y.value);
 			
-			Seed.print(picked);
+			print(picked);
 			
 			if(picked)
 				picked = picked.get_parent();
@@ -145,7 +145,7 @@ Board = new GType({
 			
 			score += points_awarded;
 			
-			Seed.print(score);
+			print(score);
 			
 			if(board.has_completed())
 			{
@@ -155,7 +155,7 @@ Board = new GType({
 				final_score = new Score();
 				final_score.animate_final_score(score);
 				
-				Seed.print("Done with: " + score + " points!");
+				print("Done with: " + score + " points!");
 			}
 		}
 		

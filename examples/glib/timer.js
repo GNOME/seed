@@ -8,5 +8,5 @@ GLib.timer_start(timer);
 while (GLib.timer_elapsed(timer, null) < 2)
 {
 }
-Seed.print(GLib.timer_elapsed(timer, null));
+print(GLib.timer_elapsed(timer, null));
 

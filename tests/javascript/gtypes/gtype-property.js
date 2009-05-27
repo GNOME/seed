@@ -25,7 +25,7 @@ init: function()
 
 HelloWindow = new GType(HelloWindowType);
 w = new HelloWindow({test: true});
-Seed.print(w.test);
+print(w.test);
 w = new HelloWindow();
-Seed.print(w.test);
+print(w.test);
 

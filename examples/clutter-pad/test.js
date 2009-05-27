@@ -6,7 +6,7 @@ function assertEquals(expected, value, message) {
     if (expected != value) {
 	throw new Error('FAILED: ' + message + ', expected: ' + expected + ' got: ' + value);
     } else {
-	Seed.print('PASS: ' + message);
+	print('PASS: ' + message);
     }
 }
 

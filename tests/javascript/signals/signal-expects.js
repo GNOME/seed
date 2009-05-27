@@ -9,7 +9,7 @@ Gtk.init(Seed.argv);
 
 function expects_test(widget, user_data)
 {
-    Seed.print("In signal");
+    print("In signal");
 }
 
 w = new Gtk.Window();

@@ -133,7 +133,7 @@ PangoActor = new GType({
 							blue: icolor.blue + 0,
 							alpha: 255};*/
 			
-			//Seed.print(this.color.red);
+			//print(this.color.red);
 			
 			return serobj;
 		}

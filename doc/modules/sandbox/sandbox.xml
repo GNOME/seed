@@ -33,7 +33,7 @@ sandbox = imports.sandbox;
 
 ctx = new sandbox.Context();
 ctx.eval("b = 2+2");
-Seed.print(ctx.global.b); //4
+print(ctx.global.b); //4
 ctx.global.b = new Gtk.Window(); // Possible to expose objects to the context.
 ctx.eval("b.show()");
 

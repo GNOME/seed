@@ -21,4 +21,4 @@ os.flush();
 input = new Gio.DataInputStream.c_new(client.get_input_stream());
 
 out = input.read_until("", 0);
-Seed.print(out);
+print(out);

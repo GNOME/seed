@@ -9,7 +9,7 @@ for (var i = 0; i < storyinfos.length; i++){
     var info = storyinfos[i];
     var keyword = info.getElementsByTagName("keyword")[0];
     
-    Seed.printf ("Story info Keyword (example: %s): %s", 
+    printf ("Story info Keyword (example: %s): %s", 
 		 keyword.getAttribute("example"),
 		 keyword.content);
 		 

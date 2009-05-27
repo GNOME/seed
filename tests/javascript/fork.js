@@ -8,9 +8,9 @@ var a = Seed.fork();
 
 if(a)
 {
-	Seed.print("A");
+	print("A");
 }
 else
 {
-	Seed.print("B");
+	print("B");
 }

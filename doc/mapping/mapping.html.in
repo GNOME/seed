@@ -80,12 +80,12 @@ The type conversion, is fairly sophisticated, so where C methods expect non-basi
 w = new <namespace>Gtk</namespace>.<type>Window</type>();
 w.add (new <namespace>Gtk</namespace>.<type>VBox</type>());
 w.foreach(function (widget) {
-              Seed.print(widget);
+              print(widget);
          });
 
 children = w.<member>get_children</member>();
 for (i in children) {
-    Seed.print(children[i]);
+    print(children[i]);
 }
 
 </pre>
@@ -108,18 +108,18 @@ So, accessing for example <code>actor.wi<u>td</u>h</code> will return <code>null
 <p>
 Interaction with an objects signals, takes place through the <code>object.signals</code> property. For example
 <pre class="javascript">
-w.signal.map.connect(function(window) {Seed.print ("Hello world");});
+w.signal.map.connect(function(window) {print ("Hello world");});
 foo.signal.bar.emit(3, 7, "Baz");
 </pre>
 In addition you can use <code>user_data</code>, similar to C
 <pre class="javascript">
-w.signal.map.connect(function(window, user_data) {Seed.print(user_data)},  "Hello world");
+w.signal.map.connect(function(window, user_data) {print(user_data)},  "Hello world");
 </pre>
 In many cases this is made useless by JavaScript's support for closures.
 
 Note, in many cases, it is useful to access signals with details, for example <code>notify::x</code> however as this is not a valid JavaScript identifier, you have to use the array syntax for accessing properties, 
 <pre class="javascript">
-w.signal["notify::x"].connect(function(){Seed.print("x changed")});
+w.signal["notify::x"].connect(function(){print("x changed")});
 </pre>
 
 Sometimes, it may be desirable to check that the functions you are connecting to signals, have the correct arity (accept the proper number of argmuents), and if you compile Seed with debugging enabled, and pass <code>--seed-debug=signal</code> or <code>--seed-debug=all</code>, Seed will give warnings when connections of improper arity are made (however clearly this is only sometimes a bug).

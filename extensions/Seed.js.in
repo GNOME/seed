@@ -136,7 +136,7 @@ Seed.repl = function()
 		}
 		catch (e)
 		{
-			Seed.print(e.name + " " + e.message);
+			print(e.name + " " + e.message);
 			return true;
 		}
 	}
@@ -146,11 +146,11 @@ Seed.repl = function()
 		item = readline.readline("> ");
 		if (item == "continue")
 			return false;
-		Seed.print(eval(item));
+		print(eval(item));
 	}
 	catch (e)
 	{
-		Seed.print(e.name + " " + e.message);
+		print(e.name + " " + e.message);
 	}
 	return true;
 }
@@ -168,7 +168,7 @@ Seed.thread_repl = function()
 
 }
 
-Seed.printf = function () { Seed.print(Seed.sprintf.apply(this, arguments)) };
+printf = function () { print(Seed.sprintf.apply(this, arguments)) };
 
 imports.searchPath = ["@GNOME_JS_DIR@", "@prefix@/lib/seed", "@prefix@/share/seed", "/usr/local/lib/seed","/usr/local/share/seed","/usr/lib/seed","/usr/share/seed","."];
 

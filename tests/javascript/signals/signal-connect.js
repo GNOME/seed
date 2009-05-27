@@ -9,9 +9,9 @@ Gtk.init(Seed.argv);
 
 function handle_opacity_change(obj, gobject, user_data)
 {
-	Seed.print(user_data);
-	Seed.print(user_data === button);
-	Seed.print(obj.opacity);
+	print(user_data);
+	print(user_data === button);
+	print(obj.opacity);
 }
 
 win = new Gtk.Window();

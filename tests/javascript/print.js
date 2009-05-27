@@ -4,4 +4,4 @@
 // STDOUT:Hello, world!
 // STDERR:
 
-Seed.print("Hello, world!");
+print("Hello, world!");

@@ -9,7 +9,7 @@ Gtk.init(Seed.argv);
 
 function mapped(window)
 {
-    Seed.print("Window mapped.");
+    print("Window mapped.");
 }
 
 w = new Gtk.Window();

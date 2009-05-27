@@ -14,4 +14,4 @@ HelloWindowType = {
 
 try{
     HelloWindow = new GType(HelloWindowType);
-} catch (e) {Seed.print(e.message);}
+} catch (e) {print(e.message);}

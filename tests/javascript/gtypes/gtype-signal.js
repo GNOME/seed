@@ -16,8 +16,8 @@ HelloWindowType = {
 HelloWindow = new GType(HelloWindowType);
 w = new HelloWindow();
 
-w.signal.hello.connect(function(){Seed.print("Hello");});
-w.signal.goodbye.connect(function(){Seed.print("Goodbye");});
+w.signal.hello.connect(function(){print("Hello");});
+w.signal.goodbye.connect(function(){print("Goodbye");});
 
 w.signal.hello.emit();
 w.signal.goodbye.emit();

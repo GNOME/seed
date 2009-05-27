@@ -7,6 +7,6 @@
 Gdk = imports.gi.Gdk;
 
 color = new Gdk.Color();
-Seed.print(color.red);
+print(color.red);
 color.red = 200;
-Seed.print(color.red);
+print(color.red);

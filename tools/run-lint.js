@@ -13,8 +13,8 @@ function runLint(filename)
 	if(JSLINT(read_file, {white:false, passfail: false, eqeqeq: false, forin: false}))
 		return;
 	
-	Seed.print("################################################################################");
-	Seed.print("            " + filename);
+	print("################################################################################");
+	print("            " + filename);
 	
 	for(no in JSLINT.errors)
 	{
@@ -23,7 +23,7 @@ function runLint(filename)
 		if(!err || !err.reason)
 			continue;
 	
-		Seed.printf("%d:%d\t%s",err.line,err.character,err.reason);
+		printf("%d:%d\t%s",err.line,err.character,err.reason);
 	}
 	
 	return JSLINT.errors.length;

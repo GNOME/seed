@@ -138,7 +138,7 @@ BrowserTabType = {
 	
 /*		forker_pipe.write("fork");
 		this.pid = parseInt(forker_pipe.read());
-		Seed.print("new pid: " + this.pid);*/
+		print("new pid: " + this.pid);*/
 		
 		
 		this.show_all();

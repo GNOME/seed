@@ -10,4 +10,4 @@ Gtk.init(Seed.argv);
 Gtk.Window.prototype.hello = "Hello World";
 
 a = new Gtk.Window();
-Seed.print(a.hello);
+print(a.hello);

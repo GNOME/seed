@@ -11,15 +11,15 @@ var forker_pid = Seed.fork();
 if (forker_pid == 0)
 {
 	var children = new Object;
-	Seed.print("*** Initializing forker \n");
-	Seed.print(forker_pipes[0].read());
+	print("*** Initializing forker \n");
+	print(forker_pipes[0].read());
 	forker_pipes[0].write("And the other direction!");
 	
 	forker_pipes[0].add_watch(1,
 			  function(source, condition)
 			  {
 				  var message = source.read();
-				  Seed.print("*** forker communication from main: " + message);
+				  print("*** forker communication from main: " + message);
 				  if (message == "fork\n")
 				  {
 					  var child_pipes = new Multiprocessing.Pipe();
@@ -75,7 +75,7 @@ function shutdown()
 
 /*forker_pipes[1].write("Testing communication from main to forker,"+
 					  " received");
-Seed.print(forker_pipes[1].read());
+print(forker_pipes[1].read());
 forker_pipe = forker_pipes[1];*/
 
 var window = new Gtk.Window({title: "Browser"});

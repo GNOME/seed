@@ -38,7 +38,7 @@ function put_pixbuf(container, uri){
 			    }
 			}
 			catch (e){
-			    Seed.print(e.name + " " + e.message);
+			    print(e.name + " " + e.message);
 			}
 			container.pack_end(
 			    new Gtk.Image.from_pixbuf(loader.get_pixbuf()));

@@ -12,4 +12,4 @@ o1 = { };
 o2 = { };
 
 w.get_size_request(o1, o2);
-Seed.print(o1.value + " " +  o2.value);
+print(o1.value + " " +  o2.value);
