@@ -87,7 +87,7 @@ seed_struct_constructor_invoked (JSContextRef ctx,
     {
       if (!JSValueIsObject (ctx, arguments[0]))
 	{
-	  seed_make_exception (ctx, exception, "ArgmuentError",
+	  seed_make_exception (ctx, exception, "ArgumentError",
 			       "Constructor expects object as argument");
 	  return (JSObjectRef) JSValueMakeNull (ctx);
 	}
@@ -137,7 +137,7 @@ seed_gobject_constructor_invoked (JSContextRef ctx,
     {
       if (!JSValueIsObject (ctx, arguments[0]))
 	{
-	  seed_make_exception (ctx, exception, "ArgmuentError",
+	  seed_make_exception (ctx, exception, "ArgumentError",
 			       "Constructor expects object as argument");
 	  g_type_class_unref (oclass);
 	  return (JSObjectRef) JSValueMakeNull (ctx);
