@@ -18,6 +18,10 @@
   [GObject.TYPE_FOO, bar]
 * Implement some varargs functions which can be implemented on top of non vararg variants in JavaScript extensions.
 * JSON stuff (stringify,parse) is now in gnome-js-common.
+* Add seed_value_to_format to API, for converting an Array of SeedValue based on a format string.
+* Install seed-debug.h so modules can make use of it.
+* Search path now works in nonstandard prefix, default search path includes
+  gnome-js-common moduledir (from pkgconfig).
 
 == Seed 0.7, "Another Side of Bob Dylan" (2009.05.13) ==
 * Support for library init methods.
