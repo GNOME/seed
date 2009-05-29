@@ -1,5 +1,5 @@
 EXTRA_DIST = \
-	sandbox.js
+	sandbox.js sandbox.xml
 
 sandbox-funcs.xml: $(top_builddir)/src/seed sandbox.js 
 	$(top_builddir)/src/seed ../make-functions.js sandbox.js > sandbox-funcs.xml
