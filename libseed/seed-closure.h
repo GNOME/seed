@@ -38,6 +38,7 @@ typedef struct _SeedClosure
 typedef struct _SeedNativeClosure
 {
   GICallableInfo *info;
+  GIArgInfo *arg_info;
   JSValueRef function;
 
   ffi_closure *closure;
@@ -48,6 +49,7 @@ extern JSClassRef seed_native_callback_class;
 
 SeedNativeClosure *seed_make_native_closure (JSContextRef ctx,
 					     GICallableInfo * info,
+					     GIArgInfo *arg_info,
 					     JSValueRef function);
 GClosure *seed_closure_new (JSContextRef ctx,
 			    JSObjectRef function, 

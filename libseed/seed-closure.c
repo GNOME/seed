@@ -34,6 +34,7 @@ seed_closure_finalize (JSObjectRef object)
   g_free (privates->cif);
   g_callable_info_free_closure (privates->info, privates->closure);
   g_base_info_unref ((GIBaseInfo *) privates->info);
+  g_base_info_unref ((GIBaseInfo *) privates->arg_info);
   
   JSValueUnprotect (eng->context, object);
 }
@@ -273,7 +274,9 @@ seed_handle_closure (ffi_cif * cif, void *result, void **args, void *userdata)
 
 SeedNativeClosure *
 seed_make_native_closure (JSContextRef ctx,
-			  GICallableInfo * info, JSValueRef function)
+			  GICallableInfo * info, 
+			  GIArgInfo *arg_info, 
+			  JSValueRef function)
 {
   ffi_cif *cif;
   ffi_closure *closure;
@@ -299,6 +302,7 @@ seed_make_native_closure (JSContextRef ctx,
 
   privates = g_new0 (SeedNativeClosure, 1);
   privates->info = (GICallableInfo *) g_base_info_ref ((GIBaseInfo *) info);
+  privates->arg_info = (GIArgInfo *) g_base_info_ref ((GIBaseInfo *) arg_info);
   privates->function = function;
   privates->cif = cif;
 
