@@ -5,7 +5,8 @@ SUBDIRS = util
 EXTRA_DIST = dbus2js.py \
 			 dbus.js \
 			 dbus-values.h \
-			 lang.js
+			 lang.js \
+			 dbus-exports.h
 
 moduledir = $(datadir)/seed
 module_DATA = dbus.js lang.js
