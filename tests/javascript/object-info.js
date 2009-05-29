@@ -7,7 +7,9 @@
 Gtk = imports.gi.Gtk;
 GIRepository = imports.gi.GIRepository;
 
-info = GIRepository.irepository_find_by_gtype(null, Gtk.Window.type);
+gir = GIRepository.IRepository.get_default();
+
+info = gir.find_by_gtype(Gtk.Window.type);
 print(GIRepository.base_info_get_name(info) + " implements interfaces");
 
 n = GIRepository.object_info_get_n_interfaces(info);
