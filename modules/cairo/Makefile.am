@@ -1,7 +1,6 @@
 if BUILD_CAIRO_MODULE
 
 seedlibdir = ${libdir}/seed
-EXTRA_DIST=run-tests.js
 
 seedlib_LTLIBRARIES = \
 	libcairo.la
