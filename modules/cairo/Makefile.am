@@ -1,5 +1,13 @@
 if BUILD_CAIRO_MODULE
 
+EXTRA_DIST = seed-cairo-enums.h \
+             seed-cairo.h \
+             seed-cairo-image-surface.h \
+             seed-cairo-matrix.h \
+             seed-cairo-pattern.h \
+             seed-cairo-pdf-surface.h \
+             seed-cairo-surface.h
+
 seedlibdir = ${libdir}/seed
 
 seedlib_LTLIBRARIES = \
