@@ -1,5 +1,5 @@
 SUBDIRS=canvas multiprocessing readline sandbox sqlite gtkbuilder
-EXTRA_DIST=make-functions.js
+EXTRA_DIST=make-functions.js book.xml
 
 if ENABLE_GTK_DOC
 html/index.html: book.xml sqlite/sqlite.xml sqlite/sqlite-funcs.xml readline/readline.xml readline/readline-funcs.xml make-functions.js gtkbuilder/gtkbuilder-funcs.xml gtkbuilder/gtkbuilder.xml sandbox/sandbox.xml sandbox/sandbox-funcs.xml
