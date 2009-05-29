@@ -5,7 +5,7 @@ EXTRA_DIST = \
 	gtkbuilder.xml
 
 gtkbuilder-funcs.xml: $(top_builddir)/src/seed gtkbuilder.js example.ui example.js
-	$(top_builddir)/src/seed $(top_builddir)/doc/modules/make-functions.js gtkbuilder.js > $(top_builddir)/doc/modules/gtkbuilder/gtkbuilder-funcs.xml
+	$(top_builddir)/src/seed $(top_srcdir)/doc/modules/make-functions.js gtkbuilder.js > $(top_builddir)/doc/modules/gtkbuilder/gtkbuilder-funcs.xml
 CLEANFILES=gtkbuilder-funcs.xml
 
 gtkbuilderdocsdir = \
