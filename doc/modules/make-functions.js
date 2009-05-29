@@ -2,7 +2,7 @@
 Seed.include(Seed.argv[2]);
 
 function output_param (param){
-    printf("<varlistentry><term><parameter>%s</parameter></term>"+
+    Seed.printf("<varlistentry><term><parameter>%s</parameter></term>"+
 		"<listitem><simpara>%s</simpara></listitem></varlistentry>",
 		param.name,
 		param.description);
@@ -10,7 +10,7 @@ function output_param (param){
 }
 
 function output_function (func){
-    var start = printf("<refsect2 id=\"%s\" role=\"function\">"+
+    var start = Seed.printf("<refsect2 id=\"%s\" role=\"function\">"+
 			    "<title>%s</title>"+
 			    "<para>%s</para>",
 			    func.id, func.title, func.description);
@@ -23,7 +23,7 @@ function output_function (func){
 	}
     }
     if (func.returns != null){
-	printf("<varlistentry><term><emphasis>Returns</emphasis></term>"+
+	Seed.printf("<varlistentry><term><emphasis>Returns</emphasis></term>"+
 		    "<listitem><simpara>%s</simpara></listitem></varlistentry>",
 		    func.returns);
     }
