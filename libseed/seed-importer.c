@@ -56,14 +56,29 @@ GHashTable *file_imports;
 * Handle definition of toplevel functions in a namespace.
 * i.e. Gtk.main
 */
+
+static gboolean
+seed_gi_importer_is_init (GIFunctionInfo *info)
+{
+  if (strcmp (g_base_info_get_name ((GIBaseInfo *) info), "init"))
+    {
+      return FALSE;
+    }
+  if (g_callable_info_get_n_args ((GICallableInfo *)info) != 2)
+    return FALSE;
+  
+  return TRUE;
+}
+
 static void
 seed_gi_importer_handle_function (JSContextRef ctx,
 				  JSObjectRef namespace_ref,
 				  GIFunctionInfo *info,
 				  JSValueRef *exception)
 {
-  if (strcmp(g_base_info_get_name ((GIBaseInfo *)info), "init"))
-    seed_gobject_define_property_from_function_info (ctx, (GIFunctionInfo *) info,
+  if (!seed_gi_importer_is_init (info))
+    seed_gobject_define_property_from_function_info (ctx, 
+						     (GIFunctionInfo *) info,
 						     namespace_ref, FALSE);
   else
     {
