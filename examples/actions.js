@@ -12,45 +12,35 @@ window.add(vbox);
 var actions = new Gtk.ActionGroup({name: "toolbar"});
 var accels = new Gtk.AccelGroup();
 
+function make_action(def){
+    var action = new Gtk.Action(def);
+    action.set_accel_group(accels);
+    actions.add_action_with_accel(action);
+    //Could pass string, but this makes it use default accelerator for STOCK_NEW
+    action.connect_accelerator();
+    action.signal.activate.connect(
+	function (){ 
+	    print(def.tooltip);
+	});
+    return action;				 
+}
+
 window.add_accel_group(accels);
 
-new_action = new Gtk.Action({name:"new", label: "New",
-			     tooltip:"New File",
-			     stock_id:Gtk.STOCK_NEW});
-new_action.set_accel_group(accels);
-actions.add_action_with_accel(new_action);
-//Could pass string, but this makes it use default accelerator for STOCK_NEW
-new_action.connect_accelerator();
-new_action.signal.activate.connect(
-    function (){ 
-	print("New file");
-    });
 
-open_action = new Gtk.Action({name:"open", label: "Open",
+new_action = make_action({name:"new", label: "New",
+			 tooltip:"New File",
+			 stock_id:Gtk.STOCK_NEW});
+open_action = make_action({name:"open", label: "Open",
 			      tooltip:"Open File",
 			      stock_id:Gtk.STOCK_OPEN});
-open_action.set_accel_group(accels);
-actions.add_action_with_accel(open_action);
-open_action.connect_accelerator();
-open_action.signal.activate.connect(
-    function (){
-	print("Open file"); 
-    });
+save_action = make_action({name:"save", label: "Save",
+			   tooltip:"Save File",
+			   stock_id:Gtk.STOCK_SAVE});
 
-save_action = new Gtk.Action({name:"save", label: "Save",
-			      tooltip:"Save File",
-			      stock_id:Gtk.STOCK_SAVE});
-save_action.set_accel_group(accels);
-actions.add_action_with_accel(save_action);
-save_action.connect_accelerator();
-save_action.signal.activate.connect(
-    function () { 
-	print("Save file"); 
-    });
-
-toolbar.insert(save_action.create_tool_item());
-toolbar.insert(open_action.create_tool_item());
-toolbar.insert(new_action.create_tool_item());
+[new_action, open_action, save_action].forEach(function(action){
+    toolbar.insert(action.create_tool_item());
+});
 
 var menu = new Gtk.MenuBar();
 var file = new Gtk.MenuItem({"child": new Gtk.Label({"label": "File"})});
@@ -58,9 +48,9 @@ file_menu = new Gtk.Menu();
 file.submenu = file_menu;
 menu.append(file);
 
-file_menu.append(new_action.create_menu_item(), -1);
-file_menu.append(open_action.create_menu_item(), -1);
-file_menu.append(save_action.create_menu_item(), -1);
+[new_action, open_action, save_action].forEach(function(action){
+    file_menu.append(action.create_menu_item(), -1);
+});
 
 vbox.pack_start(menu);
 vbox.pack_start(toolbar);
