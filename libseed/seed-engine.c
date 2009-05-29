@@ -439,7 +439,7 @@ seed_gobject_method_invoked (JSContextRef ctx,
 	{
 
 	  if (!seed_gi_make_argument (ctx, arguments[i],
-				      type_info,
+				      type_info, arg_info,
 				      &in_args[n_in_args++], exception))
 	    {
 	      seed_make_exception (ctx, exception, 

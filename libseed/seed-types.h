@@ -53,6 +53,7 @@ gboolean seed_gvalue_from_seed_value (JSContextRef ctx,
 gboolean seed_gi_make_argument (JSContextRef ctx,
 				JSValueRef value,
 				GITypeInfo * type_info,
+				GIArgInfo *arg_info,
 				GArgument * arg, JSValueRef * exception);
 JSValueRef seed_gi_argument_make_js (JSContextRef ctx,
 				     GArgument * arg,
