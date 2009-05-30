@@ -47,7 +47,6 @@ examples_DATA = \
     repl.js \
     soup.js \
     threaded-repl.js \
-    threaded-repl.js \
     video.js \
     vte-test.js \
     HACKING
