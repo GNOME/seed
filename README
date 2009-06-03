@@ -5,7 +5,7 @@ Seed is a library and interpreter, dynamically bridging (through gobject-introsp
 Seed requires a WebKit SVN revision newer than 35442. Keep in mind that some builds between this and HEAD still won't work with Seed, and performance has only improved, so try to keep an up-to-date version of WebKit if you're planning on working with Seed.
 
 Website: http://live.gnome.org/Seed
-SVN: svn://svn.gnome.org/svn/seed
+SVN: git://git.gnome.org/seed
 
 Dependencies (Ubuntu package name):
    * gobject-introspection (gobject-introspection)
@@ -14,6 +14,7 @@ Dependencies (Ubuntu package name):
    * webkit (libwebkit-1.0-4-dev)
    * readline (libreadline-dev)
    * ffi (libffi-dev)
+   * gnome-js-common
 
 Recommended Dependencies (Ubuntu package name):
    * sqlite3 (libsqlite3-dev)
