@@ -381,6 +381,7 @@ extensions/Makefile
 tests/Makefile
 tests/javascript/Makefile
 tests/javascript/gtypes/Makefile
+tests/javascript/searchpath/Makefile
 tests/javascript/signals/Makefile
 tests/javascript/structs/Makefile
 tests/c/Makefile

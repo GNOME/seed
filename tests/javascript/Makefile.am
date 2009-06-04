@@ -1,4 +1,4 @@
-SUBDIRS = gtypes signals structs
+SUBDIRS = gtypes signals structs searchpath
 
 EXTRA_DIST = \
     COPYING \
@@ -21,6 +21,7 @@ EXTRA_DIST = \
     gvalue-argument.js \
     include.js \
     include-syntax.js \
+    importer-search-path.js \
     introspect.js \
     json-constructor.js \
     json.js \
