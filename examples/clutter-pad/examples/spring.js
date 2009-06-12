@@ -85,6 +85,7 @@ stage.signal.button_press_event.connect(click);
 stage.signal.button_release_event.connect(release);
 stage.signal.motion_event.connect(drag);
 
-var update = new Clutter.Timeline({fps:60, num_frames:10000, loop:true});
+var update = new Clutter.Timeline({duration: 500});
+update.loop = true;
 update.signal.new_frame.connect(update_spring);
 update.start();
