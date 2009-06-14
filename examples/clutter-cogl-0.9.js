@@ -5,6 +5,7 @@ imports.gi.versions.Clutter = "0.9";
 Clutter = imports.gi.Clutter;
 GLib = imports.gi.GLib;
 GObject = imports.gi.GObject;
+Cogl = imports.gi.Cogl;
 
 const RIPPLE_S = 2000;
 const RIPPLE_W = 8;
@@ -32,18 +33,18 @@ function circle_paint (actor){
     
     actor.fill_color.alpha = actor.opacity;
     
-    Clutter.cogl_set_source_color(actor.fill_color);
-    Clutter.cogl_path_move_to(radius, radius);
-    Clutter.cogl_path_arc(radius, radius, radius, radius,
+    Cogl.set_source_color(actor.fill_color);
+    Cogl.path_move_to(radius, radius);
+    Cogl.path_arc(radius, radius, radius, radius,
 			  deg_to_rad(0),
 			  deg_to_rad(360));
-    Clutter.cogl_path_line_to(radius - RIPPLE_WX/2, radius);
-    Clutter.cogl_path_arc(radius, radius, 
+    Cogl.path_line_to(radius - RIPPLE_WX/2, radius);
+    Cogl.path_arc(radius, radius, 
 			  radius-RIPPLE_WX/2, radius-RIPPLE_WX/2,
 			  deg_to_rad(0),
 			  deg_to_rad(360));
-    Clutter.cogl_path_close();
-    Clutter.cogl_path_fill();	
+    Cogl.path_close();
+    Cogl.path_fill();	
 }
 
 function ripple(stage, x, y){
@@ -73,9 +74,9 @@ function ripple(stage, x, y){
 	
 		actor.anim = actor.animate(Clutter.AnimationMode.EASE_OUT_BOUNCE, RIPPLE_S,
 		{
-			width: [GObject.TYPE_INT, SCREEN_W / RIPPLE_W],
-			height: [GObject.TYPE_INT, SCREEN_W / RIPPLE_W],
-			opacity: [GObject.TYPE_UCHAR, 0]
+			width: SCREEN_W / RIPPLE_W,
+			height: SCREEN_W / RIPPLE_W,
+			opacity: 0
 		});
 	
 		actor.anim.timeline.start();
