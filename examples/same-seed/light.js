@@ -7,8 +7,8 @@ function load_svg(file)
     return tx;
 }
 
-var colors = [load_svg("blue.svg"), load_svg("green.svg"),
-	      load_svg("red.svg"), load_svg("yellow.svg")];
+var colors = ["blue.svg", "green.svg", "red.svg", "yellow.svg"];
+var loaded_colors = {};
 
 Light = new GType({
     parent: Clutter.Group.type,
@@ -19,12 +19,16 @@ Light = new GType({
 	var closed = false;
 	var light_x, light_y;
 	var state = Math.floor(Math.random() * max_colors);
-	
+		
 	// Public
 	this.visited = false;
 	
-	this.on = new Clutter.Clone({source: colors[state],
-				     reactive: true});
+	if(loaded_colors[state])
+		this.on = new Clutter.Clone({source: loaded_colors[state],
+		                             reactive: true});
+	else
+		this.on = loaded_colors[state] = load_svg(colors[state]);
+	
 	
 	this.get_state = function ()
 	{

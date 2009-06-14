@@ -161,8 +161,9 @@ Board = new GType({
 		
 		function enter_tile(actor, event)
 		{
-			var picked = stage.get_actor_at_pos(event.motion.x,
-												event.motion.y).get_parent();
+			var picked = stage.get_actor_at_pos(Clutter.PickMode.ALL,
+			                                    event.motion.x,
+			                                    event.motion.y).get_parent();
 			
 			if(picked === oldpicked)
 				return false;
