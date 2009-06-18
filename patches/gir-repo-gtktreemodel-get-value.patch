@@ -1,0 +1,30 @@
+From 205c9b9fe98b51a03b3541ec40283337e4a689b1 Mon Sep 17 00:00:00 2001
+From: Tim Horton <hortont@svn.gnome.org>
+Date: Thu, 18 Jun 2009 18:54:58 -0400
+Subject: [PATCH] Add annotation for gtk_tree_model_get_value's out argument
+
+---
+ gir/Gtk-custom.c |    7 +++++++
+ 1 files changed, 7 insertions(+), 0 deletions(-)
+
+diff --git a/gir/Gtk-custom.c b/gir/Gtk-custom.c
+index 16e3ce3..f7c187d 100644
+--- a/gir/Gtk-custom.c
++++ b/gir/Gtk-custom.c
+@@ -1394,6 +1394,13 @@ gtk_dialog_get_vbox(GtkDialog *dialog)
+  */
+ 
+ /**
++ * gtk_tree_model_get_value:
++ * @iter:
++ * @column:
++ * @value: (out) (transfer none):
++ */
++
++/**
+  * gtk_tree_model_iter_children: 
+  * @parent: (allow-none): 
+  */
+-- 
+1.6.3.2
+
