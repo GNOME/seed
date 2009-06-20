@@ -349,7 +349,7 @@ dnl =============================gtk-doc=======================================
 GTK_DOC_CHECK(1.9)
 
 dnl =============================Output========================================
-SHAVE_INIT([scripts])
+SHAVE_INIT([scripts],[enable])
 AC_CONFIG_FILES([
 seed.pc
 Makefile
