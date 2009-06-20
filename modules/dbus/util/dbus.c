@@ -624,7 +624,7 @@ info_free(BigDBusInfo *info)
                                                        info->name_ownership_monitors->data);
     }
 
-    while (value = g_hash_table_lookup(info->name_watches, &key)) 
+    while ((value = g_hash_table_lookup(info->name_watches, &key)))
     {
         BigNameWatch *watch = value;
         

@@ -678,7 +678,7 @@ static void
 exports_finalize (SeedObject obj)
 {
     Exports *priv;
-    BigDBusConnectFuncs const *connect_funcs;
+    BigDBusConnectFuncs const *connect_funcs = NULL;
 
     priv = seed_object_get_private (obj);
     if (priv == NULL)
