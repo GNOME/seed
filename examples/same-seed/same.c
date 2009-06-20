@@ -1,3 +1,5 @@
+// gcc `pkg-config --cflags --libs clutter-0.9 glib-2.0` same.c -o same
+
 #include <glib.h>
 #include <clutter/clutter.h>
 #include <stdlib.h>
@@ -20,6 +22,8 @@ typedef struct
 } light;
 
 light * grid[WIDTH][HEIGHT];
+gboolean animating_lights = FALSE;
+GQueue * click_queue;
 
 gboolean light_on_matches(int x, int y, int color)
 {
@@ -66,6 +70,35 @@ GList * connected_lights(light * l)
 	return _connected_lights(l->x, l->y);
 }
 
+void update_light_position(light * l, int new_x, int new_y)
+{
+	l->x = new_x;
+	l->y = new_y;
+	
+	double pos_x = (50 * l->x);
+	double pos_y = ((HEIGHT - 1) * 50) - (l->y * 50);
+	
+	clutter_actor_animate(l->actor, CLUTTER_EASE_OUT_BOUNCE, 500,
+	                      "x", pos_x,
+	                      "y", pos_y,
+	                      NULL);
+}
+
+gboolean animation_finished(ClutterTimeline * timeline,
+                            gpointer user_data)
+{
+	animating_lights = FALSE;
+	light * l = NULL;
+	
+	if(!g_queue_is_empty(click_queue))
+	{
+		l = (light *)g_queue_pop_head(click_queue);
+		light_clicked(NULL, NULL, (gpointer)l);
+	}
+	
+	return FALSE;
+}
+
 gboolean light_clicked(ClutterActor * actor,
                        ClutterEvent * event,
                        gpointer user_data)
@@ -75,6 +108,14 @@ gboolean light_clicked(ClutterActor * actor,
 
 	if(g_list_length(cl) < 2)
 		return FALSE;
+	
+	if(animating_lights)
+	{
+		g_queue_push_tail(click_queue, l);
+		return FALSE;
+	}
+	
+	animating_lights = TRUE;
 
 	GList * li;
 	ClutterTimeline * out_timeline = clutter_timeline_new(500);
@@ -82,7 +123,7 @@ gboolean light_clicked(ClutterActor * actor,
 	for(li = cl; li != NULL; li = g_list_next(li))
 	{
 		light * inner_l = li->data;
-		//clutter_actor_set_opacity(inner_l->actor, 128);
+		
 		clutter_actor_animate_with_timeline(inner_l->actor,
 		                                    CLUTTER_EASE_OUT_EXPO,
 		                                    out_timeline,
@@ -91,7 +132,13 @@ gboolean light_clicked(ClutterActor * actor,
 		inner_l->closed = TRUE;
 	}
 	
+	clutter_timeline_start(out_timeline);
+	
+	g_signal_connect(out_timeline, "completed",
+	                 G_CALLBACK(animation_finished), NULL);
+	
 	int vx, vy;
+	int new_x = 0;
 	
 	for(vx = 0; vx < WIDTH; vx++)
 	{
@@ -104,6 +151,7 @@ gboolean light_clicked(ClutterActor * actor,
 		}
 		
 		GList * new_col_iter;
+		gboolean empty_column = TRUE;
 		int new_y = 0;
 		
 		for(new_col_iter = new_col;
@@ -111,15 +159,30 @@ gboolean light_clicked(ClutterActor * actor,
 		    new_col_iter = g_list_next(new_col_iter))
 		{
 			light * l = (light *)new_col_iter->data;
-			l->y = new_y;
-			clutter_actor_set_y(l->actor, ((HEIGHT - 1) * 50) - (new_y * 50));
-			grid[vx][new_y] = l;
+			
+			if(!l->closed)
+				empty_column = FALSE;
+			
+			update_light_position(l, new_x, new_y);
+			
+			grid[new_x][new_y] = l;
 			new_y++;
 		}
 		
 		for(; new_y < HEIGHT; new_y++)
 		{
-			grid[vx][new_y] = NULL;
+			grid[new_x][new_y] = NULL;
+		}
+		
+		if(!empty_column)
+			new_x++;
+	}
+	
+	for(; new_x < WIDTH; new_x++)
+	{
+		for(vy = 0; vy < HEIGHT; vy++)
+		{
+			grid[new_x][vy] = NULL;
 		}
 	}
 	
@@ -216,6 +279,8 @@ int main()
 {
 	ClutterActor * stage;
 	ClutterColor stage_color = { 0x00, 0x00, 0x00, 0xff };
+	
+	click_queue = g_queue_new();
 
 	clutter_init(NULL, NULL);
 	
