@@ -419,8 +419,10 @@ gboolean
 seed_object_is_of_class (SeedContext ctx, SeedObject obj, SeedClass class);
 
 gboolean
-seed_value_to_format (SeedContext,
+seed_value_to_format (SeedContext ctx,
 		      const gchar *format,
+		      SeedValue *values,
+		      SeedValue *exception,
 		      ...);
 
 #endif

@@ -5,7 +5,7 @@
   <bookinfo>
     <title>Seed Reference Manual</title>
     <releaseinfo>
-      Documentation for Seed 0.7. 
+      Documentation for Seed 0.8.
       The latest version of this documentation can be found on-line at
       <ulink role="online-location" url="http://www.gnome.org/~racarr/seed/gtk-doc/index.html">http://www.gnome.org/~racarr/seed/gtk-doc/</ulink>.
     </releaseinfo>
@@ -22,7 +22,7 @@
     <title>API Reference</title>
     <chapter>
       <title>General Seed Functions</title>
-      <xi:include href="xml/seed.xml"/>
+      <xi:include href="xml/seed-main.xml"/>
       <xi:include href="xml/seed-context.xml"/>
       <xi:include href="xml/seed-closure.xml"/>
       <xi:include href="xml/seed-string.xml"/>

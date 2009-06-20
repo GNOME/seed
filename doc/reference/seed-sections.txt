@@ -25,6 +25,8 @@ seed_make_object
 seed_make_array
 seed_object_call
 seed_object_set_property_at_index
+seed_object_get_property_at_index
+seed_object_is_of_class
 seed_object_get_private
 seed_object_set_private
 seed_object_get_property
@@ -131,10 +133,12 @@ seed_string_is_equal_utf8
 <TITLE>Library</TITLE>
 <FILE>seed-main</FILE>
 <INCLUDE>seed/seed.h</INCLUDE>
-SeedEngine;
 <SUBSECTION>
 SeedEngine
 seed_init
+seed_init_with_context_group
+seed_importer_add_global
+seed_importer_set_search_path
 seed_engine_set_search_path
 seed_engine_get_search_path
 <SUBSECTION>
@@ -145,6 +149,7 @@ seed_simple_evaluate
 seed_script_new_from_file
 seed_script_exception
 <SUBSECTION>
+seed_make_function
 seed_create_function
 seed_make_constructor
 <SUBSECTION>
@@ -155,6 +160,6 @@ SeedModuleInitCallback
 </SECTION>
 <SUBSECTION>
 seed_signal_connect
-seed_signal_connect_full
+seed_signal_connect_value
 </SECTION>
 

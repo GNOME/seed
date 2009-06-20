@@ -76,7 +76,7 @@ seed_make_exception (JSContextRef ctx,
 }
 
 /**
- * seed_make_exception:
+ * seed_make_exception_from_gerror:
  * @ctx: A #SeedContext.
  * @exception: A reference to a #SeedException in which to store the exception.
  * @error: A #GError* from which to copy the properties of the exception.
