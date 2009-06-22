@@ -407,6 +407,7 @@ seed_gobject_method_invoked (JSContextRef ctx,
   GArgument *out_args;
   GArgument *out_values;
   guint n_args, n_in_args, n_out_args, i;
+  guint in_args_pos, out_args_pos;
   GIArgInfo *arg_info;
   GITypeInfo *type_info;
   GIDirection dir;
@@ -542,6 +543,8 @@ seed_gobject_method_invoked (JSContextRef ctx,
 
       return JSValueMakeNull (ctx);
     }
+
+  in_args_pos = out_args_pos = 0;
   for (i = 0; (i < n_args); i++)
     {
       JSValueRef jsout_val;
@@ -553,14 +556,16 @@ seed_gobject_method_invoked (JSContextRef ctx,
 	{
 	  seed_gi_release_in_arg (g_arg_info_get_ownership_transfer
 				  (arg_info), type_info,
-				  &in_args[i + (instance_method ? 1 : 0)]);
+				  &in_args[in_args_pos + (instance_method ? 1 : 0)]);
+          in_args_pos++;
 
 	  g_base_info_unref ((GIBaseInfo *) type_info);
 	  g_base_info_unref ((GIBaseInfo *) arg_info);
 	  continue;
 	}
-      jsout_val = seed_gi_argument_make_js (ctx, &out_values[i],
+      jsout_val = seed_gi_argument_make_js (ctx, &out_args[out_args_pos],
 					    type_info, exception);
+      out_args_pos++;
       if (!JSValueIsNull (ctx, arguments[i]) &&
 	  JSValueIsObject (ctx, arguments[i]))
 	{
