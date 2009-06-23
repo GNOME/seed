@@ -165,11 +165,26 @@ Seed.thread_repl = function()
 {
 	GLib.thread_create_full(function() { while(Seed.repl()){} },
 							null, 0, true);
-
 }
 
 Seed.printf = function () { print(Seed.sprintf.apply(this, arguments)) };
 
 if(!imports.searchPath || (imports.searchPath.length == 0))
-	imports.searchPath = ["@GNOME_JS_DIR@", "@prefix@/lib/seed", "@prefix@/share/seed", "/usr/local/lib/seed","/usr/local/share/seed","/usr/lib/seed","/usr/share/seed","."];
+{
+	imports.searchPath = [ "@GNOME_JS_DIR@",
+	                       "@prefix@/lib/seed",
+	                       "@prefix@/share/seed",
+	                       "/usr/local/lib/seed",
+	                       "/usr/local/share/seed",
+	                       "/usr/lib/seed",
+	                       "/usr/share/seed",
+	                       "."];
 
+	if(Seed.argv.length > 1)
+	{
+		var script_path = imports.gi.GLib.path_get_dirname(Seed.argv[1]);
+		
+		if(script_path && script_path != "")
+			imports.searchPath.push(script_path);
+	}
+}
