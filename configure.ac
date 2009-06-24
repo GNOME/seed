@@ -258,6 +258,14 @@ AM_CONDITIONAL(BUILD_CAIRO_MODULE, test "x$want_cairo_module" = "xyes")
 AC_SUBST(BUILD_CAIRO_MODULE)
 
 
+dnl ==== gettext ====
+AC_ARG_ENABLE(gettext-module,
+			  AC_HELP_STRING([--enable-gettext-module],
+							 [enable the gettext Seed module. [default=yes]]),
+			  [want_gettext_module=$enableval],[want_gettext_module="yes"])
+
+AM_CONDITIONAL(BUILD_GETTEXT_MODULE, test "x$want_gettext_module" = "xyes")
+AC_SUBST(BUILD_GETTEXT_MODULE)
 
 dnl =========================turtle example====================================
 AC_ARG_ENABLE(turtle-example,
@@ -416,6 +424,7 @@ modules/dbus/util/Makefile
 modules/libxml/Makefile
 modules/cairo/Makefile
 modules/gtkbuilder/Makefile
+modules/gettext/Makefile
 
 libseed/seed-path.h
 ])
@@ -442,6 +451,7 @@ Modules:
    libxml.....................$want_libxml_module
    cairo......................$want_cairo_module
    gtkbuilder.................$want_gtkbuilder_module
+   gettext....................$want_gettext_module
 
 Examples:
    Turtle.....................$want_turtle_example
