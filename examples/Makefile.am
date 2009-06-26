@@ -7,7 +7,6 @@ SUBDIRS = \
     glib \
     opengl \
     pong \
-    same-seed \
     turtle \
     xml \
     twitter
