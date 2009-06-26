@@ -2,8 +2,9 @@ The goal of this file is to tell you what each example serves as an example of, 
 
 == External Examples ==
 
-The Lights Off example now lives in the gnome-games module. It uses Clutter,
-	with custom animations, SVGs, GConf, etc.
+The Lights Off and Same Seed examples now live in the gnome-games
+module (gsoc-seed-games branch). They use Clutter, SVGs, GConf, Gtk/GtkClutter,
+gettext, GnomeGamesSupport, GtkBuilder, Cairo, etc.
 
 == Large Examples ==
 
