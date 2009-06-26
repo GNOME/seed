@@ -177,8 +177,7 @@ if(!imports.searchPath || (imports.searchPath.length == 0))
 	                       "/usr/local/lib/seed",
 	                       "/usr/local/share/seed",
 	                       "/usr/lib/seed",
-	                       "/usr/share/seed",
-	                       "."];
+	                       "/usr/share/seed" ];
 
 	if(Seed.argv.length > 1)
 	{
@@ -187,4 +186,6 @@ if(!imports.searchPath || (imports.searchPath.length == 0))
 		if(script_path && script_path != "")
 			imports.searchPath.push(script_path);
 	}
+
+	imports.searchPath.push(".");
 }
