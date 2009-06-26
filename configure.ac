@@ -408,7 +408,6 @@ examples/turtle/Makefile
 examples/opengl/Makefile
 examples/twitter/Makefile
 examples/pong/Makefile
-examples/same-seed/Makefile
 examples/dbus/Makefile
 examples/xml/Makefile
 modules/Makefile
