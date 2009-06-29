@@ -132,7 +132,7 @@ Seed.repl = function()
 	{
 		try
 		{
-			Seed.import_namespace("readline");
+			readline = imports.readline;
 		}
 		catch (e)
 		{
@@ -158,12 +158,12 @@ Seed.repl = function()
 
 Seed.glib_repl = function()
 {
-	GLib.idle_add(Seed.repl, null);
+	imports.gi.GLib.idle_add(Seed.repl, null);
 }
 
 Seed.thread_repl = function()
 {
-	GLib.thread_create_full(function() { while(Seed.repl()){} },
+	imports.gi.GLib.thread_create_full(function() { while(Seed.repl()){} },
 							null, 0, true);
 }
 

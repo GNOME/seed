@@ -1,6 +1,6 @@
 #!/usr/bin/env seed
 
-Seed.import_namespace("Gio");
+Gio = imports.gi.Gio;
 
 Seed.include("jslint.js");
 
