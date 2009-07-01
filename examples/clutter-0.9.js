@@ -89,7 +89,7 @@ function animate_rectangles(rectangles){
 	});
 }
 
-var stage = new Clutter.Stage();
+var stage = Clutter.Stage.get_default();
 var rectangles = new Array(colors.length);
 stage.signal.hide.connect(Clutter.main_quit);
 

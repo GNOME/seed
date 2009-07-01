@@ -9,7 +9,7 @@ Clutter.init(Seed.argv);
 
 Seed.include("transition-library.js");
 
-var stage = new Clutter.Stage();
+var stage = Clutter.Stage.get_default();
 stage.signal.hide.connect(Clutter.main_quit);
 stage.set_size(1024,768);
 stage.show_all();

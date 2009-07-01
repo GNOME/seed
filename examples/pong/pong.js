@@ -262,7 +262,7 @@ timeline.start();
 var black = new Clutter.Color();
 Clutter.color_parse("Black", black);
 
-var stage = new Clutter.Stage();
+var stage = Clutter.Stage.get_default();
 stage.signal.hide.connect(Clutter.main_quit);
 stage.set_size(500,500);
 stage.color = black;

@@ -24,7 +24,7 @@ c.x = c.y = 100;
 
 ctx.destroy();
 
-s = new Clutter.Stage();
+s = Clutter.Stage.get_default();
 s.signal.hide.connect(Clutter.main_quit);
 
 s.add_actor(c);

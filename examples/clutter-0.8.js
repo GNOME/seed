@@ -38,7 +38,7 @@ function alpha_func(alpha){
 					(time-=(2.625/2.75))*time+0.984375);
 }
 
-var stage = new Clutter.Stage();
+var stage = Clutter.Stage.get_default();
 stage.signal.hide.connect(Clutter.main_quit);
 var timeline = new Clutter.Timeline({fps:60, num_frames:300});
 stage.show_all();

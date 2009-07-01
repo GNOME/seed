@@ -99,7 +99,7 @@ function ripple(stage, x, y){
     }
 }
 
-var stage = new Clutter.Stage();
+var stage = Clutter.Stage.get_default();
 
 stage.width = SCREEN_W;
 stage.height = SCREEN_H;

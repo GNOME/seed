@@ -5,7 +5,7 @@ GL = imports.gi.GL;
 
 Clutter.init(null, null);
 
-var s = new Clutter.Stage();
+var s = Clutter.Stage.get_default();
 var b = new Clutter.Rectangle();
 
 b.width = b.x = s.width/2;
