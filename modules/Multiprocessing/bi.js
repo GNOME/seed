@@ -9,7 +9,7 @@ child_pid = Seed.fork();
 if (child_pid == 0)
 {
 	mine = pipes[0];
-	mine.add_watch(1, 
+	mine.add_watch(1,
 				   function()
 				   {
 					   var message = {type: "PING",

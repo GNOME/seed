@@ -19,10 +19,10 @@ function make_action(def){
     //Could pass string, but this makes it use default accelerator for STOCK_NEW
     action.connect_accelerator();
     action.signal.activate.connect(
-	function (){ 
+	function (){
 	    print(def.tooltip);
 	});
-    return action;				 
+    return action;
 }
 
 window.add_accel_group(accels);

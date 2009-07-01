@@ -20,21 +20,21 @@ seed_gettext_i18n (SeedContext ctx,
 
 	if (argument_count != 1)
 	{
-		seed_make_exception (ctx, exception, "ArgumentError", 
-		                     "gettext.i18n expected 1 argument, got %zd", 
+		seed_make_exception (ctx, exception, "ArgumentError",
+		                     "gettext.i18n expected 1 argument, got %zd",
 		                     argument_count);
 		return seed_make_null (ctx);
 	}
-	
+
 	string_to_translate = seed_value_to_string (ctx, arguments[0], exception);
-	
-	return seed_value_from_string (ctx, _(string_to_translate), exception);  
+
+	return seed_value_from_string (ctx, _(string_to_translate), exception);
 }
 
 static void
 seed_gettext_define_stuff ()
 {
-	seed_create_function(eng->context, "i18n", 
+	seed_create_function(eng->context, "i18n",
 	                     (SeedFunctionCallback) seed_gettext_i18n,
 	                     namespace_ref);
 }

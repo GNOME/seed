@@ -1,17 +1,17 @@
 /*
  * This file is part of Seed, the GObject Introspection<->Javascript bindings.
  *
- * Seed is free software: you can redistribute it and/or modify 
+ * Seed is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of
- * the License, or (at your option) any later version. 
- * Seed is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
- * GNU Lesser General Public License for more details. 
- * You should have received a copy of the GNU Lesser General Public License 
+ * the License, or (at your option) any later version.
+ * Seed is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ * You should have received a copy of the GNU Lesser General Public License
  * along with Seed.  If not, see <http://www.gnu.org/licenses/>.
- 
+
  * Copyright (C) Robert Carr 2008 <carrr@rpi.edu>
  */
 
@@ -35,7 +35,7 @@ seed_closure_finalize (JSObjectRef object)
   g_callable_info_free_closure (privates->info, privates->closure);
   g_base_info_unref ((GIBaseInfo *) privates->info);
   g_base_info_unref ((GIBaseInfo *) privates->arg_info);
-  
+
   JSValueUnprotect (eng->context, object);
 }
 
@@ -53,7 +53,7 @@ seed_handle_closure (ffi_cif * cif, void *result, void **args, void *userdata)
   GArgument rarg;
   GArgument return_arg;
   JSContextRef ctx = JSGlobalContextCreateInGroup (context_group, 0);
-  
+
   seed_prepare_global_context (ctx);
 
   SEED_NOTE (INVOCATION, "Invoking closure of type: %s \n",
@@ -182,7 +182,7 @@ seed_handle_closure (ffi_cif * cif, void *result, void **args, void *userdata)
       exception = 0;
     }
 
-  seed_gi_make_argument (ctx, (JSValueRef) return_value, return_type, NULL, 
+  seed_gi_make_argument (ctx, (JSValueRef) return_value, return_type, NULL,
 			 &return_arg, 0);
   switch (return_tag)
     {
@@ -274,8 +274,8 @@ seed_handle_closure (ffi_cif * cif, void *result, void **args, void *userdata)
 
 SeedNativeClosure *
 seed_make_native_closure (JSContextRef ctx,
-			  GICallableInfo * info, 
-			  GIArgInfo *arg_info, 
+			  GICallableInfo * info,
+			  GIArgInfo *arg_info,
 			  JSValueRef function)
 {
   ffi_cif *cif;
@@ -326,13 +326,13 @@ static void
 closure_invalidated (gpointer data, GClosure * c)
 {
   SeedClosure *closure = (SeedClosure *) c;
-  
+
   SEED_NOTE (FINALIZATION, "Finalizing closure.");
   if (closure->user_data && !JSValueIsUndefined(eng->context, closure->user_data))
     JSValueUnprotect(eng->context, closure->user_data);
   if (!JSValueIsUndefined (eng->context, closure->function))
     JSValueUnprotect (eng->context, closure->function);
-  
+
   g_free (closure->description);
 
 }
@@ -350,15 +350,15 @@ seed_closure_invoke (GClosure *closure, JSValueRef *args, guint argc, JSValueRef
   JSValueRef *real_args = g_newa (JSValueRef, argc +1);
   JSValueRef ret;
   guint i;
-  
+
   seed_prepare_global_context (ctx);
   for (i = 0; i < argc; i++)
     real_args[i] = args[i];
   args[argc] = ((SeedClosure *)closure)->user_data ? ((SeedClosure *)closure)->user_data : JSValueMakeNull (ctx);
-  
+
   ret = JSObjectCallAsFunction (ctx, ((SeedClosure *)closure)->function, NULL, argc+1, real_args, exception);
   JSGlobalContextRelease ((JSGlobalContextRef) ctx);
-  
+
   return ret;
 }
 
@@ -368,13 +368,13 @@ seed_closure_invoke_with_context (JSContextRef ctx, GClosure *closure, JSValueRe
   JSValueRef *real_args = g_newa (JSValueRef, argc +1);
   JSValueRef ret;
   guint i;
-  
+
   for (i = 0; i < argc; i++)
     real_args[i] = args[i];
   args[argc] = ((SeedClosure *)closure)->user_data ? ((SeedClosure *)closure)->user_data : JSValueMakeNull (ctx);
-  
+
   ret = JSObjectCallAsFunction (ctx, ((SeedClosure *)closure)->function, NULL, argc+1, real_args, exception);
-  
+
   return ret;
 }
 
@@ -394,7 +394,7 @@ seed_closure_new (JSContextRef ctx, JSObjectRef function, JSObjectRef user_data,
       ((SeedClosure *) closure)->user_data = user_data;
       JSValueProtect(ctx, user_data);
     }
-  
+
   if (description)
     ((SeedClosure *) closure)->description = g_strdup (description);
 
@@ -407,15 +407,15 @@ seed_closure_warn_exception (GClosure *c,
 			     JSValueRef exception)
 {
   JSObjectRef callable = seed_closure_get_callable (c);
-  gchar *name = seed_value_to_string (ctx, 
+  gchar *name = seed_value_to_string (ctx,
 				      seed_object_get_property (ctx, callable, "name"),
 				      NULL);
   gchar *mes = seed_exception_to_string (ctx, exception);
 
   g_warning("Exception in closure (%p) for %s (handler %s). %s", c, ((SeedClosure *)c)->description, *name == '\0' ? "[anonymous]" : name, mes);
-  
+
   g_free (name);
-  g_free (mes);   
+  g_free (mes);
 }
 
 JSClassDefinition seed_native_callback_def = {

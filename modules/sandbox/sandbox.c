@@ -14,10 +14,10 @@ seed_construct_sandbox_context (SeedContext ctx,
 {
   SeedObject ret;
   SeedContext c;
-  
+
   c = seed_context_create (group, NULL);
   ret = seed_make_object (ctx, context_class, c);
-  
+
   seed_object_set_property (ctx, ret, "global", seed_context_get_global_object (c));
   return ret;
 }
@@ -27,7 +27,7 @@ seed_context_eval (SeedContext ctx,
 		  SeedObject function,
 		  SeedObject this_object,
 		  size_t argument_count,
-		  const SeedValue arguments[], 
+		  const SeedValue arguments[],
 		  SeedException * exception)
 {
   SeedContext c = seed_object_get_private (this_object);
@@ -36,15 +36,15 @@ seed_context_eval (SeedContext ctx,
 
   if (!c)
     {
-      seed_make_exception (ctx, exception, 
+      seed_make_exception (ctx, exception,
 			   "ArgumentError", "Context is destroyed");
       return seed_make_undefined (ctx);
     }
-  
+
   s = seed_value_to_string (ctx, arguments[0], exception);
   ret = seed_simple_evaluate (c, s, exception);
   g_free (s);
-  
+
   return ret;
 }
 
@@ -53,13 +53,13 @@ seed_sandbox_context_add_globals (SeedContext ctx,
 				  SeedObject function,
 				  SeedObject this_object,
 				  size_t argument_count,
-				  const SeedValue arguments[], 
+				  const SeedValue arguments[],
 				  SeedException * exception)
 {
   SeedContext c = seed_object_get_private (this_object);
   if (!c)
     {
-      seed_make_exception (ctx, exception, 
+      seed_make_exception (ctx, exception,
 			   "ArgumentError", "Context is destroyed");
       return seed_make_undefined (ctx);
     }
@@ -74,11 +74,11 @@ seed_sandbox_context_destroy (SeedContext ctx,
 			      SeedObject function,
 			      SeedObject this_object,
 			      size_t argument_count,
-			      const SeedValue arguments[], 
+			      const SeedValue arguments[],
 			      SeedException * exception)
 {
   SeedContext c = seed_object_get_private (this_object);
-   
+
   seed_context_unref (c);
   seed_object_set_private (this_object, NULL);
   return seed_make_null (ctx);
@@ -100,18 +100,18 @@ seed_module_init(SeedEngine * eng)
   ctx = eng->context;
   group = eng->group;
   namespace_ref = seed_make_object (ctx, NULL, NULL);
-  
+
   context_class_def.class_name = "Context";
   context_class_def.static_functions = context_funcs;
-  
+
   context_class = seed_create_class (&context_class_def);
-  
-  
+
+
   context_constructor = seed_make_constructor (eng->context,
 					       context_class,
 					       seed_construct_sandbox_context);
   seed_object_set_property (eng->context, namespace_ref, "Context", context_constructor);
-  
+
   return namespace_ref;
 
 }

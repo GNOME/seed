@@ -1,17 +1,17 @@
 /*
  * This file is part of Seed, the GObject Introspection<->Javascript bindings.
  *
- * Seed is free software: you can redistribute it and/or modify 
+ * Seed is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of
- * the License, or (at your option) any later version. 
- * Seed is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
- * GNU Lesser General Public License for more details. 
- * You should have received a copy of the GNU Lesser General Public License 
- * along with Seed.  If not, see <http://www.gnu.org/licenses/>. 
- * 
+ * the License, or (at your option) any later version.
+ * Seed is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Seed.  If not, see <http://www.gnu.org/licenses/>.
+ *
  * Copyright (C) Robert Carr 2008 <carrr@rpi.edu>
  */
 
@@ -43,12 +43,12 @@ seed_value_protect (JSContextRef ctx,
  * @ctx: A #SeedContext.
  * @value: The #SeedValue to unprotect.
  *
- * Decrements the "protection count" of @value, as explained in 
+ * Decrements the "protection count" of @value, as explained in
  * seed_value_protect().
  *
  */
 void
-seed_value_unprotect (JSContextRef ctx, 
+seed_value_unprotect (JSContextRef ctx,
 		      JSValueRef value)
 {
   JSValueUnprotect (ctx, value);
@@ -65,7 +65,7 @@ seed_value_unprotect (JSContextRef ctx,
  *
  */
 JSGlobalContextRef
-seed_context_create (JSContextGroupRef group, 
+seed_context_create (JSContextGroupRef group,
 		     JSClassRef global_class)
 {
   return JSGlobalContextCreateInGroup (group, global_class);
@@ -124,7 +124,7 @@ seed_make_null (JSContextRef ctx)
  */
 JSObjectRef
 seed_make_object (JSContextRef ctx,
-		  JSClassRef class, 
+		  JSClassRef class,
 		  gpointer private)
 {
   return JSObjectMake (ctx, class, private);
@@ -167,7 +167,7 @@ seed_object_get_property_at_index (JSContextRef ctx,
  * @this: The #SeedObject to use as the 'this' object inside the called function.
  * @argument_count: The number of arguments in the @arguments array.
  * @arguments: An array (@argument_count long) of #SeedValues to pass in as the
- *             function's arguments. 
+ *             function's arguments.
  * @exception: A reference to a #SeedValue in which to store any exceptions.
  *             Pass %NULL to ignore exceptions.
  *
@@ -238,7 +238,7 @@ seed_make_script (JSContextRef ctx,
  *
  */
 SeedScript *
-seed_script_new_from_file (JSContextRef ctx, 
+seed_script_new_from_file (JSContextRef ctx,
 			   gchar * file)
 {
   SeedScript *script;
@@ -294,7 +294,7 @@ seed_evaluate (JSContextRef ctx,
  *
  */
 JSValueRef
-seed_simple_evaluate (JSContextRef ctx, 
+seed_simple_evaluate (JSContextRef ctx,
 		      const gchar * source,
 		      JSValueRef *exception)
 {
@@ -414,7 +414,7 @@ seed_string_unref (JSStringRef string)
  * seed_create_class:
  * @def: A #JSClassDefinition.
  *
- * Return value: A #SeedClass, described by @def. 
+ * Return value: A #SeedClass, described by @def.
  *
  */
 JSClassRef
@@ -423,7 +423,7 @@ seed_create_class (JSClassDefinition * def)
   return JSClassCreate (def);
 }
 
-/* TODO:FIXME: GtkDoc is choking on JSObjectCallAsConstructorCallback, and 
+/* TODO:FIXME: GtkDoc is choking on JSObjectCallAsConstructorCallback, and
                merging it into the parameter name...??! */
 
 /**
@@ -563,7 +563,7 @@ seed_signal_connect_full (JSContextRef ctx,
 			   GObject *object,
 			   const gchar *signal,
 			   JSObjectRef function,
-			   JSObjectRef user_data)			   
+			   JSObjectRef user_data)
 {
   seed_gobject_signal_connect(ctx, signal, object, function,
 			       NULL, user_data);
@@ -583,7 +583,7 @@ seed_signal_connect (JSContextRef ctx,
 		     const gchar *script)
 {
   JSValueRef func;
-  
+
   func = seed_simple_evaluate(ctx, script, NULL);
   seed_signal_connect_full(ctx, object, signal, (JSObjectRef)func,
 			   NULL);
@@ -613,9 +613,9 @@ seed_context_get_global_object (JSGlobalContextRef ctx)
  */
 
 JSObjectRef
-seed_make_array (JSContextRef ctx, 
+seed_make_array (JSContextRef ctx,
 		 const JSValueRef elements[],
-		 gsize num_elements, 
+		 gsize num_elements,
 		 JSValueRef *exception)
 {
   return JSObjectMakeArray (ctx, num_elements, elements, exception);
@@ -625,7 +625,7 @@ seed_make_array (JSContextRef ctx,
  * seed_make_undefined:
  * @ctx: A valid #SeedContext
  *
- * Note that this function returns a valid SeedValue, 
+ * Note that this function returns a valid SeedValue,
  * representing the undefined javascript value, and not an
  * undefined SeedValue.
  *
@@ -665,7 +665,7 @@ seed_object_copy_property_names(JSContextRef ctx,
   JSPropertyNameArrayRef names;
   guint i, length;
   gchar **ret;
-  
+
   names = JSObjectCopyPropertyNames (ctx, object);
   length = JSPropertyNameArrayGetCount (names);
   ret = g_malloc((length+1)*sizeof(gchar *));
@@ -674,17 +674,17 @@ seed_object_copy_property_names(JSContextRef ctx,
       JSStringRef name = JSPropertyNameArrayGetNameAtIndex (names, i);
       guint max_length;
       gchar *c_name;
-      
+
       max_length = JSStringGetMaximumUTF8CStringSize (name);
       c_name = g_malloc (max_length * sizeof (gchar));
       JSStringGetUTF8CString (name, c_name, length);
       ret[i] = c_name;
-      
+
     }
   ret[length] = NULL;
   JSPropertyNameArrayRelease (names);
-  
-  return ret;  
+
+  return ret;
 }
 
 /**
@@ -724,10 +724,10 @@ seed_make_function (JSContextRef ctx,
   if (name)
     jsname = JSStringCreateWithUTF8CString (name);
   oref = JSObjectMakeFunctionWithCallback (ctx, NULL, func);
-  
+
   if (jsname)
     JSStringRelease (jsname);
-  
+
   return oref;
 }
 
@@ -737,7 +737,7 @@ seed_make_function (JSContextRef ctx,
  * @format: Format string to use.
  * @exception: Location to store an exception.
  * @values: The values to convert.
- * @Varargs: A %NULL-terminated list of locations to store the results of conversion. 
+ * @Varargs: A %NULL-terminated list of locations to store the results of conversion.
  *
  * A convenience API for converting multiple values at once, the format string
  * is composed of single characters specifying types, for example:
@@ -748,11 +748,11 @@ seed_make_function (JSContextRef ctx,
  * f: gdouble
  * c: gchar
  *
- * and a valid format string could be "iuo". 
+ * and a valid format string could be "iuo".
  *
- * This function may be in particular useful in converting arguments 
+ * This function may be in particular useful in converting arguments
  * in a #SeedFunctionCallback.
- * Return value: Whether conversion was successful. 
+ * Return value: Whether conversion was successful.
  */
 gboolean
 seed_value_to_format (JSContextRef ctx,
@@ -764,16 +764,16 @@ seed_value_to_format (JSContextRef ctx,
   va_list argp;
   const gchar *c;
   guint i = 0;
-  
+
   c = format;
-  
+
   va_start (argp, exception);
-  
+
   for (c = format; *c; c++)
     {
       JSValueRef val = values[i];
       gpointer p = va_arg (argp, gpointer);
-      
+
       if (!val || !p)
 	{
 	  va_end (argp);
@@ -814,8 +814,8 @@ seed_value_to_format (JSContextRef ctx,
 	}
       i++;
     }
-  
+
   va_end (argp);
   return TRUE;
 }
-		      
+

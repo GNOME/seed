@@ -21,10 +21,10 @@
     return seed_make_undefined (ctx);}
 
 #define CHECK_THIS_BOOL(res) if (!seed_object_get_private (this_object)){ \
-    seed_make_exception (ctx, exception, "ArgumentError", "Cairo surface has been destroyed"); return FALSE;} 
+    seed_make_exception (ctx, exception, "ArgumentError", "Cairo surface has been destroyed"); return FALSE;}
 
 
-  
+
 
 SeedClass seed_cairo_surface_class;
 
@@ -58,11 +58,11 @@ SeedObject
 seed_object_from_cairo_surface (SeedContext ctx, cairo_surface_t *surf)
 {
   SeedObject jsobj;
-  
+
   jsobj = cairo_surface_get_user_data (surf, seed_get_cairo_key());
   if (jsobj)
     return jsobj;
-  
+
   jsobj = seed_make_object (ctx, seed_cairo_surface_class, surf);
   cairo_surface_set_user_data (surf, seed_get_cairo_key(), jsobj, seed_cairo_destroy_func);
   return jsobj;
@@ -84,14 +84,14 @@ seed_cairo_surface_create_similar (SeedContext ctx,
     {
       EXPECTED_EXCEPTION("create_similar", "3 arguments");
     }
-  
+
   surface = seed_object_to_cairo_surface (ctx, this_object, exception);
   if (!surface)
     return seed_make_undefined (ctx);
   content = seed_value_to_long (ctx, arguments[0], exception);
   width = seed_value_to_int (ctx, arguments[1], exception);
   height = seed_value_to_int (ctx, arguments[2], exception);
-  
+
   ret = cairo_surface_create_similar (surface, content, width, height);
   return seed_object_from_cairo_surface (ctx, ret);
 }
@@ -162,7 +162,7 @@ seed_cairo_surface_mark_dirty_rectangle(SeedContext ctx,
   y = seed_value_to_int (ctx, arguments[1], exception);
   width = seed_value_to_int (ctx, arguments[2], exception);
   height = seed_value_to_int (ctx, arguments[3], exception);
-  
+
   cairo_surface_mark_dirty_rectangle (surf, x, y, width, height);
 
   return seed_make_undefined (ctx);
@@ -192,20 +192,20 @@ seed_cairo_surface_set_device_offset(SeedContext ctx,
   gdouble x, y;
   SeedValue jsx, jsy;
   CHECK_THIS_BOOL();
-  
+
   if (!seed_value_is_object (ctx, value))
     {
       seed_make_exception(ctx, exception, "ArgumentError", "Cairo.Surface.device_offset must be an array [x,y]");
       return FALSE;
     }
-  
+
   jsx = seed_object_get_property_at_index (ctx, (SeedObject) value, 0, exception);
-  jsy = seed_object_get_property_at_index (ctx, (SeedObject) value, 1, exception); 
+  jsy = seed_object_get_property_at_index (ctx, (SeedObject) value, 1, exception);
 
   surf = seed_object_to_cairo_surface (ctx, this_object, exception);
   x = seed_value_to_double (ctx, jsx, exception);
   y = seed_value_to_double (ctx, jsy, exception);
-  
+
   cairo_surface_set_device_offset (surf, x, y);
   return TRUE;
 }
@@ -223,7 +223,7 @@ seed_cairo_surface_get_device_offset(SeedContext ctx,
 
   surf = seed_object_to_cairo_surface (ctx, this_object, exception);
   cairo_surface_get_device_offset (surf, &x, &y);
-  
+
   offsets[0] = seed_value_from_double (ctx, x, exception);
   offsets[1] = seed_value_from_double (ctx, y, exception);
 
@@ -241,20 +241,20 @@ seed_cairo_surface_set_fallback_resolution(SeedContext ctx,
   gdouble x, y;
   SeedValue jsx, jsy;
   CHECK_THIS_BOOL();
-  
+
   if (!seed_value_is_object (ctx, value))
     {
       seed_make_exception(ctx, exception, "ArgumentError", "Cairo.Surface.fallback_resolution must be an array [x,y]");
       return FALSE;
     }
-  
+
   jsx = seed_object_get_property_at_index (ctx, (SeedObject) value, 0, exception);
   jsy = seed_object_get_property_at_index (ctx, (SeedObject) value, 1, exception);
 
   surf = seed_object_to_cairo_surface (ctx, this_object, exception);
   x = seed_value_to_double (ctx, jsx, exception);
   y = seed_value_to_double (ctx, jsy, exception);
-  
+
   cairo_surface_set_fallback_resolution (surf, x, y);
   return TRUE;
 }
@@ -262,7 +262,7 @@ seed_cairo_surface_set_fallback_resolution(SeedContext ctx,
 static SeedValue
 seed_cairo_surface_get_fallback_resolution(SeedContext ctx,
 					   SeedObject this_object,
-					   SeedString property_name,					   
+					   SeedString property_name,
 					   SeedException *exception)
 {
   SeedValue offsets[2];
@@ -272,7 +272,7 @@ seed_cairo_surface_get_fallback_resolution(SeedContext ctx,
 
   surf = seed_object_to_cairo_surface (ctx, this_object, exception);
   cairo_surface_get_fallback_resolution (surf, &x, &y);
-  
+
   offsets[0] = seed_value_from_double (ctx, x, exception);
   offsets[1] = seed_value_from_double (ctx, y, exception);
 
@@ -324,7 +324,7 @@ seed_cairo_surface_has_show_text_glyphs(SeedContext ctx,
 					SeedException *exception)
 {
   CHECK_THIS();
-  return seed_value_from_boolean (ctx, 
+  return seed_value_from_boolean (ctx,
 				  cairo_surface_has_show_text_glyphs (seed_object_to_cairo_surface(ctx, this_object, exception)), exception);
 }
 
@@ -340,18 +340,18 @@ seed_cairo_surface_write_to_png (SeedContext ctx,
   cairo_surface_t *surf;
   gchar *filename;
   CHECK_THIS();
-  
+
   if (argument_count != 1)
     {
       EXPECTED_EXCEPTION("write_to_png", "1 argument");
     }
-  
+
   surf = seed_object_get_private (this_object);
   filename = seed_value_to_string (ctx, arguments[0], exception);
-  
+
   ret = cairo_surface_write_to_png (surf, filename);
   g_free (filename);
-  
+
   return seed_value_from_long (ctx, ret, exception);
 }
 
@@ -384,14 +384,14 @@ seed_define_cairo_surface (SeedContext ctx,
 			   SeedObject namespace_ref)
 {
   seed_class_definition surface_def = seed_empty_class;
-  
+
   surface_def.class_name = "Surface";
   surface_def.finalize = seed_cairo_surface_finalize;
   surface_def.static_functions = surface_funcs;
   surface_def.static_values = surface_values;
 
   seed_cairo_surface_class = seed_create_class (&surface_def);
-  
+
   seed_define_cairo_image_surface (ctx, namespace_ref);
   seed_define_cairo_pdf_surface (ctx, namespace_ref);
 }

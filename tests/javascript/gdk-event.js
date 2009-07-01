@@ -13,7 +13,7 @@ function paint(wdg, evt)
 	print(evt.expose.window);
 	print(wdg.window);
 	print(evt.expose.window === wdg.window);
-	
+
 	print(evt.expose.area.width);
 
 	Gtk.main_quit();

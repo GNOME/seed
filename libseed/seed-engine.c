@@ -1,16 +1,16 @@
 /*
  * This file is part of Seed, the GObject Introspection<->Javascript bindings.
  *
- * Seed is free software: you can redistribute it and/or modify 
+ * Seed is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of
- * the License, or (at your option) any later version. 
- * Seed is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
- * GNU Lesser General Public License for more details. 
- * You should have received a copy of the GNU Lesser General Public License 
- * along with Seed.  If not, see <http://www.gnu.org/licenses/>. 
+ * the License, or (at your option) any later version.
+ * Seed is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Seed.  If not, see <http://www.gnu.org/licenses/>.
  *
  * Copyright (C) Robert Carr 2008 <carrr@rpi.edu>
  */
@@ -64,7 +64,7 @@ void
 seed_prepare_global_context (JSContextRef ctx)
 {
   JSObjectRef global = JSContextGetGlobalObject (ctx);
-  
+
   seed_object_set_property (ctx, global, "imports", importer);
   seed_object_set_property (ctx, global, "GType", seed_gtype_constructor);
   seed_object_set_property (ctx, global, "Seed", seed_obj_ref);
@@ -128,7 +128,7 @@ seed_gobject_constructor_invoked (JSContextRef ctx,
 
   if (argumentCount > 1)
     {
-      seed_make_exception (ctx, exception, "ArgumentError", 
+      seed_make_exception (ctx, exception, "ArgumentError",
 			   "Constructor expects"
 			   " 1 argument, got %zd", argumentCount);
 
@@ -203,12 +203,12 @@ seed_gobject_constructor_invoked (JSContextRef ctx,
 
   if (jsprops)
     JSPropertyNameArrayRelease (jsprops);
-  
+
 
   gobject = g_object_newv (type, ri, params);
 
 
-  if (G_IS_INITIALLY_UNOWNED (gobject) && 
+  if (G_IS_INITIALLY_UNOWNED (gobject) &&
       !g_object_is_floating(gobject))
     g_object_ref(gobject);
   else if (g_object_is_floating(gobject))
@@ -238,13 +238,13 @@ seed_gobject_property_type (JSContextRef ctx,
 			    JSObjectRef function,
 			    JSObjectRef this_object,
 			    size_t argumentCount,
-			    const JSValueRef arguments[], 
+			    const JSValueRef arguments[],
 			    JSValueRef * exception)
 {
   GParamSpec *spec;
   gchar *name;
   GObject *this;
-  
+
   if (argumentCount != 1)
     {
       seed_make_exception (ctx, exception, "ArgumentError",
@@ -252,13 +252,13 @@ seed_gobject_property_type (JSContextRef ctx,
 			   "got %zd", argumentCount);
       return JSValueMakeNull (ctx);
     }
-  
+
   this = seed_value_to_object (ctx, this_object, exception);
   name = seed_value_to_string (ctx, arguments[0], exception);
-  
+
   spec = g_object_class_find_property (G_OBJECT_GET_CLASS (this), name);
   g_free (name);
-  
+
   return seed_value_from_long (ctx, spec->value_type, exception);
 }
 
@@ -294,15 +294,15 @@ seed_gobject_init_build_argv (JSContextRef ctx,
 {
   guint i,length;
   JSValueRef jsl;
-  
+
   jsl = seed_object_get_property (ctx, array, "length");
   if (JSValueIsNull (ctx, jsl) || JSValueIsUndefined (ctx, jsl))
     return FALSE;
-  
+
   length = seed_value_to_uint (ctx, jsl, exception);
   priv->argv = g_new(gchar *, length);
   priv->argc = length;
-  
+
   for (i = 0; i < length; i++)
     {
       priv->argv[i] = seed_value_to_string (ctx,
@@ -330,8 +330,8 @@ seed_gobject_init_method_invoked (JSContextRef ctx,
 
   if (argumentCount != 1 && argumentCount != 2)
     {
-      seed_make_exception (ctx, exception, 
-			   "ArgumentError", "init method expects 1 argument, got %zd", 
+      seed_make_exception (ctx, exception,
+			   "ArgumentError", "init method expects 1 argument, got %zd",
 			   argumentCount);
       return JSValueMakeUndefined (ctx);
     }
@@ -339,7 +339,7 @@ seed_gobject_init_method_invoked (JSContextRef ctx,
   if (argumentCount ==1)
     {
       if (JSValueIsNull (ctx, arguments[0]) || !JSValueIsObject (ctx, arguments[0]))
-	  
+
 	{
 	  seed_make_exception (ctx, exception,
 			       "ArgumentError", "init method expects an array object as argument");
@@ -361,11 +361,11 @@ seed_gobject_init_method_invoked (JSContextRef ctx,
 				   "Init method expects an array as argument");
 	      return JSValueMakeUndefined (ctx);
 
-	    }	  
+	    }
 	  allocated = TRUE;
 	}
     }
-  
+
   info = JSObjectGetPrivate (function);
   typelib = g_base_info_get_typelib (info);
   g_typelib_symbol (typelib, g_function_info_get_symbol ((GIFunctionInfo *)info), (gpointer *)&c);
@@ -380,7 +380,7 @@ seed_gobject_init_method_invoked (JSContextRef ctx,
 
   if (allocated)
     g_free (priv->argv);
-    
+
   return JSValueMakeUndefined (ctx);
 }
 
@@ -442,9 +442,9 @@ seed_gobject_method_invoked (JSContextRef ctx,
 				      type_info, arg_info,
 				      &in_args[n_in_args++], exception))
 	    {
-	      seed_make_exception (ctx, exception, 
-				   "ArgumentError", 
-				   "Unable to make argument %d for" 
+	      seed_make_exception (ctx, exception,
+				   "ArgumentError",
+				   "Unable to make argument %d for"
 				   " function: %s. \n",
 				   i + 1,
 				   g_base_info_get_name ((GIBaseInfo *) info));
@@ -892,7 +892,7 @@ seed_gobject_set_property (JSContextRef context,
 
   if (seed_next_gobject_wrapper || JSValueIsNull (context, value))
     return 0;
-  
+
 
   obj = seed_value_to_object (context, object, 0);
 
@@ -939,7 +939,7 @@ seed_gobject_set_property (JSContextRef context,
   g_object_set_property (obj, cproperty_name, &gval);
   if (glib_message != 0)
     {
-      seed_make_exception (context, exception, "PropertyError", 
+      seed_make_exception (context, exception, "PropertyError",
 			   glib_message, NULL);
 
       return FALSE;
@@ -957,17 +957,17 @@ seed_gobject_constructor_convert_to_type (JSContextRef ctx,
 					  JSValueRef *exception)
 {
   GType gtype;
-  
+
   if (type == kJSTypeString)
     {
       JSValueRef ret;
       gchar *as_string;
       gtype = (GType) JSObjectGetPrivate (object);
-      
+
       as_string = g_strdup_printf("[gobject_constructor %s]", g_type_name (gtype));
       ret = seed_value_from_string (ctx, as_string, exception);
       g_free (as_string);
-      
+
       return ret;
     }
   return FALSE;
@@ -986,7 +986,7 @@ JSClassDefinition gobject_def = {
   NULL,				/* Parent Class */
   NULL,				/* Static Values */
   gobject_static_funcs,		/* Static Functions */
-  NULL, 
+  NULL,
   seed_gobject_finalize,	/* Finalize */
   NULL,				/* Has Property */
   seed_gobject_get_property,	/* Get Property */
@@ -1121,8 +1121,8 @@ JSClassDefinition struct_constructor_def = {
 
 void
 seed_create_function (JSContextRef ctx,
-		      gchar * name, 
-		      gpointer func, 
+		      gchar * name,
+		      gpointer func,
 		      JSObjectRef obj)
 {
   JSObjectRef oref;
@@ -1320,7 +1320,7 @@ seed_init (gint * argc, gchar *** argv)
   g_irepository_require (g_irepository_get_default (), "GObject", NULL, 0, 0);
   g_irepository_require (g_irepository_get_default (), "GIRepository",
 			 NULL, 0, 0);
-  
+
   seed_initialize_importer (eng->context, eng->global);
 
   seed_init_builtins (eng, argc, argv);
@@ -1338,14 +1338,14 @@ seed_init (gint * argc, gchar *** argv)
 
   base_info_info =
     g_irepository_find_by_name (0, "GIRepository", "IBaseInfo");
-  
+
   return eng;
 }
 
 
 
 SeedEngine *
-seed_init_with_context_group (gint * argc, 
+seed_init_with_context_group (gint * argc,
 			      gchar *** argv,
 			      JSContextGroupRef group)
 {
@@ -1417,6 +1417,6 @@ seed_init_with_context_group (gint * argc,
 
   base_info_info =
     g_irepository_find_by_name (0, "GIRepository", "IBaseInfo");
-  
+
   return eng;
 }

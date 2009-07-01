@@ -143,10 +143,10 @@ void basic_types(TestSimpleFixture * fixture, gconstpointer _data)
 	si[1] = seed_value_from_int (fixture->context, 1, NULL);
 	gint ni;
 	gchar *ns;
-	
+
 	seed_value_to_format (fixture->context, "si", si, NULL, &ns, &ni, NULL);
 	g_assert (ni == 1);
 	g_assert (!strcmp(ns, "Hi"));
 
-	
+
 }

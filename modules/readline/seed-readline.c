@@ -56,7 +56,7 @@ seed_readline_bind(SeedContext ctx,
 
   if (argumentCount != 2)
     {
-      seed_make_exception(ctx, exception, "ArgumentError", 
+      seed_make_exception(ctx, exception, "ArgumentError",
 			  "Seed.readline_bind expected 2 arguments, "
 			  "got %Zd", argumentCount);
       return seed_make_null(ctx);
@@ -77,7 +77,7 @@ seed_rl_done(SeedContext ctx,
 	     SeedObject function,
 	     SeedObject this_object,
 	     size_t argumentCount,
-	     const SeedValue arguments[], 
+	     const SeedValue arguments[],
 	     SeedValue * exception)
 {
   rl_done = 1;
@@ -89,7 +89,7 @@ seed_rl_buffer(SeedContext ctx,
 	     SeedObject function,
 	     SeedObject this_object,
 	     size_t argumentCount,
-	     const SeedValue arguments[], 
+	     const SeedValue arguments[],
 	     SeedValue * exception)
 {
   return seed_value_from_string (ctx, rl_line_buffer, exception);
@@ -100,22 +100,22 @@ seed_rl_insert(SeedContext ctx,
 	       SeedObject function,
 	       SeedObject this_object,
 	       size_t argumentCount,
-	       const SeedValue arguments[], 
+	       const SeedValue arguments[],
 	       SeedValue * exception)
 {
   gchar *ins;
   gint ret;
   if (argumentCount != 1)
     {
-      seed_make_exception (ctx, exception, "ArgumentError", 
-			   "readline.insert expected 1 argument, got %zd", 
+      seed_make_exception (ctx, exception, "ArgumentError",
+			   "readline.insert expected 1 argument, got %zd",
 			   argumentCount);
       return seed_make_null (ctx);
     }
   ins = seed_value_to_string (ctx, arguments[0], exception);
   ret = rl_insert_text (ins);
   g_free (ins);
-  
+
   return seed_value_from_int (ctx, ret, exception);
 }
 
@@ -140,7 +140,7 @@ seed_readline(SeedContext ctx,
 
   if (argumentCount != 1)
     {
-      seed_make_exception(ctx, exception, "ArgumentError", 
+      seed_make_exception(ctx, exception, "ArgumentError",
 			  "Seed.readline expected 1 argument, "
 			  "got %Zd", argumentCount);
       return seed_make_null(ctx);

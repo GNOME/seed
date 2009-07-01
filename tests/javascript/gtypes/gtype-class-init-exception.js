@@ -20,4 +20,4 @@ HelloWindowType = {
 
 HelloWindow = new GType(HelloWindowType);
 w = new HelloWindow();
-	  
+

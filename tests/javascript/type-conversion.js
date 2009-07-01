@@ -23,5 +23,5 @@ for ( i in tests )
 	{
 		print(e.message);
 	}
-	
+
 }

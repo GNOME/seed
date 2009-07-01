@@ -3,7 +3,7 @@
 // STDIN:
 // STDOUT:2
 // STDERR:
- 
+
 Gtk = imports.gi.Gtk;
 Gtk.init(Seed.argv);
 

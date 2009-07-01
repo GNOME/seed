@@ -9,7 +9,7 @@
 typedef struct _Exports {
   // Why does GJS have this?
   SeedObject object;
-  
+
   DBusBusType which_bus;
   DBusConnection *connection_weak_ref;
   gboolean filter_was_registered;
@@ -52,12 +52,12 @@ on_bus_opened(DBusConnection *connection,
 
     if (!dbus_connection_add_filter(connection,
                                     on_message, priv,
-                                    NULL)) 
+                                    NULL))
       {
 	g_warning("DBus: Failed to add message filter");
 	return;
       }
-    
+
     priv->filter_was_registered = TRUE;
 }
 
@@ -71,7 +71,7 @@ on_bus_closed(DBusConnection *connection,
 
     priv->connection_weak_ref = NULL;
 
-    if (priv->filter_was_registered) 
+    if (priv->filter_was_registered)
       {
         dbus_connection_remove_filter(connection,
                                       on_message, priv);
@@ -96,10 +96,10 @@ dbus_reply_from_exception_and_sender(SeedContext  ctx,
   gchar *s;
   const gchar *name = NULL;
 
-  
+
   *reply_p = NULL;
 
-  if (seed_value_is_undefined (ctx, *exception) || 
+  if (seed_value_is_undefined (ctx, *exception) ||
       seed_value_is_null (ctx, *exception) ||
       !seed_value_is_object (ctx, *exception))
     return FALSE;
@@ -143,22 +143,22 @@ signature_from_method(SeedContext ctx,
 		      SeedException *exception)
 {
   SeedValue signature_value;
-  
+
   if ((signature_value = seed_object_get_property(ctx,
 						 method_obj, "outSignature")))
     {
       *signature = seed_value_to_string (ctx, signature_value, exception);
-      if (*signature == NULL) 
+      if (*signature == NULL)
 	{
 	  return FALSE;
         }
-    } 
-  else 
+    }
+  else
     {
       /* We default to a{sv} */
       *signature = "a{sv}";
     }
-  
+
   return TRUE;
 }
 
@@ -195,21 +195,21 @@ build_reply_from_jsval(SeedContext ctx,
 
     dbus_message_iter_init_append(reply, &arg_iter);
 
-    if (seed_value_is_undefined (ctx, rval) || g_str_equal(signature, "")) 
+    if (seed_value_is_undefined (ctx, rval) || g_str_equal(signature, ""))
       {
         /* We don't want to send anything in these cases so skip the
          * marshalling altogether.
          */
         return reply;
       }
-    
+
     dbus_signature_iter_init(&sig_iter, signature);
-    
-    if (signature_has_one_element(signature)) 
+
+    if (signature_has_one_element(signature))
       {
 	marshalled = seed_js_one_value_to_dbus(ctx, rval, &arg_iter, &sig_iter, exception);
-      } 
-    else 
+      }
+    else
       {
         if (!seed_value_is_object (ctx, rval))
 	  {
@@ -248,7 +248,7 @@ invoke_js_from_dbus(SeedContext ctx,
 
     dbus_message_iter_init(method_call, &arg_iter);
 
-    if (!seed_js_values_from_dbus(ctx, &arg_iter, &values, exception)) 
+    if (!seed_js_values_from_dbus(ctx, &arg_iter, &values, exception))
       {
 	if (!dbus_reply_from_exception(ctx, method_call, &reply, exception))
 	  g_warning("conversion of dbus method arg failed but no exception was set?");
@@ -273,7 +273,7 @@ invoke_js_from_dbus(SeedContext ctx,
         goto out;
       }
 
-    if (dbus_reply_from_exception(ctx, method_call, &reply, exception)) 
+    if (dbus_reply_from_exception(ctx, method_call, &reply, exception))
       {
 	g_warning("Closure invocation succeeded but an exception was set?");
 	goto out;
@@ -281,11 +281,11 @@ invoke_js_from_dbus(SeedContext ctx,
 
     if (!signature_from_method(ctx,
                                method_obj,
-                               &signature, exception)) 
+                               &signature, exception))
       {
         if (!dbus_reply_from_exception(ctx, method_call, &reply, exception))
 	  g_warning("dbus method invocation failed but no exception was set?");
-	
+
         goto out;
       }
 
@@ -340,13 +340,13 @@ async_call_callback(SeedContext ctx,
     prop_value = seed_object_get_property(ctx,
                                      function,
 					  "_dbusSerial");
-                                
-    
+
+
     serial = seed_value_to_uint (ctx, prop_value, exception);
     prop_value = seed_object_get_property(ctx,
 					  function,
 					  "_dbusBusType");
-                                
+
     which_bus = seed_value_to_int(ctx, prop_value, exception);
 
     /* From now we have enough information to
@@ -355,13 +355,13 @@ async_call_callback(SeedContext ctx,
     prop_value = seed_object_get_property(ctx,
 					  function,
 					  "_dbusOutSignature");
-                                
+
     signature = seed_value_to_string (ctx, prop_value, exception);
     if (!signature)
         return FALSE;
 
     if (argument_count != 1) {
-      seed_make_exception(ctx, exception, "ArgumentError", 
+      seed_make_exception(ctx, exception, "ArgumentError",
 			  "The callback to async DBus calls takes one argument, "
 			  "the return value or array of return values");
         thrown = TRUE;
@@ -376,18 +376,18 @@ async_call_callback(SeedContext ctx,
 				   exception);
 
 out:
-    if (!reply && thrown) 
+    if (!reply && thrown)
       {
 	if (!dbus_reply_from_exception_and_sender(ctx, sender, serial, &reply, exception))
 	  g_warning("dbus method invocation failed but no exception was set?");
       }
 
-    if (reply) 
+    if (reply)
       {
         big_dbus_add_bus_weakref(which_bus, &connection);
-        if (!connection) 
+        if (!connection)
 	  {
-            seed_make_exception(ctx, exception, "DBusError", 
+            seed_make_exception(ctx, exception, "DBusError",
 				"We were disconnected from the bus before the callback "
 				"to some async remote call was called");
             dbus_message_unref(reply);
@@ -427,7 +427,7 @@ invoke_js_async_from_dbus(SeedContext ctx,
     argc = 0;
     argv = NULL;
 
-    if (!seed_js_values_from_dbus(ctx, &arg_iter, &values, exception)) 
+    if (!seed_js_values_from_dbus(ctx, &arg_iter, &values, exception))
       {
 	if (!dbus_reply_from_exception(ctx, method_call, &reply, exception))
 	  g_warning ("conversion of dbus method arg failed but no exception was set?");
@@ -446,12 +446,12 @@ invoke_js_async_from_dbus(SeedContext ctx,
      * callback, so we don't need to bother with memory managing them
      * if the callback is never called and just discarded.*/
     sender_string = seed_value_from_string (ctx, dbus_message_get_sender (method_call), exception);
-    if (!sender_string) 
+    if (!sender_string)
       {
         thrown = TRUE;
         goto out;
       }
-    
+
     seed_object_set_property (ctx, callback_object, "_dbusSender", sender_string);
     seed_object_set_property (ctx, callback_object, "_dbusSerial",
 			      seed_value_from_int (ctx, dbus_message_get_serial (method_call),
@@ -462,14 +462,14 @@ invoke_js_async_from_dbus(SeedContext ctx,
     if (!signature_from_method(ctx,
                                method_obj,
                                &signature,
-			       exception)) 
+			       exception))
       {
         thrown = TRUE;
         goto out;
       }
-    
+
     signature_string = seed_value_from_string (ctx, signature, exception);
-    if (!signature_string) 
+    if (!signature_string)
       {
         thrown = TRUE;
         goto out;
@@ -479,10 +479,10 @@ invoke_js_async_from_dbus(SeedContext ctx,
     argc = values->len;
     argv = (SeedValue *)values->data;
 
-    seed_object_call (ctx, method_obj, this_obj, argc, 
+    seed_object_call (ctx, method_obj, this_obj, argc,
 		      argv, &ignored);
 out:
-    if (thrown) 
+    if (thrown)
       {
         if (!dbus_reply_from_exception(ctx, method_call, &reply, exception))
 	  g_warning("conversion of dbus method arg failed but no exception was set?");
@@ -508,7 +508,7 @@ find_js_property_by_path(SeedContext ctx,
     /* g_strsplit returns empty string for the first
      * '/' so we start with elements[1]
      */
-    for (i = 1; elements[i] != NULL; ++i) 
+    for (i = 1; elements[i] != NULL; ++i)
       {
         obj = seed_object_get_property(ctx, obj, elements[i]);
 
@@ -519,7 +519,7 @@ find_js_property_by_path(SeedContext ctx,
 	    break;
 	  }
       }
-    
+
     g_strfreev(elements);
 
     return obj;
@@ -532,7 +532,7 @@ find_method(SeedContext ctx,
             SeedValue      *method_value)
 {
   *method_value = seed_object_get_property (ctx, obj, method_name);
-    if (seed_value_is_undefined (ctx, *method_value) || 
+    if (seed_value_is_undefined (ctx, *method_value) ||
 	!seed_value_is_object (ctx, *method_value))
       return FALSE;
 
@@ -554,27 +554,27 @@ on_message(DBusConnection *connection,
   SeedValue method_value;
   DBusMessage *reply;
   Exports *priv;
-  
+
   priv = user_data;
   async_method_name = NULL;
   reply = NULL;
-  
+
   ctx = seed_context_create (group, NULL);
   seed_prepare_global_context (ctx);
-  
+
   if (dbus_message_get_type(message) != DBUS_MESSAGE_TYPE_METHOD_CALL)
     return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
-  
+
   method_value = seed_make_undefined (ctx);
 
   result = DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
-  
+
   path = dbus_message_get_path(message);
-  
+
   obj = find_js_property_by_path(ctx,
 				 priv->object,
 				 path);
-    if (obj == NULL) 
+    if (obj == NULL)
       {
         g_warning("There is no JS object at %s",
                   path);
@@ -642,9 +642,9 @@ exports_constructor(SeedContext ctx,
 		    SeedObject obj)
 {
   Exports *priv;
-  
+
   priv = g_slice_new0(Exports);
-  
+
   seed_object_set_private (obj, priv);
   priv->object = obj;
 }
@@ -707,14 +707,14 @@ exports_new (SeedContext ctx,
 {
   SeedObject exports;
   SeedObject global;
-  
+
   global = seed_context_get_global_object (ctx);
   if (!seed_js_exports_class)
     {
       seed_class_definition def = seed_empty_class;
       def.initialize = exports_constructor;
       def.finalize = exports_finalize;
-      
+
       seed_js_exports_class = seed_create_class (&def);
     }
   exports = seed_make_object (ctx, seed_js_exports_class, NULL);
@@ -736,7 +736,7 @@ seed_js_define_dbus_exports(SeedContext ctx,
 
     if (!add_connect_funcs(ctx, exports, which_bus))
       return FALSE;
-    
+
     seed_object_set_property (ctx, on_object, "exports",
 			      exports);
 

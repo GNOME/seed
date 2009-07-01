@@ -1,16 +1,16 @@
 /*
  * This file is part of Seed, the GObject Introspection<->Javascript bindings.
  *
- * Seed is free software: you can redistribute it and/or modify 
+ * Seed is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of
- * the License, or (at your option) any later version. 
- * Seed is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
- * GNU Lesser General Public License for more details. 
- * You should have received a copy of the GNU Lesser General Public License 
- * along with Seed.  If not, see <http://www.gnu.org/licenses/>. 
+ * the License, or (at your option) any later version.
+ * Seed is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Seed.  If not, see <http://www.gnu.org/licenses/>.
  *
  * Copyright (C) Robert Carr 2008 <carrr@rpi.edu>
  */
@@ -65,19 +65,19 @@ seed_make_wrapper_for_type (JSContextRef ctx, GType type)
   JSClassRef class;
   JSObjectRef ret;
   JSValueRef prototype;
-  
+
   class = seed_gobject_get_class_for_gtype (ctx, type);
-  
+
   while (!class && (type = g_type_parent (type)))
     class = seed_gobject_get_class_for_gtype (ctx, type);
-  
+
   prototype = seed_gobject_get_prototype_for_gtype (type);
   ret = JSObjectMake (ctx, class, NULL);
   if (prototype)
     JSObjectSetPrototype (ctx, ret, prototype);
   else
     g_assert_not_reached();
-  
+
   return ret;
 }
 
@@ -107,9 +107,9 @@ seed_wrap_object (JSContextRef ctx, GObject * object)
 
   JSValueProtect (eng->context, js_ref);
   g_object_add_toggle_ref (object, seed_toggle_ref, (gpointer) js_ref);
-  
+
   seed_add_signals_to_object (ctx, js_ref, object);
-  
+
   seed_next_gobject_wrapper = NULL;
 
   return js_ref;
@@ -220,7 +220,7 @@ seed_gi_release_arg (GITransfer transfer,
 
 gboolean
 seed_gi_release_in_arg (GITransfer transfer,
-			GITypeInfo * type_info, 
+			GITypeInfo * type_info,
 			GArgument * arg)
 {
   GITypeTag type_tag;
@@ -356,9 +356,9 @@ seed_gi_make_array (JSContextRef ctx,
       {
 	gdouble *result;
 	guint i;
-	
+
 	result = g_new0 (gdouble, length + 1);
-	
+
 	for (i = 0; i < length; i++)
 	  {
 	    JSValueRef elem = JSObjectGetPropertyAtIndex (ctx,
@@ -367,7 +367,7 @@ seed_gi_make_array (JSContextRef ctx,
 							  exception);
 	    result[i] = seed_value_to_double (ctx, elem, exception);
 	  }
-	
+
 	*array_p = result;
       }
       break;
@@ -375,9 +375,9 @@ seed_gi_make_array (JSContextRef ctx,
       {
 	gint *result;
 	guint i;
-	
+
 	result = g_new0 (gint, length + 1);
-	
+
 	for (i = 0; i < length; i++)
 	  {
 	    JSValueRef elem = JSObjectGetPropertyAtIndex (ctx,
@@ -386,7 +386,7 @@ seed_gi_make_array (JSContextRef ctx,
 							  exception);
 	    result[i] = seed_value_to_int (ctx, elem, exception);
 	  }
-	
+
 	*array_p = result;
       }
       break;
@@ -460,7 +460,7 @@ seed_gi_make_array (JSContextRef ctx,
 gboolean
 seed_gi_make_argument (JSContextRef ctx,
 		       JSValueRef value,
-		       GITypeInfo * type_info, 
+		       GITypeInfo * type_info,
 		       GIArgInfo *arg_info,
 		       GArgument * arg,
 		       JSValueRef * exception)
@@ -578,13 +578,13 @@ seed_gi_make_argument (JSContextRef ctx,
 	    if (!(interface_type == GI_INFO_TYPE_FLAGS) && !seed_validate_enum ((GIEnumInfo *)interface, arg->v_long))
 	      {
 		seed_make_exception (ctx, exception, "EnumRange",
-				     "Enum value: %ld is out of range", 
+				     "Enum value: %ld is out of range",
 				     arg->v_long);
 		g_base_info_unref (interface);
-		
+
 		return FALSE;
 	      }
-				     
+
 	    g_base_info_unref (interface);
 	    break;
 	  }
@@ -614,7 +614,7 @@ seed_gi_make_argument (JSContextRef ctx,
 		    g_base_info_unref (interface);
 		    break;
 		  }
-		// Automatically convert between functions and 
+		// Automatically convert between functions and
 		// GClosures where expected.
 		else if (g_type_is_a (type, G_TYPE_CLOSURE))
 		  {
@@ -645,7 +645,7 @@ seed_gi_make_argument (JSContextRef ctx,
 		g_base_info_unref (interface);
 		break;
 	      }
-	    // Someone passes in a wrapper around a method where a 
+	    // Someone passes in a wrapper around a method where a
 	    // callback is expected, i.e Clutter.sine_inc_func, as an alpha
 	    // Have to dlsym the symbol to be able to do this.
 	    // NOTE: Some cases where dlsym(NULL, symbol) doesn't work depending
@@ -685,8 +685,8 @@ seed_gi_make_argument (JSContextRef ctx,
 		g_base_info_unref (interface);
 		break;
 	      }
-	    // Automagically create closure around function passed in as 
-	    // callback. 
+	    // Automagically create closure around function passed in as
+	    // callback.
 	    else if (JSObjectIsFunction (ctx, (JSObjectRef) value))
 	      {
 		SeedNativeClosure *privates = seed_make_native_closure (ctx,
@@ -1092,7 +1092,7 @@ seed_gvalue_from_seed_value (JSContextRef ctx,
 	if (type == 0 && JSValueIsObject (ctx, val))
 	  {
 	    // TODO: FIXME: Better array test like the cool one on reddit.
-	    guint length = 
+	    guint length =
 	      seed_value_to_int (ctx,
 				 seed_object_get_property (ctx,
 							   (JSObjectRef) val,
@@ -1101,7 +1101,7 @@ seed_gvalue_from_seed_value (JSContextRef ctx,
 
 	    if (length)
 	      {
-		type = 
+		type =
 		  seed_value_to_int (ctx,
 				     JSObjectGetPropertyAtIndex (ctx,
 								 (JSObjectRef)
@@ -1864,9 +1864,9 @@ seed_value_from_binary_string (JSContextRef ctx,
   gchar *nstr = g_alloca ((n_bytes +1)*sizeof(gchar));
   strncpy (nstr, bytes, n_bytes);
   nstr[n_bytes] = '\0';
-  
+
   ret = seed_value_from_string (ctx, nstr, exception);
-  
+
   return ret;
 }
 
@@ -1922,11 +1922,11 @@ seed_value_to_object (JSContextRef ctx,
 {
   GObject *gobject;
 
-  /* 
-   * Worth investigating if this is the best way to handle null. Some of 
-   * the existing code depends on null Objects not throwing an exception 
-   * however, needs testing at higher level if value can be null 
-   * (through GI) 
+  /*
+   * Worth investigating if this is the best way to handle null. Some of
+   * the existing code depends on null Objects not throwing an exception
+   * however, needs testing at higher level if value can be null
+   * (through GI)
    */
 
   if (JSValueIsNull (ctx, val))
@@ -1960,7 +1960,7 @@ seed_validate_enum (GIEnumInfo *info,
 		    long val)
 {
   gint n, i;
-  
+
   n = g_enum_info_get_n_values (info);
   for (i = 0; i < n; i++)
     {
@@ -1971,7 +1971,7 @@ seed_validate_enum (GIEnumInfo *info,
       if (value == val)
 	return TRUE;
     }
-  
+
   return FALSE;
 }
 
@@ -1981,7 +1981,7 @@ seed_value_from_time_t (JSContextRef ctx,
 			JSValueRef *exception)
 {
   JSValueRef args[1];
-  
+
   args[0] = seed_value_from_double (ctx, ((gdouble)time)*1000, exception);
   return JSObjectMakeDate(ctx, 1, args, exception);
 }
@@ -2000,7 +2000,7 @@ seed_value_to_time_t (JSContextRef ctx,
       JSValueRef get_time_method;
       JSValueRef jstime;
       gdouble time;
-      
+
       get_time_method = seed_object_get_property (ctx, (JSObjectRef)value,
 						  "getTime");
       if (JSValueIsNull(ctx, get_time_method) ||
@@ -2008,7 +2008,7 @@ seed_value_to_time_t (JSContextRef ctx,
 	{
 	  goto out;
 	}
-      jstime = JSObjectCallAsFunction (ctx, 
+      jstime = JSObjectCallAsFunction (ctx,
 				       (JSObjectRef)get_time_method,
 				       (JSObjectRef)value,
 				       0, NULL,

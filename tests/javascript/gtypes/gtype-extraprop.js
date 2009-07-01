@@ -18,4 +18,4 @@ HelloWindow = new GType(HelloWindowType);
 w = new HelloWindow({test: 1});
 
 w.show();
-      
+

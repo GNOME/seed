@@ -72,7 +72,7 @@ prepare_call (SeedContext ctx,
 	      SeedObject arg_array,
 	      guint argc,
 	      const SeedValue * argv,
-	      DBusBusType bus_type, 
+	      DBusBusType bus_type,
 	      SeedException * exception)
 {
   DBusMessage *message;
@@ -778,7 +778,7 @@ seed_js_dbus_emit_signal(SeedContext ctx,
     const char *in_signature;
     DBusBusType bus_type;
 
-    if (argument_count < 4) 
+    if (argument_count < 4)
     {
       seed_make_exception(ctx, exception, "ArgumentError", "Not enough args, need object path, interface and signal and the arguments");
       return seed_make_null (ctx);
@@ -816,7 +816,7 @@ seed_js_dbus_emit_signal(SeedContext ctx,
 
     dbus_signature_iter_init(&sig_iter, in_signature);
 
-    if (!seed_js_values_to_dbus(ctx, 0, arguments[4], &arg_iter, &sig_iter, exception)) 
+    if (!seed_js_values_to_dbus(ctx, 0, arguments[4], &arg_iter, &sig_iter, exception))
       {
         dbus_message_unref(message);
 	return seed_make_null (ctx);
@@ -844,7 +844,7 @@ seed_js_dbus_call(SeedContext ctx,
     DBusBusType bus_type;
     SeedValue retval;
 
-    if (argument_count < 8) 
+    if (argument_count < 8)
       {
 	seed_make_exception(ctx, exception, "ArgumentError",
 			    "Not enough args, need bus name, object path, interface, method, out signature, in signature, autostart flag, and args");
@@ -906,7 +906,7 @@ on_name_acquired(DBusConnection *connection,
 
     seed_closure_invoke_with_context(ctx, owner->acquired_closure,
 				     argv, argc, &exception);
-    
+
     seed_context_unref (ctx);
 }
 
@@ -939,7 +939,7 @@ on_name_lost(DBusConnection *connection,
 
     seed_closure_invoke_with_context(ctx, owner->lost_closure,
 				     argv, argc, &exception);
-    
+
     seed_context_unref (ctx);
 }
 
@@ -980,9 +980,9 @@ seed_js_dbus_acquire_name(SeedContext ctx,
     BigDBusNameType name_type;
     unsigned int id;
 
-    if (argument_count < 4) 
+    if (argument_count < 4)
       {
-	seed_make_exception (ctx, exception, "ArgumentError", 
+	seed_make_exception (ctx, exception, "ArgumentError",
 			     "Not enough args, need bus name, name type, acquired_func, lost_func");
 	return seed_make_null (ctx);
       }
@@ -993,8 +993,8 @@ seed_js_dbus_acquire_name(SeedContext ctx,
 
     name_type = (BigDBusNameType)seed_value_to_int (ctx, arguments[1], exception);
 
-    if (!seed_value_is_object (ctx, arguments[2]) || 
-	!seed_value_is_function (ctx, arguments[2])) 
+    if (!seed_value_is_object (ctx, arguments[2]) ||
+	!seed_value_is_function (ctx, arguments[2]))
       {
         seed_make_exception (ctx, exception, "ArgumentError",
 			     "Third arg is a callback to invoke on acquiring the name");
@@ -1003,8 +1003,8 @@ seed_js_dbus_acquire_name(SeedContext ctx,
 
     acquire_func = arguments[2];
 
-    if (!seed_value_is_object (ctx, arguments[3]) || 
-	!seed_value_is_function (ctx, arguments[3])) 
+    if (!seed_value_is_object (ctx, arguments[3]) ||
+	!seed_value_is_function (ctx, arguments[3]))
       {
         seed_make_exception (ctx, exception, "ArgumentError",
 			     "Fourth arg is a callback to invoke on acquiring the name");
@@ -1054,13 +1054,13 @@ seed_js_dbus_release_name_by_id (SeedContext ctx,
     DBusBusType bus_type;
     unsigned int id;
 
-    if (argument_count < 1) 
+    if (argument_count < 1)
       {
-        seed_make_exception (ctx, exception, 
+        seed_make_exception (ctx, exception,
 			     "ArgumentError", "Not enough args, need name owner monitor id");
 	return seed_make_null (ctx);
       }
-    
+
     bus_type = get_bus_type_from_object(ctx, this_object, exception);
 
     id = seed_value_to_int (ctx, arguments[0], exception);
@@ -1102,7 +1102,7 @@ on_name_appeared(DBusConnection *connection,
     seed_closure_invoke_with_context (ctx, watcher->appeared_closure,
 				      argv, argc, &exception);
     // TODO: Do something with exception.
-    
+
     seed_context_unref (ctx);
 
 }
@@ -1132,7 +1132,7 @@ on_name_vanished(DBusConnection *connection,
     seed_closure_invoke_with_context (ctx, watcher->vanished_closure,
 				      argv, argc, &exception);
     // TODO: Do something with exception.
-    
+
     seed_context_unref (ctx);
 
 }
@@ -1180,9 +1180,9 @@ seed_js_dbus_watch_name(SeedContext ctx,
     BigJSDBusNameWatcher *watcher;
     DBusBusType bus_type;
 
-    if (argument_count < 4) 
+    if (argument_count < 4)
       {
-        seed_make_exception (ctx, exception, 
+        seed_make_exception (ctx, exception,
 			     "ArgumentError", "Not enough args, need bus name, acquired_func, lost_func");
 	return seed_make_null (ctx);
       }
@@ -1247,13 +1247,13 @@ unique_name_getter (SeedContext ctx,
 {
   DBusConnection *bus_connection;
   DBusBusType bus_type;
-  
+
   bus_type = get_bus_type_from_object (ctx, object, exception);
-  
+
   bus_check (ctx, bus_type, exception);
-  
+
   bus_connection = DBUS_CONNECTION_FROM_TYPE (bus_type);
-  
+
   if (bus_connection == NULL)
     {
       return seed_make_null (ctx);
@@ -1279,7 +1279,7 @@ seed_js_dbus_start_service(SeedContext ctx,
     DBusBusType     bus_type;
     DBusConnection *bus_connection;
 
-    if (argument_count != 1) 
+    if (argument_count != 1)
       {
         seed_make_exception (ctx, exception, "ArgumentError",
 			     "Wrong number of arguments, expected service name");
@@ -1379,7 +1379,7 @@ define_bus_object (SeedContext ctx,
 {
   SeedObject bus_obj;
   const gchar *bus_name;
-  
+
   bus_name = BIG_DBUS_NAME_FROM_TYPE(which_bus);
   bus_obj = seed_make_object (ctx, dbus_bus_class, NULL);
   seed_object_set_property (ctx, bus_obj, "_dbusBusType",
@@ -1410,7 +1410,7 @@ seed_module_init (SeedEngine * eng)
   dbus_namespace_class_def.class_name = "dbusnative";
   dbus_namespace_class_def.static_functions = dbus_funcs;
   dbus_namespace_class_def.static_values = dbus_values;
-  
+
   dbus_bus_class_def.class_name = "dbusbus";
   dbus_bus_class_def.static_functions = bus_funcs;
   dbus_bus_class_def.static_values = bus_values;

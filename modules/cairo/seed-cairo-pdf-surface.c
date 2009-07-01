@@ -28,11 +28,11 @@ static SeedObject
 seed_object_from_cairo_pdf_surface (SeedContext ctx, cairo_surface_t *surf)
 {
   SeedObject jsobj;
-  
+
   jsobj = cairo_surface_get_user_data (surf, seed_get_cairo_key());
   if (jsobj)
     return jsobj;
-  
+
   jsobj = seed_make_object (ctx, seed_cairo_pdf_surface_class, surf);
   cairo_surface_set_user_data (surf, seed_get_cairo_key(), jsobj, seed_cairo_destroy_func);
   return jsobj;
@@ -48,7 +48,7 @@ seed_cairo_pdf_surface_set_size (SeedContext ctx,
 {
   cairo_surface_t *surf;
   gdouble x, y;
-  
+
   CHECK_THIS();
   if (argument_count != 2)
     {
@@ -57,9 +57,9 @@ seed_cairo_pdf_surface_set_size (SeedContext ctx,
   surf = seed_object_get_private (this_object);
   x = seed_value_to_double (ctx, arguments[0], exception);
   y = seed_value_to_double (ctx, arguments[1], exception);
-  
+
   cairo_pdf_surface_set_size (surf, x, y);
-  
+
   return seed_make_undefined (ctx);
 }
 
@@ -78,13 +78,13 @@ seed_cairo_construct_pdf_surface (SeedContext ctx,
     {
       EXPECTED_EXCEPTION("PDFSurface", "3 arguments");
     }
-  
+
   if (!seed_value_is_null (ctx, arguments[0]))
     filename  = seed_value_to_string (ctx, arguments[0], exception);
   width = seed_value_to_double (ctx, arguments[1], exception);
   height = seed_value_to_double (ctx, arguments[2], exception);
   ret = cairo_pdf_surface_create (filename, width, height);
-  
+
   return seed_object_from_cairo_pdf_surface (ctx, ret);
 }
 
@@ -96,22 +96,22 @@ seed_static_function pdf_surface_funcs[] = {
   {"set_size", seed_cairo_pdf_surface_set_size, 0},
   {0, 0, 0}
 };
-  
-   
-	
+
+
+
 
 void
 seed_define_cairo_pdf_surface (SeedContext ctx,
 				 SeedObject namespace_ref)
 {
   seed_class_definition pdf_def = seed_empty_class;
-  
+
   pdf_def.class_name = "PDFSurface";
   pdf_def.static_values = pdf_surface_values;
   pdf_def.parent_class = seed_get_cairo_surface_class ();
   pdf_def.static_functions = pdf_surface_funcs;
   seed_cairo_pdf_surface_class = seed_create_class (&pdf_def);
-  
+
   pdf_surface_constructor_ref = seed_make_constructor (ctx,
 							 NULL,
 							 //seed_cairo_pdf_surface_class,

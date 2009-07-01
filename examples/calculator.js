@@ -10,7 +10,7 @@ var calc_val = "";
 
 function update_display(){
     label.set_markup("<span size='30000'>" + calc_val + "</span>");
-    
+
     if(calc_val === ""){
 	label.set_markup("<span size='30000'>0</span>");
     }

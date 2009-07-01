@@ -28,20 +28,20 @@ for root, dirs, files in os.walk(os.path.join(mcwd,"javascript")):
 					test_in = test_code[2].replace("// STDIN:","").rstrip().replace("\\n","\n");
 					test_out = "^" + test_code[3].replace("// STDOUT:","").rstrip().replace("\\n","\n") + "$";
 					test_err = "^" + test_code[4].replace("// STDERR:","").rstrip().replace("\\n","\n") + "$";
-				
+
 					p = subprocess.Popen(f, shell=True,
 								 stdin=subprocess.PIPE, stdout=subprocess.PIPE,
 								 stderr=subprocess.PIPE, close_fds=True,
 								 cwd=os.path.join(mcwd,"javascript"))
 					(out,err)=(p.stdout, p.stderr)
-				
+
 					(run_out,run_err)=p.communicate(test_in + "\004")
 					run_out = run_out.rstrip()
 					run_err = run_err.rstrip()
-				
+
 					out.close()
 					err.close()
-				
+
 					if not re.match(test_out,run_out):
 						failed.append([filename,test_out,run_out,0,run_err])
 						sys.stdout.write("x")
@@ -100,4 +100,4 @@ for fail in failed:
 		print "  Expected Retval:\t%d" % fail[1]
 		print "  Actual Retval:\t%d" % fail[2]
 if len(failed):
-	print "---------------------------------------"	
+	print "---------------------------------------"

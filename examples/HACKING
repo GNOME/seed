@@ -34,7 +34,7 @@ pong/
 	- An incomplete implementation of Pong in Clutter.
 
 same-seed/
-	- An in-progress Clutter port of Same Gnome. Makes heavy use of the new 
+	- An in-progress Clutter port of Same Gnome. Makes heavy use of the new
 	  Clutter 0.9 API, which is signficantly different from our older examples,
 	  which all use Clutter 0.8.
 
@@ -58,7 +58,7 @@ async-quine.js: A Quine which loads itself asynchronouosly.
 calculator.js: Simple Gtk widgets, packing, labels, signals. javascript eval.
 clutter-cairo.js: Draws into a Clutter context using our Canvas extension.
 clutter-cogl.js: Draw ripples from the mouse, using Clutter's COGL library.
-clutter-0.[8,9].js: Clutter, implementing custom Clutter animations, using 
+clutter-0.[8,9].js: Clutter, implementing custom Clutter animations, using
                     Clutter effects (animations in 0.9), ClutterColor.
 dbus-banshee.js: Plays the song specified as an argument in Banshee, over DBUS.
 dbus-consolekit.js: Queries ConsoleKit over DBUS to determine if the invoking

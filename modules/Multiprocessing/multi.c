@@ -182,6 +182,6 @@ seed_module_init(SeedEngine * local_eng)
 
   seed_object_set_property(eng->context,
 			   namespace_ref, "Pipe", pipe_constructor);
-  
+
   return namespace_ref;
 }

@@ -1,21 +1,21 @@
 /*
- * -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*- 
+ * -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*-
  */
 
 /*
  * This file is part of Seed, the GObject Introspection<->Javascript bindings.
  *
- * Seed is free software: you can redistribute it and/or modify 
+ * Seed is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of
- * the License, or (at your option) any later version. 
- * Seed is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
- * GNU Lesser General Public License for more details. 
- * You should have received a copy of the GNU Lesser General Public License 
- * along with Seed.  If not, see <http://www.gnu.org/licenses/>. 
- * 
+ * the License, or (at your option) any later version.
+ * Seed is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Seed.  If not, see <http://www.gnu.org/licenses/>.
+ *
  * Copyright (C) Robert Carr 2008 <carrr@rpi.edu>
  */
 
@@ -72,18 +72,18 @@ typedef struct _SeedEngine
 } SeedEngine;
 
 /*
- * seed-engine.c 
+ * seed-engine.c
  */
 SeedEngine *seed_init (gint *argc, gchar ***argv);
 SeedEngine *seed_init_with_context_group (gint *argc, gchar ***argv,
 					  SeedContextGroup group);
 
-SeedValue seed_simple_evaluate (SeedContext ctx, 
-				gchar * source, 
+SeedValue seed_simple_evaluate (SeedContext ctx,
+				gchar * source,
 				SeedException *exception);
 
 SeedScript *seed_make_script (SeedContext ctx,
-			      const gchar * js, 
+			      const gchar * js,
 			      const gchar * source_url,
 			      gint line_number);
 SeedScript *seed_script_new_from_file (SeedContext ctx, gchar * file);
@@ -141,7 +141,7 @@ SeedValue seed_object_call (SeedContext ctx,
 void seed_value_unprotect (SeedContext ctx, SeedValue value);
 void seed_value_protect (SeedContext ctx, SeedValue value);
 /*
- * seed-types.c 
+ * seed-types.c
  */
 gboolean seed_object_set_property (SeedContext ctx,
 				   SeedObject object,
@@ -256,7 +256,7 @@ typedef SeedObject (*SeedModuleInitCallback) (SeedEngine * eng);
 typedef void (*SeedObjectInitializeCallback) (SeedContext ctx,
 					      SeedObject object);
 
-/* Using any functions that require a context from 
+/* Using any functions that require a context from
  *this callback has undefined results */
 typedef void (*SeedObjectFinalizeCallback) (SeedObject object);
 
@@ -374,7 +374,7 @@ seed_signal_connect_value (SeedContext ctx,
 			   GObject *object,
 			   const gchar *signal,
 			   SeedValue function,
-			   SeedValue user_data);			   
+			   SeedValue user_data);
 
 
 SeedObject seed_context_get_global_object (SeedContext ctx);
@@ -387,7 +387,7 @@ void seed_prepare_global_context (SeedContext ctx);
 
 SeedType seed_value_get_type (SeedContext ctx, SeedValue type);
 
-gchar **seed_object_copy_property_names(SeedContext ctx, SeedObject object); 
+gchar **seed_object_copy_property_names(SeedContext ctx, SeedObject object);
 
 SeedValue
 seed_value_from_binary_string (SeedContext ctx,
@@ -396,7 +396,7 @@ seed_value_from_binary_string (SeedContext ctx,
 			       SeedException *exception);
 
 GClosure *seed_closure_new (SeedContext ctx,
-			    SeedObject function, 
+			    SeedObject function,
 			    SeedObject user_data,
 			    const gchar *description);
 

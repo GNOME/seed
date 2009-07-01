@@ -30,4 +30,4 @@ w.signal.map.connect(
                  print("In map, verifying widget.title : " + widget.title);
              });
 w.show();
-      
+

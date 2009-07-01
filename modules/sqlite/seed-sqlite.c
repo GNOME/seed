@@ -139,7 +139,7 @@ SeedValue seed_sqlite_exec(SeedContext ctx,
     {
       if (sqlite_error)
 	{
-		seed_make_exception(ctx, exception, "SqliteError", 
+		seed_make_exception(ctx, exception, "SqliteError",
 				    sqlite_error, NULL);
 	  sqlite3_free(sqlite_error);
 	}
@@ -193,6 +193,6 @@ seed_module_init(SeedEngine * local_eng)
 					 sqlite_construct_database);
   seed_object_set_property(eng->context,
 			   namespace_ref, "Database", db_constructor);
-  
+
   return namespace_ref;
 }

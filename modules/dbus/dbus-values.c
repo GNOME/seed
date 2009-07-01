@@ -13,7 +13,7 @@
 
 gboolean
 seed_js_one_value_from_dbus (SeedContext ctx,
-			     DBusMessageIter * iter, 
+			     DBusMessageIter * iter,
                              SeedValue *value_p,
                              SeedException *exception)
 {
@@ -109,7 +109,7 @@ seed_js_one_value_from_dbus (SeedContext ctx,
                   {
 		    return FALSE;
                   }
-                
+
                 seed_object_set_property (ctx, obj,
                                           key, entry_value);
 
@@ -153,14 +153,14 @@ seed_js_one_value_from_dbus (SeedContext ctx,
                   {
                     return FALSE;
                   }
-                
+
                 seed_object_set_property_at_index (ctx, obj, index, prop_value, exception);
 
 		dbus_message_iter_next (&array_iter);
 		index++;
               }
             seed_object_set_property (ctx, obj, "length",
-                                      seed_value_from_int (ctx, 
+                                      seed_value_from_int (ctx,
                                                            index, exception));
 	    *value_p = (SeedValue) obj;
           }
@@ -252,15 +252,15 @@ seed_js_one_value_from_dbus (SeedContext ctx,
 
 gboolean
 seed_js_values_from_dbus (SeedContext ctx,
-			  DBusMessageIter * iter, 
+			  DBusMessageIter * iter,
                           GArray **array_p,
                           SeedException *exception)
 {
   GArray *array;
   SeedValue value;
-  
+
   value = seed_make_undefined (ctx);
-  
+
   array = g_array_new (FALSE, FALSE, sizeof(SeedValue));
 
   /* TODO */
@@ -273,11 +273,11 @@ seed_js_values_from_dbus (SeedContext ctx,
           g_array_free (array, TRUE);
           return FALSE;
 	}
-      
+
       g_array_append_val (array, value);
     }
   while (dbus_message_iter_next (iter));
-                       
+
   *array_p = array;
   return TRUE;
 }
@@ -309,7 +309,7 @@ append_basic_maybe_in_variant (DBusMessageIter * iter,
 static void
 append_byte_array_maybe_in_variant (DBusMessageIter * iter,
 				    const char *data,
-				    gsize len, 
+				    gsize len,
                                     gboolean wrap_in_variant)
 {
   DBusMessageIter array_iter;
@@ -339,8 +339,8 @@ append_byte_array_maybe_in_variant (DBusMessageIter * iter,
 static gboolean
 append_string (SeedContext ctx,
 	       DBusMessageIter * iter,
-	       const char *forced_signature, 
-               const char *s, 
+	       const char *forced_signature,
+               const char *s,
                gsize len,
                SeedException *exception)
 {
@@ -388,8 +388,8 @@ append_string (SeedContext ctx,
 
 static gboolean
 append_int32 (SeedContext ctx,
-	      DBusMessageIter * iter, 
-              int forced_type, 
+	      DBusMessageIter * iter,
+              int forced_type,
               dbus_int32_t v_INT32,
               SeedException *exception)
 {
@@ -501,7 +501,7 @@ append_boolean (SeedContext ctx,
 static gboolean
 append_array (SeedContext ctx,
 	      DBusMessageIter * iter,
-	      DBusSignatureIter * sig_iter, SeedObject array, 
+	      DBusSignatureIter * sig_iter, SeedObject array,
               int length,
               SeedException *exception)
 {
@@ -548,9 +548,9 @@ append_array (SeedContext ctx,
   for (i = 0; i < length; i++)
     {
       element = seed_object_get_property_at_index (ctx, array, i, exception);
-      
+
       SEED_NOTE(MODULE, " Adding array element %u", i);
-      
+
       if (!seed_js_one_value_to_dbus (ctx, element, &array_iter,
                                       &element_sig_iter, exception))
         return FALSE;
@@ -564,7 +564,7 @@ append_array (SeedContext ctx,
 static gboolean
 append_dict (SeedContext ctx,
 	     DBusMessageIter * iter,
-	     DBusSignatureIter * sig_iter, 
+	     DBusSignatureIter * sig_iter,
              SeedObject props,
              SeedException *exception)
 {
@@ -657,7 +657,7 @@ append_dict (SeedContext ctx,
                            "Specifying _dbus_signatures for a dictionary with non-variant values is useless");
       return FALSE;
     }
-  
+
   prop_names = seed_object_copy_property_names (ctx, props);
   num_props = g_strv_length (prop_names);
 
@@ -681,7 +681,7 @@ append_dict (SeedContext ctx,
       if (!seed_value_is_undefined (ctx, prop_signatures))
 	{
           SeedValue signature_value;
-          
+
           signature_value = seed_object_get_property (ctx, prop_signatures, name);
           if (!seed_value_is_undefined (ctx, signature_value))
 	    {
@@ -745,7 +745,7 @@ append_dict (SeedContext ctx,
 	}
 
       dbus_message_iter_close_container (&dict_iter, &entry_iter);
- 
+
     next:
       continue;
     }
@@ -775,7 +775,7 @@ seed_js_one_value_to_dbus (SeedContext ctx,
   /* Don't write anything on the bus if the signature is empty */
   if (forced_type == DBUS_TYPE_INVALID)
     return TRUE;
-  
+
   type = seed_value_get_type (ctx, value);
 
   if (seed_value_is_null (ctx, value))
@@ -894,19 +894,19 @@ gboolean
 seed_js_values_to_dbus (SeedContext ctx,
 			int index,
 			SeedObject values,
-			DBusMessageIter * iter, 
+			DBusMessageIter * iter,
                         DBusSignatureIter * sig_iter,
                         SeedException *exception)
 {
   SeedValue value;
   guint length;
 
-  length = seed_value_to_int (ctx, 
+  length = seed_value_to_int (ctx,
                               seed_object_get_property (ctx, values, "length"),
                               exception);
   if (index > (int) length)
     {
-      seed_make_exception (ctx, exception, "ArgumentError", 
+      seed_make_exception (ctx, exception, "ArgumentError",
                            "Index %d is bigger than array length %d", index,
                            length);
       return FALSE;
@@ -914,7 +914,7 @@ seed_js_values_to_dbus (SeedContext ctx,
 
   if (index == (int) length)
     return TRUE;
-  
+
   value = seed_object_get_property_at_index (ctx, values, index, exception);
 
   if (!seed_js_one_value_to_dbus (ctx, value, iter, sig_iter, exception))
@@ -945,7 +945,7 @@ seed_js_add_dbus_props (SeedContext ctx, DBusMessage * message, SeedValue value,
     return TRUE;
 
   sender = (gchar *)dbus_message_get_sender (message);
-  
+
   seed_object_set_property (ctx, value, "_dbus_sender",
                             seed_value_from_string (ctx, sender, exception));
 

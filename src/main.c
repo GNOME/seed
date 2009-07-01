@@ -52,7 +52,7 @@ seed_exec (gint argc, gchar ** argv)
   gchar *buffer;
 
   g_file_get_contents (argv[1], &buffer, 0, 0);
-  
+
   if (!buffer)
     {
       g_critical ("File %s not found!", argv[1]);
@@ -75,7 +75,7 @@ seed_exec (gint argc, gchar ** argv)
 		  seed_exception_get_line (eng->context, e));
       exit (1);
     }
-  
+
   global = seed_context_get_global_object (eng->context);
   seed_importer_add_global (global, argv[1]);
 

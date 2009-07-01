@@ -15,41 +15,41 @@ OscillatorWidget = new GType({
     name: "OscillatorWidget",
     class_init: function(klass, prototype)
     {
-	var flags = (GObject.ParamFlags.CONSTRUCT | 
+	var flags = (GObject.ParamFlags.CONSTRUCT |
 		     GObject.ParamFlags.READABLE |
 		     GObject.ParamFlags.WRITABLE);
-	
+
 	var ps = GObject.param_spec_float("frequency",
 					  "Oscillator Frequency",
 					  "The frequency of the audiotestsrc.",
 					  0, 3000, 1000, flags);
-	
+
 	klass.c_install_property(ps);
     },
     init: function()
     {
 	// Private
-	
+
 	var hbox = new Gtk.HBox();
 	var frequency_slider = new Gtk.VScale();
 	var volume_slider = new Gtk.VScale();
 	var button = new Gtk.ToggleButton({label: "Enabled"});
-	
+
 	// No actual introspection data for audiotestsrc, so can not
 	// instantiate one with a constructor, have to use element_factory,
 	// likewise for the others.
 	var audiosrc = Gst.ElementFactory.make("audiotestsrc", "source" + unique_id);
 	var audiosink = Gst.ElementFactory.make("alsasink", "sink" + unique_id);
 	var volume = Gst.ElementFactory.make("volume", "volume" + unique_id);
-	
+
 	unique_id++;
-	
+
 	var toggle_enabled = function(button, that)
 	{
 	    pipeline.set_state(Gst.State.PLAYING);
 	    volume.volume = button.active ? volume_slider.get_value() : 0;
 	};
-	
+
 	var set_frequency = function(range)
 	{
 	    this.frequency = audiosrc.freq = range.get_value();
@@ -60,21 +60,21 @@ OscillatorWidget = new GType({
 	    if(button.active)
 		volume.volume = range.get_value();
 	};
-	
+
 	// Implementation
-	
+
 	frequency_slider.adjustment.upper = 3000;
 	audiosrc.freq = frequency_slider.adjustment.value = this.frequency;
-	
+
 	volume_slider.adjustment.upper = 10;
 	volume_slider.adjustment.value = 0.5;
 	volume.volume = 0;
-	
+
 	pipeline.add(audiosrc);
 	pipeline.add(audiosink);
 	pipeline.add(volume);
 	audiosrc.link_many(volume, audiosink);
-	
+
 	button.signal.toggled.connect(toggle_enabled);
 	frequency_slider.signal.value_changed.connect(set_frequency);
 	volume_slider.signal.value_changed.connect(set_volume);

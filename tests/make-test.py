@@ -15,7 +15,7 @@ else:
 
 os.system("chmod +x " + sys.argv[1])
 (n,out,err) = os.popen3("./" + sys.argv[1])
-		
+
 if(test_in != ""):
 	n.write(test_in + "\004")
 	n.close()

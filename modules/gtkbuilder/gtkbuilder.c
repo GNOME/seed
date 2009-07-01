@@ -27,11 +27,11 @@ seed_builder_connect_func (GtkBuilder *builder,
   func = seed_object_get_property (ctx, obj, handler_name);
   if (!seed_value_is_object (ctx, func) || !seed_value_is_function (ctx, func))
     return;
-  
+
   closure = seed_closure_new (ctx, func, priv->user_data, "signal handler (GtkBuilder)");
   if (connect_object != NULL)
     g_object_watch_closure (connect_object, closure);
-  
+
   g_signal_connect_closure (object, signal_name, closure, FALSE);
 }
 
@@ -45,14 +45,14 @@ seed_gtk_builder_connect_signals(SeedContext ctx,
 {
   builder_ud ud;
   GtkBuilder *b;
-  
+
   if (!seed_value_is_object (ctx, arguments[0]))
     {
       seed_make_exception (ctx, exception, "ArgumentError",
 			   "connect_signals expects one object as an argument");
       return seed_make_undefined (ctx);
     }
-  
+
   b = GTK_BUILDER (seed_value_to_object (ctx, this_object, exception));
   ud.ctx = ctx;
   ud.obj = arguments[0];
@@ -61,7 +61,7 @@ seed_gtk_builder_connect_signals(SeedContext ctx,
   else
     ud.user_data = NULL;
   gtk_builder_connect_signals_full(b, seed_builder_connect_func, &ud);
-  
+
   return seed_make_undefined (ctx);
 }
 
@@ -69,12 +69,12 @@ SeedObject
 seed_module_init(SeedEngine *eng)
 {
   SeedObject gtkbuilder_proto;
-  
+
   gtkbuilder_proto = seed_simple_evaluate (eng->context,
 					   "imports.gi.Gtk.Builder.prototype",
 					   NULL);
   seed_create_function (eng->context,
-			"connect_signals", 
+			"connect_signals",
 			seed_gtk_builder_connect_signals,
 			gtkbuilder_proto);
 

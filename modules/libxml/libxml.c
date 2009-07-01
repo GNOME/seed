@@ -22,7 +22,7 @@ SeedClass xml_xpathobj_class;
 #define XML_XPATHOBJ_PRIV(obj) ((xmlXPathObjectPtr)seed_object_get_private (obj))
 
 static SeedObject
-seed_make_xml_doc (SeedContext ctx, 
+seed_make_xml_doc (SeedContext ctx,
 		    xmlDocPtr doc)
 {
   SeedObject ret;
@@ -34,7 +34,7 @@ seed_make_xml_doc (SeedContext ctx,
 }
 
 static SeedObject
-seed_make_xml_node (SeedContext ctx, 
+seed_make_xml_node (SeedContext ctx,
 		xmlNodePtr node)
 {
   SeedObject ret;
@@ -71,10 +71,10 @@ seed_xml_element_type_to_string (xmlElementType type)
   else if (type == XML_TEXT_NODE)
     return "text";
   else
-    return "Implement more types! racarr is lazy.";	   
+    return "Implement more types! racarr is lazy.";
 }
 
-static SeedValue 
+static SeedValue
 seed_xml_parse_file (SeedContext ctx,
 		     SeedObject function,
 		     SeedObject this_object,
@@ -107,7 +107,7 @@ seed_xml_parse_file (SeedContext ctx,
   return ret;
 }
 
-static SeedValue 
+static SeedValue
 seed_xml_parse_string (SeedContext ctx,
 		       SeedObject function,
 		       SeedObject this_object,
@@ -174,7 +174,7 @@ seed_xml_node_get_children (SeedContext ctx,
 			   SeedException *exception)
 {
   xmlNodePtr node = XML_NODE_PRIV (object);
- 
+
   return seed_make_xml_node (ctx, node->children);
 
 }
@@ -186,7 +186,7 @@ seed_xml_node_get_parent (SeedContext ctx,
 			  SeedException *exception)
 {
   xmlNodePtr node = XML_NODE_PRIV (object);
- 
+
   return seed_make_xml_node (ctx, node->parent);
 }
 
@@ -197,7 +197,7 @@ seed_xml_node_get_next (SeedContext ctx,
 			SeedException *exception)
 {
   xmlNodePtr node = XML_NODE_PRIV (object);
- 
+
   return seed_make_xml_node (ctx, node->next);
 }
 
@@ -208,7 +208,7 @@ seed_xml_node_get_prev (SeedContext ctx,
 			SeedException *exception)
 {
   xmlNodePtr node = XML_NODE_PRIV (object);
- 
+
   return seed_make_xml_node (ctx, node->prev);
 }
 
@@ -219,7 +219,7 @@ seed_xml_node_get_last (SeedContext ctx,
 			SeedException *exception)
 {
   xmlNodePtr node = XML_NODE_PRIV (object);
- 
+
   return seed_make_xml_node (ctx, node->last);
 }
 
@@ -230,7 +230,7 @@ seed_xml_node_get_doc (SeedContext ctx,
 		       SeedException *exception)
 {
   xmlNodePtr node = XML_NODE_PRIV (object);
-  
+
   return seed_make_xml_doc (ctx, node->doc);
 }
 
@@ -243,11 +243,11 @@ seed_xml_node_get_content (SeedContext ctx,
   SeedValue ret;
   gchar *content;
   xmlNodePtr node = XML_NODE_PRIV (object);
-  
+
   content = xmlNodeGetContent (node);
   ret = seed_value_from_string (ctx, content, exception);
   g_free (content);
- 
+
   return ret;
 }
 
@@ -258,9 +258,9 @@ seed_xml_node_get_type (SeedContext ctx,
 			SeedException *exception)
 {
   xmlNodePtr node = XML_NODE_PRIV (object);
-  
-  return seed_value_from_string (ctx, 
-				 seed_xml_element_type_to_string 
+
+  return seed_value_from_string (ctx,
+				 seed_xml_element_type_to_string
 				 (node->type), exception);
 }
 
@@ -271,7 +271,7 @@ seed_xml_node_get_properties (SeedContext ctx,
 			      SeedException *exception)
 {
   xmlNodePtr node = XML_NODE_PRIV (object);
-  
+
   return seed_make_xml_attr (ctx, node->properties);
 }
 
@@ -307,10 +307,10 @@ seed_xml_xpath_eval (SeedContext ctx,
   xmlXPathObjectPtr xpath_obj;
   xmlXPathContextPtr xpath_ctx;
   gchar *xpath;
-  
+
   if (argument_count != 1)
     {
-      seed_make_exception (ctx, exception, 
+      seed_make_exception (ctx, exception,
 			   "ArgumentError",
 			   "xpathEval expected 1 argument, got %zd",
 			   argument_count);
@@ -321,7 +321,7 @@ seed_xml_xpath_eval (SeedContext ctx,
   xpath = seed_value_to_string (ctx, arguments[0], exception);
   xpath_obj = xmlXPathEval (xpath, xpath_ctx);
   g_free (xpath);
-  
+
   return seed_make_object (ctx, xml_xpathobj_class, xpath_obj);
 }
 
@@ -346,12 +346,12 @@ seed_xml_xpath_register_ns (SeedContext ctx,
   xpath = XML_XPATH_PRIV (this_object);
   prefix = seed_value_to_string (ctx, arguments[0], exception);
   ns_uri = seed_value_to_string (ctx, arguments[1], exception);
-  
+
   xmlXPathRegisterNs (xpath, prefix, ns_uri);
   g_free (prefix);
   g_free (ns_uri);
-  
-  return seed_make_undefined (ctx);  
+
+  return seed_make_undefined (ctx);
 }
 
 static SeedValue
@@ -364,12 +364,12 @@ seed_xml_construct_xpath_context (SeedContext ctx,
 {
   xmlXPathContextPtr xpath;
   xmlDocPtr doc;
-  
+
   doc = XML_DOC_PRIV (this_object);
   xpath = xmlXPathNewContext (doc);
-  
+
   seed_value_protect (ctx, this_object);
-  
+
   return seed_make_object (ctx, xml_xpath_class, xpath);
 }
 
@@ -521,27 +521,27 @@ seed_libxml_define_stuff ()
   xml_attr_class_def.finalize = seed_xml_node_finalize;
   xml_attr_class_def.initialize = seed_xml_node_init;
   xml_attr_class = seed_create_class (&xml_attr_class_def);
-  
+
   xml_xpath_class_def.class_name = "XMLXPathContext";
   xml_xpath_class_def.finalize = seed_xml_xpath_finalize;
   xml_xpath_class_def.static_functions = xpath_funcs;
   xml_xpath_class = seed_create_class (&xml_xpath_class_def);
-  
+
   xml_xpathobj_class_def.class_name = "XMLXPathObj";
   xml_xpathobj_class_def.finalize = seed_xml_xpathobj_finalize;
   xml_xpathobj_class_def.static_values = xpathobj_values;
   xml_xpathobj_class = seed_create_class (&xml_xpathobj_class_def);
-  
-  seed_create_function (eng->context, "parseFile", 
+
+  seed_create_function (eng->context, "parseFile",
 			(SeedFunctionCallback) seed_xml_parse_file,
 			namespace_ref);
-  seed_create_function (eng->context, "parseString", 
+  seed_create_function (eng->context, "parseString",
 			(SeedFunctionCallback) seed_xml_parse_string,
 			namespace_ref);
 
   node_proto = seed_object_get_prototype (eng->context,
-					  seed_make_object (eng->context, 
-							    xml_node_class, 
+					  seed_make_object (eng->context,
+							    xml_node_class,
 							    NULL));
   seed_make_object (eng->context, xml_node_class, NULL);
   seed_object_set_property (eng->context, namespace_ref, "_nodeProto", node_proto);
@@ -554,7 +554,7 @@ seed_module_init(SeedEngine *local_eng)
   eng = local_eng;
   namespace_ref = seed_make_object (eng->context, NULL, NULL);
   seed_value_protect (eng->context, namespace_ref);
-  
+
   seed_libxml_define_stuff();
 
   return namespace_ref;

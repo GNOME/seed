@@ -15,9 +15,9 @@ if (child_pid == 0)
 	w = new Gtk.Window();
 	l = new Gtk.Label();
 	w.add(l);
-	
+
 	w.show_all();
-	childs.add_watch(1, 
+	childs.add_watch(1,
 					 function(source, condition, label)
 					 {
 						 label.label = source.read();

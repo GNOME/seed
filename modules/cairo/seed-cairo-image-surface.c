@@ -27,11 +27,11 @@ static SeedObject
 seed_object_from_cairo_image_surface (SeedContext ctx, cairo_surface_t *surf)
 {
   SeedObject jsobj;
-  
+
   jsobj = cairo_surface_get_user_data (surf, seed_get_cairo_key());
   if (jsobj)
     return jsobj;
-  
+
   jsobj = seed_make_object (ctx, seed_cairo_image_surface_class, surf);
   cairo_surface_set_user_data (surf, seed_get_cairo_key(), jsobj, seed_cairo_destroy_func);
   return jsobj;
@@ -91,12 +91,12 @@ seed_cairo_construct_image_surface (SeedContext ctx,
     {
       EXPECTED_EXCEPTION("ImageSurface", "3 arguments");
     }
-  
+
   format = seed_value_to_long (ctx, arguments[0], exception);
   width = seed_value_to_int (ctx, arguments[1], exception);
   height = seed_value_to_int (ctx, arguments[2], exception);
   ret = cairo_image_surface_create (format, width, height);
-  
+
   return seed_object_from_cairo_image_surface (ctx, ret);
 }
 
@@ -107,9 +107,9 @@ seed_static_value image_surface_values[] = {
   {"stride", seed_cairo_image_surface_get_stride, 0, SEED_PROPERTY_ATTRIBUTE_READ_ONLY | SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
   {0, 0, 0, 0}
 };
-  
-   
-	
+
+
+
 
 void
 seed_define_cairo_image_surface (SeedContext ctx,
@@ -118,14 +118,14 @@ seed_define_cairo_image_surface (SeedContext ctx,
   seed_class_definition image_def = seed_empty_class;
   // TODO: FIX
   seed_static_function webkit_fail = {0,0,0};
-  
+
   image_def.class_name = "ImageSurface";
   image_def.static_values = image_surface_values;
   image_def.parent_class = seed_get_cairo_surface_class ();
   // FAIL
   image_def.static_functions = &webkit_fail;
   seed_cairo_image_surface_class = seed_create_class (&image_def);
-  
+
   image_surface_constructor_ref = seed_make_constructor (ctx,
 							 NULL,
 							 //seed_cairo_image_surface_class,

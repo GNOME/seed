@@ -1,16 +1,16 @@
 /*
  * This file is part of Seed, the GObject Introspection<->Javascript bindings.
  *
- * Seed is free software: you can redistribute it and/or modify 
+ * Seed is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of
- * the License, or (at your option) any later version. 
- * Seed is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
- * GNU Lesser General Public License for more details. 
- * You should have received a copy of the GNU Lesser General Public License 
- * along with Seed.  If not, see <http://www.gnu.org/licenses/>. 
+ * the License, or (at your option) any later version.
+ * Seed is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Seed.  If not, see <http://www.gnu.org/licenses/>.
  *
  * Copyright (C) Robert Carr 2008 <carrr@rpi.edu>
  */
@@ -42,7 +42,7 @@ seed_gobject_signal_connect (JSContextRef ctx,
 			     const gchar * signal_name,
 			     GObject * on_obj,
 			     JSObjectRef func,
-			     JSObjectRef this_obj, 
+			     JSObjectRef this_obj,
 			     JSObjectRef user_data)
 {
   GSignalQuery query;
@@ -52,7 +52,7 @@ seed_gobject_signal_connect (JSContextRef ctx,
 		  &query);
 #ifdef SEED_ENABLE_DEBUG
   {
-    guint function_arity = 
+    guint function_arity =
       seed_value_to_uint (ctx,
 			  seed_object_get_property(ctx, func, "length"),
 			  NULL);
@@ -87,7 +87,7 @@ seed_gobject_signal_connect_by_name (JSContextRef ctx,
 
   if (argumentCount < 2 || argumentCount > 3)
     {
-      seed_make_exception (ctx, exception, "ArgumentError", 
+      seed_make_exception (ctx, exception, "ArgumentError",
 			   "Signal connection expected"
 			   " 2 or 3 arguments. Got " "%zd",
 			   argumentCount);
@@ -95,8 +95,8 @@ seed_gobject_signal_connect_by_name (JSContextRef ctx,
       return JSValueMakeNull (ctx);
     }
 
-  if (JSValueIsNull (ctx, arguments[1]) || 
-      !JSValueIsObject (ctx, arguments[1]) || 
+  if (JSValueIsNull (ctx, arguments[1]) ||
+      !JSValueIsObject (ctx, arguments[1]) ||
       !JSObjectIsFunction (ctx, (JSObjectRef) arguments[1]))
     {
       seed_make_exception (ctx, exception, "ArgumentError",
@@ -223,12 +223,12 @@ seed_gobject_signal_emit (JSContextRef ctx,
 
   signal_id = g_signal_lookup (privates->signal_name,
 			       G_OBJECT_TYPE (privates->object));
-  
+
   g_signal_query (signal_id, &query);
 
   if (argumentCount != query.n_params)
     {
-      seed_make_exception (ctx, exception, "ArgumentError", 
+      seed_make_exception (ctx, exception, "ArgumentError",
 			   "Signal: %s for type %s expected %u "
 			   "arguments, got %zd",
 			   query.signal_name,
@@ -283,7 +283,7 @@ seed_gobject_signal_disconnect (JSContextRef ctx,
     }
   id = seed_value_to_ulong (ctx, arguments[0], exception);
   g_signal_handler_disconnect (JSObjectGetPrivate (thisObject), id);
-  
+
   return JSValueMakeUndefined(ctx);
 }
 
@@ -316,9 +316,9 @@ seed_gobject_signal_connect_on_property (JSContextRef ctx,
 
       return JSValueMakeNull (ctx);
     }
-  
-  if (JSValueIsNull (ctx, arguments[0]) || 
-      !JSValueIsObject (ctx, arguments[0]) || 
+
+  if (JSValueIsNull (ctx, arguments[0]) ||
+      !JSValueIsObject (ctx, arguments[0]) ||
       !JSObjectIsFunction (ctx, (JSObjectRef) arguments[0]))
     {
       seed_make_exception (ctx, exception, "ArgumentError",
@@ -343,7 +343,7 @@ seed_gobject_signal_connect_on_property (JSContextRef ctx,
   return seed_value_from_ulong (ctx, id, exception);
 }
 
-JSStaticFunction signal_static_functions[] = { 
+JSStaticFunction signal_static_functions[] = {
   {"connect", seed_gobject_signal_connect_on_property, 0},
   {"emit", seed_gobject_signal_emit, 0},
   {0, 0, 0}
@@ -388,26 +388,26 @@ seed_signal_holder_get_property (JSContextRef ctx,
   JSObjectRef signal_ref;
 
   JSStringGetUTF8CString (property_name, signal_name, length);
-  
+
   if (!strcmp (signal_name, "connect") || !strcmp (signal_name, "disconnect"))
     {
       g_free (signal_name);
       return NULL;
     }
-  
+
   if (!g_signal_lookup (signal_name, G_OBJECT_TYPE (gobj)))
     {
       g_free (signal_name);
       return NULL;
     }
-  
+
   priv = g_slice_alloc (sizeof (signal_privates));
 
   priv->object = gobj;
   priv->signal_name = signal_name;
-  
+
   signal_ref = JSObjectMake (ctx, gobject_signal_class, priv);
-  
+
   return signal_ref;
 }
 

@@ -14,13 +14,13 @@ seed_cairo_status_to_string (SeedContext ctx,
 			     SeedException *exception)
 {
   cairo_status_t status;
-  
+
   if (argument_count != 1)
     {
       EXPECTED_EXCEPTION("status_to_string", "1 argument");
     }
   status = seed_value_to_long (ctx, arguments[0], exception);
-  
+
   return seed_value_from_string (ctx, cairo_status_to_string (status), exception);
 }
 
@@ -30,7 +30,7 @@ seed_define_cairo_enums (SeedContext ctx,
 {
   SeedObject content_holder, format_holder, antialias_holder, fillrule_holder,
     linecap_holder, linejoin_holder, operator_holder, status_holder;
-  
+
   content_holder = seed_make_object (ctx, NULL, NULL);
   seed_object_set_property (ctx, namespace_ref, "Content", content_holder);
   ENUM_MEMBER(content_holder, "COLOR", CAIRO_CONTENT_COLOR);
@@ -85,7 +85,7 @@ seed_define_cairo_enums (SeedContext ctx,
   ENUM_MEMBER(operator_holder, "XOR", CAIRO_OPERATOR_XOR);
   ENUM_MEMBER(operator_holder, "ADD", CAIRO_OPERATOR_ADD);
   ENUM_MEMBER(operator_holder, "SATURATE", CAIRO_OPERATOR_SATURATE);
-  
+
   status_holder = seed_make_object (ctx, NULL, NULL);
   seed_object_set_property (ctx, namespace_ref, "Status", status_holder);
   ENUM_MEMBER(status_holder, "SUCCESS", CAIRO_STATUS_SUCCESS);
@@ -120,6 +120,6 @@ seed_define_cairo_enums (SeedContext ctx,
   ENUM_MEMBER(status_holder, "INVALID_CLUSTERS", CAIRO_STATUS_INVALID_CLUSTERS);
   ENUM_MEMBER(status_holder, "INVALID_SLANT", CAIRO_STATUS_INVALID_SLANT);
   ENUM_MEMBER(status_holder, "INVALID_WEIGHT", CAIRO_STATUS_INVALID_WEIGHT);
-  
+
   seed_create_function (ctx, "to_string", seed_cairo_status_to_string, status_holder);
 }

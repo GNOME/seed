@@ -20,21 +20,21 @@ typedef struct _SeedCanvasColor {
 typedef struct _SeedCanvasStyle {
   SeedCanvasColor fill;
   SeedCanvasColor stroke;
-  
+
   gdouble global_opacity;
   cairo_operator_t operator;
 } SeedCanvasStyle;
 
 typedef struct _SeedCanvasPrivates {
   cairo_t *cr;
-  
+
   GSList *styles;
 } SeedCanvasPrivates;
 
 #define GET_CR  \
   SeedCanvasPrivates *priv = seed_object_get_private(this_object);	\
   cairo_t *cr = priv->cr
-  
+
 
 SeedObject
 canvas_construct_canvas_from_cairo (SeedContext ctx, cairo_t * cr,
@@ -45,7 +45,7 @@ canvas_construct_canvas_from_cairo (SeedContext ctx, cairo_t * cr,
 
   cairo_set_source_rgb (cr, 0, 0, 0);
   cairo_set_miter_limit (cr, 10);
-  
+
   priv->cr = cr;
   priv->styles = NULL;
 
@@ -203,7 +203,7 @@ seed_canvas_parse_color (SeedCanvasColor *color,
   if (*spec == '#')
     {
       guint r = 0, g = 0, b = 0, a = 0, found;
-      
+
       if (strlen (spec) > 4)
 	found = sscanf(spec, "#%2x%2x%2x%2x", &r, &g, &b, &a);
       else
@@ -216,7 +216,7 @@ seed_canvas_parse_color (SeedCanvasColor *color,
 	}
       if (found < 4)
 	a = 0xff;
-      
+
       color->r = r / 255.0;
       color->g = g / 255.0;
       color->b = b / 255.0;
@@ -232,27 +232,27 @@ seed_canvas_parse_color (SeedCanvasColor *color,
 	  {
 	    gdouble r, g, b;
 	    gfloat a;
-	    
+
 	    sscanf (spec, "rgba(%lf,%lf,%lf,%f)", &r, &g, &b, &a);
-	    
+
 	    color->r = r/255.0;
 	    color->g = g/255.0;
 	    color->b = b/255.0;
 	    color->a = a;
-	    
+
 	    return;
 	  }
 	case '(':
 	  {
 	    gdouble r, g, b;
-	    
+
 	    sscanf (spec, "rgb(%lf,%lf,%lf)", &r, &g, &b);
-	    
+
 	    color->r = r / 255.0;
 	    color->g = g / 255.0;
 	    color->b = b / 255.0;
 	    color->a = 1.0;
-	    
+
 	    return;
 	  }
 	}
@@ -268,12 +268,12 @@ gboolean
 seed_canvas_update_stroke_style (SeedContext ctx,
 				 SeedObject this_object,
 				 SeedString property_name,
-				 SeedValue value, 
+				 SeedValue value,
 				 SeedException * e)
 {
   SeedCanvasStyle *style;
   GET_CR;
-  
+
   gchar *stroke_style = seed_value_to_string (ctx, value, e);
 
   if (!priv->styles)
@@ -283,13 +283,13 @@ seed_canvas_update_stroke_style (SeedContext ctx,
       ((SeedCanvasStyle *) priv->styles->data)->fill.a = 1;
       ((SeedCanvasStyle *) priv->styles->data)->operator = CAIRO_OPERATOR_OVER;
     }
-  
+
   style = (SeedCanvasStyle *)priv->styles->data;
-  
+
   seed_canvas_parse_color (&style->stroke, stroke_style);
-  
+
   g_free(stroke_style);
-  
+
   return TRUE;
 }
 
@@ -302,7 +302,7 @@ seed_canvas_update_fill_style (SeedContext ctx,
 {
   SeedCanvasStyle *style;
   GET_CR;
-  
+
   gchar *fill_style = seed_value_to_string (ctx, value, e);
 
   if (!priv->styles)
@@ -312,14 +312,14 @@ seed_canvas_update_fill_style (SeedContext ctx,
       ((SeedCanvasStyle *) priv->styles->data)->stroke.a = 1;
       ((SeedCanvasStyle *) priv->styles->data)->operator = CAIRO_OPERATOR_OVER;
     }
-  
+
   style = (SeedCanvasStyle *)priv->styles->data;
 
-  
+
   seed_canvas_parse_color (&style->fill, fill_style);
-  
+
   g_free(fill_style);
-  
+
   return TRUE;
 }
 
@@ -331,7 +331,7 @@ seed_canvas_update_global_alpha (SeedContext ctx,
 {
   SeedCanvasStyle *style;
   GET_CR;
-  
+
   gdouble global_alpha = seed_value_to_double (ctx, value, e);
 
   if (!priv->styles)
@@ -344,9 +344,9 @@ seed_canvas_update_global_alpha (SeedContext ctx,
     }
 
   style = (SeedCanvasStyle *)priv->styles->data;
-  
+
   style->global_opacity = global_alpha;
-  
+
   return TRUE;
 }
 
@@ -370,7 +370,7 @@ seed_canvas_update_global_composite (SeedContext ctx,
     }
 
   style = (SeedCanvasStyle *)priv->styles->data;
-  
+
   if (!strcmp (composite_op, "copy"))
     style->operator = CAIRO_OPERATOR_SOURCE;
   else if (!strcmp (composite_op, "source-over"))
@@ -397,11 +397,11 @@ seed_canvas_update_global_composite (SeedContext ctx,
     style->operator = CAIRO_OPERATOR_ADD;
   else
     style->operator = CAIRO_OPERATOR_OVER;
-  
+
   cairo_set_operator (cr, style->operator);
-  
+
   g_free (composite_op);
-  
+
   return TRUE;
 }
 
@@ -476,7 +476,7 @@ void
 seed_canvas_apply_stroke_style (SeedCanvasStyle *style,
 				cairo_t * cr)
 {
-  cairo_set_source_rgba(cr, 
+  cairo_set_source_rgba(cr,
 			style->stroke.r,
 			style->stroke.g,
 			style->stroke.b,
@@ -488,7 +488,7 @@ void
 seed_canvas_apply_fill_style (SeedCanvasStyle *style,
 				cairo_t * cr)
 {
-  cairo_set_source_rgba(cr, 
+  cairo_set_source_rgba(cr,
 			style->fill.r,
 			style->fill.g,
 			style->fill.b,
@@ -508,7 +508,7 @@ seed_canvas_save (SeedContext ctx,
   SeedCanvasStyle *old_style = (SeedCanvasStyle *)priv->styles->data;
 
   cairo_save (cr);
-  
+
   priv->styles = g_slist_prepend(priv->styles, g_new(SeedCanvasStyle, 1));
 
   memcpy(priv->styles->data, old_style, sizeof(SeedCanvasStyle));
@@ -782,7 +782,7 @@ seed_canvas_stroke (SeedContext ctx,
 {
   GET_CR;
 
-  seed_canvas_apply_stroke_style ((SeedCanvasStyle *)priv->styles->data, 
+  seed_canvas_apply_stroke_style ((SeedCanvasStyle *)priv->styles->data,
 				  cr);
 
   cairo_stroke (cr);
@@ -866,7 +866,7 @@ seed_canvas_quadratic (SeedContext ctx,
 
 
   // Convert quadratic curve to cubic curve...
-  // I think the math is explained in some 
+  // I think the math is explained in some
   // freetype documentation somewhere.
   cp3x = qp2x;
   cp3y = qp2y;
@@ -1071,6 +1071,6 @@ seed_module_init (SeedEngine * local_eng)
 			    svg_constructor);
   seed_object_set_property (eng->context, namespace_ref, "ImageCanvas",
 			    svg_constructor);
-  
+
   return namespace_ref;
 }

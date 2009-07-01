@@ -32,12 +32,12 @@ seed_os_chdir (SeedContext ctx,
 	       SeedObject function,
 	       SeedObject this_object,
 	       size_t argument_count,
-	       const SeedValue arguments[], 
+	       const SeedValue arguments[],
 	       SeedException * exception)
 {
   gchar *arg;
   gint ret;
-  
+
   if (argument_count != 1)
     {
       EXPECTED_EXCEPTION("os.chdir", "1 argument");
@@ -45,7 +45,7 @@ seed_os_chdir (SeedContext ctx,
   arg = seed_value_to_string (ctx, arguments[0], exception);
   ret = chdir (arg);
   g_free (arg);
-  
+
   return seed_value_from_int (ctx, ret, exception);
 }
 
@@ -54,18 +54,18 @@ seed_os_fchdir (SeedContext ctx,
 	       SeedObject function,
 	       SeedObject this_object,
 	       size_t argument_count,
-	       const SeedValue arguments[], 
+	       const SeedValue arguments[],
 	       SeedException * exception)
 {
   gint ret, arg;
-  
+
   if (argument_count != 1)
     {
       EXPECTED_EXCEPTION("os.fchdir", "1 argument");
     }
   arg = seed_value_to_int (ctx, arguments[0], exception);
   ret = fchdir (arg);
-  
+
   return seed_value_from_int (ctx, ret, exception);
 }
 
@@ -74,12 +74,12 @@ seed_os_getcwd (SeedContext ctx,
 		SeedObject function,
 		SeedObject this_object,
 		size_t argument_count,
-		const SeedValue arguments[], 
+		const SeedValue arguments[],
 		SeedException * exception)
 {
   SeedValue seed_ret;
   gchar *ret;
-  
+
   if (argument_count != 0)
     {
       EXPECTED_EXCEPTION("os.getcwd", "no arguments");
@@ -87,7 +87,7 @@ seed_os_getcwd (SeedContext ctx,
   ret = getcwd (NULL, 0);
   seed_ret = seed_value_from_string (ctx, ret, exception);
   g_free (ret);
-  
+
   return seed_ret;
 }
 
@@ -96,12 +96,12 @@ seed_os_ctermid (SeedContext ctx,
 		 SeedObject function,
 		 SeedObject this_object,
 		 size_t argument_count,
-		 const SeedValue arguments[], 
+		 const SeedValue arguments[],
 		 SeedException * exception)
 {
   SeedValue seed_ret;
   gchar *ret;
-  
+
   if (argument_count != 0)
     {
       EXPECTED_EXCEPTION("os.getcwd", "no arguments");
@@ -109,7 +109,7 @@ seed_os_ctermid (SeedContext ctx,
   // ctermid returns a static buffer
   ret = ctermid (NULL);
   seed_ret = seed_value_from_string (ctx, ret, exception);
-  
+
   return seed_ret;
 }
 
@@ -118,11 +118,11 @@ seed_os_getegid (SeedContext ctx,
 		 SeedObject function,
 		 SeedObject this_object,
 		 size_t argument_count,
-		 const SeedValue arguments[], 
+		 const SeedValue arguments[],
 		 SeedException * exception)
 {
   gid_t ret;
-  
+
   if (argument_count != 0)
     {
       EXPECTED_EXCEPTION("os.getegid", "no arguments");
@@ -137,11 +137,11 @@ seed_os_geteuid (SeedContext ctx,
 		 SeedObject function,
 		 SeedObject this_object,
 		 size_t argument_count,
-		 const SeedValue arguments[], 
+		 const SeedValue arguments[],
 		 SeedException * exception)
 {
   uid_t ret;
-  
+
   if (argument_count != 0)
     {
       EXPECTED_EXCEPTION("os.geteuid", "no arguments");
@@ -156,12 +156,12 @@ seed_os_getgid (SeedContext ctx,
 		 SeedObject function,
 		 SeedObject this_object,
 		 size_t argument_count,
-		 const SeedValue arguments[], 
+		 const SeedValue arguments[],
 		 SeedException * exception)
 {
   SeedValue seed_ret;
   gid_t ret;
-  
+
   if (argument_count != 0)
     {
       EXPECTED_EXCEPTION("os.getgid", "no arguments");
@@ -176,11 +176,11 @@ seed_os_getuid (SeedContext ctx,
 		SeedObject function,
 		SeedObject this_object,
 		size_t argument_count,
-		const SeedValue arguments[], 
+		const SeedValue arguments[],
 		SeedException * exception)
 {
   uid_t ret;
-  
+
   if (argument_count != 0)
     {
       EXPECTED_EXCEPTION("os.getuid", "no arguments");
@@ -195,14 +195,14 @@ seed_os_getgroups (SeedContext ctx,
 		   SeedObject function,
 		   SeedObject this_object,
 		   size_t argument_count,
-		   const SeedValue arguments[], 
+		   const SeedValue arguments[],
 		   SeedException * exception)
 {
   SeedValue ret;
   SeedValue *groups;
   gid_t *group_list;
   guint num_groups, i;
-  
+
   if (argument_count != 0)
     {
       EXPECTED_EXCEPTION("os.getgroups", "no arguments");
@@ -216,7 +216,7 @@ seed_os_getgroups (SeedContext ctx,
       // Investigate python
       return seed_make_null (ctx);
     }
-  
+
   for (i = 0; i < num_groups; i++)
     {
       groups[i] = seed_value_from_long (ctx, (glong) group_list[i], exception);
@@ -231,7 +231,7 @@ seed_os_getlogin (SeedContext ctx,
 		  SeedObject function,
 		  SeedObject this_object,
 		  size_t argument_count,
-		  const SeedValue arguments[], 
+		  const SeedValue arguments[],
 		  SeedException * exception)
 {
   if (argument_count != 0)
@@ -247,7 +247,7 @@ seed_os_getpgid (SeedContext ctx,
 		 SeedObject function,
 		 SeedObject this_object,
 		 size_t argument_count,
-		 const SeedValue arguments[], 
+		 const SeedValue arguments[],
 		 SeedException * exception)
 {
   pid_t pid;
@@ -256,7 +256,7 @@ seed_os_getpgid (SeedContext ctx,
       EXPECTED_EXCEPTION("os.getpgid", "1 argument");
     }
   pid = (pid_t) seed_value_to_long (ctx, arguments[0], exception);
-  
+
   return seed_value_from_long (ctx, (glong) getpgid(pid), exception);
 }
 
@@ -265,14 +265,14 @@ seed_os_getpgrp (SeedContext ctx,
 		 SeedObject function,
 		 SeedObject this_object,
 		 size_t argument_count,
-		 const SeedValue arguments[], 
+		 const SeedValue arguments[],
 		 SeedException * exception)
 {
   if (argument_count != 0)
     {
       EXPECTED_EXCEPTION("os.getpgrp", "no arguments");
     }
-  
+
   return seed_value_from_long (ctx, (glong) getpgrp(), exception);
 }
 
@@ -281,14 +281,14 @@ seed_os_getpid (SeedContext ctx,
 		SeedObject function,
 		SeedObject this_object,
 		size_t argument_count,
-		const SeedValue arguments[], 
+		const SeedValue arguments[],
 		SeedException * exception)
 {
   if (argument_count != 0)
     {
       EXPECTED_EXCEPTION("os.getpid", "no arguments");
     }
-  
+
   return seed_value_from_long (ctx, (glong) getpid(), exception);
 }
 
@@ -297,14 +297,14 @@ seed_os_getppid (SeedContext ctx,
 		SeedObject function,
 		SeedObject this_object,
 		size_t argument_count,
-		const SeedValue arguments[], 
+		const SeedValue arguments[],
 		SeedException * exception)
 {
   if (argument_count != 0)
     {
       EXPECTED_EXCEPTION("os.getppid", "no arguments");
     }
-  
+
   return seed_value_from_long (ctx, (glong) getppid(), exception);
 }
 
@@ -313,7 +313,7 @@ seed_os_getenv (SeedContext ctx,
 		SeedObject function,
 		SeedObject this_object,
 		size_t argument_count,
-		const SeedValue arguments[], 
+		const SeedValue arguments[],
 		SeedException * exception)
 {
   SeedValue ret;
@@ -326,7 +326,7 @@ seed_os_getenv (SeedContext ctx,
   value = getenv (name);
   ret = seed_value_from_string (ctx, value, exception);
   g_free (name);
-  
+
   return ret;
 }
 
@@ -335,12 +335,12 @@ seed_os_putenv (SeedContext ctx,
 		SeedObject function,
 		SeedObject this_object,
 		size_t argument_count,
-		const SeedValue arguments[], 
+		const SeedValue arguments[],
 		SeedException * exception)
 {
   gint ret;
   gchar *name, *value, *arg;
-  
+
   if (argument_count != 2)
     {
       EXPECTED_EXCEPTION("os.putenv", "2 arguments");
@@ -348,12 +348,12 @@ seed_os_putenv (SeedContext ctx,
   name = seed_value_to_string (ctx, arguments[0], exception);
   value = seed_value_to_string (ctx, arguments[1], exception);
   arg = g_strconcat (name, "=", value, NULL);
-  
+
   ret = putenv (arg);
-  
+
   g_free (name);
   g_free (value);
-  
+
   return seed_value_from_int (ctx, ret, exception);
 }
 
@@ -363,17 +363,17 @@ seed_os_setegid (SeedContext ctx,
 		 SeedObject function,
 		 SeedObject this_object,
 		 size_t argument_count,
-		 const SeedValue arguments[], 
+		 const SeedValue arguments[],
 		 SeedException * exception)
 {
   gid_t arg;
-  
+
   if (argument_count != 1)
     {
       EXPECTED_EXCEPTION("os.setegid", "1 argument");
     }
   arg = seed_value_to_long (ctx, arguments[0], exception);
-  
+
   return seed_value_from_int (ctx, setegid(arg), exception);
 }
 
@@ -382,17 +382,17 @@ seed_os_setgid (SeedContext ctx,
 		 SeedObject function,
 		 SeedObject this_object,
 		 size_t argument_count,
-		 const SeedValue arguments[], 
+		 const SeedValue arguments[],
 		 SeedException * exception)
 {
   gid_t arg;
-  
+
   if (argument_count != 1)
     {
       EXPECTED_EXCEPTION("os.setgid", "1 argument");
     }
   arg = seed_value_to_long (ctx, arguments[0], exception);
-  
+
   return seed_value_from_int (ctx, setgid(arg), exception);
 }
 
@@ -401,17 +401,17 @@ seed_os_seteuid (SeedContext ctx,
 		 SeedObject function,
 		 SeedObject this_object,
 		 size_t argument_count,
-		 const SeedValue arguments[], 
+		 const SeedValue arguments[],
 		 SeedException * exception)
 {
   uid_t arg;
-  
+
   if (argument_count != 1)
     {
       EXPECTED_EXCEPTION("os.seteuid", "1 argument");
     }
   arg = seed_value_to_long (ctx, arguments[0], exception);
-  
+
   return seed_value_from_int (ctx, seteuid(arg), exception);
 }
 
@@ -420,17 +420,17 @@ seed_os_setuid (SeedContext ctx,
 		 SeedObject function,
 		 SeedObject this_object,
 		 size_t argument_count,
-		 const SeedValue arguments[], 
+		 const SeedValue arguments[],
 		 SeedException * exception)
 {
   uid_t arg;
-  
+
   if (argument_count != 1)
     {
       EXPECTED_EXCEPTION("os.setuid", "1 argument");
     }
   arg = seed_value_to_long (ctx, arguments[0], exception);
-  
+
   return seed_value_from_int (ctx, setuid(arg), exception);
 }
 
@@ -439,17 +439,17 @@ seed_os_strerror (SeedContext ctx,
 		  SeedObject function,
 		  SeedObject this_object,
 		  size_t argument_count,
-		  const SeedValue arguments[], 
+		  const SeedValue arguments[],
 		  SeedException * exception)
 {
   int arg;
-  
+
   if (argument_count != 1)
     {
       EXPECTED_EXCEPTION("os.strerror", "1 argument");
     }
   arg = seed_value_to_int (ctx, arguments[0], exception);
-  
+
   return seed_value_from_string (ctx, strerror(arg), exception);
 }
 
@@ -458,17 +458,17 @@ seed_os_umask (SeedContext ctx,
 	       SeedObject function,
 	       SeedObject this_object,
 	       size_t argument_count,
-	       const SeedValue arguments[], 
+	       const SeedValue arguments[],
 	       SeedException * exception)
 {
   mode_t arg;
-  
+
   if (argument_count != 1)
     {
       EXPECTED_EXCEPTION("os.umask", "1 argument");
     }
   arg = seed_value_to_long (ctx, arguments[0], exception);
-  
+
   return seed_value_from_long (ctx, umask(arg), exception);
 }
 
@@ -477,13 +477,13 @@ seed_os_uname (SeedContext ctx,
 	       SeedObject function,
 	       SeedObject this_object,
 	       size_t argument_count,
-	       const SeedValue arguments[], 
+	       const SeedValue arguments[],
 	       SeedException * exception)
 {
   SeedValue elements[5], ret;
   guint c;
   struct utsname name;
-  
+
   if (argument_count != 0)
     {
       EXPECTED_EXCEPTION("os.uname", "no arguments");
@@ -496,8 +496,8 @@ seed_os_uname (SeedContext ctx,
   elements[3] = seed_value_from_string (ctx, name.version, exception);
   elements[4] = seed_value_from_string (ctx, name.machine, exception);
   ret = seed_make_array (ctx, elements, 5, exception);
-  
-  
+
+
   return ret;
 }
 
@@ -507,7 +507,7 @@ seed_os_unsetenv (SeedContext ctx,
 		  SeedObject function,
 		  SeedObject this_object,
 		  size_t argument_count,
-		  const SeedValue arguments[], 
+		  const SeedValue arguments[],
 		  SeedException * exception)
 {
   gint ret;
@@ -517,7 +517,7 @@ seed_os_unsetenv (SeedContext ctx,
     {
       EXPECTED_EXCEPTION("os.unsetenv", "1 argument");
     }
-  
+
   arg = seed_value_to_string (ctx, arguments[0], exception);
   ret = unsetenv (arg);
   g_free (arg);
@@ -530,7 +530,7 @@ seed_os_open (SeedContext ctx,
 	      SeedObject function,
 	      SeedObject this_object,
 	      size_t argument_count,
-	      const SeedValue arguments[], 
+	      const SeedValue arguments[],
 	      SeedException * exception)
 {
   gchar *path;
@@ -540,13 +540,13 @@ seed_os_open (SeedContext ctx,
     {
       EXPECTED_EXCEPTION("os.open", "2 arguments");
     }
-  
+
   path = seed_value_to_string (ctx, arguments[0], exception);
   flags = seed_value_to_int (ctx, arguments[1], exception);
-  
+
   ret = open (path, flags);
   g_free (path);
-  
+
   return seed_value_from_int (ctx, ret, exception);
 }
 
@@ -555,18 +555,18 @@ seed_os_close (SeedContext ctx,
 	       SeedObject function,
 	       SeedObject this_object,
 	       size_t argument_count,
-	       const SeedValue arguments[], 
+	       const SeedValue arguments[],
 	       SeedException * exception)
 {
   gint arg;
-  
+
   if (argument_count != 1)
     {
       EXPECTED_EXCEPTION("os.close", "2 arguments");
     }
-  
+
   arg = seed_value_to_int (ctx, arguments[0], exception);
-  
+
   return seed_value_from_int (ctx, close (arg), exception);
 }
 
@@ -575,18 +575,18 @@ seed_os_dup (SeedContext ctx,
 	     SeedObject function,
 	     SeedObject this_object,
 	     size_t argument_count,
-	     const SeedValue arguments[], 
+	     const SeedValue arguments[],
 	     SeedException * exception)
 {
   gint arg;
-  
+
   if (argument_count != 1)
     {
       EXPECTED_EXCEPTION("os.dup", "1 argument");
     }
-  
+
   arg = seed_value_to_int (ctx, arguments[0], exception);
-  
+
   return seed_value_from_int (ctx, dup (arg), exception);
 }
 SeedValue
@@ -594,19 +594,19 @@ seed_os_dup2 (SeedContext ctx,
 	      SeedObject function,
 	      SeedObject this_object,
 	      size_t argument_count,
-	      const SeedValue arguments[], 
+	      const SeedValue arguments[],
 	      SeedException * exception)
 {
   gint arg, arg2;
-  
+
   if (argument_count != 2)
     {
       EXPECTED_EXCEPTION("os.dup2", "2 arguments");
     }
-  
+
   arg = seed_value_to_int (ctx, arguments[0], exception);
   arg2 = seed_value_to_int (ctx, arguments[0], exception);
-  
+
   return seed_value_from_int (ctx, dup2 (arg, arg2), exception);
 }
 
@@ -615,7 +615,7 @@ seed_os_fchmod (SeedContext ctx,
 		SeedObject function,
 		SeedObject this_object,
 		size_t argument_count,
-		const SeedValue arguments[], 
+		const SeedValue arguments[],
 		SeedException * exception)
 {
   gint fd;
@@ -627,7 +627,7 @@ seed_os_fchmod (SeedContext ctx,
     }
   fd = seed_value_to_int (ctx, arguments[0], exception);
   mode = seed_value_to_long (ctx, arguments[1], exception);
-  
+
   return seed_value_from_int (ctx, fchmod (fd, mode), exception);
 }
 
@@ -636,7 +636,7 @@ seed_os_fchown (SeedContext ctx,
 		SeedObject function,
 		SeedObject this_object,
 		size_t argument_count,
-		const SeedValue arguments[], 
+		const SeedValue arguments[],
 		SeedException * exception)
 {
   gint fd;
@@ -650,7 +650,7 @@ seed_os_fchown (SeedContext ctx,
   fd = seed_value_to_int (ctx, arguments[0], exception);
   uid = seed_value_to_long (ctx, arguments[1], exception);
   gid = seed_value_to_long (ctx, arguments[2], exception);
-  
+
   return seed_value_from_int (ctx, fchown (fd, uid, gid), exception);
 }
 
@@ -659,7 +659,7 @@ seed_os_fdatasync (SeedContext ctx,
 		   SeedObject function,
 		   SeedObject this_object,
 		   size_t argument_count,
-		   const SeedValue arguments[], 
+		   const SeedValue arguments[],
 		   SeedException * exception)
 {
   gint fd;
@@ -669,7 +669,7 @@ seed_os_fdatasync (SeedContext ctx,
       EXPECTED_EXCEPTION ("os.fdatasync", "1 argument");
     }
   fd = seed_value_to_int (ctx, arguments[0], exception);
-  
+
   return seed_value_from_int (ctx, fdatasync (fd), exception);
 }
 
@@ -678,7 +678,7 @@ seed_os_fpathconf (SeedContext ctx,
 		   SeedObject function,
 		   SeedObject this_object,
 		   size_t argument_count,
-		   const SeedValue arguments[], 
+		   const SeedValue arguments[],
 		   SeedException * exception)
 {
   gint fd, name;
@@ -689,7 +689,7 @@ seed_os_fpathconf (SeedContext ctx,
     }
   fd = seed_value_to_int (ctx, arguments[0], exception);
   name = seed_value_to_int (ctx, arguments[1], exception);
-  
+
   return seed_value_from_long (ctx, fpathconf (fd, name), exception);
 }
 
@@ -698,7 +698,7 @@ seed_os_fsync (SeedContext ctx,
 	       SeedObject function,
 	       SeedObject this_object,
 	       size_t argument_count,
-	       const SeedValue arguments[], 
+	       const SeedValue arguments[],
 	       SeedException * exception)
 {
   gint fd, name;
@@ -708,7 +708,7 @@ seed_os_fsync (SeedContext ctx,
       EXPECTED_EXCEPTION ("os.fsync", "1 argument");
     }
   fd = seed_value_to_int (ctx, arguments[0], exception);
-  
+
   return seed_value_from_long (ctx, fsync (fd), exception);
 }
 
@@ -717,7 +717,7 @@ seed_os_ftruncate (SeedContext ctx,
 		   SeedObject function,
 		   SeedObject this_object,
 		   size_t argument_count,
-		   const SeedValue arguments[], 
+		   const SeedValue arguments[],
 		   SeedException * exception)
 {
   gint fd;
@@ -729,7 +729,7 @@ seed_os_ftruncate (SeedContext ctx,
     }
   fd = seed_value_to_int (ctx, arguments[0], exception);
   length = seed_value_to_int (ctx, arguments[1], exception);
-  
+
   return seed_value_from_long (ctx, ftruncate (fd, length), exception);
 }
 
@@ -738,7 +738,7 @@ seed_os_isatty (SeedContext ctx,
 		SeedObject function,
 		SeedObject this_object,
 		size_t argument_count,
-		const SeedValue arguments[], 
+		const SeedValue arguments[],
 		SeedException * exception)
 {
   gint fd;
@@ -748,7 +748,7 @@ seed_os_isatty (SeedContext ctx,
       EXPECTED_EXCEPTION ("os.isatty", "1 argument");
     }
   fd = seed_value_to_int (ctx, arguments[0], exception);
-  
+
   return seed_value_from_boolean (ctx, isatty (fd), exception);
 }
 
@@ -757,7 +757,7 @@ seed_os_lseek (SeedContext ctx,
 	       SeedObject function,
 	       SeedObject this_object,
 	       size_t argument_count,
-	       const SeedValue arguments[], 
+	       const SeedValue arguments[],
 	       SeedException * exception)
 {
   gint fd, whence;
@@ -770,7 +770,7 @@ seed_os_lseek (SeedContext ctx,
   fd = seed_value_to_int (ctx, arguments[0], exception);
   offset = seed_value_to_long (ctx, arguments[1], exception);
   whence = seed_value_to_int (ctx, arguments[2], exception);
-  
+
   return seed_value_from_long (ctx, lseek (fd, offset, whence), exception);
 }
 
@@ -779,7 +779,7 @@ seed_os_openpty (SeedContext ctx,
 		 SeedObject function,
 		 SeedObject this_object,
 		 size_t argument_count,
-		 const SeedValue arguments[], 
+		 const SeedValue arguments[],
 		 SeedException * exception)
 {
   SeedValue fds[2], ret;
@@ -790,12 +790,12 @@ seed_os_openpty (SeedContext ctx,
       EXPECTED_EXCEPTION ("os.openpty", "no arguments");
     }
   openpty (&master, &slave, NULL, NULL, NULL);
-  
+
   fds[0] = seed_value_from_int (ctx, master, exception);
   fds[1] = seed_value_from_int (ctx, slave, exception);
-  
+
   ret = seed_make_array (ctx, fds, 2, exception);
-  
+
   return ret;
 }
 
@@ -804,7 +804,7 @@ seed_os_pipe (SeedContext ctx,
 	      SeedObject function,
 	      SeedObject this_object,
 	      size_t argument_count,
-	      const SeedValue arguments[], 
+	      const SeedValue arguments[],
 	      SeedException * exception)
 {
   SeedValue fds[2], ret;
@@ -818,12 +818,12 @@ seed_os_pipe (SeedContext ctx,
     {
       // TODO
     }
-  
+
   fds[0] = seed_value_from_int (ctx, fildes[0], exception);
   fds[1] = seed_value_from_int (ctx, fildes[1], exception);
-  
+
   ret = seed_make_array (ctx, fds, 2, exception);
-  
+
   return ret;
 }
 
@@ -832,7 +832,7 @@ seed_os_read (SeedContext ctx,
 	      SeedObject function,
 	      SeedObject this_object,
 	      size_t argument_count,
-	      const SeedValue arguments[], 
+	      const SeedValue arguments[],
 	      SeedException * exception)
 {
   SeedValue ret;
@@ -845,7 +845,7 @@ seed_os_read (SeedContext ctx,
     }
   fd = seed_value_to_int (ctx, arguments[0], exception);
   n = seed_value_to_int (ctx, arguments[1], exception);
-  
+
   buf = g_alloca (n * sizeof (gchar));
   nr = read (fd, buf, n);
   buf[nr] = '\0';
@@ -854,7 +854,7 @@ seed_os_read (SeedContext ctx,
     ret = seed_value_from_string (ctx, buf, exception);
   else
     ret = seed_make_null (ctx);
-  
+
   return ret;
 }
 
@@ -863,7 +863,7 @@ seed_os_write (SeedContext ctx,
 	       SeedObject function,
 	       SeedObject this_object,
 	       size_t argument_count,
-	       const SeedValue arguments[], 
+	       const SeedValue arguments[],
 	       SeedException * exception)
 {
   SeedValue ret;
@@ -876,7 +876,7 @@ seed_os_write (SeedContext ctx,
     }
   fd = seed_value_to_int (ctx, arguments[0], exception);
   buf = seed_value_to_string (ctx, arguments[1], exception);
-  
+
   nw = write (fd, buf, strlen (buf));
 
   return seed_value_from_int (ctx, nw, exception);
@@ -887,7 +887,7 @@ seed_os_ttyname (SeedContext ctx,
 		 SeedObject function,
 		 SeedObject this_object,
 		 size_t argument_count,
-		 const SeedValue arguments[], 
+		 const SeedValue arguments[],
 		 SeedException * exception)
 {
   SeedValue ret;
@@ -898,7 +898,7 @@ seed_os_ttyname (SeedContext ctx,
       EXPECTED_EXCEPTION ("os.ttyname", "1 argument");
     }
   fd = seed_value_to_int (ctx, arguments[0], exception);
-  
+
   return seed_value_from_string (ctx, ttyname (fd), exception);
 }
 
@@ -907,7 +907,7 @@ seed_os_tcgetpgrp (SeedContext ctx,
 		   SeedObject function,
 		   SeedObject this_object,
 		   size_t argument_count,
-		   const SeedValue arguments[], 
+		   const SeedValue arguments[],
 		   SeedException * exception)
 {
   SeedValue ret;
@@ -918,7 +918,7 @@ seed_os_tcgetpgrp (SeedContext ctx,
       EXPECTED_EXCEPTION ("os.tcgetpgrp", "1 argument");
     }
   fd = seed_value_to_int (ctx, arguments[0], exception);
-  
+
   return seed_value_from_long (ctx, tcgetpgrp (fd), exception);
 }
 
@@ -927,7 +927,7 @@ seed_os_tcsetpgrp (SeedContext ctx,
 		   SeedObject function,
 		   SeedObject this_object,
 		   size_t argument_count,
-		   const SeedValue arguments[], 
+		   const SeedValue arguments[],
 		   SeedException * exception)
 {
   SeedValue ret;
@@ -940,7 +940,7 @@ seed_os_tcsetpgrp (SeedContext ctx,
     }
   fd = seed_value_to_int (ctx, arguments[0], exception);
   pgrp = seed_value_to_int (ctx, arguments[1], exception);
-  
+
   return seed_value_from_int (ctx, tcsetpgrp (fd, pgrp), exception);
 }
 
@@ -949,7 +949,7 @@ seed_os_access (SeedContext ctx,
 		SeedObject function,
 		SeedObject this_object,
 		size_t argument_count,
-		const SeedValue arguments[], 
+		const SeedValue arguments[],
 		SeedException * exception)
 {
   int ret;
@@ -962,9 +962,9 @@ seed_os_access (SeedContext ctx,
     }
   path = seed_value_to_string (ctx, arguments[0], exception);
   amd = seed_value_to_int (ctx, arguments[1], exception);
-  
+
   ret = access (path, amd);
-  
+
   if (ret == 0)
     return seed_value_from_boolean (ctx, TRUE, exception);
   else
@@ -980,7 +980,7 @@ seed_os_fork (SeedContext ctx,
 	      SeedException *exception)
 {
   pid_t t = fork();
-  
+
   return seed_value_from_long (ctx, t, exception);
 }
 
@@ -1043,12 +1043,12 @@ seed_module_init(SeedEngine * eng)
 {
   SeedClass os_namespace_class;
   seed_class_definition os_namespace_class_definition = seed_empty_class;
-  
+
   os_namespace_class_definition.static_functions = os_funcs;
   os_namespace_class = seed_create_class (&os_namespace_class_definition);
 
   os_namespace = seed_make_object (eng->context, os_namespace_class, NULL);
-  
+
   OS_DEFINE_QUICK_ENUM (O_RDONLY);
   OS_DEFINE_QUICK_ENUM (O_WRONLY);
   OS_DEFINE_QUICK_ENUM (O_RDWR);
@@ -1084,7 +1084,7 @@ seed_module_init(SeedEngine * eng)
   OS_DEFINE_QUICK_ENUM (SEEK_SET);
   OS_DEFINE_QUICK_ENUM (SEEK_CUR);
   OS_DEFINE_QUICK_ENUM (SEEK_END);
-  
+
   OS_DEFINE_QUICK_ENUM (F_OK);
   OS_DEFINE_QUICK_ENUM (R_OK);
   OS_DEFINE_QUICK_ENUM (W_OK);

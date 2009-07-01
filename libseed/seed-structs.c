@@ -1,16 +1,16 @@
 /*
  * This file is part of Seed, the GObject Introspection<->Javascript bindings.
  *
- * Seed is free software: you can redistribute it and/or modify 
+ * Seed is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of
- * the License, or (at your option) any later version. 
- * Seed is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
- * GNU Lesser General Public License for more details. 
- * You should have received a copy of the GNU Lesser General Public License 
- * along with Seed.  If not, see <http://www.gnu.org/licenses/>. 
+ * the License, or (at your option) any later version.
+ * Seed is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Seed.  If not, see <http://www.gnu.org/licenses/>.
  *
  *Copyright (C) Robert Carr 2008 <carrr@rpi.edu>
  */
@@ -726,7 +726,7 @@ seed_construct_struct_type_with_parameters (JSContextRef ctx,
 	field = seed_union_find_field ((GIUnionInfo *) info, prop_name);
       if (!field)
 	{
-	  seed_make_exception (ctx, exception, "PropertyError", 
+	  seed_make_exception (ctx, exception, "PropertyError",
 			       "Invalid property for construction: %s",
 			       prop_name);
 
