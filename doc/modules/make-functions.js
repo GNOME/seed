@@ -2,18 +2,16 @@
 Seed.include(Seed.argv[2]);
 
 function output_param (param){
-    Seed.printf("<varlistentry><term><parameter>%s</parameter></term>"+
-		"<listitem><simpara>%s</simpara></listitem></varlistentry>",
-		param.name,
-		param.description);
+    print("<varlistentry><term><parameter>" + param.name +
+			"</parameter></term>"  + "<listitem><simpara>" +
+			param.descripton + "</simpara></listitem></varlistentry>");
 		
 }
 
 function output_function (func){
-    var start = Seed.printf("<refsect2 id=\"%s\" role=\"function\">"+
-			    "<title>%s</title>"+
-			    "<para>%s</para>",
-			    func.id, func.title, func.description);
+    var start = print("<refsect2 id=" + func.id +  " role=\"function\">" +
+			    "<title>" + func.title + "</title>" +
+			    "<para>" + func.description + "</para>");
     
     if (func.params || func.returns)
 	print("<variablelist role=\"params\">");
@@ -23,9 +21,9 @@ function output_function (func){
 	}
     }
     if (func.returns != null){
-	Seed.printf("<varlistentry><term><emphasis>Returns</emphasis></term>"+
-		    "<listitem><simpara>%s</simpara></listitem></varlistentry>",
-		    func.returns);
+	print("<varlistentry><term><emphasis>Returns</emphasis></term>" +
+		    "<listitem><simpara>" + func.returns +
+			"</simpara></listitem></varlistentry>");
     }
     if (func.params || func.returns)
 	print("</variablelist>");
@@ -34,7 +32,9 @@ function output_function (func){
 }
 
 print("<para>");
-for (var i = 0; i < funcs.length; i++){
+for (var i = 0; i < funcs.length; i++)
+{
     output_function (funcs[i]);
 }
 print("</para>");
+
