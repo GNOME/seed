@@ -1,9 +1,8 @@
-
 #include <seed.h>
 #include <glib/gi18n.h>
 
 SeedObject namespace_ref;
-SeedEngine *eng;
+SeedEngine * eng;
 
 static SeedValue
 seed_gettext_gettext (SeedContext ctx,
@@ -27,7 +26,7 @@ seed_gettext_gettext (SeedContext ctx,
 	msgid = seed_value_to_string (ctx, arguments[0], exception);
 
 	ret = seed_value_from_string (ctx, gettext(msgid), exception);
-	g_free( ret );
+	g_free(ret);
 
 	return ret;
 }
@@ -61,13 +60,13 @@ seed_gettext_textdomain (SeedContext ctx,
 
 static SeedValue
 seed_gettext_bindtextdomain (SeedContext ctx,
-							 SeedObject function,
-							 SeedObject this_object,
-							 gsize argument_count,
-							 const SeedValue args[],
-							 SeedException * exception)
+                             SeedObject function,
+                             SeedObject this_object,
+                             gsize argument_count,
+                             const SeedValue args[],
+                             SeedException * exception)
 {
-	gchar *domainname, *dirname;
+	gchar * domainname, * dirname;
 	SeedValue ret;
 
 	if (argument_count != 2)
@@ -81,22 +80,24 @@ seed_gettext_bindtextdomain (SeedContext ctx,
 	domainname = seed_value_to_string (ctx, args[0], exception);
 	dirname = seed_value_to_string (ctx, args[1], exception);
 
-	ret = seed_value_from_string (ctx, bindtextdomain(domainname, dirname), exception);
-	g_free( domainname );
-	g_free( dirname );
+	ret = seed_value_from_string (ctx,
+	                              bindtextdomain(domainname, dirname),
+	                              exception);
+	g_free(domainname);
+	g_free(dirname);
 
 	return ret;
 }
 
 static SeedValue
 seed_gettext_bind_textdomain_codeset (SeedContext ctx,
-									  SeedObject function,
-									  SeedObject this_object,
-									  gsize argument_count,
-									  const SeedValue args[],
-									  SeedException * exception)
+                                      SeedObject function,
+                                      SeedObject this_object,
+                                      gsize argument_count,
+                                      const SeedValue args[],
+                                      SeedException * exception)
 {
-	gchar *domainname, *codeset;
+	gchar * domainname, * codeset;
 	SeedValue ret;
 
 	if (argument_count != 2)
@@ -113,21 +114,21 @@ seed_gettext_bind_textdomain_codeset (SeedContext ctx,
 	ret = seed_value_from_string (ctx,
 								  bind_textdomain_codeset(domainname, codeset),
 								  exception);
-	g_free( domainname );
-	g_free( codeset );
+	g_free(domainname);
+	g_free(codeset);
 
 	return ret;
 }
 
 static SeedValue
 seed_gettext_dgettext (SeedContext ctx,
-					   SeedObject function,
-					   SeedObject this_object,
-					   gsize argument_count,
-					   const SeedValue args[],
-					   SeedException * exception)
+                       SeedObject function,
+                       SeedObject this_object,
+                       gsize argument_count,
+                       const SeedValue args[],
+                       SeedException * exception)
 {
-	gchar *domainname, *msgid;
+	gchar * domainname, * msgid;
 	SeedValue ret;
 
 	if (argument_count != 2)
@@ -139,24 +140,24 @@ seed_gettext_dgettext (SeedContext ctx,
 	}
 
 	domainname = seed_value_to_string (ctx, args[0], exception);
-	msgid  = seed_value_to_string (ctx, args[1], exception);
+	msgid = seed_value_to_string (ctx, args[1], exception);
 
 	ret = seed_value_from_string (ctx, dgettext(domainname, msgid), exception);
-	g_free( domainname );
-	g_free( msgid );
+	g_free(domainname);
+	g_free(msgid);
 
 	return ret;
 }
 
 static SeedValue
 seed_gettext_dcgettext (SeedContext ctx,
-						SeedObject function,
-						SeedObject this_object,
-						gsize argument_count,
-						const SeedValue args[],
-						SeedException * exception)
+                        SeedObject function,
+                        SeedObject this_object,
+                        gsize argument_count,
+                        const SeedValue args[],
+                        SeedException * exception)
 {
-	gchar *domainname, *msgid;
+	gchar * domainname, * msgid;
 	gint category;
 	SeedValue ret;
 
@@ -169,23 +170,25 @@ seed_gettext_dcgettext (SeedContext ctx,
 	}
 
 	domainname = seed_value_to_string (ctx, args[0], exception);
-	msgid  = seed_value_to_string (ctx, args[1], exception);
-	category  = seed_value_to_int (ctx, args[2], exception);
+	msgid = seed_value_to_string (ctx, args[1], exception);
+	category = seed_value_to_int (ctx, args[2], exception);
 
-	ret = seed_value_from_string (ctx, dcgettext(domainname, msgid, category), exception);
-	g_free( domainname );
-	g_free( msgid );
+	ret = seed_value_from_string (ctx,
+	                              dcgettext(domainname, msgid, category),
+	                              exception);
+	g_free(domainname);
+	g_free(msgid);
 }
 
 static SeedValue
 seed_gettext_ngettext (SeedContext ctx,
-					   SeedObject function,
-					   SeedObject this_object,
-					   gsize argument_count,
-					   const SeedValue args[],
-					   SeedException * exception)
+                       SeedObject function,
+                       SeedObject this_object,
+                       gsize argument_count,
+                       const SeedValue args[],
+                       SeedException * exception)
 {
-	gchar *msgid, *msgid_plural;
+	gchar * msgid, * msgid_plural;
 	guint n;
 	SeedValue ret;
 
@@ -198,25 +201,25 @@ seed_gettext_ngettext (SeedContext ctx,
 	}
 
 	msgid = seed_value_to_string (ctx, args[0], exception);
-	msgid_plural  = seed_value_to_string (ctx, args[1], exception);
-	n  = seed_value_to_guint (ctx, args[2], exception);
+	msgid_plural = seed_value_to_string (ctx, args[1], exception);
+	n = seed_value_to_guint (ctx, args[2], exception);
 
 	ret = seed_value_from_string (ctx, ngettext(msgid, msgid_plural, n), exception);
-	g_free( msgid );
-	g_free( msgid_plural );
+	g_free(msgid);
+	g_free(msgid_plural);
 
 	return ret;
 }
 
 static SeedValue
 seed_gettext_dngettext (SeedContext ctx,
-						SeedObject function,
-						SeedObject this_object,
-						gsize argument_count,
-						const SeedValue args[],
-						SeedException * exception)
+                        SeedObject function,
+                        SeedObject this_object,
+                        gsize argument_count,
+                        const SeedValue args[],
+                        SeedException * exception)
 {
-	gchar *domainname, *msgid, *msgid_plural;
+	gchar * domainname, * msgid, * msgid_plural;
 	guint n;
 	SeedValue ret;
 
@@ -230,13 +233,13 @@ seed_gettext_dngettext (SeedContext ctx,
 
 	domainname = seed_value_to_string (ctx, args[0], exception);
 	msgid = seed_value_to_string (ctx, args[1], exception);
-	msgid_plural  = seed_value_to_string (ctx, args[2], exception);
-	n  = seed_value_to_guint (ctx, args[3], exception);
+	msgid_plural = seed_value_to_string (ctx, args[2], exception);
+	n = seed_value_to_guint (ctx, args[3], exception);
 
 	ret = seed_value_from_string (ctx, dngettext(domainname, msgid, msgid_plural, n), exception);
-	g_free( domainname );
-	g_free( msgid );
-	g_free( msgid_plural );
+	g_free(domainname);
+	g_free(msgid);
+	g_free(msgid_plural);
 
 	return ret;
 }
@@ -249,7 +252,7 @@ seed_gettext_dcngettext (SeedContext ctx,
                          const SeedValue args[],
                          SeedException * exception)
 {
-	gchar *domainname, *msgid, *msgid_plural;
+	gchar * domainname, * msgid, * msgid_plural;
 	guint n;
 	gint category;
 	SeedValue ret;
@@ -264,29 +267,29 @@ seed_gettext_dcngettext (SeedContext ctx,
 
 	domainname = seed_value_to_string (ctx, args[0], exception);
 	msgid = seed_value_to_string (ctx, args[1], exception);
-	msgid_plural  = seed_value_to_string (ctx, args[2], exception);
-	n  = seed_value_to_guint (ctx, args[3], exception);
-	category  = seed_value_to_gint (ctx, args[4], exception);
+	msgid_plural = seed_value_to_string (ctx, args[2], exception);
+	n = seed_value_to_guint (ctx, args[3], exception);
+	category = seed_value_to_gint (ctx, args[4], exception);
 
 	ret = seed_value_from_string (ctx,
-								  dcngettext(domainname, msgid, msgid_plural, n, category),
-								  exception);
-	g_free( domainname );
-	g_free( msgid );
-	g_free( msgid_plural );
+	                              dcngettext(domainname, msgid, msgid_plural, n, category),
+	                              exception);
+	g_free(domainname);
+	g_free(msgid);
+	g_free(msgid_plural);
 
 	return ret;
 }
 
 static SeedValue
 seed_gettext_setlocale (SeedContext ctx,
-						SeedObject function,
-						SeedObject this_object,
-						gsize argument_count,
-						const SeedValue args[],
-						SeedException * exception)
+                        SeedObject function,
+                        SeedObject this_object,
+                        gsize argument_count,
+                        const SeedValue args[],
+                        SeedException * exception)
 {
-	gchar *locale;
+	gchar * locale;
 	gint category;
 	SeedValue ret;
 
@@ -302,9 +305,9 @@ seed_gettext_setlocale (SeedContext ctx,
 	locale = seed_value_to_string (ctx, args[1], exception);
 
 	ret = seed_value_from_string (ctx,
-								  setlocale(category, locale),
-								  exception);
-	g_free( locale );
+	                              setlocale(category, locale),
+	                              exception);
+	g_free(locale);
 
 	return ret;
 }
