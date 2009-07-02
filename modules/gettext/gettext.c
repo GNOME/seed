@@ -202,7 +202,7 @@ seed_gettext_ngettext (SeedContext ctx,
 
 	msgid = seed_value_to_string (ctx, args[0], exception);
 	msgid_plural = seed_value_to_string (ctx, args[1], exception);
-	n = seed_value_to_guint (ctx, args[2], exception);
+	n = seed_value_to_uint (ctx, args[2], exception);
 
 	ret = seed_value_from_string (ctx, ngettext(msgid, msgid_plural, n), exception);
 	g_free(msgid);
@@ -234,7 +234,7 @@ seed_gettext_dngettext (SeedContext ctx,
 	domainname = seed_value_to_string (ctx, args[0], exception);
 	msgid = seed_value_to_string (ctx, args[1], exception);
 	msgid_plural = seed_value_to_string (ctx, args[2], exception);
-	n = seed_value_to_guint (ctx, args[3], exception);
+	n = seed_value_to_uint (ctx, args[3], exception);
 
 	ret = seed_value_from_string (ctx, dngettext(domainname, msgid, msgid_plural, n), exception);
 	g_free(domainname);
@@ -268,8 +268,8 @@ seed_gettext_dcngettext (SeedContext ctx,
 	domainname = seed_value_to_string (ctx, args[0], exception);
 	msgid = seed_value_to_string (ctx, args[1], exception);
 	msgid_plural = seed_value_to_string (ctx, args[2], exception);
-	n = seed_value_to_guint (ctx, args[3], exception);
-	category = seed_value_to_gint (ctx, args[4], exception);
+	n = seed_value_to_uint (ctx, args[3], exception);
+	category = seed_value_to_int (ctx, args[4], exception);
 
 	ret = seed_value_from_string (ctx,
 	                              dcngettext(domainname, msgid, msgid_plural, n, category),
@@ -301,7 +301,7 @@ seed_gettext_setlocale (SeedContext ctx,
 		return seed_make_null (ctx);
 	}
 
-	category = seed_value_to_gint (ctx, args[0], exception);
+	category = seed_value_to_int (ctx, args[0], exception);
 	locale = seed_value_to_string (ctx, args[1], exception);
 
 	ret = seed_value_from_string (ctx,
