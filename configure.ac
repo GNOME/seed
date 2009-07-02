@@ -267,6 +267,46 @@ AC_ARG_ENABLE(gettext-module,
 AM_CONDITIONAL(BUILD_GETTEXT_MODULE, test "x$want_gettext_module" = "xyes")
 AC_SUBST(BUILD_GETTEXT_MODULE)
 
+dnl ==== mpfr ====
+AC_ARG_ENABLE(mpfr-module,
+			  AC_HELP_STRING([--enable-mpfr-module],
+							 [enable the mpfr Seed module. [default=yes]]),
+			  [want_mpfr_module=$enableval],[want_mpfr_module="yes"])
+
+if test x"$want_mpfr_module" == x"yes" ; then
+	AC_MSG_CHECKING(for mpfr.h)
+
+	AC_TRY_CPP([#include <mpfr.h>], have_mpfr_h=yes, have_mpfr_h=no)
+	if test x"$have_mpfr_h" = x"yes"; then
+		save_LIBS=$LIBS
+		if test x"$with_mpfr" = x"yes" || test x"$with_mpfr" = x"auto"; then
+			other_LIBS=
+		else
+			other_LIBS=$with_mpfr
+		fi
+
+        #this section...I don't get what it's doing
+		AC_SEARCH_LIBS(mpfr_init2,mpfr,,AC_MSG_ERROR([mpfr not found]),$other_LIBS)
+		if test x"$ac_cv_search_mpfr_call" = x"none required" ; then
+			MPFR_LDFLAGS=$other_LIBS
+		else
+			MPFR_LDFLAGS="$other_LIBS"
+		fi
+		LIBS=$save_LIBS
+	fi
+	if test x"$have_mpfr_h" != x"yes" ; then
+		AC_MSG_ERROR([mpfr.h not found])
+	fi
+
+	MPFR_CFLAGS=
+
+	AC_MSG_RESULT([$have_mpfr_h])
+
+fi
+
+AM_CONDITIONAL(BUILD_MPFR_MODULE, test "x$want_mpfr_module" = "xyes")
+AC_SUBST(BUILD_MPFR_MODULE)
+
 dnl =========================turtle example====================================
 AC_ARG_ENABLE(turtle-example,
 			  AC_HELP_STRING([--enable-turtle-example],
@@ -424,6 +464,7 @@ modules/libxml/Makefile
 modules/cairo/Makefile
 modules/gtkbuilder/Makefile
 modules/gettext/Makefile
+modules/mpfr/Makefile
 
 libseed/seed-path.h
 ])
@@ -451,6 +492,7 @@ Modules:
    cairo......................$want_cairo_module
    gtkbuilder.................$want_gtkbuilder_module
    gettext....................$want_gettext_module
+   mpfr.......................$want_mpfr_module
 
 Examples:
    Turtle.....................$want_turtle_example
