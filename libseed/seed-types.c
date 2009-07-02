@@ -1514,6 +1514,90 @@ seed_value_from_uchar (JSContextRef ctx, guchar val, JSValueRef * exception)
 }
 
 /**
+ * seed_value_to_short:
+ * @ctx: A #SeedContext.
+ * @val: The #SeedValue to convert.
+ * @exception: A reference to a #SeedValue in which to store any exceptions.
+ *             Pass %NULL to ignore exceptions.
+ *
+ * Return value: The %gshort represented by @val, or %NULL if an exception
+ *               is raised during the conversion.
+ *
+ */
+gshort
+seed_value_to_short (JSContextRef ctx, JSValueRef val, JSValueRef * exception)
+{
+  if (!JSValueIsNumber (ctx, val) && !JSValueIsBoolean (ctx, val))
+    {
+      if (!JSValueIsNull (ctx, val))
+	seed_make_exception (ctx, exception, "ConversionError",
+			     "Can not convert Javascript value to" " short");
+      return 0;
+    }
+
+  return (gshort) JSValueToNumber (ctx, val, NULL);
+}
+
+/**
+ * seed_value_from_short:
+ * @ctx: A #SeedContext.
+ * @val: The #gshort to represent.
+ * @exception: A reference to a #SeedValue in which to store any exceptions.
+ *             Pass %NULL to ignore exceptions.
+ *
+ * Return value: A %SeedValue which represents @val, or %NULL if an exception
+ *               is raised during the conversion.
+ *
+ */
+JSValueRef
+seed_value_from_short (JSContextRef ctx, gshort val, JSValueRef * exception)
+{
+  return JSValueMakeNumber (ctx, (gdouble) val);
+}
+
+/**
+ * seed_value_to_ushort:
+ * @ctx: A #SeedContext.
+ * @val: The #SeedValue to convert.
+ * @exception: A reference to a #SeedValue in which to store any exceptions.
+ *             Pass %NULL to ignore exceptions.
+ *
+ * Return value: The %gushort represented by @val, or %NULL if an exception
+ *               is raised during the conversion.
+ *
+ */
+gushort
+seed_value_to_ushort (JSContextRef ctx, JSValueRef val, JSValueRef * exception)
+{
+  if (!JSValueIsNumber (ctx, val) && !JSValueIsBoolean (ctx, val))
+    {
+      if (!JSValueIsNull (ctx, val))
+	seed_make_exception (ctx, exception, "ConversionError",
+			     "Can not convert Javascript value to" " ushort");
+      return 0;
+    }
+
+  return (gushort) JSValueToNumber (ctx, val, NULL);
+}
+
+/**
+ * seed_value_from_ushort:
+ * @ctx: A #SeedContext.
+ * @val: The #gushort to represent.
+ * @exception: A reference to a #SeedValue in which to store any exceptions.
+ *             Pass %NULL to ignore exceptions.
+ *
+ * Return value: A %SeedValue which represents @val, or %NULL if an exception
+ *               is raised during the conversion.
+ *
+ */
+JSValueRef
+seed_value_from_ushort (JSContextRef ctx, gushort val, JSValueRef * exception)
+{
+  return JSValueMakeNumber (ctx, (gdouble) val);
+}
+
+/**
  * seed_value_to_long:
  * @ctx: A #SeedContext.
  * @val: The #SeedValue to convert.
@@ -1538,7 +1622,7 @@ seed_value_to_long (JSContextRef ctx, JSValueRef val, JSValueRef * exception)
   return (glong) JSValueToNumber (ctx, val, NULL);
 }
 
-/**
+ /**
  * seed_value_from_long:
  * @ctx: A #SeedContext.
  * @val: The #glong to represent.
