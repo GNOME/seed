@@ -359,6 +359,34 @@ seed_module_init(SeedEngine *local_eng)
 	                     (SeedFunctionCallback) seed_gettext_setlocale,
 	                     namespace_ref);
 
+    /* define enums for setlocale. Where to put them?  */
+    seed_object_set_property(eng->context, namespace_ref, "LC_CTYPE",
+                             seed_value_from_long(eng->context, LC_CTYPE, NULL));
+    seed_object_set_property(eng->context, namespace_ref, "LC_NUMERIC",
+                             seed_value_from_long(eng->context, LC_NUMERIC, NULL));
+    seed_object_set_property(eng->context, namespace_ref, "LC_TIME",
+                             seed_value_from_long(eng->context, LC_TIME, NULL));
+    seed_object_set_property(eng->context, namespace_ref, "LC_COLLATE",
+                             seed_value_from_long(eng->context, LC_COLLATE, NULL));
+    seed_object_set_property(eng->context, namespace_ref, "LC_MONETARY",
+                             seed_value_from_long(eng->context, LC_MONETARY, NULL));
+    seed_object_set_property(eng->context, namespace_ref, "LC_MESSAGES",
+                             seed_value_from_long(eng->context, LC_MESSAGES, NULL));
+    seed_object_set_property(eng->context, namespace_ref, "LC_ALL",
+                             seed_value_from_long(eng->context, LC_ALL, NULL));
+    seed_object_set_property(eng->context, namespace_ref, "LC_PAPER",
+                             seed_value_from_long(eng->context, LC_PAPER, NULL));
+    seed_object_set_property(eng->context, namespace_ref, "LC_NAME",
+                             seed_value_from_long(eng->context, LC_NAME, NULL));
+    seed_object_set_property(eng->context, namespace_ref, "LC_ADDRESS",
+                             seed_value_from_long(eng->context, LC_ADDRESS, NULL));
+    seed_object_set_property(eng->context, namespace_ref, "LC_TELEPHONE",
+                             seed_value_from_long(eng->context, LC_TELEPHONE, NULL));
+    seed_object_set_property(eng->context, namespace_ref, "LC_MEASUREMENT",
+                             seed_value_from_long(eng->context, LC_MEASUREMENT, NULL));
+    seed_object_set_property(eng->context, namespace_ref, "LC_IDENTIFICATION",
+                             seed_value_from_long(eng->context, LC_IDENTIFICATION, NULL));
+
 	return namespace_ref;
 }
 
