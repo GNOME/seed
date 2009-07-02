@@ -112,8 +112,8 @@ seed_gettext_bind_textdomain_codeset (SeedContext ctx,
 	codeset = seed_value_to_string (ctx, args[1], exception);
 
 	ret = seed_value_from_string (ctx,
-								  bind_textdomain_codeset(domainname, codeset),
-								  exception);
+	                              bind_textdomain_codeset(domainname, codeset),
+	                              exception);
 	g_free(domainname);
 	g_free(codeset);
 
@@ -315,77 +315,77 @@ seed_gettext_setlocale (SeedContext ctx,
 SeedObject
 seed_module_init(SeedEngine *local_eng)
 {
-	eng = local_eng;
-	namespace_ref = seed_make_object (eng->context, NULL, NULL);
-	seed_value_protect (eng->context, namespace_ref);
+	SeedGlobalContext ctx = local_eng->context;
+	namespace_ref = seed_make_object (ctx, NULL, NULL);
+	seed_value_protect (ctx, namespace_ref);
 
-	seed_create_function(eng->context, "gettext",
+	seed_create_function(ctx, "gettext",
 	                     (SeedFunctionCallback) seed_gettext_gettext,
 	                     namespace_ref);
 
-	seed_create_function(eng->context, "textdomain",
+	seed_create_function(ctx, "textdomain",
 	                     (SeedFunctionCallback) seed_gettext_textdomain,
 	                     namespace_ref);
 
-	seed_create_function(eng->context, "bindtextdomain",
+	seed_create_function(ctx, "bindtextdomain",
 	                     (SeedFunctionCallback) seed_gettext_bindtextdomain,
 	                     namespace_ref);
 
-	seed_create_function(eng->context, "bind_textdomain_codeset",
+	seed_create_function(ctx, "bind_textdomain_codeset",
 	                     (SeedFunctionCallback) seed_gettext_bind_textdomain_codeset,
 	                     namespace_ref);
 
-	seed_create_function(eng->context, "dgettext",
+	seed_create_function(ctx, "dgettext",
 	                     (SeedFunctionCallback) seed_gettext_dgettext,
 	                     namespace_ref);
 
-	seed_create_function(eng->context, "dcgettext",
+	seed_create_function(ctx, "dcgettext",
 	                     (SeedFunctionCallback) seed_gettext_dcgettext,
 	                     namespace_ref);
 
-	seed_create_function(eng->context, "ngettext",
+	seed_create_function(ctx, "ngettext",
 	                     (SeedFunctionCallback) seed_gettext_ngettext,
 	                     namespace_ref);
 
-	seed_create_function(eng->context, "dngettext",
+	seed_create_function(ctx, "dngettext",
 	                     (SeedFunctionCallback) seed_gettext_dngettext,
 	                     namespace_ref);
 
-	seed_create_function(eng->context, "dcngettext",
+	seed_create_function(ctx, "dcngettext",
 	                     (SeedFunctionCallback) seed_gettext_dcngettext,
 	                     namespace_ref);
 
-	seed_create_function(eng->context, "setlocale",
+	seed_create_function(ctx, "setlocale",
 	                     (SeedFunctionCallback) seed_gettext_setlocale,
 	                     namespace_ref);
 
-    /* define enums for setlocale. Where to put them?  */
-    seed_object_set_property(eng->context, namespace_ref, "LC_CTYPE",
-                             seed_value_from_long(eng->context, LC_CTYPE, NULL));
-    seed_object_set_property(eng->context, namespace_ref, "LC_NUMERIC",
-                             seed_value_from_long(eng->context, LC_NUMERIC, NULL));
-    seed_object_set_property(eng->context, namespace_ref, "LC_TIME",
-                             seed_value_from_long(eng->context, LC_TIME, NULL));
-    seed_object_set_property(eng->context, namespace_ref, "LC_COLLATE",
-                             seed_value_from_long(eng->context, LC_COLLATE, NULL));
-    seed_object_set_property(eng->context, namespace_ref, "LC_MONETARY",
-                             seed_value_from_long(eng->context, LC_MONETARY, NULL));
-    seed_object_set_property(eng->context, namespace_ref, "LC_MESSAGES",
-                             seed_value_from_long(eng->context, LC_MESSAGES, NULL));
-    seed_object_set_property(eng->context, namespace_ref, "LC_ALL",
-                             seed_value_from_long(eng->context, LC_ALL, NULL));
-    seed_object_set_property(eng->context, namespace_ref, "LC_PAPER",
-                             seed_value_from_long(eng->context, LC_PAPER, NULL));
-    seed_object_set_property(eng->context, namespace_ref, "LC_NAME",
-                             seed_value_from_long(eng->context, LC_NAME, NULL));
-    seed_object_set_property(eng->context, namespace_ref, "LC_ADDRESS",
-                             seed_value_from_long(eng->context, LC_ADDRESS, NULL));
-    seed_object_set_property(eng->context, namespace_ref, "LC_TELEPHONE",
-                             seed_value_from_long(eng->context, LC_TELEPHONE, NULL));
-    seed_object_set_property(eng->context, namespace_ref, "LC_MEASUREMENT",
-                             seed_value_from_long(eng->context, LC_MEASUREMENT, NULL));
-    seed_object_set_property(eng->context, namespace_ref, "LC_IDENTIFICATION",
-                             seed_value_from_long(eng->context, LC_IDENTIFICATION, NULL));
+	/* define enums for setlocale. Where to put them?  */
+	seed_object_set_property(ctx, namespace_ref, "LC_CTYPE",
+	                         seed_value_from_long(ctx, LC_CTYPE, NULL));
+	seed_object_set_property(ctx, namespace_ref, "LC_NUMERIC",
+	                         seed_value_from_long(ctx, LC_NUMERIC, NULL));
+	seed_object_set_property(ctx, namespace_ref, "LC_TIME",
+	                         seed_value_from_long(ctx, LC_TIME, NULL));
+	seed_object_set_property(ctx, namespace_ref, "LC_COLLATE",
+	                         seed_value_from_long(ctx, LC_COLLATE, NULL));
+	seed_object_set_property(ctx, namespace_ref, "LC_MONETARY",
+	                         seed_value_from_long(ctx, LC_MONETARY, NULL));
+	seed_object_set_property(ctx, namespace_ref, "LC_MESSAGES",
+	                         seed_value_from_long(ctx, LC_MESSAGES, NULL));
+	seed_object_set_property(ctx, namespace_ref, "LC_ALL",
+	                         seed_value_from_long(ctx, LC_ALL, NULL));
+	seed_object_set_property(ctx, namespace_ref, "LC_PAPER",
+	                         seed_value_from_long(ctx, LC_PAPER, NULL));
+	seed_object_set_property(ctx, namespace_ref, "LC_NAME",
+	                         seed_value_from_long(ctx, LC_NAME, NULL));
+	seed_object_set_property(ctx, namespace_ref, "LC_ADDRESS",
+	                         seed_value_from_long(ctx, LC_ADDRESS, NULL));
+	seed_object_set_property(ctx, namespace_ref, "LC_TELEPHONE",
+	                         seed_value_from_long(ctx, LC_TELEPHONE, NULL));
+	seed_object_set_property(ctx, namespace_ref, "LC_MEASUREMENT",
+	                         seed_value_from_long(ctx, LC_MEASUREMENT, NULL));
+	seed_object_set_property(ctx, namespace_ref, "LC_IDENTIFICATION",
+	                         seed_value_from_long(ctx, LC_IDENTIFICATION, NULL));
 
 	return namespace_ref;
 }
