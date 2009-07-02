@@ -9,7 +9,7 @@ function output_param (param){
 }
 
 function output_function (func){
-    var start = print("<refsect2 id=" + func.id +  " role=\"function\">" +
+    var start = print("<refsect2 id=\"" + func.id + "\" role=\"function\">" +
 			    "<title>" + func.title + "</title>" +
 			    "<para>" + func.description + "</para>");
     
