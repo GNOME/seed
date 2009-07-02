@@ -1,8 +1,6 @@
 Clutter = imports.gi.Clutter;
 stage = Clutter.Stage.get_default();
 
-Clutter.set_motion_events_frequency(60);
-
 var vs = 0, as = 0, f = 0, dragging = false;
 
 var spring = new Clutter.Rectangle();
