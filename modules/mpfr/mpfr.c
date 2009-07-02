@@ -4,7 +4,7 @@
 SeedObject ns_ref;
 SeedEngine * eng;
 
-static void
+static SeedValue
 seed_mpfr_init2 (SeedContext ctx,
                  SeedObject function,
                  SeedObject this_object,
@@ -37,7 +37,7 @@ seed_mpfr_init2 (SeedContext ctx,
 
     mpfr_init2(ptr, prec);
 
-    return;
+    return seed_make_null(ctx);
 }
 
 SeedObject
@@ -45,15 +45,11 @@ seed_module_init(SeedEngine *local_eng)
 {
     SeedGlobalContext ctx = local_eng->context;
     ns_ref = seed_make_object (ctx, NULL, NULL);
-    seed_value_protect (ctx, namespace_ref);
+    seed_value_protect (ctx, ns_ref);
 
     seed_create_function(ctx, "init2",
                          (SeedFunctionCallback) seed_mpfr_init2,
                          ns_ref);
-
-    seed_object_set_property(ctx, namespace_ref, "LC_CTYPE",
-                             seed_value_from_long(ctx, LC_CTYPE, NULL));
-
 
     return ns_ref;
 }

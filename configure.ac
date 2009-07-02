@@ -162,7 +162,7 @@ AC_ARG_ENABLE(example-module,
 AM_CONDITIONAL(BUILD_EXAMPLE_MODULE, test "x$want_example_module" = "xyes")
 AC_SUBST(BUILD_EXAMPLE_MODULE)
 
-dnl ==== dbus? ====
+dnl ==== dbus ====
 AC_ARG_ENABLE(dbus-module,
 			  AC_HELP_STRING([--enable-dbus-module],
 							 [enable the dbus Seed module. [default=yes]]),
@@ -285,7 +285,6 @@ if test x"$want_mpfr_module" == x"yes" ; then
 			other_LIBS=$with_mpfr
 		fi
 
-        #this section...I don't get what it's doing
 		AC_SEARCH_LIBS(mpfr_init2,mpfr,,AC_MSG_ERROR([mpfr not found]),$other_LIBS)
 		if test x"$ac_cv_search_mpfr_call" = x"none required" ; then
 			MPFR_LDFLAGS=$other_LIBS

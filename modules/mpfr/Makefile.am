@@ -5,7 +5,7 @@ seedlibdir = ${libdir}/seed
 seedlib_LTLIBRARIES = \
 	libmpfr.la
 
-libgettext_la_SOURCES = \
+libmpfr_la_SOURCES = \
 	mpfr.c
 
 AM_CPPFLAGS = \
