@@ -11,10 +11,10 @@ libmultiprocessing_la_SOURCES = \
 	multi.c
 
 libmultiprocessing_la_CFLAGS = \
-        $(GOBJECT_INTROSPECTION_CFLAGS) \
+	$(GOBJECT_INTROSPECTION_CFLAGS) \
 	-I@top_srcdir@/libseed/ \
-        $(SEED_DEBUG_CFLAGS) \
-        $(SEED_PROFILE_CFLAGS)
+	$(SEED_DEBUG_CFLAGS) \
+	$(SEED_PROFILE_CFLAGS)
 
 libmultiprocessing_la_LDFLAGS = \
 	$(GOBJECT_INTROSPECTION_LDFLAGS) \
