@@ -26,8 +26,29 @@ SeedClass mpfr_class;
 #define seed_value_to_mpfr_prec_t(a, b, c) seed_value_to_uint64(a, b, c)
 #define seed_value_from_mpfr_prec_t(a, b, c) seed_value_from_uint64(a, b, c)
 
+/* For now at least ignoring the ability to use gmp types since there is no gmp module */
+
 SeedEngine * eng;
 
+typedef enum _seed_mpfr_t
+{
+    SEED_MPFR_UNKNOWN = 0,
+    SEED_MPFR_MPFR = 1 << 1,
+    SEED_MPFR_DOUBLE = 1 << 2
+} seed_mpfr_t;
+
+static inline seed_mpfr_t
+seed_mpfr_arg_type(SeedContext ctx, SeedValue arg, SeedException exept)
+{
+    if ( seed_value_is_object_of_class(ctx, arg, mpfr_class) )
+        return SEED_MPFR_MPFR;
+    else if ( seed_value_is_number(ctx, arg) )
+        return SEED_MPFR_DOUBLE;
+    else
+        return SEED_MPFR_UNKNOWN;
+}
+
+/* This is a bit disgusting. Oh well. */
 static SeedValue
 seed_mpfr_add (SeedContext ctx,
                SeedObject function,
@@ -38,22 +59,65 @@ seed_mpfr_add (SeedContext ctx,
 {
     mpfr_rnd_t rnd;
     mpfr_ptr rop, op1, op2;
+    gdouble dop1, dop2;
+    SeedObject obj;
+    gint ret;
+    seed_mpfr_t argt1, argt2;
+    /* only want 1 double argument. alternatively, could accept 2,
+       add those, and set from the result*/
 
-    if ( arg_count != 4 )
+    if ( arg_count != 3 )
     {
         seed_make_exception (ctx, exception, "ArgumentError",
-                             "mpfr.add expected 4 arguments, got %zd",
+                             "mpfr.add expected 3 arguments, got %zd",
                              arg_count);
         return seed_make_null (ctx);
     }
 
-    /* TODO: Peter says that won't work */
-    rop = seed_pointer_get_pointer(ctx, args[0]);
-    op1 = seed_pointer_get_pointer(ctx, args[1]);
-    op2 = seed_pointer_get_pointer(ctx, args[2]);
-    rnd = seed_value_to_char(ctx, args[3], exception);
+    rop = seed_object_get_private(this_object);
+    rnd = seed_value_to_char(ctx, args[2], exception);
 
-    return seed_value_from_int(ctx, mpfr_add(rop, op1, op2, rnd), exception);
+    argt1 = seed_mpfr_arg_type(ctx, args[0], exception);
+    argt2 = seed_mpfr_arg_type(ctx, args[1], exception);
+
+    if ( (argt1 & argt2) == SEED_MPFR_MPFR )
+    {
+        /* both mpfr_t */
+        op1 = seed_object_get_private(args[0]);
+        op2 = seed_object_get_private(args[1]);
+        ret = mpfr_add(rop, op1, op2, rnd);
+    }
+    else if ( (argt1 | argt2) == (SEED_MPFR_MPFR | SEED_MPFR_DOUBLE) )
+    {
+        /* a double and an mpfr_t. Figure out the order */
+        if ( argt1 == SEED_MPFR_MPFR )
+        {
+            op1 = seed_object_get_private(args[0]);
+            dop2 = seed_value_to_double(ctx, args[1], exception);
+            mpfr_add_d(rop, op1, dop2, rnd);
+        }
+        else
+        {
+            dop2 = seed_value_to_double(ctx, args[0], exception);
+            op1 = seed_object_get_private(args[1]);
+            mpfr_add_d(rop, op1, dop2, rnd);
+        }
+    }
+    else if ( (argt1 & argt2) == SEED_MPFR_DOUBLE )
+    {
+        /* 2 doubles. hopefully doesn't happen */
+        dop1 = seed_value_to_double(ctx, args[0], exception);
+        dop2 = seed_value_to_double(ctx, args[1], exception);
+        ret = mpfr_set_d(rop, dop1 + dop2, rnd);
+    }
+    else
+    {
+        seed_make_exception (ctx, exception, "TypeError",
+                             "mpfr add received unexpected type");
+        return seed_make_null(ctx);
+    }
+
+    return seed_value_from_int(ctx, ret, exception);
 }
 
 static SeedValue
