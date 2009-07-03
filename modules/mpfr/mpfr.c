@@ -55,7 +55,6 @@ seed_mpfr_init2 (SeedContext ctx,
     return seed_make_null(ctx);
 }
 
-
 static SeedValue
 seed_mpfr_add (SeedContext ctx,
                SeedObject function,
@@ -75,6 +74,7 @@ seed_mpfr_add (SeedContext ctx,
         return seed_make_null (ctx);
     }
 
+    /* TODO: Peter says that won't work */
     rop = seed_pointer_get_pointer(ctx, args[0]);
     op1 = seed_pointer_get_pointer(ctx, args[1]);
     op2 = seed_pointer_get_pointer(ctx, args[2]);
@@ -89,7 +89,7 @@ seed_mpfr_get_prec (SeedContext ctx,
                     SeedString property_name,
                     SeedException *exception)
 {
-    mpfr_ptr ptr = seed_pointer_get_pointer(ctx, this_object);
+    mpfr_ptr ptr = seed_object_get_private(this_object);
     return seed_value_from_mpfr_prec_t(ctx, mpfr_get_prec(ptr), exception);
 }
 
@@ -100,7 +100,7 @@ seed_mpfr_set_prec (SeedContext ctx,
                     SeedValue value,
                     SeedException *exception)
 {
-    mpfr_ptr ptr = seed_pointer_get_pointer(ctx, this_object);
+    mpfr_ptr ptr = seed_object_get_private(this_object);
     mpfr_set_prec(ptr, seed_value_to_mpfr_prec_t(ctx, value, exception));
     return TRUE;
 }
@@ -131,7 +131,7 @@ seed_mpfr_construct_with_set(SeedContext ctx,
     gchar* str;
     SeedObject obj;
 
-     /* TODO: Precision range check */
+    /* TODO: Precision range check */
     if ( arg_count == 2 )
         prec = mpfr_get_default_prec();
     else if ( arg_count == 3 )
@@ -243,7 +243,7 @@ seed_static_function mpfr_funcs[] =
 
 seed_static_value mpfr_values[] =
 {
-    {"precision", seed_mpfr_get_prec, seed_mpfr_set_prec, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
+    {"prec", seed_mpfr_get_prec, seed_mpfr_set_prec, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
     {NULL, 0, NULL, 0}
 };
 
