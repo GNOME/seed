@@ -1,4 +1,6 @@
 #include "../../libseed/seed.h"
+
+#include <stdio.h>
 #include <mpfr.h>
 
 SeedObject ns_ref;
@@ -26,6 +28,10 @@ SeedClass mpfr_class;
 #define seed_value_to_mpfr_prec_t(a, b, c) seed_value_to_uint64(a, b, c)
 #define seed_value_from_mpfr_prec_t(a, b, c) seed_value_from_uint64(a, b, c)
 
+/* TODO: Right size for this */
+#define seed_value_to_mpfr_rnd_t(a, b, c) seed_value_to_char(a, b, c)
+#define seed_value_from_mpfr_rnd_t(a, b, c) seed_value_from_char(a, b, c)
+
 /* For now at least ignoring the ability to use gmp types since there is no gmp module */
 
 SeedEngine * eng;
@@ -46,6 +52,39 @@ seed_mpfr_arg_type(SeedContext ctx, SeedValue arg, SeedException exept)
         return SEED_MPFR_DOUBLE;
     else
         return SEED_MPFR_UNKNOWN;
+}
+
+static SeedValue
+seed_mpfr_out_str (SeedContext ctx,
+                   SeedObject function,
+                   SeedObject this_object,
+                   gsize arg_count,
+                   const SeedValue args[],
+                   SeedException * exception)
+{
+    size_t n;
+    FILE* stream;
+    gint base;
+    mpfr_rnd_t rnd;
+    mpfr_ptr op;
+
+    if ( arg_count != 4 )
+    {
+        seed_make_exception (ctx, exception, "ArgumentError",
+                             "mpfr.out_str expected 4 arguments, got %zd",
+                             arg_count);
+        return seed_make_null (ctx);
+    }
+
+    stream = (FILE*) seed_pointer_get_pointer(ctx, args[0]);
+    base = seed_value_to_int(ctx, args[1], exception);
+    n = seed_value_to_uint(ctx, args[2], exception);
+    op = seed_object_get_private(this_object);
+    rnd = seed_value_to_mpfr_rnd_t(ctx, args[3], exception);
+
+    return seed_value_from_uint(ctx,
+                                mpfr_out_str(stream, base, n, op, rnd),
+                                exception);
 }
 
 /* This is a bit disgusting. Oh well. */
@@ -75,7 +114,7 @@ seed_mpfr_add (SeedContext ctx,
     }
 
     rop = seed_object_get_private(this_object);
-    rnd = seed_value_to_char(ctx, args[2], exception);
+    rnd = seed_value_to_mpfr_rnd_t(ctx, args[2], exception);
 
     argt1 = seed_mpfr_arg_type(ctx, args[0], exception);
     argt2 = seed_mpfr_arg_type(ctx, args[1], exception);
@@ -274,6 +313,7 @@ seed_mpfr_construct(SeedContext ctx,
 seed_static_function mpfr_funcs[] =
 {
     {"add", seed_mpfr_add, 0},
+    {"out_str", seed_mpfr_out_str, 0},
     {NULL, NULL, 0}
 };
 
