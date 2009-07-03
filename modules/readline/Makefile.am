@@ -18,8 +18,7 @@ libreadline_la_CFLAGS = \
 libreadline_la_LDFLAGS = \
 	$(GOBJECT_INTROSPECTION_LDFLAGS) \
 	$(FFI_LDFLAGS) \
+	-lreadline \
 	$(SEED_PROFILE_LIBS) 
-
-AM_LDFLAGS = -lreadline
 
 endif
