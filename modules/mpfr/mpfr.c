@@ -29,33 +29,6 @@ SeedClass mpfr_class;
 SeedEngine * eng;
 
 static SeedValue
-seed_mpfr_init2 (SeedContext ctx,
-                 SeedObject function,
-                 SeedObject this_object,
-                 gsize arg_count,
-                 const SeedValue args[],
-                 SeedException * exception)
-{
-    mpfr_prec_t prec;
-    mpfr_ptr ptr;
-
-    if ( arg_count != 2 )
-    {
-        seed_make_exception (ctx, exception, "ArgumentError",
-                             "mpfr_init2 expected 2 arguments, got %zd",
-                             arg_count);
-        return seed_make_null (ctx);
-    }
-
-    ptr = seed_pointer_get_pointer(ctx, args[0]);
-    prec = seed_value_to_mpfr_prec_t(ctx, args[1], exception);
-
-    mpfr_init2(ptr, prec);
-
-    return seed_make_null(ctx);
-}
-
-static SeedValue
 seed_mpfr_add (SeedContext ctx,
                SeedObject function,
                SeedObject this_object,
@@ -236,7 +209,6 @@ seed_mpfr_construct(SeedContext ctx,
 
 seed_static_function mpfr_funcs[] =
 {
-    {"init2", seed_mpfr_init2, 0},
     {"add", seed_mpfr_add, 0},
     {NULL, NULL, 0}
 };
