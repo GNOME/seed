@@ -1,6 +1,9 @@
 #include "../../libseed/seed.h"
 #include <mpfr.h>
 
+SeedObject ns_ref;
+SeedClass mpfr_class;
+
 #if 0 /* TODO: Make this work */
 /* kind of stupid hack */
 #if MPFR_PREC_MAX == G_MAXLONG
@@ -105,9 +108,130 @@ seed_mpfr_set_prec (SeedContext ctx,
 static void
 seed_mpfr_finalize (SeedObject obj)
 {
-    mpfr_ptr ptr = seed_pointer_get_pointer(eng->context, obj);
+    mpfr_ptr ptr = seed_object_get_private(obj);
     if ( ptr )
+    {
         mpfr_clear(ptr);
+        g_free( ptr );
+    }
+}
+
+/* init and set functions, using default precision, or optionally specifying it */
+SeedObject
+seed_mpfr_construct_with_set(SeedContext ctx,
+                             SeedObject constructor,
+                             size_t arg_count,
+                             const SeedValue args[],
+                             SeedException* exception)
+{
+    mpfr_prec_t prec;
+    mpfr_rnd_t rnd;
+    mpfr_ptr newmp, op;
+    gdouble dbl;
+    gchar* str;
+    SeedObject obj;
+
+     /* TODO: Precision range check */
+    if ( arg_count == 2 )
+        prec = mpfr_get_default_prec();
+    else if ( arg_count == 3 )
+    {
+        if ( seed_value_is_number(ctx, args[1]) )
+            prec = seed_value_to_int(ctx, args[1], exception);
+        else
+        {
+            seed_make_exception (ctx, exception, "TypeError",
+                                 "mpfr constructor with set expected number as precision");
+            return seed_make_null(ctx);
+        }
+    }
+    else
+    {
+        seed_make_exception (ctx, exception, "ArgumentError",
+                             "mpfr constructor with init expected 2 or 3 arguments, got %zd",
+                             arg_count);
+        return seed_make_null (ctx);
+    }
+
+    /* last argument is always rnd */
+    /* TODO: Right size for mpfr_rnd_t */
+    if ( seed_value_is_number(ctx, args[arg_count - 1]) )
+        rnd = seed_value_to_int(ctx, args[arg_count - 1], exception);
+    else
+    {
+        seed_make_exception (ctx, exception, "TypeError",
+                             "mpfr constructor expected number as round mode");
+        return seed_make_null(ctx);
+    }
+
+    newmp = (mpfr_ptr) g_malloc(sizeof(mpfr_t));
+
+    if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) )
+    {
+        obj = seed_value_to_object(ctx, args[0], exception);
+        op = seed_object_get_private(obj);
+        mpfr_init_set(newmp, op, rnd);
+    }
+    else if ( seed_value_is_number(ctx, args[0]) )
+    {
+        dbl = seed_value_to_double(ctx, args[0], exception);
+        mpfr_init_set_d(newmp, dbl, rnd);
+    }
+    else if ( seed_value_is_string(ctx, args[0]) )
+    {
+        /* TODO: Assuming base 10 is bad */
+        str = seed_value_to_string(ctx, args[0], exception);
+        mpfr_init_set_str(newmp, str, 10, rnd);
+    }
+    else
+    {
+        seed_make_exception (ctx, exception, "TypeError",
+                             "mpfr constructor with set expected initializer as mpfr, number, or string");
+        mpfr_clear( newmp );
+        g_free( newmp );
+        return seed_make_null(ctx);
+    }
+
+    return seed_make_object(ctx, mpfr_class, newmp);
+}
+
+/* init, optionally specifying precision */
+SeedObject
+seed_mpfr_construct(SeedContext ctx,
+                    SeedObject constructor,
+                    size_t arg_count,
+                    const SeedValue args[],
+                    SeedException* exception)
+{
+    mpfr_prec_t prec;
+    mpfr_ptr newmp = (mpfr_ptr) g_malloc(sizeof(mpfr_t));
+
+    switch (arg_count)
+    {
+        case 0:
+            mpfr_init(newmp);           /* use default precision */
+            break;
+        case 1:
+            if ( seed_value_is_number(ctx, args[0]) )
+            {
+                prec = seed_value_to_mpfr_prec_t(ctx, args[0], exception);
+                mpfr_init2(newmp, prec);
+            }
+            else
+            {
+                seed_make_exception (ctx, exception, "TypeError",
+                                     "mpfr constructor expected number as precision");
+                g_free( newmp );
+                return seed_make_null(ctx);
+            }
+            break;
+        default:
+            seed_make_exception (ctx, exception, "ArgumentError",
+                                 "mpfr constructor expected 0 or 1 argument, got %zd", arg_count);
+            break;
+    }
+
+    return seed_make_object(ctx, mpfr_class, newmp);
 }
 
 seed_static_function mpfr_funcs[] =
@@ -128,17 +252,23 @@ seed_module_init(SeedEngine *local_eng)
 {
     SeedGlobalContext ctx = local_eng->context;
     SeedObject ctx_constructor_rew;
-    SeedObject ns_ref;
     seed_class_definition mpfr_def = seed_empty_class;
+    SeedObject mpfr_constructor, mpfr_constructor_set;
 
     ns_ref = seed_make_object(ctx, NULL, NULL);
-    seed_value_protect (ctx, ns_ref);
 
     mpfr_def.class_name = "mpfr";
     mpfr_def.static_functions = mpfr_funcs;
     mpfr_def.finalize = seed_mpfr_finalize;
     mpfr_def.static_values = mpfr_values;
 
+    mpfr_class = seed_create_class(&mpfr_def);
+
+    mpfr_constructor = seed_make_constructor(ctx, mpfr_class, seed_mpfr_construct);
+    mpfr_constructor_set = seed_make_constructor(ctx, mpfr_class, seed_mpfr_construct_with_set);
+
+    seed_object_set_property(ctx, ns_ref, "mpfr", mpfr_constructor);
+    seed_object_set_property(ctx, mpfr_constructor, "set", mpfr_constructor_set);
 
     return ns_ref;
 }
