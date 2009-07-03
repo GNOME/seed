@@ -81,21 +81,21 @@ seed_mpfr_add (SeedContext ctx,
 }
 
 static SeedValue
-seed_mpfr_get_precision (SeedContext ctx,
-                         SeedObject this_object,
-                         SeedString property_name,
-                         SeedException *exception)
+seed_mpfr_get_prec (SeedContext ctx,
+                    SeedObject this_object,
+                    SeedString property_name,
+                    SeedException *exception)
 {
     mpfr_ptr ptr = seed_pointer_get_pointer(ctx, this_object);
     return seed_value_from_mpfr_prec_t(ctx, mpfr_get_prec(ptr), exception);
 }
 
 static gboolean
-seed_mpfr_set_precision (SeedContext ctx,
-                         SeedObject this_object,
-                         SeedString property_name,
-                         SeedValue value,
-                         SeedException *exception)
+seed_mpfr_set_prec (SeedContext ctx,
+                    SeedObject this_object,
+                    SeedString property_name,
+                    SeedValue value,
+                    SeedException *exception)
 {
     mpfr_ptr ptr = seed_pointer_get_pointer(ctx, this_object);
     mpfr_set_prec(ptr, seed_value_to_mpfr_prec_t(ctx, value, exception));
@@ -119,7 +119,7 @@ seed_static_function mpfr_funcs[] =
 
 seed_static_value mpfr_values[] =
 {
-    {"precision", seed_mpfr_get_precision, seed_mpfr_set_precision, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
+    {"precision", seed_mpfr_get_prec, seed_mpfr_set_prec, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
     {NULL, 0, NULL, 0}
 };
 
