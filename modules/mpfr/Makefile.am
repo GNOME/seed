@@ -18,6 +18,8 @@ libmpfr_la_LDFLAGS = \
 	$(GOBJECT_INTROSPECTION_LDFLAGS) \
 	$(SEED_PROFILE_LIBS)
 
+libmpfr_la_LIBADD = -lmpfr -lgmp
+
 endif
 
 

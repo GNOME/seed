@@ -1,7 +1,28 @@
-#include <seed.h>
+#include "../../libseed/seed.h"
 #include <mpfr.h>
 
-SeedObject ns_ref;
+#if 0 /* TODO: Make this work */
+/* kind of stupid hack */
+#if MPFR_PREC_MAX == G_MAXLONG
+    #define seed_value_to_mpfr_prec_t(a, b, c) seed_value_to_ulong(a, b, c)
+    #define seed_value_from_mpfr_prec_t(a, b, c) seed_value_from_ulong(a, b, c)
+#elif MPFR_PREC_MAX == G_MAXUSHORT
+    #define seed_value_to_mpfr_prec_t(a, b, c) seed_value_to_ushort(a, b, c)
+    #define seed_value_from_mpfr_prec_t(a, b, c) seed_value_from_ushort(a, b, c)
+#elif MPFR_PREC_MAX == G_MAXINT
+    #define seed_value_to_mpfr_prec_t(a, b, c) seed_value_to_int(a, b, c)
+    #define seed_value_from_mpfr_prec_t(a, b, c) seed_value_from_int(a, b, c)
+#elif MPFR_PREC_MAX == G_MAXUINT64
+    #define seed_value_to_mpfr_prec_t(a, b, c) seed_value_to_uint64(a, b, c)
+    #define seed_value_from_mpfr_prec_t(a, b, c) seed_value_from_uint64(a, b, c)
+#else
+    #error "Wrong mpfr_prec_t size somehow?"
+#endif
+#endif
+
+#define seed_value_to_mpfr_prec_t(a, b, c) seed_value_to_uint64(a, b, c)
+#define seed_value_from_mpfr_prec_t(a, b, c) seed_value_from_uint64(a, b, c)
+
 SeedEngine * eng;
 
 static SeedValue
@@ -24,16 +45,7 @@ seed_mpfr_init2 (SeedContext ctx,
     }
 
     ptr = seed_pointer_get_pointer(ctx, args[0]);
-
-    #if _MPFR_PREC_FORMAT == 1
-    prec = seed_value_to_ushort(ctx, args[1], exception);
-    #elif _MPFR_PREC_FORMAT == 2
-    prec = seed_value_to_uint(ctx, args[1], exception);
-    #elif _MPFR_PREC_FORMAT == 3
-    prec = seed_value_to_ulong(ctx, args[1], exception);
-    #else
-    #error "Invalid MPFR Prec format"
-    #endif
+    prec = seed_value_to_mpfr_prec_t(ctx, args[1], exception);
 
     mpfr_init2(ptr, prec);
 
@@ -68,19 +80,65 @@ seed_mpfr_add (SeedContext ctx,
     return seed_value_from_int(ctx, mpfr_add(rop, op1, op2, rnd), exception);
 }
 
+static SeedValue
+seed_mpfr_get_precision (SeedContext ctx,
+                         SeedObject this_object,
+                         SeedString property_name,
+                         SeedException *exception)
+{
+    mpfr_ptr ptr = seed_pointer_get_pointer(ctx, this_object);
+    return seed_value_from_mpfr_prec_t(ctx, mpfr_get_prec(ptr), exception);
+}
+
+static gboolean
+seed_mpfr_set_precision (SeedContext ctx,
+                         SeedObject this_object,
+                         SeedString property_name,
+                         SeedValue value,
+                         SeedException *exception)
+{
+    mpfr_ptr ptr = seed_pointer_get_pointer(ctx, this_object);
+    mpfr_set_prec(ptr, seed_value_to_mpfr_prec_t(ctx, value, exception));
+    return TRUE;
+}
+
+static void
+seed_mpfr_finalize (SeedObject obj)
+{
+    mpfr_ptr ptr = seed_pointer_get_pointer(eng->context, obj);
+    if ( ptr )
+        mpfr_clear(ptr);
+}
+
+seed_static_function mpfr_funcs[] =
+{
+    {"init2", seed_mpfr_init2, 0},
+    {"add", seed_mpfr_add, 0},
+    {NULL, NULL, 0}
+};
+
+seed_static_value mpfr_values[] =
+{
+    {"precision", seed_mpfr_get_precision, seed_mpfr_set_precision, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
+    {NULL, 0, NULL, 0}
+};
+
 SeedObject
 seed_module_init(SeedEngine *local_eng)
 {
     SeedGlobalContext ctx = local_eng->context;
-    ns_ref = seed_make_object (ctx, NULL, NULL);
+    SeedObject ctx_constructor_rew;
+    SeedObject ns_ref;
+    seed_class_definition mpfr_def = seed_empty_class;
+
+    ns_ref = seed_make_object(ctx, NULL, NULL);
     seed_value_protect (ctx, ns_ref);
 
-    seed_create_function(ctx, "init2",
-                         (SeedFunctionCallback) seed_mpfr_init2,
-                         ns_ref);
-    seed_create_function(ctx, "add",
-                         (SeedFunctionCallback) seed_mpfr_add,
-                         ns_ref);
+    mpfr_def.class_name = "mpfr";
+    mpfr_def.static_functions = mpfr_funcs;
+    mpfr_def.finalize = seed_mpfr_finalize;
+    mpfr_def.static_values = mpfr_values;
+
 
     return ns_ref;
 }
