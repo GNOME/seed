@@ -506,6 +506,21 @@ seed_value_is_object (JSContextRef ctx, JSValueRef value)
 }
 
 /**
+ * seed_value_is_object_of_class:
+ * @ctx: A #SeedContext.
+ * @value: A #SeedValue.
+ * @klass: A #SeedClass.
+ *
+ * Return value: #true if @value is an object of specified class, #false otherwise.
+ *
+ */
+gboolean
+seed_value_is_object_of_class (JSContextRef ctx, JSValueRef value, JSClassRef klass)
+{
+  return !seed_value_is_null (ctx, value) && JSValueIsObjectOfClass (ctx, value, klass);
+}
+
+/**
  * seed_value_is_function:
  * @ctx: A #SeedContext.
  * @value: A #SeedObject.

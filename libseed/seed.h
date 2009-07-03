@@ -129,6 +129,7 @@ gboolean seed_string_is_equal_utf8 (SeedString a, const gchar * b);
 gboolean seed_value_is_null (SeedContext ctx, SeedValue value);
 gboolean seed_value_is_undefined (SeedContext ctx, SeedValue value);
 gboolean seed_value_is_object (SeedContext ctx, SeedValue value);
+gboolean seed_value_is_object_of_class (SeedContext ctx, SeedValue value, SeedClass klass);
 gboolean seed_value_is_function (SeedContext ctx, SeedObject value);
 gboolean seed_value_is_string (SeedContext ctx, SeedValue value);
 gboolean seed_value_is_number (SeedContext ctx, SeedValue value);
