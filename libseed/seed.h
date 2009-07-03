@@ -130,6 +130,8 @@ gboolean seed_value_is_null (SeedContext ctx, SeedValue value);
 gboolean seed_value_is_undefined (SeedContext ctx, SeedValue value);
 gboolean seed_value_is_object (SeedContext ctx, SeedValue value);
 gboolean seed_value_is_function (SeedContext ctx, SeedObject value);
+gboolean seed_value_is_string (SeedContext ctx, SeedValue value);
+gboolean seed_value_is_number (SeedContext ctx, SeedValue value);
 
 SeedValue seed_object_call (SeedContext ctx,
 			    SeedObject object,

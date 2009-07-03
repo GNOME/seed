@@ -521,6 +521,34 @@ seed_value_is_function (JSContextRef ctx, JSObjectRef value)
 }
 
 /**
+ * seed_value_is_string:
+ * @ctx: A #SeedContext.
+ * @value: A #SeedValue.
+ *
+ * Return value: #true if @value is a string, and #false otherwise.
+ *
+ */
+gboolean
+seed_value_is_string (JSContextRef ctx, JSValueRef value)
+{
+  return JSValueIsString (ctx, value);
+}
+
+/**
+ * seed_value_is_number:
+ * @ctx: A #SeedContext.
+ * @value: A #SeedValue.
+ *
+ * Return value: #true if @value is a number), #false otherwise.
+ *
+ */
+gboolean
+seed_value_is_number (JSContextRef ctx, JSValueRef value)
+{
+  return JSValueIsNumber (ctx, value);
+}
+
+/**
  * seed_engine_set_search_path:
  * @eng: A #SeedEngine, on which to set the path.
  * @path: A #const gchar*, a colon separated string containing the path to set
