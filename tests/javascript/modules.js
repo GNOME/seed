@@ -1,7 +1,7 @@
 #!/usr/bin/env seed
 // Returns: 0
 // STDIN:
-// STDOUT:
+// STDOUT:.*
 // STDERR:
 
 // This test is merely to appease the coverage checker (calls init in each
