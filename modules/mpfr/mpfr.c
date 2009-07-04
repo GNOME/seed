@@ -432,7 +432,7 @@ seed_module_init(SeedEngine *local_eng)
 
     ns_ref = seed_make_object(ctx, NULL, NULL);
 
-    mpfr_def.class_name = "mpfr";
+    mpfr_def.class_name = "mpfr_t";
     mpfr_def.static_functions = mpfr_funcs;
     mpfr_def.finalize = seed_mpfr_finalize;
     mpfr_def.static_values = mpfr_values;
@@ -442,7 +442,7 @@ seed_module_init(SeedEngine *local_eng)
     mpfr_constructor = seed_make_constructor(ctx, mpfr_class, seed_mpfr_construct);
     mpfr_constructor_set = seed_make_constructor(ctx, mpfr_class, seed_mpfr_construct_with_set);
 
-    seed_object_set_property(ctx, ns_ref, "mpfr", mpfr_constructor);
+    seed_object_set_property(ctx, ns_ref, "mpfr_t", mpfr_constructor);
     seed_object_set_property(ctx, mpfr_constructor, "set", mpfr_constructor_set);
 
     return ns_ref;
