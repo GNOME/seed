@@ -302,32 +302,21 @@ seed_module_init(SeedEngine *local_eng)
 	                     namespace_ref);
 
 	/* define enums for setlocale. Where to put them?  */
-	seed_object_set_property(ctx, namespace_ref, "LC_CTYPE",
-	                         seed_value_from_long(ctx, LC_CTYPE, NULL));
-	seed_object_set_property(ctx, namespace_ref, "LC_NUMERIC",
-	                         seed_value_from_long(ctx, LC_NUMERIC, NULL));
-	seed_object_set_property(ctx, namespace_ref, "LC_TIME",
-	                         seed_value_from_long(ctx, LC_TIME, NULL));
-	seed_object_set_property(ctx, namespace_ref, "LC_COLLATE",
-	                         seed_value_from_long(ctx, LC_COLLATE, NULL));
-	seed_object_set_property(ctx, namespace_ref, "LC_MONETARY",
-	                         seed_value_from_long(ctx, LC_MONETARY, NULL));
-	seed_object_set_property(ctx, namespace_ref, "LC_MESSAGES",
-	                         seed_value_from_long(ctx, LC_MESSAGES, NULL));
-	seed_object_set_property(ctx, namespace_ref, "LC_ALL",
-	                         seed_value_from_long(ctx, LC_ALL, NULL));
-	seed_object_set_property(ctx, namespace_ref, "LC_PAPER",
-	                         seed_value_from_long(ctx, LC_PAPER, NULL));
-	seed_object_set_property(ctx, namespace_ref, "LC_NAME",
-	                         seed_value_from_long(ctx, LC_NAME, NULL));
-	seed_object_set_property(ctx, namespace_ref, "LC_ADDRESS",
-	                         seed_value_from_long(ctx, LC_ADDRESS, NULL));
-	seed_object_set_property(ctx, namespace_ref, "LC_TELEPHONE",
-	                         seed_value_from_long(ctx, LC_TELEPHONE, NULL));
-	seed_object_set_property(ctx, namespace_ref, "LC_MEASUREMENT",
-	                         seed_value_from_long(ctx, LC_MEASUREMENT, NULL));
-	seed_object_set_property(ctx, namespace_ref, "LC_IDENTIFICATION",
-	                         seed_value_from_long(ctx, LC_IDENTIFICATION, NULL));
+	
+	DEFINE_ENUM_MEMBER(namespace_ref, "LC_CTYPE", LC_CTYPE);
+	DEFINE_ENUM_MEMBER(namespace_ref, "LC_NUMERIC", LC_NUMERIC);
+	DEFINE_ENUM_MEMBER(namespace_ref, "LC_TIME", LC_TIME);
+	DEFINE_ENUM_MEMBER(namespace_ref, "LC_COLLATE", LC_COLLATE);
+	DEFINE_ENUM_MEMBER(namespace_ref, "LC_MONETARY", LC_MONETARY);
+	DEFINE_ENUM_MEMBER(namespace_ref, "LC_MESSAGES", LC_MESSAGES);
+	DEFINE_ENUM_MEMBER(namespace_ref, "LC_ALL", LC_ALL);
+	DEFINE_ENUM_MEMBER(namespace_ref, "LC_PAPER", LC_PAPER);
+	DEFINE_ENUM_MEMBER(namespace_ref, "LC_NAME", LC_NAME);
+	DEFINE_ENUM_MEMBER(namespace_ref, "LC_ADDRESS", LC_ADDRESS);
+	DEFINE_ENUM_MEMBER(namespace_ref, "LC_TELEPHONE", LC_TELEPHONE);
+	DEFINE_ENUM_MEMBER(namespace_ref, "LC_MEASUREMENT", LC_MEASUREMENT);
+	DEFINE_ENUM_MEMBER(namespace_ref, "LC_IDENTIFICATION", LC_IDENTIFICATION);
+	DEFINE_ENUM_MEMBER(namespace_ref, "LC_CTYPE", LC_CTYPE);
 
 	return namespace_ref;
 }
