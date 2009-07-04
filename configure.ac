@@ -329,21 +329,6 @@ AC_ARG_ENABLE(examples,
 AM_CONDITIONAL(BUILD_SEED_EXAMPLES, test "x$enable_examples" = "xyes")
 AC_SUBST(BUILD_SEED_EXAMPLES)
 
-dnl =============================Debug=========================================
-AC_ARG_ENABLE(debug,
-			  AC_HELP_STRING([--enable-debug],
-							 [enable verbose debugging. [default=no]]),
-			  [enable_debug="yes"],[enable_debug="no"])
-
-if test "x$enable_debug" = "xyes"; then
-	SEED_DEBUG_CFLAGS="-DSEED_ENABLE_DEBUG -g"
-	CFLAGS="-O0"
-else
-	SEED_DEBUG_CFLAGS="-DG_DISABLE_ASSERT -DG_DISABLE_CHECKS -DG_DISABLE_CAST_CHECKS"
-fi
-
-AC_SUBST(SEED_DEBUG_CFLAGS)
-
 dnl ===========================Profiling=======================================
 AC_ARG_ENABLE(profile,
 			  AC_HELP_STRING([--enable-profile],
@@ -359,6 +344,7 @@ if test "x$enable_profile" = "xyes"; then
 	SEED_PROFILE_CFLAGS="-fprofile-arcs -ftest-coverage"
 	SEED_PROFILE_LIBS="-lgcov"
 	CFLAGS="-O0"
+	[need_debug="yes"]
 fi
 
 if test "x$enable_profile" = "xno"; then
@@ -369,6 +355,25 @@ AC_SUBST(SEED_PROFILE_CFLAGS)
 AC_SUBST(SEED_PROFILE_LIBS)
 
 AM_CONDITIONAL(PROFILE_MODULES, test "x$enable_profile_modules" = "xyes")
+
+dnl =============================Debug=========================================
+AC_ARG_ENABLE(debug,
+			  AC_HELP_STRING([--enable-debug],
+							 [enable verbose debugging. [default=no]]),
+			  [enable_debug="yes"],[enable_debug="no"])
+
+if test "x$enable_debug" = "xyes"; then
+	SEED_DEBUG_CFLAGS="-DSEED_ENABLE_DEBUG -g"
+	CFLAGS="-O0"
+else
+	SEED_DEBUG_CFLAGS="-DG_DISABLE_ASSERT -DG_DISABLE_CHECKS -DG_DISABLE_CAST_CHECKS"
+	
+	if test "x$need_debug" = "xyes"; then
+		AC_MSG_ERROR([debug must be enabled in order to enable profiling.])
+	fi
+fi
+
+AC_SUBST(SEED_DEBUG_CFLAGS)
 
 dnl ===========================Darwin Build====================================
 SEED_OSX_CFLAGS=

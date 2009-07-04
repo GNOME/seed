@@ -58,18 +58,26 @@ endif
 	cd libseed/.libs ; gcov *.c
 
 if PROFILE_MODULES
-	cd modules/readline/.libs ; gcov *.c
-	cd modules/example/.libs ; gcov *.c
-	cd modules/sqlite/.libs ; gcov *.c
+	cd modules/cairo/.libs ; gcov *.c
 	cd modules/canvas/.libs ; gcov *.c
-	cd modules/Multiprocessing/.libs ; gcov *.c
+	cd modules/dbus/.libs ; gcov *.c
+	cd modules/example/.libs ; gcov *.c
+	cd modules/gettext/.libs ; gcov *.c
+	cd modules/gtkbuilder/.libs ; gcov *.c
+	cd modules/libxml/.libs ; gcov *.c
+	cd modules/os/.libs ; gcov *.c
+	cd modules/readline/.libs ; gcov *.c
+	cd modules/sandbox/.libs ; gcov *.c
+	cd modules/sqlite/.libs ; gcov *.c
 endif
 
 profile-gui: profile
+
 if PROFILE_MODULES
-	$mods_prof = --directory modules/readline/.libs --directory modules/example/.libs --directory modules/sqlite/.libs
+	lcov --directory libseed/.libs --directory modules/cairo/.libs --directory modules/canvas/.libs --directory modules/dbus/.libs --directory modules/example/.libs --directory modules/gettext/.libs --directory modules/gtkbuilder/.libs --directory modules/libxml/.libs --directory modules/os/.libs --directory modules/readline/.libs --directory modules/sandbox/.libs --directory modules/sqlite/.libs --capture --output-file seed.info
+else
+	lcov --directory libseed/.libs --capture --output-file seed.info
 endif
 
-	lcov --directory libseed/.libs $(mods_prof) --capture --output-file seed.info
 	cp seed.info /tmp/
 	cd /tmp ; genhtml seed.info ; gnome-open index.html
