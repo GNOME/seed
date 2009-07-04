@@ -259,33 +259,36 @@ seed_mpfr_construct_with_set(SeedContext ctx,
     gdouble dbl;
     gchar* str;
     SeedObject obj;
+    seed_mpfr_t argt;
 
     /* TODO: Precision range check */
-    if ( arg_count == 2 )
-        prec = mpfr_get_default_prec();
-    else if ( arg_count == 3 )
+    switch ( arg_count )
     {
-        if ( seed_value_is_number(ctx, args[1]) )
-            prec = seed_value_to_int(ctx, args[1], exception);
-        else
-        {
-            seed_make_exception (ctx, exception, "TypeError",
-                                 "mpfr constructor with set expected number as precision");
-            return seed_make_null(ctx);
-        }
-    }
-    else
-    {
-        seed_make_exception (ctx, exception, "ArgumentError",
-                             "mpfr constructor with init expected 2 or 3 arguments, got %zd",
-                             arg_count);
-        return seed_make_null (ctx);
+        case 2:
+            prec = mpfr_get_default_prec();
+            break;
+        case 3:
+            if ( seed_value_is_number(ctx, args[1]) )
+            {
+                prec = seed_value_to_mpfr_prec_t(ctx, args[1], exception);
+            }
+            else
+            {
+                seed_make_exception (ctx, exception, "TypeError",
+                                     "mpfr constructor with set expected number as precision");
+                return seed_make_null(ctx);
+            }
+            break;
+        default:
+            seed_make_exception (ctx, exception, "ArgumentError",
+                                 "mpfr constructor with init expected 2 or 3 arguments, got %zd",
+                                 arg_count);
+            return seed_make_null (ctx);
     }
 
     /* last argument is always rnd */
-    /* TODO: Right size for mpfr_rnd_t */
     if ( seed_value_is_number(ctx, args[arg_count - 1]) )
-        rnd = seed_value_to_int(ctx, args[arg_count - 1], exception);
+        rnd = seed_value_to_mpfr_rnd_t(ctx, args[arg_count - 1], exception);
     else
     {
         seed_make_exception (ctx, exception, "TypeError",
@@ -294,31 +297,32 @@ seed_mpfr_construct_with_set(SeedContext ctx,
     }
 
     newmp = (mpfr_ptr) g_malloc(sizeof(mpfr_t));
+    mpfr_init2(newmp, prec);
 
-    if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) )
+    argt = seed_mpfr_arg_type(ctx, args[0], exception);
+
+    switch ( argt )
     {
-        obj = seed_value_to_object(ctx, args[0], exception);
-        op = seed_object_get_private(obj);
-        mpfr_init_set(newmp, op, rnd);
-    }
-    else if ( seed_value_is_number(ctx, args[0]) )
-    {
-        dbl = seed_value_to_double(ctx, args[0], exception);
-        mpfr_init_set_d(newmp, dbl, rnd);
-    }
-    else if ( seed_value_is_string(ctx, args[0]) )
-    {
-        /* TODO: Assuming base 10 is bad */
-        str = seed_value_to_string(ctx, args[0], exception);
-        mpfr_init_set_str(newmp, str, 10, rnd);
-    }
-    else
-    {
-        seed_make_exception (ctx, exception, "TypeError",
-                             "mpfr constructor with set expected initializer as mpfr, number, or string");
-        mpfr_clear( newmp );
-        g_free( newmp );
-        return seed_make_null(ctx);
+        case SEED_MPFR_MPFR:
+            obj = seed_value_to_object(ctx, args[0], exception);
+            op = seed_object_get_private(obj);
+            mpfr_set(newmp, op, rnd);
+            break;
+        case SEED_MPFR_DOUBLE:
+            dbl = seed_value_to_double(ctx, args[0], exception);
+            mpfr_set_d(newmp, dbl, rnd);
+            break;
+        case SEED_MPFR_STRING:
+            /* TODO: Assuming base 10 is bad */
+            str = seed_value_to_string(ctx, args[0], exception);
+            mpfr_set_str(newmp, str, 10, rnd);
+            break;
+        default:
+            seed_make_exception (ctx, exception, "TypeError",
+                                 "mpfr constructor with set expected initializer as mpfr, number, or string");
+            mpfr_clear( newmp );
+            g_free( newmp );
+            return seed_make_null(ctx);
     }
 
     return seed_make_object(ctx, mpfr_class, newmp);
