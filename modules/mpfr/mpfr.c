@@ -14,6 +14,9 @@ SeedClass mpfr_class;
     seed_make_exception(ctx, except, "TypeError", name " expected " wanted ); \
     return seed_make_undefined(ctx);
 
+#define ENUM_MEMBER(holder, name, value) \
+    seed_object_set_property(ctx, holder, name, seed_value_from_long(ctx, value, NULL))
+
 #if 0 /* TODO: Make this work */
 /* kind of stupid hack */
 #if MPFR_PREC_MAX == G_MAXLONG
@@ -423,6 +426,30 @@ seed_module_init(SeedEngine *local_eng)
 
     seed_object_set_property(ctx, ns_ref, "mpfr_t", mpfr_constructor);
     seed_object_set_property(ctx, mpfr_constructor, "set", mpfr_constructor_set);
+
+
+    /* Setup enums */
+    ENUM_MEMBER(ns_ref, "GMP_RNDN", GMP_RNDN);
+    ENUM_MEMBER(ns_ref, "GMP_RNDZ", GMP_RNDZ);
+    ENUM_MEMBER(ns_ref, "GMP_RNDU", GMP_RNDU);
+    ENUM_MEMBER(ns_ref, "GMP_RNDD", GMP_RNDD);
+
+    ENUM_MEMBER(ns_ref, "MPFR_VERSION_MAJOR", MPFR_VERSION_MAJOR);
+    ENUM_MEMBER(ns_ref, "MPFR_VERSION_MINOR", MPFR_VERSION_MINOR);
+    ENUM_MEMBER(ns_ref, "MPFR_VERSION_PATCHLEVEL", MPFR_VERSION_PATCHLEVEL);
+    seed_object_set_property(ctx, ns_ref, "MPFR_VERSION_STRING",
+                             seed_value_from_string(ctx, MPFR_VERSION_STRING, NULL));
+
+    ENUM_MEMBER(ns_ref, "MPFR_PREC_MIN", MPFR_PREC_MIN);
+    ENUM_MEMBER(ns_ref, "MPFR_PREC_MAX", MPFR_PREC_MAX);
+
+    ENUM_MEMBER(ns_ref, "MPFR_EMAX_DEFAULT", MPFR_EMAX_DEFAULT);
+    ENUM_MEMBER(ns_ref, "MPFR_EMIN_DEFAULT", MPFR_EMIN_DEFAULT);
+
+    ENUM_MEMBER(ns_ref, "MPFR_NAN_KIND", MPFR_NAN_KIND);
+    ENUM_MEMBER(ns_ref, "MPFR_INF_KIND", MPFR_INF_KIND);
+    ENUM_MEMBER(ns_ref, "MPFR_ZERO_KIND", MPFR_ZERO_KIND);
+    ENUM_MEMBER(ns_ref, "MPFR_REGULAR_KIND", MPFR_REGULAR_KIND);
 
     return ns_ref;
 }
