@@ -1,5 +1,6 @@
+#include <seed-module.h>
+
 #include <stdio.h>
-#include "../../libseed/seed.h"
 #include <ffi.h>
 #include <readline/readline.h>
 #include <readline/history.h>
@@ -48,19 +49,13 @@ static SeedValue
 seed_readline_bind(SeedContext ctx,
 		   SeedObject function,
 		   SeedObject this_object,
-		   size_t argumentCount,
+		   size_t argument_count,
 		   const SeedValue arguments[], SeedValue * exception)
 {
   gchar *key;
   ffi_closure *c;
-
-  if (argumentCount != 2)
-    {
-      seed_make_exception(ctx, exception, "ArgumentError",
-			  "Seed.readline_bind expected 2 arguments, "
-			  "got %Zd", argumentCount);
-      return seed_make_null(ctx);
-    }
+  
+  CHECK_ARG_COUNT("readline.bind", 2);
 
   key = seed_value_to_string(ctx, arguments[0], exception);
   c = seed_make_rl_closure((SeedObject) arguments[1]);
@@ -76,10 +71,11 @@ static SeedValue
 seed_rl_done(SeedContext ctx,
 	     SeedObject function,
 	     SeedObject this_object,
-	     size_t argumentCount,
+	     size_t argument_count,
 	     const SeedValue arguments[],
 	     SeedValue * exception)
 {
+  CHECK_ARG_COUNT("readline.done", 0);
   rl_done = 1;
   return seed_make_null (ctx);
 }
@@ -88,10 +84,11 @@ static SeedValue
 seed_rl_buffer(SeedContext ctx,
 	     SeedObject function,
 	     SeedObject this_object,
-	     size_t argumentCount,
+	     size_t argument_count,
 	     const SeedValue arguments[],
 	     SeedValue * exception)
 {
+  CHECK_ARG_COUNT("readline.buffer", 0);
   return seed_value_from_string (ctx, rl_line_buffer, exception);
 }
 
@@ -99,19 +96,15 @@ static SeedValue
 seed_rl_insert(SeedContext ctx,
 	       SeedObject function,
 	       SeedObject this_object,
-	       size_t argumentCount,
+	       size_t argument_count,
 	       const SeedValue arguments[],
 	       SeedValue * exception)
 {
   gchar *ins;
   gint ret;
-  if (argumentCount != 1)
-    {
-      seed_make_exception (ctx, exception, "ArgumentError",
-			   "readline.insert expected 1 argument, got %zd",
-			   argumentCount);
-      return seed_make_null (ctx);
-    }
+  
+  CHECK_ARG_COUNT("readline.insert", 1);
+  
   ins = seed_value_to_string (ctx, arguments[0], exception);
   ret = rl_insert_text (ins);
   g_free (ins);
@@ -123,7 +116,7 @@ static SeedValue
 seed_readline(SeedContext ctx,
 	      SeedObject function,
 	      SeedObject this_object,
-	      size_t argumentCount,
+	      size_t argument_count,
 	      const SeedValue arguments[], SeedValue * exception)
 {
   SeedValue valstr = 0;
@@ -138,13 +131,7 @@ seed_readline(SeedContext ctx,
       readline_has_initialized = TRUE;
     }
 
-  if (argumentCount != 1)
-    {
-      seed_make_exception(ctx, exception, "ArgumentError",
-			  "Seed.readline expected 1 argument, "
-			  "got %Zd", argumentCount);
-      return seed_make_null(ctx);
-    }
+  CHECK_ARG_COUNT("readline.readline", 1);
 
   buf = seed_value_to_string(ctx, arguments[0], exception);
 
@@ -168,39 +155,27 @@ seed_readline(SeedContext ctx,
   return valstr;
 }
 
+seed_static_function readline_funcs[] = {
+	{"readline", seed_readline, 0},
+	{"bind", seed_readline_bind, 0},
+	{"done", seed_rl_done, 0},
+	{"buffer", seed_rl_buffer, 0},
+	{"insert", seed_rl_insert, 0}
+};
+
 SeedObject
 seed_module_init(SeedEngine * local_eng)
 {
-  seed_class_definition readline_class_def = seed_empty_class;
+  SeedGlobalContext ctx = local_eng->context;
+  
+  seed_class_definition readline_ns_class_def = seed_empty_class;
+  readline_ns_class_def.static_functions = readline_funcs;
+  
+  SeedClass readline_ns_class = seed_create_class(&readline_ns_class_def);
 
   eng = local_eng;
 
-  namespace_ref = seed_make_object(eng->context, 0, 0);
-
-  seed_create_function(eng->context,
-		       "readline",
-		       (SeedFunctionCallback) seed_readline,
-		       (SeedObject) namespace_ref);
-
-  seed_create_function(eng->context,
-		       "bind",
-		       (SeedFunctionCallback) seed_readline_bind,
-		       (SeedObject) namespace_ref);
-
-  seed_create_function(eng->context,
-		       "done",
-		       (SeedFunctionCallback) seed_rl_done,
-		       (SeedObject) namespace_ref);
-
-  seed_create_function(eng->context,
-		       "buffer",
-		       (SeedFunctionCallback) seed_rl_buffer,
-		       (SeedObject) namespace_ref);
-
-  seed_create_function(eng->context,
-		       "insert",
-		       (SeedFunctionCallback) seed_rl_insert,
-		       (SeedObject) namespace_ref);
+  namespace_ref = seed_make_object(eng->context, readline_ns_class, 0);
 
   return namespace_ref;
 }
