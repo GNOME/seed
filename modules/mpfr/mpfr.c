@@ -73,7 +73,7 @@ seed_mpfr_out_str (SeedContext ctx,
                    const SeedValue args[],
                    SeedException * except)
 {
-    size_t n;
+    gsize n;
     FILE* stream;
     gint base;
     mpfr_rnd_t rnd;
@@ -281,7 +281,7 @@ seed_mpfr_set (SeedContext ctx,
 SeedObject
 seed_mpfr_construct_with_set(SeedContext ctx,
                              SeedObject constructor,
-                             size_t arg_count,
+                             gsize arg_count,
                              const SeedValue args[],
                              SeedException* except)
 {
@@ -355,7 +355,7 @@ seed_mpfr_construct_with_set(SeedContext ctx,
 SeedObject
 seed_mpfr_construct(SeedContext ctx,
                     SeedObject constructor,
-                    size_t arg_count,
+                    gsize arg_count,
                     const SeedValue args[],
                     SeedException* except)
 {
