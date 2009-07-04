@@ -459,7 +459,7 @@ modules/example/Makefile
 modules/sqlite/Makefile
 modules/canvas/Makefile
 modules/readline/Makefile
-modules/Multiprocessing/Makefile
+modules/multiprocessing/Makefile
 modules/sandbox/Makefile
 modules/os/Makefile
 modules/dbus/Makefile

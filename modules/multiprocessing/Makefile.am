@@ -8,7 +8,7 @@ seedlib_LTLIBRARIES = \
 	libseed_multiprocessing.la
 
 libseed_multiprocessing_la_SOURCES = \
-	seed-Multiprocessing.c
+	seed-multiprocessing.c
 
 libseed_multiprocessing_la_CFLAGS = \
 	$(GOBJECT_INTROSPECTION_CFLAGS) \

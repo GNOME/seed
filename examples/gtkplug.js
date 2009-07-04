@@ -1,9 +1,9 @@
 #!/usr/bin/env seed
 Gtk = imports.gi.Gtk;
-Multiprocessing = imports.multiprocessing;
+multiprocessing = imports.multiprocessing;
 os = imports.os;
 
-var pipes = new Multiprocessing.Pipe();
+var pipes = new multiprocessing.Pipe();
 
 var child_pid = os.fork();
 
