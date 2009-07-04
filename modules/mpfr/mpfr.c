@@ -6,6 +6,14 @@
 SeedObject ns_ref;
 SeedClass mpfr_class;
 
+#define EXPECTED_EXCEPTION(name, argnum) \
+  seed_make_exception (ctx, except, "ArgumentError", name " expected " argnum " got %Zd", arg_count); \
+  return seed_make_undefined (ctx);
+
+#define TYPE_EXCEPTION(name, wanted) \
+    seed_make_exception(ctx, except, "TypeError", name " expected " wanted ); \
+    return seed_make_undefined(ctx);
+
 #if 0 /* TODO: Make this work */
 /* kind of stupid hack */
 #if MPFR_PREC_MAX == G_MAXLONG
@@ -61,7 +69,7 @@ seed_mpfr_out_str (SeedContext ctx,
                    SeedObject this_object,
                    gsize arg_count,
                    const SeedValue args[],
-                   SeedException * exception)
+                   SeedException * except)
 {
     size_t n;
     FILE* stream;
@@ -70,22 +78,17 @@ seed_mpfr_out_str (SeedContext ctx,
     mpfr_ptr op;
 
     if ( arg_count != 4 )
-    {
-        seed_make_exception (ctx, exception, "ArgumentError",
-                             "mpfr.out_str expected 4 arguments, got %zd",
-                             arg_count);
-        return seed_make_null (ctx);
-    }
+        EXPECTED_EXCEPTION("mpfr.out_str", "4");
 
     stream = (FILE*) seed_pointer_get_pointer(ctx, args[0]);
-    base = seed_value_to_int(ctx, args[1], exception);
-    n = seed_value_to_uint(ctx, args[2], exception);
+    base = seed_value_to_int(ctx, args[1], except);
+    n = seed_value_to_uint(ctx, args[2], except);
     op = seed_object_get_private(this_object);
-    rnd = seed_value_to_mpfr_rnd_t(ctx, args[3], exception);
+    rnd = seed_value_to_mpfr_rnd_t(ctx, args[3], except);
 
     return seed_value_from_uint(ctx,
                                 mpfr_out_str(stream, base, n, op, rnd),
-                                exception);
+                                except);
 }
 
 static SeedValue
@@ -94,22 +97,17 @@ seed_mpfr_sin (SeedContext ctx,
                SeedObject this_object,
                gsize arg_count,
                const SeedValue args[],
-               SeedException * exception)
+               SeedException * except)
 {
     mpfr_rnd_t rnd;
-    mpfr_ptr rop, op;;
+    mpfr_ptr rop, op;
     gint ret;
 
     if ( arg_count != 2 )
-    {
-        seed_make_exception (ctx, exception, "ArgumentError",
-                             "mpfr.sin expected 2 arguments, got %zd",
-                             arg_count);
-        return seed_make_null (ctx);
-    }
+        EXPECTED_EXCEPTION("mpfr.sin", "2");
 
     rop = seed_object_get_private(this_object);
-    rnd = seed_value_to_mpfr_rnd_t(ctx, args[1], exception);
+    rnd = seed_value_to_mpfr_rnd_t(ctx, args[1], except);
 
     if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) )
     {
@@ -117,14 +115,12 @@ seed_mpfr_sin (SeedContext ctx,
     }
     else
     {
-        seed_make_exception (ctx, exception, "TypeError",
-                             "mpfr.sin received unexpected type");
-        return seed_make_null (ctx);
+        TYPE_EXCEPTION("mpfr.sin", "mpfr_t");
     }
 
     ret = mpfr_sin(rop, op, rnd);
 
-    return seed_value_from_int(ctx, ret, exception);
+    return seed_value_from_int(ctx, ret, except);
 }
 
 
@@ -135,7 +131,7 @@ seed_mpfr_add (SeedContext ctx,
                SeedObject this_object,
                gsize arg_count,
                const SeedValue args[],
-               SeedException * exception)
+               SeedException * except)
 {
     mpfr_rnd_t rnd;
     mpfr_ptr rop, op1, op2;
@@ -147,18 +143,13 @@ seed_mpfr_add (SeedContext ctx,
        add those, and set from the result*/
 
     if ( arg_count != 3 )
-    {
-        seed_make_exception (ctx, exception, "ArgumentError",
-                             "mpfr.add expected 3 arguments, got %zd",
-                             arg_count);
-        return seed_make_null (ctx);
-    }
+        EXPECTED_EXCEPTION("mpfr.add", "3");
 
     rop = seed_object_get_private(this_object);
-    rnd = seed_value_to_mpfr_rnd_t(ctx, args[2], exception);
+    rnd = seed_value_to_mpfr_rnd_t(ctx, args[2], except);
 
-    argt1 = seed_mpfr_arg_type(ctx, args[0], exception);
-    argt2 = seed_mpfr_arg_type(ctx, args[1], exception);
+    argt1 = seed_mpfr_arg_type(ctx, args[0], except);
+    argt2 = seed_mpfr_arg_type(ctx, args[1], except);
 
     if ( (argt1 & argt2) == SEED_MPFR_MPFR )
     {
@@ -173,12 +164,12 @@ seed_mpfr_add (SeedContext ctx,
         if ( argt1 == SEED_MPFR_MPFR )
         {
             op1 = seed_object_get_private(args[0]);
-            dop2 = seed_value_to_double(ctx, args[1], exception);
+            dop2 = seed_value_to_double(ctx, args[1], except);
             mpfr_add_d(rop, op1, dop2, rnd);
         }
         else
         {
-            dop2 = seed_value_to_double(ctx, args[0], exception);
+            dop2 = seed_value_to_double(ctx, args[0], except);
             op1 = seed_object_get_private(args[1]);
             mpfr_add_d(rop, op1, dop2, rnd);
         }
@@ -186,28 +177,26 @@ seed_mpfr_add (SeedContext ctx,
     else if ( (argt1 & argt2) == SEED_MPFR_DOUBLE )
     {
         /* 2 doubles. hopefully doesn't happen */
-        dop1 = seed_value_to_double(ctx, args[0], exception);
-        dop2 = seed_value_to_double(ctx, args[1], exception);
+        dop1 = seed_value_to_double(ctx, args[0], except);
+        dop2 = seed_value_to_double(ctx, args[1], except);
         ret = mpfr_set_d(rop, dop1 + dop2, rnd);
     }
     else
     {
-        seed_make_exception (ctx, exception, "TypeError",
-                             "mpfr add received unexpected type");
-        return seed_make_null(ctx);
+        TYPE_EXCEPTION("mpfr.add", "double or mpfr_t");
     }
 
-    return seed_value_from_int(ctx, ret, exception);
+    return seed_value_from_int(ctx, ret, except);
 }
 
 static SeedValue
 seed_mpfr_get_prec (SeedContext ctx,
                     SeedObject this_object,
                     SeedString property_name,
-                    SeedException *exception)
+                    SeedException *except)
 {
     mpfr_ptr ptr = seed_object_get_private(this_object);
-    return seed_value_from_mpfr_prec_t(ctx, mpfr_get_prec(ptr), exception);
+    return seed_value_from_mpfr_prec_t(ctx, mpfr_get_prec(ptr), except);
 }
 
 static gboolean
@@ -215,10 +204,10 @@ seed_mpfr_set_prec (SeedContext ctx,
                     SeedObject this_object,
                     SeedString property_name,
                     SeedValue value,
-                    SeedException *exception)
+                    SeedException *except)
 {
     mpfr_ptr ptr = seed_object_get_private(this_object);
-    mpfr_set_prec(ptr, seed_value_to_mpfr_prec_t(ctx, value, exception));
+    mpfr_set_prec(ptr, seed_value_to_mpfr_prec_t(ctx, value, except));
     return TRUE;
 }
 
@@ -239,7 +228,7 @@ seed_mpfr_set (SeedContext ctx,
                SeedObject this_object,
                gsize arg_count,
                const SeedValue args[],
-               SeedException * exception)
+               SeedException * except)
 {
     mpfr_rnd_t rnd;
     mpfr_ptr rop, op;
@@ -250,16 +239,11 @@ seed_mpfr_set (SeedContext ctx,
     seed_mpfr_t argt;
 
     if ( arg_count != 2 )
-    {
-        seed_make_exception (ctx, exception, "ArgumentError",
-                             "mpfr.set expected 2 arguments, got %zd",
-                             arg_count);
-        return seed_make_null (ctx);
-    }
+        EXPECTED_EXCEPTION("mpfr.set", "2");
 
     rop = seed_object_get_private(this_object);
-    argt = seed_mpfr_arg_type(ctx, args[0], exception);
-    rnd = seed_value_to_mpfr_rnd_t(ctx, args[1], exception);
+    argt = seed_mpfr_arg_type(ctx, args[0], except);
+    rnd = seed_value_to_mpfr_rnd_t(ctx, args[1], except);
 
     switch ( argt )
     {
@@ -268,21 +252,19 @@ seed_mpfr_set (SeedContext ctx,
             ret = mpfr_set(rop, op, rnd);
             break;
         case SEED_MPFR_DOUBLE:
-            dop = seed_value_to_double(ctx, args[0], exception);
+            dop = seed_value_to_double(ctx, args[0], except);
             ret = mpfr_set_d(rop, dop, rnd);
             break;
         case SEED_MPFR_STRING:
-            str = seed_value_to_string(ctx, args[0], exception);
+            str = seed_value_to_string(ctx, args[0], except);
             ret = mpfr_set_str(rop, str, 10, rnd);
             g_free( str );
             break;
         default:
-            seed_make_exception (ctx, exception, "TypeError",
-                                 "mpfr set received unexpected type");
-            return seed_make_null(ctx);
+            TYPE_EXCEPTION("mpfr.set", "mpfr_t, double or string");
     }
 
-    return seed_value_from_int(ctx, ret, exception);
+    return seed_value_from_int(ctx, ret, except);
 }
 
 /* init and set functions, using default precision, or optionally specifying it */
@@ -291,7 +273,7 @@ seed_mpfr_construct_with_set(SeedContext ctx,
                              SeedObject constructor,
                              size_t arg_count,
                              const SeedValue args[],
-                             SeedException* exception)
+                             SeedException* except)
 {
     mpfr_prec_t prec;
     mpfr_rnd_t rnd;
@@ -310,59 +292,50 @@ seed_mpfr_construct_with_set(SeedContext ctx,
         case 3:
             if ( seed_value_is_number(ctx, args[1]) )
             {
-                prec = seed_value_to_mpfr_prec_t(ctx, args[1], exception);
+                prec = seed_value_to_mpfr_prec_t(ctx, args[1], except);
             }
             else
             {
-                seed_make_exception (ctx, exception, "TypeError",
-                                     "mpfr constructor with set expected number as precision");
-                return seed_make_null(ctx);
+                TYPE_EXCEPTION("mpfr constructor with set", "mpfr_prec_t");
             }
             break;
         default:
-            seed_make_exception (ctx, exception, "ArgumentError",
-                                 "mpfr constructor with init expected 2 or 3 arguments, got %zd",
-                                 arg_count);
-            return seed_make_null (ctx);
+            EXPECTED_EXCEPTION("mpfr_t constructor.set", "2 or 3");
     }
 
     /* last argument is always rnd */
     if ( seed_value_is_number(ctx, args[arg_count - 1]) )
-        rnd = seed_value_to_mpfr_rnd_t(ctx, args[arg_count - 1], exception);
+        rnd = seed_value_to_mpfr_rnd_t(ctx, args[arg_count - 1], except);
     else
     {
-        seed_make_exception (ctx, exception, "TypeError",
-                             "mpfr constructor expected number as round mode");
-        return seed_make_null(ctx);
+        TYPE_EXCEPTION("mpfr constructor", "mpfr_rnd_t");
     }
 
     newmp = (mpfr_ptr) g_malloc(sizeof(mpfr_t));
     mpfr_init2(newmp, prec);
 
-    argt = seed_mpfr_arg_type(ctx, args[0], exception);
+    argt = seed_mpfr_arg_type(ctx, args[0], except);
 
     switch ( argt )
     {
         case SEED_MPFR_MPFR:
-            obj = seed_value_to_object(ctx, args[0], exception);
+            obj = seed_value_to_object(ctx, args[0], except);
             op = seed_object_get_private(obj);
             mpfr_set(newmp, op, rnd);
             break;
         case SEED_MPFR_DOUBLE:
-            dbl = seed_value_to_double(ctx, args[0], exception);
+            dbl = seed_value_to_double(ctx, args[0], except);
             mpfr_set_d(newmp, dbl, rnd);
             break;
         case SEED_MPFR_STRING:
             /* TODO: Assuming base 10 is bad */
-            str = seed_value_to_string(ctx, args[0], exception);
+            str = seed_value_to_string(ctx, args[0], except);
             mpfr_set_str(newmp, str, 10, rnd);
             break;
         default:
-            seed_make_exception (ctx, exception, "TypeError",
-                                 "mpfr constructor with set expected initializer as mpfr, number, or string");
             mpfr_clear( newmp );
             g_free( newmp );
-            return seed_make_null(ctx);
+            TYPE_EXCEPTION("mpfr_constructor", "mpfr_t, double or string");
     }
 
     return seed_make_object(ctx, mpfr_class, newmp);
@@ -374,7 +347,7 @@ seed_mpfr_construct(SeedContext ctx,
                     SeedObject constructor,
                     size_t arg_count,
                     const SeedValue args[],
-                    SeedException* exception)
+                    SeedException* except)
 {
     mpfr_prec_t prec;
     mpfr_ptr newmp = (mpfr_ptr) g_malloc(sizeof(mpfr_t));
@@ -387,21 +360,17 @@ seed_mpfr_construct(SeedContext ctx,
         case 1:
             if ( seed_value_is_number(ctx, args[0]) )
             {
-                prec = seed_value_to_mpfr_prec_t(ctx, args[0], exception);
+                prec = seed_value_to_mpfr_prec_t(ctx, args[0], except);
                 mpfr_init2(newmp, prec);
             }
             else
             {
-                seed_make_exception (ctx, exception, "TypeError",
-                                     "mpfr constructor expected number as precision");
                 g_free( newmp );
-                return seed_make_null(ctx);
+                TYPE_EXCEPTION("mpfr constructor", "mpfr_prec_t");
             }
             break;
         default:
-            seed_make_exception (ctx, exception, "ArgumentError",
-                                 "mpfr constructor expected 0 or 1 argument, got %zd", arg_count);
-            break;
+            EXPECTED_EXCEPTION("mpfr_t constructor", "0 or 1");
     }
 
     return seed_make_object(ctx, mpfr_class, newmp);
