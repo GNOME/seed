@@ -1,4 +1,5 @@
-#include <seed.h>
+#include <seed-module.h>
+
 #include <gtk/gtk.h>
 
 typedef struct _builder_ud {
@@ -28,7 +29,8 @@ seed_builder_connect_func (GtkBuilder *builder,
   if (!seed_value_is_object (ctx, func) || !seed_value_is_function (ctx, func))
     return;
 
-  closure = seed_closure_new (ctx, func, priv->user_data, "signal handler (GtkBuilder)");
+  closure = seed_closure_new (ctx, func, priv->user_data,
+                              "signal handler (GtkBuilder)");
   if (connect_object != NULL)
     g_object_watch_closure (connect_object, closure);
 
@@ -45,11 +47,13 @@ seed_gtk_builder_connect_signals(SeedContext ctx,
 {
   builder_ud ud;
   GtkBuilder *b;
+  
+  CHECK_ARG_COUNT("gtkbuilder.connect_signals", 1);
 
   if (!seed_value_is_object (ctx, arguments[0]))
     {
-      seed_make_exception (ctx, exception, "ArgumentError",
-			   "connect_signals expects one object as an argument");
+      seed_make_exception (ctx, exception, "TypeError",
+			   "connect_signals expects one object as the first argument");
       return seed_make_undefined (ctx);
     }
 

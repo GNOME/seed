@@ -4,7 +4,7 @@
 #include "../libseed/seed.h"
 
 // TODO: Move [example sqlite canvas Multiprocessing
-//             os sandbox dbus libxml cairo gtkbuilder]
+//             os sandbox dbus libxml cairo]
 //       towards utilization of this header.
 
 // Pluralize an argument count ("1 argument", "2 arguments", etc), given an int
