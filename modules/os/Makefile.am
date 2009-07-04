@@ -11,6 +11,7 @@ libos_la_SOURCES = \
 libos_la_CFLAGS = \
 	$(GOBJECT_INTROSPECTION_CFLAGS) \
 	-I@top_srcdir@/libseed/ \
+	-I@top_srcdir@/modules/ \
 	$(SEED_DEBUG_CFLAGS) \
 	$(SEED_PROFILE_CFLAGS)
 

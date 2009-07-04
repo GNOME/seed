@@ -12,6 +12,7 @@ liblibxml_la_SOURCES = \
 
 AM_CPPFLAGS = \
 	-I@top_srcdir@/libseed/ \
+	-I@top_srcdir@/modules/ \
 	$(LIBXML_CFLAGS) \
 	$(GOBJECT_INTROSPECTION_CFLAGS) \
 	$(SEED_DEBUG_CFLAGS) \

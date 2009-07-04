@@ -26,6 +26,7 @@ libcairo_la_CFLAGS = \
 	-Wall \
 	$(GOBJECT_INTROSPECTION_CFLAGS) \
 	-I@top_srcdir@/libseed/ \
+	-I@top_srcdir@/modules/ \
 	$(CAIRO_CFLAGS) \
 	$(GDK_CFLAGS) \
 	$(SEED_DEBUG_CFLAGS) \

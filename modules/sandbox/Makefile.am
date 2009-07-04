@@ -9,6 +9,7 @@ libsandbox_la_SOURCES = \
 
 AM_CPPFLAGS = \
 	-I@top_srcdir@/libseed/ \
+	-I@top_srcdir@/modules/ \
 	$(GOBJECT_INTROSPECTION_CFLAGS) \
 	$(SEED_DEBUG_CFLAGS) \
 	$(SEED_PROFILE_CFLAGS)
