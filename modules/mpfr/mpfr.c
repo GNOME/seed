@@ -88,6 +88,46 @@ seed_mpfr_out_str (SeedContext ctx,
                                 exception);
 }
 
+static SeedValue
+seed_mpfr_sin (SeedContext ctx,
+               SeedObject function,
+               SeedObject this_object,
+               gsize arg_count,
+               const SeedValue args[],
+               SeedException * exception)
+{
+    mpfr_rnd_t rnd;
+    mpfr_ptr rop, op;;
+    gint ret;
+
+    if ( arg_count != 2 )
+    {
+        seed_make_exception (ctx, exception, "ArgumentError",
+                             "mpfr.sin expected 2 arguments, got %zd",
+                             arg_count);
+        return seed_make_null (ctx);
+    }
+
+    rop = seed_object_get_private(this_object);
+    rnd = seed_value_to_mpfr_rnd_t(ctx, args[1], exception);
+
+    if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) )
+    {
+        op = seed_object_get_private(args[0]);
+    }
+    else
+    {
+        seed_make_exception (ctx, exception, "TypeError",
+                             "mpfr.sin received unexpected type");
+        return seed_make_null (ctx);
+    }
+
+    ret = mpfr_sin(rop, op, rnd);
+
+    return seed_value_from_int(ctx, ret, exception);
+}
+
+
 /* This is a bit disgusting. Oh well. */
 static SeedValue
 seed_mpfr_add (SeedContext ctx,
@@ -370,6 +410,7 @@ seed_mpfr_construct(SeedContext ctx,
 seed_static_function mpfr_funcs[] =
 {
     {"add", seed_mpfr_add, 0},
+    {"sin", seed_mpfr_sin, 0},
     {"set", seed_mpfr_set, 0},
     {"out_str", seed_mpfr_out_str, 0},
     {NULL, NULL, 0}
