@@ -132,6 +132,30 @@ seed_mpfr_sin (SeedContext ctx,
     return seed_value_from_int(ctx, ret, except);
 }
 
+static SeedValue
+seed_mpfr_const_pi (SeedContext ctx,
+                    SeedObject function,
+                    SeedObject this_object,
+                    gsize arg_count,
+                    const SeedValue args[],
+                    SeedException * except)
+{
+    mpfr_rnd_t rnd;
+    mpfr_ptr rop;
+    gint ret;
+
+    if ( arg_count != 1 )
+    {
+        EXPECTED_EXCEPTION("mpfr.pi", "1");
+    }
+
+    rop = seed_object_get_private(this_object);
+    rnd = seed_value_to_mpfr_rnd_t(ctx, args[0], except);
+
+    ret = mpfr_const_pi(rop, rnd);
+
+    return seed_value_from_int(ctx, ret, except);
+}
 
 /* This is a bit disgusting. Oh well. */
 static SeedValue
@@ -395,6 +419,7 @@ seed_static_function mpfr_funcs[] =
     {"sin", seed_mpfr_sin, 0},
     {"set", seed_mpfr_set, 0},
     {"out_str", seed_mpfr_out_str, 0},
+    {"pi", seed_mpfr_const_pi, 0},
     {NULL, NULL, 0}
 };
 
