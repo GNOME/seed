@@ -72,4 +72,4 @@ endif
 
 	lcov --directory libseed/.libs $(mods_prof) --capture --output-file seed.info
 	cp seed.info /tmp/
-	cd /tmp ; genhtml seed.info ; gnome-www-browser index.html
+	cd /tmp ; genhtml seed.info ; gnome-open index.html
