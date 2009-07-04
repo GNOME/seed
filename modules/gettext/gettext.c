@@ -273,8 +273,9 @@ seed_module_init(SeedEngine *local_eng)
 {
 	SeedGlobalContext ctx = local_eng->context;
 
-
 	seed_class_definition gettext_ns_class_def = seed_empty_class;
+    gettext_ns_class_def.static_functions = gettext_funcs;
+	
 	SeedClass gettext_ns_class = seed_create_class(&gettext_ns_class_def);
 
 	ns_ref = seed_make_object (ctx, gettext_ns_class, NULL);
