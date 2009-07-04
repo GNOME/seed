@@ -22,8 +22,13 @@
 		return seed_make_undefined (ctx); \
 	}
 
+// Defines a property on holder for the given enum member
+#define DEFINE_ENUM_MEMBER(holder, member) \
+	seed_object_set_property(ctx, holder, #member, \
+	                         seed_value_from_long(ctx, member, NULL))
+
 // Defines a property on holder for the given enum member, with the given name
-#define DEFINE_ENUM_MEMBER(holder, name, val) \
+#define DEFINE_ENUM_MEMBER_EXT(holder, name, val) \
 	seed_object_set_property(ctx, holder, name, \
 	                         seed_value_from_long(ctx, val, NULL))
 

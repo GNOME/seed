@@ -303,20 +303,20 @@ seed_module_init(SeedEngine *local_eng)
 
 	/* define enums for setlocale. Where to put them?  */
 	
-	DEFINE_ENUM_MEMBER(namespace_ref, "LC_CTYPE", LC_CTYPE);
-	DEFINE_ENUM_MEMBER(namespace_ref, "LC_NUMERIC", LC_NUMERIC);
-	DEFINE_ENUM_MEMBER(namespace_ref, "LC_TIME", LC_TIME);
-	DEFINE_ENUM_MEMBER(namespace_ref, "LC_COLLATE", LC_COLLATE);
-	DEFINE_ENUM_MEMBER(namespace_ref, "LC_MONETARY", LC_MONETARY);
-	DEFINE_ENUM_MEMBER(namespace_ref, "LC_MESSAGES", LC_MESSAGES);
-	DEFINE_ENUM_MEMBER(namespace_ref, "LC_ALL", LC_ALL);
-	DEFINE_ENUM_MEMBER(namespace_ref, "LC_PAPER", LC_PAPER);
-	DEFINE_ENUM_MEMBER(namespace_ref, "LC_NAME", LC_NAME);
-	DEFINE_ENUM_MEMBER(namespace_ref, "LC_ADDRESS", LC_ADDRESS);
-	DEFINE_ENUM_MEMBER(namespace_ref, "LC_TELEPHONE", LC_TELEPHONE);
-	DEFINE_ENUM_MEMBER(namespace_ref, "LC_MEASUREMENT", LC_MEASUREMENT);
-	DEFINE_ENUM_MEMBER(namespace_ref, "LC_IDENTIFICATION", LC_IDENTIFICATION);
-	DEFINE_ENUM_MEMBER(namespace_ref, "LC_CTYPE", LC_CTYPE);
+	DEFINE_ENUM_MEMBER(namespace_ref, LC_CTYPE);
+	DEFINE_ENUM_MEMBER(namespace_ref, LC_NUMERIC);
+	DEFINE_ENUM_MEMBER(namespace_ref, LC_TIME);
+	DEFINE_ENUM_MEMBER(namespace_ref, LC_COLLATE);
+	DEFINE_ENUM_MEMBER(namespace_ref, LC_MONETARY);
+	DEFINE_ENUM_MEMBER(namespace_ref, LC_MESSAGES);
+	DEFINE_ENUM_MEMBER(namespace_ref, LC_ALL);
+	DEFINE_ENUM_MEMBER(namespace_ref, LC_PAPER);
+	DEFINE_ENUM_MEMBER(namespace_ref, LC_NAME);
+	DEFINE_ENUM_MEMBER(namespace_ref, LC_ADDRESS);
+	DEFINE_ENUM_MEMBER(namespace_ref, LC_TELEPHONE);
+	DEFINE_ENUM_MEMBER(namespace_ref, LC_MEASUREMENT);
+	DEFINE_ENUM_MEMBER(namespace_ref, LC_IDENTIFICATION);
+	DEFINE_ENUM_MEMBER(namespace_ref, LC_CTYPE);
 
 	return namespace_ref;
 }
