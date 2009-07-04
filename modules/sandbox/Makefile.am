@@ -4,7 +4,7 @@ seedlib_LTLIBRARIES = \
 	libsandbox.la
 
 libsandbox_la_SOURCES = \
-	sandbox.c
+	seed-sandbox.c
 
 
 AM_CPPFLAGS = \

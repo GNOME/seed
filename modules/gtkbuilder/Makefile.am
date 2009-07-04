@@ -6,7 +6,7 @@ seedlib_LTLIBRARIES = \
 	libgtkbuilder.la
 
 libgtkbuilder_la_SOURCES = \
-	gtkbuilder.c
+	seed-gtkbuilder.c
 
 
 AM_CPPFLAGS = \

@@ -6,7 +6,7 @@ seedlib_LTLIBRARIES = \
 	libmpfr.la
 
 libmpfr_la_SOURCES = \
-	mpfr.c
+	seed-mpfr.c
 
 AM_CPPFLAGS = \
 	-I@top_srcdir@/libseed/ \

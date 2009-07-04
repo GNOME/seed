@@ -6,7 +6,7 @@ seedlib_LTLIBRARIES = \
 	libos.la
 
 libos_la_SOURCES = \
-	os.c
+	seed-os.c
 
 libos_la_CFLAGS = \
 	$(GOBJECT_INTROSPECTION_CFLAGS) \

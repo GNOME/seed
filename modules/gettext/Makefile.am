@@ -6,7 +6,7 @@ seedlib_LTLIBRARIES = \
 	libgettext.la
 
 libgettext_la_SOURCES = \
-	gettext.c
+	seed-gettext.c
 
 AM_CPPFLAGS = \
 	-I@top_srcdir@/libseed/ \

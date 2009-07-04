@@ -6,7 +6,7 @@ seedlib_LTLIBRARIES = \
 	libexample.la
 
 libexample_la_SOURCES = \
-	example.c
+	seed-example.c
 
 
 AM_CPPFLAGS = \

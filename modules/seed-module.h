@@ -3,7 +3,7 @@
 
 #include "../libseed/seed.h"
 
-// TODO: Move [example sqlite canvas Multiprocessing readline
+// TODO: Move [example sqlite canvas Multiprocessing
 //             os sandbox dbus libxml cairo gtkbuilder]
 //       towards utilization of this header.
 

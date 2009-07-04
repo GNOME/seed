@@ -8,7 +8,7 @@ seedlib_LTLIBRARIES = \
 	liblibxml.la
 
 liblibxml_la_SOURCES = \
-	libxml.c
+	seed-libxml.c
 
 AM_CPPFLAGS = \
 	-I@top_srcdir@/libseed/ \
