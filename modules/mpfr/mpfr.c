@@ -43,6 +43,9 @@ SeedClass mpfr_class;
 #define seed_value_to_mpfr_rnd_t(a, b, c) seed_value_to_char(a, b, c)
 #define seed_value_from_mpfr_rnd_t(a, b, c) seed_value_from_char(a, b, c)
 
+#define seed_value_from_mp_exp_t(a, b, c) seed_value_from_ulong(a, b, c)
+#define seed_value_to_mp_exp_t(a, b, c) seed_value_to_ulong(a, b, c)
+
 /* For now at least ignoring the ability to use gmp types since there is no gmp module */
 
 SeedEngine * eng;
@@ -275,6 +278,28 @@ seed_mpfr_add (SeedContext ctx,
 }
 
 static SeedValue
+seed_mpfr_get_exp (SeedContext ctx,
+                   SeedObject this_object,
+                   SeedString property_name,
+                   SeedException *except)
+{
+    mpfr_ptr ptr = seed_object_get_private(this_object);
+    return seed_value_from_mp_exp_t(ctx, mpfr_get_exp(ptr), except);
+}
+
+static gboolean
+seed_mpfr_set_exp (SeedContext ctx,
+                   SeedObject this_object,
+                   SeedString property_name,
+                   SeedValue value,
+                   SeedException *except)
+{
+    mpfr_ptr ptr = seed_object_get_private(this_object);
+    mpfr_set_exp(ptr, seed_value_to_mp_exp_t(ctx, value, except));
+    return TRUE;
+}
+
+static SeedValue
 seed_mpfr_get_prec (SeedContext ctx,
                     SeedObject this_object,
                     SeedString property_name,
@@ -478,6 +503,7 @@ seed_static_function mpfr_funcs[] =
 seed_static_value mpfr_values[] =
 {
     {"prec", seed_mpfr_get_prec, seed_mpfr_set_prec, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
+    {"exp", seed_mpfr_get_exp, seed_mpfr_set_exp, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
     {NULL, 0, NULL, 0}
 };
 
