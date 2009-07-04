@@ -3,9 +3,9 @@ if BUILD_GTKBUILDER_MODULE
 seedlibdir = ${libdir}/seed
 
 seedlib_LTLIBRARIES = \
-	libgtkbuilder.la
+	libseed_gtkbuilder.la
 
-libgtkbuilder_la_SOURCES = \
+libseed_gtkbuilder_la_SOURCES = \
 	seed-gtkbuilder.c
 
 
@@ -17,7 +17,7 @@ AM_CPPFLAGS = \
 	$(SEED_DEBUG_CFLAGS) \
 	$(SEED_PROFILE_CFLAGS)
 
-libgtkbuilder_la_LDFLAGS = \
+libseed_gtkbuilder_la_LDFLAGS = \
 	$(GTK_LDFLAGS) \
 	$(GOBJECT_INTROSPECTION_LDFLAGS) \
 	$(SEED_PROFILE_LIBS)

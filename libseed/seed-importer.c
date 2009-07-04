@@ -662,7 +662,7 @@ seed_importer_search (JSContextRef ctx,
 		      JSValueRef *exception)
 {
   GSList *path, *walk;
-  gchar *prop_as_lib = g_strconcat ("lib", prop, ".", G_MODULE_SUFFIX, NULL);
+  gchar *prop_as_lib = g_strconcat ("libseed_", prop, ".", G_MODULE_SUFFIX, NULL);
 
   path = seed_importer_get_search_path (ctx, exception);
 

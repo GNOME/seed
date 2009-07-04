@@ -3,9 +3,9 @@ if BUILD_EXAMPLE_MODULE
 seedlibdir = ${libdir}/seed
 
 seedlib_LTLIBRARIES = \
-	libexample.la
+	libseed_example.la
 
-libexample_la_SOURCES = \
+libseed_example_la_SOURCES = \
 	seed-example.c
 
 
@@ -16,7 +16,7 @@ AM_CPPFLAGS = \
 	$(SEED_DEBUG_CFLAGS) \
 	$(SEED_PROFILE_CFLAGS)
 
-libexample_la_LDFLAGS = \
+libseed_example_la_LDFLAGS = \
 	$(GOBJECT_INTROSPECTION_LDFLAGS) \
 	$(SEED_PROFILE_LIBS)
 

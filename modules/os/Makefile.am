@@ -3,19 +3,19 @@ if BUILD_OS_MODULE
 seedlibdir = ${libdir}/seed
 
 seedlib_LTLIBRARIES = \
-	libos.la
+	libseed_os.la
 
-libos_la_SOURCES = \
+libseed_os_la_SOURCES = \
 	seed-os.c
 
-libos_la_CFLAGS = \
+libseed_os_la_CFLAGS = \
 	$(GOBJECT_INTROSPECTION_CFLAGS) \
 	-I@top_srcdir@/libseed/ \
 	-I@top_srcdir@/modules/ \
 	$(SEED_DEBUG_CFLAGS) \
 	$(SEED_PROFILE_CFLAGS)
 
-libos_la_LDFLAGS = \
+libseed_os_la_LDFLAGS = \
 	$(GOBJECT_INTROSPECTION_LDFLAGS) \
 	-lutil \
 	$(SEED_DEBUG_LDFLAGS) \

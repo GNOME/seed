@@ -5,9 +5,9 @@ EXTRA_DIST = xml.js
 seedlibdir = ${libdir}/seed
 
 seedlib_LTLIBRARIES = \
-	liblibxml.la
+	libseed_libxml.la
 
-liblibxml_la_SOURCES = \
+libseed_libxml_la_SOURCES = \
 	seed-libxml.c
 
 AM_CPPFLAGS = \
@@ -18,7 +18,7 @@ AM_CPPFLAGS = \
 	$(SEED_DEBUG_CFLAGS) \
 	$(SEED_PROFILE_CFLAGS)
 
-liblibxml_la_LDFLAGS = \
+libseed_libxml_la_LDFLAGS = \
 	$(LIBXML_LDFLAGS) \
 	$(GOBJECT_INTROSPECTION_LDFLAGS) \
 	$(SEED_PROFILE_LIBS)

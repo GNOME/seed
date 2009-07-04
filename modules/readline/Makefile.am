@@ -3,22 +3,22 @@ if BUILD_READLINE_MODULE
 seedlibdir = ${libdir}/seed
 
 seedlib_LTLIBRARIES = \
-	libreadline.la
+	libseed_readline.la
 
-libreadline_la_SOURCES = \
+libseed_readline_la_SOURCES = \
 	seed-readline.c
 
-libreadline_la_CFLAGS = \
+libseed_readline_la_CFLAGS = \
 	$(GOBJECT_INTROSPECTION_CFLAGS) \
 	$(FFI_CFLAGS) \
 	-I@top_srcdir@/modules/ \
 	$(SEED_DEBUG_CFLAGS) \
 	$(SEED_PROFILE_CFLAGS)
 
-libreadline_la_LDFLAGS = \
+libseed_readline_la_LDFLAGS = \
+	-lreadline \
 	$(GOBJECT_INTROSPECTION_LDFLAGS) \
 	$(FFI_LDFLAGS) \
-	-lreadline \
 	$(SEED_PROFILE_LIBS) 
 
 endif

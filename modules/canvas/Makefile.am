@@ -4,12 +4,12 @@ seedlibdir = ${libdir}/seed
 EXTRA_DIST=run-tests.js
 
 seedlib_LTLIBRARIES = \
-	libcanvas.la
+	libseed_canvas.la
 
-libcanvas_la_SOURCES = \
+libseed_canvas_la_SOURCES = \
 	seed-canvas.c
 
-libcanvas_la_CFLAGS = \
+libseed_canvas_la_CFLAGS = \
 	$(GOBJECT_INTROSPECTION_CFLAGS) \
 	-I@top_srcdir@/libseed/ \
 	-I@top_srcdir@/modules/ \
@@ -17,7 +17,7 @@ libcanvas_la_CFLAGS = \
 	$(SEED_DEBUG_CFLAGS) \
 	$(SEED_PROFILE_CFLAGS)
 
-libcanvas_la_LDFLAGS = \
+libseed_canvas_la_LDFLAGS = \
 	$(GOBJECT_INTROSPECTION_LDFLAGS) \
 	$(CAIRO_LDFLAGS) \
 	$(SEED_PROFILE_LIBS)

@@ -3,9 +3,9 @@ if BUILD_GETTEXT_MODULE
 seedlibdir = ${libdir}/seed
 
 seedlib_LTLIBRARIES = \
-	libgettext.la
+	libseed_gettext.la
 
-libgettext_la_SOURCES = \
+libseed_gettext_la_SOURCES = \
 	seed-gettext.c
 
 AM_CPPFLAGS = \
@@ -15,7 +15,7 @@ AM_CPPFLAGS = \
 	$(SEED_DEBUG_CFLAGS) \
 	$(SEED_PROFILE_CFLAGS)
 
-libgettext_la_LDFLAGS = \
+libseed_gettext_la_LDFLAGS = \
 	$(GOBJECT_INTROSPECTION_LDFLAGS) \
 	$(SEED_PROFILE_LIBS)
 

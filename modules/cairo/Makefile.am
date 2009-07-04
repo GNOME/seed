@@ -11,9 +11,9 @@ EXTRA_DIST = seed-cairo-enums.h \
 seedlibdir = ${libdir}/seed
 
 seedlib_LTLIBRARIES = \
-	libcairo.la
+	libseed_cairo.la
 
-libcairo_la_SOURCES = \
+libseed_cairo_la_SOURCES = \
 	seed-cairo.c \
 	seed-cairo-surface.c \
 	seed-cairo-image-surface.c \
@@ -22,7 +22,7 @@ libcairo_la_SOURCES = \
 	seed-cairo-pattern.c \
 	seed-cairo-enums.c 
 
-libcairo_la_CFLAGS = \
+libseed_cairo_la_CFLAGS = \
 	-Wall \
 	$(GOBJECT_INTROSPECTION_CFLAGS) \
 	-I@top_srcdir@/libseed/ \
@@ -32,7 +32,7 @@ libcairo_la_CFLAGS = \
 	$(SEED_DEBUG_CFLAGS) \
 	$(SEED_PROFILE_CFLAGS)
 
-libcairo_la_LDFLAGS = \
+libseed_cairo_la_LDFLAGS = \
 	$(GOBJECT_INTROSPECTION_LDFLAGS) \
 	$(GDK_LDFLAGS) \
 	$(CAIRO_LDFLAGS) \

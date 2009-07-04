@@ -1,9 +1,9 @@
 seedlibdir = ${libdir}/seed
 
 seedlib_LTLIBRARIES = \
-	libsandbox.la
+	libseed_sandbox.la
 
-libsandbox_la_SOURCES = \
+libseed_sandbox_la_SOURCES = \
 	seed-sandbox.c
 
 
@@ -14,7 +14,7 @@ AM_CPPFLAGS = \
 	$(SEED_DEBUG_CFLAGS) \
 	$(SEED_PROFILE_CFLAGS)
 
-libsandbox_la_LDFLAGS = \
+libseed_sandbox_la_LDFLAGS = \
 	$(GOBJECT_INTROSPECTION_LDFLAGS) \
 	$(SEED_PROFILE_LIBS)
 

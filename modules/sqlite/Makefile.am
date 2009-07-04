@@ -4,12 +4,12 @@ seedlibdir = ${libdir}/seed
 EXTRA_DIST = example.js
 
 seedlib_LTLIBRARIES = \
-	libsqlite.la
+	libseed_sqlite.la
 
-libsqlite_la_SOURCES = \
+libseed_sqlite_la_SOURCES = \
 	seed-sqlite.c
 
-libsqlite_la_CFLAGS = \
+libseed_sqlite_la_CFLAGS = \
 	-I@top_srcdir@/modules/ \
 	$(GOBJECT_INTROSPECTION_CFLAGS) \
 	$(SQLITE_CFLAGS) \
@@ -17,7 +17,7 @@ libsqlite_la_CFLAGS = \
 	$(SEED_PROFILE_CFLAGS)
 	
 
-libsqlite_la_LDFLAGS = \
+libseed_sqlite_la_LDFLAGS = \
 	$(GOBJECT_INTROSPECTION_CFLAGS) \
 	$(SQLITE_LDFLAGS) \
 	$(SEED_DEBUG_LDFLAGS) \

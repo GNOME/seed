@@ -3,9 +3,9 @@ if BUILD_MPFR_MODULE
 seedlibdir = ${libdir}/seed
 
 seedlib_LTLIBRARIES = \
-	libmpfr.la
+	libseed_mpfr.la
 
-libmpfr_la_SOURCES = \
+libseed_mpfr_la_SOURCES = \
 	seed-mpfr.c
 
 AM_CPPFLAGS = \
@@ -15,11 +15,11 @@ AM_CPPFLAGS = \
 	$(SEED_DEBUG_CFLAGS) \
 	$(SEED_PROFILE_CFLAGS)
 
-libmpfr_la_LDFLAGS = \
+libseed_mpfr_la_LDFLAGS = \
 	$(GOBJECT_INTROSPECTION_LDFLAGS) \
 	$(SEED_PROFILE_LIBS)
 
-libmpfr_la_LIBADD = -lmpfr -lgmp
+libseed_mpfr_la_LIBADD = -lmpfr -lgmp
 
 endif
 

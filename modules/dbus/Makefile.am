@@ -14,9 +14,9 @@ module_DATA = dbus.js lang.js
 seedlibdir = ${libdir}/seed
 
 seedlib_LTLIBRARIES = \
-	libdbusnative.la
+	libseed_dbusnative.la
 
-libdbusnative_la_SOURCES = \
+libseed_dbusnative_la_SOURCES = \
 	module.c \
 	util/dbus.c \
 	util/dbus-proxy.c \
@@ -25,7 +25,7 @@ libdbusnative_la_SOURCES = \
 	dbus-exports.c 
 
 
-libdbusnative_la_CFLAGS = \
+libseed_dbusnative_la_CFLAGS = \
 	-Wall \
 	-I@top_srcdir@/libseed/ \
 	-I@top_srcdir@/modules/ \
@@ -35,7 +35,7 @@ libdbusnative_la_CFLAGS = \
 	$(SEED_PROFILE_CFLAGS)
 
 
-libdbusnative_la_LDFLAGS = \
+libseed_dbusnative_la_LDFLAGS = \
 	$(GOBJECT_INTROSPECTION_LDFLAGS) \
 	-L/lib \
 	-ldbus-1 \
