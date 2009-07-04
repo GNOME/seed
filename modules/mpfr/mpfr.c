@@ -40,7 +40,8 @@ typedef enum _seed_mpfr_t
 {
     SEED_MPFR_UNKNOWN = 0,
     SEED_MPFR_MPFR = 1 << 1,
-    SEED_MPFR_DOUBLE = 1 << 2
+    SEED_MPFR_DOUBLE = 1 << 2,
+    SEED_MPFR_STRING = 1 << 3,
 } seed_mpfr_t;
 
 static inline seed_mpfr_t
@@ -192,6 +193,58 @@ seed_mpfr_finalize (SeedObject obj)
     }
 }
 
+static SeedValue
+seed_mpfr_set (SeedContext ctx,
+               SeedObject function,
+               SeedObject this_object,
+               gsize arg_count,
+               const SeedValue args[],
+               SeedException * exception)
+{
+    mpfr_rnd_t rnd;
+    mpfr_ptr rop, op;
+    gdouble dop;
+    SeedObject obj;
+    gint ret;
+    gchar* str;
+    seed_mpfr_t argt;
+
+    if ( arg_count != 2 )
+    {
+        seed_make_exception (ctx, exception, "ArgumentError",
+                             "mpfr.set expected 2 arguments, got %zd",
+                             arg_count);
+        return seed_make_null (ctx);
+    }
+
+    rop = seed_object_get_private(this_object);
+    argt = seed_mpfr_arg_type(ctx, args[0], exception);
+    rnd = seed_value_to_mpfr_rnd_t(ctx, args[1], exception);
+
+    switch ( argt )
+    {
+        case SEED_MPFR_MPFR:
+            op = seed_object_get_private(args[0]);
+            ret = mpfr_set(rop, op, rnd);
+            break;
+        case SEED_MPFR_DOUBLE:
+            dop = seed_value_to_double(ctx, args[0], exception);
+            ret = mpfr_set_d(rop, dop, rnd);
+            break;
+        case SEED_MPFR_STRING:
+            str = seed_value_to_string(ctx, args[0], exception);
+            ret = mpfr_set_str(rop, str, 10, rnd);
+            g_free( str );
+            break;
+        default:
+            seed_make_exception (ctx, exception, "TypeError",
+                                 "mpfr set received unexpected type");
+            return seed_make_null(ctx);
+    }
+
+    return seed_value_from_int(ctx, ret, exception);
+}
+
 /* init and set functions, using default precision, or optionally specifying it */
 SeedObject
 seed_mpfr_construct_with_set(SeedContext ctx,
@@ -313,6 +366,7 @@ seed_mpfr_construct(SeedContext ctx,
 seed_static_function mpfr_funcs[] =
 {
     {"add", seed_mpfr_add, 0},
+    {"set", seed_mpfr_set, 0},
     {"out_str", seed_mpfr_out_str, 0},
     {NULL, NULL, 0}
 };
