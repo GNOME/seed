@@ -3,7 +3,7 @@
 #include <glib/gi18n.h>
 #include <locale.h>
 
-SeedObject namespace_ref;
+SeedObject ns_ref;
 SeedEngine * eng;
 
 static SeedValue
@@ -254,70 +254,49 @@ seed_gettext_setlocale (SeedContext ctx,
 	return ret;
 }
 
+seed_static_function gettext_funcs[] = {
+	{"gettext", seed_gettext_gettext, 0},
+	{"textdomain", seed_gettext_textdomain, 0},
+	{"bindtextdomain", seed_gettext_bindtextdomain, 0},
+	{"bind_textdomain_codeset", seed_gettext_bind_textdomain_codeset, 0},
+	{"dgettext", seed_gettext_dgettext, 0},
+	{"dcgettext", seed_gettext_dcgettext, 0},
+	{"ngettext", seed_gettext_ngettext, 0},
+	{"dngettext", seed_gettext_dngettext, 0},
+	{"dcngettext", seed_gettext_dcngettext, 0},
+	{"setlocale", seed_gettext_setlocale, 0},
+	{"gettext", seed_gettext_gettext, 0}
+};
+
 SeedObject
 seed_module_init(SeedEngine *local_eng)
 {
 	SeedGlobalContext ctx = local_eng->context;
-	namespace_ref = seed_make_object (ctx, NULL, NULL);
-	seed_value_protect (ctx, namespace_ref);
 
-	seed_create_function(ctx, "gettext",
-	                     (SeedFunctionCallback) seed_gettext_gettext,
-	                     namespace_ref);
 
-	seed_create_function(ctx, "textdomain",
-	                     (SeedFunctionCallback) seed_gettext_textdomain,
-	                     namespace_ref);
+	seed_class_definition gettext_ns_class_def = seed_empty_class;
+	SeedClass gettext_ns_class = seed_create_class(&gettext_ns_class_def);
 
-	seed_create_function(ctx, "bindtextdomain",
-	                     (SeedFunctionCallback) seed_gettext_bindtextdomain,
-	                     namespace_ref);
-
-	seed_create_function(ctx, "bind_textdomain_codeset",
-	                     (SeedFunctionCallback) seed_gettext_bind_textdomain_codeset,
-	                     namespace_ref);
-
-	seed_create_function(ctx, "dgettext",
-	                     (SeedFunctionCallback) seed_gettext_dgettext,
-	                     namespace_ref);
-
-	seed_create_function(ctx, "dcgettext",
-	                     (SeedFunctionCallback) seed_gettext_dcgettext,
-	                     namespace_ref);
-
-	seed_create_function(ctx, "ngettext",
-	                     (SeedFunctionCallback) seed_gettext_ngettext,
-	                     namespace_ref);
-
-	seed_create_function(ctx, "dngettext",
-	                     (SeedFunctionCallback) seed_gettext_dngettext,
-	                     namespace_ref);
-
-	seed_create_function(ctx, "dcngettext",
-	                     (SeedFunctionCallback) seed_gettext_dcngettext,
-	                     namespace_ref);
-
-	seed_create_function(ctx, "setlocale",
-	                     (SeedFunctionCallback) seed_gettext_setlocale,
-	                     namespace_ref);
+	ns_ref = seed_make_object (ctx, gettext_ns_class, NULL);
+	seed_value_protect (ctx, ns_ref);
 
 	/* define enums for setlocale. Where to put them?  */
 	
-	DEFINE_ENUM_MEMBER(namespace_ref, LC_CTYPE);
-	DEFINE_ENUM_MEMBER(namespace_ref, LC_NUMERIC);
-	DEFINE_ENUM_MEMBER(namespace_ref, LC_TIME);
-	DEFINE_ENUM_MEMBER(namespace_ref, LC_COLLATE);
-	DEFINE_ENUM_MEMBER(namespace_ref, LC_MONETARY);
-	DEFINE_ENUM_MEMBER(namespace_ref, LC_MESSAGES);
-	DEFINE_ENUM_MEMBER(namespace_ref, LC_ALL);
-	DEFINE_ENUM_MEMBER(namespace_ref, LC_PAPER);
-	DEFINE_ENUM_MEMBER(namespace_ref, LC_NAME);
-	DEFINE_ENUM_MEMBER(namespace_ref, LC_ADDRESS);
-	DEFINE_ENUM_MEMBER(namespace_ref, LC_TELEPHONE);
-	DEFINE_ENUM_MEMBER(namespace_ref, LC_MEASUREMENT);
-	DEFINE_ENUM_MEMBER(namespace_ref, LC_IDENTIFICATION);
-	DEFINE_ENUM_MEMBER(namespace_ref, LC_CTYPE);
+	DEFINE_ENUM_MEMBER(ns_ref, LC_CTYPE);
+	DEFINE_ENUM_MEMBER(ns_ref, LC_NUMERIC);
+	DEFINE_ENUM_MEMBER(ns_ref, LC_TIME);
+	DEFINE_ENUM_MEMBER(ns_ref, LC_COLLATE);
+	DEFINE_ENUM_MEMBER(ns_ref, LC_MONETARY);
+	DEFINE_ENUM_MEMBER(ns_ref, LC_MESSAGES);
+	DEFINE_ENUM_MEMBER(ns_ref, LC_ALL);
+	DEFINE_ENUM_MEMBER(ns_ref, LC_PAPER);
+	DEFINE_ENUM_MEMBER(ns_ref, LC_NAME);
+	DEFINE_ENUM_MEMBER(ns_ref, LC_ADDRESS);
+	DEFINE_ENUM_MEMBER(ns_ref, LC_TELEPHONE);
+	DEFINE_ENUM_MEMBER(ns_ref, LC_MEASUREMENT);
+	DEFINE_ENUM_MEMBER(ns_ref, LC_IDENTIFICATION);
+	DEFINE_ENUM_MEMBER(ns_ref, LC_CTYPE);
 
-	return namespace_ref;
+	return ns_ref;
 }
 
