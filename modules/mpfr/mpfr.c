@@ -59,6 +59,8 @@ seed_mpfr_arg_type(SeedContext ctx, SeedValue arg, SeedException exept)
         return SEED_MPFR_MPFR;
     else if ( seed_value_is_number(ctx, arg) )
         return SEED_MPFR_DOUBLE;
+    else if ( seed_value_is_string(ctx, arg) )
+        return SEED_MPFR_STRING;
     else
         return SEED_MPFR_UNKNOWN;
 }
