@@ -80,7 +80,9 @@ seed_mpfr_out_str (SeedContext ctx,
     mpfr_ptr op;
 
     if ( arg_count != 4 )
+    {
         EXPECTED_EXCEPTION("mpfr.out_str", "4");
+    }
 
     stream = (FILE*) seed_pointer_get_pointer(ctx, args[0]);
     base = seed_value_to_int(ctx, args[1], except);
@@ -106,7 +108,9 @@ seed_mpfr_sin (SeedContext ctx,
     gint ret;
 
     if ( arg_count != 2 )
+    {
         EXPECTED_EXCEPTION("mpfr.sin", "2");
+    }
 
     rop = seed_object_get_private(this_object);
     rnd = seed_value_to_mpfr_rnd_t(ctx, args[1], except);
@@ -145,7 +149,9 @@ seed_mpfr_add (SeedContext ctx,
        add those, and set from the result*/
 
     if ( arg_count != 3 )
+    {
         EXPECTED_EXCEPTION("mpfr.add", "3");
+    }
 
     rop = seed_object_get_private(this_object);
     rnd = seed_value_to_mpfr_rnd_t(ctx, args[2], except);
@@ -241,7 +247,9 @@ seed_mpfr_set (SeedContext ctx,
     seed_mpfr_t argt;
 
     if ( arg_count != 2 )
+    {
         EXPECTED_EXCEPTION("mpfr.set", "2");
+    }
 
     rop = seed_object_get_private(this_object);
     argt = seed_mpfr_arg_type(ctx, args[0], except);
