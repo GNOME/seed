@@ -1,5 +1,6 @@
 #include <seed.h>
 #include <glib/gi18n.h>
+#include <locale.h>
 
 SeedObject namespace_ref;
 SeedEngine * eng;
