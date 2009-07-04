@@ -58,6 +58,9 @@ seed_value_protect
 seed_value_is_undefined
 seed_value_is_null
 seed_value_is_function
+seed_value_is_number
+seed_value_is_string
+seed_value_is_object_of_class
 seed_value_is_object
 seed_value_to_boolean
 seed_value_from_boolean
