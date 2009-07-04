@@ -1,7 +1,11 @@
 #ifndef _SEED_MODULE_H_
 #define _SEED_MODULE_H_
 
-#include <seed.h>
+#include "../libseed/seed.h"
+
+// TODO: Move [example sqlite canvas Multiprocessing readline
+//             os sandbox dbus libxml cairo gtkbuilder]
+//       towards utilization of this header.
 
 // Pluralize an argument count ("1 argument", "2 arguments", etc), given an int
 #define PLURALIZE_ARG_COUNT(c) \
