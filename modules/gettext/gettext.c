@@ -1,4 +1,5 @@
-#include <seed.h>
+#include <seed-module.h>
+
 #include <glib/gi18n.h>
 #include <locale.h>
 
@@ -16,13 +17,7 @@ seed_gettext_gettext (SeedContext ctx,
 	gchar * msgid;
 	SeedValue ret;
 
-	if (argument_count != 1)
-	{
-		seed_make_exception (ctx, exception, "ArgumentError",
-		                     "gettext.gettext expected 1 argument, got %zd",
-		                     argument_count);
-		return seed_make_null (ctx);
-	}
+	CHECK_ARG_COUNT("gettext.gettext", 1);
 
 	msgid = seed_value_to_string (ctx, arguments[0], exception);
 
@@ -43,13 +38,7 @@ seed_gettext_textdomain (SeedContext ctx,
 	gchar * domain_name;
 	SeedValue ret;
 
-	if (argument_count != 1)
-	{
-		seed_make_exception (ctx, exception, "ArgumentError",
-		                     "gettext.textdomain expected 1 argument, got %zd",
-		                     argument_count);
-		return seed_make_null (ctx);
-	}
+	CHECK_ARG_COUNT("gettext.textdomain", 1);
 
 	domain_name = seed_value_to_string (ctx, arguments[0], exception);
 
@@ -70,13 +59,7 @@ seed_gettext_bindtextdomain (SeedContext ctx,
 	gchar * domainname, * dirname;
 	SeedValue ret;
 
-	if (argument_count != 2)
-	{
-		seed_make_exception (ctx, exception, "ArgumentError",
-		                     "gettext.bindtextdomain expected 2 arguments, got %zd",
-		                     argument_count);
-		return seed_make_null (ctx);
-	}
+	CHECK_ARG_COUNT("gettext.bindtextdomain", 2);
 
 	domainname = seed_value_to_string (ctx, args[0], exception);
 	dirname = seed_value_to_string (ctx, args[1], exception);
@@ -101,13 +84,7 @@ seed_gettext_bind_textdomain_codeset (SeedContext ctx,
 	gchar * domainname, * codeset;
 	SeedValue ret;
 
-	if (argument_count != 2)
-	{
-		seed_make_exception (ctx, exception, "ArgumentError",
-		                     "gettext.bind_textdomain_codeset expected 2 arguments, got %zd",
-		                     argument_count);
-		return seed_make_null (ctx);
-	}
+	CHECK_ARG_COUNT("gettext.bind_textdomain_codeset", 2);
 
 	domainname = seed_value_to_string (ctx, args[0], exception);
 	codeset = seed_value_to_string (ctx, args[1], exception);
@@ -132,13 +109,7 @@ seed_gettext_dgettext (SeedContext ctx,
 	gchar * domainname, * msgid;
 	SeedValue ret;
 
-	if (argument_count != 2)
-	{
-		seed_make_exception (ctx, exception, "ArgumentError",
-		                     "gettext.dgettext expected 2 arguments, got %zd",
-		                     argument_count);
-		return seed_make_null (ctx);
-	}
+	CHECK_ARG_COUNT("gettext.dgettext", 2);
 
 	domainname = seed_value_to_string (ctx, args[0], exception);
 	msgid = seed_value_to_string (ctx, args[1], exception);
@@ -162,13 +133,7 @@ seed_gettext_dcgettext (SeedContext ctx,
 	gint category;
 	SeedValue ret;
 
-	if (argument_count != 2)
-	{
-		seed_make_exception (ctx, exception, "ArgumentError",
-		                     "gettext.dcgettext expected 3 arguments, got %zd",
-		                     argument_count);
-		return seed_make_null (ctx);
-	}
+	CHECK_ARG_COUNT("gettext.dcgettext", 3);
 
 	domainname = seed_value_to_string (ctx, args[0], exception);
 	msgid = seed_value_to_string (ctx, args[1], exception);
@@ -193,13 +158,7 @@ seed_gettext_ngettext (SeedContext ctx,
 	guint n;
 	SeedValue ret;
 
-	if (argument_count != 3)
-	{
-		seed_make_exception (ctx, exception, "ArgumentError",
-		                     "gettext.ngettext expected 3 arguments, got %zd",
-		                     argument_count);
-		return seed_make_null (ctx);
-	}
+	CHECK_ARG_COUNT("gettext.ngettext", 3);
 
 	msgid = seed_value_to_string (ctx, args[0], exception);
 	msgid_plural = seed_value_to_string (ctx, args[1], exception);
@@ -224,13 +183,7 @@ seed_gettext_dngettext (SeedContext ctx,
 	guint n;
 	SeedValue ret;
 
-	if (argument_count != 4)
-	{
-		seed_make_exception (ctx, exception, "ArgumentError",
-		                     "gettext.dngettext expected 4 arguments, got %zd",
-		                     argument_count);
-		return seed_make_null (ctx);
-	}
+	CHECK_ARG_COUNT("gettext.dngettext", 4);
 
 	domainname = seed_value_to_string (ctx, args[0], exception);
 	msgid = seed_value_to_string (ctx, args[1], exception);
@@ -258,13 +211,7 @@ seed_gettext_dcngettext (SeedContext ctx,
 	gint category;
 	SeedValue ret;
 
-	if (argument_count != 5)
-	{
-		seed_make_exception (ctx, exception, "ArgumentError",
-		                     "gettext.dcngettext expected 5 arguments, got %zd",
-		                     argument_count);
-		return seed_make_null (ctx);
-	}
+	CHECK_ARG_COUNT("gettext.dcngettext", 5);
 
 	domainname = seed_value_to_string (ctx, args[0], exception);
 	msgid = seed_value_to_string (ctx, args[1], exception);
@@ -294,13 +241,7 @@ seed_gettext_setlocale (SeedContext ctx,
 	gint category;
 	SeedValue ret;
 
-	if (argument_count != 2)
-	{
-		seed_make_exception (ctx, exception, "ArgumentError",
-		                     "gettext.setlocale expected 2 arguments, got %zd",
-		                     argument_count);
-		return seed_make_null (ctx);
-	}
+	CHECK_ARG_COUNT("gettext.setlocale", 2);
 
 	category = seed_value_to_int (ctx, args[0], exception);
 	locale = seed_value_to_string (ctx, args[1], exception);
