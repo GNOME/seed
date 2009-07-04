@@ -1,10 +1,12 @@
 #!/usr/bin/env seed
 
-Seed.import_namespace("Multiprocessing");
-Seed.import_namespace("Gtk");
+multiprocessing = imports.multiprocessing;
+Gtk = imports.gi.Gtk;
+os = imports.os;
+JSON = imports.JSON;
 
-pipes = new Multiprocessing.Pipe();
-child_pid = Seed.fork();
+pipes = new multiprocessing.Pipe();
+child_pid = os.fork();
 
 if (child_pid == 0)
 {

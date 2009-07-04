@@ -1,4 +1,5 @@
-#include <seed.h>
+#include <seed-module.h>
+
 #include <unistd.h>
 #include <stdio.h>
 
@@ -29,6 +30,8 @@ SeedObject seed_construct_pipe(SeedContext ctx,
   SeedObject jsone, jstwo, jsret;
   int fd1[2], fd2[2];
   pipe_priv *priv_one, *priv_two;
+  
+  CHECK_ARG_COUNT("multiprocessing.pipe constructor", 0);
 
   if (pipe(fd1) < 0)
     {
@@ -76,6 +79,8 @@ SeedValue seed_pipe_read(SeedContext ctx,
   SeedValue ret;
   gchar *read;
   GET_CHANNEL;
+  
+  CHECK_ARG_COUNT("multiprocessing.pipe.read", 0);
 
   g_io_channel_read_line(priv->read, &read, 0, 0, 0);
   ret = seed_value_from_string(ctx, read, exception);
@@ -125,6 +130,8 @@ SeedValue seed_pipe_write(SeedContext ctx,
   gsize written;
   gchar eol = '\n';
   GET_CHANNEL;
+  
+  CHECK_ARG_COUNT("multiprocessing.pipe.write", 1);
 
   data = seed_value_to_string(ctx, arguments[0], exception);
   g_io_channel_write_chars(priv->write, data, -1, &written, 0);
@@ -142,6 +149,7 @@ SeedValue seed_pipe_add_watch(SeedContext ctx,
 			      SeedException * exception)
 {
   GET_CHANNEL;
+  
   marshal_privates *mpriv = g_malloc0(sizeof(marshal_privates));
   glong condition = seed_value_to_long(ctx, arguments[0], exception);
 
@@ -155,10 +163,8 @@ SeedValue seed_pipe_add_watch(SeedContext ctx,
 }
 
 seed_static_function pipe_funcs[] = {
-  {"read", seed_pipe_read, 0}
-  ,
-  {"write", seed_pipe_write, 0}
-  ,
+  {"read", seed_pipe_read, 0},
+  {"write", seed_pipe_write, 0},
   {"add_watch", seed_pipe_add_watch, 0}
 };
 
