@@ -14,6 +14,7 @@
   <chapter id="seed">
     <title>Seed Overview</title>
     <para>This is the documentation for the C API of Seed, used for embedding, and creating native C modules. For documentation on the JavaScript interface of Seed, see <ulink role="online-location" url="http://www.gnome.org/~racarr/seed">http://www.gnome.org/~racarr/seed/</ulink>.</para>
+    <xi:include href="introduction.sgml"/>
     <xi:include href="building.sgml"/>
   </chapter>
   
