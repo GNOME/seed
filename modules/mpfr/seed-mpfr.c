@@ -630,6 +630,7 @@ seed_static_function mpfr_funcs[] =
     {"set_inf", seed_mpfr_set_inf, 0},
     {"set_nan", seed_mpfr_set_nan, 0},
     {"swap", seed_mpfr_swap, 0},
+    {"cmp", seed_mpfr_cmp, 0},
     {"get_d", seed_mpfr_get_d, 0},
     {"fits_ulong_p", seed_mpfr_fits_ulong_p, 0},
     {"fits_slong_p", seed_mpfr_fits_slong_p, 0},
