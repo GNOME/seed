@@ -603,6 +603,7 @@ seed_static_function mpfr_funcs[] =
 {
     {"add", seed_mpfr_add, 0},
     {"sqrt", seed_mpfr_sqrt, 0},
+    {"rec_sqrt", seed_mpfr_rec_sqrt, 0},
     {"sin", seed_mpfr_sin, 0},
     {"cos", seed_mpfr_cos, 0},
     {"tan", seed_mpfr_tan, 0},
