@@ -122,6 +122,7 @@ DEF_SEED_MPFR_FUNC(seed_mpfr_yn);
 
 DEF_SEED_MPFR_FUNC(seed_mpfr_fma);
 DEF_SEED_MPFR_FUNC(seed_mpfr_fms);
+DEF_SEED_MPFR_FUNC(seed_mpfr_agm);
 
 
 #endif      /* _SEED_MFPR_H_ */
