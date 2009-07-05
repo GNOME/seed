@@ -1,0 +1,294 @@
+<refentry id="seed-building" revision="04 Jul 2009">
+<refmeta>
+<refentrytitle>Compiling Seed</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>SEED Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>Compiling Seed</refname>
+<refpurpose>
+How to compile Seed itself
+</refpurpose>
+  </refnamediv>
+
+    <refsect1 id="building">
+      <title>Building the Library on UNIX</title>
+      <para>
+        On UNIX, Seed uses the standard GNU build system,
+        using <application>autoconf</application> for package
+        configuration and resolving portability issues,
+        <application>automake</application> for building makefiles
+        that comply with the GNU Coding Standards, and
+        <application>libtool</application> for building shared
+        libraries on multiple platforms.  The normal sequence for
+        compiling and installing Seed is thus:
+
+        <literallayout>
+          <userinput>./configure</userinput>
+          <userinput>make</userinput>
+          <userinput>make install</userinput>
+        </literallayout>
+      </para>
+
+      <para>
+        The standard options provided by <application>GNU
+        autoconf</application> may be passed to the
+        <command>configure</command> script.  Please see the
+        <application>autoconf</application> documentation or run
+        <command>./configure --help</command> for information about
+        the standard options.
+      </para>
+    </refsect1>
+    
+    <refsect1 id="dependencies">
+      <title>Dependencies</title>
+      <para>
+        Before you can compile Seed, you need to have
+        various external libraries installed on your system.
+      </para>
+      <itemizedlist>
+        <listitem>
+	  <para>
+	  The <ulink url="http://live.gnome.org/GObjectIntrospection">gobject-introspection library</ulink> is necessary to build Seed. It provides the bridge between Seed and many GObject-based libraries.
+	  </para>
+      </listitem>
+      <listitem>
+	<para>
+	  <ulink url="http://webkit.org">WebKit</ulink> provides the JavaScriptCore interpreter, which is fundamental to Seed's ability to execute JavaScript.
+	</para>
+      </listitem>
+      <listitem>
+	<para>
+    <ulink url="http://tiswww.case.edu/php/chet/readline/rltop.html">readline</ulink> is used by the Seed REPL in order to communicate with the user.
+	</para>
+      </listitem>
+      <listitem>
+    	<para>
+        <ulink url="http://sourceware.org/libffi/">libffi</ulink> provides Seed with an interface to call into C libraries at runtime.
+    	</para>
+      </listitem>
+      <listitem>
+    	<para>
+        <ulink url="http://ftp.gnome.org/pub/GNOME/sources/gnome-js-common/">gnome-js-common</ulink> includes a battery of tests against both Seed and GJS, and also provides numerous libraries of JavaScript functions, including JSON manipulation and various language extensions.
+    	</para>
+      </listitem>
+    </itemizedlist>
+    </refsect1>
+    
+    <refsect1 id="moddependencies">
+      <title>Module Dependencies</title>
+      <para>
+        Seed ships with a number of native modules which provide access to libraries which help with development but are not able to be introspected. Some of these modules depend on external libraries, and Seed's configuration will fail if they are not installed; if you wish to build Seed without a module for which you do not have the underlying library installed, check the Extra Configuration Options section of this document.
+      </para>
+      <itemizedlist>
+    <listitem>
+      <para>
+      The <ulink url="http://cairographics.org/">Cairo</ulink> module provides access to fast 2D graphics and numerous different types of output, including drawing to the screen, to an image, to a PDF, etc.
+      </para>
+    </listitem>
+    <listitem>
+      <para>
+      <ulink url="http://www.freedesktop.org/wiki/Software/dbus">DBus</ulink> enables Seed access to the various message busses, and provides communication between applications.
+      </para>
+    </listitem>
+    <listitem>
+      <para>
+      <ulink url="http://www.gnu.org/software/gettext/">gettext</ulink> is a common library used for internationalization support.
+      </para>
+    </listitem>
+    <listitem>
+      <para>
+      The <ulink url="http://xmlsoft.org/">libxml2</ulink> module wraps the most common XML parsing library.
+      </para>
+    </listitem>
+    <listitem>
+      <para>
+      <ulink url="http://www.mpfr.org/">mpfr</ulink> provides multiple-precision arithmetic.
+      </para>
+    </listitem>
+    <listitem>
+      <para>
+      <ulink url="http://www.sqlite.org/">sqlite3</ulink> provides straightforward read-write access to on-disk SQL databases.
+      </para>
+    </listitem>
+    </itemizedlist>
+    </refsect1>
+    
+    <refsect1 id="optdependencies">
+      <title>Optional Dependencies</title>
+      <para>
+        Seed's library of examples utilizes many other GObject projects which Seed does not strictly depend on, and will not be enumerated here. Introspection data for these projects may either be found within the projects themselves, or in the <ulink url="http://live.gnome.org/GObjectIntrospection">gir-repository</ulink>.
+      </para>
+    </refsect1>
+    
+    <refsect1 id="extra-configuration-options">
+      <title>Extra Configuration Options</title>
+
+      <para>
+        In addition to the normal options, the
+        <command>configure</command> script in the Seed
+        library supports these additional arguments:
+      </para>
+
+      <formalpara>
+        <title><systemitem>--disable-canvas-module</systemitem> and
+          <systemitem>--enable-canvas-module</systemitem></title>
+
+        <para>
+	  By default, and with <systemitem>--enable-canvas-module</systemitem>
+	  as well, Seed attempts to build the Canvas native module.
+        </para>
+      </formalpara>
+      <formalpara>
+        <title><systemitem>--disable-readline-module</systemitem> and
+          <systemitem>--enable-readline-module</systemitem></title>
+
+        <para>
+	  By default, and with <systemitem>--enable-readline-module</systemitem>
+	  as well, Seed attempts to build the readline native module.
+        </para>
+      </formalpara>
+      <formalpara>
+        <title><systemitem>--disable-multiprocessing-module</systemitem> and
+          <systemitem>--enable-multiprocessing-module</systemitem></title>
+
+        <para>
+	  By default, and with <systemitem>--enable-multiprocessing-module</systemitem>
+	  as well, Seed attempts to build the multiprocessing native module.
+        </para>
+      </formalpara>
+      <formalpara>
+        <title><systemitem>--disable-sqlite-module</systemitem> and
+          <systemitem>--enable-sqlite-module</systemitem></title>
+
+        <para>
+	  By default, and with <systemitem>--enable-sqlite-module</systemitem>
+	  as well, Seed attempts to build the SQLite native module.
+        </para>
+      </formalpara>
+      <formalpara>
+        <title><systemitem>--disable-example-module</systemitem> and
+          <systemitem>--enable-example-module</systemitem></title>
+
+        <para>
+	  By default, and with <systemitem>--enable-example-module</systemitem>
+	  as well, Seed attempts to build the example native module.
+        </para>
+      </formalpara>
+      <formalpara>
+        <title><systemitem>--disable-dbus-module</systemitem> and
+          <systemitem>--enable-dbus-module</systemitem></title>
+
+        <para>
+	  By default, and with <systemitem>--enable-dbus-module</systemitem>
+	  as well, Seed attempts to build the DBus native module.
+        </para>
+      </formalpara>
+      <formalpara>
+        <title><systemitem>--disable-os-module</systemitem> and
+          <systemitem>--enable-os-module</systemitem></title>
+
+        <para>
+	  By default, and with <systemitem>--enable-os-module</systemitem>
+	  as well, Seed attempts to build the os native module.
+        </para>
+      </formalpara>
+      <formalpara>
+        <title><systemitem>--disable-libxml-module</systemitem> and
+          <systemitem>--enable-libxml-module</systemitem></title>
+
+        <para>
+	  By default, and with <systemitem>--enable-libxml-module</systemitem>
+	  as well, Seed attempts to build the libxml2 native module.
+        </para>
+      </formalpara>
+      <formalpara>
+        <title><systemitem>--disable-gtkbuilder-module</systemitem> and
+          <systemitem>--enable-gtkbuilder-module</systemitem></title>
+
+        <para>
+	  By default, and with <systemitem>--enable-gtkbuilder-module</systemitem>
+	  as well, Seed attempts to build the GtkBuilder native module.
+        </para>
+      </formalpara>
+      <formalpara>
+        <title><systemitem>--disable-cairo-module</systemitem> and
+          <systemitem>--enable-cairo-module</systemitem></title>
+
+        <para>
+	  By default, and with <systemitem>--enable-cairo-module</systemitem>
+	  as well, Seed attempts to build the Cairo native module.
+        </para>
+      </formalpara>
+      <formalpara>
+        <title><systemitem>--disable-gettext-module</systemitem> and
+          <systemitem>--enable-gettext-module</systemitem></title>
+
+        <para>
+	  By default, and with <systemitem>--enable-gettext-module</systemitem>
+	  as well, Seed attempts to build the gettext native module.
+        </para>
+      </formalpara>
+      <formalpara>
+        <title><systemitem>--disable-mpfr-module</systemitem> and
+          <systemitem>--enable-mpfr-module</systemitem></title>
+
+        <para>
+	  By default, and with <systemitem>--enable-mpfr-module</systemitem>
+	  as well, Seed attempts to build the mpfr native module.
+        </para>
+      </formalpara>
+      <formalpara>
+        <title><systemitem>--disable-turtle-example</systemitem> and
+          <systemitem>--enable-turtle-example</systemitem></title>
+
+        <para>
+	  By default, and with <systemitem>--enable-turtle-example</systemitem>
+	  as well, Seed attempts to build the Turtle example.
+        </para>
+      </formalpara>
+      <formalpara>
+        <title><systemitem>--disable-examples</systemitem> and
+          <systemitem>--enable-examples</systemitem></title>
+
+        <para>
+	  By default, and with <systemitem>--enable-examples</systemitem>
+	  as well, a library of JavaScript examples are installed alongside Seed.
+        </para>
+      </formalpara>
+      <formalpara>
+        <title><systemitem>--disable-profile</systemitem> and
+          <systemitem>--enable-profile</systemitem></title>
+
+        <para>
+	  With <systemitem>--enable-profile</systemitem>, Seed is built with profiling and coverage instructions. One can use <command>make profile</command> or <command>make profile-gui</command> to profile the library.
+        </para>
+      </formalpara>
+      <formalpara>
+        <title><systemitem>--disable-profile-modules</systemitem> and
+          <systemitem>--enable-profile-modules</systemitem></title>
+
+        <para>
+	  With <systemitem>--enable-profile-modules</systemitem>, all Seed modules are built with profiling and coverage instructions. One can use <command>make profile</command> or <command>make profile-gui</command> to profile the modules.
+        </para>
+      </formalpara>
+      <formalpara>
+        <title><systemitem>--disable-debug</systemitem> and
+          <systemitem>--enable-debug</systemitem></title>
+
+        <para>
+	  With <systemitem>--enable-debug</systemitem>, Seed is built without optimizations and with extra debugging information included, and extra debug arguments to the <command>seed</command> interpreter are enabled; you can learn about these by calling <command>seed --help</command>.
+        </para>
+      </formalpara>
+      <formalpara>
+        <title><systemitem>--disable-shave</systemitem> and
+          <systemitem>--enable-shave</systemitem></title>
+
+        <para>
+	  By default, and with <systemitem>--enable-shave</systemitem> as well, Seed is built with pretty-printed build output. Disable this to see the actual compiler and linker commands being executed.
+        </para>
+      </formalpara>
+   </refsect1>
+
+</refentry>
