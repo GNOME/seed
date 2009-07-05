@@ -69,6 +69,8 @@ doc/reference/xml/api-index-full.xml
 doc/reference/xml/object_index.sgml
 doc/reference/xml/seed-builtins.xml
 doc/reference/xml/seed-closure.xml
+doc/reference/xml/seed-exception.xml
+doc/reference/xml/seed-string.xml
 doc/reference/xml/seed-debug.xml
 doc/reference/xml/seed-doc.bottom
 doc/reference/xml/seed-doc.top
@@ -148,13 +150,6 @@ tests/javascript/Makefile.in
 doc/reference/html/seed-SeedException.html
 doc/reference/html/seed-SeedString.html
 doc/reference/html/seed-SeedValue.html
-doc/reference/tmpl/seed-api.sgml
-doc/reference/tmpl/seed-exception.sgml
-doc/reference/tmpl/seed-string.sgml
-doc/reference/tmpl/seed-value.sgml
-doc/reference/xml/seed-api.xml
-doc/reference/xml/seed-exception.xml
-doc/reference/xml/seed-string.xml
 doc/reference/xml/seed-value.xml
 doc/reference/tmpl/seed.sgml.sgml
 libseed/libseed_la-seed-api.gcno
@@ -184,11 +179,6 @@ doc/modules/readline/readline-funcs.xml
 doc/modules/sandbox/sandbox-funcs.xml
 doc/modules/sqlite/sqlite-funcs.xml
 doc/reference/html/
-doc/reference/tmpl/seed-closure.sgml
-doc/reference/tmpl/seed-context.sgml
-doc/reference/tmpl/seed-main.sgml
-doc/reference/tmpl/seed-main.sgml.sgml
-doc/reference/tmpl/seed-object.sgml
 doc/reference/xml/seed-context.xml
 doc/reference/xml/seed-main.xml
 doc/reference/xml/seed-object.xml

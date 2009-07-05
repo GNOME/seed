@@ -19,12 +19,6 @@
  * Copyright (C) Robert Carr 2008 <carrr@rpi.edu>
  */
 
-/**
- * SECTION:seed-context
- * @short_description: Construction and manipulation of JavaScript contexts
- *
- */
-
 #ifndef _SEED_ENGINE_H
 #define _SEED_ENGINE_H
 
