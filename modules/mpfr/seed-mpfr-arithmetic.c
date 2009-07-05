@@ -748,3 +748,26 @@ SeedValue seed_mpfr_max (SeedContext ctx,
     return seed_value_from_int(ctx, ret, exception);
 }
 
+SeedValue seed_mpfr_prec_round (SeedContext ctx,
+                                SeedObject function,
+                                SeedObject this_object,
+                                gsize argument_count,
+                                const SeedValue args[],
+                                SeedException * exception)
+{
+    mpfr_rnd_t rnd;
+    mp_prec_t prec;
+    mpfr_ptr rop;
+    gint ret;
+
+    CHECK_ARG_COUNT("mpfr.prec_round", 2);
+
+    rop = seed_object_get_private(this_object);
+    prec = seed_value_to_mpfr_prec_t(ctx, args[0], exception);
+    rnd = seed_value_to_mpfr_rnd_t(ctx, args[1], exception);
+
+    ret = mpfr_prec_round(rop, prec, rnd);
+
+    return seed_value_from_int(ctx, ret, exception);
+}
+

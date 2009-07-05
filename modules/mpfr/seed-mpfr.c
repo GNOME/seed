@@ -636,6 +636,7 @@ seed_static_function mpfr_funcs[] =
     {"floor", seed_mpfr_floor, 0},
     {"round", seed_mpfr_round, 0},
     {"trunc", seed_mpfr_trunc, 0},
+    {"prec_round", seed_mpfr_prec_round, 0},
     {"nexttoward", seed_mpfr_nexttoward, 0},
     {"nextabove", seed_mpfr_nextabove, 0},
     {"nextbelow", seed_mpfr_nextbelow, 0},
