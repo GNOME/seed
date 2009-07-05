@@ -7,10 +7,6 @@
 //             os sandbox dbus libxml cairo]
 //       towards utilization of this header.
 
-// Pluralize an argument count ("1 argument", "2 arguments", etc), given an int
-#define PLURALIZE_ARG_COUNT(c) \
-	((c == 1) ? #c " argument" : #c " arguments")
-
 // Check that the required number of arguments were passed into a seed callback.
 // If this is not true, raise an exception and return null.
 // This requires the callback to use "argument_count", "ctx", and "exception"
@@ -18,11 +14,9 @@
 #define CHECK_ARG_COUNT(name, argnum) \
 	if ( argument_count != argnum ) \
 	{ \
-		char * msg; \
-		asprintf(&msg, "%s expected %s got %Zd", name, \
-		         PLURALIZE_ARG_COUNT(argnum), argument_count); \
-		seed_make_exception (ctx, exception, "ArgumentError", "%s", msg); \
-		g_free(msg); \
+		seed_make_exception (ctx, exception, "ArgumentError", \
+		                     "wrong number of arguments; wanted %s, got %Zd", \
+		                     #argnum, argument_count); \
 		return seed_make_undefined (ctx); \
 	}
 
