@@ -113,6 +113,13 @@ DEF_SEED_MPFR_FUNC(seed_mpfr_zeta);
 DEF_SEED_MPFR_FUNC(seed_mpfr_erf);
 DEF_SEED_MPFR_FUNC(seed_mpfr_erfc);
 
+DEF_SEED_MPFR_FUNC(seed_mpfr_j0);
+DEF_SEED_MPFR_FUNC(seed_mpfr_j1);
+DEF_SEED_MPFR_FUNC(seed_mpfr_jn);
+DEF_SEED_MPFR_FUNC(seed_mpfr_y0);
+DEF_SEED_MPFR_FUNC(seed_mpfr_y1);
+DEF_SEED_MPFR_FUNC(seed_mpfr_yn);
+
 
 #endif      /* _SEED_MFPR_H_ */
 
