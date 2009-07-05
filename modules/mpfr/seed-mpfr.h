@@ -90,5 +90,10 @@ DEF_SEED_MPFR_FUNC(seed_mpfr_cbrt);
 DEF_SEED_MPFR_FUNC(seed_mpfr_cmp);
 DEF_SEED_MPFR_FUNC(seed_mpfr_cmpabs);
 
+DEF_SEED_MPFR_FUNC(seed_mpfr_nan_p);
+DEF_SEED_MPFR_FUNC(seed_mpfr_inf_p);
+DEF_SEED_MPFR_FUNC(seed_mpfr_number_p);
+DEF_SEED_MPFR_FUNC(seed_mpfr_zero_p);
+
 #endif      /* _SEED_MFPR_H_ */
 

@@ -58,3 +58,83 @@ SeedValue seed_mpfr_cmpabs (SeedContext ctx,
     return seed_value_from_int(ctx, ret, exception);
 }
 
+SeedValue
+seed_mpfr_nan_p (SeedContext ctx,
+                 SeedObject function,
+                 SeedObject this_object,
+                 gsize argument_count,
+                 const SeedValue args[],
+                 SeedException * exception)
+{
+    mpfr_ptr rop;
+    gboolean ret;
+
+    CHECK_ARG_COUNT("mpfr.nan_p", 0);
+
+    rop = seed_object_get_private(this_object);
+
+    ret = mpfr_nan_p(rop);
+
+    return seed_value_from_boolean(ctx, ret, exception);
+}
+
+SeedValue
+seed_mpfr_inf_p (SeedContext ctx,
+                 SeedObject function,
+                 SeedObject this_object,
+                 gsize argument_count,
+                 const SeedValue args[],
+                 SeedException * exception)
+{
+    mpfr_ptr rop;
+    gboolean ret;
+
+    CHECK_ARG_COUNT("mpfr.inf_p", 0);
+
+    rop = seed_object_get_private(this_object);
+
+    ret = mpfr_inf_p(rop);
+
+    return seed_value_from_boolean(ctx, ret, exception);
+}
+
+SeedValue
+seed_mpfr_number_p (SeedContext ctx,
+                    SeedObject function,
+                    SeedObject this_object,
+                    gsize argument_count,
+                    const SeedValue args[],
+                    SeedException * exception)
+{
+    mpfr_ptr rop;
+    gboolean ret;
+
+    CHECK_ARG_COUNT("mpfr.number_p", 0);
+
+    rop = seed_object_get_private(this_object);
+
+    ret = mpfr_number_p(rop);
+
+    return seed_value_from_boolean(ctx, ret, exception);
+}
+
+SeedValue
+seed_mpfr_zero_p (SeedContext ctx,
+                  SeedObject function,
+                  SeedObject this_object,
+                  gsize argument_count,
+                  const SeedValue args[],
+                  SeedException * exception)
+{
+    mpfr_ptr rop;
+    gboolean ret;
+
+    CHECK_ARG_COUNT("mpfr.zero_p", 0);
+
+    rop = seed_object_get_private(this_object);
+
+    ret = mpfr_zero_p(rop);
+
+    return seed_value_from_boolean(ctx, ret, exception);
+}
+
