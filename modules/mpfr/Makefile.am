@@ -7,6 +7,8 @@ seedlib_LTLIBRARIES = \
 
 libseed_mpfr_la_SOURCES = \
 	seed-mpfr.c
+	seed-mpfr-trig.c
+	seed-mpfr-arithmetic.c
 
 AM_CPPFLAGS = \
 	-I@top_srcdir@/libseed/ \
