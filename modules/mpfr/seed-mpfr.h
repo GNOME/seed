@@ -54,6 +54,9 @@ typedef enum _seed_mpfr_t
 
 inline seed_mpfr_t seed_mpfr_arg_type(SeedContext, SeedValue, SeedException);
 
+DEF_SEED_MPFR_FUNC(seed_mpfr_neg);
+DEF_SEED_MPFR_FUNC(seed_mpfr_abs);
+
 DEF_SEED_MPFR_FUNC(seed_mpfr_add);
 DEF_SEED_MPFR_FUNC(seed_mpfr_sin);
 DEF_SEED_MPFR_FUNC(seed_mpfr_cos);
