@@ -550,3 +550,95 @@ SeedValue seed_mpfr_coth (SeedContext ctx,
     return seed_value_from_int(ctx, ret, exception);
 }
 
+/* inverse hyperbolic trig */
+
+SeedValue seed_mpfr_asinh (SeedContext ctx,
+                           SeedObject function,
+                           SeedObject this_object,
+                           gsize argument_count,
+                           const SeedValue args[],
+                           SeedException * exception)
+{
+    mpfr_rnd_t rnd;
+    mpfr_ptr rop, op;
+    gint ret;
+
+    CHECK_ARG_COUNT("mpfr.asinh", 2);
+
+    rop = seed_object_get_private(this_object);
+    rnd = seed_value_to_mpfr_rnd_t(ctx, args[1], exception);
+
+    if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) )
+    {
+        op = seed_object_get_private(args[0]);
+    }
+    else
+    {
+        TYPE_EXCEPTION("mpfr.asinh", "mpfr_t");
+    }
+
+    ret = mpfr_asinh(rop, op, rnd);
+
+    return seed_value_from_int(ctx, ret, exception);
+}
+
+SeedValue seed_mpfr_acosh (SeedContext ctx,
+                           SeedObject function,
+                           SeedObject this_object,
+                           gsize argument_count,
+                           const SeedValue args[],
+                           SeedException * exception)
+{
+    mpfr_rnd_t rnd;
+    mpfr_ptr rop, op;
+    gint ret;
+
+    CHECK_ARG_COUNT("mpfr.acosh", 2);
+
+    rop = seed_object_get_private(this_object);
+    rnd = seed_value_to_mpfr_rnd_t(ctx, args[1], exception);
+
+    if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) )
+    {
+        op = seed_object_get_private(args[0]);
+    }
+    else
+    {
+        TYPE_EXCEPTION("mpfr.acosh", "mpfr_t");
+    }
+
+    ret = mpfr_acosh(rop, op, rnd);
+
+    return seed_value_from_int(ctx, ret, exception);
+}
+
+SeedValue seed_mpfr_atanh (SeedContext ctx,
+                           SeedObject function,
+                           SeedObject this_object,
+                           gsize argument_count,
+                           const SeedValue args[],
+                           SeedException * exception)
+{
+    mpfr_rnd_t rnd;
+    mpfr_ptr rop, op;
+    gint ret;
+
+    CHECK_ARG_COUNT("mpfr.atanh", 2);
+
+    rop = seed_object_get_private(this_object);
+    rnd = seed_value_to_mpfr_rnd_t(ctx, args[1], exception);
+
+    if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) )
+    {
+        op = seed_object_get_private(args[0]);
+    }
+    else
+    {
+        TYPE_EXCEPTION("mpfr.atanh", "mpfr_t");
+    }
+
+    ret = mpfr_atanh(rop, op, rnd);
+
+    return seed_value_from_int(ctx, ret, exception);
+}
+
