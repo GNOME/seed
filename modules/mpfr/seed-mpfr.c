@@ -139,6 +139,182 @@ seed_mpfr_get_d (SeedContext ctx,
 }
 
 static SeedValue
+seed_mpfr_fits_ulong_p (SeedContext ctx,
+                        SeedObject function,
+                        SeedObject this_object,
+                        gsize argument_count,
+                        const SeedValue args[],
+                        SeedException * exception)
+{
+    mpfr_rnd_t rnd;
+    mpfr_ptr rop;
+    gboolean ret;
+
+    CHECK_ARG_COUNT("mpfr.fits_ulong_p", 1);
+
+    rop = seed_object_get_private(this_object);
+    rnd = seed_value_to_mpfr_rnd_t(ctx, args[0], exception);
+
+    ret = mpfr_fits_ulong_p(rop, rnd);
+
+    return seed_value_from_boolean(ctx, ret, exception);
+}
+
+static SeedValue
+seed_mpfr_fits_slong_p (SeedContext ctx,
+                        SeedObject function,
+                        SeedObject this_object,
+                        gsize argument_count,
+                        const SeedValue args[],
+                        SeedException * exception)
+{
+    mpfr_rnd_t rnd;
+    mpfr_ptr rop;
+    gboolean ret;
+
+    CHECK_ARG_COUNT("mpfr.fits_slong_p", 1);
+
+    rop = seed_object_get_private(this_object);
+    rnd = seed_value_to_mpfr_rnd_t(ctx, args[0], exception);
+
+    ret = mpfr_fits_slong_p(rop, rnd);
+
+    return seed_value_from_boolean(ctx, ret, exception);
+}
+
+static SeedValue
+seed_mpfr_fits_uint_p (SeedContext ctx,
+                       SeedObject function,
+                       SeedObject this_object,
+                       gsize argument_count,
+                       const SeedValue args[],
+                       SeedException * exception)
+{
+    mpfr_rnd_t rnd;
+    mpfr_ptr rop;
+    gboolean ret;
+
+    CHECK_ARG_COUNT("mpfr.fits_uint_p", 1);
+
+    rop = seed_object_get_private(this_object);
+    rnd = seed_value_to_mpfr_rnd_t(ctx, args[0], exception);
+
+    ret = mpfr_fits_uint_p(rop, rnd);
+
+    return seed_value_from_boolean(ctx, ret, exception);
+}
+
+static SeedValue
+seed_mpfr_fits_sint_p (SeedContext ctx,
+                       SeedObject function,
+                       SeedObject this_object,
+                       gsize argument_count,
+                       const SeedValue args[],
+                       SeedException * exception)
+{
+    mpfr_rnd_t rnd;
+    mpfr_ptr rop;
+    gboolean ret;
+
+    CHECK_ARG_COUNT("mpfr.fits_sint_p", 1);
+
+    rop = seed_object_get_private(this_object);
+    rnd = seed_value_to_mpfr_rnd_t(ctx, args[0], exception);
+
+    ret = mpfr_fits_sint_p(rop, rnd);
+
+    return seed_value_from_boolean(ctx, ret, exception);
+}
+
+static SeedValue
+seed_mpfr_fits_ushort_p (SeedContext ctx,
+                         SeedObject function,
+                         SeedObject this_object,
+                         gsize argument_count,
+                         const SeedValue args[],
+                         SeedException * exception)
+{
+    mpfr_rnd_t rnd;
+    mpfr_ptr rop;
+    gboolean ret;
+
+    CHECK_ARG_COUNT("mpfr.fits_ushort_p", 1);
+
+    rop = seed_object_get_private(this_object);
+    rnd = seed_value_to_mpfr_rnd_t(ctx, args[0], exception);
+
+    ret = mpfr_fits_ushort_p(rop, rnd);
+
+    return seed_value_from_boolean(ctx, ret, exception);
+}
+
+static SeedValue
+seed_mpfr_fits_sshort_p (SeedContext ctx,
+                         SeedObject function,
+                         SeedObject this_object,
+                         gsize argument_count,
+                         const SeedValue args[],
+                         SeedException * exception)
+{
+    mpfr_rnd_t rnd;
+    mpfr_ptr rop;
+    gboolean ret;
+
+    CHECK_ARG_COUNT("mpfr.fits_sshort_p", 1);
+
+    rop = seed_object_get_private(this_object);
+    rnd = seed_value_to_mpfr_rnd_t(ctx, args[0], exception);
+
+    ret = mpfr_fits_sshort_p(rop, rnd);
+
+    return seed_value_from_boolean(ctx, ret, exception);
+}
+
+static SeedValue
+seed_mpfr_fits_intmax_p (SeedContext ctx,
+                         SeedObject function,
+                         SeedObject this_object,
+                         gsize argument_count,
+                         const SeedValue args[],
+                         SeedException * exception)
+{
+    mpfr_rnd_t rnd;
+    mpfr_ptr rop;
+    gboolean ret;
+
+    CHECK_ARG_COUNT("mpfr.fits_intmax_p", 1);
+
+    rop = seed_object_get_private(this_object);
+    rnd = seed_value_to_mpfr_rnd_t(ctx, args[0], exception);
+
+    ret = mpfr_fits_intmax_p(rop, rnd);
+
+    return seed_value_from_boolean(ctx, ret, exception);
+}
+
+static SeedValue
+seed_mpfr_fits_uintmax_p (SeedContext ctx,
+                          SeedObject function,
+                          SeedObject this_object,
+                          gsize argument_count,
+                          const SeedValue args[],
+                          SeedException * exception)
+{
+    mpfr_rnd_t rnd;
+    mpfr_ptr rop;
+    gboolean ret;
+
+    CHECK_ARG_COUNT("mpfr.fits_uintmax_p", 1);
+
+    rop = seed_object_get_private(this_object);
+    rnd = seed_value_to_mpfr_rnd_t(ctx, args[0], exception);
+
+    ret = mpfr_fits_uintmax_p(rop, rnd);
+
+    return seed_value_from_boolean(ctx, ret, exception);
+}
+
+static SeedValue
 seed_mpfr_get_exp (SeedContext ctx,
                    SeedObject this_object,
                    SeedString property_name,
@@ -452,6 +628,14 @@ seed_static_function mpfr_funcs[] =
     {"set_nan", seed_mpfr_set_nan, 0},
     {"swap", seed_mpfr_swap, 0},
     {"get_d", seed_mpfr_get_d, 0},
+    {"fits_ulong_p", seed_mpfr_fits_ulong_p, 0},
+    {"fits_slong_p", seed_mpfr_fits_slong_p, 0},
+    {"fits_uint_p", seed_mpfr_fits_uint_p, 0},
+    {"fits_sint_p", seed_mpfr_fits_sint_p, 0},
+    {"fits_ushort_p", seed_mpfr_fits_ushort_p, 0},
+    {"fits_sshort_p", seed_mpfr_fits_sshort_p, 0},
+    {"fits_intmax_p", seed_mpfr_fits_intmax_p, 0},
+    {"fits_uintmax_p", seed_mpfr_fits_uintmax_p, 0},
     {"out_str", seed_mpfr_out_str, 0},
     {"pi", seed_mpfr_const_pi, 0},
     {"euler", seed_mpfr_const_pi, 0},
