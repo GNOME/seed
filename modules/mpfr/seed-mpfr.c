@@ -643,6 +643,8 @@ seed_static_function mpfr_funcs[] =
     {"rint_floor", seed_mpfr_rint_floor, 0},
     {"rint_round", seed_mpfr_rint_round, 0},
     {"rint_trunc", seed_mpfr_rint_trunc, 0},
+    {"min", seed_mpfr_min, 0},
+    {"max", seed_mpfr_max, 0},
     {"frac", seed_mpfr_frac, 0},
     {"fmod", seed_mpfr_fmod, 0},
     {"remainder", seed_mpfr_remainder, 0},
