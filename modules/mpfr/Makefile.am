@@ -23,6 +23,8 @@ libseed_mpfr_la_LDFLAGS = \
 
 libseed_mpfr_la_LIBADD = -lmpfr -lgmp
 
+EXTRA_DIST = seed-mpfr.h
+
 endif
 
 
