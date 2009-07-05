@@ -125,6 +125,8 @@ DEF_SEED_MPFR_FUNC(seed_mpfr_fms);
 DEF_SEED_MPFR_FUNC(seed_mpfr_agm);
 DEF_SEED_MPFR_FUNC(seed_mpfr_hypot);
 
+DEF_SEED_MPFR_FUNC(seed_mpfr_free_cache);
+
 
 #endif      /* _SEED_MFPR_H_ */
 

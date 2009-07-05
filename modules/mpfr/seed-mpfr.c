@@ -675,6 +675,7 @@ seed_static_function mpfr_funcs[] =
     {"pi", seed_mpfr_const_pi, 0},
     {"euler", seed_mpfr_const_pi, 0},
     {"catalan", seed_mpfr_const_pi, 0},
+    {"free_cache", seed_mpfr_free_cache, 0},
     {NULL, NULL, 0}
 };
 

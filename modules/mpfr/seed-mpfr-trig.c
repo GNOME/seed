@@ -1213,3 +1213,15 @@ SeedValue seed_mpfr_hypot (SeedContext ctx,
     return seed_value_from_int(ctx, ret, exception);
 }
 
+SeedValue seed_mpfr_free_cache (SeedContext ctx,
+                                SeedObject function,
+                                SeedObject this_object,
+                                gsize argument_count,
+                                const SeedValue args[],
+                                SeedException * exception)
+{
+    CHECK_ARG_COUNT("mpfr.free_cache", 0);
+    mpfr_free_cache();
+    return seed_make_null(ctx);
+}
+
