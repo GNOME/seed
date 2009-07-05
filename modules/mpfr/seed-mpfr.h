@@ -71,5 +71,9 @@ DEF_SEED_MPFR_FUNC(seed_mpfr_log);
 DEF_SEED_MPFR_FUNC(seed_mpfr_log2);
 DEF_SEED_MPFR_FUNC(seed_mpfr_log10);
 
+DEF_SEED_MPFR_FUNC(seed_mpfr_sinh);
+DEF_SEED_MPFR_FUNC(seed_mpfr_cosh);
+DEF_SEED_MPFR_FUNC(seed_mpfr_tanh);
+
 #endif      /* _SEED_MFPR_H_ */
 
