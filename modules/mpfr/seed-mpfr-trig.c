@@ -1181,3 +1181,35 @@ SeedValue seed_mpfr_agm (SeedContext ctx,
     return seed_value_from_int(ctx, ret, exception);
 }
 
+SeedValue seed_mpfr_hypot (SeedContext ctx,
+                           SeedObject function,
+                           SeedObject this_object,
+                           gsize argument_count,
+                           const SeedValue args[],
+                           SeedException * exception)
+{
+    mpfr_rnd_t rnd;
+    mpfr_ptr rop, op1, op2;
+    gint ret;
+
+    CHECK_ARG_COUNT("mpfr.hypot", 3);
+
+    rop = seed_object_get_private(this_object);
+    rnd = seed_value_to_mpfr_rnd_t(ctx, args[2], exception);
+
+    if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) &&
+         seed_value_is_object_of_class(ctx, args[1], mpfr_class))
+    {
+        op1 = seed_object_get_private(args[0]);
+        op2 = seed_object_get_private(args[1]);
+    }
+    else
+    {
+        TYPE_EXCEPTION("mpfr.agm", "mpfr_t");
+    }
+
+    ret = mpfr_hypot(rop, op1, op2, rnd);
+
+    return seed_value_from_int(ctx, ret, exception);
+}
+

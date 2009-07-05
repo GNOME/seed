@@ -643,6 +643,7 @@ seed_static_function mpfr_funcs[] =
     {"fma", seed_mpfr_fma, 0},
     {"fms", seed_mpfr_fms, 0},
     {"agm", seed_mpfr_agm, 0},
+    {"hypot", seed_mpfr_hypot, 0},
     {"set", seed_mpfr_set, 0},
     {"set_inf", seed_mpfr_set_inf, 0},
     {"set_nan", seed_mpfr_set_nan, 0},
