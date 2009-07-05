@@ -59,5 +59,9 @@ DEF_SEED_MPFR_FUNC(seed_mpfr_sin);
 DEF_SEED_MPFR_FUNC(seed_mpfr_cos);
 DEF_SEED_MPFR_FUNC(seed_mpfr_tan);
 
+DEF_SEED_MPFR_FUNC(seed_mpfr_csc);
+DEF_SEED_MPFR_FUNC(seed_mpfr_sec);
+DEF_SEED_MPFR_FUNC(seed_mpfr_cot);
+
 #endif      /* _SEED_MFPR_H_ */
 
