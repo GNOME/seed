@@ -67,5 +67,9 @@ DEF_SEED_MPFR_FUNC(seed_mpfr_asin);
 DEF_SEED_MPFR_FUNC(seed_mpfr_acos);
 DEF_SEED_MPFR_FUNC(seed_mpfr_atan);
 
+DEF_SEED_MPFR_FUNC(seed_mpfr_log);
+DEF_SEED_MPFR_FUNC(seed_mpfr_log2);
+DEF_SEED_MPFR_FUNC(seed_mpfr_log10);
+
 #endif      /* _SEED_MFPR_H_ */
 
