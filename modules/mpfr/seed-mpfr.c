@@ -5,55 +5,11 @@
 
 #include "seed-mpfr.h"
 
-SeedObject ns_ref;
-SeedClass mpfr_class;
-
-#define TYPE_EXCEPTION(name, wanted) \
-    seed_make_exception(ctx, exception, "TypeError", name " expected " wanted ); \
-    return seed_make_undefined(ctx);
-
-#if 0 /* TODO: Make this work */
-/* kind of stupid hack */
-#if MPFR_PREC_MAX == G_MAXLONG
-    #define seed_value_to_mpfr_prec_t(a, b, c) seed_value_to_ulong(a, b, c)
-    #define seed_value_from_mpfr_prec_t(a, b, c) seed_value_from_ulong(a, b, c)
-#elif MPFR_PREC_MAX == G_MAXUSHORT
-    #define seed_value_to_mpfr_prec_t(a, b, c) seed_value_to_ushort(a, b, c)
-    #define seed_value_from_mpfr_prec_t(a, b, c) seed_value_from_ushort(a, b, c)
-#elif MPFR_PREC_MAX == G_MAXINT
-    #define seed_value_to_mpfr_prec_t(a, b, c) seed_value_to_int(a, b, c)
-    #define seed_value_from_mpfr_prec_t(a, b, c) seed_value_from_int(a, b, c)
-#elif MPFR_PREC_MAX == G_MAXUINT64
-    #define seed_value_to_mpfr_prec_t(a, b, c) seed_value_to_uint64(a, b, c)
-    #define seed_value_from_mpfr_prec_t(a, b, c) seed_value_from_uint64(a, b, c)
-#else
-    #error "Wrong mpfr_prec_t size somehow?"
-#endif
-#endif
-
-#define seed_value_to_mpfr_prec_t(a, b, c) seed_value_to_uint64(a, b, c)
-#define seed_value_from_mpfr_prec_t(a, b, c) seed_value_from_uint64(a, b, c)
-
-/* TODO: Right size for this */
-#define seed_value_to_mpfr_rnd_t(a, b, c) seed_value_to_char(a, b, c)
-#define seed_value_from_mpfr_rnd_t(a, b, c) seed_value_from_char(a, b, c)
-
-#define seed_value_from_mp_exp_t(a, b, c) seed_value_from_ulong(a, b, c)
-#define seed_value_to_mp_exp_t(a, b, c) seed_value_to_ulong(a, b, c)
-
 /* For now at least ignoring the ability to use gmp types since there is no gmp module */
 
 SeedEngine * eng;
 
-typedef enum _seed_mpfr_t
-{
-    SEED_MPFR_UNKNOWN = 0,
-    SEED_MPFR_MPFR = 1 << 1,
-    SEED_MPFR_DOUBLE = 1 << 2,
-    SEED_MPFR_STRING = 1 << 3,
-} seed_mpfr_t;
-
-static inline seed_mpfr_t
+inline seed_mpfr_t
 seed_mpfr_arg_type(SeedContext ctx, SeedValue arg, SeedException exept)
 {
     if ( seed_value_is_object_of_class(ctx, arg, mpfr_class) )
@@ -79,7 +35,7 @@ seed_mpfr_out_str (SeedContext ctx,
     gint base;
     mpfr_rnd_t rnd;
     mpfr_ptr op;
-    
+
     CHECK_ARG_COUNT("mpfr.out_str", 4);
 
     stream = (FILE*) seed_pointer_get_pointer(ctx, args[0]);
