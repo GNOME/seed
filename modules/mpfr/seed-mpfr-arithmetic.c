@@ -246,3 +246,148 @@ SeedValue seed_mpfr_dim (SeedContext ctx,
     return seed_value_from_int(ctx, ret, exception);
 }
 
+
+/* Rounding functions */
+
+SeedValue seed_mpfr_rint (SeedContext ctx,
+                          SeedObject function,
+                          SeedObject this_object,
+                          gsize argument_count,
+                          const SeedValue args[],
+                          SeedException * exception)
+{
+    mpfr_rnd_t rnd;
+    mpfr_ptr rop, op;
+    gint ret;
+
+    CHECK_ARG_COUNT("mpfr.rint", 2);
+
+    rop = seed_object_get_private(this_object);
+    rnd = seed_value_to_mpfr_rnd_t(ctx, args[1], exception);
+
+    if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) )
+    {
+        op = seed_object_get_private(args[0]);
+    }
+    else
+    {
+        TYPE_EXCEPTION("mpfr.rint", "mpfr_t");
+    }
+
+    ret = mpfr_rint(rop, op, rnd);
+
+    return seed_value_from_int(ctx, ret, exception);
+}
+
+SeedValue seed_mpfr_ceil (SeedContext ctx,
+                          SeedObject function,
+                          SeedObject this_object,
+                          gsize argument_count,
+                          const SeedValue args[],
+                          SeedException * exception)
+{
+    mpfr_ptr rop, op;
+    gint ret;
+
+    CHECK_ARG_COUNT("mpfr.ceil", 1);
+
+    rop = seed_object_get_private(this_object);
+
+    if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) )
+    {
+        op = seed_object_get_private(args[0]);
+    }
+    else
+    {
+        TYPE_EXCEPTION("mpfr.ceil", "mpfr_t");
+    }
+
+    ret = mpfr_ceil(rop, op);
+
+    return seed_value_from_int(ctx, ret, exception);
+}
+
+SeedValue seed_mpfr_floor (SeedContext ctx,
+                           SeedObject function,
+                           SeedObject this_object,
+                           gsize argument_count,
+                           const SeedValue args[],
+                           SeedException * exception)
+{
+    mpfr_ptr rop, op;
+    gint ret;
+
+    CHECK_ARG_COUNT("mpfr.floor", 1);
+
+    rop = seed_object_get_private(this_object);
+
+    if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) )
+    {
+        op = seed_object_get_private(args[0]);
+    }
+    else
+    {
+        TYPE_EXCEPTION("mpfr.floor", "mpfr_t");
+    }
+
+    ret = mpfr_floor(rop, op);
+
+    return seed_value_from_int(ctx, ret, exception);
+}
+
+SeedValue seed_mpfr_round (SeedContext ctx,
+                           SeedObject function,
+                           SeedObject this_object,
+                           gsize argument_count,
+                           const SeedValue args[],
+                           SeedException * exception)
+{
+    mpfr_ptr rop, op;
+    gint ret;
+
+    CHECK_ARG_COUNT("mpfr.round", 1);
+
+    rop = seed_object_get_private(this_object);
+
+    if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) )
+    {
+        op = seed_object_get_private(args[0]);
+    }
+    else
+    {
+        TYPE_EXCEPTION("mpfr.round", "mpfr_t");
+    }
+
+    ret = mpfr_round(rop, op);
+
+    return seed_value_from_int(ctx, ret, exception);
+}
+
+SeedValue seed_mpfr_trunc (SeedContext ctx,
+                           SeedObject function,
+                           SeedObject this_object,
+                           gsize argument_count,
+                           const SeedValue args[],
+                           SeedException * exception)
+{
+    mpfr_ptr rop, op;
+    gint ret;
+
+    CHECK_ARG_COUNT("mpfr.trunc", 1);
+
+    rop = seed_object_get_private(this_object);
+
+    if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) )
+    {
+        op = seed_object_get_private(args[0]);
+    }
+    else
+    {
+        TYPE_EXCEPTION("mpfr.trunc", "mpfr_t");
+    }
+
+    ret = mpfr_trunc(rop, op);
+
+    return seed_value_from_int(ctx, ret, exception);
+}
+
