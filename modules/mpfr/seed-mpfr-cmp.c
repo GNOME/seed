@@ -30,3 +30,31 @@ SeedValue seed_mpfr_cmp (SeedContext ctx,
     return seed_value_from_boolean(ctx, ret, exception);
 }
 
+SeedValue seed_mpfr_cmpabs (SeedContext ctx,
+                            SeedObject function,
+                            SeedObject this_object,
+                            gsize argument_count,
+                            const SeedValue args[],
+                            SeedException * exception)
+{
+    mpfr_ptr rop, op;
+    gint ret;
+
+    CHECK_ARG_COUNT("mpfr.cmpabs", 1);
+
+    rop = seed_object_get_private(this_object);
+
+    if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) )
+    {
+        op = seed_object_get_private(args[0]);
+    }
+    else
+    {
+        TYPE_EXCEPTION("mpfr.cmpabs", "mpfr_t");
+    }
+
+    ret = mpfr_cmpabs(rop, op);
+
+    return seed_value_from_int(ctx, ret, exception);
+}
+

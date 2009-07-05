@@ -88,6 +88,7 @@ DEF_SEED_MPFR_FUNC(seed_mpfr_rec_sqrt);
 DEF_SEED_MPFR_FUNC(seed_mpfr_cbrt);
 
 DEF_SEED_MPFR_FUNC(seed_mpfr_cmp);
+DEF_SEED_MPFR_FUNC(seed_mpfr_cmpabs);
 
 #endif      /* _SEED_MFPR_H_ */
 
