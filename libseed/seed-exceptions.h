@@ -21,7 +21,7 @@
 
 /**
  * SECTION:seed-exception
- * @short_description: Manipulation of JavaScript exceptions.
+ * @short_description: Construction and handling of JavaScript exceptions
  *
  */
 

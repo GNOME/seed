@@ -10,30 +10,31 @@
       <ulink role="online-location" url="http://www.gnome.org/~racarr/seed/gtk-doc/index.html">http://www.gnome.org/~racarr/seed/gtk-doc/</ulink>.
     </releaseinfo>
   </bookinfo>
+
+  <chapter id="seed">
+    <title>Seed Overview</title>
+    <para>This is the documentation for the C API of Seed, used for embedding, and creating native C modules. For documentation on the JavaScript interface of Seed, see <ulink role="online-location" url="http://www.gnome.org/~racarr/seed">http://www.gnome.org/~racarr/seed/</ulink>.</para>
+    Stuff here about installing, prereqs, contact info, etc.
+  </chapter>
   
-  <preface>
-    <title>Introduction</title>
-    <para>
-      This is the documentation for the C API of Seed, used for embedding, and modules. For documentation on the JavaScript interface of Seed, see <ulink role="online-location" url="http://www.gnome.org/~racarr/seed">http://www.gnome.org/~racarr/seed/</ulink>
-    </para>
-  </preface>
+  <chapter id="fundamentals">
+    <title>Seed Fundamentals</title>
+    <xi:include href="xml/seed-main.xml"/>
+    <xi:include href="xml/seed-context.xml"/>
+    <xi:include href="xml/seed-closure.xml"/>
+  </chapter>
   
-  <part>
-    <title>API Reference</title>
-    <chapter>
-      <title>General Seed Functions</title>
-      <xi:include href="xml/seed-main.xml"/>
-      <xi:include href="xml/seed-context.xml"/>
-      <xi:include href="xml/seed-closure.xml"/>
-      <xi:include href="xml/seed-string.xml"/>
-      <xi:include href="xml/seed-exception.xml"/>
-    </chapter>
-    <chapter>
-      <title>Value and Object manipulation</title>
-      <xi:include href="xml/seed-object.xml"/>
-      <xi:include href="xml/seed-value.xml"/>
-    </chapter>
-    </part>
+  <chapter id="general">
+    <title>Seed Exception Handling</title>
+    <xi:include href="xml/seed-exception.xml"/>
+  </chapter>
+  
+  <chapter id="values">
+    <title>Seed Data Types and Type-Conversion Utilities</title>
+    <xi:include href="xml/seed-object.xml"/>
+    <xi:include href="xml/seed-string.xml"/>
+    <xi:include href="xml/seed-value.xml"/>
+  </chapter>
   
   <index>
     <title>Index</title>

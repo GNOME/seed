@@ -21,13 +21,13 @@
 
 /**
  * SECTION:seed-value
- * @short_description: Conversion between, and manipulation of, Seed and C types.
+ * @short_description: Conversion between, and manipulation of, Seed and C types
  *
  */
 
 /**
  * SECTION:seed-string
- * @short_description: Manipulation of #SeedString objects.
+ * @short_description: Various string-related functions
  *
  */
 
