@@ -607,6 +607,7 @@ seed_static_function mpfr_funcs[] =
     {"cbrt", seed_mpfr_cbrt, 0},
     {"neg", seed_mpfr_neg, 0},
     {"abs", seed_mpfr_abs, 0},
+    {"dim", seed_mpfr_dim, 0},
     {"sin", seed_mpfr_sin, 0},
     {"cos", seed_mpfr_cos, 0},
     {"tan", seed_mpfr_tan, 0},
