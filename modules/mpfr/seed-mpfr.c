@@ -380,7 +380,6 @@ seed_mpfr_set (SeedContext ctx,
     mpfr_rnd_t rnd;
     mpfr_ptr rop, op;
     gdouble dop;
-    SeedObject obj;
     gint ret;
     gchar* str;
     seed_mpfr_t argt;
@@ -676,8 +675,8 @@ seed_static_function mpfr_funcs[] =
     {"fits_uintmax_p", seed_mpfr_fits_uintmax_p, 0},
     {"out_str", seed_mpfr_out_str, 0},
     {"pi", seed_mpfr_const_pi, 0},
-    {"euler", seed_mpfr_const_pi, 0},
-    {"catalan", seed_mpfr_const_pi, 0},
+    {"euler", seed_mpfr_const_euler, 0},
+    {"catalan", seed_mpfr_const_catalan, 0},
     {"free_cache", seed_mpfr_free_cache, 0},
     {NULL, NULL, 0}
 };
@@ -693,7 +692,6 @@ SeedObject
 seed_module_init(SeedEngine *local_eng)
 {
     SeedGlobalContext ctx = local_eng->context;
-    SeedObject ctx_constructor_rew;
     seed_class_definition mpfr_def = seed_empty_class;
     SeedObject mpfr_constructor, mpfr_constructor_set;
 

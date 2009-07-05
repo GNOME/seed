@@ -13,7 +13,6 @@ SeedValue seed_mpfr_add (SeedContext ctx,
     mpfr_rnd_t rnd;
     mpfr_ptr rop, op1, op2;
     gdouble dop1, dop2;
-    SeedObject obj;
     gint ret;
     seed_mpfr_t argt1, argt2;
     /* only want 1 double argument. alternatively, could accept 2,
