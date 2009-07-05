@@ -215,6 +215,38 @@ seed_mpfr_set (SeedContext ctx,
     return seed_value_from_int(ctx, ret, exception);
 }
 
+SeedValue seed_mpfr_set_inf (SeedContext ctx,
+                             SeedObject function,
+                             SeedObject this_object,
+                             gsize argument_count,
+                             const SeedValue args[],
+                             SeedException * exception)
+{
+    mpfr_ptr rop;
+    gint sign;
+
+    CHECK_ARG_COUNT("mpfr.set_inf", 1);
+
+    rop = seed_object_get_private(this_object);
+
+    if ( seed_value_is_number(ctx, args[0]) )
+    {
+        sign = seed_value_to_int(ctx, args[0], exception);
+    }
+    else
+    {
+        TYPE_EXCEPTION("mpfr.set_inf", "int");
+    }
+
+    mpfr_set_inf(rop, sign);
+
+    return seed_make_null(ctx);
+}
+
+
+
+
+
 /* init and set functions, using default precision, or optionally specifying it */
 SeedObject
 seed_mpfr_construct_with_set(SeedContext ctx,
@@ -353,6 +385,7 @@ seed_static_function mpfr_funcs[] =
     {"acosh", seed_mpfr_acosh, 0},
     {"atanh", seed_mpfr_atanh, 0},
     {"set", seed_mpfr_set, 0},
+    {"set_inf", seed_mpfr_set_inf, 0},
     {"out_str", seed_mpfr_out_str, 0},
     {"pi", seed_mpfr_const_pi, 0},
     {"euler", seed_mpfr_const_pi, 0},
