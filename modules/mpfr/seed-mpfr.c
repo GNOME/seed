@@ -49,6 +49,31 @@ seed_mpfr_out_str (SeedContext ctx,
                                 exception);
 }
 
+/* no way to do real printf with varargs yet, this is a way to get fake printf  */
+static SeedValue
+seed_mpfr_print (SeedContext ctx,
+                 SeedObject function,
+                 SeedObject this_object,
+                 gsize argument_count,
+                 const SeedValue args[],
+                 SeedException * exception)
+{
+    mpfr_ptr op;
+    mpfr_rnd_t rnd;
+    unsigned int width, sigdigits;
+    gint ret;
+
+    CHECK_ARG_COUNT("mpfr.print", 3);
+
+    op = seed_object_get_private(this_object);
+    width = seed_value_to_uint(ctx, args[0], exception);
+    sigdigits = seed_value_to_uint(ctx, args[1], exception);
+    rnd = seed_value_to_mpfr_rnd_t(ctx, args[2], exception);
+
+    ret = mpfr_printf("%*.*R*g", width, sigdigits, rnd, op );
+
+    return seed_value_from_int(ctx, ret, exception);
+}
 
 static SeedValue
 seed_mpfr_const_pi (SeedContext ctx,
@@ -674,6 +699,7 @@ seed_static_function mpfr_funcs[] =
     {"fits_intmax_p", seed_mpfr_fits_intmax_p, 0},
     {"fits_uintmax_p", seed_mpfr_fits_uintmax_p, 0},
     {"out_str", seed_mpfr_out_str, 0},
+    {"print", seed_mpfr_print, 0},
     {"pi", seed_mpfr_const_pi, 0},
     {"euler", seed_mpfr_const_euler, 0},
     {"catalan", seed_mpfr_const_catalan, 0},
