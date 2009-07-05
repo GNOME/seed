@@ -117,6 +117,28 @@ seed_mpfr_const_catalan (SeedContext ctx,
 }
 
 static SeedValue
+seed_mpfr_get_d (SeedContext ctx,
+                 SeedObject function,
+                 SeedObject this_object,
+                 gsize argument_count,
+                 const SeedValue args[],
+                 SeedException * exception)
+{
+    mpfr_rnd_t rnd;
+    mpfr_ptr rop;
+    gdouble ret;
+
+    CHECK_ARG_COUNT("mpfr.get_d", 1);
+
+    rop = seed_object_get_private(this_object);
+    rnd = seed_value_to_mpfr_rnd_t(ctx, args[0], exception);
+
+    ret = mpfr_get_d(rop, rnd);
+
+    return seed_value_from_double(ctx, ret, exception);
+}
+
+static SeedValue
 seed_mpfr_get_exp (SeedContext ctx,
                    SeedObject this_object,
                    SeedString property_name,
@@ -429,6 +451,7 @@ seed_static_function mpfr_funcs[] =
     {"set_inf", seed_mpfr_set_inf, 0},
     {"set_nan", seed_mpfr_set_nan, 0},
     {"swap", seed_mpfr_swap, 0},
+    {"get_d", seed_mpfr_get_d, 0},
     {"out_str", seed_mpfr_out_str, 0},
     {"pi", seed_mpfr_const_pi, 0},
     {"euler", seed_mpfr_const_pi, 0},
