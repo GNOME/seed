@@ -65,6 +65,10 @@ DEF_SEED_MPFR_FUNC(seed_mpfr_round);
 DEF_SEED_MPFR_FUNC(seed_mpfr_trunc);
 DEF_SEED_MPFR_FUNC(seed_mpfr_frac);
 
+DEF_SEED_MPFR_FUNC(seed_mpfr_nexttoward);
+DEF_SEED_MPFR_FUNC(seed_mpfr_nextabove);
+DEF_SEED_MPFR_FUNC(seed_mpfr_nextbelow);
+
 DEF_SEED_MPFR_FUNC(seed_mpfr_fmod);
 DEF_SEED_MPFR_FUNC(seed_mpfr_remainder);
 DEF_SEED_MPFR_FUNC(seed_mpfr_integer_p);

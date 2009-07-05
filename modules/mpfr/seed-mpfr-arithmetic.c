@@ -623,3 +623,64 @@ SeedValue seed_mpfr_remainder (SeedContext ctx,
     return seed_value_from_int(ctx, ret, exception);
 }
 
+SeedValue seed_mpfr_nexttoward (SeedContext ctx,
+                                SeedObject function,
+                                SeedObject this_object,
+                                gsize argument_count,
+                                const SeedValue args[],
+                                SeedException * exception)
+{
+    mpfr_ptr rop, op;
+
+    CHECK_ARG_COUNT("mpfr.nexttoward", 1);
+
+    rop = seed_object_get_private(this_object);
+
+    if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) )
+    {
+        op = seed_object_get_private(args[0]);
+    }
+    else
+    {
+        TYPE_EXCEPTION("mpfr.nexttoward", "mpfr_t");
+    }
+
+    mpfr_nexttoward(rop, op);
+
+    return seed_make_null(ctx);
+}
+
+SeedValue seed_mpfr_nextabove (SeedContext ctx,
+                               SeedObject function,
+                               SeedObject this_object,
+                               gsize argument_count,
+                               const SeedValue args[],
+                               SeedException * exception)
+{
+    mpfr_ptr rop;
+
+    CHECK_ARG_COUNT("mpfr.nextabove", 0);
+
+    rop = seed_object_get_private(this_object);
+
+    mpfr_nextabove(rop);
+    return seed_make_null(ctx);
+}
+
+SeedValue seed_mpfr_nextbelow (SeedContext ctx,
+                               SeedObject function,
+                               SeedObject this_object,
+                               gsize argument_count,
+                               const SeedValue args[],
+                               SeedException * exception)
+{
+    mpfr_ptr rop;
+
+    CHECK_ARG_COUNT("mpfr.nextbelow", 0);
+
+    rop = seed_object_get_private(this_object);
+
+    mpfr_nextbelow(rop);
+    return seed_make_null(ctx);
+}
+
