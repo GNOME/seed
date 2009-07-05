@@ -1205,7 +1205,7 @@ SeedValue seed_mpfr_hypot (SeedContext ctx,
     }
     else
     {
-        TYPE_EXCEPTION("mpfr.agm", "mpfr_t");
+        TYPE_EXCEPTION("mpfr.hypot", "mpfr_t");
     }
 
     ret = mpfr_hypot(rop, op1, op2, rnd);
