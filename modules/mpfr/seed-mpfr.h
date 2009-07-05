@@ -75,5 +75,9 @@ DEF_SEED_MPFR_FUNC(seed_mpfr_sinh);
 DEF_SEED_MPFR_FUNC(seed_mpfr_cosh);
 DEF_SEED_MPFR_FUNC(seed_mpfr_tanh);
 
+DEF_SEED_MPFR_FUNC(seed_mpfr_csch);
+DEF_SEED_MPFR_FUNC(seed_mpfr_sech);
+DEF_SEED_MPFR_FUNC(seed_mpfr_coth);
+
 #endif      /* _SEED_MFPR_H_ */
 
