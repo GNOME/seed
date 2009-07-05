@@ -261,6 +261,32 @@ SeedValue seed_mpfr_set_nan (SeedContext ctx,
     return seed_make_null(ctx);
 }
 
+SeedValue seed_mpfr_swap (SeedContext ctx,
+                          SeedObject function,
+                          SeedObject this_object,
+                          gsize argument_count,
+                          const SeedValue args[],
+                          SeedException * exception)
+{
+    mpfr_ptr rop, op;
+
+    CHECK_ARG_COUNT("mpfr.swap", 1);
+
+    rop = seed_object_get_private(this_object);
+
+    if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) )
+    {
+        op = seed_object_get_private(args[0]);
+    }
+    else
+    {
+        TYPE_EXCEPTION("mpfr.swap", "mpfr_t");
+    }
+
+    mpfr_swap(rop, op);
+
+    return seed_make_null(ctx);
+}
 
 /* init and set functions, using default precision, or optionally specifying it */
 SeedObject
@@ -402,6 +428,7 @@ seed_static_function mpfr_funcs[] =
     {"set", seed_mpfr_set, 0},
     {"set_inf", seed_mpfr_set_inf, 0},
     {"set_nan", seed_mpfr_set_nan, 0},
+    {"swap", seed_mpfr_swap, 0},
     {"out_str", seed_mpfr_out_str, 0},
     {"pi", seed_mpfr_const_pi, 0},
     {"euler", seed_mpfr_const_pi, 0},
