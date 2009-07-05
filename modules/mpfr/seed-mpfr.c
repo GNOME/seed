@@ -640,6 +640,8 @@ seed_static_function mpfr_funcs[] =
     {"y0", seed_mpfr_y0, 0},
     {"y1", seed_mpfr_y1, 0},
     {"yn", seed_mpfr_yn, 0},
+    {"fma", seed_mpfr_fma, 0},
+    {"fms", seed_mpfr_fms, 0},
     {"set", seed_mpfr_set, 0},
     {"set_inf", seed_mpfr_set_inf, 0},
     {"set_nan", seed_mpfr_set_nan, 0},

@@ -1081,3 +1081,71 @@ SeedValue seed_mpfr_yn (SeedContext ctx,
     return seed_value_from_int(ctx, ret, exception);
 }
 
+SeedValue seed_mpfr_fma (SeedContext ctx,
+                         SeedObject function,
+                         SeedObject this_object,
+                         gsize argument_count,
+                         const SeedValue args[],
+                         SeedException * exception)
+{
+    mpfr_rnd_t rnd;
+    mpfr_ptr rop, op1, op2, op3;
+    gint ret;
+
+    CHECK_ARG_COUNT("mpfr.fma", 4);
+
+    rop = seed_object_get_private(this_object);
+    rnd = seed_value_to_mpfr_rnd_t(ctx, args[3], exception);
+
+    if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) &&
+         seed_value_is_object_of_class(ctx, args[1], mpfr_class) &&
+         seed_value_is_object_of_class(ctx, args[2], mpfr_class))
+    {
+        op1 = seed_object_get_private(args[0]);
+        op2 = seed_object_get_private(args[1]);
+        op3 = seed_object_get_private(args[2]);
+    }
+    else
+    {
+        TYPE_EXCEPTION("mpfr.fma", "mpfr_t");
+    }
+
+    ret = mpfr_fma(rop, op1, op2, op3, rnd);
+
+    return seed_value_from_int(ctx, ret, exception);
+}
+
+SeedValue seed_mpfr_fms (SeedContext ctx,
+                         SeedObject function,
+                         SeedObject this_object,
+                         gsize argument_count,
+                         const SeedValue args[],
+                         SeedException * exception)
+{
+    mpfr_rnd_t rnd;
+    mpfr_ptr rop, op1, op2, op3;
+    gint ret;
+
+    CHECK_ARG_COUNT("mpfr.fms", 4);
+
+    rop = seed_object_get_private(this_object);
+    rnd = seed_value_to_mpfr_rnd_t(ctx, args[3], exception);
+
+    if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) &&
+         seed_value_is_object_of_class(ctx, args[1], mpfr_class) &&
+         seed_value_is_object_of_class(ctx, args[2], mpfr_class))
+    {
+        op1 = seed_object_get_private(args[0]);
+        op2 = seed_object_get_private(args[1]);
+        op3 = seed_object_get_private(args[2]);
+    }
+    else
+    {
+        TYPE_EXCEPTION("mpfr.fms", "mpfr_t");
+    }
+
+    ret = mpfr_fms(rop, op1, op2, op3, rnd);
+
+    return seed_value_from_int(ctx, ret, exception);
+}
+
