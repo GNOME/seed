@@ -94,8 +94,15 @@ DEF_SEED_MPFR_FUNC(seed_mpfr_nan_p);
 DEF_SEED_MPFR_FUNC(seed_mpfr_inf_p);
 DEF_SEED_MPFR_FUNC(seed_mpfr_number_p);
 DEF_SEED_MPFR_FUNC(seed_mpfr_zero_p);
+DEF_SEED_MPFR_FUNC(seed_mpfr_sgn);
 
 DEF_SEED_MPFR_FUNC(seed_mpfr_greater_p);
+DEF_SEED_MPFR_FUNC(seed_mpfr_greaterequal_p);
+DEF_SEED_MPFR_FUNC(seed_mpfr_less_p);
+DEF_SEED_MPFR_FUNC(seed_mpfr_lessequal_p);
+DEF_SEED_MPFR_FUNC(seed_mpfr_lessgreater_p);
+DEF_SEED_MPFR_FUNC(seed_mpfr_equal_p);
+DEF_SEED_MPFR_FUNC(seed_mpfr_unordered_p);
 
 #endif      /* _SEED_MFPR_H_ */
 

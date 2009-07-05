@@ -138,6 +138,26 @@ seed_mpfr_zero_p (SeedContext ctx,
     return seed_value_from_boolean(ctx, ret, exception);
 }
 
+SeedValue
+seed_mpfr_sgn (SeedContext ctx,
+               SeedObject function,
+               SeedObject this_object,
+               gsize argument_count,
+               const SeedValue args[],
+               SeedException * exception)
+{
+    mpfr_ptr rop;
+    gint ret;
+
+    CHECK_ARG_COUNT("mpfr.sgn", 0);
+
+    rop = seed_object_get_private(this_object);
+
+    ret = mpfr_sgn(rop);
+
+    return seed_value_from_int(ctx, ret, exception);
+}
+
 SeedValue seed_mpfr_greater_p (SeedContext ctx,
                                SeedObject function,
                                SeedObject this_object,
@@ -162,6 +182,174 @@ SeedValue seed_mpfr_greater_p (SeedContext ctx,
     }
 
     ret = mpfr_greater_p(rop, op);
+
+    return seed_value_from_boolean(ctx, ret, exception);
+}
+
+SeedValue seed_mpfr_greaterequal_p (SeedContext ctx,
+                                    SeedObject function,
+                                    SeedObject this_object,
+                                    gsize argument_count,
+                                    const SeedValue args[],
+                                    SeedException * exception)
+{
+    mpfr_ptr rop, op;
+    gboolean ret;
+
+    CHECK_ARG_COUNT("mpfr.greaterequal_p", 1);
+
+    rop = seed_object_get_private(this_object);
+
+    if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) )
+    {
+        op = seed_object_get_private(args[0]);
+    }
+    else
+    {
+        TYPE_EXCEPTION("mpfr.greaterequal_p", "mpfr_t");
+    }
+
+    ret = mpfr_greaterequal_p(rop, op);
+
+    return seed_value_from_boolean(ctx, ret, exception);
+}
+
+SeedValue seed_mpfr_less_p (SeedContext ctx,
+                            SeedObject function,
+                            SeedObject this_object,
+                            gsize argument_count,
+                            const SeedValue args[],
+                            SeedException * exception)
+{
+    mpfr_ptr rop, op;
+    gboolean ret;
+
+    CHECK_ARG_COUNT("mpfr.less_p", 1);
+
+    rop = seed_object_get_private(this_object);
+
+    if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) )
+    {
+        op = seed_object_get_private(args[0]);
+    }
+    else
+    {
+        TYPE_EXCEPTION("mpfr.less_p", "mpfr_t");
+    }
+
+    ret = mpfr_less_p(rop, op);
+
+    return seed_value_from_boolean(ctx, ret, exception);
+}
+
+SeedValue seed_mpfr_lessequal_p (SeedContext ctx,
+                                 SeedObject function,
+                                 SeedObject this_object,
+                                 gsize argument_count,
+                                 const SeedValue args[],
+                                 SeedException * exception)
+{
+    mpfr_ptr rop, op;
+    gboolean ret;
+
+    CHECK_ARG_COUNT("mpfr.less_equal_p", 1);
+
+    rop = seed_object_get_private(this_object);
+
+    if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) )
+    {
+        op = seed_object_get_private(args[0]);
+    }
+    else
+    {
+        TYPE_EXCEPTION("mpfr.less_equal_p", "mpfr_t");
+    }
+
+    ret = mpfr_lessequal_p(rop, op);
+
+    return seed_value_from_boolean(ctx, ret, exception);
+}
+
+SeedValue seed_mpfr_lessgreater_p (SeedContext ctx,
+                                   SeedObject function,
+                                   SeedObject this_object,
+                                   gsize argument_count,
+                                   const SeedValue args[],
+                                   SeedException * exception)
+{
+    mpfr_ptr rop, op;
+    gboolean ret;
+
+    CHECK_ARG_COUNT("mpfr.lessgreater_p", 1);
+
+    rop = seed_object_get_private(this_object);
+
+    if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) )
+    {
+        op = seed_object_get_private(args[0]);
+    }
+    else
+    {
+        TYPE_EXCEPTION("mpfr.lessgreater_p", "mpfr_t");
+    }
+
+    ret = mpfr_lessgreater_p(rop, op);
+
+    return seed_value_from_boolean(ctx, ret, exception);
+}
+
+SeedValue seed_mpfr_equal_p (SeedContext ctx,
+                             SeedObject function,
+                             SeedObject this_object,
+                             gsize argument_count,
+                             const SeedValue args[],
+                             SeedException * exception)
+{
+    mpfr_ptr rop, op;
+    gboolean ret;
+
+    CHECK_ARG_COUNT("mpfr.equal_p", 1);
+
+    rop = seed_object_get_private(this_object);
+
+    if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) )
+    {
+        op = seed_object_get_private(args[0]);
+    }
+    else
+    {
+        TYPE_EXCEPTION("mpfr.equal_p", "mpfr_t");
+    }
+
+    ret = mpfr_equal_p(rop, op);
+
+    return seed_value_from_boolean(ctx, ret, exception);
+}
+
+SeedValue seed_mpfr_unordered_p (SeedContext ctx,
+                                 SeedObject function,
+                                 SeedObject this_object,
+                                 gsize argument_count,
+                                 const SeedValue args[],
+                                 SeedException * exception)
+{
+    mpfr_ptr rop, op;
+    gboolean ret;
+
+    CHECK_ARG_COUNT("mpfr.unordered_p", 1);
+
+    rop = seed_object_get_private(this_object);
+
+    if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) )
+    {
+        op = seed_object_get_private(args[0]);
+    }
+    else
+    {
+        TYPE_EXCEPTION("mpfr.unordered_p", "mpfr_t");
+    }
+
+    ret = mpfr_unordered_p(rop, op);
 
     return seed_value_from_boolean(ctx, ret, exception);
 }
