@@ -15,7 +15,7 @@
 	if ( argument_count != argnum ) \
 	{ \
 		seed_make_exception (ctx, exception, "ArgumentError", \
-		                     "wrong number of arguments; wanted %s, got %Zd", \
+		                     "wrong number of arguments; expected %s, got %Zd", \
 		                     #argnum, argument_count); \
 		return seed_make_undefined (ctx); \
 	}
