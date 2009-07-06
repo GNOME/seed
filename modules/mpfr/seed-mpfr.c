@@ -705,10 +705,76 @@ SeedValue seed_mpfr_get_patches (SeedContext ctx,
     return ret;
 }
 
+SeedValue seed_mpfr_set_emin (SeedContext ctx,
+                              SeedObject function,
+                              SeedObject this_object,
+                              gsize argument_count,
+                              const SeedValue args[],
+                              SeedException * exception)
+{
+    mp_exp_t exp;
+    gint ret;
+
+    CHECK_ARG_COUNT("mpfr.set_emin", 1);
+
+    exp = seed_value_to_mp_exp_t(ctx, args[0], exception);
+    ret = mpfr_set_emin(exp);
+
+    return seed_value_from_int(ctx, ret, exception);
+}
+
+SeedValue seed_mpfr_set_emax (SeedContext ctx,
+                              SeedObject function,
+                              SeedObject this_object,
+                              gsize argument_count,
+                              const SeedValue args[],
+                              SeedException * exception)
+{
+    mp_exp_t exp;
+    gint ret;
+
+    CHECK_ARG_COUNT("mpfr.set_emax", 1);
+
+    exp = seed_value_to_mp_exp_t(ctx, args[0], exception);
+    ret = mpfr_set_emax(exp);
+
+    return seed_value_from_int(ctx, ret, exception);
+}
+
+SeedValue seed_mpfr_get_emax (SeedContext ctx,
+                              SeedObject function,
+                              SeedObject this_object,
+                              gsize argument_count,
+                              const SeedValue args[],
+                              SeedException * exception)
+{
+    mp_exp_t exp;
+    CHECK_ARG_COUNT("mpfr.get_emax", 0);
+    exp = mpfr_get_emax();
+    return seed_value_from_mp_exp_t(ctx, exp, exception);
+}
+
+SeedValue seed_mpfr_get_emin (SeedContext ctx,
+                              SeedObject function,
+                              SeedObject this_object,
+                              gsize argument_count,
+                              const SeedValue args[],
+                              SeedException * exception)
+{
+    mp_exp_t exp;
+    CHECK_ARG_COUNT("mpfr.get_emin", 0);
+    exp = mpfr_get_emin();
+    return seed_value_from_mp_exp_t(ctx, exp, exception);
+}
+
 seed_static_function mpfr_funcs[] =
 {
     {"get_version", seed_mpfr_get_version, 0},
     {"get_patches", seed_mpfr_get_patches, 0},
+    {"set_emin", seed_mpfr_set_emin, 0},
+    {"set_emax", seed_mpfr_set_emax, 0},
+    {"get_emin", seed_mpfr_get_emin, 0},
+    {"get_emax", seed_mpfr_get_emax, 0},
     {"add", seed_mpfr_add, 0},
     {"sqrt", seed_mpfr_sqrt, 0},
     {"rec_sqrt", seed_mpfr_rec_sqrt, 0},
