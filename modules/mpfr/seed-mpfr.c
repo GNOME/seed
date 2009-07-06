@@ -368,8 +368,7 @@ seed_mpfr_set_default_rounding_mode (SeedContext ctx,
                                      SeedValue value,
                                      SeedException *exception)
 {
-    mpfr_ptr ptr = seed_object_get_private(this_object);
-    mpfr_set_default_rounding_mode(ptr, seed_value_to_mp_rnd_t(ctx, value, exception));
+    mpfr_set_default_rounding_mode(seed_value_to_mpfr_rnd_t(ctx, value, exception));
     return TRUE;
 }
 
@@ -379,8 +378,7 @@ seed_mpfr_get_default_rounding_mode (SeedContext ctx,
                                      SeedString property_name,
                                      SeedException *exception)
 {
-    mpfr_ptr ptr = seed_object_get_private(this_object);
-    return seed_value_from_mpfr_rnd_t(ctx, mpfr_get_default_rounding_mode(ptr), exception);
+    return seed_value_from_mpfr_rnd_t(ctx, mpfr_get_default_rounding_mode(), exception);
 }
 
 static SeedValue
@@ -532,6 +530,32 @@ SeedValue seed_mpfr_swap (SeedContext ctx,
     return seed_make_null(ctx);
 }
 
+SeedValue seed_mpfr_can_round (SeedContext ctx,
+                               SeedObject function,
+                               SeedObject this_object,
+                               gsize argument_count,
+                               const SeedValue args[],
+                               SeedException * exception)
+{
+    mpfr_rnd_t rnd1, rnd2;
+    mpfr_ptr rop;
+    gboolean ret;
+    mpfr_prec_t prec;
+    mp_exp_t err;
+
+    CHECK_ARG_COUNT("mpfr.can_round", 4);
+
+    rop = seed_object_get_private(this_object);
+    err = seed_value_to_mp_exp_t(ctx, args[0], exception);
+    rnd1 = seed_value_to_mpfr_rnd_t(ctx, args[1], exception);
+    rnd2 = seed_value_to_mpfr_rnd_t(ctx, args[2], exception);
+    prec = seed_value_to_mpfr_prec_t(ctx, args[3], exception);
+
+    ret = mpfr_can_round(rop, err, rnd1, rnd2, prec);
+
+    return seed_value_from_boolean(ctx, ret, exception);
+}
+
 /* init and set functions, using default precision, or optionally specifying it */
 SeedObject
 seed_mpfr_construct_with_set(SeedContext ctx,
@@ -659,6 +683,7 @@ seed_static_function mpfr_funcs[] =
     {"round", seed_mpfr_round, 0},
     {"trunc", seed_mpfr_trunc, 0},
     {"prec_round", seed_mpfr_prec_round, 0},
+    {"can_round", seed_mpfr_can_round, 0},
     {"nexttoward", seed_mpfr_nexttoward, 0},
     {"nextabove", seed_mpfr_nextabove, 0},
     {"nextbelow", seed_mpfr_nextbelow, 0},
