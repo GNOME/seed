@@ -42,7 +42,7 @@ FIXXREF_OPTIONS=
 # Used for dependencies. The docs will be rebuilt if any of these change.
 # e.g. HFILE_GLOB=$(top_srcdir)/gtk/*.h
 # e.g. CFILE_GLOB=$(top_srcdir)/gtk/*.c
-HFILE_GLOB=$(top_srcdir)/libseed/seed.h
+HFILE_GLOB=$(top_srcdir)/libseed/*.h
 CFILE_GLOB=$(top_srcdir)/libseed/*.c
 
 # Header files to ignore when scanning.
@@ -55,7 +55,7 @@ HTML_IMAGES=
 
 # Extra SGML files that are included by $(DOC_MAIN_SGML_FILE).
 # e.g. content_files=running.sgml building.sgml changes-2.0.sgml
-content_files=
+content_files=seed-docs.sgml seed-sections.txt building.sgml introduction.sgml building-osx.sgml
 
 # SGML files where gtk-doc abbrevations (#GtkWidget) are expanded
 # These files must be listed here *and* in content_files
@@ -75,7 +75,7 @@ include $(top_srcdir)/gtk-doc.make
 
 # Other files to distribute
 # e.g. EXTRA_DIST += version.xml.in
-EXTRA_DIST += seed-docs.sgml seed-sections.txt building.sgml introduction.sgml building-osx.sgml
+EXTRA_DIST += 
 
 # Files not to distribute
 # for --rebuild-types in $(SCAN_OPTIONS), e.g. $(DOC_MODULE).types
