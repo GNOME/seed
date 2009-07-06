@@ -11,29 +11,37 @@
     </releaseinfo>
   </bookinfo>
 
-  <chapter id="seed">
+  <part id="seed">
     <title>Seed Overview</title>
     <xi:include href="introduction.sgml"/>
     <xi:include href="building.sgml"/>
     <xi:include href="building-osx.sgml"/>
     <xi:include href="contact.sgml"/>
-  </chapter>
+  </part>
   
-  <chapter id="js">
+  <part id="js">
     <title>Seed JavaScript Reference</title>
-  </chapter>
+  </part>
   
-  <chapter id="api">
+  <part id="api">
     <title>Seed API Reference</title>
     <para>This is the documentation for the C API of Seed, used for embedding, and creating native C modules. For documentation on the JavaScript interface of Seed, see <ulink role="online-location" url="http://www.gnome.org/~racarr/seed">http://www.gnome.org/~racarr/seed/</ulink>.</para>
     <xi:include href="xml/seed-main.xml"/>
     <xi:include href="xml/seed-context.xml"/>
-    <xi:include href="xml/seed-closure.xml"/>
+    <xi:include href="xml/seed-eval.xml"/>
     <xi:include href="xml/seed-exception.xml"/>
-    <xi:include href="xml/seed-object.xml"/>
-    <xi:include href="xml/seed-string.xml"/>
-    <xi:include href="xml/seed-value.xml"/>
-  </chapter>
+    <xi:include href="xml/seed-signals.xml"/>
+    <chapter id="types">
+		<title>Values and Type Conversion</title>
+        <xi:include href="xml/seed-typeconversion.xml"/>
+        <xi:include href="xml/seed-nativetypes.xml"/>
+        <xi:include href="xml/seed-object.xml"/>
+    </chapter>
+    <xi:include href="xml/seed-nativefuncs.xml"/>
+    <xi:include href="xml/seed-jsclass.xml"/>
+    <xi:include href="xml/seed-closure.xml"/>
+    <xi:include href="xml/seed-modules.xml"/>
+  </part>
   
   <index>
     <title>Index</title>
