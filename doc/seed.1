@@ -1,0 +1,29 @@
+.TH "seed" 1
+.SH NAME
+seed \- libseed JavaScript REPL/Interpreter.
+.SH SYNOPSIS
+.B seed
+[OPTION...] [SCRIPT]
+.SH DESCRIPTION
+seed acts as a simple read-eval-print loop for libseed's GObject JavaScriptCore
+bindings, unless the path to a script to interpret is specified.
+.SH OPTIONS
+.TP
+.B \---help
+Show help options
+.TP
+.B \---debug=DEBUGFLAGS
+Show debug messages, filtered by the specified debug flags. If one wishes to see
+all possible debug messages, specify the flag "all" (keep in mind that this will
+produce a significant amount of output). Otherwise, specify a comma-separated
+list of: misc, finalization, initialization, signal, invocation, structs,
+construction, gtype, importer, module.
+.TP
+.SH BUGS
+Report bugs at http://bugzilla.gnome.org/ in the seed product.
+.SH HOMEPAGE and CONTACT
+http://live.gnome.org/Seed
+.SH AUTHORS
+Robert Carr <racarr@svn.gnome.org>
+.PP
+Tim Horton <hortont@svn.gnome.org>

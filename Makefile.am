@@ -21,8 +21,9 @@ seeddoc_DATA = \
 	INSTALL
 
 pkgconfig_DATA = seed.pc 
-
 pkgconfigdir = $(libdir)/pkgconfig
+
+man_MANS = doc/seed.1
 
 EXTRA_DIST = $(seeddoc_DATA) \
 	$(pkgconfig_DATA)
