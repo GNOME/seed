@@ -1,0 +1,23 @@
+<refentry id="seed-contact" revision="05 Jul 2009">
+<refmeta>
+<refentrytitle>Contact Information</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>SEED Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>Contact Information</refname>
+<refpurpose>
+Where to find help, ask questions, or bring patches
+</refpurpose>
+  </refnamediv>
+  
+    <refsect1 id="build">
+      <title>Authors</title>
+      <itemizedlist>
+        <listitem><para>Robert Carr &lt;racarr@svn.gnome.org&gt;</para></listitem>
+        <listitem><para>Tim Horton &lt;hortont@svn.gnome.org&gt;</para></listitem>
+    </itemizedlist>
+    </refsect1>
+
+</refentry>

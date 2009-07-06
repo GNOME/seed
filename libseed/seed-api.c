@@ -19,18 +19,6 @@
 #include <stdarg.h>
 
 /**
- * SECTION:seed-main
- * @short_description: Library initialization and engine configuration
- *
- */
-
-/**
- * SECTION:seed-object
- * @short_description: Manipulation of JavaScript objects
- *
- */
-
-/**
  * seed_value_protect:
  * @ctx: A #SeedContext.
  * @value: The #SeedValue to protect.

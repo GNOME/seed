@@ -19,12 +19,6 @@
  * Copyright (C) Robert Carr 2008 <carrr@rpi.edu>
  */
 
-/**
- * SECTION:seed-exception
- * @short_description: Construction and handling of JavaScript exceptions
- *
- */
-
 #ifndef _SEED_EXCEPTIONS_H
 #define _SEED_EXCEPTIONS_H
 

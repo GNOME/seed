@@ -19,18 +19,6 @@
  * Copyright (C) Robert Carr 2008 <carrr@rpi.edu>
  */
 
-/**
- * SECTION:seed-value
- * @short_description: Conversion between, and manipulation of, Seed and C types
- *
- */
-
-/**
- * SECTION:seed-string
- * @short_description: Various string-related functions
- *
- */
-
 #ifndef _SEED_TYPES_H
 #define _SEED_TYPES_H
 

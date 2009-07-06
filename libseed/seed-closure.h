@@ -19,12 +19,6 @@
  * Copyright (C) Robert Carr 2008 <carrr@rpi.edu>
  */
 
-/**
- * SECTION:seed-closure
- * @short_description: JavaScript closures from C functions
- *
- */
-
 #ifndef _SEED_CLOSURE_H_
 #define _SEED_CLOSURE_H_
 
