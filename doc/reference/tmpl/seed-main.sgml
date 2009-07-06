@@ -8,3 +8,52 @@ Overall setup of the Seed engine
 <para>
 Long description
 </para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### FUNCTION seed_init ##### -->
+<para>
+
+</para>
+
+@argc: 
+@argv: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_init_with_context_group ##### -->
+<para>
+
+</para>
+
+@argc: 
+@argv: 
+@group: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_engine_set_search_path ##### -->
+<para>
+
+</para>
+
+@eng: 
+@path: 
+
+
+<!-- ##### FUNCTION seed_engine_get_search_path ##### -->
+<para>
+
+</para>
+
+@eng: 
+@Returns: 
+
+

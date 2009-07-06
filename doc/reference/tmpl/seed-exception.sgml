@@ -8,3 +8,81 @@ Throwing and catching exceptions
 <para>
 Long description
 </para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### TYPEDEF SeedException ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION seed_make_exception ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@exception: 
+@name: 
+@message: 
+@Varargs: 
+
+
+<!-- ##### FUNCTION seed_exception_get_name ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@exception: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_exception_get_message ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@exception: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_exception_get_line ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@exception: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_exception_get_file ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@exception: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_exception_to_string ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@exception: 
+@Returns: 
+
+

@@ -8,3 +8,93 @@ Self-contained JavaScript execution environments
 <para>
 Long description
 </para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### TYPEDEF SeedContext ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### TYPEDEF SeedGlobalContext ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### TYPEDEF SeedContextGroup ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION seed_context_create ##### -->
+<para>
+
+</para>
+
+@group: 
+@global_class: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_context_ref ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_context_unref ##### -->
+<para>
+
+</para>
+
+@ctx: 
+
+
+<!-- ##### FUNCTION seed_context_get_global_object ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_prepare_global_context ##### -->
+<para>
+
+</para>
+
+@ctx: 
+
+
+<!-- ##### FUNCTION seed_importer_add_global ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@name: 
+
+
+<!-- ##### FUNCTION seed_importer_set_search_path ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@search_path: 
+
+

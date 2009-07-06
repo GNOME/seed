@@ -8,3 +8,57 @@ Dealing with Seed class definitions and constructors
 <para>
 Long description
 </para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### ENUM SeedPropertyAttributes ##### -->
+<para>
+
+</para>
+
+@SEED_PROPERTY_ATTRIBUTE_NONE: 
+@SEED_PROPERTY_ATTRIBUTE_READ_ONLY: 
+@SEED_PROPERTY_ATTRIBUTE_DONT_ENUM: 
+@SEED_PROPERTY_ATTRIBUTE_DONT_DELETE: 
+
+<!-- ##### ENUM SeedClassAttributes ##### -->
+<para>
+
+</para>
+
+@SEED_CLASS_ATTRIBUTE_NONE: 
+@SEED_CLASS_ATTRIBUTE_NO_SHARED_PROTOTYPE: 
+
+<!-- ##### TYPEDEF SeedClass ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION seed_create_class ##### -->
+<para>
+
+</para>
+
+@def: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_make_constructor ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@class: 
+@Param3: 
+@Returns: 
+
+

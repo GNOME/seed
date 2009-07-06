@@ -8,3 +8,36 @@ Connecting JavaScript functions to signals
 <para>
 Long description
 </para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### FUNCTION seed_signal_connect ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@object: 
+@signal: 
+@script: 
+
+
+<!-- ##### FUNCTION seed_signal_connect_value ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@object: 
+@signal: 
+@function: 
+@user_data: 
+
+

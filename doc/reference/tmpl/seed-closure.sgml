@@ -8,3 +8,69 @@ Creating and invoking closures over JavaScript functions using GClosure
 <para>
 Long description
 </para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### FUNCTION seed_closure_new ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@function: 
+@user_data: 
+@description: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_closure_get_callable ##### -->
+<para>
+
+</para>
+
+@c: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_closure_invoke ##### -->
+<para>
+
+</para>
+
+@closure: 
+@args: 
+@argc: 
+@exception: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_closure_invoke_with_context ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@closure: 
+@args: 
+@argc: 
+@exception: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_closure_warn_exception ##### -->
+<para>
+
+</para>
+
+@c: 
+@ctx: 
+@exception: 
+
+

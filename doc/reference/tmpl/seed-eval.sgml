@@ -8,3 +8,72 @@ Creating and interpreting scripts
 <para>
 Long description
 </para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### STRUCT SeedScript ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION seed_make_script ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@js: 
+@source_url: 
+@line_number: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_evaluate ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@s: 
+@this: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_simple_evaluate ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@source: 
+@exception: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_script_new_from_file ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@file: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_script_exception ##### -->
+<para>
+
+</para>
+
+@s: 
+@Returns: 
+
+

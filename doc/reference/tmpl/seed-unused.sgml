@@ -22,6 +22,44 @@
 seed-api
 
 
+<!-- ##### SECTION ./tmpl/seed-main.sgml.sgml:Long_Description ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/seed-main.sgml.sgml:See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION ./tmpl/seed-main.sgml.sgml:Short_Description ##### -->
+
+
+
+<!-- ##### SECTION ./tmpl/seed-main.sgml.sgml:Stability_Level ##### -->
+
+
+
+<!-- ##### SECTION ./tmpl/seed-main.sgml.sgml:Title ##### -->
+seed-main.sgml
+
+
+<!-- ##### SECTION ./tmpl/seed-string.sgml:Long_Description ##### -->
+<para>
+Long description
+</para>
+
+
+<!-- ##### SECTION ./tmpl/seed-string.sgml:Short_Description ##### -->
+This one should go away eventually
+
+
+<!-- ##### SECTION ./tmpl/seed-string.sgml:Title ##### -->
+SeedString
+
+
 <!-- ##### SECTION ./tmpl/seed.sgml.sgml:Long_Description ##### -->
 <para>
 

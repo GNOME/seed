@@ -8,3 +8,22 @@ Native C plug-in modules for Seed
 <para>
 Long description
 </para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### USER_FUNCTION SeedModuleInitCallback ##### -->
+<para>
+
+</para>
+
+@eng: 
+@Returns: 
+
+

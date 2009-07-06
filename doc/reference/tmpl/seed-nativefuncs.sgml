@@ -8,3 +8,49 @@ C functions as first-class JavaScript objects
 <para>
 Long description
 </para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### USER_FUNCTION SeedFunctionCallback ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@function: 
+@this_object: 
+@argument_count: 
+@arguments: 
+@excecption: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_make_function ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@callback: 
+@name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_create_function ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@name: 
+@callback: 
+@object: 
+
+

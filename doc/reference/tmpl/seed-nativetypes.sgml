@@ -8,3 +8,112 @@ Determining the type of a SeedValue
 <para>
 Long description
 </para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### FUNCTION seed_value_unprotect ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@value: 
+
+
+<!-- ##### FUNCTION seed_value_protect ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@value: 
+
+
+<!-- ##### FUNCTION seed_value_is_undefined ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@value: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_value_is_null ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@value: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_value_is_function ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@value: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_value_is_number ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@value: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_value_is_string ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@value: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_value_is_object_of_class ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@value: 
+@klass: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_value_is_object ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@value: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_value_get_type ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@type: 
+@Returns: 
+
+

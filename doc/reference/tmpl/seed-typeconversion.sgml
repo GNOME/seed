@@ -8,3 +8,455 @@ Moving between JavaScript and C intrinsic types
 <para>
 Long description
 </para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### TYPEDEF SeedValue ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### ENUM SeedType ##### -->
+<para>
+
+</para>
+
+@SEED_TYPE_UNDEFINED: 
+@SEED_TYPE_NULL: 
+@SEED_TYPE_BOOLEAN: 
+@SEED_TYPE_NUMBER: 
+@SEED_TYPE_STRING: 
+@SEED_TYPE_OBJECT: 
+
+<!-- ##### FUNCTION seed_make_undefined ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_make_null ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_value_to_boolean ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@val: 
+@exception: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_value_from_boolean ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@val: 
+@exception: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_value_to_uint ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@val: 
+@exception: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_value_from_uint ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@val: 
+@exception: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_value_to_int ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@val: 
+@exception: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_value_from_int ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@val: 
+@exception: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_value_to_char ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@val: 
+@exception: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_value_from_char ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@val: 
+@exception: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_value_to_uchar ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@val: 
+@exception: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_value_from_uchar ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@val: 
+@exception: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_value_to_long ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@val: 
+@exception: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_value_from_long ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@val: 
+@exception: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_value_to_ulong ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@val: 
+@exception: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_value_from_ulong ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@val: 
+@exception: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_value_to_int64 ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@val: 
+@exception: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_value_from_int64 ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@val: 
+@exception: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_value_to_uint64 ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@val: 
+@exception: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_value_from_uint64 ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@val: 
+@exception: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_value_to_float ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@val: 
+@exception: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_value_from_float ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@val: 
+@exception: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_value_to_double ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@val: 
+@exception: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_value_from_double ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@val: 
+@exception: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_value_to_string ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@val: 
+@exception: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_value_from_string ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@val: 
+@exception: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_value_from_binary_string ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@bytes: 
+@n_bytes: 
+@exception: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_value_to_object ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@val: 
+@exception: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_value_from_object ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@val: 
+@exception: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_value_to_filename ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@val: 
+@exception: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_value_from_filename ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@filename: 
+@exception: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_value_to_format ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@format: 
+@values: 
+@exception: 
+@Varargs: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_pointer_get_pointer ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@pointer: 
+@Returns: 
+
+
+<!-- ##### TYPEDEF SeedString ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION seed_string_ref ##### -->
+<para>
+
+</para>
+
+@string: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_string_unref ##### -->
+<para>
+
+</para>
+
+@string: 
+
+
+<!-- ##### FUNCTION seed_string_get_maximum_size ##### -->
+<para>
+
+</para>
+
+@string: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_string_to_utf8_buffer ##### -->
+<para>
+
+</para>
+
+@string: 
+@buffer: 
+@buffer_size: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_string_is_equal ##### -->
+<para>
+
+</para>
+
+@a: 
+@b: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_string_is_equal_utf8 ##### -->
+<para>
+
+</para>
+
+@a: 
+@b: 
+@Returns: 
+
+

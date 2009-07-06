@@ -8,3 +8,276 @@ Using properties, constructing objects, etc.
 <para>
 Long description
 </para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### TYPEDEF SeedObject ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### FUNCTION seed_make_object ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@class: 
+@private: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_make_array ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@elements: 
+@num_elements: 
+@exception: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_object_call ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@object: 
+@this: 
+@argument_count: 
+@arguments: 
+@exception: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_object_set_property_at_index ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@object: 
+@index: 
+@value: 
+@exception: 
+
+
+<!-- ##### FUNCTION seed_object_get_property_at_index ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@object: 
+@index: 
+@exception: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_object_is_of_class ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@obj: 
+@class: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_object_get_private ##### -->
+<para>
+
+</para>
+
+@object: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_object_set_private ##### -->
+<para>
+
+</para>
+
+@object: 
+@value: 
+
+
+<!-- ##### FUNCTION seed_object_get_property ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@object: 
+@name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_object_set_property ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@object: 
+@name: 
+@value: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_object_get_prototype ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@obj: 
+@Returns: 
+
+
+<!-- ##### FUNCTION seed_object_copy_property_names ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@object: 
+@Returns: 
+
+
+<!-- ##### USER_FUNCTION SeedObjectInitializeCallback ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@object: 
+
+
+<!-- ##### USER_FUNCTION SeedObjectFinalizeCallback ##### -->
+<para>
+
+</para>
+
+@object: 
+
+
+<!-- ##### USER_FUNCTION SeedObjectHasPropertyCallback ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@object: 
+@string: 
+@Returns: 
+
+
+<!-- ##### USER_FUNCTION SeedObjectGetPropertyCallback ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@object: 
+@property_name: 
+@e: 
+@Returns: 
+
+
+<!-- ##### USER_FUNCTION SeedObjectSetPropertyCallback ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@object: 
+@property_name: 
+@value: 
+@e: 
+@Returns: 
+
+
+<!-- ##### USER_FUNCTION SeedObjectDeletePropertyCallback ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@object: 
+@property_name: 
+@value: 
+@e: 
+@Returns: 
+
+
+<!-- ##### USER_FUNCTION SeedObjectGetPropertyNamesCallback ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### USER_FUNCTION SeedObjectCallAsFunctionCallback ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@function: 
+@this_object: 
+@argument_count: 
+@arguments: 
+@exception: 
+@Returns: 
+
+
+<!-- ##### USER_FUNCTION SeedObjectHasInstanceCallback ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@constructor: 
+@instance_p: 
+@exception: 
+@Returns: 
+
+
+<!-- ##### USER_FUNCTION SeedObjectConvertToTypeCallback ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@object: 
+@type: 
+@exception: 
+@Returns: 
+
+
+<!-- ##### USER_FUNCTION SeedObjectCallAsConstructorCallback ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@constructor: 
+@argument_count: 
+@arguments: 
+@exception: 
+@Returns: 
+
+
