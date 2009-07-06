@@ -275,14 +275,14 @@ seed_module_init(SeedEngine *local_eng)
 
 	seed_class_definition gettext_ns_class_def = seed_empty_class;
     gettext_ns_class_def.static_functions = gettext_funcs;
-	
+
 	SeedClass gettext_ns_class = seed_create_class(&gettext_ns_class_def);
 
 	ns_ref = seed_make_object (ctx, gettext_ns_class, NULL);
 	seed_value_protect (ctx, ns_ref);
 
 	/* define enums for setlocale. Where to put them?  */
-	
+
 	DEFINE_ENUM_MEMBER(ns_ref, LC_CTYPE);
 	DEFINE_ENUM_MEMBER(ns_ref, LC_NUMERIC);
 	DEFINE_ENUM_MEMBER(ns_ref, LC_TIME);

@@ -670,16 +670,12 @@ seed_mpfr_construct(SeedContext ctx,
 }
 
 SeedValue seed_mpfr_get_version (SeedContext ctx,
-                                 SeedObject function,
                                  SeedObject this_object,
-                                 gsize argument_count,
-                                 const SeedValue args[],
+                                 SeedString property_name,
                                  SeedException * exception)
 {
     const gchar* str;
     SeedValue ret;
-
-    CHECK_ARG_COUNT("mpfr.get_version", 0);
 
     str = mpfr_get_version();
     ret = seed_value_from_string(ctx, str, exception);
@@ -688,16 +684,12 @@ SeedValue seed_mpfr_get_version (SeedContext ctx,
 }
 
 SeedValue seed_mpfr_get_patches (SeedContext ctx,
-                                 SeedObject function,
                                  SeedObject this_object,
-                                 gsize argument_count,
-                                 const SeedValue args[],
+                                 SeedString property_name,
                                  SeedException * exception)
 {
     const gchar* str;
     SeedValue ret;
-
-    CHECK_ARG_COUNT("mpfr.get_patches", 0);
 
     str = mpfr_get_patches();
     ret = seed_value_from_string(ctx, str, exception);
@@ -705,76 +697,74 @@ SeedValue seed_mpfr_get_patches (SeedContext ctx,
     return ret;
 }
 
-SeedValue seed_mpfr_set_emin (SeedContext ctx,
-                              SeedObject function,
-                              SeedObject this_object,
-                              gsize argument_count,
-                              const SeedValue args[],
-                              SeedException * exception)
+static gboolean seed_mpfr_set_emin (SeedContext ctx,
+                                    SeedObject this_object,
+                                    SeedString property_name,
+                                    SeedValue value,
+                                    SeedException* exception)
 {
     mp_exp_t exp;
     gint ret;
 
-    CHECK_ARG_COUNT("mpfr.set_emin", 1);
-
-    exp = seed_value_to_mp_exp_t(ctx, args[0], exception);
+    exp = seed_value_to_mp_exp_t(ctx, value, exception);
     ret = mpfr_set_emin(exp);
 
-    return seed_value_from_int(ctx, ret, exception);
+    return ret;
 }
 
-SeedValue seed_mpfr_set_emax (SeedContext ctx,
-                              SeedObject function,
-                              SeedObject this_object,
-                              gsize argument_count,
-                              const SeedValue args[],
-                              SeedException * exception)
+static gboolean seed_mpfr_set_emax (SeedContext ctx,
+                                    SeedObject this_object,
+                                    SeedString property_name,
+                                    SeedValue value,
+                                    SeedException * exception)
 {
     mp_exp_t exp;
     gint ret;
 
-    CHECK_ARG_COUNT("mpfr.set_emax", 1);
-
-    exp = seed_value_to_mp_exp_t(ctx, args[0], exception);
+    exp = seed_value_to_mp_exp_t(ctx, value, exception);
     ret = mpfr_set_emax(exp);
 
-    return seed_value_from_int(ctx, ret, exception);
+    return ret;
 }
 
 SeedValue seed_mpfr_get_emax (SeedContext ctx,
-                              SeedObject function,
                               SeedObject this_object,
-                              gsize argument_count,
-                              const SeedValue args[],
-                              SeedException * exception)
+                              SeedString property_name,
+                              SeedException* exception)
 {
     mp_exp_t exp;
-    CHECK_ARG_COUNT("mpfr.get_emax", 0);
     exp = mpfr_get_emax();
     return seed_value_from_mp_exp_t(ctx, exp, exception);
 }
 
 SeedValue seed_mpfr_get_emin (SeedContext ctx,
-                              SeedObject function,
                               SeedObject this_object,
-                              gsize argument_count,
-                              const SeedValue args[],
-                              SeedException * exception)
+                              SeedString property_name,
+                              SeedException* exception)
 {
     mp_exp_t exp;
-    CHECK_ARG_COUNT("mpfr.get_emin", 0);
     exp = mpfr_get_emin();
     return seed_value_from_mp_exp_t(ctx, exp, exception);
 }
 
+seed_static_value mpfr_ns_values[] =
+{
+    {"default_rounding_mode", seed_mpfr_get_default_rounding_mode, seed_mpfr_set_default_rounding_mode, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
+    {"emax", seed_mpfr_get_emax, seed_mpfr_set_emax, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
+    {"emin", seed_mpfr_get_emin, seed_mpfr_set_emin, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
+    {"version", seed_mpfr_get_version, NULL, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
+    {"patches", seed_mpfr_get_patches, NULL, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
+    {NULL, 0, NULL, 0}
+};
+
+seed_static_function mpfr_ns_funcs[] =
+{
+    {"free_cache", seed_mpfr_free_cache, 0},
+    {NULL, NULL, 0}
+};
+
 seed_static_function mpfr_funcs[] =
 {
-    {"get_version", seed_mpfr_get_version, 0},
-    {"get_patches", seed_mpfr_get_patches, 0},
-    {"set_emin", seed_mpfr_set_emin, 0},
-    {"set_emax", seed_mpfr_set_emax, 0},
-    {"get_emin", seed_mpfr_get_emin, 0},
-    {"get_emax", seed_mpfr_get_emax, 0},
     {"add", seed_mpfr_add, 0},
     {"sqrt", seed_mpfr_sqrt, 0},
     {"rec_sqrt", seed_mpfr_rec_sqrt, 0},
@@ -876,16 +866,13 @@ seed_static_function mpfr_funcs[] =
     {"pi", seed_mpfr_const_pi, 0},
     {"euler", seed_mpfr_const_euler, 0},
     {"catalan", seed_mpfr_const_catalan, 0},
-    {"free_cache", seed_mpfr_free_cache, 0},
     {NULL, NULL, 0}
 };
 
-/* CHECKME: thing that doesn't belong here */
 seed_static_value mpfr_values[] =
 {
     {"prec", seed_mpfr_get_prec, seed_mpfr_set_prec, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
     {"exp", seed_mpfr_get_exp, seed_mpfr_set_exp, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
-    {"default_rounding_mode", seed_mpfr_get_default_rounding_mode, seed_mpfr_set_default_rounding_mode, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
     {NULL, 0, NULL, 0}
 };
 
@@ -894,9 +881,17 @@ seed_module_init(SeedEngine *local_eng)
 {
     SeedGlobalContext ctx = local_eng->context;
     seed_class_definition mpfr_def = seed_empty_class;
+    seed_class_definition ns_ref_class_def = seed_empty_class;
     SeedObject mpfr_constructor, mpfr_constructor_set;
+    SeedClass ns_class;
 
-    ns_ref = seed_make_object(ctx, NULL, NULL);
+    ns_ref_class_def.static_values = mpfr_ns_values;
+    ns_ref_class_def.static_functions = mpfr_ns_funcs;
+
+    ns_class = seed_create_class(&ns_ref_class_def);
+
+    ns_ref = seed_make_object(ctx, ns_class, NULL);
+    seed_value_protect(ctx, ns_ref);
 
     mpfr_def.class_name = "mpfr_t";
     mpfr_def.static_functions = mpfr_funcs;
