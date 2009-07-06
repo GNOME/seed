@@ -669,8 +669,46 @@ seed_mpfr_construct(SeedContext ctx,
     return seed_make_object(ctx, mpfr_class, newmp);
 }
 
+SeedValue seed_mpfr_get_version (SeedContext ctx,
+                                 SeedObject function,
+                                 SeedObject this_object,
+                                 gsize argument_count,
+                                 const SeedValue args[],
+                                 SeedException * exception)
+{
+    const gchar* str;
+    SeedValue ret;
+
+    CHECK_ARG_COUNT("mpfr.get_version", 0);
+
+    str = mpfr_get_version();
+    ret = seed_value_from_string(ctx, str, exception);
+
+    return ret;
+}
+
+SeedValue seed_mpfr_get_patches (SeedContext ctx,
+                                 SeedObject function,
+                                 SeedObject this_object,
+                                 gsize argument_count,
+                                 const SeedValue args[],
+                                 SeedException * exception)
+{
+    const gchar* str;
+    SeedValue ret;
+
+    CHECK_ARG_COUNT("mpfr.get_patches", 0);
+
+    str = mpfr_get_patches();
+    ret = seed_value_from_string(ctx, str, exception);
+
+    return ret;
+}
+
 seed_static_function mpfr_funcs[] =
 {
+    {"get_version", seed_mpfr_get_version, 0},
+    {"get_patches", seed_mpfr_get_patches, 0},
     {"add", seed_mpfr_add, 0},
     {"sqrt", seed_mpfr_sqrt, 0},
     {"rec_sqrt", seed_mpfr_rec_sqrt, 0},
