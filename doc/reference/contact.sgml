@@ -15,9 +15,16 @@ Where to find help, ask questions, or bring patches
     <refsect1 id="build">
       <title>Authors</title>
       <itemizedlist>
-        <listitem><para>Robert Carr &lt;racarr@svn.gnome.org&gt;</para></listitem>
-        <listitem><para>Tim Horton &lt;hortont@svn.gnome.org&gt;</para></listitem>
+        <listitem>Robert Carr &lt;<ulink url="mailto:racarr@svn.gnome.org">racarr@svn.gnome.org</ulink>&gt;</listitem>
+        <listitem>Tim Horton &lt;<ulink url="mailto:hortont@svn.gnome.org">hortont@svn.gnome.org</ulink>&gt;</listitem>
     </itemizedlist>
+    </refsect1>
+    
+    <refsect1 id="git">
+      <title>Source Repository</title>
+      <para>The Seed source code is kept in the GNOME-wide version control at <ulink url="http://git.gnome.org/cgit/seed">git.gnome.org</ulink>. You can check out the code on your own machine if you have <command>git</command> installed:</para>
+      <para><command>git clone git://git.gnome.org/seed</command></para>
+      
     </refsect1>
 
 </refentry>
