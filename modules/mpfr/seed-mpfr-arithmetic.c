@@ -541,7 +541,6 @@ SeedValue seed_mpfr_frac (SeedContext ctx,
     return seed_value_from_int(ctx, ret, exception);
 }
 
-
 SeedValue seed_mpfr_integer_p (SeedContext ctx,
                                SeedObject function,
                                SeedObject this_object,
@@ -767,6 +766,87 @@ SeedValue seed_mpfr_prec_round (SeedContext ctx,
     rnd = seed_value_to_mpfr_rnd_t(ctx, args[1], exception);
 
     ret = mpfr_prec_round(rop, prec, rnd);
+
+    return seed_value_from_int(ctx, ret, exception);
+}
+
+SeedValue seed_mpfr_signbit (SeedContext ctx,
+                             SeedObject function,
+                             SeedObject this_object,
+                             gsize argument_count,
+                             const SeedValue args[],
+                             SeedException * exception)
+{
+    mpfr_ptr rop;
+    gboolean ret;
+
+    CHECK_ARG_COUNT("mpfr.signbit", 0);
+    rop = seed_object_get_private(this_object);
+    ret = mpfr_signbit(rop);
+
+    return seed_value_from_boolean(ctx, ret, exception);
+}
+
+SeedValue seed_mpfr_setsign (SeedContext ctx,
+                             SeedObject function,
+                             SeedObject this_object,
+                             gsize argument_count,
+                             const SeedValue args[],
+                             SeedException * exception)
+{
+    mpfr_ptr rop, op;
+    gint ret;
+    gint s;
+    mpfr_rnd_t rnd;
+
+    CHECK_ARG_COUNT("mpfr.signbit", 3);
+
+    rop = seed_object_get_private(this_object);
+    s = seed_value_to_int(ctx, args[1], exception);
+    rnd = seed_value_to_mpfr_rnd_t(ctx, args[2], exception);
+
+    if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) )
+    {
+        op = seed_object_get_private(args[0]);
+    }
+    else
+    {
+        TYPE_EXCEPTION("mpfr.setsign", "mpfr_t");
+    }
+
+    ret = mpfr_setsign(rop, op, s, rnd);
+
+    return seed_value_from_int(ctx, ret, exception);
+}
+
+SeedValue seed_mpfr_copysign (SeedContext ctx,
+                              SeedObject function,
+                              SeedObject this_object,
+                              gsize argument_count,
+                              const SeedValue args[],
+                              SeedException * exception)
+{
+    mpfr_rnd_t rnd;
+    mpfr_ptr rop, op1, op2;
+    gint ret;
+
+    CHECK_ARG_COUNT("mpfr.copysign", 3);
+
+    rop = seed_object_get_private(this_object);
+    rnd = seed_value_to_mpfr_rnd_t(ctx, args[2], exception);
+
+    if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) &&
+         seed_value_is_object_of_class(ctx, args[1], mpfr_class))
+    {
+        op1 = seed_object_get_private(args[0]);
+        op2 = seed_object_get_private(args[1]);
+    }
+    else
+    {
+        TYPE_EXCEPTION("mpfr.copysign", "mpfr_t");
+    }
+
+    ret = mpfr_copysign(rop, op1, op2, rnd);
 
     return seed_value_from_int(ctx, ret, exception);
 }

@@ -70,6 +70,9 @@ DEF_SEED_MPFR_FUNC(seed_mpfr_nextabove);
 DEF_SEED_MPFR_FUNC(seed_mpfr_nextbelow);
 
 DEF_SEED_MPFR_FUNC(seed_mpfr_prec_round);
+DEF_SEED_MPFR_FUNC(seed_mpfr_signbit);
+DEF_SEED_MPFR_FUNC(seed_mpfr_setsign);
+DEF_SEED_MPFR_FUNC(seed_mpfr_copysign);
 
 DEF_SEED_MPFR_FUNC(seed_mpfr_min);
 DEF_SEED_MPFR_FUNC(seed_mpfr_max);
