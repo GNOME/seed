@@ -1,7 +1,8 @@
+<INCLUDE>seed/seed.h</INCLUDE>
+
 <SECTION>
 <TITLE>Initialization</TITLE>
 <FILE>seed-main</FILE>
-<INCLUDE>seed/seed.h</INCLUDE>
 SeedEngine
 seed_init
 seed_init_with_context_group
@@ -12,7 +13,6 @@ seed_engine_get_search_path
 <SECTION>
 <TITLE>Contexts</TITLE>
 <FILE>seed-context</FILE>
-<INCLUDE>seed/seed.h</INCLUDE>
 SeedContext
 SeedGlobalContext
 SeedContextGroup
@@ -28,7 +28,6 @@ seed_importer_set_search_path
 <SECTION>
 <TITLE>Evaluation</TITLE>
 <FILE>seed-eval</FILE>
-<INCLUDE>seed/seed.h</INCLUDE>
 SeedScript
 seed_make_script
 seed_evaluate
@@ -40,7 +39,6 @@ seed_script_exception
 <SECTION>
 <TITLE>Exceptions</TITLE>
 <FILE>seed-exception</FILE>
-<INCLUDE>seed/seed.h</INCLUDE>
 SeedException
 seed_make_exception
 seed_exception_get_name
@@ -53,7 +51,6 @@ seed_exception_to_string
 <SECTION>
 <TITLE>Signals</TITLE>
 <FILE>seed-signals</FILE>
-<INCLUDE>seed/seed.h</INCLUDE>
 seed_signal_connect
 seed_signal_connect_value
 </SECTION>
@@ -61,7 +58,6 @@ seed_signal_connect_value
 <SECTION>
 <TITLE>Native Type Conversion</TITLE>
 <FILE>seed-typeconversion</FILE>
-<INCLUDE>seed/seed.h</INCLUDE>
 SeedValue
 SeedType
 seed_make_undefined
@@ -109,7 +105,6 @@ seed_string_is_equal_utf8
 <SECTION>
 <TITLE>Operating on Native Types</TITLE>
 <FILE>seed-nativetypes</FILE>
-<INCLUDE>seed/seed.h</INCLUDE>
 seed_value_unprotect
 seed_value_protect
 seed_value_is_undefined
@@ -125,7 +120,6 @@ seed_value_get_type
 <SECTION>
 <TITLE>JS Objects</TITLE>
 <FILE>seed-object</FILE>
-<INCLUDE>seed/seed.h</INCLUDE>
 SeedObject
 seed_make_object
 seed_make_array
@@ -155,7 +149,6 @@ SeedObjectCallAsConstructorCallback
 <SECTION>
 <TITLE>Native Functions</TITLE>
 <FILE>seed-nativefuncs</FILE>
-<INCLUDE>seed/seed.h</INCLUDE>
 SeedFunctionCallback
 seed_make_function
 seed_create_function
@@ -164,7 +157,6 @@ seed_create_function
 <SECTION>
 <TITLE>JavaScript Classes</TITLE>
 <FILE>seed-jsclass</FILE>
-<INCLUDE>seed/seed.h</INCLUDE>
 SeedPropertyAttributes
 SeedClassAttributes
 SeedClass
@@ -175,7 +167,6 @@ seed_make_constructor
 <SECTION>
 <TITLE>SeedClosure</TITLE>
 <FILE>seed-closure</FILE>
-<INCLUDE>seed/seed.h</INCLUDE>
 SeedClosure
 seed_closure_new
 seed_closure_get_callable
@@ -187,6 +178,5 @@ seed_closure_warn_exception
 <SECTION>
 <TITLE>Modules</TITLE>
 <FILE>seed-modules</FILE>
-<INCLUDE>seed/seed.h</INCLUDE>
 SeedModuleInitCallback
 </SECTION>
