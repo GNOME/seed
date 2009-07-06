@@ -160,6 +160,7 @@ seed_create_function
 SeedPropertyAttributes
 SeedClassAttributes
 SeedClass
+seed_empty_class
 seed_create_class
 seed_make_constructor
 </SECTION>
