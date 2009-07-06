@@ -84,12 +84,12 @@ How to compile Seed itself
       <itemizedlist>
     <listitem>
       <para>
-      The <ulink url="http://cairographics.org/">Cairo</ulink> module provides access to fast 2D graphics and numerous different types of output, including drawing to the screen, to an image, to a PDF, etc.
+      <ulink url="http://cairographics.org/">Cairo</ulink> provides access to fast 2D graphics and numerous different types of output, including drawing to the screen, to an image, to a PDF, etc.
       </para>
     </listitem>
     <listitem>
       <para>
-      <ulink url="http://www.freedesktop.org/wiki/Software/dbus">DBus</ulink> enables Seed access to the various message busses, and provides communication between applications.
+      <ulink url="http://www.freedesktop.org/wiki/Software/dbus">DBus</ulink> enables Seed to manipulate the various message busses, and provides communication between applications.
       </para>
     </listitem>
     <listitem>
@@ -99,7 +99,7 @@ How to compile Seed itself
     </listitem>
     <listitem>
       <para>
-      The <ulink url="http://xmlsoft.org/">libxml2</ulink> module wraps the most common XML parsing library.
+      <ulink url="http://xmlsoft.org/">libxml2</ulink> provides a powerful XML parsing interface.
       </para>
     </listitem>
     <listitem>
