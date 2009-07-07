@@ -159,7 +159,6 @@ seed_os_getgid (SeedContext ctx,
 		 const SeedValue arguments[],
 		 SeedException * exception)
 {
-  SeedValue seed_ret;
   gid_t ret;
 
   if (argument_count != 0)
@@ -701,7 +700,7 @@ seed_os_fsync (SeedContext ctx,
 	       const SeedValue arguments[],
 	       SeedException * exception)
 {
-  gint fd, name;
+  gint fd;
 
   if (argument_count != 1)
     {
@@ -866,7 +865,6 @@ seed_os_write (SeedContext ctx,
 	       const SeedValue arguments[],
 	       SeedException * exception)
 {
-  SeedValue ret;
   gint fd, nw;
   gchar *buf;
 
@@ -890,7 +888,6 @@ seed_os_ttyname (SeedContext ctx,
 		 const SeedValue arguments[],
 		 SeedException * exception)
 {
-  SeedValue ret;
   gint fd;
 
   if (argument_count != 1)
@@ -910,7 +907,6 @@ seed_os_tcgetpgrp (SeedContext ctx,
 		   const SeedValue arguments[],
 		   SeedException * exception)
 {
-  SeedValue ret;
   gint fd;
 
   if (argument_count != 1)
@@ -930,7 +926,6 @@ seed_os_tcsetpgrp (SeedContext ctx,
 		   const SeedValue arguments[],
 		   SeedException * exception)
 {
-  SeedValue ret;
   gint fd;
   pid_t pgrp;
 
