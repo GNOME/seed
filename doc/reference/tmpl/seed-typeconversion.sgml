@@ -396,6 +396,16 @@ Long description
 @Returns: 
 
 
+<!-- ##### FUNCTION seed_make_pointer ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@pointer: 
+@Returns: 
+
+
 <!-- ##### TYPEDEF SeedString ##### -->
 <para>
 

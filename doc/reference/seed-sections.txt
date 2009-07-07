@@ -93,6 +93,7 @@ seed_value_to_filename
 seed_value_from_filename
 seed_value_to_format
 seed_pointer_get_pointer
+seed_make_pointer
 SeedString
 seed_string_ref
 seed_string_unref

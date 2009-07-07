@@ -238,6 +238,7 @@ SeedValue seed_value_from_object (SeedContext ctx,
 				  GObject * val, SeedException * exception);
 
 gpointer seed_pointer_get_pointer (SeedContext ctx, SeedValue pointer);
+SeedValue seed_make_pointer (SeedContext ctx, gpointer pointer);
 
 typedef SeedValue (*SeedFunctionCallback) (SeedContext ctx,
 					   SeedObject function,
