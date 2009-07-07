@@ -144,6 +144,8 @@ seed_gettext_dcgettext (SeedContext ctx,
 	                              exception);
 	g_free(domainname);
 	g_free(msgid);
+	
+	return ret;
 }
 
 static SeedValue
