@@ -8,7 +8,6 @@ seedlib_LTLIBRARIES = \
 libseed_example_la_SOURCES = \
 	seed-example.c
 
-
 AM_CPPFLAGS = \
 	-I@top_srcdir@/libseed/ \
 	-I@top_srcdir@/modules/ \
