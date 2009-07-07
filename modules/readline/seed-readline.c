@@ -22,7 +22,7 @@ seed_handle_rl_closure(ffi_cif * cif, void *result, void **args, void *userdata)
     {
       gchar *mes = seed_exception_to_string(ctx,
 					    exception);
-      g_warning("Exception in readline bind key closure. %s \n", mes, 0);
+      g_warning("Exception in readline bind key closure. %s \n", mes);
     }
   seed_context_unref((SeedContext) ctx);
 }
@@ -33,8 +33,6 @@ static ffi_closure *seed_make_rl_closure(SeedObject function)
 {
   ffi_cif *cif;
   ffi_closure *closure;
-  ffi_arg result;
-  ffi_status status;
 
   cif = g_new0(ffi_cif, 1);
   closure = mmap(0, sizeof(ffi_closure), PROT_READ | PROT_WRITE |
@@ -166,8 +164,6 @@ seed_static_function readline_funcs[] = {
 SeedObject
 seed_module_init(SeedEngine * local_eng)
 {
-  SeedGlobalContext ctx = local_eng->context;
-  
   seed_class_definition readline_ns_class_def = seed_empty_class;
   readline_ns_class_def.static_functions = readline_funcs;
   

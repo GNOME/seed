@@ -6,10 +6,10 @@ SUBDIRS = po \
 	libseed \
 	src \
 	extensions \
-	doc \
 	modules \
 	tests \
-	examples
+	examples \
+	doc
 
 seeddocdir = ${prefix}/share/doc/seed
 seeddoc_DATA = \

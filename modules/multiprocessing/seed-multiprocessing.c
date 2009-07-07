@@ -26,7 +26,6 @@ SeedObject seed_construct_pipe(SeedContext ctx,
 			       const SeedValue arguments[],
 			       SeedException * exception)
 {
-  GIOChannel *oner, *onew, twor, twow;
   SeedObject jsone, jstwo, jsret;
   int fd1[2], fd2[2];
   pipe_priv *priv_one, *priv_two;
