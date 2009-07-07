@@ -5,6 +5,7 @@
 #include <libxml/xmlmemory.h>
 #include <libxml/parser.h>
 #include <libxml/xpath.h>
+#include <libxml/xpathInternals.h> // for xmlXPathRegisterNs
 
 SeedObject namespace_ref;
 SeedEngine *eng;
@@ -164,7 +165,7 @@ seed_xml_node_get_name (SeedContext ctx,
 			SeedException *exception)
 {
   xmlNodePtr node = XML_NODE_PRIV (object);
-  return seed_value_from_string (ctx, node->name, exception);
+  return seed_value_from_string (ctx, (gchar *)node->name, exception);
 }
 
 static SeedValue
@@ -244,7 +245,7 @@ seed_xml_node_get_content (SeedContext ctx,
   gchar *content;
   xmlNodePtr node = XML_NODE_PRIV (object);
 
-  content = xmlNodeGetContent (node);
+  content = (gchar *)xmlNodeGetContent (node);
   ret = seed_value_from_string (ctx, content, exception);
   g_free (content);
 
@@ -306,7 +307,7 @@ seed_xml_xpath_eval (SeedContext ctx,
 {
   xmlXPathObjectPtr xpath_obj;
   xmlXPathContextPtr xpath_ctx;
-  gchar *xpath;
+  guchar *xpath;
 
   if (argument_count != 1)
     {
@@ -318,7 +319,7 @@ seed_xml_xpath_eval (SeedContext ctx,
     }
   xpath_ctx = XML_XPATH_PRIV (this_object);
 
-  xpath = seed_value_to_string (ctx, arguments[0], exception);
+  xpath = (guchar *)seed_value_to_string (ctx, arguments[0], exception);
   xpath_obj = xmlXPathEval (xpath, xpath_ctx);
   g_free (xpath);
 
@@ -334,8 +335,8 @@ seed_xml_xpath_register_ns (SeedContext ctx,
 			    SeedException * exception)
 {
   xmlXPathContextPtr xpath;
-  gchar *prefix;
-  gchar *ns_uri;
+  guchar *prefix;
+  guchar *ns_uri;
   if (argument_count != 2)
     {
       seed_make_exception (ctx, exception, "ArgumentError",
@@ -344,8 +345,8 @@ seed_xml_xpath_register_ns (SeedContext ctx,
       return seed_make_undefined (ctx);
     }
   xpath = XML_XPATH_PRIV (this_object);
-  prefix = seed_value_to_string (ctx, arguments[0], exception);
-  ns_uri = seed_value_to_string (ctx, arguments[1], exception);
+  prefix = (guchar *)seed_value_to_string (ctx, arguments[0], exception);
+  ns_uri = (guchar *)seed_value_to_string (ctx, arguments[1], exception);
 
   xmlXPathRegisterNs (xpath, prefix, ns_uri);
   g_free (prefix);
@@ -493,7 +494,6 @@ seed_static_value xpathobj_values[] = {
 static void
 seed_libxml_define_stuff ()
 {
-  SeedObject xpath_constructor;
   SeedObject node_proto;
 
   seed_class_definition xml_doc_class_def = seed_empty_class;
