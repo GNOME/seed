@@ -37,7 +37,7 @@ Long description
 </para>
 
 @ctx: 
-@callback: 
+@func: 
 @name: 
 @Returns: 
 

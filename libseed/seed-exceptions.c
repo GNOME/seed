@@ -24,7 +24,9 @@
  * @ctx: A #SeedContext.
  * @exception: A reference to a #SeedException in which to store the exception.
  * @name: The #gchar* representing the exception name.
- * @message: The #gchar* representing the details of the exception.
+ * @message: The #gchar*, as a printf format string, representing the
+ *           details of the exception.
+ * @VarArgs: A list of printf-style format arguments to substitute in @message.
  *
  * The line number and file name of the exception created will be undefined.
  *

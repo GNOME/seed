@@ -250,7 +250,7 @@ typedef SeedValue (*SeedFunctionCallback) (SeedContext ctx,
 void seed_create_function (SeedContext ctx,
 			   gchar * name, SeedFunctionCallback callback,
 			   SeedObject object);
-SeedObject seed_make_function (SeedContext ctx, SeedFunctionCallback callback, const gchar *name);
+SeedObject seed_make_function (SeedContext ctx, SeedFunctionCallback func, const gchar *name);
 /* Inconsistent naming? */
 SeedObject seed_make_array (SeedContext ctx, const SeedValue elements,
 			    gsize num_elements, SeedException *exception);
@@ -361,8 +361,7 @@ SeedClass seed_create_class (seed_class_definition * def);
 
 SeedObject seed_make_constructor (SeedContext ctx,
 				  SeedClass class,
-				  SeedObjectCallAsConstructorCallback
-				  constructor);
+				  SeedObjectCallAsConstructorCallback constructor);
 
 void seed_engine_set_search_path (SeedEngine * eng, const gchar * path);
 gchar **seed_engine_get_search_path (SeedEngine * eng);
@@ -389,7 +388,7 @@ void seed_importer_set_search_path (SeedContext ctx,
 
 void seed_prepare_global_context (SeedContext ctx);
 
-SeedType seed_value_get_type (SeedContext ctx, SeedValue type);
+SeedType seed_value_get_type (SeedContext ctx, SeedValue value);
 
 gchar **seed_object_copy_property_names(SeedContext ctx, SeedObject object);
 
