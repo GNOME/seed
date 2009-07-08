@@ -16,16 +16,16 @@ int main (int argc, char **argv)
 {
     SeedEngine * eng;
     SeedScript * script;
-
+&nbsp;
     /* Initialize the Seed engine */
     eng = seed_init(&amp;argc, &amp;argv);
-
+&nbsp;
     /* Create a simple #SeedScript */
     script = seed_make_script(eng->context, "print('Hello, world!')", NULL, 0);
-
+&nbsp;
     /* Evaluate the #SeedScript in the default context */
     seed_evaluate(eng->context, script, 0);
-
+&nbsp;
     g_free(script);
     return 0;
 }

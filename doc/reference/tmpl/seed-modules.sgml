@@ -21,7 +21,7 @@ SeedObject seed_module_init(SeedEngine * eng)
 {
     /* Say hello! */
     g_print("Hello, Seed Module World!\n");
-    
+&nbsp;
     /* Return an empty object as the module's namespace */
     return seed_make_object (eng->context, NULL, NULL);
 }
@@ -45,42 +45,41 @@ SeedValue say_hello_to(SeedContext ctx,
                        SeedException *exception)
 {
     guchar * name;
-
+&nbsp;
     /* Check that only one argument was passed into the function.
        CHECK_ARG_COUNT() is from seed-module.h, which you might find useful. */
     CHECK_ARG_COUNT("hello.say_hello_to", 1);
-    
+&nbsp;
     /* Convert the first argument, a #SeedValue, to a C string */
     name = seed_value_to_string(ctx, arguments[0], exception);
-    
+&nbsp;    
     g_print("Hello, %s!\n", name);
-    
+&nbsp;    
     g_free(name);
-    
+&nbsp;    
     return seed_make_null(ctx);
 }
-
-
+&nbsp;
 /* Define an array of #seed_static_function */
 seed_static_function gettext_funcs[] = {
     {"say_hello_to", say_hello_to, 0}
 };
-
+&nbsp;
 SeedObject seed_module_init(SeedEngine * eng)
 {
     SeedGlobalContext ctx = eng->context;
-
+&nbsp;
     /* Create a new class definition with our array of static functions */
     seed_class_definition ns_class_def = seed_empty_class;
     ns_class_def.static_functions = example_funcs;
-
+&nbsp;
     /* Create a class from the class definition we just created */
     SeedClass ns_class = seed_create_class(&amp;ns_class_def);
-
+&nbsp;
     /* Instantiate the class; this instance will be the namespace we return */
     ns_ref = seed_make_object (ctx, ns_class, NULL);
     seed_value_protect (ctx, ns_ref);
-
+&nbsp;
     return ns_ref;
 }
 </programlisting>
