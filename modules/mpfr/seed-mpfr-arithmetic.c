@@ -337,6 +337,47 @@ SeedValue seed_mpfr_sqr (SeedContext ctx,
     return seed_value_from_int(ctx, ret, exception);
 }
 
+SeedValue seed_mpfr_root (SeedContext ctx,
+                         SeedObject function,
+                         SeedObject this_object,
+                         gsize argument_count,
+                         const SeedValue args[],
+                         SeedException * exception)
+{
+    mpfr_rnd_t rnd;
+    mpfr_ptr rop, op;
+    gint ret;
+    gulong k;
+
+    CHECK_ARG_COUNT("mpfr.root", 3);
+
+    rop = seed_object_get_private(this_object);
+    rnd = seed_value_to_mpfr_rnd_t(ctx, args[2], exception);
+
+    if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) )
+    {
+        op = seed_object_get_private(args[0]);
+    }
+    else
+    {
+        TYPE_EXCEPTION("mpfr.root", "mpfr_t");
+    }
+
+    if ( seed_value_is_number(ctx, args[1]) )
+    {
+        k = seed_value_to_ulong(ctx, args[1], exception);
+    }
+    else
+    {
+        TYPE_EXCEPTION("mpfr.root", "unsigned long int");
+    }
+
+
+    ret = mpfr_root(rop, op, k, rnd);
+
+    return seed_value_from_int(ctx, ret, exception);
+}
+
 SeedValue seed_mpfr_cbrt (SeedContext ctx,
                           SeedObject function,
                           SeedObject this_object,
