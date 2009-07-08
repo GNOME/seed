@@ -60,8 +60,15 @@ static const GDebugKey seed_debug_keys[] = {
 };
 #endif /* SEED_ENABLE_DEBUG */
 
-void
-seed_prepare_global_context (JSContextRef ctx)
+/**
+ * seed_prepare_global_context:
+ * @group: A #SeedContext on which to add the default set of global objects.
+ *
+ * Adds the default set of global objects (imports, GType, Seed, and print)
+ * to a fresh #SeedContext.
+ *
+ */
+void seed_prepare_global_context (JSContextRef ctx)
 {
   JSObjectRef global = JSContextGetGlobalObject (ctx);
 

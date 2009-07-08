@@ -61,6 +61,10 @@ seed_value_unprotect (JSContextRef ctx,
  * @global_class: The #SeedClass to use to create the global object, or %NULL to
  *                create it with the default class.
  *
+ * Create a new #SeedContext. By default, this creates a new context
+ * which has no global objects; you can add the default set using
+ * seed_prepare_global_context().
+ *
  * Return value: A new #SeedContext.
  *
  */
