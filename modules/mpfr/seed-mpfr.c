@@ -747,11 +747,55 @@ SeedValue seed_mpfr_get_emin (SeedContext ctx,
     return seed_value_from_mp_exp_t(ctx, exp, exception);
 }
 
+SeedValue seed_mpfr_get_emin_min (SeedContext ctx,
+                                  SeedObject this_object,
+                                  SeedString property_name,
+                                  SeedException* exception)
+{
+    mp_exp_t exp;
+    exp = mpfr_get_emin_min();
+    return seed_value_from_mp_exp_t(ctx, exp, exception);
+}
+
+SeedValue seed_mpfr_get_emin_max (SeedContext ctx,
+                                  SeedObject this_object,
+                                  SeedString property_name,
+                                  SeedException* exception)
+{
+    mp_exp_t exp;
+    exp = mpfr_get_emin_max();
+    return seed_value_from_mp_exp_t(ctx, exp, exception);
+}
+
+SeedValue seed_mpfr_get_emax_min (SeedContext ctx,
+                                  SeedObject this_object,
+                                  SeedString property_name,
+                                  SeedException* exception)
+{
+    mp_exp_t exp;
+    exp = mpfr_get_emax_min();
+    return seed_value_from_mp_exp_t(ctx, exp, exception);
+}
+
+SeedValue seed_mpfr_get_emax_max (SeedContext ctx,
+                                  SeedObject this_object,
+                                  SeedString property_name,
+                                  SeedException* exception)
+{
+    mp_exp_t exp;
+    exp = mpfr_get_emax_max();
+    return seed_value_from_mp_exp_t(ctx, exp, exception);
+}
+
 seed_static_value mpfr_ns_values[] =
 {
     {"default_rounding_mode", seed_mpfr_get_default_rounding_mode, seed_mpfr_set_default_rounding_mode, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
     {"emax", seed_mpfr_get_emax, seed_mpfr_set_emax, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
     {"emin", seed_mpfr_get_emin, seed_mpfr_set_emin, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
+    {"emin_min", seed_mpfr_get_emin_min, NULL, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
+    {"emin_max", seed_mpfr_get_emin_max, NULL, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
+    {"emax_min", seed_mpfr_get_emax_min, NULL, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
+    {"emax_max", seed_mpfr_get_emax_max, NULL, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
     {"version", seed_mpfr_get_version, NULL, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
     {"patches", seed_mpfr_get_patches, NULL, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
     {NULL, 0, NULL, 0}
