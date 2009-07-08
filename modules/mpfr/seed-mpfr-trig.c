@@ -1225,3 +1225,15 @@ SeedValue seed_mpfr_free_cache (SeedContext ctx,
     return seed_make_null(ctx);
 }
 
+SeedValue seed_mpfr_clear_flags (SeedContext ctx,
+                                 SeedObject function,
+                                 SeedObject this_object,
+                                 gsize argument_count,
+                                 const SeedValue args[],
+                                 SeedException * exception)
+{
+    CHECK_ARG_COUNT("mpfr.clear_flags", 0);
+    mpfr_clear_flags();
+    return seed_make_null(ctx);
+}
+

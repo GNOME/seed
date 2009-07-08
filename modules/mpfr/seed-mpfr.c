@@ -934,6 +934,7 @@ seed_static_value mpfr_ns_values[] =
 seed_static_function mpfr_ns_funcs[] =
 {
     {"free_cache", seed_mpfr_free_cache, 0},
+    {"clear_flags", seed_mpfr_clear_flags, 0},
     {NULL, NULL, 0}
 };
 
