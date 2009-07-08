@@ -2,12 +2,100 @@
 Seed Modules
 
 <!-- ##### SECTION Short_Description ##### -->
-Native C plug-in modules for Seed
+Native C modules for Seed
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
-Long description
+Seed includes a simple system for creating C modules which can be loaded and manipulated from JavaScript. This is used for implementing performance-critical code closer to the silicon, as well as binding non-introspectable libraries in an attractive way.
 </para>
+
+<para>Numerous binding modules are included in the Seed repository; when writing a new native module, it would be wise to look over these before beginning, as they have many tidbits of useful knowledge for writing modules.</para>
+
+<example>
+<title>Very simple example C module</title>
+<programlisting>
+#include &lt;glib.h&gt;
+#include &lt;seed-module.h&gt;
+
+SeedObject seed_module_init(SeedEngine * eng)
+{
+    /* Say hello! */
+    g_print("Hello, Seed Module World!\n");
+    
+    /* Return an empty object as the module's namespace */
+    return seed_make_object (eng->context, NULL, NULL);
+}
+</programlisting>
+</example>
+
+<para>Above is a C module which does absolutely nothing useful. When a module is loaded, seed_module_init() is called, which should have the signature of SeedModuleInitCallback(). You're passed the global #SeedEngine, and the value you return is the namespace for your module. Say, for example, you place a static function on that object:</para>
+
+<example>
+<title>C module with a function</title>
+<programlisting>
+#include &lt;glib.h&gt;
+#include &lt;seed-module.h&gt;
+
+/* Our function, with the signature of SeedFunctionCallback(); say hello! */
+SeedValue say_hello_to(SeedContext ctx,
+                       SeedObject function,
+                       SeedObject this_object,
+                       gsize argument_count,
+                       const SeedValue arguments[],
+                       SeedException *exception)
+{
+    guchar * name;
+
+    /* Check that only one argument was passed into the function.
+       CHECK_ARG_COUNT() is from seed-module.h, which you might find useful. */
+    CHECK_ARG_COUNT("hello.say_hello_to", 1);
+    
+    /* Convert the first argument, a #SeedValue, to a C string */
+    name = seed_value_to_string(ctx, arguments[0], exception);
+    
+    g_print("Hello, %s!\n", name);
+    
+    g_free(name);
+    
+    return seed_make_null(ctx);
+}
+
+
+/* Define an array of #seed_static_function */
+seed_static_function gettext_funcs[] = {
+    {"say_hello_to", say_hello_to, 0}
+};
+
+SeedObject seed_module_init(SeedEngine * eng)
+{
+    SeedGlobalContext ctx = eng->context;
+
+    /* Create a new class definition with our array of static functions */
+    seed_class_definition ns_class_def = seed_empty_class;
+    ns_class_def.static_functions = example_funcs;
+
+    /* Create a class from the class definition we just created */
+    SeedClass ns_class = seed_create_class(&amp;ns_class_def);
+
+    /* Instantiate the class; this instance will be the namespace we return */
+    ns_ref = seed_make_object (ctx, ns_class, NULL);
+    seed_value_protect (ctx, ns_ref);
+
+    return ns_ref;
+}
+</programlisting>
+</example>
+
+<para>After building and installing this module (look in the Seed build system for examples of how to get this to work, as well as a copy of seed-module.h, which will be very useful), it will be loadable with the normal Seed import system. Assuming it's installed as libseed_hello.so:</para>
+
+<example>
+<title>Utilize our second example C module from JavaScript</title>
+<programlisting>
+hello = imports.hello;
+
+hello.say_hello_to("Tim");
+</programlisting>
+</example>
 
 <!-- ##### SECTION See_Also ##### -->
 <para>
