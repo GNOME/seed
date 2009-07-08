@@ -802,6 +802,7 @@ SeedValue seed_mpfr_zeta (SeedContext ctx,
     mpfr_rnd_t rnd;
     mpfr_ptr rop, op;
     gint ret;
+    gulong uiop;
 
     CHECK_ARG_COUNT("mpfr.zeta", 2);
 
@@ -811,13 +812,17 @@ SeedValue seed_mpfr_zeta (SeedContext ctx,
     if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) )
     {
         op = seed_object_get_private(args[0]);
+        ret = mpfr_zeta(rop, op, rnd);
+    }
+    else if ( seed_value_is_number(ctx, args[0]) )
+    {
+        uiop = seed_value_to_ulong(ctx, args[0], exception);
+        ret = mpfr_zeta_ui(rop, uiop, rnd);
     }
     else
     {
-        TYPE_EXCEPTION("mpfr.zeta", "mpfr_t");
+        TYPE_EXCEPTION("mpfr.zeta", "mpfr_t or unsigned int");
     }
-
-    ret = mpfr_zeta(rop, op, rnd);
 
     return seed_value_from_int(ctx, ret, exception);
 }
