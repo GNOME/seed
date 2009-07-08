@@ -568,7 +568,7 @@ seed_value_is_number (JSContextRef ctx, JSValueRef value)
  * @eng: A #SeedEngine, on which to set the path.
  * @path: A #const gchar*, a colon separated string containing the path to set
  *
- * Sets the default search path for Seed.include.
+ * Sets the default search path for the imports system.
  *
  */
 void
@@ -650,7 +650,8 @@ seed_context_get_global_object (JSGlobalContextRef ctx)
  * @ctx: A valid #SeedContext
  * @elements: An array of #SeedValue's with which to populate the array.
  * @num_elements: The number of values, in @elements
- * @exception: A #SeedException in which to store an exception. Pass %NULL to ignore exceptions.
+ * @exception: A #SeedException in which to store an exception.
+ *             Pass %NULL to ignore exceptions.
  *
  * Return value: A new array object, populated with @elements.
  */

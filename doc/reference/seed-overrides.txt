@@ -1,0 +1,41 @@
+# These are manually-edited to override or add declarations to those scanned
+# from the Seed header files.
+
+
+<STRUCT>
+<NAME>SeedEngine</NAME>
+struct SeedEngine
+{
+	JSGlobalContextRef context;
+	JSObjectRef global;
+	gchar **search_path;
+
+	JSContextGroupRef group;
+};
+</STRUCT>
+
+<STRUCT>
+<NAME>SeedScript</NAME>
+struct SeedScript
+{
+  JSStringRef script;
+  JSValueRef exception;
+
+  JSStringRef source_url;
+  gint line_number;
+};
+</STRUCT>
+
+<STRUCT>
+<NAME>SeedClosure</NAME>
+struct SeedClosure
+{
+  GClosure closure;
+
+  JSObjectRef function;
+  JSValueRef user_data;
+
+  GType return_type;
+  gchar *description;
+};
+</STRUCT>

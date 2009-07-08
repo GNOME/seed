@@ -6,7 +6,7 @@ Overall setup of the Seed engine
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
-Long description
+Before any other Seed functions can be used, you must initialize the engine, which creates an initial JavaScript context and sets up JavaScriptCore and GLib. To do this in most cases, you will use seed_init(), which will provide you with a #SeedEngine. Only one SeedEngine is permitted per application; use a #SeedContext to sandbox code execution.
 </para>
 
 <!-- ##### SECTION See_Also ##### -->
@@ -16,6 +16,16 @@ Long description
 
 <!-- ##### SECTION Stability_Level ##### -->
 
+
+<!-- ##### STRUCT SeedEngine ##### -->
+<para>
+
+</para>
+
+@context: 
+@global: 
+@search_path: 
+@group: 
 
 <!-- ##### FUNCTION seed_init ##### -->
 <para>

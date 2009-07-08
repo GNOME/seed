@@ -22,6 +22,10 @@ Long description
 
 </para>
 
+@script: 
+@exception: 
+@source_url: 
+@line_number: 
 
 <!-- ##### FUNCTION seed_make_script ##### -->
 <para>

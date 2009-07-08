@@ -17,6 +17,17 @@ Long description
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### STRUCT SeedClosure ##### -->
+<para>
+
+</para>
+
+@closure: 
+@function: 
+@user_data: 
+@return_type: 
+@description: 
+
 <!-- ##### FUNCTION seed_closure_new ##### -->
 <para>
 

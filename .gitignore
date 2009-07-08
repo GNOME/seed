@@ -50,7 +50,6 @@ doc/reference/html/up.png
 doc/reference/scan-build.stamp
 doc/reference/seed-decl-list.txt
 doc/reference/seed-decl.txt
-doc/reference/seed-overrides.txt
 doc/reference/seed-undeclared.txt
 doc/reference/seed-undocumented.txt
 doc/reference/seed-unused.txt
