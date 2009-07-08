@@ -812,6 +812,106 @@ gboolean seed_mpfr_set_underflow (SeedContext ctx,
     return setorclear;
 }
 
+SeedValue seed_mpfr_overflow_p (SeedContext ctx,
+                                SeedObject this_object,
+                                SeedString property_name,
+                                SeedException* exception)
+{
+    gint ret = mpfr_overflow_p();
+    return seed_value_from_int(ctx, ret, exception);
+}
+
+gboolean seed_mpfr_set_overflow (SeedContext ctx,
+                                 SeedObject this_object,
+                                 SeedString property_name,
+                                 SeedValue value,
+                                 SeedException * exception)
+{
+    gboolean setorclear;
+    setorclear = seed_value_to_boolean(ctx, value, exception);
+    if ( setorclear )
+        mpfr_set_overflow();
+    else
+        mpfr_clear_overflow();
+
+    return setorclear;
+}
+
+SeedValue seed_mpfr_nanflag_p (SeedContext ctx,
+                               SeedObject this_object,
+                               SeedString property_name,
+                               SeedException* exception)
+{
+    gint ret = mpfr_nanflag_p();
+    return seed_value_from_int(ctx, ret, exception);
+}
+
+gboolean seed_mpfr_set_nanflag (SeedContext ctx,
+                                SeedObject this_object,
+                                SeedString property_name,
+                                SeedValue value,
+                                SeedException * exception)
+{
+    gboolean setorclear;
+    setorclear = seed_value_to_boolean(ctx, value, exception);
+    if ( setorclear )
+        mpfr_set_nanflag();
+    else
+        mpfr_clear_nanflag();
+
+    return setorclear;
+}
+
+SeedValue seed_mpfr_inexflag_p (SeedContext ctx,
+                                SeedObject this_object,
+                                SeedString property_name,
+                                SeedException* exception)
+{
+    gint ret = mpfr_inexflag_p();
+    return seed_value_from_int(ctx, ret, exception);
+}
+
+gboolean seed_mpfr_set_inexflag (SeedContext ctx,
+                                 SeedObject this_object,
+                                 SeedString property_name,
+                                 SeedValue value,
+                                 SeedException * exception)
+{
+    gboolean setorclear;
+    setorclear = seed_value_to_boolean(ctx, value, exception);
+    if ( setorclear )
+        mpfr_set_inexflag();
+    else
+        mpfr_clear_inexflag();
+
+    return setorclear;
+}
+
+SeedValue seed_mpfr_erangeflag_p (SeedContext ctx,
+                                  SeedObject this_object,
+                                  SeedString property_name,
+                                  SeedException* exception)
+{
+    gint ret = mpfr_erangeflag_p();
+    return seed_value_from_int(ctx, ret, exception);
+}
+
+gboolean seed_mpfr_set_erangeflag (SeedContext ctx,
+                                   SeedObject this_object,
+                                   SeedString property_name,
+                                   SeedValue value,
+                                   SeedException * exception)
+{
+    gboolean setorclear;
+    setorclear = seed_value_to_boolean(ctx, value, exception);
+    if ( setorclear )
+        mpfr_set_erangeflag();
+    else
+        mpfr_clear_erangeflag();
+
+    return setorclear;
+}
+
 seed_static_value mpfr_ns_values[] =
 {
     {"default_rounding_mode", seed_mpfr_get_default_rounding_mode, seed_mpfr_set_default_rounding_mode, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
@@ -822,6 +922,10 @@ seed_static_value mpfr_ns_values[] =
     {"emax_min", seed_mpfr_get_emax_min, NULL, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
     {"emax_max", seed_mpfr_get_emax_max, NULL, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
     {"underflow", seed_mpfr_underflow_p, seed_mpfr_set_underflow, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
+    {"overflow", seed_mpfr_overflow_p, seed_mpfr_set_overflow, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
+    {"nanflag", seed_mpfr_nanflag_p, seed_mpfr_set_nanflag, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
+    {"inexflag", seed_mpfr_inexflag_p, seed_mpfr_set_inexflag, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
+    {"erangeflag", seed_mpfr_erangeflag_p, seed_mpfr_set_erangeflag, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
     {"version", seed_mpfr_get_version, NULL, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
     {"patches", seed_mpfr_get_patches, NULL, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
     {NULL, 0, NULL, 0}
