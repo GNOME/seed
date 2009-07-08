@@ -787,6 +787,31 @@ SeedValue seed_mpfr_get_emax_max (SeedContext ctx,
     return seed_value_from_mp_exp_t(ctx, exp, exception);
 }
 
+SeedValue seed_mpfr_underflow_p (SeedContext ctx,
+                                 SeedObject this_object,
+                                 SeedString property_name,
+                                 SeedException* exception)
+{
+    gint ret = mpfr_underflow_p();
+    return seed_value_from_int(ctx, ret, exception);
+}
+
+gboolean seed_mpfr_set_underflow (SeedContext ctx,
+                                  SeedObject this_object,
+                                  SeedString property_name,
+                                  SeedValue value,
+                                  SeedException * exception)
+{
+    gboolean setorclear;
+    setorclear = seed_value_to_boolean(ctx, value, exception);
+    if ( setorclear )
+        mpfr_set_underflow();
+    else
+        mpfr_clear_underflow();
+
+    return setorclear;
+}
+
 seed_static_value mpfr_ns_values[] =
 {
     {"default_rounding_mode", seed_mpfr_get_default_rounding_mode, seed_mpfr_set_default_rounding_mode, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
@@ -796,6 +821,7 @@ seed_static_value mpfr_ns_values[] =
     {"emin_max", seed_mpfr_get_emin_max, NULL, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
     {"emax_min", seed_mpfr_get_emax_min, NULL, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
     {"emax_max", seed_mpfr_get_emax_max, NULL, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
+    {"underflow", seed_mpfr_underflow_p, seed_mpfr_set_underflow, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
     {"version", seed_mpfr_get_version, NULL, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
     {"patches", seed_mpfr_get_patches, NULL, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
     {NULL, 0, NULL, 0}
