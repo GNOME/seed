@@ -568,7 +568,7 @@ seed_value_is_number (JSContextRef ctx, JSValueRef value)
  * @eng: A #SeedEngine, on which to set the path.
  * @path: A #const gchar*, a colon separated string containing the path to set
  *
- * Sets the default search path for the imports system.
+ * Sets the search path for the imports system.
  *
  */
 void
@@ -583,6 +583,8 @@ seed_engine_set_search_path (SeedEngine * eng, const gchar * path)
 /**
  * seed_engine_get_search_path:
  * @eng: A #SeedEngine, to get the currently set search path.
+ *
+ * Retrieves the search path for the imports system.
  *
  * Return value: A null-terminated array of strings containing the paths.
  *

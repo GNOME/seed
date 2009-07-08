@@ -1262,7 +1262,11 @@ seed_parse_args (int *argc, char ***argv)
  * @argc: A reference to the number of arguments remaining to parse.
  * @argv: A reference to an array of string arguments remaining to parse.
  *
- * Initializes a new #SeedEngine.
+ * Initializes a new #SeedEngine. This involves initializing GLib, creating
+ * an initial context with all of the default globals, and initializing 
+ * various internal parts of Seed.
+ *
+ * This function should only be called once within a single Seed application.
  *
  * Return value: The newly created and initialized #SeedEngine.
  *
@@ -1343,13 +1347,27 @@ seed_init (gint * argc, gchar *** argv)
 }
 
 
-
+/**
+ * seed_init_with_context_group:
+ * @argc: A reference to the number of arguments remaining to parse.
+ * @argv: A reference to an array of string arguments remaining to parse.
+ * @group: A #SeedContextGroup within which to create the initial context.
+ *
+ * Initializes a new #SeedEngine. This involves initializing GLib, creating
+ * an initial context (in #group) with all of the default globals, and
+ * initializing various internal parts of Seed.
+ *
+ * This function should only be called once within a single Seed application.
+ *
+ * Return value: The newly created and initialized #SeedEngine.
+ *
+ */
 SeedEngine *
 seed_init_with_context_group (gint * argc,
 			      gchar *** argv,
 			      JSContextGroupRef group)
 {
-  JSStringRef defaults_script;
+  // FIXME: this seems like unnecessary code duplication
 
   g_type_init ();
   g_log_set_handler ("GLib-GObject", G_LOG_LEVEL_WARNING, seed_log_handler,
