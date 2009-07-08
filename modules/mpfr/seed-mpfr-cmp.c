@@ -10,7 +10,8 @@ SeedValue seed_mpfr_cmp (SeedContext ctx,
                           SeedException * exception)
 {
     mpfr_ptr rop, op;
-    gboolean ret;
+    gdouble dop;
+    gint ret;
 
     CHECK_ARG_COUNT("mpfr.cmp", 1);
 
@@ -19,15 +20,20 @@ SeedValue seed_mpfr_cmp (SeedContext ctx,
     if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) )
     {
         op = seed_object_get_private(args[0]);
+        ret = mpfr_cmp(rop, op);
+    }
+    else if ( seed_value_is_number(ctx, args[0]))
+    {
+        dop = seed_value_to_double(ctx, args[0], exception);
+        ret = mpfr_cmp_d(rop, dop);
     }
     else
     {
-        TYPE_EXCEPTION("mpfr.cmp", "mpfr_t");
+        TYPE_EXCEPTION("mpfr.cmp", "mpfr_t or double");
     }
 
-    ret = mpfr_cmp(rop, op);
 
-    return seed_value_from_boolean(ctx, ret, exception);
+    return seed_value_from_int(ctx, ret, exception);
 }
 
 SeedValue seed_mpfr_cmpabs (SeedContext ctx,
