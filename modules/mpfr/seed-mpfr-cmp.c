@@ -360,3 +360,43 @@ SeedValue seed_mpfr_unordered_p (SeedContext ctx,
     return seed_value_from_boolean(ctx, ret, exception);
 }
 
+
+SeedValue seed_mpfr_cmp_si_2exp (SeedContext ctx,
+                                 SeedObject function,
+                                 SeedObject this_object,
+                                 gsize argument_count,
+                                 const SeedValue args[],
+                                 SeedException * exception)
+{
+    mpfr_ptr op1;
+    gulong op2;
+    mp_exp_t exp;
+    gint ret;
+
+    CHECK_ARG_COUNT("mpfr.cmp_si_2exp", 2);
+
+    op1 = seed_object_get_private(this_object);
+
+    if ( seed_value_is_number(ctx, args[0]) )
+    {
+        op2 = seed_value_to_ulong(ctx, args[0], exception);
+    }
+    else
+    {
+        TYPE_EXCEPTION("mpfr.cmp_si_2exp", "long int");
+    }
+
+    if ( seed_value_is_number(ctx, args[1]) )
+    {
+        exp = seed_value_to_mp_exp_t(ctx, args[1], exception);
+    }
+    else
+    {
+        TYPE_EXCEPTION("mpfr.cmp_si_2exp", "mp_exp_t");
+    }
+
+    ret = mpfr_cmp_si_2exp(op1, op2, exp);
+
+    return seed_value_from_int(ctx, ret, exception);
+}
+

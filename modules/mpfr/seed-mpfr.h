@@ -130,6 +130,7 @@ DEF_SEED_MPFR_FUNC(seed_mpfr_div_2si);
 
 DEF_SEED_MPFR_FUNC(seed_mpfr_cmp);
 DEF_SEED_MPFR_FUNC(seed_mpfr_cmpabs);
+DEF_SEED_MPFR_FUNC(seed_mpfr_cmp_si_2exp);
 
 DEF_SEED_MPFR_FUNC(seed_mpfr_nan_p);
 DEF_SEED_MPFR_FUNC(seed_mpfr_inf_p);

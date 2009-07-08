@@ -1069,6 +1069,7 @@ seed_static_function mpfr_funcs[] =
     {"swap", seed_mpfr_swap, 0},
     {"cmp", seed_mpfr_cmp, 0},
     {"cmpabs", seed_mpfr_cmpabs, 0},
+    {"cmp_si_2exp", seed_mpfr_cmp_si_2exp, 0},
     {"greater_p", seed_mpfr_greater_p, 0},
     {"greaterequal_p", seed_mpfr_greaterequal_p, 0},
     {"less_p", seed_mpfr_less_p, 0},
