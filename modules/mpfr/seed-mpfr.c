@@ -993,6 +993,7 @@ seed_static_function mpfr_funcs[] =
     {"sqrt", seed_mpfr_sqrt, 0},
     {"sqr", seed_mpfr_sqr, 0},
     {"pow", seed_mpfr_pow, 0},
+    {"mul_2si", seed_mpfr_mul_2si, 0},
     {"root", seed_mpfr_root, 0},
     {"rec_sqrt", seed_mpfr_rec_sqrt, 0},
     {"cbrt", seed_mpfr_cbrt, 0},
