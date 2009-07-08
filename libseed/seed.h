@@ -245,7 +245,7 @@ typedef SeedValue (*SeedFunctionCallback) (SeedContext ctx,
 					   SeedObject this_object,
 					   gsize argument_count,
 					   const SeedValue arguments[],
-					   SeedException * excecption);
+					   SeedException * exception);
 
 void seed_create_function (SeedContext ctx,
 			   gchar * name, SeedFunctionCallback callback,
