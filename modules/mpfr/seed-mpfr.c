@@ -935,6 +935,29 @@ seed_mpfr_subnormalize (SeedContext ctx,
     return seed_value_from_int(ctx, ret, exception);
 }
 
+static SeedValue
+seed_mpfr_check_range (SeedContext ctx,
+                       SeedObject function,
+                       SeedObject this_object,
+                       gsize argument_count,
+                       const SeedValue args[],
+                       SeedException * exception)
+{
+    mpfr_rnd_t rnd;
+    mpfr_ptr rop;
+    gint ret, t;
+
+    CHECK_ARG_COUNT("mpfr.check_range", 2);
+
+    rop = seed_object_get_private(this_object);
+    rnd = seed_value_to_mpfr_rnd_t(ctx, args[1], exception);
+    t = seed_value_to_int(ctx, args[0], exception);
+
+    ret = mpfr_check_range(rop, t, rnd);
+
+    return seed_value_from_int(ctx, ret, exception);
+}
+
 seed_static_value mpfr_ns_values[] =
 {
     {"default_rounding_mode", seed_mpfr_get_default_rounding_mode, seed_mpfr_set_default_rounding_mode, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
@@ -1065,6 +1088,7 @@ seed_static_function mpfr_funcs[] =
     {"euler", seed_mpfr_const_euler, 0},
     {"catalan", seed_mpfr_const_catalan, 0},
     {"subnormalize", seed_mpfr_subnormalize, 0},
+    {"check_range", seed_mpfr_check_range, 0},
     {NULL, NULL, 0}
 };
 
