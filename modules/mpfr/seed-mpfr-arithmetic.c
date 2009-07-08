@@ -247,6 +247,71 @@ SeedValue seed_mpfr_div (SeedContext ctx,
     return seed_value_from_int(ctx, ret, exception);
 }
 
+
+SeedValue seed_mpfr_pow (SeedContext ctx,
+                         SeedObject function,
+                         SeedObject this_object,
+                         gsize argument_count,
+                         const SeedValue args[],
+                         SeedException * exception)
+{
+    mpfr_rnd_t rnd;
+    mpfr_ptr rop, op1, op2;
+    gint ret;
+    glong iop;
+    gulong uiop1, uiop2;
+    seed_mpfr_t argt1, argt2;
+    /* only want 1 double argument. alternatively, could accept 2,
+       add those, and set from the result*/
+
+    CHECK_ARG_COUNT("mpfr.pow", 3);
+
+    rop = seed_object_get_private(this_object);
+    rnd = seed_value_to_mpfr_rnd_t(ctx, args[2], exception);
+
+    argt1 = seed_mpfr_arg_type(ctx, args[0], exception);
+    argt2 = seed_mpfr_arg_type(ctx, args[1], exception);
+
+    if ( (argt1 & argt2) == SEED_MPFR_MPFR )
+    {
+        /* both mpfr_t */
+        op1 = seed_object_get_private(args[0]);
+        op2 = seed_object_get_private(args[1]);
+        ret = mpfr_pow(rop, op1, op2, rnd);
+    }
+    else if ( (argt1 | argt2) == (SEED_MPFR_MPFR | SEED_MPFR_DOUBLE) )
+    {
+        /* a double and an mpfr_t. Figure out the order */
+        /* FIXME: is this switching ui and si bad? si_pow doesn't exist,
+           and it's all from double anyway */
+        if ( argt1 == SEED_MPFR_MPFR )
+        {
+            op1 = seed_object_get_private(args[0]);
+            iop = seed_value_to_long(ctx, args[1], exception);
+            ret = mpfr_pow_si(rop, op1, iop, rnd);
+        }
+        else
+        {
+            uiop1 = seed_value_to_ulong(ctx, args[0], exception);
+            op2 = seed_object_get_private(args[1]);
+            ret = mpfr_ui_pow(rop, uiop1, op2, rnd);
+        }
+    }
+    else if ( (argt1 & argt2) == SEED_MPFR_DOUBLE )
+    {
+        /* pretend both ui */
+        uiop1 = seed_value_to_ulong(ctx, args[0], exception);
+        uiop2 = seed_value_to_ulong(ctx, args[1], exception);
+        ret = mpfr_ui_pow_ui(rop, uiop1, uiop2, rnd);
+    }
+    else
+    {
+        TYPE_EXCEPTION("mpfr.pow", "int or unsigned int and mpfr_t");
+    }
+
+    return seed_value_from_int(ctx, ret, exception);
+}
+
 SeedValue seed_mpfr_sqrt (SeedContext ctx,
                           SeedObject function,
                           SeedObject this_object,
