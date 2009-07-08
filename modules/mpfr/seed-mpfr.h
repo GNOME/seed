@@ -87,6 +87,8 @@ DEF_SEED_MPFR_FUNC(seed_mpfr_rint_round);
 DEF_SEED_MPFR_FUNC(seed_mpfr_rint_trunc);
 
 DEF_SEED_MPFR_FUNC(seed_mpfr_add);
+DEF_SEED_MPFR_FUNC(seed_mpfr_mul);
+
 DEF_SEED_MPFR_FUNC(seed_mpfr_sin);
 DEF_SEED_MPFR_FUNC(seed_mpfr_cos);
 DEF_SEED_MPFR_FUNC(seed_mpfr_tan);
