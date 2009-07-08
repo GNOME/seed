@@ -120,6 +120,7 @@ DEF_SEED_MPFR_FUNC(seed_mpfr_acosh);
 DEF_SEED_MPFR_FUNC(seed_mpfr_atanh);
 
 DEF_SEED_MPFR_FUNC(seed_mpfr_sqrt);
+DEF_SEED_MPFR_FUNC(seed_mpfr_sqr);
 DEF_SEED_MPFR_FUNC(seed_mpfr_rec_sqrt);
 DEF_SEED_MPFR_FUNC(seed_mpfr_cbrt);
 
