@@ -6,8 +6,31 @@ Overall setup of the Seed engine
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
-Before any other Seed functions can be used, you must initialize the engine, which creates an initial JavaScript context and sets up JavaScriptCore and GLib. To do this in most cases, you will use seed_init(), which will provide you with a #SeedEngine. Only one SeedEngine is permitted per application; use a #SeedContext to sandbox code execution.
+Before any other Seed functions can be used, you must initialize the engine, which creates an initial JavaScript context and sets up JavaScriptCore and GLib. To do this in most cases, you will use seed_init(), which will provide you with a #SeedEngine. Only one #SeedEngine is permitted per application; use a #SeedContext to sandbox code execution.
 </para>
+
+<example>
+<title>Very simple <function>main</function> function for a Seed program</title>
+<programlisting>
+int main (int argc, char **argv)
+{
+    SeedEngine * eng;
+    SeedScript * script;
+
+    /* Initialize the Seed engine */
+    eng = seed_init(&amp;argc, &amp;argv);
+
+    /* Create a simple #SeedScript */
+    script = seed_make_script(eng->context, "print('Hello, world!')", NULL, 0);
+
+    /* Evaluate the #SeedScript in the default context */
+    seed_evaluate(eng->context, script, 0);
+
+    g_free(script);
+    return 0;
+}
+</programlisting>
+</example>
 
 <!-- ##### SECTION See_Also ##### -->
 <para>
