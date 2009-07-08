@@ -22,7 +22,8 @@ seed_gettext_gettext (SeedContext ctx,
 	msgid = seed_value_to_string (ctx, arguments[0], exception);
 
 	ret = seed_value_from_string (ctx, gettext(msgid), exception);
-	g_free(ret);
+
+	g_free(msgid);
 
 	return ret;
 }
