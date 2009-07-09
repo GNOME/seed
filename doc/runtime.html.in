@@ -73,32 +73,6 @@ test_file = imports.test_file;
 print(test_file.test_string);
 </pre>
 <p>This will print "Hello, world!", as expected. Notice how, unlike in versions of Seed prior to 0.5, the file is not actually evaluated in the context of the importing file, so its toplevel objects are not globally available.</p>
-<div class="section"><b>Seed.import_namespace</b>(namespace, <i>version</i>)</div>
-<p style="color:red;"><b>Deprecated. Do not use in new code. Will be removed in a future version.</b></p>
-<p>
-Imports functions and constructors from the given gobject-introspection <i>namespace</i>. The optional <i>version</i> parameter forces a particular version, and will throw an exception if the typelib for that version is not installed; if it is omitted, the latest version is loaded.
-</p>
-<pre class="sh_javascript">
-Seed.import_namespace("Gtk", "2.0");
-</pre>
-<p>
-Behaviour when loading a namespace which has already been loaded is undefined and most likely unwanted. To work around this, a try/catch block can be used:
-</p>
-<pre class="sh_javascript">
-try{
-    Clutter;
-}
-catch(e){
-    Seed.import_namespace("Clutter");
-}
-</pre>
-<div class="section"><b>Seed.include</b>(file)</div>
-<p>
-Evaluates a Javascript <i>file</i> as if it were included in the file at the point include is called.
-</p>
-<pre class="sh_javascript">
-Seed.include("tabview.js");
-</pre>
 <div class="section"><b>print</b>(value)</div>
 <p>
 Prints, to standard output, a representation of <i>value</i>. Number types are printed as floating-point values (with 6 decimal places); strings are printed as-is; objects are printed as <code>[object <i>type</i>]</code>.
@@ -186,7 +160,6 @@ Seed throws Javascript exceptions for errors in the GObject layer; our custom ex
 <ul>
 <li><b>InvalidPropertyValue</b> - a property was set to a value out of range</li>
 <li><b>PropertyError</b> - a warning occurred in GLib while trying to set a property</li>
-<li><b>NamespaceError</b> - Seed.import_namespace() was called with a nonexistant namespace or namespace version</li>
 <li><b>ArgumentError</b> - a function was called with the wrong number of arguments</li>
 <li><b>ConversionError</b> - one of the type conversion functions threw an exception </li>
 <li><b>TypeError</b> - a required argument was of the wrong type </li>
