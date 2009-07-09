@@ -9,8 +9,18 @@ Self-contained JavaScript execution environments
 A #SeedContext provides a complete "universe" for the execution of JavaScript. You can use seed_context_new() to create a sandboxed context that lacks the import system, so it can be used to execute somewhat untrusted JavaScript (as it has no way to access the rest of your system). You can also expose the default set of globals (including "print", "imports", and "Seed") to create more powerful but still self-contained environments within which to execute code.
 </para>
 
-<para>
-The "sandbox" module provides access to this system from the JavaScript side of Seed.
+<example>
+<title>Using a Seed context as a form of sandboxing</title>
+<programlisting>
+...
+ctx = seed_context_create(NULL, NULL);
+script = seed_make_script(ctx, "print(imports)", NULL, 0);
+// nothing is printed, because imports is undefined, because we're in a sandbox
+...
+</programlisting>
+</example>
+
+<para>The "sandbox" module provides access to this system from the JavaScript side of Seed.
 </para>
 
 <!-- ##### SECTION See_Also ##### -->
