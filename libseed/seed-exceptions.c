@@ -115,6 +115,10 @@ seed_make_exception_from_gerror (JSContextRef ctx,
  * @ctx: A #SeedContext.
  * @exception: A reference to a #SeedException.
  *
+ * Retrieves the name of the given exception; this could be one of the
+ * predefined exception names given above, or your own name, which should
+ * be a single CamelCase word, preferably ending in something like "Error".
+ *
  * Return value: A #gchar* representing the name of @exception.
  *
  */
@@ -134,6 +138,11 @@ seed_exception_get_name (JSContextRef ctx, JSValueRef e)
  * seed_exception_get_message:
  * @ctx: A #SeedContext.
  * @exception: A reference to a #SeedException.
+ *
+ * Retrieves the message of the given exception; this should be a
+ * human-readable string describing the exception enough that a developer
+ * could utilize the message in order to determine where to look to debug
+ * the problem.
  *
  * Return value: A #gchar* representing the detailed message of @exception.
  *
@@ -155,6 +164,9 @@ seed_exception_get_message (JSContextRef ctx, JSValueRef e)
  * @ctx: A #SeedContext.
  * @exception: A reference to a #SeedException.
  *
+ * Retrieves the line number the given exception was thrown from; keep in mind
+ * that exceptions created from C have an undefined line number.
+ *
  * Return value: A #guint representing the line number from which @exception
  *               was thrown.
  *
@@ -174,6 +186,9 @@ seed_exception_get_line (JSContextRef ctx, JSValueRef e)
  * seed_exception_get_file:
  * @ctx: A #SeedContext.
  * @exception: A reference to a #SeedException.
+ *
+ * Retrieves the file name the given exception was thrown from; keep in mind
+ * that exceptions created from C have an undefined file name.
  *
  * Return value: A #gchar* representing the name of the file from which
  *               @exception was thrown.
@@ -195,8 +210,12 @@ seed_exception_get_file (JSContextRef ctx, JSValueRef e)
  * @ctx: A #SeedContext.
  * @exception: A reference to a #SeedException.
  *
- * Return value: A #gchar* representing the name, detailed message, line number,
- *               and file name of @exception.
+ * Properly formats the name, detailed message, line number, and file name of
+ * the given extension. This provides a consistent format for printed
+ * exceptions, to reduce confusion. Please use it if you're exposing exception
+ * data to the outside world.
+ *
+ * Return value: A #gchar* representing the @exception.
  *
  */
 gchar *
