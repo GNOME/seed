@@ -180,5 +180,8 @@ seed_closure_warn_exception
 <SECTION>
 <TITLE>Modules</TITLE>
 <FILE>seed-modules</FILE>
+CHECK_ARG_COUNT
+DEFINE_ENUM_MEMBER
+DEFINE_ENUM_MEMBER_EXT
 SeedModuleInitCallback
 </SECTION>

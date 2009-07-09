@@ -9,9 +9,9 @@ libseed_readline_la_SOURCES = \
 	seed-readline.c
 
 libseed_readline_la_CFLAGS = \
+	-I@top_srcdir@/libseed/ \
 	$(GOBJECT_INTROSPECTION_CFLAGS) \
 	$(FFI_CFLAGS) \
-	-I@top_srcdir@/modules/ \
 	$(SEED_DEBUG_CFLAGS) \
 	$(SEED_PROFILE_CFLAGS)
 

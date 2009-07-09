@@ -11,9 +11,8 @@ libseed_multiprocessing_la_SOURCES = \
 	seed-multiprocessing.c
 
 libseed_multiprocessing_la_CFLAGS = \
-	$(GOBJECT_INTROSPECTION_CFLAGS) \
 	-I@top_srcdir@/libseed/ \
-	-I@top_srcdir@/modules/ \
+	$(GOBJECT_INTROSPECTION_CFLAGS) \
 	$(SEED_DEBUG_CFLAGS) \
 	$(SEED_PROFILE_CFLAGS)
 

@@ -104,6 +104,34 @@ hello.say_hello_to("Tim");
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### MACRO CHECK_ARG_COUNT ##### -->
+<para>
+
+</para>
+
+@name: 
+@argnum: 
+
+
+<!-- ##### MACRO DEFINE_ENUM_MEMBER ##### -->
+<para>
+
+</para>
+
+@holder: 
+@member: 
+
+
+<!-- ##### MACRO DEFINE_ENUM_MEMBER_EXT ##### -->
+<para>
+
+</para>
+
+@holder: 
+@name: 
+@val: 
+
+
 <!-- ##### USER_FUNCTION SeedModuleInitCallback ##### -->
 <para>
 

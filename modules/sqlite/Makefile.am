@@ -10,7 +10,7 @@ libseed_sqlite_la_SOURCES = \
 	seed-sqlite.c
 
 libseed_sqlite_la_CFLAGS = \
-	-I@top_srcdir@/modules/ \
+	-I@top_srcdir@/libseed/ \
 	$(GOBJECT_INTROSPECTION_CFLAGS) \
 	$(SQLITE_CFLAGS) \
 	$(SEED_DEBUG_CFLAGS) \

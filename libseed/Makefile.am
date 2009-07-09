@@ -42,7 +42,7 @@ libseed_la_LDFLAGS = \
 	$(SEED_OSX_LIBS) \
 	$(FFI_LDFLAGS)
 
-seedheaders_HEADERS = seed.h seed-debug.h
+seedheaders_HEADERS = seed.h seed-debug.h seed-module.h
 
 seedheadersdir = $(pkgincludedir)
 
