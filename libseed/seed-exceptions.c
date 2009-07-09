@@ -28,10 +28,9 @@
  *           details of the exception.
  * @VarArgs: A list of printf-style format arguments to substitute in @message.
  *
- * The line number and file name of the exception created will be undefined.
+ * Creates a new JavaScript exception with the given attributes.
  *
- * The runtime documentation contains a list of names of built-in exceptions,
- * and should eventually be merged in here.
+ * The line number and file name of the exception created will be undefined.
  *
  */
 void

@@ -41,7 +41,8 @@
  * Defines a property on @holder which is named the same as @member, and
  * is assigned the value that @member has in C.
  *
- * This macro works for defining properties from constants and defines as well.
+ * This macro works for defining properties from constants and
+ * &num;defines as well.
  *
  */
 #define DEFINE_ENUM_MEMBER(holder, member) \
