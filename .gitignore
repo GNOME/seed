@@ -58,7 +58,6 @@ doc/reference/seed.hierarchy
 doc/reference/seed.interfaces
 doc/reference/seed.prerequisites
 doc/reference/seed.signals
-doc/reference/seed.types
 doc/reference/sgml-build.stamp
 doc/reference/sgml.stamp
 doc/reference/tmpl-build.stamp
