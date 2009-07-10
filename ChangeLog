@@ -1,36 +1,62 @@
 == Seed 0.8, "Bringing It All Back Home" (2009.05.27) ==
-* Importer now supports constructing directory objects, to avoid manipulation of search path.
-  Importer directory objects now support property enumeration.
-* Fix small leak in GObject wrapper initialization. (and also simplify the process).
+* Importer now supports constructing directory objects, to avoid manipulation
+  of search path. Importer directory objects now support property enumeration.
+
+* Fix small leak in GObject wrapper initialization. (and also simplify
+  the process).
+
 * GtkBuilder module to handle GtkBuilder automatic signal connection.
-* *_init methods now take normal arrays (by value) in addition to the special Seed.argv array.
+
+* *_init methods now take normal arrays (by value) in addition to the special
+  Seed.argv array.
+
 * GObject constructors (init methods) now take "self" as a parameter.
-* Passing non gobject-properties to a GObject constructor will set the properties
-  on the GObject wrapper.
+
+* Passing non gobject-properties to a GObject constructor will set the
+  properties on the GObject wrapper.
+  
 * Module documentation rewritten in docbook, and builds one nice manual.
-* New Cairo module, supports most of the cairo API, with automatic memory management
-  and everything you would expect.
+
+* New Cairo module, supports most of the cairo API, with automatic memory
+  management and everything you would expect.
+
 * Fix a reference count leak introduced in the last few releases.
   in some cases with non INITIALLY_UNOWNED objects.
-* Some work on ClutterPad examples, and writing examples which live inside of it.
+
+* Some work on ClutterPad examples, and writing examples which live inside of it
   (lots of fun to play with!, cairo example...fun spring example...ClutterBox2D)
-* Working around a WebKit bug (which is actually fixed in SVN now), should prevent a
-  crash that happened sometimes with C modules.
-* Clutter animatev wrapper looks up property type wrapper now, so as to avoid having to pass
-  [GObject.TYPE_FOO, bar]
-* Implement some varargs functions which can be implemented on top of non vararg variants in JavaScript extensions.
+
+* Working around a WebKit bug (which is actually fixed in SVN now), should
+  prevent a crash that happened sometimes with C modules.
+
+* Clutter animatev wrapper looks up property type wrapper now, so as to avoid
+  having to pass [GObject.TYPE_FOO, bar]
+
+* Implement some varargs functions which can be implemented on top of non-vararg
+  variants in JavaScript extensions.
+
 * JSON stuff (stringify,parse) is now in gnome-js-common.
-* Add seed_value_to_format to API, for converting an Array of SeedValue based on a format string.
+
+* Add seed_value_to_format to API, for converting an Array of SeedValue based
+  on a format string.
+  
 * Install seed-debug.h so modules can make use of it.
+
 * Search path now works in nonstandard prefix, default search path includes
   gnome-js-common moduledir (from pkgconfig).
+  
 * Support to/from Date objects to time_t.
 
 == Seed 0.7, "Another Side of Bob Dylan" (2009.05.13) ==
+
 * Support for library init methods.
+
 * The REPL now supports multi-line entry.
+
 * Signal disconnection.
+
 * Significant Gtk-Doc reorganization.
+
 * New C modules:
 	* sandbox - provides sandboxed JavaScriptCore contexts.
 	* DBus - Client side DBus bindings.
@@ -43,13 +69,21 @@
 	* Pango examples have returned.
 	* Same Seed performance is increased significantly.
 	* Many examples now use "recent" style; some were completely rewritten
+	
 * Improvements to test system, and quite a few more tests.
+
 * Improvements to error checking/handling in signal code.
-* Reorganization of API related to GClosure handling, much cleaner and easier now.
+
+* Reorganization of API related to GClosure handling, much cleaner and easier.
+
 * Several new API methods.
+
 * GC related crash fixes.
+
 * Improvements to seed_value_to_string (mostly formatting improvements).
+
 * Void methods now properly return undefined instead of null.
+
 * seed_make_exception takes format strings now.
 
 == Seed 0.6, Beatles for Sale (2009.04.29) ==
