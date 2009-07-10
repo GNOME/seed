@@ -55,7 +55,7 @@ How to compile Seed itself
       </listitem>
       <listitem>
 	<para>
-	  <ulink url="http://webkit.org">WebKit</ulink> provides the JavaScriptCore interpreter, which is fundamental to Seed's ability to execute JavaScript.
+	  <ulink url="http://webkit.org">WebKit</ulink> provides the JavaScriptCore interpreter, which is fundamental to Seed's ability to execute JavaScript. Seed requires a WebKit SVN revision newer than 35442. Keep in mind that some builds between this and HEAD still won't work with Seed, and performance has only improved, so try to keep an up-to-date version of WebKit if you're planning on working with Seed.
 	</para>
       </listitem>
       <listitem>
