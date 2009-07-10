@@ -7,7 +7,8 @@ EXTRA_DIST = \
 	conventions.html.in \
 	sh.css \
 	sh.js \
-	sh_js.js
+	sh_js.js \
+	seed.1
 
 docdir = $(datadir)/doc/seed/
 doc_DATA = index.html runtime.html conventions.html style.css sh.css sh.js sh_js.js
