@@ -1,4 +1,33 @@
+== Seed 0.8.5, "Self Portrait" (2009.07.10) ==
+
+* Significant reorganization and expansion of the reference documentation
+
+* New native modules:
+	* gettext
+	* MPFR (partially complete)
+
+* Same Seed has moved to the gsoc-seed-games branch of Gnome Games
+  (and will eventually move to master)
+
+* Add seed-module.h, which includes a handful of macros to make writing modules
+  slightly more attractive. Look at gettext or the reference docs for examples.
+
+* Prefix native modules with seed_ (libseed_readline.so, etc.); this fixes the
+  need to incessantly 'make clean' seed and cuts down on ambiguity in naming.
+
+* Add 'seed_value_is_string', 'seed_value_is_number', and
+  'seed_value_is_object_of_class' to libseed
+
+* Update examples to latest (now frozen) Clutter API changes.
+
+* Fixes a bug with the importer search path which resulted in the search path
+  being overwritten each time something was imported
+ 
+* The importer now also searches the directory in which the script being
+  executed is located by default.
+
 == Seed 0.8, "Bringing It All Back Home" (2009.05.27) ==
+
 * Importer now supports constructing directory objects, to avoid manipulation
   of search path. Importer directory objects now support property enumeration.
 
@@ -86,7 +115,7 @@
 
 * seed_make_exception takes format strings now.
 
-== Seed 0.6, Beatles for Sale (2009.04.29) ==
+== Seed 0.6, "Beatles for Sale" (2009.04.29) ==
 
 * Significant build fixes and cleanups. Should build on more distros
   with weird libffis now.
@@ -116,7 +145,7 @@
   rotted a bit, being written months ago.
 	
  
-== Seed 0.5, Transformer (2009.04.16) ==
+== Seed 0.5, "Transformer" (2009.04.16) ==
 
 * Many, many crash fixes.
 
@@ -167,7 +196,7 @@ of API documentation.
 
 * The Lights Off example now lives in Gnome Games.
 
-== Seed 0.3, Wednesday Morning 3AM (2008.12.31) ==
+== Seed 0.3, "Wednesday Morning 3AM" (2008.12.31) ==
 
 * Lots of memory changes. Memory usage isn't bad anymore, 
   reference counting actually works (no big leaks or anything anymore
