@@ -11,14 +11,14 @@
       </affiliation>
     </author>
   </chapterinfo>
-  <title>SQLite module.</title>
+  <title>SQLite</title>
   
-  <section>
+  <refsect1>
     <title>API Reference</title>
     <para>
       The sqlite module allows for manipulation and querying of sqlite databases.
       <programlisting>
-	sqlite = imports.sqlite;
+sqlite = imports.sqlite;
       </programlisting>
     </para>
     
@@ -31,8 +31,8 @@ sqlite.[OK, ERROR, INTERNAL, PERM ABORT, BUSY,
         NOLFS, AUTH, FORMAT, RANGE, NOTADB, ROW, DONE]
     </programlisting>
     <xi:include href="sqlite-funcs.xml"/>
-  </section>
-  <section>
+  </refsect1>
+  <refsect1>
     <title>Examples</title>
     <para>Below are several examples of using the Seed sqlite module. For additional resources, consult the examples/ folder of the Seed source</para>
     <example id="readline-repl-example">
@@ -43,9 +43,9 @@ var db = new sqlite.Database("people.db");
 db.exec("create table people (key INTEGER PRIMARY KEY, name TEXT," +
                              "age INTEGER, phone TEXT);");
 db.exec("insert into people(name, age, phone) " + 
-                    "values('John Smith', 24, '555-123-4567');");
+        "values('John Smith', 24, '555-123-4567');");
 
-function cb_print_phone(results){
+function cb_print_phone(results) {
     print(results.phone);
 }
 
@@ -53,6 +53,6 @@ db.exec("select from people where name='John Smith';", cb_print_phone);
 db.close();
       </programlisting>
     </example>
-  </section>
+  </refsect1>
 </chapter>
 

@@ -11,9 +11,9 @@
       </affiliation>
     </author>
   </chapterinfo>
-  <title>GtkBuilder module.</title>
+  <title>GtkBuilder</title>
 
-  <section>
+  <refsect1>
     <title>API Reference</title>
     <para>
       The GtkBuilder extends Gtk.GtkBuilder.prototype to implement a custom automatic signal connection function, which is useful in Seed. It does not provide any methods or types, so there is no need to save it's namespace, as of such it can be imported as follows.
@@ -23,14 +23,14 @@
     </para>
     
     <xi:include href="gtkbuilder-funcs.xml"/>
-  </section>
-  <section>
+  </refsect1>
+  <refsect1>
     <title>Examples</title>
     <para>Below are several examples of using the Seed GtkBuilder module. For additional resources, consult the examples/ folder of the Seed source</para>
     <example id="GtkBuilder-xml-example">
       <xi:include href="example.ui"/>
       <xi:include href="example.js"/>
     </example>
-  </section>
+  </refsect1>
 </chapter>
 

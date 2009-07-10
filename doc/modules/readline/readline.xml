@@ -11,9 +11,9 @@
       </affiliation>
     </author>
   </chapterinfo>
-  <title>readline module.</title>
+  <title>readline</title>
 
-  <section>
+  <refsect1>
     <title>API Reference</title>
     <para>
       The readline module allows for basic usage of the GNU readline library, in Seed. More advanced features may be added a a later time. In order to use the readline module it must be first imported.
@@ -23,8 +23,8 @@
     </para>
     
     <xi:include href="readline-funcs.xml"/>
-  </section>
-  <section>
+  </refsect1>
+  <refsect1>
     <title>Examples</title>
     <para>Below are several examples of using the Seed readline module. For additional resources, consult the examples/ folder of the Seed source</para>
     <example id="readline-repl-example">
@@ -41,6 +41,6 @@ while (1){
 }
       </programlisting>
     </example>
-  </section>
+  </refsect1>
 </chapter>
 

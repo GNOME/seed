@@ -1,4 +1,4 @@
-SUBDIRS = tutorial-standalone reference modules mapping
+SUBDIRS = tutorial-standalone modules mapping reference
 
 EXTRA_DIST = \
 	index.html \

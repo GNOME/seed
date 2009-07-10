@@ -47,7 +47,7 @@ CFILE_GLOB=$(top_srcdir)/libseed/*.c
 
 # Header files to ignore when scanning.
 # e.g. IGNORE_HFILES=gtkdebug.h gtkintl.h
-IGNORE_HFILES=seed-builtins.h seed-closure.h seed-engine.h seed-exceptions.h seed-gtype.h seed-private.h seed-signals.h seed-structs.h seed-types.h
+IGNORE_HFILES=seed-builtins.h seed-closure.h seed-engine.h seed-exceptions.h seed-gtype.h seed-private.h seed-signals.h seed-structs.h seed-types.h seed-importer.h
 
 # Images to copy into HTML directory.
 # e.g. HTML_IMAGES=$(top_srcdir)/gtk/stock-icons/stock_about_24.png
