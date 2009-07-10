@@ -272,7 +272,7 @@ seed_canvas_update_stroke_style (SeedContext ctx,
 				 SeedException * e)
 {
   SeedCanvasStyle *style;
-  GET_CR;
+  SeedCanvasPrivates *priv = seed_object_get_private(this_object);
 
   gchar *stroke_style = seed_value_to_string (ctx, value, e);
 
@@ -301,7 +301,7 @@ seed_canvas_update_fill_style (SeedContext ctx,
 				 SeedValue value, SeedException * e)
 {
   SeedCanvasStyle *style;
-  GET_CR;
+  SeedCanvasPrivates *priv = seed_object_get_private(this_object);
 
   gchar *fill_style = seed_value_to_string (ctx, value, e);
 
@@ -330,7 +330,7 @@ seed_canvas_update_global_alpha (SeedContext ctx,
 				 SeedValue value, SeedException * e)
 {
   SeedCanvasStyle *style;
-  GET_CR;
+  SeedCanvasPrivates *priv = seed_object_get_private(this_object);
 
   gdouble global_alpha = seed_value_to_double (ctx, value, e);
 

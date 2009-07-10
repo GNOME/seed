@@ -386,6 +386,8 @@ append_string (SeedContext ctx,
   return TRUE;
 }
 
+/* Seems to be unused
+
 static gboolean
 append_int32 (SeedContext ctx,
 	      DBusMessageIter * iter,
@@ -431,6 +433,7 @@ append_int32 (SeedContext ctx,
 
   return TRUE;
 }
+*/
 
 static gboolean
 append_double (SeedContext ctx,
