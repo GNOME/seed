@@ -14,6 +14,7 @@ version=`cat configure.ac | perl -e "while(<>){if(/AC_INIT/){ \\$a = \\$_; \\$a 
 echo "Found seed-$version. Making tarball."
 
 ./autogen.sh --enable-gtk-doc >> /tmp/seed-build.log
+make -j2
 make dist >> /tmp/seed-build.log
 
 mv "seed-$version.tar.gz" ..

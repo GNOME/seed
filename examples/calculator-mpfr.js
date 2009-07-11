@@ -3,6 +3,9 @@
 readline = imports.readline;
 mpfr = imports.mpfr;
 
+print("This example is currently incomplete.");
+Seed.quit();
+
 var isAtom = function(a)
 {
 	return typeof a == 'string' || typeof a == 'number' || typeof a == 'boolean';
