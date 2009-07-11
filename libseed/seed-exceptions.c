@@ -43,6 +43,7 @@ seed_make_exception (JSContextRef ctx,
   JSStringRef js_message = 0;
   JSValueRef js_name_ref = 0, js_message_ref = 0;
   JSObjectRef exception_obj;
+  gchar *mes;
   va_list args;
 
   if (!exception)
@@ -57,7 +58,7 @@ seed_make_exception (JSContextRef ctx,
     }
   if (message)
     {
-      gchar *mes = g_strdup_vprintf (message, args);
+      mes = g_strdup_vprintf (message, args);
       js_message = JSStringCreateWithUTF8CString (mes);
       js_message_ref = JSValueMakeString (ctx, js_message);
       g_free (mes);
@@ -90,10 +91,11 @@ seed_make_exception_from_gerror (JSContextRef ctx,
 {
   const gchar *domain = g_quark_to_string (error->domain);
   GString *string = g_string_new (domain);
-  int i;
+  guint i;
+  gsize len = string->len;
 
   *(string->str) = g_unichar_toupper (*(string->str));
-  for (i = 0; i < string->len; i++)
+  for (i = 0; i < len; i++)
     {
       if (*(string->str + i) == '-')
 	{

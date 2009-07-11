@@ -148,7 +148,8 @@ seed_signal_marshal_func (GClosure * closure,
   SeedClosure *seed_closure = (SeedClosure *) closure;
   JSValueRef *args, exception = 0;
   JSValueRef ret = 0;
-  gint i;
+  guint i;
+  gchar *mes;
 
   JSContextRef ctx = JSGlobalContextCreateInGroup (context_group,
 						   0);
@@ -192,7 +193,7 @@ seed_signal_marshal_func (GClosure * closure,
 
   if (exception)
     {
-      gchar *mes = seed_exception_to_string (ctx, exception);
+      mes = seed_exception_to_string (ctx, exception);
       g_warning ("Exception in signal handler return value. %s \n", mes);
       g_free (mes);
     }
@@ -326,11 +327,13 @@ seed_gobject_signal_connect_on_property (JSContextRef ctx,
     }
 
   if (argumentCount == 1)
+  {
     id = seed_gobject_signal_connect (ctx, privates->signal_name,
 				      privates->object,
 				      (JSObjectRef) arguments[0], this_obj, NULL);
 
-  if (argumentCount == 2)
+  }
+  else if (argumentCount == 2)
     {
       id = seed_gobject_signal_connect (ctx, privates->signal_name,
 					privates->object,

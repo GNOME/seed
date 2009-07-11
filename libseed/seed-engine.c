@@ -415,8 +415,7 @@ seed_gobject_method_invoked (JSContextRef ctx,
 
   info = JSObjectGetPrivate (function);
   // We just want to check if there IS an object, not actually throw an
-  // exception if we don't
-  // get it.
+  // exception if we don't get it.
   if (!this_object || !
       ((object = seed_value_to_object (ctx, this_object, 0)) ||
        (object = seed_pointer_get_pointer (ctx, this_object))))
@@ -633,14 +632,13 @@ seed_gobject_add_methods_for_interfaces (JSContextRef ctx,
 					 JSObjectRef object)
 {
   GIInterfaceInfo *interface;
-  gint n_interfaces, i;
+  GIFunctionInfo *function;
+  gint n_interfaces, i, n_functions, k;
 
   n_interfaces = g_object_info_get_n_interfaces (oinfo);
 
   for (i = 0; i < n_interfaces; i++)
     {
-      GIFunctionInfo *function;
-      gint n_functions, k;
       interface = g_object_info_get_interface (oinfo, i);
 
       n_functions = g_interface_info_get_n_methods (interface);
@@ -729,8 +727,8 @@ seed_gobject_get_class_for_gtype (JSContextRef ctx, GType type)
       GType *interfaces;
       GIFunctionInfo *function;
       GIBaseInfo *interface;
-      gint n_functions, k, i;
-      guint n;
+      gint n_functions, k;
+      guint i, n;
 
       interfaces = g_type_interfaces (type, &n);
       for (i = 0; i < n; i++)
@@ -804,7 +802,8 @@ seed_gobject_get_property (JSContextRef context,
   char *cproperty_name;
   gint length;
   JSValueRef ret;
-  gint i, len;
+  guint i;
+  gsize len;
 
   b = seed_value_to_object (context, (JSValueRef) object, exception);
   if (!b)
@@ -819,8 +818,8 @@ seed_gobject_get_property (JSContextRef context,
 
   if (!spec)
     {
-      len = strlen (cproperty_name);
-      for (i = 0; i < len - 1; i++)
+      len = strlen (cproperty_name) - 1;
+      for (i = 0; i < len; i++)
 	{
 	  if (cproperty_name[i] == '_')
 	    cproperty_name[i] = '-';
@@ -831,13 +830,13 @@ seed_gobject_get_property (JSContextRef context,
 	goto found;
       else
 	{
-	  GIFieldInfo *field = 0;
+	  GIFieldInfo *field = NULL;
 	  GIBaseInfo *info = (GIBaseInfo *)
 	    g_irepository_find_by_gtype (0, G_OBJECT_TYPE (b));
 	  gint n;
 	  const gchar *name;
 
-	  for (i = 0; i < len - 1; i++)
+	  for (i = 0; i < len; i++)
 	    {
 	      if (cproperty_name[i] == '-')
 		cproperty_name[i] = '_';
@@ -845,7 +844,7 @@ seed_gobject_get_property (JSContextRef context,
 
 	  if (!info)
 	    {
-	      return 0;
+	      return NULL;
 	    }
 
 	  n = g_object_info_get_n_fields ((GIObjectInfo *) info);
@@ -871,7 +870,7 @@ seed_gobject_get_property (JSContextRef context,
 	    }
 	  g_base_info_unref ((GIBaseInfo *) info);
 	}
-      return 0;
+      return NULL;
     }
 found:
 
@@ -894,7 +893,8 @@ seed_gobject_set_property (JSContextRef context,
   GValue gval = { 0 };
   GType type;
   gchar *cproperty_name;
-  gint length;
+  gsize length;
+  gsize i, len;
 
   if (seed_next_gobject_wrapper || JSValueIsNull (context, value))
     return 0;
@@ -911,7 +911,6 @@ seed_gobject_set_property (JSContextRef context,
 
   if (!spec)
     {
-      gint i, len;
       len = strlen (cproperty_name);
       for (i = 0; i < len; i++)
 	{
@@ -922,7 +921,7 @@ seed_gobject_set_property (JSContextRef context,
 					   cproperty_name);
       if (!spec)
 	{
-	  return 0;
+	  return FALSE;
 	}
     }
 
@@ -934,7 +933,7 @@ seed_gobject_set_property (JSContextRef context,
   seed_gvalue_from_seed_value (context, value, type, &gval, exception);
   if (*exception)
     {
-      return 0;
+      return FALSE;
     }
 
   if (glib_message)
@@ -963,11 +962,11 @@ seed_gobject_constructor_convert_to_type (JSContextRef ctx,
 					  JSValueRef *exception)
 {
   GType gtype;
+  gchar *as_string;
 
   if (type == kJSTypeString)
     {
       JSValueRef ret;
-      gchar *as_string;
       gtype = (GType) JSObjectGetPrivate (object);
 
       as_string = g_strdup_printf("[gobject_constructor %s]", g_type_name (gtype));
@@ -1340,7 +1339,6 @@ seed_init (gint * argc, gchar *** argv)
   seed_gtype_init (eng);
 
 
-
   defaults_script =
 	  JSStringCreateWithUTF8CString ("Seed.include(\""SEED_PREFIX_PATH"extensions/Seed.js\");");
 
@@ -1444,3 +1442,4 @@ seed_init_with_context_group (gint * argc,
 
   return eng;
 }
+

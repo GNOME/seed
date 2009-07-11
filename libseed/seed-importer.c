@@ -103,7 +103,11 @@ seed_gi_importer_handle_enum (JSContextRef ctx,
 			      JSValueRef *exception)
 {
   JSObjectRef enum_class;
-  gint num_vals, j;
+  guint num_vals, i, j;
+  gsize name_len;
+  glong value;
+  gchar *name;
+  GIValueInfo *val;
 
   enum_class = JSObjectMake (ctx, 0, 0);
   num_vals = g_enum_info_get_n_values (info);
@@ -111,15 +115,12 @@ seed_gi_importer_handle_enum (JSContextRef ctx,
 			    g_base_info_get_name ((GIBaseInfo *)info),
 			    enum_class);
 
-  for (j = 0; j < num_vals; j++)
+  for (i = 0; i < num_vals; i++)
     {
-      GIValueInfo *val =
-	g_enum_info_get_value ((GIEnumInfo *) info, j);
-      gint value = g_value_info_get_value (val);
-      gchar *name =
-	g_strdup (g_base_info_get_name ((GIBaseInfo *) val));
-      gint name_len = strlen (name);
-      gint j;
+      val = g_enum_info_get_value ((GIEnumInfo *) info, i);
+      value = g_value_info_get_value (val);
+      name = g_strdup (g_base_info_get_name ((GIBaseInfo *) val));
+      name_len = strlen (name);
       JSValueRef value_ref;
 
       value_ref = JSValueMakeNumber (ctx, value);
@@ -277,7 +278,7 @@ seed_gi_importer_handle_union (JSContextRef ctx,
 {
   JSObjectRef union_ref;
   JSObjectRef proto;
-  gint i, n_methods;
+  guint i, n_methods;
   GIFunctionInfo *finfo;
 
   union_ref =
@@ -385,6 +386,7 @@ seed_gi_importer_do_namespace (JSContextRef ctx,
     {
       seed_make_exception_from_gerror (ctx, exception, e);
       g_error_free (e);
+	  g_free (version);
       return NULL;
     }
   g_free (version);
@@ -500,6 +502,7 @@ seed_importer_get_search_path (JSContextRef ctx,
 			       JSValueRef *exception)
 {
   GSList *path = NULL;
+  gchar *entry;
   JSValueRef search_path_ref, length_ref;
   guint length, i;
 
@@ -516,7 +519,6 @@ seed_importer_get_search_path (JSContextRef ctx,
   for (i = 0; i < length; i++)
     {
       JSValueRef entry_ref;
-      gchar *entry;
 
       entry_ref = JSObjectGetPropertyAtIndex (ctx, (JSObjectRef) search_path_ref, i, exception);
       entry = seed_value_to_string (ctx, entry_ref, exception);
@@ -661,16 +663,21 @@ seed_importer_search (JSContextRef ctx,
 		      gchar *prop,
 		      JSValueRef *exception)
 {
+
+  GDir *dir;
+  GError *e;
+  gchar *mentry;
   GSList *path, *walk;
+  JSObjectRef ret;
   gchar *prop_as_lib = g_strconcat ("libseed_", prop, ".", G_MODULE_SUFFIX, NULL);
+  gsize i, mentrylen;
 
   path = seed_importer_get_search_path (ctx, exception);
 
   walk = path;
   while (walk)
     {
-      GError *e = NULL;
-      GDir *dir;
+      e = NULL;
       const gchar *entry;
 
       dir = g_dir_open ((gchar *)walk->data, 0, &e);
@@ -683,18 +690,16 @@ seed_importer_search (JSContextRef ctx,
 	}
       while ((entry = g_dir_read_name(dir)))
 	{
-	  guint i;
-	  gchar *mentry = g_strdup (entry);
+	  mentry = g_strdup (entry);
 
-	  for (i = 0; i < strlen (mentry); i++)
+	  mentrylen = strlen(mentry);
+	  for (i = 0; i < mentrylen; i++)
 	    {
 	      if (mentry[i] == '.')
 		mentry[i] = '\0';
 	    }
 	  if (!g_strcmp0 (mentry, prop))
 	    {
-	      JSObjectRef ret;
-
 	      ret = seed_importer_handle_file (ctx, walk->data, entry, exception);
 
 	      g_dir_close (dir);
@@ -706,8 +711,6 @@ seed_importer_search (JSContextRef ctx,
 	    }
 	  else if (!g_strcmp0(entry, prop_as_lib))
 	    {
-	      JSObjectRef ret;
-
 	      ret = seed_importer_handle_native_module (ctx, walk->data, entry, exception);
 	      g_dir_close (dir);
 	      g_free (mentry);
@@ -763,10 +766,11 @@ seed_importer_dir_get_property (JSContextRef ctx,
 {
   GError *e = NULL;
   GDir *dir;
-  guint len;
+  guint len, i;
+  gsize mentrylen;
   const gchar *entry;
-  gchar *dir_path, *prop;
-
+  gchar *dir_path, *prop, *mentry;
+  JSObjectRef ret;
 
   dir_path = JSObjectGetPrivate (object);
 
@@ -785,10 +789,10 @@ seed_importer_dir_get_property (JSContextRef ctx,
     }
   while ((entry = g_dir_read_name (dir)))
     {
-      gchar *mentry = g_strdup (entry);
-      guint i;
+      mentry = g_strdup (entry);
+	  mentrylen = strlen(mentry);
 
-      for (i = 0; i < strlen (mentry); i++)
+      for (i = 0; i < mentrylen; i++)
 	{
 	  if (mentry[i] == '.')
 	    mentry[i] = '\0';
@@ -796,7 +800,6 @@ seed_importer_dir_get_property (JSContextRef ctx,
 
       if (!g_strcmp0 (mentry, prop))
 	{
-	  JSObjectRef ret;
 
 	  ret = seed_importer_handle_file (ctx, dir_path, entry, exception);
 	  g_dir_close (dir);
@@ -817,7 +820,6 @@ seed_importer_dir_finalize (JSObjectRef dir)
   gchar *dir_path = (gchar *) JSObjectGetPrivate (dir);
   g_free (dir_path);
 }
-
 
 void
 seed_importer_add_global(JSObjectRef global,
@@ -861,7 +863,7 @@ seed_importer_dir_enumerate_properties (JSContextRef ctx,
 JSObjectRef
 seed_importer_construct_dir (JSContextRef ctx,
 			     JSObjectRef constructor,
-			     size_t argumentCount,
+			     gsize argumentCount,
 			     const JSValueRef arguments[],
 			     JSValueRef *exception)
 {
@@ -993,3 +995,4 @@ void seed_initialize_importer(JSContextRef ctx,
 
   seed_object_set_property (ctx, global, "imports", importer);
 }
+
