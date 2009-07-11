@@ -624,9 +624,8 @@ seed_struct_prototype (JSContextRef ctx, GIBaseInfo * info)
 JSObjectRef
 seed_make_struct (JSContextRef ctx, gpointer strukt, GIBaseInfo * info)
 {
-  JSObjectRef object;
-  JSObjectRef proto;
-  seed_struct_privates *priv = g_slice_alloc (sizeof (seed_struct_privates));
+    JSObjectRef object, proto;
+    seed_struct_privates *priv = g_slice_alloc (sizeof (seed_struct_privates));
 
   priv->info = info ? g_base_info_ref (info) : 0;
   priv->pointer = strukt;
@@ -635,10 +634,10 @@ seed_make_struct (JSContextRef ctx, gpointer strukt, GIBaseInfo * info)
   object = JSObjectMake (ctx, seed_struct_class, priv);
   // Examine cases where struct is being used without info.
   if (info)
-    {
+  {
       proto = seed_struct_prototype (ctx, info);
       if (proto)
-	JSObjectSetPrototype (ctx, object, proto);
+          JSObjectSetPrototype (ctx, object, proto);
       else
 	g_assert_not_reached ();
     }

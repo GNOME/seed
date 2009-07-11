@@ -45,14 +45,16 @@ seed_handle_closure (ffi_cif * cif, void *result, void **args, void *userdata)
   SeedNativeClosure *privates = userdata;
   gint num_args, i;
   JSValueRef *jsargs;
-  JSValueRef return_value;
-  JSValueRef exception = 0;
+  JSValueRef return_value, exception = 0;
   GITypeTag return_tag;
   GIArgInfo *arg_info;
   GITypeInfo *return_type;
-  GArgument rarg;
-  GArgument return_arg;
+  GITypeInfo *arg_type;
+  GITypeTag tag;
+  GArgument rarg, return_arg;
   JSContextRef ctx = JSGlobalContextCreateInGroup (context_group, 0);
+  GArgument *arg = &rarg;
+  gchar *mes;
 
   seed_prepare_global_context (ctx);
 
@@ -66,9 +68,6 @@ seed_handle_closure (ffi_cif * cif, void *result, void **args, void *userdata)
 
   for (i = 0; i < num_args; i++)
     {
-      GITypeInfo *arg_type;
-      GITypeTag tag;
-      GArgument *arg = &rarg;
 
       arg_info = g_callable_info_get_arg (privates->info, i);
       arg_type = g_arg_info_get_type (arg_info);
@@ -175,7 +174,7 @@ seed_handle_closure (ffi_cif * cif, void *result, void **args, void *userdata)
 
   if (exception)
     {
-      gchar *mes = seed_exception_to_string (ctx,
+      mes = seed_exception_to_string (ctx,
 					     exception);
       g_warning ("Exception in closure marshal. %s \n", mes);
       g_free (mes);
@@ -444,3 +443,4 @@ seed_closures_init (void)
   seed_native_callback_class = JSClassCreate (&seed_native_callback_def);
   JSClassRetain (seed_native_callback_class);
 }
+

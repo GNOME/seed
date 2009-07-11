@@ -1142,7 +1142,7 @@ seed_repl_expose (JSContextRef ctx, ...)
   va_list argp;
   void *expose;
   JSObjectRef arrayObj;
-  int i = 0;
+  guint i = 0;
   JSStringRef script;
   JSObjectRef seed = (JSObjectRef) seed_object_get_property (ctx,
 							     JSContextGetGlobalObject
@@ -1156,7 +1156,7 @@ seed_repl_expose (JSContextRef ctx, ...)
 
   while ((expose = va_arg (argp, void *)))
     {
-      g_print ("  Seed.debug_argv[%d] = %p\n", i, expose);
+      g_print ("  Seed.debug_argv[%u] = %p\n", i, expose);
       JSObjectSetPropertyAtIndex (ctx, arrayObj, i++, expose, NULL);
     }
 
@@ -1234,6 +1234,7 @@ seed_parse_args (int *argc, char ***argv)
 {
   GOptionContext *option_context;
   GOptionGroup *seed_group;
+
   GError *error = NULL;
   gboolean ret = TRUE;
 
@@ -1268,7 +1269,7 @@ seed_parse_args (int *argc, char ***argv)
  * @argv: A reference to an array of string arguments remaining to parse.
  *
  * Initializes a new #SeedEngine. This involves initializing GLib, creating
- * an initial context with all of the default globals, and initializing 
+ * an initial context with all of the default globals, and initializing
  * various internal parts of Seed.
  *
  * This function should only be called once within a single Seed application.
@@ -1286,7 +1287,7 @@ seed_init (gint * argc, gchar *** argv)
   if ((argc != 0) && seed_parse_args (argc, argv) == FALSE)
     {
       SEED_NOTE (MISC, "failed to parse arguments.");
-      return false;
+      return FALSE;
     }
 
   qname = g_quark_from_static_string ("js-type");

@@ -33,12 +33,9 @@ seed_include (JSContextRef ctx,
   JSStringRef file_contents, file_name;
 
   GDir *dir;
-
   gchar *import_file, *abs_path;
-
   gchar *buffer, *walk;
-
-  guint i;
+  guint i, len;
 
   if (argumentCount != 1)
     {
@@ -55,7 +52,8 @@ seed_include (JSContextRef ctx,
     g_file_get_contents (import_file, &buffer, 0, NULL);
   else				/* A search path is set and path given is not absolute.  */
     {
-      for (i = 0; i < g_strv_length (eng->search_path); ++i)
+		len = g_strv_length(eng->search_path);
+      for (i = 0; i < len; ++i)
 	{
 	  dir = g_dir_open (eng->search_path[i], 0, NULL);
 
@@ -68,6 +66,7 @@ seed_include (JSContextRef ctx,
 	  if (g_file_get_contents (abs_path, &buffer, 0, NULL))
 	    {
 	      g_free (abs_path);
+          g_dir_close (dir);
 	      break;
 	    }
 
@@ -119,17 +118,11 @@ seed_scoped_include (JSContextRef ctx,
 		     const JSValueRef arguments[], JSValueRef * exception)
 {
   JSContextRef nctx;
-
   JSObjectRef global;
-
   JSStringRef file_contents, file_name;
-
   GDir *dir;
-
   gchar *import_file, *abs_path;
-
   gchar *buffer, *walk;
-
   guint i;
 
   if (argumentCount != 1)
@@ -218,6 +211,7 @@ seed_print (JSContextRef ctx,
 	    size_t argumentCount,
 	    const JSValueRef arguments[], JSValueRef * exception)
 {
+    gchar *buf;
   if (argumentCount != 1)
     {
       seed_make_exception (ctx, exception, "ArgumentError",
@@ -226,7 +220,7 @@ seed_print (JSContextRef ctx,
       return JSValueMakeNull (ctx);
     }
 
-  gchar *buf = seed_value_to_string (ctx, arguments[0], exception);
+    buf = seed_value_to_string (ctx, arguments[0], exception);
 
   puts (buf);
   g_free (buf);
@@ -240,10 +234,11 @@ seed_g_type_name_to_string (GITypeInfo * type)
   GITypeTag type_tag = g_type_info_get_tag (type);
 
   const gchar *type_name;
+  GIBaseInfo *interface;
 
   if (type_tag == GI_TYPE_TAG_INTERFACE)
     {
-      GIBaseInfo *interface = g_type_info_get_interface (type);
+      interface = g_type_info_get_interface (type);
 
       type_name = g_base_info_get_name (interface);
       g_base_info_unref (interface);
@@ -266,10 +261,8 @@ seed_introspect (JSContextRef ctx,
   // TODO: LEAKY!
 
   GICallableInfo *info;
-
-  JSObjectRef data_obj, args_obj;
-
-  guint i;
+  JSObjectRef data_obj, args_obj, argument;
+  guint i, nargs;
 
   if (argumentCount != 1)
     {
@@ -302,9 +295,10 @@ seed_introspect (JSContextRef ctx,
 
   seed_object_set_property (ctx, data_obj, "args", args_obj);
 
-  for (i = 0; i < g_callable_info_get_n_args (info); ++i)
+  nargs = g_callable_info_get_n_args (info);
+  for (i = 0; i < nargs; ++i)
     {
-      JSObjectRef argument = JSObjectMake (ctx, NULL, NULL);
+       argument = JSObjectMake (ctx, NULL, NULL);
 
       const gchar *arg_name =
 	seed_g_type_name_to_string (g_arg_info_get_type
@@ -327,9 +321,10 @@ seed_check_syntax (JSContextRef ctx,
 		   size_t argumentCount,
 		   const JSValueRef arguments[], JSValueRef * exception)
 {
+    JSStringRef jsstr;
   if (argumentCount == 1)
     {
-      JSStringRef jsstr = JSValueToStringCopy (ctx,
+      jsstr = JSValueToStringCopy (ctx,
 					       arguments[0],
 					       exception);
 
@@ -353,10 +348,8 @@ seed_spawn (JSContextRef ctx,
 	    size_t argumentCount,
 	    const JSValueRef arguments[], JSValueRef * exception)
 {
-  gchar *line, *stdout, *stderr;
-
+  gchar *line, *stdoutstr, *stderrstr;
   JSObjectRef ret;
-
   GError *error = NULL;
 
   if (argumentCount != 1)
@@ -368,7 +361,7 @@ seed_spawn (JSContextRef ctx,
     }
 
   line = seed_value_to_string (ctx, arguments[0], exception);
-  g_spawn_command_line_sync (line, &stdout, &stderr, NULL, &error);
+  g_spawn_command_line_sync (line, &stdoutstr, &stderrstr, NULL, &error);
   if (error)
     {
       seed_make_exception_from_gerror (ctx, exception, error);
@@ -380,13 +373,13 @@ seed_spawn (JSContextRef ctx,
 
   ret = JSObjectMake (ctx, NULL, NULL);
   seed_object_set_property (ctx, ret, "stdout",
-			    seed_value_from_string (ctx, stdout, exception));
+			    seed_value_from_string (ctx, stdoutstr, exception));
   seed_object_set_property (ctx, ret, "stderr",
-			    seed_value_from_string (ctx, stderr, exception));
+			    seed_value_from_string (ctx, stderrstr, exception));
 
   g_free (line);
-  g_free (stdout);
-  g_free (stderr);
+  g_free (stdoutstr);
+  g_free (stderrstr);
 
   return ret;
 }
@@ -430,12 +423,9 @@ seed_argv_get_property (JSContextRef ctx,
 			JSStringRef property_name, JSValueRef * exception)
 {
   SeedArgvPrivates *priv;
-
   gchar *cproperty_name;
-
-  gint length;
-
-  gint index;
+  gsize length;
+  guint index;
 
   priv = JSObjectGetPrivate (object);
   if (!priv->argc)
@@ -478,9 +468,7 @@ void
 seed_init_builtins (SeedEngine * local_eng, gint * argc, gchar *** argv)
 {
   SeedArgvPrivates *priv;
-
   JSObjectRef arrayObj;
-
   JSObjectRef obj =
     (JSObjectRef) seed_object_get_property (local_eng->context,
 					    local_eng->global,
@@ -516,3 +504,4 @@ seed_init_builtins (SeedEngine * local_eng, gint * argc, gchar *** argv)
   seed_object_set_property (local_eng->context, obj, "argv", arrayObj);
 
 }
+

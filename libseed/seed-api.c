@@ -713,20 +713,20 @@ seed_object_copy_property_names(JSContextRef ctx,
 				JSObjectRef object)
 {
   JSPropertyNameArrayRef names;
+  JSStringRef name;
   guint i, length;
+  gsize max_length;
+  gchar *c_name;
   gchar **ret;
 
   names = JSObjectCopyPropertyNames (ctx, object);
   length = JSPropertyNameArrayGetCount (names);
-  ret = g_malloc((length+1)*sizeof(gchar *));
+  ret = (gchar**) g_malloc((length+1)*sizeof(gchar *));
   for (i = 0; i < length; i++)
     {
-      JSStringRef name = JSPropertyNameArrayGetNameAtIndex (names, i);
-      guint max_length;
-      gchar *c_name;
-
+      name = JSPropertyNameArrayGetNameAtIndex (names, i);
       max_length = JSStringGetMaximumUTF8CStringSize (name);
-      c_name = g_malloc (max_length * sizeof (gchar));
+      c_name = (gchar*) g_malloc (max_length * sizeof (gchar));
       JSStringGetUTF8CString (name, c_name, length);
       ret[i] = c_name;
 

@@ -129,10 +129,10 @@ seed_exception_get_name (JSContextRef ctx, JSValueRef e)
   JSValueRef name;
   g_assert ((e));
   if (!JSValueIsObject (ctx, e))
-    return 0;
+    return NULL;
 
   name = seed_object_get_property (ctx, (JSObjectRef) e, "name");
-  return seed_value_to_string (ctx, name, 0);
+  return seed_value_to_string (ctx, name, NULL);
 }
 
 /**
@@ -157,7 +157,7 @@ seed_exception_get_message (JSContextRef ctx, JSValueRef e)
     return 0;
 
   name = seed_object_get_property (ctx, (JSObjectRef) e, "message");
-  return seed_value_to_string (ctx, name, 0);
+  return seed_value_to_string (ctx, name, NULL);
 }
 
 /**
@@ -180,7 +180,7 @@ seed_exception_get_line (JSContextRef ctx, JSValueRef e)
   if (!JSValueIsObject (ctx, e))
     return 0;
   line = seed_object_get_property (ctx, (JSObjectRef) e, "line");
-  return seed_value_to_uint (ctx, line, 0);
+  return seed_value_to_uint (ctx, line, NULL);
 }
 
 /**
@@ -238,3 +238,4 @@ seed_exception_to_string (JSContextRef ctx, JSValueRef e)
 
   return ret;
 }
+
