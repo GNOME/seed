@@ -273,8 +273,6 @@ AC_ARG_ENABLE(mpfr-module,
 			  [want_mpfr_module=$enableval],[want_mpfr_module="yes"])
 
 if test x"$want_mpfr_module" == x"yes" ; then
-	AC_MSG_CHECKING(for mpfr.h)
-
 	AC_TRY_CPP([#include <mpfr.h>], have_mpfr_h=yes, have_mpfr_h=no)
 	if test x"$have_mpfr_h" = x"yes"; then
 		save_LIBS=$LIBS
@@ -297,9 +295,6 @@ if test x"$want_mpfr_module" == x"yes" ; then
 	fi
 
 	MPFR_CFLAGS=
-
-	AC_MSG_RESULT([$have_mpfr_h])
-
 fi
 
 AM_CONDITIONAL(BUILD_MPFR_MODULE, test "x$want_mpfr_module" = "xyes")
