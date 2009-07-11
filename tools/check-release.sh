@@ -5,7 +5,7 @@
 cd /tmp
 
 echo "Checking out Seed from Git..."
-git clone git+ssh://git.gnome.org/git/seed > /tmp/seed-build.log
+git clone git://git.gnome.org/seed > /tmp/seed-build.log
 cp -r seed seed-svn
 cd seed
 
