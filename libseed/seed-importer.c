@@ -1,6 +1,6 @@
-#include <string.h>
 
 #include <gio/gio.h>
+#include <string.h>
 
 #include "seed-private.h"
 
@@ -60,7 +60,7 @@ GHashTable *file_imports;
 static gboolean
 seed_gi_importer_is_init (GIFunctionInfo *info)
 {
-  if (strcmp (g_base_info_get_name ((GIBaseInfo *) info), "init"))
+  if (g_strcmp0 (g_base_info_get_name ((GIBaseInfo *) info), "init"))
     {
       return FALSE;
     }
@@ -186,9 +186,9 @@ seed_gi_importer_handle_object (JSContextRef ctx,
 						      finfo);
 	      const gchar *fname =
 		g_base_info_get_name ((GIBaseInfo *) finfo);
-	      if (strstr (fname, "new_") == fname)
+	      if (g_strrstr (fname, "new_") == fname)
 		fname += 4;
-	      else if (!strcmp (fname, "new"))
+	      else if (!g_strcmp0 (fname, "new"))
 		fname = "c_new";
 
 	      seed_object_set_property (ctx,
@@ -251,7 +251,7 @@ seed_gi_importer_handle_struct (JSContextRef ctx,
 	    g_base_info_get_name ((GIBaseInfo *) finfo);
 	  if (g_str_has_prefix (fname, "new_"))
 	    fname += 4;
-	  else if (!strcmp (fname, "new"))
+	  else if (!g_strcmp0 (fname, "new"))
 	    fname = "c_new";
 
 	  seed_object_set_property (ctx, struct_ref, fname, constructor);
@@ -464,12 +464,12 @@ seed_gi_importer_get_property (JSContextRef ctx,
 
   SEED_NOTE (IMPORTER, "seed_gi_importer_get_property with %s", prop);
 
-  if (!strcmp(prop, "versions"))
+  if (!g_strcmp0(prop, "versions"))
     return gi_importer_versions;
   // Nasty hack
-  else if (!strcmp(prop, "toString"))
+  else if (!g_strcmp0(prop, "toString"))
     return 0;
-  if (!strcmp (prop, "valueOf")) // HACK
+  if (!g_strcmp0 (prop, "valueOf")) // HACK
     return NULL;
 
 
@@ -691,7 +691,7 @@ seed_importer_search (JSContextRef ctx,
 	      if (mentry[i] == '.')
 		mentry[i] = '\0';
 	    }
-	  if (!strcmp (mentry, prop))
+	  if (!g_strcmp0 (mentry, prop))
 	    {
 	      JSObjectRef ret;
 
@@ -704,7 +704,7 @@ seed_importer_search (JSContextRef ctx,
 
 	      return ret;
 	    }
-	  else if (!strcmp(entry, prop_as_lib))
+	  else if (!g_strcmp0(entry, prop_as_lib))
 	    {
 	      JSObjectRef ret;
 
@@ -743,11 +743,11 @@ seed_importer_get_property (JSContextRef ctx,
   prop = g_alloca (len * sizeof (gchar));
   JSStringGetUTF8CString (property_name, prop, len);
 
-  if (!strcmp (prop, "gi"))
+  if (!g_strcmp0 (prop, "gi"))
     return gi_importer;
-  if (!strcmp (prop, "searchPath"))
+  if (!g_strcmp0 (prop, "searchPath"))
     return NULL;
-  if (!strcmp (prop, "toString")) // HACK
+  if (!g_strcmp0 (prop, "toString")) // HACK
     return NULL;
 
   ret = seed_importer_search (ctx, prop, exception);
@@ -794,7 +794,7 @@ seed_importer_dir_get_property (JSContextRef ctx,
 	    mentry[i] = '\0';
 	}
 
-      if (!strcmp (mentry, prop))
+      if (!g_strcmp0 (mentry, prop))
 	{
 	  JSObjectRef ret;
 

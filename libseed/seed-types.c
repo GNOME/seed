@@ -17,7 +17,6 @@
 
 #include "seed-private.h"
 #include <dlfcn.h>
-#include <string.h>
 
 JSClassRef gobject_class;
 JSClassRef gobject_method_class;
@@ -1946,7 +1945,7 @@ seed_value_from_binary_string (JSContextRef ctx,
   JSValueRef ret;
 
   gchar *nstr = g_alloca ((n_bytes +1)*sizeof(gchar));
-  strncpy (nstr, bytes, n_bytes);
+  g_strlcpy (nstr, bytes, n_bytes);
   nstr[n_bytes] = '\0';
 
   ret = seed_value_from_string (ctx, nstr, exception);

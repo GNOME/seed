@@ -19,8 +19,6 @@
 #include "seed-private.h"
 #include <sys/mman.h>
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include <signal.h>
 
 JSValueRef seed_print_ref;
@@ -446,7 +444,7 @@ seed_argv_get_property (JSContextRef ctx,
   cproperty_name = g_alloca (length * sizeof (gchar));
   JSStringGetUTF8CString (property_name, cproperty_name, length);
 
-  if (!strcmp (cproperty_name, "length"))
+  if (!g_strcmp0 (cproperty_name, "length"))
     {
       return seed_value_from_int (ctx, priv->argc, exception);
     }

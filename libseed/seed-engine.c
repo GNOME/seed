@@ -20,8 +20,8 @@
 
 #include <sys/types.h>
 #include <sys/wait.h>
-#include <string.h>
 #include <stdarg.h>
+#include <string.h>
 
 JSObjectRef seed_obj_ref;
 
@@ -616,7 +616,7 @@ seed_gobject_define_property_from_function_info (JSContextRef ctx,
 			     g_base_info_ref ((GIBaseInfo *) info));
 
   name = g_base_info_get_name ((GIBaseInfo *) info);
-  if (!strcmp (name, "new"))
+  if (!g_strcmp0 (name, "new"))
     name = "c_new";
   seed_object_set_property (ctx, object, name, method_ref);
   seed_object_set_property (ctx, method_ref, "info",
@@ -819,7 +819,6 @@ seed_gobject_get_property (JSContextRef context,
 
   if (!spec)
     {
-
       len = strlen (cproperty_name);
       for (i = 0; i < len - 1; i++)
 	{
@@ -855,7 +854,7 @@ seed_gobject_get_property (JSContextRef context,
 	      field = g_object_info_get_field ((GIObjectInfo *) info, i);
 	      name = g_base_info_get_name ((GIBaseInfo *) field);
 
-	      if (!strcmp (name, cproperty_name))
+	      if (!g_strcmp0 (name, cproperty_name))
 		goto found_field;
 	      else
 		{

@@ -16,7 +16,6 @@
  */
 
 #include "seed-private.h"
-#include <string.h>
 #include <stdarg.h>
 
 /**
@@ -101,7 +100,7 @@ seed_make_exception_from_gerror (JSContextRef ctx,
 	  *(string->str + i + 1) = g_unichar_toupper (*(string->str + i + 1));
 	  g_string_erase (string, i, 1);
 	}
-      else if (!strcmp (string->str + i - 1, "Quark"))
+      else if (!g_strcmp0 (string->str + i - 1, "Quark"))
 	g_string_truncate (string, i - 1);
 
     }

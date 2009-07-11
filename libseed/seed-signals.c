@@ -15,8 +15,6 @@
  * Copyright (C) Robert Carr 2008 <carrr@rpi.edu>
  */
 
-#include <string.h>
-
 #include "seed-private.h"
 
 typedef struct _signal_privates
@@ -389,7 +387,7 @@ seed_signal_holder_get_property (JSContextRef ctx,
 
   JSStringGetUTF8CString (property_name, signal_name, length);
 
-  if (!strcmp (signal_name, "connect") || !strcmp (signal_name, "disconnect"))
+  if (!(g_strcmp0 (signal_name, "connect") && g_strcmp0 (signal_name, "disconnect")) )
     {
       g_free (signal_name);
       return NULL;
@@ -424,3 +422,4 @@ seed_get_signal_class (void)
 
   return &gobject_signal_def;
 }
+

@@ -16,8 +16,6 @@
  */
 
 #include "seed-private.h"
-#include <stdio.h>
-#include <string.h>
 JSClassRef seed_struct_class = 0;
 JSClassRef seed_union_class = 0;
 JSClassRef seed_pointer_class = 0;
@@ -94,7 +92,7 @@ seed_union_find_field (GIUnionInfo * info, gchar * field_name)
 
       field = g_union_info_get_field (info, i);
       name = g_base_info_get_name ((GIBaseInfo *) field);
-      if (!strcmp (name, field_name))
+      if (!g_strcmp0 (name, field_name))
 	return field;
       else
 	g_base_info_unref ((GIBaseInfo *) field);
@@ -116,7 +114,7 @@ seed_struct_find_field (GIStructInfo * info, gchar * field_name)
 
       field = g_struct_info_get_field (info, i);
       name = g_base_info_get_name ((GIBaseInfo *) field);
-      if (!strcmp (name, field_name))
+      if (!g_strcmp0 (name, field_name))
 	return field;
       else
 	g_base_info_unref ((GIBaseInfo *) field);

@@ -24,8 +24,6 @@
 #include "../libseed/seed-debug.h"
 #include <girepository.h>
 
-#include <string.h>
-
 #define DEFAULT_PATH "."
 
 SeedEngine *eng;
