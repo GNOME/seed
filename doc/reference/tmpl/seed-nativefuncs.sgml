@@ -46,3 +46,14 @@ All native C callbacks should have the prototype of SeedFunctionCallback().
 @Returns: 
 
 
+<!-- ##### FUNCTION seed_create_function ##### -->
+<para>
+
+</para>
+
+@ctx: 
+@name: 
+@callback: 
+@object: 
+
+

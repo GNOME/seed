@@ -1124,6 +1124,18 @@ JSClassDefinition struct_constructor_def = {
   NULL				/* Convert To Type */
 };
 
+/**
+ * seed_create_function:
+ * @ctx: A valid #SeedContext
+ * @name: The name of the function (used in exceptions).
+ * @func: A #SeedFunctionCallback to implement the function.
+ * @obj: The #SeedObject on which to put the function. 
+ *
+ * Creates a JavaScript object representing a first-class function; when
+ * the function is called from JavaScript, @func will be called. Places
+ * the created function as the property @name on @obj.
+ *
+ */
 void
 seed_create_function (JSContextRef ctx,
 		      gchar * name,
