@@ -104,19 +104,6 @@ seed_context_unref (JSGlobalContextRef ctx)
 }
 
 /**
- * seed_make_null:
- * @ctx: A #SeedContext.
- *
- * Return value: A #SeedValue representing %NULL.
- *
- */
-JSValueRef
-seed_make_null (JSContextRef ctx)
-{
-  return JSValueMakeNull (ctx);
-}
-
-/**
  * seed_make_object:
  * @ctx: The #SeedContext in which to create the new object.
  * @class: The #SeedClass to use to create the new object, or %NULL to use the
@@ -678,11 +665,28 @@ seed_make_array (JSContextRef ctx,
 }
 
 /**
+ * seed_make_null:
+ * @ctx: A valid #SeedContext
+ *
+ * Note that this function returns a valid SeedValue,
+ * representing the null JavaScript value, and not a
+ * null SeedValue.
+ *
+ * Return value: A #SeedValue of the 'null' type.
+ *
+ */
+JSValueRef
+seed_make_null (JSContextRef ctx)
+{
+  return JSValueMakeNull (ctx);
+}
+
+/**
  * seed_make_undefined:
  * @ctx: A valid #SeedContext
  *
  * Note that this function returns a valid SeedValue,
- * representing the undefined javascript value, and not an
+ * representing the undefined JavaScript value, and not an
  * undefined SeedValue.
  *
  * Return value: A #SeedValue of the 'undefined' type.

@@ -1995,6 +1995,21 @@ seed_value_from_string (JSContextRef ctx,
   return valstr;
 }
 
+/**
+ * seed_value_from_binary_string:
+ * @ctx: A #SeedContext.
+ * @bytes: A string of bytes to represent as a string.
+ * @n_bytes: The number of bytes from @bytes to convert.
+ * @exception: A reference to a #SeedValue in which to store any exceptions.
+ *             Pass %NULL to ignore exceptions.
+ *
+ * Converts a string representation of the given binary string
+ * into a #SeedValue.
+ *
+ * Return value: A #SeedValue which represents @bytes as a string, or %NULL
+ *               if an exception is raised during the conversion.
+ *
+ */
 JSValueRef
 seed_value_from_binary_string (JSContextRef ctx,
 			       const gchar *bytes,
@@ -2012,6 +2027,20 @@ seed_value_from_binary_string (JSContextRef ctx,
   return ret;
 }
 
+/**
+ * seed_value_to_filename:
+ * @ctx: A #SeedContext.
+ * @val: The #SeedValue to convert.
+ * @exception: A reference to a #SeedValue in which to store any exceptions.
+ *             Pass %NULL to ignore exceptions.
+ *
+ * Converts the given #SeedValue into a #gchar*, properly converting to the 
+ * character set used for filenames on the local machine.
+ *
+ * Return value: The #gchar* represented by @val, or %NULL if an exception
+ *               is raised during the conversion.
+ *
+ */
 gchar *
 seed_value_to_filename (JSContextRef ctx,
 			JSValueRef val, JSValueRef * exception)
@@ -2032,6 +2061,20 @@ seed_value_to_filename (JSContextRef ctx,
   return filename;
 }
 
+/**
+ * seed_value_from_filename:
+ * @ctx: A #SeedContext.
+ * @filename: The #gchar* filename to represent.
+ * @exception: A reference to a #SeedValue in which to store any exceptions.
+ *             Pass %NULL to ignore exceptions.
+ *
+ * Converts the given #gchar* filename into a #SeedValue, respecting the 
+ * character set used for filenames on the local machine.
+ *
+ * Return value: A #SeedValue which represents @val, or %NULL if an exception
+ *               is raised during the conversion.
+ *
+ */
 JSValueRef
 seed_value_from_filename (JSContextRef ctx,
 			  const gchar * filename, JSValueRef * exception)
