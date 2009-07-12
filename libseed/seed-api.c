@@ -203,6 +203,9 @@ seed_object_call (JSContextRef ctx,
  * Creates a new #SeedScript instance with @js as the contents, then
  * checks for proper syntax.
  *
+ * Note: seed_make_script() does not handle the shebang line, and will return a
+ *       parse error if one is included in @js.
+ *
  * Return value: The newly created #SeedScript.
  *
  */
@@ -292,7 +295,8 @@ seed_evaluate (JSContextRef ctx,
  * @source: A string representing the JavaScript to evaluate.
  * @exception: A #SeedException pointer to store an exception in.
  *
- * Evaluates a string of JavaScript.
+ * Evaluates a string of JavaScript in @ctx; if an exception
+ * is raised in the context of the script, it will be placed in @exception.
  *
  * Return value: The #SeedValue returned by evaluating the script.
  *
@@ -315,7 +319,9 @@ seed_simple_evaluate (JSContextRef ctx,
  * seed_script_exception:
  * @s: A #SeedScript.
  *
- * Return value: A #JSValueRef representing the exception of @s.
+ * Retrieves the exception (if any) raised during the evaluation of @s.
+ *
+ * Return value: A #SeedException representing the exception of @s.
  *
  */
 JSValueRef

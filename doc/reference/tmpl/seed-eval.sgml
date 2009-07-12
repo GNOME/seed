@@ -6,8 +6,40 @@ Creating and interpreting scripts
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
-Long description
+Seed relies on WebKit's JavaScriptCore interpreter to actually evaluate snippets of JavaScript; however, it provides a handful of useful wrapper functions to quickly create and evaluate scripts. seed_make_script() and seed_evaluate() are the workhorse functions; these allow you to control every detail of the created script and its evaluation environment (including customizing the "this" object during evaluation, and setting a starting line number and filename from which the script originates). seed_simple_evaluate() provides an interface to execute a string of JavaScript without previously creating a #SeedScript, and, while requiring less supporting code, is less flexible.
 </para>
+
+<example>
+<title>Create and evaluate a string of JavaScript with seed_make_script()</title>
+<programlisting>
+SeedEngine * eng;
+&nbsp;
+...
+&nbsp;    
+SeedScript * script;
+/* Create a simple #SeedScript */
+script = seed_make_script(eng->context, "print('Hello, world!')", NULL, 0);
+&nbsp;
+/* Evaluate the #SeedScript in the default context */
+seed_evaluate(eng->context, script, 0);
+&nbsp;
+...
+</programlisting>
+</example>
+
+<example>
+<title>Create and evaluate a string of JavaScript with seed_simple_evaluate()</title>
+<programlisting>
+SeedEngine * eng;
+&nbsp;
+...
+&nbsp;
+/* Evaluate a simple JavaScript snippet in the default context */
+seed_simple_evaluate(eng->context, "print('Hello, world!')", NULL);
+&nbsp;
+...
+</programlisting>
+</example>
 
 <!-- ##### SECTION See_Also ##### -->
 <para>
