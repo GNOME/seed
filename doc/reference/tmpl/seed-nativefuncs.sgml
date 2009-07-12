@@ -26,13 +26,14 @@ All native C callbacks should have the prototype of SeedFunctionCallback().
 
 </para>
 
-@ctx: 
-@function: 
-@this_object: 
-@argument_count: 
-@arguments: 
-@exception: 
-@Returns: 
+@ctx: A #SeedContext
+@function: The #SeedObject representing the function
+@this_object: The #SeedObject representing the "this" object in the caller
+@argument_count: The number of arguments passed into the callback
+@arguments: An array of #SeedValues; the value of the arguments passed in
+@exception: A reference to a #SeedException; use seed_make_exception() in order
+            to throw a JavaScript exception from the callback.
+@Returns: The #SeedValue to return to the caller
 
 
 <!-- ##### FUNCTION seed_make_function ##### -->
