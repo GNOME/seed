@@ -808,7 +808,10 @@ seed_object_is_of_class (JSContextRef ctx, JSObjectRef obj, JSClassRef class)
  * @func: A #SeedFunctionCallback to implement the function.
  * @name: The name of the function (used in exceptions).
  *
- * Return value: The function
+ * Creates a JavaScript object representing a first-class function; when
+ * the function is called from JavaScript, @func will be called.
+ *
+ * Return value: A #SeedObject representing the function
  */
 JSObjectRef
 seed_make_function (JSContextRef ctx,

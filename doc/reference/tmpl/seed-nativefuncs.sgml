@@ -6,7 +6,11 @@ C functions as first-class JavaScript objects
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
-Long description
+Exposing native C functions to JavaScript is one of the fundamental use cases for libseed when used in an embedding environment; if your application cannot be introspected, or you only have a small number of functions to expose, this is the simplest way to do that.
+</para>
+
+<para>
+All native C callbacks should have the prototype of SeedFunctionCallback(). 
 </para>
 
 <!-- ##### SECTION See_Also ##### -->
@@ -40,16 +44,5 @@ Long description
 @func: 
 @name: 
 @Returns: 
-
-
-<!-- ##### FUNCTION seed_create_function ##### -->
-<para>
-
-</para>
-
-@ctx: 
-@name: 
-@callback: 
-@object: 
 
 
