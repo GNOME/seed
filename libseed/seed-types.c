@@ -2099,7 +2099,20 @@ seed_value_from_filename (JSContextRef ctx,
   return valstr;
 }
 
-
+/**
+ * seed_value_to_object:
+ * @ctx: A #SeedContext.
+ * @val: The #SeedValue to unwrap.
+ * @exception: A reference to a #SeedValue in which to store any exceptions.
+ *             Pass %NULL to ignore exceptions.
+ *
+ * Given a #SeedValue which is wrapping a #GObject, retrieve the wrapped
+ * #GObject.
+ *
+ * Return value: The #GObject wrapped within @val, or %NULL if an exception
+ *               is raised during the conversion.
+ *
+ */
 GObject *
 seed_value_to_object (JSContextRef ctx,
 		      JSValueRef val, JSValueRef * exception)
@@ -2129,6 +2142,19 @@ seed_value_to_object (JSContextRef ctx,
   return gobject;
 }
 
+/**
+ * seed_value_from_object:
+ * @ctx: A #SeedContext.
+ * @val: The #GObject to wrap.
+ * @exception: A reference to a #SeedValue in which to store any exceptions.
+ *             Pass %NULL to ignore exceptions.
+ *
+ * Wraps @val in a #SeedValue.
+ *
+ * Return value: A #SeedValue which wraps @val, or %NULL if an exception
+ *               is raised during the conversion.
+ *
+ */
 JSValueRef
 seed_value_from_object (JSContextRef ctx,
 			GObject * val, JSValueRef * exception)
