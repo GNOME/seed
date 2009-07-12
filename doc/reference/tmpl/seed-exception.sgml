@@ -5,6 +5,39 @@ Exception Handling
 Throwing and catching exceptions
 
 <!-- ##### SECTION Long_Description ##### -->
+<para>
+Seed uses exceptions as a method of handling runtime errors within scripts. An exception consists of a name (a list of commonly-used exception names is below), a message, detailing the error, and the line number and filename from which the exception was raised. If Seed cannot determine from where the exception was raised, the line number and filename will be undefined. seed_exception_to_string() provides a simple way to convert all of these into a consistent representation to display to users.
+</para>
+
+<para>
+All Seed callbacks take an exception argument; calling seed_make_exception() with this argument and the details you wish to fill it with will propogate that exception up the chain. Exceptions can be <emphasis>caught</emphasis> either by a try/catch block in the calling JavaScript, or by observing the exception property, dealing with it, and then clearing the exception.
+</para>
+
+<example>
+<title>Throw an exception, because <function>random_callback</function> was called with the wrong number of arguments</title>
+<programlisting>
+SeedValue random_callback(SeedContext ctx,
+                          SeedObject function,
+                          SeedObject this_object,
+                          gsize argument_count,
+                          const SeedValue arguments[],
+                          SeedException *exception)
+{
+    ...
+&nbsp;
+    if(argument_count != 1)
+    {
+        seed_make_exception(ctx, exception, "ArgumentError",
+                            "wrong number of arguments; expected 1, got %Zd",
+                            argument_count);
+        return seed_make_undefined(ctx);
+    }
+&nbsp;
+    ...
+}
+</programlisting>
+</example>
+
 <note>
 <title>Predefined Exception Names</title>
 <para>
@@ -16,6 +49,7 @@ Throwing and catching exceptions
   <listitem><emphasis>TypeError</emphasis> - a required argument was of the wrong type</listitem>
   <listitem><emphasis>SyntaxError</emphasis> - a syntax error was thrown from JavaScriptCore</listitem>
   <listitem><emphasis>ParseError</emphasis> - a parsing error was thrown from JavaScriptCore (make sure you close all of your brackets!)</listitem>
+  <listitem><emphasis>ReferenceError</emphasis> - a reference error was thrown from JavaScriptCore (most likely, you tried to access a variable which was undefined)</listitem>
 </itemizedlist>
 </para>
 </note>

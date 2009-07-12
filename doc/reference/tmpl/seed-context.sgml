@@ -20,7 +20,7 @@ script = seed_make_script(ctx, "print(imports)", NULL, 0);
 </programlisting>
 </example>
 
-<para>The "sandbox" module provides access to this system from the JavaScript side of Seed.
+<para>The <link linkend="Sandbox-module">sandbox</link> module provides access to this system from the JavaScript side of Seed.
 </para>
 
 <!-- ##### SECTION See_Also ##### -->
