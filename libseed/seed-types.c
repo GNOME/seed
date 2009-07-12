@@ -1269,7 +1269,10 @@ seed_object_set_property (JSContextRef ctx, JSObjectRef object,
  * @exception: A reference to a #SeedValue in which to store any exceptions.
  *             Pass %NULL to ignore exceptions.
  *
- * Return value: The %gboolean represented by @val, or %NULL if an exception
+ * Converts the given #SeedValue into a #gboolean. Keep in mind that this will
+ * not convert a JavaScript number type, only a boolean.
+ *
+ * Return value: The #gboolean represented by @val, or %NULL if an exception
  *               is raised during the conversion.
  *
  */
@@ -1299,7 +1302,9 @@ seed_value_to_boolean (JSContextRef ctx,
  * @exception: A reference to a #SeedValue in which to store any exceptions.
  *             Pass %NULL to ignore exceptions.
  *
- * Return value: A %SeedValue which represents @val, or %NULL if an exception
+ * Converts the given #gboolean into a #SeedValue.
+ *
+ * Return value: A #SeedValue which represents @val, or %NULL if an exception
  *               is raised during the conversion.
  *
  */
@@ -1317,7 +1322,9 @@ seed_value_from_boolean (JSContextRef ctx,
  * @exception: A reference to a #SeedValue in which to store any exceptions.
  *             Pass %NULL to ignore exceptions.
  *
- * Return value: The %guint represented by @val, or %NULL if an exception
+ * Converts the given #SeedValue into a #guint.
+ *
+ * Return value: The #guint represented by @val, or %NULL if an exception
  *               is raised during the conversion.
  *
  */
@@ -1345,7 +1352,9 @@ seed_value_to_uint (JSContextRef ctx, JSValueRef val, JSValueRef * exception)
  * @exception: A reference to a #SeedValue in which to store any exceptions.
  *             Pass %NULL to ignore exceptions.
  *
- * Return value: A %SeedValue which represents @val, or %NULL if an exception
+ * Converts the given #guint into a #SeedValue.
+ *
+ * Return value: A #SeedValue which represents @val, or %NULL if an exception
  *               is raised during the conversion.
  *
  */
@@ -1362,7 +1371,9 @@ seed_value_from_uint (JSContextRef ctx, guint val, JSValueRef * exception)
  * @exception: A reference to a #SeedValue in which to store any exceptions.
  *             Pass %NULL to ignore exceptions.
  *
- * Return value: The %gint represented by @val, or %NULL if an exception
+ * Converts the given #SeedValue into a #gint.
+ *
+ * Return value: The #gint represented by @val, or %NULL if an exception
  *               is raised during the conversion.
  *
  */
@@ -1387,7 +1398,9 @@ seed_value_to_int (JSContextRef ctx, JSValueRef val, JSValueRef * exception)
  * @exception: A reference to a #SeedValue in which to store any exceptions.
  *             Pass %NULL to ignore exceptions.
  *
- * Return value: A %SeedValue which represents @val, or %NULL if an exception
+ * Converts the given #gint into a #SeedValue.
+ *
+ * Return value: A #SeedValue which represents @val, or %NULL if an exception
  *               is raised during the conversion.
  *
  */
@@ -1404,7 +1417,9 @@ seed_value_from_int (JSContextRef ctx, gint val, JSValueRef * exception)
  * @exception: A reference to a #SeedValue in which to store any exceptions.
  *             Pass %NULL to ignore exceptions.
  *
- * Return value: The %gchar represented by @val, or %NULL if an exception
+ * Converts the given #SeedValue into a #gchar.
+ *
+ * Return value: The #gchar represented by @val, or %NULL if an exception
  *               is raised during the conversion.
  *
  */
@@ -1440,7 +1455,9 @@ seed_value_to_char (JSContextRef ctx, JSValueRef val, JSValueRef * exception)
  * @exception: A reference to a #SeedValue in which to store any exceptions.
  *             Pass %NULL to ignore exceptions.
  *
- * Return value: A %SeedValue which represents @val, or %NULL if an exception
+ * Converts the given #gchar into a #SeedValue.
+ *
+ * Return value: A #SeedValue which represents @val, or %NULL if an exception
  *               is raised during the conversion.
  *
  */
@@ -1457,7 +1474,9 @@ seed_value_from_char (JSContextRef ctx, gchar val, JSValueRef * exception)
  * @exception: A reference to a #SeedValue in which to store any exceptions.
  *             Pass %NULL to ignore exceptions.
  *
- * Return value: The %guchar represented by @val, or %NULL if an exception
+ * Converts the given #SeedValue into a #guchar.
+ *
+ * Return value: The #guchar represented by @val, or %NULL if an exception
  *               is raised during the conversion.
  *
  */
@@ -1493,7 +1512,9 @@ seed_value_to_uchar (JSContextRef ctx, JSValueRef val, JSValueRef * exception)
  * @exception: A reference to a #SeedValue in which to store any exceptions.
  *             Pass %NULL to ignore exceptions.
  *
- * Return value: A %SeedValue which represents @val, or %NULL if an exception
+ * Converts the given #guchar into a #SeedValue.
+ *
+ * Return value: A #SeedValue which represents @val, or %NULL if an exception
  *               is raised during the conversion.
  *
  */
@@ -1510,7 +1531,9 @@ seed_value_from_uchar (JSContextRef ctx, guchar val, JSValueRef * exception)
  * @exception: A reference to a #SeedValue in which to store any exceptions.
  *             Pass %NULL to ignore exceptions.
  *
- * Return value: The %gshort represented by @val, or %NULL if an exception
+ * Converts the given #SeedValue into a #gshort.
+ *
+ * Return value: The #gshort represented by @val, or %NULL if an exception
  *               is raised during the conversion.
  *
  */
@@ -1535,7 +1558,9 @@ seed_value_to_short (JSContextRef ctx, JSValueRef val, JSValueRef * exception)
  * @exception: A reference to a #SeedValue in which to store any exceptions.
  *             Pass %NULL to ignore exceptions.
  *
- * Return value: A %SeedValue which represents @val, or %NULL if an exception
+ * Converts the given #gshort into a #SeedValue.
+ *
+ * Return value: A #SeedValue which represents @val, or %NULL if an exception
  *               is raised during the conversion.
  *
  */
@@ -1552,7 +1577,9 @@ seed_value_from_short (JSContextRef ctx, gshort val, JSValueRef * exception)
  * @exception: A reference to a #SeedValue in which to store any exceptions.
  *             Pass %NULL to ignore exceptions.
  *
- * Return value: The %gushort represented by @val, or %NULL if an exception
+ * Converts the given #SeedValue into a #gushort.
+ *
+ * Return value: The #gushort represented by @val, or %NULL if an exception
  *               is raised during the conversion.
  *
  */
@@ -1577,7 +1604,9 @@ seed_value_to_ushort (JSContextRef ctx, JSValueRef val, JSValueRef * exception)
  * @exception: A reference to a #SeedValue in which to store any exceptions.
  *             Pass %NULL to ignore exceptions.
  *
- * Return value: A %SeedValue which represents @val, or %NULL if an exception
+ * Converts the given #gushort into a #SeedValue.
+ *
+ * Return value: A #SeedValue which represents @val, or %NULL if an exception
  *               is raised during the conversion.
  *
  */
@@ -1594,7 +1623,9 @@ seed_value_from_ushort (JSContextRef ctx, gushort val, JSValueRef * exception)
  * @exception: A reference to a #SeedValue in which to store any exceptions.
  *             Pass %NULL to ignore exceptions.
  *
- * Return value: The %glong represented by @val, or %NULL if an exception
+ * Converts the given #SeedValue into a #glong.
+ *
+ * Return value: The #glong represented by @val, or %NULL if an exception
  *               is raised during the conversion.
  *
  */
@@ -1619,7 +1650,9 @@ seed_value_to_long (JSContextRef ctx, JSValueRef val, JSValueRef * exception)
  * @exception: A reference to a #SeedValue in which to store any exceptions.
  *             Pass %NULL to ignore exceptions.
  *
- * Return value: A %SeedValue which represents @val, or %NULL if an exception
+ * Converts the given #glong into a #SeedValue.
+ *
+ * Return value: A #SeedValue which represents @val, or %NULL if an exception
  *               is raised during the conversion.
  *
  */
@@ -1636,7 +1669,9 @@ seed_value_from_long (JSContextRef ctx, glong val, JSValueRef * exception)
  * @exception: A reference to a #SeedValue in which to store any exceptions.
  *             Pass %NULL to ignore exceptions.
  *
- * Return value: The %gulong represented by @val, or %NULL if an exception
+ * Converts the given #SeedValue into a #gulong.
+ *
+ * Return value: The #gulong represented by @val, or %NULL if an exception
  *               is raised during the conversion.
  *
  */
@@ -1662,7 +1697,9 @@ seed_value_to_ulong (JSContextRef ctx, JSValueRef val, JSValueRef * exception)
  * @exception: A reference to a #SeedValue in which to store any exceptions.
  *             Pass %NULL to ignore exceptions.
  *
- * Return value: A %SeedValue which represents @val, or %NULL if an exception
+ * Converts the given #gulong into a #SeedValue.
+ *
+ * Return value: A #SeedValue which represents @val, or %NULL if an exception
  *               is raised during the conversion.
  *
  */
@@ -1679,7 +1716,9 @@ seed_value_from_ulong (JSContextRef ctx, gulong val, JSValueRef * exception)
  * @exception: A reference to a #SeedValue in which to store any exceptions.
  *             Pass %NULL to ignore exceptions.
  *
- * Return value: The %gint64 represented by @val, or %NULL if an exception
+ * Converts the given #SeedValue into a #gint64.
+ *
+ * Return value: The #gint64 represented by @val, or %NULL if an exception
  *               is raised during the conversion.
  *
  */
@@ -1705,7 +1744,9 @@ seed_value_to_int64 (JSContextRef ctx, JSValueRef val, JSValueRef * exception)
  * @exception: A reference to a #SeedValue in which to store any exceptions.
  *             Pass %NULL to ignore exceptions.
  *
- * Return value: A %SeedValue which represents @val, or %NULL if an exception
+ * Converts the given #gint64 into a #SeedValue.
+ *
+ * Return value: A #SeedValue which represents @val, or %NULL if an exception
  *               is raised during the conversion.
  *
  */
@@ -1722,7 +1763,9 @@ seed_value_from_int64 (JSContextRef ctx, gint64 val, JSValueRef * exception)
  * @exception: A reference to a #SeedValue in which to store any exceptions.
  *             Pass %NULL to ignore exceptions.
  *
- * Return value: The %guint64 represented by @val, or %NULL if an exception
+ * Converts the given #SeedValue into a #guint64.
+ *
+ * Return value: The #guint64 represented by @val, or %NULL if an exception
  *               is raised during the conversion.
  *
  */
@@ -1750,7 +1793,9 @@ seed_value_to_uint64 (JSContextRef ctx,
  * @exception: A reference to a #SeedValue in which to store any exceptions.
  *             Pass %NULL to ignore exceptions.
  *
- * Return value: A %SeedValue which represents @val, or %NULL if an exception
+ * Converts the given #guint64 into a #SeedValue.
+ *
+ * Return value: A #SeedValue which represents @val, or %NULL if an exception
  *               is raised during the conversion.
  *
  */
@@ -1767,7 +1812,9 @@ seed_value_from_uint64 (JSContextRef ctx, guint64 val, JSValueRef * exception)
  * @exception: A reference to a #SeedValue in which to store any exceptions.
  *             Pass %NULL to ignore exceptions.
  *
- * Return value: The %gfloat represented by @val, or %NULL if an exception
+ * Converts the given #SeedValue into a #gfloat.
+ *
+ * Return value: The #gfloat represented by @val, or %NULL if an exception
  *               is raised during the conversion.
  *
  */
@@ -1792,7 +1839,9 @@ seed_value_to_float (JSContextRef ctx, JSValueRef val, JSValueRef * exception)
  * @exception: A reference to a #SeedValue in which to store any exceptions.
  *             Pass %NULL to ignore exceptions.
  *
- * Return value: A %SeedValue which represents @val, or %NULL if an exception
+ * Converts the given #gfloat into a #SeedValue.
+ *
+ * Return value: A #SeedValue which represents @val, or %NULL if an exception
  *               is raised during the conversion.
  *
  */
@@ -1809,7 +1858,9 @@ seed_value_from_float (JSContextRef ctx, gfloat val, JSValueRef * exception)
  * @exception: A reference to a #SeedValue in which to store any exceptions.
  *             Pass %NULL to ignore exceptions.
  *
- * Return value: The %gdouble represented by @val, or %NULL if an exception
+ * Converts the given #SeedValue into a #gdouble.
+ *
+ * Return value: The #gdouble represented by @val, or %NULL if an exception
  *               is raised during the conversion.
  *
  */
@@ -1835,7 +1886,9 @@ seed_value_to_double (JSContextRef ctx,
  * @exception: A reference to a #SeedValue in which to store any exceptions.
  *             Pass %NULL to ignore exceptions.
  *
- * Return value: A %SeedValue which represents @val, or %NULL if an exception
+ * Converts the given #gdouble into a #SeedValue.
+ *
+ * Return value: A #SeedValue which represents @val, or %NULL if an exception
  *               is raised during the conversion.
  *
  */
@@ -1852,7 +1905,10 @@ seed_value_from_double (JSContextRef ctx, gdouble val, JSValueRef * exception)
  * @exception: A reference to a #SeedValue in which to store any exceptions.
  *             Pass %NULL to ignore exceptions.
  *
- * Return value: The %gchar* represented by @val, or %NULL if an exception
+ * Converts the given #SeedValue into a #gchar* string. Keep in mind that it's
+ * up to the caller to free the string.
+ *
+ * Return value: The #gchar* represented by @val, or %NULL if an exception
  *               is raised during the conversion.
  *
  */
@@ -1912,7 +1968,9 @@ seed_value_to_string (JSContextRef ctx,
  * @exception: A reference to a #SeedValue in which to store any exceptions.
  *             Pass %NULL to ignore exceptions.
  *
- * Return value: A %SeedValue which represents @val, or %NULL if an exception
+ * Converts the given #gchar* string into a #SeedValue.
+ *
+ * Return value: A #SeedValue which represents @val, or %NULL if an exception
  *               is raised during the conversion.
  *
  */
