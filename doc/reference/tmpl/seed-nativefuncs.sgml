@@ -13,6 +13,44 @@ Exposing native C functions to JavaScript is one of the fundamental use cases fo
 All native C callbacks should have the prototype of SeedFunctionCallback(). 
 </para>
 
+<example>
+<title>Simple C program which embeds Seed with one exposed function</title>
+<programlisting>
+#include &lt;glib.h&gt;
+#include &lt;seed.h&gt;
+&nbsp;
+/* Our function, with the signature of SeedFunctionCallback(); say hello! */
+SeedValue hello_world(SeedContext ctx,
+                      SeedObject function,
+                      SeedObject this_object,
+                      gsize argument_count,
+                      const SeedValue arguments[],
+                      SeedException *exception)
+{
+    g_print("Hello, World!\n");
+    return seed_make_null(ctx);
+}
+&nbsp;
+int main(gint argc, gchar ** argv)
+{
+    SeedEngine * eng;
+&nbsp;
+    /* Initialize the Seed engine */
+    eng = seed_init(&amp;argc, &amp;argv);
+&nbsp;
+    /* Expose a C function to JavaScript */
+    seed_create_function(eng-&gt;context, "hello_world",
+                         (SeedFunctionCallback)hello_world,
+                         eng-&gt;global);
+&nbsp;
+    /* Call the newly created JavaScript function */
+    seed_simple_evaluate(eng-&gt;context, "hello_world()", NULL);
+&nbsp;
+    return 0;
+}
+</programlisting>
+</example>
+
 <!-- ##### SECTION See_Also ##### -->
 <para>
 
