@@ -1908,6 +1908,16 @@ seed_value_from_double (JSContextRef ctx, gdouble val, JSValueRef * exception)
  * Converts the given #SeedValue into a #gchar* string. Keep in mind that it's
  * up to the caller to free the string.
  *
+ * If the #SeedValue represents JavaScript's undefined value, this returns
+ * "[undefined]"; if it represents JavaScript's null value, this returns
+ * "[null]".
+ *
+ * If the #SeedValue is a number or a boolean, it is printed as a double, with 
+ * the printf format string "%.15g".
+ *
+ * If the #SeedValue is an object, the string returned is that obtained by
+ * calling .toString() on said object.
+ *
  * Return value: The #gchar* represented by @val, or %NULL if an exception
  *               is raised during the conversion.
  *
