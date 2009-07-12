@@ -918,3 +918,20 @@ seed_value_to_format (JSContextRef ctx,
   return TRUE;
 }
 
+/*************************** CALLBACK DOCUMENTATION **************************/
+
+/**
+ * SeedFunctionCallback:
+ * @ctx: A #SeedContext
+ * @function: The #SeedObject representing the function
+ * @this_object: The #SeedObject representing the "this" object in the caller
+ * @argument_count: The number of arguments passed into the callback
+ * @arguments: An array of #SeedValues; the value of the arguments passed in
+ * @exception: A reference to a #SeedException; use seed_make_exception() in order
+ *             to throw a JavaScript exception from the callback.
+ *
+ * All native C function callbacks should use the prototype of
+ * SeedFunctionCallback.
+ *
+ * Return value: The #SeedValue to return to the caller
+ */
