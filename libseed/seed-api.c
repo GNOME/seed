@@ -445,6 +445,8 @@ seed_make_constructor (JSContextRef ctx,
  * seed_object_get_private:
  * @object: A #SeedObject.
  *
+ * Retrieves the private data of @object.
+ *
  * Return value: A pointer to the private data of @object.
  *
  */
@@ -473,7 +475,9 @@ seed_object_set_private (JSObjectRef object, gpointer value)
  * @ctx: A #SeedContext.
  * @value: A #SeedValue.
  *
- * Return value: #true if @value represents %NULL, #false otherwise.
+ * Determine whether or not @value represents the JavaScript null value
+ *
+ * Return value: A #gboolean (%true if @value is 'null')
  *
  */
 gboolean
@@ -482,6 +486,16 @@ seed_value_is_null (JSContextRef ctx, JSValueRef value)
   return JSValueIsNull (ctx, value);
 }
 
+/**
+ * seed_value_is_undefined:
+ * @ctx: A #SeedContext.
+ * @value: A #SeedValue.
+ *
+ * Determine whether or not @value represents the JavaScript undefined value
+ *
+ * Return value: A #gboolean (%true if @value is 'undefined')
+ *
+ */
 gboolean
 seed_value_is_undefined (JSContextRef ctx, JSValueRef value)
 {
@@ -493,7 +507,9 @@ seed_value_is_undefined (JSContextRef ctx, JSValueRef value)
  * @ctx: A #SeedContext.
  * @value: A #SeedValue.
  *
- * Return value: #true if @value is an object, #false otherwise.
+ * Determine whether or not @value is a JavaScript object
+ *
+ * Return value: A #gboolean (%true if @value is an object)
  *
  */
 gboolean
@@ -508,7 +524,9 @@ seed_value_is_object (JSContextRef ctx, JSValueRef value)
  * @value: A #SeedValue.
  * @klass: A #SeedClass.
  *
- * Return value: #true if @value is an object of specified class, #false otherwise.
+ * Determine whether or not @value is an object of the specified class
+ *
+ * Return value: A #gboolean (%true if @value is of class @klass)
  *
  */
 gboolean
@@ -520,10 +538,12 @@ seed_value_is_object_of_class (JSContextRef ctx, JSValueRef value, JSClassRef kl
 /**
  * seed_value_is_function:
  * @ctx: A #SeedContext.
- * @value: A #SeedObject.
+ * @value: A #SeedValue.
  *
- * Return value: #true if @value is a function (and therefore, an object),
- *               #false otherwise.
+ * Determine whether or not @value is a JavaScript function (and, therefore,
+ * an object)
+ *
+ * Return value: A #gboolean (%true if @value is a function)
  *
  */
 gboolean
@@ -537,7 +557,9 @@ seed_value_is_function (JSContextRef ctx, JSObjectRef value)
  * @ctx: A #SeedContext.
  * @value: A #SeedValue.
  *
- * Return value: #true if @value is a string, and #false otherwise.
+ * Determine whether or not @value is a JavaScript string
+ *
+ * Return value: A #gboolean (%true if @value is a string)
  *
  */
 gboolean
@@ -551,7 +573,9 @@ seed_value_is_string (JSContextRef ctx, JSValueRef value)
  * @ctx: A #SeedContext.
  * @value: A #SeedValue.
  *
- * Return value: #true if @value is a number), #false otherwise.
+ * Determine whether or not @value is a JavaScript number
+ *
+ * Return value: A #gboolean (%true if @value is a number)
  *
  */
 gboolean
@@ -599,6 +623,10 @@ seed_engine_get_search_path (SeedEngine * eng)
  * @signal: A signal specification.
  * @function: The JavaScript function to connect to the signal.
  * @user_data: An additional parameter to pass to the function.
+ *
+ * Connects @function to the signal specified by @signal on @object. @user_data
+ * is passed as the user_data argument to the callback function.
+ *
  */
 void
 seed_signal_connect_full (JSContextRef ctx,
@@ -616,7 +644,12 @@ seed_signal_connect_full (JSContextRef ctx,
  * @ctx: A valid #SeedContext
  * @object: A #GObject, to connect the signal on.
  * @signal: A signal specification.
- * @script: The script to connect to the signal. Should be a function.
+ * @script: The script to connect to the signal. Should return a function.
+ *
+ * Evaluates @script, which should return a function, then connects the returned
+ * function to the signal specified by @signal on @object. @user_data
+ * is passed as the user_data argument to the callback function.
+ *
  */
 void
 seed_signal_connect (JSContextRef ctx,
@@ -651,6 +684,9 @@ seed_context_get_global_object (JSGlobalContextRef ctx)
  * @num_elements: The number of values, in @elements
  * @exception: A #SeedException in which to store an exception.
  *             Pass %NULL to ignore exceptions.
+ *
+ * Creates a JavaScript Array object from @elements, a C-style array of
+ * SeedValues.
  *
  * Return value: A new array object, populated with @elements.
  */

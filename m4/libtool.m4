@@ -4261,9 +4261,6 @@ dnl Note also adjust exclude_expsyms for C++ above.
   openbsd*)
     with_gnu_ld=no
     ;;
-  linux* | k*bsd*-gnu)
-    _LT_TAGVAR(link_all_deplibs, $1)=no
-    ;;
   esac
 
   _LT_TAGVAR(ld_shlibs, $1)=yes
