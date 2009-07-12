@@ -248,8 +248,8 @@ typedef SeedValue (*SeedFunctionCallback) (SeedContext ctx,
 					   SeedException * exception);
 
 void seed_create_function (SeedContext ctx,
-			   gchar * name, SeedFunctionCallback callback,
-			   SeedObject object);
+			   gchar * name, SeedFunctionCallback func,
+			   SeedObject obj);
 SeedObject seed_make_function (SeedContext ctx, SeedFunctionCallback func, const gchar *name);
 /* Inconsistent naming? */
 SeedObject seed_make_array (SeedContext ctx, const SeedValue elements,

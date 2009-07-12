@@ -53,7 +53,7 @@ All native C callbacks should have the prototype of SeedFunctionCallback().
 
 @ctx: 
 @name: 
-@callback: 
-@object: 
+@func: 
+@obj: 
 
 
