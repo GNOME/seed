@@ -7,7 +7,7 @@
     <releaseinfo>
       Documentation for Seed 0.8.5.
       The latest version of this documentation can be found on-line at
-      <ulink role="online-location" url="http://www.gnome.org/~racarr/seed/gtk-doc/index.html">http://www.gnome.org/~racarr/seed/gtk-doc/</ulink>.
+      <ulink role="online-location" url="http://library.gnome.org/devel/seed/">http://library.gnome.org/devel/seed/</ulink>.
     </releaseinfo>
   </bookinfo>
 
@@ -25,7 +25,7 @@
   
   <part id="api">
     <title>Seed API Reference</title>
-    <para>This is the documentation for the C API of Seed, used for embedding, and creating native C modules. For documentation on the JavaScript interface of Seed, see <ulink role="online-location" url="http://www.gnome.org/~racarr/seed">http://www.gnome.org/~racarr/seed/</ulink>.</para>
+    <para>This is the documentation for the C API of Seed, used for embedding, and creating native C modules. For documentation on the JavaScript interface of Seed, see <ulink role="online-location" url="http://library.gnome.org/devel/seed/">http://library.gnome.org/devel/seed/</ulink>.</para>
     <xi:include href="xml/seed-main.xml"/>
     <xi:include href="xml/seed-context.xml"/>
     <xi:include href="xml/seed-eval.xml"/>
