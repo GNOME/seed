@@ -14,5 +14,5 @@ else
 enumerator = file.enumerate_children("standard::name,standard::size");
 
 while ((child = enumerator.next_file())){
-    printf("%s\t%d",child.get_name(), child.get_size());
+    Seed.printf("%s\t%d",child.get_name(), child.get_size());
 }
