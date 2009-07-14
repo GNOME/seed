@@ -592,6 +592,7 @@ seed_importer_handle_file (JSContextRef ctx,
 			   JSValueRef *exception)
 {
   JSContextRef nctx;
+  JSValueRef js_file_dirname;
   JSObjectRef global, c_global;
   JSStringRef file_contents, file_name;
   gchar *contents, *walk, *file_path, *canonical;
@@ -639,6 +640,11 @@ seed_importer_handle_file (JSContextRef ctx,
   global = JSContextGetGlobalObject (nctx);
   c_global = JSContextGetGlobalObject (ctx);
   JSValueProtect (eng->context, global);
+  
+  js_file_dirname = seed_value_from_string(ctx, g_path_get_dirname(file_path),
+                                           NULL);
+  
+  seed_object_set_property(nctx, global, "__script_path__", js_file_dirname);
 
   g_hash_table_insert (file_imports, canonical, global);
   g_free (file_path);

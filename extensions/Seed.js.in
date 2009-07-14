@@ -181,10 +181,10 @@ if(!imports.searchPath || (imports.searchPath.length == 0))
 
 	if(Seed.argv.length > 1)
 	{
-		var script_path = imports.gi.GLib.path_get_dirname(Seed.argv[1]);
+		__script_path__ = imports.gi.GLib.path_get_dirname(Seed.argv[1]);
 		
-		if(script_path && script_path != "")
-			imports.searchPath.push(script_path);
+		if(__script_path__ && __script_path__ != "")
+			imports.searchPath.push(__script_path__);
 	}
 
 	imports.searchPath.push(".");
