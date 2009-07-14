@@ -27,3 +27,13 @@ Gtk = imports.gi.Gtk;
    Gtk.VBox.prototype.pack = pack;
    Gtk.HBox.prototype.pack = pack;
  }).apply();
+
+(function()
+ {
+   var add_from_string = function(str)
+   {
+     this.add_from_string_c(str, str.length);
+   }
+   Gtk.Builder.prototype.add_from_string_c = Gtk.Builder.prototype.add_from_string;
+   Gtk.Builder.prototype.add_from_string = add_from_string;
+ }).apply();

@@ -48,7 +48,7 @@ seed_gtk_builder_connect_signals(SeedContext ctx,
   builder_ud ud;
   GtkBuilder *b;
   
-  CHECK_ARG_COUNT("gtkbuilder.connect_signals", 1);
+  CHECK_ARG_COUNT("GtkBuilder.connect_signals", 1);
 
   if (!seed_value_is_object (ctx, arguments[0]))
     {
