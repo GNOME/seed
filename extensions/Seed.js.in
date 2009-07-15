@@ -1,3 +1,5 @@
+GLib = imports.gi.GLib;
+
 Seed.sprintf = function ()
 {
     if (typeof arguments == "undefined") { return null; }
@@ -158,12 +160,12 @@ Seed.repl = function()
 
 Seed.glib_repl = function()
 {
-	imports.gi.GLib.idle_add(Seed.repl, null);
+	GLib.idle_add(Seed.repl, null);
 }
 
 Seed.thread_repl = function()
 {
-	imports.gi.GLib.thread_create_full(function() { while(Seed.repl()){} },
+	GLib.thread_create_full(function() { while(Seed.repl()){} },
 							null, 0, true);
 }
 
@@ -181,10 +183,25 @@ if(!imports.searchPath || (imports.searchPath.length == 0))
 
 	if(Seed.argv.length > 1)
 	{
-		__script_path__ = imports.gi.GLib.path_get_dirname(Seed.argv[1]);
+		__script_path__ = GLib.path_get_dirname(Seed.argv[1]);
+		
+		try
+		{
+		if(!GLib.path_is_absolute(__script_path__))
+		{
+			__script_path__ = GLib.build_filenamev([GLib.get_current_dir(),
+			                                      __script_path__]);
+		}
+		
+		__script_path__ = imports.os.realpath(__script_path__);
 		
 		if(__script_path__ && __script_path__ != "")
 			imports.searchPath.push(__script_path__);
+		}
+		catch(e)
+		{
+			print(imports.JSON.stringify(e));
+		}
 	}
 
 	imports.searchPath.push(".");

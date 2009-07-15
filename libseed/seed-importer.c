@@ -595,7 +595,8 @@ seed_importer_handle_file (JSContextRef ctx,
   JSValueRef js_file_dirname;
   JSObjectRef global, c_global;
   JSStringRef file_contents, file_name;
-  gchar *contents, *walk, *file_path, *canonical;
+  gchar *contents, *walk, *file_path, *canonical, *absolute_path;
+  gchar normalized_path[PATH_MAX];
 
   file_path = g_strconcat (dir, "/", file, NULL);
   canonical = seed_importer_canonicalize_path (file_path);
@@ -641,13 +642,23 @@ seed_importer_handle_file (JSContextRef ctx,
   c_global = JSContextGetGlobalObject (ctx);
   JSValueProtect (eng->context, global);
   
-  js_file_dirname = seed_value_from_string(ctx, g_path_get_dirname(file_path),
-                                           NULL);
+  absolute_path = g_path_get_dirname(file_path);
+  if(!g_path_is_absolute(absolute_path))
+    {
+      g_free(absolute_path);
+      absolute_path = g_build_filename(g_get_current_dir(),
+				       g_path_get_dirname(file_path), NULL);
+    }
+
+  realpath(absolute_path, normalized_path);
+
+  js_file_dirname = seed_value_from_string(ctx, normalized_path, NULL);
   
   seed_object_set_property(nctx, global, "__script_path__", js_file_dirname);
 
   g_hash_table_insert (file_imports, canonical, global);
   g_free (file_path);
+  g_free (absolute_path);
 
   JSEvaluateScript (nctx, file_contents, NULL, file_name, 0, exception);
 

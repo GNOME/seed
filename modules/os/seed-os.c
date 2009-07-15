@@ -28,6 +28,28 @@ SeedObject os_namespace;
   return seed_make_undefined (ctx);
 
 SeedValue
+seed_os_realpath (SeedContext ctx,
+	          SeedObject function,
+	          SeedObject this_object,
+	          size_t argument_count,
+	          const SeedValue arguments[],
+	          SeedException * exception)
+{
+  gchar *arg;
+  gchar ret[PATH_MAX];
+
+  if (argument_count != 1)
+    {
+      EXPECTED_EXCEPTION("os.realpath", "1 argument");
+    }
+  arg = seed_value_to_string (ctx, arguments[0], exception);
+  realpath(arg, ret);
+  g_free (arg);
+
+  return seed_value_from_string (ctx, ret, exception);
+}
+
+SeedValue
 seed_os_chdir (SeedContext ctx,
 	       SeedObject function,
 	       SeedObject this_object,
@@ -981,6 +1003,7 @@ seed_os_fork (SeedContext ctx,
 
 seed_static_function os_funcs[] = {
   {"fork", seed_os_fork, 0},
+  {"realpath", seed_os_realpath, 0},
   {"chdir", seed_os_chdir, 0},
   {"fchdir", seed_os_fchdir, 0},
   {"getcwd", seed_os_getcwd, 0},
