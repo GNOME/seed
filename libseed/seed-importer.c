@@ -1,3 +1,5 @@
+// TODO: Don't use GNU libc extension canonicalize_file_name, don't use realpath?
+#define _GNU_SOURCE
 
 #include <gio/gio.h>
 #include <string.h>
@@ -596,7 +598,7 @@ seed_importer_handle_file (JSContextRef ctx,
   JSObjectRef global, c_global;
   JSStringRef file_contents, file_name;
   gchar *contents, *walk, *file_path, *canonical, *absolute_path;
-  gchar normalized_path[PATH_MAX];
+  gchar *normalized_path;
 
   file_path = g_build_filename(dir, file, NULL);
   canonical = seed_importer_canonicalize_path (file_path);
@@ -650,7 +652,7 @@ seed_importer_handle_file (JSContextRef ctx,
 				       g_path_get_dirname(file_path), NULL);
     }
 
-  realpath(absolute_path, normalized_path);
+  normalized_path = canonicalize_file_name(absolute_path);
 
   js_file_dirname = seed_value_from_string(ctx, normalized_path, NULL);
   
