@@ -36,14 +36,14 @@ seed_os_realpath (SeedContext ctx,
 	          SeedException * exception)
 {
   gchar *arg;
-  gchar ret[PATH_MAX];
+  gchar *ret;
 
   if (argument_count != 1)
     {
       EXPECTED_EXCEPTION("os.realpath", "1 argument");
     }
   arg = seed_value_to_string (ctx, arguments[0], exception);
-  realpath(arg, ret);
+  ret = canonicalize_file_name(arg);
   g_free (arg);
 
   return seed_value_from_string (ctx, ret, exception);
