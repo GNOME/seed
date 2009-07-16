@@ -598,7 +598,7 @@ seed_importer_handle_file (JSContextRef ctx,
   gchar *contents, *walk, *file_path, *canonical, *absolute_path;
   gchar normalized_path[PATH_MAX];
 
-  file_path = g_strconcat (dir, "/", file, NULL);
+  file_path = g_build_filename(dir, file, NULL);
   canonical = seed_importer_canonicalize_path (file_path);
   SEED_NOTE (IMPORTER, "Trying to import file: %s", file_path);
 
