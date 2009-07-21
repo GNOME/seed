@@ -12,7 +12,7 @@ bookdir = $(datadir)/doc/seed/modules/html
 book_DATA = html/index.html
 
 install-data-local:
-	cp -r html $(datadir)/doc/seed/modules
+	cp -r html $(DESTDIR)$(datadir)/doc/seed/modules
 
 CLEANFILES = html/*
 endif 
