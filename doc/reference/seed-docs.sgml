@@ -19,13 +19,15 @@
     <xi:include href="contact.sgml"/>
   </part>
   
-  <!--<part id="js">
+  <part id="js">
     <title>Seed JavaScript Reference</title>
-  </part>-->
+    <para>This is the documentation for the JavaScript runtime side of Seed.</para>
+    <xi:include href="imports.sgml" />
+  </part>
   
   <part id="api">
     <title>Seed API Reference</title>
-    <para>This is the documentation for the C API of Seed, used for embedding, and creating native C modules. For documentation on the JavaScript interface of Seed, see <ulink role="online-location" url="http://library.gnome.org/devel/seed/">http://library.gnome.org/devel/seed/</ulink>.</para>
+    <para>This is the documentation for the C API of Seed, used for embedding, and creating native C modules.</para>
     <xi:include href="xml/seed-main.xml"/>
     <xi:include href="xml/seed-context.xml"/>
     <xi:include href="xml/seed-eval.xml"/>
