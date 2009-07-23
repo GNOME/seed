@@ -22,6 +22,7 @@ Importing gobject-introspection namespaces, native modules, and JavaScript modul
 	<listitem>JavaScript modules, which provide a way to access (in a namespaced manner) the global object of another script, offering a simple way to modularize code written against Seed.</listitem>
 	<listitem>Directories, which simply contain, as properties on the object the importer returns, the contents of the directory. (expand, fix. this is confusing and misplaced)</listitem>
       </itemizedlist>
+
     </refsect1>
 
     <refsect1>
@@ -37,10 +38,10 @@ Gtk = imports.gi.Gtk;
       </example>
 
       <para>This will import the Gtk namespace from GObject-Introspection, and assign it to the global "Gtk" object. Afterwards, Gtk-related functions can be accessed as properties of said object. Imports will <emphasis>never</emphasis> add values to the global object or affect anything outside of their namespace.</para>
-      <para>By default, 'imports.gi.NameSpace' will return the most recent installed version of the imported namespace; in order to request a different version, or to mark your program as requiring a particular version, the "imports.gi.versions.NameSpace" property can be set; the import will raise an exception if the requested version could not be loaded:</para>
+      <para>By default, 'imports.gi.NameSpace' will return the most recent installed version of the imported namespace; in order to request a different version, or to mark your program as requiring a particular version, the "imports.gi.versions.NameSpace" property can be set. Keep in mind that versioning for GObject-Introspection namespaces is slightly different from the actual library version numbers; for example, the version for Gtk is still "2.0", even though we're many versions past that. The import will raise an exception if the requested version could not be loaded:</para>
 
       <example>
-	<title>Using 'imports.gi.version' to require Clutter 0.8</title>
+	<title>Using 'imports.gi.versions' to require Clutter 0.8</title>
 <programlisting>
 imports.gi.versions.Clutter = "0.8";
 
@@ -54,6 +55,22 @@ catch(e)
 }
 </programlisting>
       </example>
+    </refsect1>
+
+    <refsect1>
+      <title>Importing Native Modules</title>
+      <para>Seed ships with a number of (link!) native modules, which provide access to various parts of the system which GObject-Introspection cannot provide proper metadata for. An application developer could also decide to write performance-critical parts of their code as a native Seed module, as well, as one of the numerous ways to interface C with Seed.</para>
+      <para>Native modules are loaded just like GObject-Introspection namespaces, except as toplevel objects on "imports", instead of "imports.gi". For example, to load the readline module that ships with Seed, one could:</para>
+ 
+     <example>
+	<title>Loading the native module "readline"</title>
+<programlisting>
+readline = imports.readline;
+</programlisting>
+      </example>
+
+     <para>Seed searches the imports search path for native modules; if it finds a file with the given name, the prefix "seed_" and the same suffix as is used for shared libraries on your system (.so on Linux, .dylib on Mac OS X, etc.), it will assume this is a native module and load and initialize it as such. For example, the readline module loaded above is named <file>seed_readline.so</file> on a recent Linux machine.</para>
+
     </refsect1>
 
 </refentry>
