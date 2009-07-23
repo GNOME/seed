@@ -22,13 +22,24 @@ Importing gobject-introspection namespaces, native modules, and JavaScript modul
 	<listitem>JavaScript modules, which provide a way to access (in a namespaced manner) the global object of another script, offering a simple way to modularize code written against Seed.</listitem>
 	<listitem>Directories, which simply contain, as properties on the object the importer returns, the contents of the directory. (expand, fix. this is confusing and misplaced)</listitem>
       </itemizedlist>
+      <para>The global 'imports' object represents the runtime-side portion of the importer; all of your interactions with the importer will take place through this object.</para>
+    </refsect1>
 
+    <refsect1>
+      <title>The Imports Search Path</title>
+      <para>The path which the importer searches for native modules and JavaScript modules is defined by the searchPath property on the 'imports' global. This should be a JavaScript array of strings representing the order and locations to search for these modules; the default set of paths includes various Seed system directories, the directory in which the currently running script is located, and the current directory, in that order. You can change the path at any time; if an invalid value is assigned, the importer will throw an exception the next time something is imported, <emphasis>not</emphasis> when the property is set.</para>
+      <example>
+	<title>Adding a directory to the search path</title>
+<programlisting>
+imports.searchPath.unshift("/usr/local/share/random-seed-program-scripts/");
+</programlisting>
+      </example>
     </refsect1>
 
     <refsect1>
       <title>Importing GObject-Introspection namespaces</title>
       <para>GObject-Introspection provides the metadata required in order to call functions, connect to signals, and interact with properties within any library which has been scanned. The hows and whys of introspection are outside of the scope of this article, but how to utilize this data is central to the very tenents of Seed (the minimal platform possible to interact with GObject-based libraries from a pleasant language).</para>
-      <para>The global 'imports' object represents the runtime-side portion of the importer; all of your interactions with the importer will take place through this object. Namespaces are loaded as requested, and are loaded only once throughout the lifetime of a Seed program (subsequent requests for the same namespace will return the same object provided previously). The special property 'gi' on the imports global represents the interface for loading these namespaces. A request to import Gtk might look like the following:</para>
+      <para>Namespaces are loaded as requested, and are loaded only once throughout the lifetime of a Seed program (subsequent requests for the same namespace will return the same object provided previously). The special property 'gi' on the imports global represents the interface for loading these namespaces. A request to import Gtk might look like the following:</para>
 
       <example>
 	<title>Using 'imports.gi' to import the Gtk namespace</title>
