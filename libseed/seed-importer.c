@@ -495,7 +495,12 @@ seed_make_importer_dir (JSContextRef ctx, gchar *path)
   init = g_strconcat (path, "/__init__.js", NULL);
   if (g_file_test (init, G_FILE_TEST_IS_REGULAR))
     {
+      SeedScript *s;
       SEED_NOTE (IMPORTER, "Found __init__.js (%s)", path);
+      
+      s = seed_script_new_from_file (ctx, init);
+      seed_evaluate (ctx, s, dir);
+      seed_script_destroy (s);
     }
 
   g_free (init);

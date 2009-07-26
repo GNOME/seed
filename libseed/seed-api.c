@@ -405,6 +405,15 @@ seed_string_unref (JSStringRef string)
   JSStringRelease (string);
 }
 
+void 
+seed_script_destroy (SeedScript *s)
+{
+  seed_string_unref (s->script);
+  seed_string_unref (s->source_url);
+  
+  g_free (s);
+}
+
 // TODO:FIXME: Do we have an external typedef or anything for JSClassDefinition?
 
 /**
