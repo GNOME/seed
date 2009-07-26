@@ -484,6 +484,24 @@ seed_gi_importer_get_property (JSContextRef ctx,
   return ret;
 }
 
+static JSObjectRef
+seed_make_importer_dir (JSContextRef ctx, gchar *path)
+{
+  gchar *init;
+  JSObjectRef dir;
+
+  dir = JSObjectMake (ctx, importer_dir_class, path);
+
+  init = g_strconcat (path, "/__init__.js", NULL);
+  if (g_file_test (init, G_FILE_TEST_IS_REGULAR))
+    {
+      SEED_NOTE (IMPORTER, "Found __init__.js (%s)", path);
+    }
+
+  g_free (init);
+  return dir;
+}
+
 static void
 seed_importer_free_search_path (GSList *path)
 {
@@ -618,7 +636,7 @@ seed_importer_handle_file (JSContextRef ctx,
       if (g_file_test (file_path, G_FILE_TEST_IS_DIR))
 	{
 	  SEED_NOTE (IMPORTER, "File is directory");
-	  return JSObjectMake (ctx, importer_dir_class, file_path);
+	  return seed_make_importer_dir (ctx, file_path);
 	}
       return NULL;
     }
@@ -903,7 +921,7 @@ seed_importer_construct_dir (JSContextRef ctx,
       return (JSObjectRef)JSValueMakeUndefined (ctx);
     }
 
-  return JSObjectMake (ctx, importer_dir_class, path);
+  return seed_make_importer_dir (ctx, path);
 }
 
 void
