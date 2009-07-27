@@ -492,7 +492,7 @@ seed_make_importer_dir (JSContextRef ctx, gchar *path)
 
   dir = JSObjectMake (ctx, importer_dir_class, path);
 
-  init = g_strconcat (path, "/__init__.js", NULL);
+  init = g_build_filename (path, "__init__.js", NULL);
   if (g_file_test (init, G_FILE_TEST_IS_REGULAR))
     {
       SeedScript *s;
