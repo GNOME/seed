@@ -18,17 +18,13 @@
 #include "seed-private.h"
 #include <sys/mman.h>
 
+GHashTable *gtype_iinits;
+
 JSClassRef seed_gtype_class;
 GIBaseInfo *objectclass_info = NULL;
 GIBaseInfo *paramspec_info = NULL;
 
 JSObjectRef seed_gtype_constructor;
-
-GQuark qgetter;
-GQuark qsetter;
-
-GQuark qiinit;
-GQuark qcinit;
 
 typedef struct _SeedGClassPrivates {
   JSObjectRef constructor;
@@ -193,74 +189,6 @@ seed_gsignal_method_invoked (JSContextRef ctx,
   return (JSValueRef) seed_value_from_uint (ctx, signal_id, exception);
 }
 
-static void
-seed_gtype_builtin_set_property (GObject * object,
-				 guint property_id,
-				 const GValue * value, GParamSpec * spec)
-{
-  JSContextRef ctx = JSGlobalContextCreateInGroup (context_group, 0);
-  gchar *name = g_strjoin (NULL, "_", spec->name, NULL);
-  JSObjectRef jsobj = (JSObjectRef) seed_value_from_object (ctx, object, 0);
-
-  seed_prepare_global_context (ctx);
-
-  seed_object_set_property (ctx,
-			    jsobj,
-			    name,
-			    seed_value_from_gvalue (ctx, (GValue *) value,
-						    0));
-
-  g_free (name);
-  JSGlobalContextRelease ((JSGlobalContextRef) ctx);
-}
-
-static void
-seed_gtype_builtin_get_property (GObject * object,
-				 guint property_id,
-				 GValue * value, GParamSpec * spec)
-{
-  // TODO: Exceptions
-  JSContextRef ctx = JSGlobalContextCreateInGroup (context_group, 0);
-  gchar *name = g_strjoin (NULL, "_", spec->name, NULL);
-  JSObjectRef jsobj = (JSObjectRef) seed_value_from_object (ctx, object, 0);
-  JSValueRef jsval = seed_object_get_property (ctx, jsobj,
-					       name);
-
-  seed_prepare_global_context (ctx);
-
-  seed_gvalue_from_seed_value (ctx, jsval, spec->value_type, value, 0);
-
-  g_free (name);
-  JSGlobalContextRelease ((JSGlobalContextRef) ctx);
-}
-
-static void
-seed_gtype_set_property (GObject * object,
-			 guint property_id,
-			 const GValue * value, GParamSpec * spec)
-{
-  gpointer data = g_param_spec_get_qdata (spec, qsetter);
-
-  if (!data)
-    {
-      seed_gtype_builtin_set_property (object, property_id, value, spec);
-      return;
-    }
-}
-
-static void
-seed_gtype_get_property (GObject * object,
-			 guint property_id, GValue * value, GParamSpec * spec)
-{
-  gpointer data = g_param_spec_get_qdata (spec, qgetter);
-
-  if (!data)
-    {
-      seed_gtype_builtin_get_property (object, property_id, value, spec);
-      return;
-    }
-}
-
 static GIBaseInfo *
 seed_get_class_info_for_type (GType type)
 {
@@ -311,7 +239,7 @@ seed_gtype_construct (GType type,
 
   g_type_class_unref (parent_class);
 
-  func = g_type_get_qdata (type, qiinit);
+  func = g_hash_table_lookup (gtype_iinits, GINT_TO_POINTER (type));
   if (func)
     {
       ctx = JSGlobalContextCreateInGroup (context_group, 0);
@@ -431,8 +359,6 @@ seed_gtype_class_init (gpointer g_class,
 
   priv = (SeedGClassPrivates *)class_data;
 
-  ((GObjectClass *)g_class)->get_property = seed_gtype_get_property;
-  ((GObjectClass *)g_class)->set_property = seed_gtype_set_property;
   ((GObjectClass *)g_class)->constructor = seed_gtype_construct;
 
   ctx = JSGlobalContextCreateInGroup (context_group, 0);
@@ -580,78 +506,12 @@ seed_gtype_constructor_invoked (JSContextRef ctx,
       JSValueIsObject (ctx, instance_init) &&
       JSObjectIsFunction (ctx, (JSObjectRef) instance_init))
     {
-      g_type_set_qdata (new_type, qiinit, (gpointer) instance_init);
+      g_hash_table_insert (gtype_iinits, GINT_TO_POINTER (new_type), (gpointer) instance_init);
       JSValueProtect (ctx, instance_init);
     }
 
   g_free (new_name);
   return constructor_ref;
-}
-
-static JSValueRef
-seed_param_getter_invoked (JSContextRef ctx,
-			   JSObjectRef function,
-			   JSObjectRef thisObject,
-			   gsize argumentCount,
-			   const JSValueRef arguments[],
-			   JSValueRef * exception)
-{
-  GParamSpec *pspec = seed_pointer_get_pointer (ctx, thisObject);
-
-  if (argumentCount != 1)
-    {
-      seed_make_exception (ctx, exception, "ArgumentError",
-			   "ParamSpec.get expected "
-			   "1 argument, got %zd", argumentCount);
-
-      return JSValueMakeNull (ctx);
-    }
-  else if (JSValueIsNull (ctx, arguments[0]) ||
-	   !JSValueIsObject (ctx, arguments[0]) ||
-	   !JSObjectIsFunction (ctx, (JSObjectRef) arguments[0]))
-    {
-      // Maybe should  accept C functions
-      seed_make_exception (ctx, exception, "ArgumentError",
-			   "ParamSpec.get expected a function");
-      return JSValueMakeNull (ctx);
-    }
-
-  g_param_spec_set_qdata (pspec, qgetter, (gpointer) arguments[0]);
-
-  return seed_value_from_boolean (ctx, TRUE, exception);
-}
-
-static JSValueRef
-seed_param_setter_invoked (JSContextRef ctx,
-			   JSObjectRef function,
-			   JSObjectRef thisObject,
-			   gsize argumentCount,
-			   const JSValueRef arguments[],
-			   JSValueRef * exception)
-{
-  GParamSpec *pspec = seed_pointer_get_pointer (ctx, thisObject);
-
-  if (argumentCount != 1)
-    {
-      seed_make_exception (ctx, exception, "ArgumentError",
-			   "ParamSpec.set expected "
-			   "1 argument, got %zd", argumentCount);
-
-      return JSValueMakeNull (ctx);
-    }
-  else if (JSValueIsNull (ctx, arguments[0]) ||
-	   !JSValueIsObject (ctx, arguments[0]) ||
-	   !JSObjectIsFunction (ctx, (JSObjectRef) arguments[0]))
-    {
-      // Maybe should  accept C functions
-      seed_make_exception (ctx, exception, "ArgumentError",
-			   "ParamSpec.set expected a function");
-      return JSValueMakeNull (ctx);
-    }
-
-  g_param_spec_set_qdata (pspec, qsetter, (gpointer) arguments[0]);
-
-  return seed_value_from_boolean (ctx, TRUE, exception);
 }
 
 void
@@ -663,12 +523,6 @@ seed_define_gtype_functions (JSContextRef ctx)
 						 "GObject", "ObjectClass");
 
   proto = seed_struct_prototype (ctx, objectclass_info);
-
-  paramspec_info = g_irepository_find_by_name (NULL, "GObject", "ParamSpec");
-  proto = seed_struct_prototype (ctx, paramspec_info);
-
-  seed_create_function (ctx, "get", &seed_param_getter_invoked, proto);
-  seed_create_function (ctx, "set", &seed_param_setter_invoked, proto);
 }
 
 void
@@ -685,8 +539,8 @@ seed_gtype_init (SeedEngine * local_eng)
   seed_object_set_property (local_eng->context,
 			    local_eng->global, "GType", seed_gtype_constructor);
 
-  qiinit = g_quark_from_static_string("js-instance-init");
-
   seed_define_gtype_functions (local_eng->context);
+  
+  gtype_iinits = g_hash_table_new (g_int_hash, g_str_equal);
 }
 
