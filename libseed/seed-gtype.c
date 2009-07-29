@@ -18,6 +18,8 @@
 #include "seed-private.h"
 #include <sys/mman.h>
 
+typedef  GObject * (*GObjectConstructCallback) (GType, guint, GObjectConstructParam *);
+
 GHashTable *gtype_iinits;
 
 JSClassRef seed_gtype_class;
@@ -219,25 +221,13 @@ seed_attach_methods_to_class_object (JSContextRef ctx,
 			&seed_gsignal_method_invoked, object);
 }
 
-static GObject *
-seed_gtype_construct (GType type,
-		      guint n_construct_params,
-		      GObjectConstructParam *construct_params)
+static void
+seed_gtype_call_construct (GType type, GObject *object)
 {
   JSContextRef ctx;
   JSObjectRef func, this_object;
   JSValueRef exception = NULL, args[1];
-  GObject *object;
-  GType parent;
-  GObjectClass *parent_class;
-  gchar *mes;
-
-  parent = g_type_parent (type);
-  parent_class = g_type_class_ref (parent);
-
-  object = parent_class->constructor (type, n_construct_params, construct_params);
-
-  g_type_class_unref (parent_class);
+  gchar * mes;
 
   func = g_hash_table_lookup (gtype_iinits, GINT_TO_POINTER (type));
   if (func)
@@ -259,6 +249,39 @@ seed_gtype_construct (GType type,
 	}
       JSGlobalContextRelease ((JSGlobalContextRef) ctx);
     }
+
+
+}
+
+static GObject *
+seed_gtype_construct (GType type,
+		      guint n_construct_params,
+		      GObjectConstructParam *construct_params)
+{
+  GObject *object;
+  GType parent;
+  GObjectClass *parent_class;
+
+  parent = g_type_parent (type);
+  parent_class = g_type_class_ref (parent);
+    
+  if (parent_class->constructor == seed_gtype_construct)
+    {
+      parent = g_type_parent (parent);
+
+      g_type_class_unref (parent_class);
+      parent_class = g_type_class_ref (parent);
+
+      object = parent_class->constructor (type, n_construct_params, construct_params);
+
+      g_type_class_unref (parent_class);
+    }
+  else
+    object = parent_class->constructor (type, n_construct_params, construct_params);
+  
+  seed_gtype_call_construct (type, object);
+  
+  g_type_class_unref (parent_class);
 
   return object;
 }
