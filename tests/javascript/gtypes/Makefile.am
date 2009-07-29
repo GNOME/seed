@@ -3,6 +3,7 @@ EXTRA_DIST = \
 	gtype-property.js \
 	gtype-typerror.js \
 	gtype.js \
+	gtype-gtype.js \
 	gtype-signal-args.js \
 	gtype-property-construct.js \
 	gtype-self.js \

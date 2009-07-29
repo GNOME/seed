@@ -307,7 +307,7 @@ seed_gtype_construct (GType type,
   parent = g_type_parent (type);
   parent_class = g_type_class_ref (parent);
 
-  object = parent_class->constructor (type, n_construct_params, construct_params);
+  object = parent_class->constructor (parent, n_construct_params, construct_params);
 
   g_type_class_unref (parent_class);
 
