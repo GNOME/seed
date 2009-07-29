@@ -17,10 +17,10 @@ can be <emphasis>caught</emphasis> either by a try/catch block in the
 calling JavaScript, or by observing the exception property, dealing
 with it, and then clearing the exception.
 
-It is important to note that calling seed_make_exception(), does not
-in fact 'throw' the exception, but just creates an object, that when
-stored in the exception pointer passed to a callback, causes JSC to
-throw an exception once flow is returned.
+It is important to note that calling seed_make_exception() does not
+in fact <emphasis>throw</emphasis> the exception, but just creates an
+object which, when stored in the exception pointer passed to a callback,
+causes JSC to throw an exception once flow is returned.
 </para>
 
 <example>

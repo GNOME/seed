@@ -6,14 +6,14 @@ Dealing with Seed class definitions and constructors
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
-Defining new "Seed" classes, allows for implementing more complex
-behavior than possible with the traditional JavaScript object system,
+Defining new Seed classes allows for implementing more complex
+behavior than possible with the traditional JavaScript object system
 and default class.
 
 When writing Seed modules, it is often the best pattern to define many
-of your types, through classes and static functions/value.
+of your types through classes and static functions/value.
 
-Please note that inside the "Finalize" callback of a class, it is not
+Please note that inside the finalize callback of a class, it is not
 legal to call any method requiring a #SeedContext (with the exception
 of protect/unprotect, though it is not guaranteed this will continue
 to work with future versions of JSCore).
