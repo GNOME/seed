@@ -79,4 +79,6 @@ JSValueRef seed_evaluate (JSContextRef ctx, SeedScript *script, JSObjectRef this
 
 void seed_script_destroy (SeedScript *s);
 
+JSValueRef seed_simple_evaluate (JSContextRef ctx, const gchar *script, JSValueRef *exception);
+
 #endif

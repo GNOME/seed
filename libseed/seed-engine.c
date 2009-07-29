@@ -23,6 +23,8 @@
 #include <stdarg.h>
 #include <string.h>
 
+JSObjectRef function_proto;
+
 JSObjectRef seed_obj_ref;
 
 GQuark qname;
@@ -618,6 +620,8 @@ seed_gobject_define_property_from_function_info (JSContextRef ctx,
 
   method_ref = JSObjectMake (ctx, gobject_method_class,
 			     g_base_info_ref ((GIBaseInfo *) info));
+  
+  JSObjectSetPrototype (ctx, method_ref, function_proto);
 
   name = g_base_info_get_name ((GIBaseInfo *) info);
   if (!g_strcmp0 (name, "new"))
@@ -1320,6 +1324,9 @@ seed_init (gint * argc, gchar *** argv)
   eng->group = context_group;
   eng->search_path = NULL;
 
+  function_proto = (JSObjectRef)
+	  seed_simple_evaluate (eng->context, "Function.prototype", NULL);
+
   gobject_class = JSClassCreate (&gobject_def);
   JSClassRetain (gobject_class);
   gobject_method_class = JSClassCreate (&gobject_method_def);
@@ -1413,6 +1420,9 @@ seed_init_with_context_group (gint * argc,
   eng->global = JSContextGetGlobalObject (eng->context);
   eng->group = context_group;
   eng->search_path = NULL;
+  
+  function_proto = (JSObjectRef)
+	  seed_simple_evaluate (eng->context, "Function.prototype", NULL);
 
   gobject_class = JSClassCreate (&gobject_def);
   JSClassRetain (gobject_class);
