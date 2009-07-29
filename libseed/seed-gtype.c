@@ -307,7 +307,7 @@ seed_gtype_construct (GType type,
   parent = g_type_parent (type);
   parent_class = g_type_class_ref (parent);
 
-  object = parent_class->constructor (parent, n_construct_params, construct_params);
+  object = parent_class->constructor (type, n_construct_params, construct_params);
 
   g_type_class_unref (parent_class);
 
@@ -685,10 +685,7 @@ seed_gtype_init (SeedEngine * local_eng)
   seed_object_set_property (local_eng->context,
 			    local_eng->global, "GType", seed_gtype_constructor);
 
-  qgetter = g_quark_from_static_string ("js-getter");
-  qsetter = g_quark_from_static_string ("js-setter");
   qiinit = g_quark_from_static_string("js-instance-init");
-  qcinit = g_quark_from_static_string("js-class-init");
 
   seed_define_gtype_functions (local_eng->context);
 }
