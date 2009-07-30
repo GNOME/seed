@@ -1,6 +1,4 @@
-/*
- * -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*-
- */
+/* -*- mode: C; indent-tabs-mode: t; tab-width: 8; c-basic-offset: 2; -*- */
 
 /*
  * This file is part of Seed, the GObject Introspection<->Javascript bindings.
@@ -16,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Seed.  If not, see <http://www.gnu.org/licenses/>.
  *
- * Copyright (C) Robert Carr 2008 <carrr@rpi.edu>
+ * Copyright (C) Robert Carr 2009 <carrr@rpi.edu>
  */
 
 #ifndef _SEED_DEBUG_H
