@@ -52,7 +52,7 @@ seed_include (JSContextRef ctx,
     g_file_get_contents (import_file, &buffer, 0, NULL);
   else				/* A search path is set and path given is not absolute.  */
     {
-		len = g_strv_length(eng->search_path);
+      len = g_strv_length (eng->search_path);
       for (i = 0; i < len; ++i)
 	{
 	  dir = g_dir_open (eng->search_path[i], 0, NULL);
@@ -66,7 +66,7 @@ seed_include (JSContextRef ctx,
 	  if (g_file_get_contents (abs_path, &buffer, 0, NULL))
 	    {
 	      g_free (abs_path);
-          g_dir_close (dir);
+	      g_dir_close (dir);
 	      break;
 	    }
 
@@ -211,7 +211,7 @@ seed_print (JSContextRef ctx,
 	    size_t argumentCount,
 	    const JSValueRef arguments[], JSValueRef * exception)
 {
-    gchar *buf;
+  gchar *buf;
   if (argumentCount != 1)
     {
       seed_make_exception (ctx, exception, "ArgumentError",
@@ -220,7 +220,7 @@ seed_print (JSContextRef ctx,
       return JSValueMakeNull (ctx);
     }
 
-    buf = seed_value_to_string (ctx, arguments[0], exception);
+  buf = seed_value_to_string (ctx, arguments[0], exception);
 
   puts (buf);
   g_free (buf);
@@ -298,7 +298,7 @@ seed_introspect (JSContextRef ctx,
   nargs = g_callable_info_get_n_args (info);
   for (i = 0; i < nargs; ++i)
     {
-       argument = JSObjectMake (ctx, NULL, NULL);
+      argument = JSObjectMake (ctx, NULL, NULL);
 
       const gchar *arg_name =
 	seed_g_type_name_to_string (g_arg_info_get_type
@@ -321,12 +321,10 @@ seed_check_syntax (JSContextRef ctx,
 		   size_t argumentCount,
 		   const JSValueRef arguments[], JSValueRef * exception)
 {
-    JSStringRef jsstr;
+  JSStringRef jsstr;
   if (argumentCount == 1)
     {
-      jsstr = JSValueToStringCopy (ctx,
-					       arguments[0],
-					       exception);
+      jsstr = JSValueToStringCopy (ctx, arguments[0], exception);
 
       JSCheckScriptSyntax (ctx, jsstr, 0, 0, exception);
       if (jsstr)
@@ -373,9 +371,11 @@ seed_spawn (JSContextRef ctx,
 
   ret = JSObjectMake (ctx, NULL, NULL);
   seed_object_set_property (ctx, ret, "stdout",
-			    seed_value_from_string (ctx, stdoutstr, exception));
+			    seed_value_from_string (ctx, stdoutstr,
+						    exception));
   seed_object_set_property (ctx, ret, "stderr",
-			    seed_value_from_string (ctx, stderrstr, exception));
+			    seed_value_from_string (ctx, stderrstr,
+						    exception));
 
   g_free (line);
   g_free (stdoutstr);
@@ -504,4 +504,3 @@ seed_init_builtins (SeedEngine * local_eng, gint * argc, gchar *** argv)
   seed_object_set_property (local_eng->context, obj, "argv", arrayObj);
 
 }
-

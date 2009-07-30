@@ -35,9 +35,7 @@
 void
 seed_make_exception (JSContextRef ctx,
 		     JSValueRef * exception,
-		     const gchar * name,
-		     const gchar * message,
-		     ...)
+		     const gchar * name, const gchar * message, ...)
 {
   JSStringRef js_name = 0;
   JSStringRef js_message = 0;
@@ -238,4 +236,3 @@ seed_exception_to_string (JSContextRef ctx, JSValueRef e)
 
   return ret;
 }
-

@@ -40,8 +40,7 @@ seed_gobject_signal_connect (JSContextRef ctx,
 			     const gchar * signal_name,
 			     GObject * on_obj,
 			     JSObjectRef func,
-			     JSObjectRef this_obj,
-			     JSObjectRef user_data)
+			     JSObjectRef this_obj, JSObjectRef user_data)
 {
   GSignalQuery query;
   GClosure *closure;
@@ -50,15 +49,18 @@ seed_gobject_signal_connect (JSContextRef ctx,
 		  &query);
 #ifdef SEED_ENABLE_DEBUG
   {
-    guint function_arity =
-      seed_value_to_uint (ctx,
-			  seed_object_get_property(ctx, func, "length"),
-			  NULL);
+    guint function_arity = seed_value_to_uint (ctx,
+					       seed_object_get_property (ctx,
+									 func,
+									 "length"),
+					       NULL);
     if (function_arity != query.n_params)
       {
-	SEED_MARK();
-	SEED_NOTE(SIGNAL, "Connecting signal: %s. Function has arity %d, signal expects %d", query.signal_name, function_arity, query.n_params);
-	SEED_MARK();
+	SEED_MARK ();
+	SEED_NOTE (SIGNAL,
+		   "Connecting signal: %s. Function has arity %d, signal expects %d",
+		   query.signal_name, function_arity, query.n_params);
+	SEED_MARK ();
       }
   }
 #endif
@@ -87,8 +89,7 @@ seed_gobject_signal_connect_by_name (JSContextRef ctx,
     {
       seed_make_exception (ctx, exception, "ArgumentError",
 			   "Signal connection expected"
-			   " 2 or 3 arguments. Got " "%zd",
-			   argumentCount);
+			   " 2 or 3 arguments. Got " "%zd", argumentCount);
 
       return JSValueMakeNull (ctx);
     }
@@ -99,8 +100,7 @@ seed_gobject_signal_connect_by_name (JSContextRef ctx,
     {
       seed_make_exception (ctx, exception, "ArgumentError",
 			   "Signal connection by name "
-			   "requires a function"
-			   " as second argument");
+			   "requires a function" " as second argument");
       return JSValueMakeNull (ctx);
     }
 
@@ -114,7 +114,8 @@ seed_gobject_signal_connect_by_name (JSContextRef ctx,
   obj_type = G_OBJECT_TYPE (obj);
 
   id = seed_gobject_signal_connect (ctx, signal_name, obj,
-			       (JSObjectRef) arguments[1], NULL, user_data);
+				    (JSObjectRef) arguments[1], NULL,
+				    user_data);
 
   g_free (signal_name);
 
@@ -142,8 +143,7 @@ seed_signal_marshal_func (GClosure * closure,
 			  GValue * return_value,
 			  guint n_param_values,
 			  const GValue * param_values,
-			  gpointer invocation_hint,
-			  gpointer marshall_data)
+			  gpointer invocation_hint, gpointer marshall_data)
 {
   SeedClosure *seed_closure = (SeedClosure *) closure;
   JSValueRef *args, exception = 0;
@@ -175,8 +175,7 @@ seed_signal_marshal_func (GClosure * closure,
     args[i] = JSValueMakeNull (ctx);
 
   ret = JSObjectCallAsFunction (ctx, seed_closure->function,
-				NULL,
-				n_param_values + 1, args, &exception);
+				NULL, n_param_values + 1, args, &exception);
 
   if (exception)
     {
@@ -232,8 +231,7 @@ seed_gobject_signal_emit (JSContextRef ctx,
 			   "arguments, got %zd",
 			   query.signal_name,
 			   g_type_name (query.itype),
-			   query.n_params,
-			   argumentCount);
+			   query.n_params, argumentCount);
 
       return JSValueMakeNull (ctx);
     }
@@ -283,7 +281,7 @@ seed_gobject_signal_disconnect (JSContextRef ctx,
   id = seed_value_to_ulong (ctx, arguments[0], exception);
   g_signal_handler_disconnect (JSObjectGetPrivate (thisObject), id);
 
-  return JSValueMakeUndefined(ctx);
+  return JSValueMakeUndefined (ctx);
 }
 
 static JSValueRef
@@ -310,8 +308,7 @@ seed_gobject_signal_connect_on_property (JSContextRef ctx,
     {
       seed_make_exception (ctx, exception, "ArgumentError",
 			   "Signal connection expected"
-			   " 1, or 2 arguments. Got "
-			   "%zd", argumentCount);
+			   " 1, or 2 arguments. Got " "%zd", argumentCount);
 
       return JSValueMakeNull (ctx);
     }
@@ -327,12 +324,13 @@ seed_gobject_signal_connect_on_property (JSContextRef ctx,
     }
 
   if (argumentCount == 1)
-  {
-    id = seed_gobject_signal_connect (ctx, privates->signal_name,
-				      privates->object,
-				      (JSObjectRef) arguments[0], this_obj, NULL);
+    {
+      id = seed_gobject_signal_connect (ctx, privates->signal_name,
+					privates->object,
+					(JSObjectRef) arguments[0], this_obj,
+					NULL);
 
-  }
+    }
   else if (argumentCount == 2)
     {
       id = seed_gobject_signal_connect (ctx, privates->signal_name,
@@ -345,14 +343,18 @@ seed_gobject_signal_connect_on_property (JSContextRef ctx,
 }
 
 JSStaticFunction signal_static_functions[] = {
-  {"connect", seed_gobject_signal_connect_on_property, 0},
-  {"emit", seed_gobject_signal_emit, 0},
+  {"connect", seed_gobject_signal_connect_on_property, 0}
+  ,
+  {"emit", seed_gobject_signal_emit, 0}
+  ,
   {0, 0, 0}
 };
 
-JSStaticFunction signal_holder_static_functions [] = {
-  {"connect", seed_gobject_signal_connect_by_name, 0},
-  {"disconnect", seed_gobject_signal_disconnect, 0},
+JSStaticFunction signal_holder_static_functions[] = {
+  {"connect", seed_gobject_signal_connect_by_name, 0}
+  ,
+  {"disconnect", seed_gobject_signal_disconnect, 0}
+  ,
   {0, 0, 0}
 };
 
@@ -380,7 +382,7 @@ static JSValueRef
 seed_signal_holder_get_property (JSContextRef ctx,
 				 JSObjectRef object,
 				 JSStringRef property_name,
-				 JSValueRef *exception)
+				 JSValueRef * exception)
 {
   GObject *gobj = JSObjectGetPrivate (object);
   signal_privates *priv;
@@ -390,7 +392,9 @@ seed_signal_holder_get_property (JSContextRef ctx,
 
   JSStringGetUTF8CString (property_name, signal_name, length);
 
-  if (!(g_strcmp0 (signal_name, "connect") && g_strcmp0 (signal_name, "disconnect")) )
+  if (!
+      (g_strcmp0 (signal_name, "connect")
+       && g_strcmp0 (signal_name, "disconnect")))
     {
       g_free (signal_name);
       return NULL;
@@ -425,4 +429,3 @@ seed_get_signal_class (void)
 
   return &gobject_signal_def;
 }
-

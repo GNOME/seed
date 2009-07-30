@@ -70,7 +70,8 @@ static const GDebugKey seed_debug_keys[] = {
  * to a fresh #SeedContext.
  *
  */
-void seed_prepare_global_context (JSContextRef ctx)
+void
+seed_prepare_global_context (JSContextRef ctx)
 {
   JSObjectRef global = JSContextGetGlobalObject (ctx);
 
@@ -201,7 +202,7 @@ seed_gobject_constructor_invoked (JSContextRef ctx,
 	{
 	  g_free (params);
 	  JSPropertyNameArrayRelease (jsprops);
-	  seed_next_gobject_wrapper =  NULL;
+	  seed_next_gobject_wrapper = NULL;
 	  return 0;
 	}
       params[ri].name = prop_name;
@@ -217,11 +218,10 @@ seed_gobject_constructor_invoked (JSContextRef ctx,
   gobject = g_object_newv (type, ri, params);
 
 
-  if (G_IS_INITIALLY_UNOWNED (gobject) &&
-      !g_object_is_floating(gobject))
-    g_object_ref(gobject);
-  else if (g_object_is_floating(gobject))
-    g_object_ref_sink(gobject);
+  if (G_IS_INITIALLY_UNOWNED (gobject) && !g_object_is_floating (gobject))
+    g_object_ref (gobject);
+  else if (g_object_is_floating (gobject))
+    g_object_ref_sink (gobject);
 
   if (!gobject)
     ret = (JSObjectRef) JSValueMakeNull (ctx);
@@ -293,15 +293,14 @@ seed_gobject_method_finalize (JSObjectRef method)
     g_base_info_unref (info);
 }
 
-typedef void (*InitMethodCallback) (gint *argc, gchar ***argv);
+typedef void (*InitMethodCallback) (gint * argc, gchar *** argv);
 
 static gboolean
 seed_gobject_init_build_argv (JSContextRef ctx,
 			      JSObjectRef array,
-			      SeedArgvPrivates *priv,
-			      JSValueRef *exception)
+			      SeedArgvPrivates * priv, JSValueRef * exception)
 {
-  guint i,length;
+  guint i, length;
   JSValueRef jsl;
 
   jsl = seed_object_get_property (ctx, array, "length");
@@ -309,13 +308,15 @@ seed_gobject_init_build_argv (JSContextRef ctx,
     return FALSE;
 
   length = seed_value_to_uint (ctx, jsl, exception);
-  priv->argv = g_new(gchar *, length);
+  priv->argv = g_new (gchar *, length);
   priv->argc = length;
 
   for (i = 0; i < length; i++)
     {
       priv->argv[i] = seed_value_to_string (ctx,
-					    JSObjectGetPropertyAtIndex (ctx, array, i,
+					    JSObjectGetPropertyAtIndex (ctx,
+									array,
+									i,
 									exception),
 					    exception);
     }
@@ -340,31 +341,33 @@ seed_gobject_init_method_invoked (JSContextRef ctx,
   if (argumentCount != 1 && argumentCount != 2)
     {
       seed_make_exception (ctx, exception,
-			   "ArgumentError", "init method expects 1 argument, got %zd",
+			   "ArgumentError",
+			   "init method expects 1 argument, got %zd",
 			   argumentCount);
       return JSValueMakeUndefined (ctx);
     }
 
-  if (argumentCount ==1)
+  if (argumentCount == 1)
     {
-      if (JSValueIsNull (ctx, arguments[0]) || !JSValueIsObject (ctx, arguments[0]))
+      if (JSValueIsNull (ctx, arguments[0])
+	  || !JSValueIsObject (ctx, arguments[0]))
 
 	{
 	  seed_make_exception (ctx, exception,
-			       "ArgumentError", "init method expects an array object as argument");
+			       "ArgumentError",
+			       "init method expects an array object as argument");
 	  return JSValueMakeUndefined (ctx);
 	}
-      if(JSValueIsObjectOfClass (ctx, arguments[0], seed_argv_class))
+      if (JSValueIsObjectOfClass (ctx, arguments[0], seed_argv_class))
 	{
-	  priv = JSObjectGetPrivate ((JSObjectRef)arguments[0]);
+	  priv = JSObjectGetPrivate ((JSObjectRef) arguments[0]);
 	}
       else
 	{
-	  priv = g_newa (SeedArgvPrivates,1);
+	  priv = g_newa (SeedArgvPrivates, 1);
 	  if (!seed_gobject_init_build_argv (ctx,
-					     (JSObjectRef)arguments[0],
-					     priv,
-					     exception))
+					     (JSObjectRef) arguments[0],
+					     priv, exception))
 	    {
 	      seed_make_exception (ctx, exception, "ArgumentError",
 				   "Init method expects an array as argument");
@@ -377,15 +380,17 @@ seed_gobject_init_method_invoked (JSContextRef ctx,
 
   info = JSObjectGetPrivate (function);
   typelib = g_base_info_get_typelib (info);
-  g_typelib_symbol (typelib, g_function_info_get_symbol ((GIFunctionInfo *)info), (gpointer *)&c);
+  g_typelib_symbol (typelib,
+		    g_function_info_get_symbol ((GIFunctionInfo *) info),
+		    (gpointer *) & c);
   // Backwards compatibility
   if (!priv)
     {
-      c(NULL, NULL);
+      c (NULL, NULL);
       return JSValueMakeUndefined (ctx);
     }
 
-  c(&priv->argc, &priv->argv);
+  c (&priv->argc, &priv->argv);
 
   if (allocated)
     g_free (priv->argv);
@@ -436,7 +441,9 @@ seed_gobject_method_invoked (JSContextRef ctx,
 
   for (i = 0; (i < (n_args)); i++)
     {
-      SEED_NOTE (INVOCATION, "Converting arg: %d of function %s, exception is %p", i, g_base_info_get_name (info), exception);
+      SEED_NOTE (INVOCATION,
+		 "Converting arg: %d of function %s, exception is %p", i,
+		 g_base_info_get_name (info), exception);
       arg_info = g_callable_info_get_arg ((GICallableInfo *) info, i);
       dir = g_arg_info_get_direction (arg_info);
       type_info = g_arg_info_get_type (arg_info);
@@ -456,7 +463,8 @@ seed_gobject_method_invoked (JSContextRef ctx,
 				   "Unable to make argument %d for"
 				   " function: %s. \n",
 				   i + 1,
-				   g_base_info_get_name ((GIBaseInfo *) info));
+				   g_base_info_get_name ((GIBaseInfo *)
+							 info));
 
 	      g_base_info_unref ((GIBaseInfo *) type_info);
 	      g_base_info_unref ((GIBaseInfo *) arg_info);
@@ -558,8 +566,9 @@ seed_gobject_method_invoked (JSContextRef ctx,
 	{
 	  seed_gi_release_in_arg (g_arg_info_get_ownership_transfer
 				  (arg_info), type_info,
-				  &in_args[in_args_pos + (instance_method ? 1 : 0)]);
-          in_args_pos++;
+				  &in_args[in_args_pos +
+					   (instance_method ? 1 : 0)]);
+	  in_args_pos++;
 
 	  g_base_info_unref ((GIBaseInfo *) type_info);
 	  g_base_info_unref ((GIBaseInfo *) arg_info);
@@ -620,7 +629,7 @@ seed_gobject_define_property_from_function_info (JSContextRef ctx,
 
   method_ref = JSObjectMake (ctx, gobject_method_class,
 			     g_base_info_ref ((GIBaseInfo *) info));
-  
+
   JSObjectSetPrototype (ctx, method_ref, function_proto);
 
   name = g_base_info_get_name ((GIBaseInfo *) info);
@@ -967,8 +976,7 @@ seed_gobject_set_property (JSContextRef context,
 static JSValueRef
 seed_gobject_constructor_convert_to_type (JSContextRef ctx,
 					  JSObjectRef object,
-					  JSType type,
-					  JSValueRef *exception)
+					  JSType type, JSValueRef * exception)
 {
   GType gtype;
   gchar *as_string;
@@ -978,7 +986,8 @@ seed_gobject_constructor_convert_to_type (JSContextRef ctx,
       JSValueRef ret;
       gtype = (GType) JSObjectGetPrivate (object);
 
-      as_string = g_strdup_printf("[gobject_constructor %s]", g_type_name (gtype));
+      as_string =
+	g_strdup_printf ("[gobject_constructor %s]", g_type_name (gtype));
       ret = seed_value_from_string (ctx, as_string, exception);
       g_free (as_string);
 
@@ -988,8 +997,10 @@ seed_gobject_constructor_convert_to_type (JSContextRef ctx,
 }
 
 JSStaticFunction gobject_static_funcs[] = {
-  {"__debug_ref_count", seed_gobject_ref_count, 0},
-  {"__property_type", seed_gobject_property_type, 0},
+  {"__debug_ref_count", seed_gobject_ref_count, 0}
+  ,
+  {"__property_type", seed_gobject_property_type, 0}
+  ,
   {0, 0, 0}
 };
 
@@ -1147,9 +1158,7 @@ JSClassDefinition struct_constructor_def = {
  */
 void
 seed_create_function (JSContextRef ctx,
-		      gchar * name,
-		      gpointer func,
-		      JSObjectRef obj)
+		      gchar * name, gpointer func, JSObjectRef obj)
 {
   JSObjectRef oref;
 
@@ -1301,8 +1310,7 @@ seed_parse_args (int *argc, char ***argv)
  */
 SeedEngine *
 seed_init_with_context_group (gint * argc,
-			      gchar *** argv,
-			      JSContextGroupRef group)
+			      gchar *** argv, JSContextGroupRef group)
 {
 
   g_type_init ();
@@ -1329,7 +1337,7 @@ seed_init_with_context_group (gint * argc,
   eng->search_path = NULL;
 
   function_proto = (JSObjectRef)
-	  seed_simple_evaluate (eng->context, "Function.prototype", NULL);
+    seed_simple_evaluate (eng->context, "Function.prototype", NULL);
 
   gobject_class = JSClassCreate (&gobject_def);
   JSClassRetain (gobject_class);
@@ -1369,7 +1377,8 @@ seed_init_with_context_group (gint * argc,
 
 
   defaults_script =
-	  JSStringCreateWithUTF8CString ("Seed.include(\""SEED_PREFIX_PATH"extensions/Seed.js\");");
+    JSStringCreateWithUTF8CString ("Seed.include(\"" SEED_PREFIX_PATH
+				   "extensions/Seed.js\");");
 
   JSEvaluateScript (eng->context, defaults_script, NULL, NULL, 0, NULL);
 
@@ -1400,5 +1409,3 @@ seed_init (gint * argc, gchar *** argv)
 
   return seed_init_with_context_group (argc, argv, context_group);
 }
-
-

@@ -70,15 +70,16 @@ void seed_prepare_global_context (JSContextRef ctx);
 
 SeedScript *seed_make_script (JSContextRef ctx,
 			      const gchar * js,
-			      const gchar * source_url,
-			      gint line_number);
+			      const gchar * source_url, gint line_number);
 SeedScript *seed_script_new_from_file (JSContextRef ctx, gchar * file);
 JSValueRef seed_script_exception (SeedScript * s);
 
-JSValueRef seed_evaluate (JSContextRef ctx, SeedScript *script, JSObjectRef this);
+JSValueRef seed_evaluate (JSContextRef ctx, SeedScript * script,
+			  JSObjectRef this);
 
-void seed_script_destroy (SeedScript *s);
+void seed_script_destroy (SeedScript * s);
 
-JSValueRef seed_simple_evaluate (JSContextRef ctx, const gchar *script, JSValueRef *exception);
+JSValueRef seed_simple_evaluate (JSContextRef ctx, const gchar * script,
+				 JSValueRef * exception);
 
 #endif

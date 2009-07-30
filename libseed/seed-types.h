@@ -41,7 +41,7 @@ gboolean seed_gvalue_from_seed_value (JSContextRef ctx,
 gboolean seed_gi_make_argument (JSContextRef ctx,
 				JSValueRef value,
 				GITypeInfo * type_info,
-				GIArgInfo *arg_info,
+				GIArgInfo * arg_info,
 				GArgument * arg, JSValueRef * exception);
 JSValueRef seed_gi_argument_make_js (JSContextRef ctx,
 				     GArgument * arg,
@@ -125,12 +125,10 @@ JSValueRef seed_value_from_string (JSContextRef ctx,
 				   const gchar * val, JSValueRef * exception);
 
 time_t seed_value_to_time_t (JSContextRef ctx,
-			     JSValueRef val,
-			     JSValueRef *exception);
+			     JSValueRef val, JSValueRef * exception);
 
 JSValueRef seed_value_from_time_t (JSContextRef ctx,
-				   time_t time,
-				   JSValueRef *exception);
+				   time_t time, JSValueRef * exception);
 
 GObject *seed_value_to_object (JSContextRef ctx,
 			       JSValueRef val, JSValueRef * exception);
@@ -139,13 +137,12 @@ JSValueRef seed_value_from_object (JSContextRef ctx,
 
 void seed_toggle_ref (gpointer data, GObject * object, gboolean is_last_ref);
 
-gboolean seed_validate_enum (GIEnumInfo *info, long val);
+gboolean seed_validate_enum (GIEnumInfo * info, long val);
 
 JSValueRef
 seed_value_from_binary_string (JSContextRef ctx,
-			       const gchar *bytes,
-			       gint n_bytes,
-			       JSValueRef *exception);
+			       const gchar * bytes,
+			       gint n_bytes, JSValueRef * exception);
 
 JSObjectRef seed_make_wrapper_for_type (JSContextRef ctx, GType type);
 

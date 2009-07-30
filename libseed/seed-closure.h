@@ -49,25 +49,25 @@ extern JSClassRef seed_native_callback_class;
 
 SeedNativeClosure *seed_make_native_closure (JSContextRef ctx,
 					     GICallableInfo * info,
-					     GIArgInfo *arg_info,
+					     GIArgInfo * arg_info,
 					     JSValueRef function);
 GClosure *seed_closure_new (JSContextRef ctx,
 			    JSObjectRef function,
-			    JSObjectRef user_data,
-			    const gchar *description);
+			    JSObjectRef user_data, const gchar * description);
 
-JSObjectRef
-seed_closure_get_callable (GClosure *c);
+JSObjectRef seed_closure_get_callable (GClosure * c);
 
 JSValueRef
-seed_closure_invoke (GClosure *closure, JSValueRef *args, guint argc, JSValueRef *exception);
-JSValueRef
-seed_closure_invoke_with_context (JSContextRef ctx, GClosure *closure, JSValueRef *args, guint argc, JSValueRef *exception);
+seed_closure_invoke (GClosure * closure, JSValueRef * args, guint argc,
+		     JSValueRef * exception);
+JSValueRef seed_closure_invoke_with_context (JSContextRef ctx,
+					     GClosure * closure,
+					     JSValueRef * args, guint argc,
+					     JSValueRef * exception);
 
 void
-seed_closure_warn_exception (GClosure *c,
-			     JSContextRef ctx,
-			     JSValueRef exception);
+seed_closure_warn_exception (GClosure * c,
+			     JSContextRef ctx, JSValueRef exception);
 
 
 

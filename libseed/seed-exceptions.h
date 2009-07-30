@@ -24,17 +24,19 @@
 
 #include "seed-private.h"
 
-void seed_make_exception (JSContextRef ctx, JSValueRef * exception,
-			  const gchar * name, const gchar * message, ...) G_GNUC_PRINTF(4,5);
+void
+seed_make_exception (JSContextRef ctx, JSValueRef * exception,
+		     const gchar * name, const gchar * message, ...)
+G_GNUC_PRINTF (4, 5);
 
-void seed_make_exception_from_gerror (JSContextRef ctx,
-				      JSValueRef * exception,
-				      GError * e);
+     void seed_make_exception_from_gerror (JSContextRef ctx,
+					   JSValueRef * exception,
+					   GError * e);
 
-gchar *seed_exception_get_name (JSContextRef ctx, JSValueRef e);
-gchar *seed_exception_get_message (JSContextRef ctx, JSValueRef e);
-guint seed_exception_get_line (JSContextRef ctx, JSValueRef e);
-gchar *seed_exception_get_file (JSContextRef ctx, JSValueRef e);
-gchar *seed_exception_to_string (JSContextRef ctx, JSValueRef e);
+     gchar *seed_exception_get_name (JSContextRef ctx, JSValueRef e);
+     gchar *seed_exception_get_message (JSContextRef ctx, JSValueRef e);
+     guint seed_exception_get_line (JSContextRef ctx, JSValueRef e);
+     gchar *seed_exception_get_file (JSContextRef ctx, JSValueRef e);
+     gchar *seed_exception_to_string (JSContextRef ctx, JSValueRef e);
 
 #endif

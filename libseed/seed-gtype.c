@@ -18,7 +18,8 @@
 #include "seed-private.h"
 #include <sys/mman.h>
 
-typedef  GObject * (*GObjectConstructCallback) (GType, guint, GObjectConstructParam *);
+typedef GObject *(*GObjectConstructCallback) (GType, guint,
+					      GObjectConstructParam *);
 
 GHashTable *gtype_iinits;
 
@@ -28,7 +29,8 @@ GIBaseInfo *paramspec_info = NULL;
 
 JSObjectRef seed_gtype_constructor;
 
-typedef struct _SeedGClassPrivates {
+typedef struct _SeedGClassPrivates
+{
   JSObjectRef constructor;
   JSObjectRef func;
 
@@ -164,16 +166,14 @@ seed_gsignal_method_invoked (JSContextRef ctx,
       if (n_params > 0)
 	{
 	  guint i;
-      JSValueRef ptype;
+	  JSValueRef ptype;
 
 	  param_types = g_new0 (GType, n_params);
 	  for (i = 0; i < n_params; i++)
 	    {
-	       ptype = JSObjectGetPropertyAtIndex (ctx,
-							     (JSObjectRef)
-							     jsparams,
-							     i,
-							     exception);
+	      ptype = JSObjectGetPropertyAtIndex (ctx,
+						  (JSObjectRef)
+						  jsparams, i, exception);
 
 	      param_types[i] = seed_value_to_int (ctx, ptype, exception);
 	    }
@@ -202,8 +202,8 @@ seed_get_class_info_for_type (GType type)
       if (object_info)
 	{
 	  return
-	    (GIBaseInfo *)g_object_info_get_class_struct
-	                  ((GIObjectInfo *)object_info);
+	    (GIBaseInfo *) g_object_info_get_class_struct
+	    ((GIObjectInfo *) object_info);
 	}
       g_base_info_unref (object_info);
     }
@@ -213,7 +213,7 @@ seed_get_class_info_for_type (GType type)
 static void
 seed_attach_methods_to_class_object (JSContextRef ctx,
 				     JSObjectRef object,
-				     JSValueRef *exception)
+				     JSValueRef * exception)
 {
   seed_create_function (ctx, "c_install_property",
 			&seed_property_method_invoked, object);
@@ -222,12 +222,12 @@ seed_attach_methods_to_class_object (JSContextRef ctx,
 }
 
 static void
-seed_gtype_call_construct (GType type, GObject *object)
+seed_gtype_call_construct (GType type, GObject * object)
 {
   JSContextRef ctx;
   JSObjectRef func, this_object;
   JSValueRef exception = NULL, args[1];
-  gchar * mes;
+  gchar *mes;
 
   func = g_hash_table_lookup (gtype_iinits, GINT_TO_POINTER (type));
   if (func)
@@ -256,7 +256,7 @@ seed_gtype_call_construct (GType type, GObject *object)
 static GObject *
 seed_gtype_construct (GType type,
 		      guint n_construct_params,
-		      GObjectConstructParam *construct_params)
+		      GObjectConstructParam * construct_params)
 {
   GObject *object;
   GType parent;
@@ -264,7 +264,7 @@ seed_gtype_construct (GType type,
 
   parent = g_type_parent (type);
   parent_class = g_type_class_ref (parent);
-    
+
   if (parent_class->constructor == seed_gtype_construct)
     {
       parent = g_type_parent (parent);
@@ -272,15 +272,18 @@ seed_gtype_construct (GType type,
       g_type_class_unref (parent_class);
       parent_class = g_type_class_ref (parent);
 
-      object = parent_class->constructor (type, n_construct_params, construct_params);
+      object =
+	parent_class->constructor (type, n_construct_params,
+				   construct_params);
 
       g_type_class_unref (parent_class);
     }
   else
-    object = parent_class->constructor (type, n_construct_params, construct_params);
-  
+    object =
+      parent_class->constructor (type, n_construct_params, construct_params);
+
   seed_gtype_call_construct (type, object);
-  
+
   g_type_class_unref (parent_class);
 
   return object;
@@ -288,8 +291,7 @@ seed_gtype_construct (GType type,
 
 static void
 seed_gtype_install_signals (JSContextRef ctx,
-			    JSObjectRef definition,
-			    GType type)
+			    JSObjectRef definition, GType type)
 {
   JSObjectRef signals, signal_def;
   JSValueRef jslength;
@@ -301,8 +303,9 @@ seed_gtype_install_signals (JSContextRef ctx,
   JSValueRef jsname, jsflags, jsreturn_type, jsparams;
   gchar *name;
 
-  signals = (JSObjectRef) seed_object_get_property (ctx, definition, "signals");
-  if (JSValueIsNull(ctx, signals) || !JSValueIsObject (ctx, signals))
+  signals =
+    (JSObjectRef) seed_object_get_property (ctx, definition, "signals");
+  if (JSValueIsNull (ctx, signals) || !JSValueIsObject (ctx, signals))
     return;
 
   jslength = seed_object_get_property (ctx, signals, "length");
@@ -312,29 +315,33 @@ seed_gtype_install_signals (JSContextRef ctx,
   length = seed_value_to_uint (ctx, jslength, NULL);
   for (i = 0; i < length; i++)
     {
-       signal_def = (JSObjectRef)JSObjectGetPropertyAtIndex (ctx,
-									(JSObjectRef) signals,
-									i,
-									NULL);
+      signal_def = (JSObjectRef) JSObjectGetPropertyAtIndex (ctx,
+							     (JSObjectRef)
+							     signals, i,
+							     NULL);
 
-      if (JSValueIsNull (ctx, signal_def) || !JSValueIsObject(ctx, signal_def))
+      if (JSValueIsNull (ctx, signal_def)
+	  || !JSValueIsObject (ctx, signal_def))
 	continue;
 
       // TODO: Error checking
       jsname = seed_object_get_property (ctx, signal_def, "name");
       name = seed_value_to_string (ctx, jsname, NULL);
 
-      SEED_NOTE(GTYPE, "Installing signal with name: %s on type: %s",
-		name, g_type_name (type));
+      SEED_NOTE (GTYPE, "Installing signal with name: %s on type: %s",
+		 name, g_type_name (type));
 
-      jsflags = seed_object_get_property (ctx, (JSObjectRef) signal_def, "flags");
+      jsflags =
+	seed_object_get_property (ctx, (JSObjectRef) signal_def, "flags");
       if (JSValueIsNull (ctx, jsflags) || !JSValueIsNumber (ctx, jsflags))
-        flags = G_SIGNAL_RUN_LAST;
+	flags = G_SIGNAL_RUN_LAST;
       else
-        flags = seed_value_to_long (ctx, jsflags, NULL);
+	flags = seed_value_to_long (ctx, jsflags, NULL);
 
-      jsreturn_type = seed_object_get_property (ctx, signal_def, "return_type");
-      if (JSValueIsNull (ctx, jsreturn_type) || !JSValueIsNumber (ctx, jsreturn_type))
+      jsreturn_type =
+	seed_object_get_property (ctx, signal_def, "return_type");
+      if (JSValueIsNull (ctx, jsreturn_type)
+	  || !JSValueIsNumber (ctx, jsreturn_type))
 	return_type = G_TYPE_NONE;
       else
 	return_type = seed_value_to_long (ctx, jsreturn_type, NULL);
@@ -343,10 +350,15 @@ seed_gtype_install_signals (JSContextRef ctx,
 
       if (!JSValueIsNull (ctx, jsparams) && JSValueIsObject (ctx, jsparams))
 	{
-	  n_params = seed_value_to_int (ctx, seed_object_get_property (ctx, (JSObjectRef) jsparams, "length"), NULL);
+	  n_params =
+	    seed_value_to_int (ctx,
+			       seed_object_get_property (ctx,
+							 (JSObjectRef)
+							 jsparams, "length"),
+			       NULL);
 	  if (n_params > 0)
 	    {
-	      param_types = g_alloca (sizeof (GType)*n_params);
+	      param_types = g_alloca (sizeof (GType) * n_params);
 	      for (j = 0; j < n_params; j++)
 		{
 		  JSValueRef ptype = JSObjectGetPropertyAtIndex (ctx,
@@ -354,7 +366,8 @@ seed_gtype_install_signals (JSContextRef ctx,
 								 jsparams,
 								 j,
 								 NULL);
-		  param_types[j] = (GType) seed_value_to_long (ctx, ptype, NULL);
+		  param_types[j] =
+		    (GType) seed_value_to_long (ctx, ptype, NULL);
 		}
 	    }
 	}
@@ -369,8 +382,7 @@ seed_gtype_install_signals (JSContextRef ctx,
 }
 
 static void
-seed_gtype_class_init (gpointer g_class,
-		       gpointer class_data)
+seed_gtype_class_init (gpointer g_class, gpointer class_data)
 {
   SeedGClassPrivates *priv;
   GIBaseInfo *class_info;
@@ -380,9 +392,9 @@ seed_gtype_class_init (gpointer g_class,
   gchar *mes;
   JSValueRef exception = NULL;
 
-  priv = (SeedGClassPrivates *)class_data;
+  priv = (SeedGClassPrivates *) class_data;
 
-  ((GObjectClass *)g_class)->constructor = seed_gtype_construct;
+  ((GObjectClass *) g_class)->constructor = seed_gtype_construct;
 
   ctx = JSGlobalContextCreateInGroup (context_group, 0);
 
@@ -402,7 +414,8 @@ seed_gtype_class_init (gpointer g_class,
   jsargs[0] = seed_make_struct (ctx, g_class, class_info);
   jsargs[1] = seed_gobject_get_prototype_for_gtype (type);
 
-  seed_attach_methods_to_class_object (ctx, (JSObjectRef) jsargs[0], &exception);
+  seed_attach_methods_to_class_object (ctx, (JSObjectRef) jsargs[0],
+				       &exception);
 
   g_base_info_unref ((GIBaseInfo *) class_info);
 
@@ -428,10 +441,10 @@ seed_gtype_class_init (gpointer g_class,
 
 static JSObjectRef
 seed_gtype_constructor_invoked (JSContextRef ctx,
-                                JSObjectRef constructor,
-                                gsize argumentCount,
-                                const JSValueRef arguments[],
-                                JSValueRef * exception)
+				JSObjectRef constructor,
+				gsize argumentCount,
+				const JSValueRef arguments[],
+				JSValueRef * exception)
 {
   JSValueRef class_init, instance_init, name, parent_ref;
   GType parent_type, new_type;
@@ -529,7 +542,8 @@ seed_gtype_constructor_invoked (JSContextRef ctx,
       JSValueIsObject (ctx, instance_init) &&
       JSObjectIsFunction (ctx, (JSObjectRef) instance_init))
     {
-      g_hash_table_insert (gtype_iinits, GINT_TO_POINTER (new_type), (gpointer) instance_init);
+      g_hash_table_insert (gtype_iinits, GINT_TO_POINTER (new_type),
+			   (gpointer) instance_init);
       JSValueProtect (ctx, instance_init);
     }
 
@@ -557,13 +571,14 @@ seed_gtype_init (SeedEngine * local_eng)
   seed_gtype_class = JSClassCreate (&gtype_def);
   JSClassRetain (seed_gtype_class);
 
-  seed_gtype_constructor = JSObjectMake (local_eng->context, seed_gtype_class, 0);
+  seed_gtype_constructor =
+    JSObjectMake (local_eng->context, seed_gtype_class, 0);
 
   seed_object_set_property (local_eng->context,
-			    local_eng->global, "GType", seed_gtype_constructor);
+			    local_eng->global, "GType",
+			    seed_gtype_constructor);
 
   seed_define_gtype_functions (local_eng->context);
-  
+
   gtype_iinits = g_hash_table_new (g_int_hash, g_str_equal);
 }
-

@@ -102,7 +102,7 @@ seed_union_find_field (GIUnionInfo * info, gchar * field_name)
 }
 
 GIFieldInfo *
-seed_struct_find_field (GIStructInfo *info, gchar *field_name)
+seed_struct_find_field (GIStructInfo * info, gchar * field_name)
 {
   gint n, i;
   const gchar *name;
@@ -239,7 +239,8 @@ seed_union_set_property (JSContextRef context,
 
   field_type = g_field_info_get_type (field);
 
-  seed_gi_make_argument (context, value, field_type, NULL, &field_value, exception);
+  seed_gi_make_argument (context, value, field_type, NULL, &field_value,
+			 exception);
   ret = g_field_info_set_field (field, priv->pointer, &field_value);
 
   g_base_info_unref ((GIBaseInfo *) field_type);
@@ -281,7 +282,8 @@ seed_struct_set_property (JSContextRef context,
 
   field_type = g_field_info_get_type (field);
 
-  seed_gi_make_argument (context, value, field_type, NULL, &field_value, exception);
+  seed_gi_make_argument (context, value, field_type, NULL, &field_value,
+			 exception);
   ret = g_field_info_set_field (field, priv->pointer, &field_value);
 
   g_base_info_unref ((GIBaseInfo *) field_type);
@@ -624,8 +626,8 @@ seed_struct_prototype (JSContextRef ctx, GIBaseInfo * info)
 JSObjectRef
 seed_make_struct (JSContextRef ctx, gpointer strukt, GIBaseInfo * info)
 {
-    JSObjectRef object, proto;
-    seed_struct_privates *priv = g_slice_alloc (sizeof (seed_struct_privates));
+  JSObjectRef object, proto;
+  seed_struct_privates *priv = g_slice_alloc (sizeof (seed_struct_privates));
 
   priv->info = info ? g_base_info_ref (info) : 0;
   priv->pointer = strukt;
@@ -634,10 +636,10 @@ seed_make_struct (JSContextRef ctx, gpointer strukt, GIBaseInfo * info)
   object = JSObjectMake (ctx, seed_struct_class, priv);
   // Examine cases where struct is being used without info.
   if (info)
-  {
+    {
       proto = seed_struct_prototype (ctx, info);
       if (proto)
-          JSObjectSetPrototype (ctx, object, proto);
+	JSObjectSetPrototype (ctx, object, proto);
       else
 	g_assert_not_reached ();
     }
@@ -749,4 +751,3 @@ seed_construct_struct_type_with_parameters (JSContextRef ctx,
 
   return ret;
 }
-

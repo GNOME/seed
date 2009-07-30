@@ -174,8 +174,7 @@ seed_handle_closure (ffi_cif * cif, void *result, void **args, void *userdata)
 
   if (exception)
     {
-      mes = seed_exception_to_string (ctx,
-					     exception);
+      mes = seed_exception_to_string (ctx, exception);
       g_warning ("Exception in closure marshal. %s \n", mes);
       g_free (mes);
       exception = 0;
@@ -274,8 +273,7 @@ seed_handle_closure (ffi_cif * cif, void *result, void **args, void *userdata)
 SeedNativeClosure *
 seed_make_native_closure (JSContextRef ctx,
 			  GICallableInfo * info,
-			  GIArgInfo *arg_info,
-			  JSValueRef function)
+			  GIArgInfo * arg_info, JSValueRef function)
 {
   ffi_cif *cif;
   ffi_closure *closure;
@@ -301,11 +299,14 @@ seed_make_native_closure (JSContextRef ctx,
 
   privates = g_new0 (SeedNativeClosure, 1);
   privates->info = (GICallableInfo *) g_base_info_ref ((GIBaseInfo *) info);
-  privates->arg_info = (GIArgInfo *) g_base_info_ref ((GIBaseInfo *) arg_info);
+  privates->arg_info =
+    (GIArgInfo *) g_base_info_ref ((GIBaseInfo *) arg_info);
   privates->function = function;
   privates->cif = cif;
 
-  closure = g_callable_info_prepare_closure (info, cif, seed_handle_closure, privates);
+  closure =
+    g_callable_info_prepare_closure (info, cif, seed_handle_closure,
+				     privates);
   privates->closure = closure;
 
   JSValueProtect (ctx, function);
@@ -327,8 +328,9 @@ closure_invalidated (gpointer data, GClosure * c)
   SeedClosure *closure = (SeedClosure *) c;
 
   SEED_NOTE (FINALIZATION, "Finalizing closure.");
-  if (closure->user_data && !JSValueIsUndefined(eng->context, closure->user_data))
-    JSValueUnprotect(eng->context, closure->user_data);
+  if (closure->user_data
+      && !JSValueIsUndefined (eng->context, closure->user_data))
+    JSValueUnprotect (eng->context, closure->user_data);
   if (!JSValueIsUndefined (eng->context, closure->function))
     JSValueUnprotect (eng->context, closure->function);
 
@@ -337,48 +339,60 @@ closure_invalidated (gpointer data, GClosure * c)
 }
 
 JSObjectRef
-seed_closure_get_callable (GClosure *c)
+seed_closure_get_callable (GClosure * c)
 {
-  return ((SeedClosure *)c)->function;
+  return ((SeedClosure *) c)->function;
 }
 
 JSValueRef
-seed_closure_invoke (GClosure *closure, JSValueRef *args, guint argc, JSValueRef *exception)
+seed_closure_invoke (GClosure * closure, JSValueRef * args, guint argc,
+		     JSValueRef * exception)
 {
   JSContextRef ctx = JSGlobalContextCreateInGroup (context_group, 0);
-  JSValueRef *real_args = g_newa (JSValueRef, argc +1);
+  JSValueRef *real_args = g_newa (JSValueRef, argc + 1);
   JSValueRef ret;
   guint i;
 
   seed_prepare_global_context (ctx);
   for (i = 0; i < argc; i++)
     real_args[i] = args[i];
-  args[argc] = ((SeedClosure *)closure)->user_data ? ((SeedClosure *)closure)->user_data : JSValueMakeNull (ctx);
+  args[argc] =
+    ((SeedClosure *) closure)->user_data ? ((SeedClosure *) closure)->
+    user_data : JSValueMakeNull (ctx);
 
-  ret = JSObjectCallAsFunction (ctx, ((SeedClosure *)closure)->function, NULL, argc+1, real_args, exception);
+  ret =
+    JSObjectCallAsFunction (ctx, ((SeedClosure *) closure)->function, NULL,
+			    argc + 1, real_args, exception);
   JSGlobalContextRelease ((JSGlobalContextRef) ctx);
 
   return ret;
 }
 
 JSValueRef
-seed_closure_invoke_with_context (JSContextRef ctx, GClosure *closure, JSValueRef *args, guint argc, JSValueRef *exception)
+seed_closure_invoke_with_context (JSContextRef ctx, GClosure * closure,
+				  JSValueRef * args, guint argc,
+				  JSValueRef * exception)
 {
-  JSValueRef *real_args = g_newa (JSValueRef, argc +1);
+  JSValueRef *real_args = g_newa (JSValueRef, argc + 1);
   JSValueRef ret;
   guint i;
 
   for (i = 0; i < argc; i++)
     real_args[i] = args[i];
-  args[argc] = ((SeedClosure *)closure)->user_data ? ((SeedClosure *)closure)->user_data : JSValueMakeNull (ctx);
+  args[argc] =
+    ((SeedClosure *) closure)->user_data ? ((SeedClosure *) closure)->
+    user_data : JSValueMakeNull (ctx);
 
-  ret = JSObjectCallAsFunction (ctx, ((SeedClosure *)closure)->function, NULL, argc+1, real_args, exception);
+  ret =
+    JSObjectCallAsFunction (ctx, ((SeedClosure *) closure)->function, NULL,
+			    argc + 1, real_args, exception);
 
   return ret;
 }
 
 GClosure *
-seed_closure_new (JSContextRef ctx, JSObjectRef function, JSObjectRef user_data, const gchar *description)
+seed_closure_new (JSContextRef ctx, JSObjectRef function,
+		  JSObjectRef user_data, const gchar * description)
 {
   GClosure *closure;
 
@@ -391,7 +405,7 @@ seed_closure_new (JSContextRef ctx, JSObjectRef function, JSObjectRef user_data,
   if (user_data && !JSValueIsNull (ctx, user_data))
     {
       ((SeedClosure *) closure)->user_data = user_data;
-      JSValueProtect(ctx, user_data);
+      JSValueProtect (ctx, user_data);
     }
 
   if (description)
@@ -401,17 +415,19 @@ seed_closure_new (JSContextRef ctx, JSObjectRef function, JSObjectRef user_data,
 }
 
 void
-seed_closure_warn_exception (GClosure *c,
-			     JSContextRef ctx,
-			     JSValueRef exception)
+seed_closure_warn_exception (GClosure * c,
+			     JSContextRef ctx, JSValueRef exception)
 {
   JSObjectRef callable = seed_closure_get_callable (c);
   gchar *name = seed_value_to_string (ctx,
-				      seed_object_get_property (ctx, callable, "name"),
+				      seed_object_get_property (ctx, callable,
+								"name"),
 				      NULL);
   gchar *mes = seed_exception_to_string (ctx, exception);
 
-  g_warning("Exception in closure (%p) for %s (handler %s). %s", c, ((SeedClosure *)c)->description, *name == '\0' ? "[anonymous]" : name, mes);
+  g_warning ("Exception in closure (%p) for %s (handler %s). %s", c,
+	     ((SeedClosure *) c)->description,
+	     *name == '\0' ? "[anonymous]" : name, mes);
 
   g_free (name);
   g_free (mes);
@@ -443,4 +459,3 @@ seed_closures_init (void)
   seed_native_callback_class = JSClassCreate (&seed_native_callback_def);
   JSClassRetain (seed_native_callback_class);
 }
-

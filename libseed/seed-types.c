@@ -75,7 +75,7 @@ seed_make_wrapper_for_type (JSContextRef ctx, GType type)
   if (prototype)
     JSObjectSetPrototype (ctx, ret, prototype);
   else
-    g_assert_not_reached();
+    g_assert_not_reached ();
 
   return ret;
 }
@@ -102,7 +102,7 @@ seed_wrap_object (JSContextRef ctx, GObject * object)
   JSObjectSetPrivate (js_ref, object);
 
   g_object_set_qdata_full (object, js_ref_quark, (gpointer) js_ref,
-			  seed_gobject_destroyed);
+			   seed_gobject_destroyed);
 
   JSValueProtect (eng->context, js_ref);
   g_object_add_toggle_ref (object, seed_toggle_ref, (gpointer) js_ref);
@@ -218,8 +218,7 @@ seed_gi_release_arg (GITransfer transfer,
 
 gboolean
 seed_gi_release_in_arg (GITransfer transfer,
-			GITypeInfo * type_info,
-			GArgument * arg)
+			GITypeInfo * type_info, GArgument * arg)
 {
   GITypeTag type_tag;
 
@@ -256,7 +255,7 @@ seed_gi_make_jsarray (JSContextRef ctx,
   GITypeTag element_type;
   JSValueRef *elements;
   guint length, i;
-  gchar **str_array = (gchar**) array;
+  gchar **str_array = (gchar **) array;
   JSValueRef ret = JSValueMakeNull (ctx);
 
   element_type = g_type_info_get_tag (param_type);
@@ -297,14 +296,13 @@ seed_gi_make_array (JSContextRef ctx,
     {
     case GI_TYPE_TAG_UTF8:
       {
-	gchar** strresult = g_new0 (gchar *, length + 1);
+	gchar **strresult = g_new0 (gchar *, length + 1);
 
 	for (i = 0; i < length; i++)
 	  {
-	    elem  = JSObjectGetPropertyAtIndex (ctx,
-							  (JSObjectRef) array,
-							  i,
-							  exception);
+	    elem = JSObjectGetPropertyAtIndex (ctx,
+					       (JSObjectRef) array,
+					       i, exception);
 	    strresult[i] = seed_value_to_string (ctx, elem, exception);
 	  }
 
@@ -320,9 +318,8 @@ seed_gi_make_array (JSContextRef ctx,
 	for (i = 0; i < length; i++)
 	  {
 	    elem = JSObjectGetPropertyAtIndex (ctx,
-							  (JSObjectRef) array,
-							  i,
-							  exception);
+					       (JSObjectRef) array,
+					       i, exception);
 	    typeresult[i] = seed_value_to_int (ctx, elem, exception);
 	  }
 
@@ -338,9 +335,8 @@ seed_gi_make_array (JSContextRef ctx,
 	for (i = 0; i < length; i++)
 	  {
 	    elem = JSObjectGetPropertyAtIndex (ctx,
-							  (JSObjectRef) array,
-							  i,
-							  exception);
+					       (JSObjectRef) array,
+					       i, exception);
 	    floatresult[i] = seed_value_to_float (ctx, elem, exception);
 	  }
 
@@ -356,9 +352,8 @@ seed_gi_make_array (JSContextRef ctx,
 	for (i = 0; i < length; i++)
 	  {
 	    elem = JSObjectGetPropertyAtIndex (ctx,
-							  (JSObjectRef) array,
-							  i,
-							  exception);
+					       (JSObjectRef) array,
+					       i, exception);
 	    dblresult[i] = seed_value_to_double (ctx, elem, exception);
 	  }
 
@@ -374,9 +369,8 @@ seed_gi_make_array (JSContextRef ctx,
 	for (i = 0; i < length; i++)
 	  {
 	    elem = JSObjectGetPropertyAtIndex (ctx,
-							  (JSObjectRef) array,
-							  i,
-							  exception);
+					       (JSObjectRef) array,
+					       i, exception);
 	    intresult[i] = seed_value_to_int (ctx, elem, exception);
 	  }
 
@@ -392,9 +386,8 @@ seed_gi_make_array (JSContextRef ctx,
 	for (i = 0; i < length; i++)
 	  {
 	    elem = JSObjectGetPropertyAtIndex (ctx,
-							  (JSObjectRef) array,
-							  i,
-							  exception);
+					       (JSObjectRef) array,
+					       i, exception);
 	    guint8result[i] = seed_value_to_uchar (ctx, elem, exception);
 	  }
 
@@ -422,10 +415,9 @@ seed_gi_make_array (JSContextRef ctx,
 
 		for (i = 0; i < length; i++)
 		  {
-              elem = JSObjectGetPropertyAtIndex (ctx,
-								  (JSObjectRef) array,
-								  i,
-								  exception);
+		    elem = JSObjectGetPropertyAtIndex (ctx,
+						       (JSObjectRef) array,
+						       i, exception);
 		    seed_gvalue_from_seed_value (ctx, elem,
 						 (GType) 0,
 						 &gvalresult[i], exception);
@@ -452,9 +444,8 @@ gboolean
 seed_gi_make_argument (JSContextRef ctx,
 		       JSValueRef value,
 		       GITypeInfo * type_info,
-		       GIArgInfo *arg_info,
-		       GArgument * arg,
-		       JSValueRef * exception)
+		       GIArgInfo * arg_info,
+		       GArgument * arg, JSValueRef * exception)
 {
   GITypeTag gi_tag = g_type_info_get_tag (type_info);
 
@@ -566,7 +557,9 @@ seed_gi_make_argument (JSContextRef ctx,
 		 interface_type == GI_INFO_TYPE_FLAGS)
 	  {
 	    arg->v_long = seed_value_to_long (ctx, value, exception);
-	    if (!(interface_type == GI_INFO_TYPE_FLAGS) && !seed_validate_enum ((GIEnumInfo *)interface, arg->v_long))
+	    if (!(interface_type == GI_INFO_TYPE_FLAGS)
+		&& !seed_validate_enum ((GIEnumInfo *) interface,
+					arg->v_long))
 	      {
 		seed_make_exception (ctx, exception, "EnumRange",
 				     "Enum value: %ld is out of range",
@@ -612,7 +605,8 @@ seed_gi_make_argument (JSContextRef ctx,
 		    if (JSObjectIsFunction (ctx, (JSObjectRef) value))
 		      {
 			arg->v_pointer =
-				seed_closure_new (ctx, (JSObjectRef) value, NULL, NULL);
+			  seed_closure_new (ctx, (JSObjectRef) value, NULL,
+					    NULL);
 		      }
 		  }
 		else
@@ -872,7 +866,7 @@ seed_gi_argument_make_js (JSContextRef ctx,
       {
 	GITypeInfo *list_type;
 	JSObjectRef ret;
-    JSValueRef ival;
+	JSValueRef ival;
 	GArgument larg;
 	guint i = 0;
 	GSList *list = arg->v_pointer;
@@ -1082,12 +1076,11 @@ seed_gvalue_from_seed_value (JSContextRef ctx,
 	if (type == 0 && JSValueIsObject (ctx, val))
 	  {
 	    // TODO: FIXME: Better array test like the cool one on reddit.
-	    guint length =
-	      seed_value_to_int (ctx,
-				 seed_object_get_property (ctx,
-							   (JSObjectRef) val,
-							   "length"),
-				 exception);
+	    guint length = seed_value_to_int (ctx,
+					      seed_object_get_property (ctx,
+									(JSObjectRef) val,
+									"length"),
+					      exception);
 
 	    if (length)
 	      {
@@ -1251,7 +1244,8 @@ seed_object_set_property (JSContextRef ctx, JSObjectRef object,
 
   if (value)
     {
-      JSObjectSetProperty (ctx, (JSObjectRef) object, jname, value, 0, &exception);
+      JSObjectSetProperty (ctx, (JSObjectRef) object, jname, value, 0,
+			   &exception);
     }
 
   JSStringRelease (jname);
@@ -1584,7 +1578,8 @@ seed_value_from_short (JSContextRef ctx, gshort val, JSValueRef * exception)
  *
  */
 gushort
-seed_value_to_ushort (JSContextRef ctx, JSValueRef val, JSValueRef * exception)
+seed_value_to_ushort (JSContextRef ctx, JSValueRef val,
+		      JSValueRef * exception)
 {
   if (!JSValueIsNumber (ctx, val) && !JSValueIsBoolean (ctx, val))
     {
@@ -2012,13 +2007,12 @@ seed_value_from_string (JSContextRef ctx,
  */
 JSValueRef
 seed_value_from_binary_string (JSContextRef ctx,
-			       const gchar *bytes,
-			       gint n_bytes,
-			       JSValueRef *exception)
+			       const gchar * bytes,
+			       gint n_bytes, JSValueRef * exception)
 {
   JSValueRef ret;
 
-  gchar *nstr = g_alloca ((n_bytes +1)*sizeof(gchar));
+  gchar *nstr = g_alloca ((n_bytes + 1) * sizeof (gchar));
   g_strlcpy (nstr, bytes, n_bytes);
   nstr[n_bytes] = '\0';
 
@@ -2137,7 +2131,7 @@ seed_value_to_object (JSContextRef ctx,
     }
 
   gobject = (GObject *) JSObjectGetPrivate ((JSObjectRef) val);
-  g_assert(G_IS_OBJECT(gobject));
+  g_assert (G_IS_OBJECT (gobject));
 
   return gobject;
 }
@@ -2166,8 +2160,7 @@ seed_value_from_object (JSContextRef ctx,
 }
 
 gboolean
-seed_validate_enum (GIEnumInfo *info,
-		    long val)
+seed_validate_enum (GIEnumInfo * info, long val)
 {
   gint n, i;
   GIValueInfo *value_info;
@@ -2179,7 +2172,7 @@ seed_validate_enum (GIEnumInfo *info,
       value_info = g_enum_info_get_value (info, i);
       value = g_value_info_get_value (value_info);
 
-      g_base_info_unref ((GIBaseInfo *)value_info);
+      g_base_info_unref ((GIBaseInfo *) value_info);
       if (value == val)
 	return TRUE;
     }
@@ -2188,24 +2181,21 @@ seed_validate_enum (GIEnumInfo *info,
 }
 
 JSValueRef
-seed_value_from_time_t (JSContextRef ctx,
-			time_t time,
-			JSValueRef *exception)
+seed_value_from_time_t (JSContextRef ctx, time_t time, JSValueRef * exception)
 {
   JSValueRef args[1];
 
-  args[0] = seed_value_from_double (ctx, ((gdouble)time)*1000, exception);
-  return JSObjectMakeDate(ctx, 1, args, exception);
+  args[0] = seed_value_from_double (ctx, ((gdouble) time) * 1000, exception);
+  return JSObjectMakeDate (ctx, 1, args, exception);
 }
 
 time_t
 seed_value_to_time_t (JSContextRef ctx,
-		      JSValueRef value,
-		      JSValueRef *exception)
+		      JSValueRef value, JSValueRef * exception)
 {
-    JSValueRef get_time_method;
-    JSValueRef jstime;
-    gdouble time;
+  JSValueRef get_time_method;
+  JSValueRef jstime;
+  gdouble time;
 
 
   if (JSValueIsNumber (ctx, value))
@@ -2214,26 +2204,24 @@ seed_value_to_time_t (JSContextRef ctx,
     }
   else if (JSValueIsObject (ctx, value))
     {
-      get_time_method = seed_object_get_property (ctx, (JSObjectRef)value,
+      get_time_method = seed_object_get_property (ctx, (JSObjectRef) value,
 						  "getTime");
-      if (JSValueIsNull(ctx, get_time_method) ||
-	  !JSValueIsObject(ctx, get_time_method))
+      if (JSValueIsNull (ctx, get_time_method) ||
+	  !JSValueIsObject (ctx, get_time_method))
 	{
 	  goto out;
 	}
       jstime = JSObjectCallAsFunction (ctx,
-				       (JSObjectRef)get_time_method,
-				       (JSObjectRef)value,
-				       0, NULL,
-				       exception);
+				       (JSObjectRef) get_time_method,
+				       (JSObjectRef) value,
+				       0, NULL, exception);
       time = seed_value_to_double (ctx, jstime, exception);
-      return (unsigned long)(time/1000);
+      return (unsigned long) (time / 1000);
     }
 
- out:
+out:
   seed_make_exception (ctx, exception,
 		       "TypeError",
 		       "Unable to convert JavaScript value to time_t");
   return 0;
 }
-
