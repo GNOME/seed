@@ -421,6 +421,121 @@ seed_gtype_install_signals (JSContextRef ctx,
     }
 }
 
+static unsigned int
+seed_gtype_install_properties (JSContextRef ctx,
+			       JSObjectRef definition,
+			       GType type, GObjectClass *g_class)
+{
+  JSObjectRef properties, property_def;
+  JSValueRef jslength;
+  guint i, length;
+  GType property_type;
+  GParamFlags flags;
+  JSValueRef jsname, jsflags, jsproperty_type, jsdefault_value;
+  JSValueRef jsnick, jsblurb, jsmin_value, jsmax_value;
+  gchar *name , *nick, *blurb;
+  GParamSpec *pspec;
+  guint property_count = 0;
+
+  properties = (JSObjectRef) seed_object_get_property (ctx, definition,
+						       "properties");
+  if (JSValueIsNull (ctx, properties) || !JSValueIsObject (ctx, properties))
+    return 0;
+
+  jslength = seed_object_get_property (ctx, properties, "length");
+  if (JSValueIsNull (ctx, jslength))
+    return 0;
+
+  length = seed_value_to_uint (ctx, jslength, NULL);
+  for (i = 0; i < length; i++)
+    {
+      property_def = (JSObjectRef) JSObjectGetPropertyAtIndex (ctx,
+							       (JSObjectRef)
+							       properties, i,
+							       NULL);
+
+      if (JSValueIsNull (ctx, property_def)
+	  || !JSValueIsObject (ctx, property_def))
+	continue;
+
+      // TODO: Error checking
+      jsname = seed_object_get_property (ctx, property_def, "name");
+      name = seed_value_to_string (ctx, jsname, NULL);
+
+      // Check for "nick" property; set to name if nonexistent
+      jsnick = seed_object_get_property (ctx, property_def, "nick");
+      if (!JSValueIsString(ctx, jsnick))
+	nick = name;
+      else
+	nick = seed_value_to_string (ctx, jsnick, NULL);
+
+      // Check for "blurb" property; set to name if nonexistent
+      jsblurb = seed_object_get_property (ctx, property_def, "blurb");
+      if (!JSValueIsString(ctx, jsblurb))
+	blurb = name;
+      else
+	blurb = seed_value_to_string (ctx, jsblurb, NULL);
+
+      SEED_NOTE (GTYPE, "Installing property with name: %s on type: %s",
+		 name, g_type_name (type));
+      
+      jsflags =
+	seed_object_get_property (ctx, (JSObjectRef) property_def, "flags");
+      if (JSValueIsNull (ctx, jsflags) || !JSValueIsNumber (ctx, jsflags))
+	flags = G_PARAM_READABLE | G_PARAM_WRITABLE;
+      else
+	flags = seed_value_to_long (ctx, jsflags, NULL);
+
+      jsproperty_type = seed_object_get_property (ctx, property_def, "type");
+
+      // TODO: having no type should be an exception or something
+      if (JSValueIsNull (ctx, jsproperty_type) ||
+	  !JSValueIsNumber (ctx, jsproperty_type))
+	property_type = G_TYPE_NONE;
+      else
+	property_type = seed_value_to_long (ctx, jsproperty_type, NULL);
+
+      jsdefault_value = seed_object_get_property (ctx, property_def,
+						  "default_value");
+      jsmin_value = seed_object_get_property (ctx, property_def,
+					      "minimum_value");
+      jsmax_value = seed_object_get_property (ctx, property_def,
+					      "maximum_value");
+
+      // TODO: too many null exceptions throughout this
+      switch(property_type)
+	{
+	case G_TYPE_BOOLEAN:
+	  pspec = g_param_spec_boolean(name, nick, blurb,
+				       seed_value_to_boolean(ctx,
+							     jsdefault_value,
+							     NULL), flags);
+	  break;
+	case G_TYPE_CHAR:
+	  pspec = g_param_spec_char(name, nick, blurb,
+				    seed_value_to_char(ctx,
+						       jsmin_value,
+						       NULL),
+				    seed_value_to_char(ctx,
+						       jsmax_value,
+						       NULL),
+				    seed_value_to_char(ctx,
+						       jsdefault_value,
+						       NULL), flags);
+	  break;
+	default:
+	  g_print("arst unknown type\n"); // TODO: exception or something
+	  break;
+	}
+
+      g_object_class_install_property (g_class, ++property_count, pspec);
+
+      g_free (name); // TODO: more to free, after it works...
+    }
+
+  return property_count;
+}
+
 static void
 seed_gtype_class_init (gpointer g_class, gpointer class_data)
 {
@@ -431,6 +546,7 @@ seed_gtype_class_init (gpointer g_class, gpointer class_data)
   GType type;
   gchar *mes;
   JSValueRef exception = NULL;
+  int initial_prop_count = 1;
 
   priv = (SeedGClassPrivates *) class_data;
 
@@ -442,6 +558,10 @@ seed_gtype_class_init (gpointer g_class, gpointer class_data)
 
   type = (GType) JSObjectGetPrivate (priv->constructor);
   seed_gtype_install_signals (ctx, priv->definition, type);
+  initial_prop_count = seed_gtype_install_properties (ctx,
+						      priv->definition,
+						      type,
+						      (GObjectClass *) g_class);
 
   if (!priv->func)
     {
@@ -467,8 +587,9 @@ seed_gtype_class_init (gpointer g_class, gpointer class_data)
   seed_object_set_property (ctx, (JSObjectRef) jsargs[0],
 			    "type", seed_value_from_int (ctx, type, 0));
   seed_object_set_property (ctx, (JSObjectRef) jsargs[0],
-			    "property_count", seed_value_from_int (ctx, 1,
-								   0));
+			    "property_count",
+			    seed_value_from_int (ctx, initial_prop_count + 1,
+						 0));
 
   JSObjectCallAsFunction (ctx, priv->func, 0, 2, jsargs, &exception);
   if (exception)
