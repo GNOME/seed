@@ -396,9 +396,6 @@ window.resize(600, 600);
 window.add(vbox);
 window.show_all();
 
-// Ask Clutter to return motion events at 60Hz to help make dragging smoother
-Clutter.set_motion_events_frequency(60);
-
 load_actors();
 stage.show_all();
 
