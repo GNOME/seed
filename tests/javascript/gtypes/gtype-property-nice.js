@@ -11,7 +11,7 @@ Gtk.init(Seed.argv);
 HelloWindowType = {
     parent: Gtk.Window.type,
     name: "HelloWindow",
-    properties: [{name: "randomproperty",
+    properties: [{
 		  type: GObject.TYPE_BOOLEAN,
 		  nick: "randomproperty",
 		  blurb: "longer blurb about property",
