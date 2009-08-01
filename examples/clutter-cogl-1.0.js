@@ -1,6 +1,6 @@
 #!/usr/bin/env seed
 
-imports.gi.versions.Clutter = "0.9";
+imports.gi.versions.Clutter = "1.0";
 
 Clutter = imports.gi.Clutter;
 GLib = imports.gi.GLib;
@@ -18,10 +18,6 @@ const RIPPLE_WX = RIPPLE_W;
 const SCREEN_W = 640;
 const SCREEN_H = 480;
 
-function deg_to_rad(x){
-    return (((x) * 1024.0) / 360.0);
-}
-
 Clutter.init(Seed.argv);
 
 function destroy_actor(actor){
@@ -35,14 +31,11 @@ function circle_paint (actor){
 
     Cogl.set_source_color(actor.fill_color);
     Cogl.path_move_to(radius, radius);
-    Cogl.path_arc(radius, radius, radius, radius,
-			  deg_to_rad(0),
-			  deg_to_rad(360));
+    Cogl.path_arc(radius, radius, radius, radius, 0, 360);
     Cogl.path_line_to(radius - RIPPLE_WX/2, radius);
     Cogl.path_arc(radius, radius,
-			  radius-RIPPLE_WX/2, radius-RIPPLE_WX/2,
-			  deg_to_rad(0),
-			  deg_to_rad(360));
+                  radius-RIPPLE_WX/2, radius-RIPPLE_WX/2,
+                  0, 360);
     Cogl.path_close();
     Cogl.path_fill();
 }

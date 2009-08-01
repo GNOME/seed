@@ -1,7 +1,7 @@
 #!/usr/bin/env seed
 
 Canvas = imports.canvas;
-imports.gi.versions.Clutter = "0.9"
+imports.gi.versions.Clutter = "1.0";
 
 Clutter = imports.gi.Clutter;
 

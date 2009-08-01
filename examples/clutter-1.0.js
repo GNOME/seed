@@ -1,6 +1,6 @@
 #!/usr/bin/env seed
 
-imports.gi.versions.Clutter = "0.9";
+imports.gi.versions.Clutter = "1.0";
 
 Clutter = imports.gi.Clutter;
 GObject = imports.gi.GObject;
@@ -101,6 +101,4 @@ stage.show_all();
 animate_rectangles(rectangles);
 
 Clutter.main();
-
-
 

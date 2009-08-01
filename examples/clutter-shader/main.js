@@ -1,8 +1,5 @@
 #!/usr/bin/env seed
 
-imports.gi.versions.Clutter = "0.9";
-imports.gi.versions.GtkClutter = "0.9";
-
 Clutter = imports.gi.Clutter;
 Gtk = imports.gi.Gtk;
 GtkSource = imports.gi.GtkSource;
@@ -28,9 +25,12 @@ var shader_view = new ShaderView.ShaderView();
 var editor = new ShaderEditor.ShaderEditor();
 editor.connect_shader_view(shader_view);
 
+var edbin = new Gtk.Frame();
+edbin.add(editor);
+
 var pane = new Gtk.VPaned({position: 400});
 pane.add1(gtkstage);
-pane.add2(editor);
+pane.add2(edbin);
 window.add(pane);
 
 stage.add_actor(shader_view);
