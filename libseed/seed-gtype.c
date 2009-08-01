@@ -519,7 +519,8 @@ seed_gtype_install_properties (JSContextRef ctx,
 
       SEED_NOTE (GTYPE, "Installing property with name: %s on type: %s",
 		 name, g_type_name (type));
-      
+
+      // Flags default to read/write, non-construct
       jsflags =
 	seed_object_get_property (ctx, (JSObjectRef) property_def, "flags");
       if (JSValueIsNull (ctx, jsflags) || !JSValueIsNumber (ctx, jsflags))
@@ -537,13 +538,49 @@ seed_gtype_install_properties (JSContextRef ctx,
 
       jsdefault_value = seed_object_get_property (ctx, property_def,
 						  "default_value");
+
+      if (JSValueIsNull (ctx, jsdefault_value) || JSValueIsUndefined (ctx, jsdefault_value))
+	{
+	  seed_make_exception (ctx, exception, "PropertyInstallationError",
+			       "Property of type %s requires default_value attribute",
+			       g_type_name(property_type));
+	  return property_count;
+	}
+
       jsmin_value = seed_object_get_property (ctx, property_def,
 					      "minimum_value");
       jsmax_value = seed_object_get_property (ctx, property_def,
 					      "maximum_value");
 
-      // TODO: why don't we bubble exceptions up from this function?
-      // (this is true of the signal installation one too)
+      // Make sure min/max properties are defined, based on type
+      if(property_type == G_TYPE_CHAR ||
+	 property_type == G_TYPE_UCHAR ||
+	 property_type == G_TYPE_INT ||
+	 property_type == G_TYPE_UINT ||
+	 property_type == G_TYPE_INT64 ||
+	 property_type == G_TYPE_UINT64 ||
+	 property_type == G_TYPE_FLOAT ||
+	 property_type == G_TYPE_DOUBLE)
+	{
+	  if (JSValueIsNull (ctx, jsmin_value) ||
+	      !JSValueIsNumber (ctx, jsmin_value))
+	    {
+	      seed_make_exception (ctx, exception, "PropertyInstallationError",
+				   "Property of type %s requires minimum_value attribute",
+				   g_type_name(property_type));
+	      return property_count;
+	    }
+	  if (JSValueIsNull (ctx, jsmax_value) ||
+	      !JSValueIsNumber (ctx, jsmax_value))
+	    {
+	      seed_make_exception (ctx, exception, "PropertyInstallationError",
+				   "Property of type %s requires maximum_value attribute",
+				   g_type_name(property_type));
+	      return property_count;
+	    }
+	}
+
+
       switch(property_type)
 	{
 	case G_TYPE_BOOLEAN:
