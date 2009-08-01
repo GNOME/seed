@@ -718,7 +718,9 @@ seed_gtype_install_properties (JSContextRef ctx,
 							   exception), flags);
 	  break;
 	case G_TYPE_NONE:
-	  // TODO: yell and scream!
+	  seed_make_exception (ctx, exception, "PropertyInstallationError",
+			       "Property requires type attribute");
+	  return property_count;
 	  break;
 	default: // Boxed types TODO: this is almost certainly wrong
 	  pspec = g_param_spec_boxed(name, nick, blurb, type, flags);
