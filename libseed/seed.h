@@ -106,14 +106,17 @@ SeedGlobalContext seed_context_create (SeedContextGroup group,
 SeedGlobalContext seed_context_ref (SeedGlobalContext ctx);
 void seed_context_unref (SeedGlobalContext ctx);
 
+SeedObject seed_context_get_global_object (SeedContext ctx);
+
+void seed_importer_add_global(SeedContext ctx, gchar *name);
+void seed_importer_set_search_path (SeedContext ctx,
+				    gchar **search_path);
+void seed_prepare_global_context (SeedContext ctx);
+
+
+
 SeedValue seed_make_null (SeedContext ctx);
 SeedValue seed_make_undefined (SeedContext ctx);
-
-SeedObject seed_make_object (SeedContext ctx, SeedClass class,
-			     gpointer private);
-
-gpointer seed_object_get_private (SeedObject object);
-void seed_object_set_private (SeedObject object, gpointer value);
 
 SeedString seed_string_ref (SeedString string);
 void seed_string_unref (SeedString string);
@@ -133,34 +136,8 @@ gboolean seed_value_is_function (SeedContext ctx, SeedObject value);
 gboolean seed_value_is_string (SeedContext ctx, SeedValue value);
 gboolean seed_value_is_number (SeedContext ctx, SeedValue value);
 
-SeedValue seed_object_call (SeedContext ctx,
-			    SeedObject object,
-			    SeedObject this,
-			    gsize argument_count,
-			    const SeedValue arguments[],
-			    SeedException * exception);
-
 void seed_value_unprotect (SeedContext ctx, SeedValue value);
 void seed_value_protect (SeedContext ctx, SeedValue value);
-/*
- * seed-types.c
- */
-gboolean seed_object_set_property (SeedContext ctx,
-				   SeedObject object,
-				   const gchar * name, SeedValue value);
-SeedValue seed_object_get_property (SeedContext ctx,
-				    SeedObject object, const gchar * name);
-
-void seed_object_set_property_at_index (SeedContext ctx,
-					SeedObject object,
-					gint index,
-					SeedValue value,
-					SeedException * exception);
-
-SeedValue seed_object_get_property_at_index (SeedContext ctx,
-					     SeedObject object,
-					     gint index,
-					     SeedException *exception);
 
 gboolean seed_value_to_boolean (SeedContext ctx,
 				SeedValue val, SeedException * exception);
@@ -225,18 +202,62 @@ gchar *seed_value_to_string (SeedContext ctx,
 SeedValue seed_value_from_string (SeedContext ctx,
 				  const gchar * val, SeedException * exception);
 
-gchar *seed_value_to_filename (SeedContext ctx,
-			       SeedValue val, SeedValue * exception);
-SeedValue seed_value_from_filename (SeedContext ctx,
-				    const gchar * filename,
-				    SeedValue * exception);
+SeedType seed_value_get_type (SeedContext ctx, SeedValue value);
+
+gboolean
+seed_value_to_format (SeedContext ctx,
+		      const gchar *format,
+		      SeedValue *values,
+		      SeedValue *exception,
+		      ...);
+
+typedef SeedObject (*SeedModuleInitCallback) (SeedEngine * eng);
+
+gboolean seed_object_set_property (SeedContext ctx,
+				   SeedObject object,
+				   const gchar * name, SeedValue value);
+SeedValue seed_object_get_property (SeedContext ctx,
+				    SeedObject object, const gchar * name);
+
+void seed_object_set_property_at_index (SeedContext ctx,
+					SeedObject object,
+					gint index,
+					SeedValue value,
+					SeedException * exception);
+
+SeedValue seed_object_get_property_at_index (SeedContext ctx,
+					     SeedObject object,
+					     gint index,
+					     SeedException *exception);
+
+SeedValue seed_object_call (SeedContext ctx,
+			    SeedObject object,
+			    SeedObject this,
+			    gsize argument_count,
+			    const SeedValue arguments[],
+			    SeedException * exception);
 
 GObject *seed_value_to_object (SeedContext ctx,
 			       SeedValue val, SeedException * exception);
 SeedValue seed_value_from_object (SeedContext ctx,
 				  GObject * val, SeedException * exception);
 
+SeedObject seed_make_object (SeedContext ctx, SeedClass class,
+			     gpointer private);
+
+gpointer seed_object_get_private (SeedObject object);
+void seed_object_set_private (SeedObject object, gpointer value);
+
+gchar **seed_object_copy_property_names(SeedContext ctx, SeedObject object);
+
 gpointer seed_pointer_get_pointer (SeedContext ctx, SeedValue pointer);
+
+SeedObject
+seed_object_get_prototype (SeedContext ctx, SeedObject obj);
+
+gboolean
+seed_object_is_of_class (SeedContext ctx, SeedObject obj, SeedClass class);
+
 SeedValue seed_make_pointer (SeedContext ctx, gpointer pointer);
 
 typedef SeedValue (*SeedFunctionCallback) (SeedContext ctx,
@@ -250,11 +271,12 @@ void seed_create_function (SeedContext ctx,
 			   gchar * name, SeedFunctionCallback func,
 			   SeedObject obj);
 SeedObject seed_make_function (SeedContext ctx, SeedFunctionCallback func, const gchar *name);
-/* Inconsistent naming? */
+
+
 SeedObject seed_make_array (SeedContext ctx, const SeedValue elements,
 			    gsize num_elements, SeedException *exception);
 
-typedef SeedObject (*SeedModuleInitCallback) (SeedEngine * eng);
+
 
 typedef void (*SeedObjectInitializeCallback) (SeedContext ctx,
 					      SeedObject object);
@@ -378,29 +400,11 @@ seed_signal_connect_value (SeedContext ctx,
 			   SeedValue function,
 			   SeedValue user_data);
 
-
-SeedObject seed_context_get_global_object (SeedContext ctx);
-
-void seed_importer_add_global(SeedContext ctx, gchar *name);
-void seed_importer_set_search_path (SeedContext ctx,
-				    gchar **search_path);
-
-void seed_prepare_global_context (SeedContext ctx);
-
-SeedType seed_value_get_type (SeedContext ctx, SeedValue value);
-
-gchar **seed_object_copy_property_names(SeedContext ctx, SeedObject object);
-
-SeedValue
-seed_value_from_binary_string (SeedContext ctx,
-			       const gchar *bytes,
-			       gint n_bytes,
-			       SeedException *exception);
-
 GClosure *seed_closure_new (SeedContext ctx,
 			    SeedObject function,
 			    SeedObject user_data,
 			    const gchar *description);
+
 
 SeedObject
 seed_closure_get_callable (GClosure *c);
@@ -414,17 +418,5 @@ seed_closure_invoke_with_context (SeedContext ctx, GClosure *closure, SeedValue 
 void
 seed_closure_warn_exception (GClosure *c, SeedContext ctx, SeedException exception);
 
-SeedObject
-seed_object_get_prototype (SeedContext ctx, SeedObject obj);
-
-gboolean
-seed_object_is_of_class (SeedContext ctx, SeedObject obj, SeedClass class);
-
-gboolean
-seed_value_to_format (SeedContext ctx,
-		      const gchar *format,
-		      SeedValue *values,
-		      SeedValue *exception,
-		      ...);
 
 #endif
