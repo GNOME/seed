@@ -180,6 +180,8 @@ if test x"$want_dbus_module" == x"yes" ; then
 	AC_SUBST(DBUSGLIB_LDFLAGS)
 fi
 
+
+
 dnl ==== os ====
 AC_ARG_ENABLE(os-module,
 			  AC_HELP_STRING([--enable-os-module],
@@ -190,15 +192,15 @@ AC_ARG_ENABLE(os-module,
 AM_CONDITIONAL(BUILD_OS_MODULE, test "x$want_os_module" = "xyes")
 AC_SUBST(BUILD_OS_MODULE)
 
-dnl ==== os ====
-AC_ARG_ENABLE(os-module,
-			  AC_HELP_STRING([--enable-os-module],
-							 [enable the os Seed module. [default=yes]]),
-			  [want_os_module=$enableval],[want_os_module="yes"])
+dnl ==== ffi ====
+AC_ARG_ENABLE(ffi-module,
+			  AC_HELP_STRING([--enable-ffi-module],
+							 [enable the ffi Seed module. [default=yes]]),
+			  [want_ffi_module=$enableval],[want_ffi_module="yes"])
 
 
-AM_CONDITIONAL(BUILD_OS_MODULE, test "x$want_os_module" = "xyes")
-AC_SUBST(BUILD_OS_MODULE)
+AM_CONDITIONAL(BUILD_FFI_MODULE, test "x$want_ffi_module" = "xyes")
+AC_SUBST(BUILD_FFI_MODULE)
 
 dnl ==== libxml ====
 AC_ARG_ENABLE(libxml-module,
@@ -461,6 +463,7 @@ modules/cairo/Makefile
 modules/gtkbuilder/Makefile
 modules/gettext/Makefile
 modules/mpfr/Makefile
+modules/ffi/Makefile
 
 libseed/seed-path.h
 ])
@@ -489,8 +492,9 @@ Modules:
    gtkbuilder.................$want_gtkbuilder_module
    gettext....................$want_gettext_module
    mpfr.......................$want_mpfr_module
+   ffi........................$want_ffi_module
 
-Examples:
+C Examples:
    Turtle.....................$want_turtle_example
 "
 

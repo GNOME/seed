@@ -202,6 +202,16 @@ gchar *seed_value_to_string (SeedContext ctx,
 SeedValue seed_value_from_string (SeedContext ctx,
 				  const gchar * val, SeedException * exception);
 
+gchar *seed_value_to_filename (SeedContext ctx,
+			       SeedValue val, SeedValue *exception);
+SeedValue seed_value_from_filename (SeedContext ctx,
+				    SeedValue val, SeedValue *exception);
+
+SeedValue seed_value_from_binary_string (SeedContext ctx,
+					 const gchar *bytes,
+					 gint n_bytes, 
+					 SeedException *exception);
+
 SeedType seed_value_get_type (SeedContext ctx, SeedValue value);
 
 gboolean
