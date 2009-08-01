@@ -1,7 +1,7 @@
 #!/usr/bin/env seed
 
-imports.gi.versions.Clutter = "0.9";
-imports.gi.versions.GtkClutter = "0.9";
+imports.gi.versions.Clutter = "1.0";
+imports.gi.versions.GtkClutter = "1.0";
 
 Clutter = imports.gi.Clutter;
 Gtk = imports.gi.Gtk;
