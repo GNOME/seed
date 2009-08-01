@@ -2,11 +2,9 @@ SUBDIRS = \
     browser \
     clutter-pad \
     clutter-shader \
-    clutter-transitions \
     dbus \
     glib \
     opengl \
-    pong \
     turtle \
     xml \
     twitter
@@ -21,12 +19,9 @@ examples_DATA = \
     actions.js \
     async-quine.js \
     calculator.js \
-    clutter-0.8.js \
     cairo.js \
-    clutter-0.9.js \
-    clutter-cairo.js \
-    clutter-cogl-0.8.js \
-    clutter-cogl-0.9.js \
+    clutter-cairo-1.0.js \
+    clutter-cogl-1.0.js \
     gconf.js \
     gdkpixbufloader.js \
     Gnio.js \

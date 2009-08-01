@@ -439,13 +439,11 @@ examples/Makefile
 examples/clutter-pad/Makefile
 examples/clutter-pad/examples/Makefile
 examples/clutter-shader/Makefile
-examples/clutter-transitions/Makefile
 examples/glib/Makefile
 examples/browser/Makefile
 examples/turtle/Makefile
 examples/opengl/Makefile
 examples/twitter/Makefile
-examples/pong/Makefile
 examples/dbus/Makefile
 examples/xml/Makefile
 modules/Makefile
