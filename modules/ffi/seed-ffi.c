@@ -25,6 +25,30 @@ SeedObject namespace_ref;
 
 SeedClass ffi_library_class;
 
+static SeedValue
+seed_ffi_library_get_property (SeedContext ctx,
+			       SeedObject this_object,
+			       SeedString property_name,
+			       SeedException *exception)
+{
+  GModule *mod;
+  gchar *prop;
+  gsize len = seed_string_get_maximum_size (property_name);
+  gpointer symbol;
+  
+  prop = g_alloca (len);
+  seed_string_to_utf8_buffer (property_name, prop, len);
+  
+  mod = seed_object_get_private (this_object);
+  
+  if (!g_module_symbol (mod, prop, &symbol))
+    {
+      return NULL;
+    }
+  return seed_value_from_boolean (ctx, TRUE, exception);
+}
+			       
+
 static SeedObject
 seed_ffi_construct_library (SeedContext ctx,
 			    SeedObject constructor,
@@ -60,6 +84,14 @@ seed_ffi_construct_library (SeedContext ctx,
   return ret;
 }
 
+static void
+seed_ffi_library_finalize (SeedObject obj)
+{
+  GModule *mod = seed_object_get_private (obj);
+  
+  g_module_close (mod);
+}
+
 SeedObject
 seed_module_init(SeedEngine *local_eng)
 {
@@ -67,6 +99,8 @@ seed_module_init(SeedEngine *local_eng)
   seed_class_definition ffi_library_def = seed_empty_class;
 
   ffi_library_def.class_name = "FFILibrary";
+  ffi_library_def.finalize = seed_ffi_library_finalize;
+  ffi_library_def.get_property = seed_ffi_library_get_property;
   
   ffi_library_class = seed_create_class (&ffi_library_def);
 
