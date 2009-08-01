@@ -1949,11 +1949,14 @@ seed_value_to_string (JSContextRef ctx,
 	{
 	  func =
 	    seed_object_get_property (ctx, (JSObjectRef) val, "toString");
-	  str =
-	    JSObjectCallAsFunction (ctx, (JSObjectRef) func,
-				    (JSObjectRef) val, 0, NULL, NULL);
+	  if (!JSValueIsNull (ctx, func) &&
+	      JSValueIsObject (ctx, func) &&
+	      JSObjectIsFunction (ctx, (JSObjectRef) func))
+	    str =
+	      JSObjectCallAsFunction (ctx, (JSObjectRef) func,
+				      (JSObjectRef) val, 0, NULL, NULL);
 	}
-
+      
       jsstr = JSValueToStringCopy (ctx, val, NULL);
       length = JSStringGetMaximumUTF8CStringSize (jsstr);
       if (length > 0)
