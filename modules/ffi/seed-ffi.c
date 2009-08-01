@@ -24,6 +24,128 @@ SeedEngine *eng;
 SeedObject namespace_ref;
 
 SeedClass ffi_library_class;
+SeedClass ffi_function_class;
+
+typedef struct _seed_ffi_function_priv {
+  gpointer symbol;
+  
+  GType *args;
+  gint n_args;
+  
+  GType ret_val;
+  
+  SeedObject signature_obj;
+  SeedObject module_obj;
+} seed_ffi_function_priv;
+
+static SeedValue
+seed_ffi_get_signature (SeedContext ctx,
+			  SeedObject this_object,
+			  SeedString property_name,
+			  SeedException *exception)
+{
+  seed_ffi_function_priv *priv = seed_object_get_private (this_object);
+  
+  if (priv->signature_obj)
+    return priv->signature_obj;
+  else
+    return seed_make_null (ctx);
+}
+
+static gboolean
+seed_ffi_build_signature (SeedContext ctx,
+			  seed_ffi_function_priv *priv,
+			  SeedObject sig,
+			  SeedException *exception)
+{
+  SeedObject arguments;
+  SeedValue ret_type_ref, length_ref;
+  guint length, i;
+  
+  arguments = seed_object_get_property (ctx, sig, "arguments");
+  ret_type_ref = seed_object_get_property (ctx, sig, "returns");
+  
+  if (!seed_value_is_object (ctx, arguments))
+    {
+      seed_make_exception (ctx, exception, "FFIError", 
+			   "Signature arguments member must be an array describing argument types");
+      return FALSE;
+    }
+  length_ref = seed_object_get_property (ctx, arguments, "length");
+  
+  length = seed_value_to_uint (ctx, length_ref, exception);
+  priv->n_args = length;
+  priv->args = g_slice_alloc (length * sizeof (GType));
+  
+  for (i = 0; i < length; i++)
+    {
+      SeedValue type = seed_object_get_property_at_index (ctx, arguments, 
+							  i, exception);
+      priv->args[i] = seed_value_to_uint (ctx, type, exception);
+    }
+  priv->ret_val = seed_value_to_uint (ctx, ret_type_ref, exception);
+  
+  priv->signature_obj = sig;
+  seed_value_protect (ctx, sig);
+
+  return TRUE;
+}
+
+static gboolean
+seed_ffi_set_signature (SeedContext ctx,
+			  SeedObject this_object,
+			  SeedString property_name,
+			  SeedValue value,
+			  SeedException *exception)
+{
+  seed_ffi_function_priv *priv = seed_object_get_private (this_object);
+  
+  if (priv->signature_obj)
+    {
+      seed_make_exception (ctx, exception, "FFIError",
+			   "Can not reset signature of function once set");
+      return FALSE;
+    }
+  else if (!seed_value_is_object (ctx, value))
+    {
+      seed_make_exception (ctx, exception, "FFIError",
+			   "Signature must be an object");
+      return FALSE;
+    }
+  else
+    {
+      if (!seed_ffi_build_signature (ctx, priv, (SeedObject) value, exception))
+	return FALSE;
+    }
+  return TRUE;
+}
+
+static void
+seed_ffi_function_finalize (SeedObject obj)
+{
+  seed_ffi_function_priv *priv = seed_object_get_private (obj);
+  
+  if (priv->signature_obj)
+    {
+      seed_value_unprotect (eng->context, priv->signature_obj);
+      
+      g_slice_free1 (priv->n_args * sizeof(GType), priv->args);
+    }
+  
+  seed_value_unprotect (eng->context, priv->module_obj);
+}
+
+static SeedObject
+seed_ffi_make_function (SeedContext ctx, SeedObject module_obj, gpointer symbol)
+{
+  seed_ffi_function_priv *priv = 
+    g_slice_alloc0 (sizeof (seed_ffi_function_priv));
+  
+  priv->symbol = symbol;
+  priv->module_obj = module_obj;
+  
+  return seed_make_object (ctx, ffi_function_class, priv);
+}
 
 static SeedValue
 seed_ffi_library_get_property (SeedContext ctx,
@@ -45,7 +167,7 @@ seed_ffi_library_get_property (SeedContext ctx,
     {
       return NULL;
     }
-  return seed_value_from_boolean (ctx, TRUE, exception);
+  return seed_ffi_make_function (ctx, this_object, symbol);
 }
 			       
 
@@ -92,17 +214,28 @@ seed_ffi_library_finalize (SeedObject obj)
   g_module_close (mod);
 }
 
+seed_static_value ffi_function_values [] = {
+  {"signature", seed_ffi_get_signature, seed_ffi_set_signature, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
+  {0, 0, 0, 0}
+};
+
 SeedObject
 seed_module_init(SeedEngine *local_eng)
 {
   SeedObject library_constructor;
   seed_class_definition ffi_library_def = seed_empty_class;
+  seed_class_definition ffi_function_def = seed_empty_class;
 
   ffi_library_def.class_name = "FFILibrary";
   ffi_library_def.finalize = seed_ffi_library_finalize;
   ffi_library_def.get_property = seed_ffi_library_get_property;
   
+  ffi_function_def.class_name = "FFIFunction";
+  ffi_function_def.finalize = seed_ffi_function_finalize;
+  ffi_function_def.static_values = ffi_function_values;
+  
   ffi_library_class = seed_create_class (&ffi_library_def);
+  ffi_function_class = seed_create_class (&ffi_function_def);
 
   eng = local_eng;
   namespace_ref = seed_make_object (eng->context, NULL, NULL);
