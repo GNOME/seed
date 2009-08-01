@@ -20,6 +20,8 @@
 #include <glib.h>
 #include <seed-module.h>
 
+#include <ffi.h>
+
 SeedEngine *eng;
 SeedObject namespace_ref;
 
@@ -27,6 +29,7 @@ SeedClass ffi_library_class;
 SeedClass ffi_function_class;
 
 typedef struct _seed_ffi_function_priv {
+  gchar *name;
   gpointer symbol;
   
   GType *args;
@@ -132,19 +135,47 @@ seed_ffi_function_finalize (SeedObject obj)
       g_slice_free1 (priv->n_args * sizeof(GType), priv->args);
     }
   
+  g_free (priv->name);
   seed_value_unprotect (eng->context, priv->module_obj);
 }
 
 static SeedObject
-seed_ffi_make_function (SeedContext ctx, SeedObject module_obj, gpointer symbol)
+seed_ffi_make_function (SeedContext ctx, SeedObject module_obj, gpointer symbol, const gchar *name)
 {
   seed_ffi_function_priv *priv = 
     g_slice_alloc0 (sizeof (seed_ffi_function_priv));
   
   priv->symbol = symbol;
   priv->module_obj = module_obj;
+  priv->name = g_strdup (name);
   
   return seed_make_object (ctx, ffi_function_class, priv);
+}
+
+static SeedValue
+seed_ffi_function_call (SeedContext ctx,
+			SeedObject function,
+			SeedObject this_object,
+			gsize argument_count,
+			const SeedValue arguments[],
+			SeedException *exception)
+{
+  ffi_type *rtype;
+  void *rvalue;
+  int n_args;
+  ffi_type **atypes;
+  void **args;
+  int i;
+  ffi_cif cif;
+
+  seed_ffi_function_priv *priv = seed_object_get_private (this_object);
+  
+  if (argument_count != priv->n_args)
+    {
+      seed_make_exception (ctx, exception, "ArgumentError", "%s expected %d arguments got %d",
+			   priv->name, priv->n_args, argument_count);
+      return seed_make_null (ctx);
+    }
 }
 
 static SeedValue
@@ -167,7 +198,7 @@ seed_ffi_library_get_property (SeedContext ctx,
     {
       return NULL;
     }
-  return seed_ffi_make_function (ctx, this_object, symbol);
+  return seed_ffi_make_function (ctx, this_object, symbol, prop);
 }
 			       
 
@@ -233,6 +264,7 @@ seed_module_init(SeedEngine *local_eng)
   ffi_function_def.class_name = "FFIFunction";
   ffi_function_def.finalize = seed_ffi_function_finalize;
   ffi_function_def.static_values = ffi_function_values;
+  ffi_function_def.call_as_function = seed_ffi_function_call;
   
   ffi_library_class = seed_create_class (&ffi_library_def);
   ffi_function_class = seed_create_class (&ffi_function_def);
