@@ -13,19 +13,17 @@ var unique_id = 0;
 OscillatorWidget = new GType({
     parent: Gtk.VBox.type,
     name: "OscillatorWidget",
-    class_init: function(klass, prototype)
-    {
-	var flags = (GObject.ParamFlags.CONSTRUCT |
-		     GObject.ParamFlags.READABLE |
-		     GObject.ParamFlags.WRITABLE);
-
-	var ps = GObject.param_spec_float("frequency",
-					  "Oscillator Frequency",
-					  "The frequency of the audiotestsrc.",
-					  0, 3000, 1000, flags);
-
-	klass.c_install_property(ps);
-    },
+    properties: [
+    	{ name: "frequency",
+    	  type: GObject.TYPE_INT,
+    	  default_value: 1000,
+    	  minimum_value: 0,
+    	  maximum_value: 3000,
+    	  flags: GObject.ParamFlags.CONSTRUCT |
+		         GObject.ParamFlags.READABLE |
+		         GObject.ParamFlags.WRITABLE
+		}
+    ],
     init: function()
     {
 	// Private
