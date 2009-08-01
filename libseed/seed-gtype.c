@@ -341,6 +341,7 @@ seed_gtype_construct (GType type,
 
   if (parent_class->constructor == seed_gtype_construct)
     {
+      GType t = parent;
       parent = g_type_parent (parent);
 
       g_type_class_unref (parent_class);
@@ -349,6 +350,8 @@ seed_gtype_construct (GType type,
       object =
 	parent_class->constructor (type, n_construct_params,
 				   construct_params);
+      
+      seed_gtype_call_construct (t, object);
 
       g_type_class_unref (parent_class);
     }
