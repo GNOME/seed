@@ -8,7 +8,7 @@ seedlib_LTLIBRARIES = \
 libseed_ffi_la_SOURCES = \
 	seed-ffi.c
 
-AM_CPPFLAGS = \
+libseed_ffi_la_CFLAGS = \
 	-I@top_srcdir@/libseed/ \
 	$(GOBJECT_INTROSPECTION_CFLAGS) \
 	$(SEED_DEBUG_CFLAGS) \
