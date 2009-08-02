@@ -20,6 +20,7 @@ examples_DATA = \
     async-quine.js \
     calculator.js \
     cairo.js \
+    clutter-1.0.js \
     clutter-cairo-1.0.js \
     clutter-cogl-1.0.js \
     gconf.js \
@@ -52,11 +53,9 @@ EXTRA_DIST = \
     cairo.js \
     async-quine.js \
     calculator.js \
-    clutter-0.8.js \
-    clutter-0.9.js \
-    clutter-cairo.js \
-    clutter-cogl-0.8.js \
-    clutter-cogl-0.9.js \
+    clutter-1.0.js \
+    clutter-cairo-1.0.js \
+    clutter-cogl-1.0.js \
     COPYING \
     gconf.js \
     gdkpixbufloader.js \
