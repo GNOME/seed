@@ -16,6 +16,7 @@ xml._nodeProto.getAttribute = function(name){
     while (properties){
 	if (properties.name == name)
 	    return properties.children.content;
+	properties = properties.next
     }
     return null;
 }
