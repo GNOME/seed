@@ -7,7 +7,7 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of
  * the License, or (at your option) any later version.
- * Seed is distributed in the hope that it will be useful,
+ * * Seed is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
@@ -60,61 +60,61 @@ gtype_to_ffi_type (SeedContext ctx,
     case G_TYPE_INT:
       return_type = &ffi_type_sint;
       garg->v_int = seed_value_to_int (ctx, value, exception);
-      *arg = &(garg->v_int);
+      *arg = (gpointer)garg;
       break;
     case G_TYPE_UCHAR:
     case G_TYPE_UINT:
       return_type = &ffi_type_uint;
       garg->v_uint = seed_value_to_uint (ctx, value, exception);
-      *arg = &(garg->v_uint);
+      *arg = (gpointer)garg;
       break;
     case G_TYPE_STRING:
       return_type = &ffi_type_pointer;
       garg->v_pointer = seed_value_to_string (ctx, value, exception);
-      *arg = &(garg->v_pointer);
+      *arg = (gpointer)garg;
       break;
     case G_TYPE_OBJECT:
       //    case G_TYPE_BOXED:
       //    case G_TYPE_POINTER:
       return_type = &ffi_type_pointer;
       garg->v_pointer = seed_value_to_object (ctx, value, exception);
-      *arg = &(garg->v_pointer);
+      *arg = (gpointer)garg;
       break;
     case G_TYPE_FLOAT:
       return_type = &ffi_type_float;
       garg->v_float = seed_value_to_float (ctx, value, exception);
-      *arg = &(garg->v_float);
+      *arg = (gpointer)garg;
       break;
     case G_TYPE_DOUBLE:
       return_type = &ffi_type_double;
       garg->v_double = seed_value_to_double (ctx, value, exception);
-      *arg = &(garg->v_double);
+      *arg = (gpointer)garg;
       break;
     case G_TYPE_LONG:
       return_type = &ffi_type_slong;
       garg->v_uint = seed_value_to_uint (ctx, value, exception);
-      *arg = &(garg->v_uint);
+      *arg = (gpointer)garg;
       break;
     case G_TYPE_ULONG:
       return_type = &ffi_type_ulong;
       garg->v_ulong = seed_value_to_ulong (ctx, value, exception);
-      *arg = &(garg->v_ulong);
+      *arg = (gpointer)garg;
       break;
     case G_TYPE_INT64:
       return_type = &ffi_type_sint64;
       garg->v_int64 = seed_value_to_int64 (ctx, value, exception);
-      *arg = &(garg->v_int64);
+      *arg = (gpointer)garg;
       break;
     case G_TYPE_UINT64:
       return_type = &ffi_type_uint64;
       garg->v_uint64 = seed_value_to_uint64 (ctx, value, exception);
-      *arg = &(garg->v_uint64);
+      *arg = (gpointer)garg;
       break;
     default:
-      g_warning ("Unsupported fundamental type: %s", g_type_name (type));
+      g_warning ("Unsupported fundamental in type: %s", g_type_name (type));
       return_type = &ffi_type_pointer;
       garg->v_pointer = NULL;
-      *arg = &(garg->v_pointer);
+      *arg = (garg->v_pointer);
       break;
     }
   return return_type;
@@ -164,7 +164,7 @@ return_type_to_ffi_type (GType otype)
       return &ffi_type_uint64;
       break;
     default:
-      g_warning ("Unsupported fundamental type: %s", g_type_name (type));
+      g_warning ("Unsupported fundamental out type: %s", g_type_name (type));
       return &ffi_type_pointer;
       break;
     }
@@ -213,9 +213,9 @@ seed_ffi_build_signature (SeedContext ctx,
     {
       SeedValue type = seed_object_get_property_at_index (ctx, arguments, 
 							  i, exception);
-      priv->args[i] = seed_value_to_uint (ctx, type, exception);
+      priv->args[i] = seed_value_to_int (ctx, type, exception);
     }
-  priv->ret_val = seed_value_to_uint (ctx, ret_type_ref, exception);
+  priv->ret_val = seed_value_to_int (ctx, ret_type_ref, exception);
   
   priv->signature_obj = sig;
   seed_value_protect (ctx, sig);
@@ -265,7 +265,7 @@ seed_ffi_function_finalize (SeedObject obj)
     }
   
   g_free (priv->name);
-  g_free (priv);
+  g_slice_free1 (sizeof(seed_ffi_function_priv), priv); 
 
   seed_value_unprotect (eng->context, priv->module_obj);
 }
@@ -286,54 +286,54 @@ seed_ffi_make_function (SeedContext ctx, SeedObject module_obj, gpointer symbol,
 static SeedValue
 value_from_ffi_type (SeedContext ctx, 
 		     GType otype,
-		     gpointer *value, 
+		     GArgument *value, 
 		     SeedException *exception)
 {
   switch (g_type_fundamental (otype))
     {
     case G_TYPE_INT:
-      return seed_value_from_int (ctx, *(gint*)value, exception);
+      return seed_value_from_int (ctx, value->v_int, exception);
       break;
     case G_TYPE_FLOAT:
-      return seed_value_from_float (ctx, *(gfloat*)value, exception);
+      return seed_value_from_float (ctx, value->v_float, exception);
       break;
     case G_TYPE_DOUBLE:
-      return seed_value_from_double (ctx, *(gdouble*)value, exception);
+      return seed_value_from_double (ctx, value->v_double, exception);
       break;
     case G_TYPE_BOOLEAN:
-      return seed_value_from_boolean (ctx, *(gboolean*)value, exception);
+      return seed_value_from_boolean (ctx, value->v_boolean, exception);
       break;
     case G_TYPE_STRING:
-      return seed_value_from_string (ctx, *(gchar**)value, exception);
+      return seed_value_from_string (ctx, value->v_pointer, exception);
       break;
     case G_TYPE_CHAR:
-      return seed_value_from_char (ctx, *(gchar*)value, exception);
+      return seed_value_from_char (ctx, value->v_int, exception);
       break;
     case G_TYPE_UCHAR:
-      return seed_value_from_uchar (ctx, *(guchar*)value, exception);
+      return seed_value_from_uchar (ctx, value->v_uint, exception);
       break;
     case G_TYPE_UINT:
-      return seed_value_from_uint (ctx, *(guint*)value, exception);
+      return seed_value_from_uint (ctx, value->v_uint, exception);
       break;
       //    case G_TYPE_POINTER:
       //      return seed_ (ctx, *(gpointer*)value, exception);
       //      break;
     case G_TYPE_LONG:
-      return seed_value_from_long (ctx, *(glong*)value, exception);
+      return seed_value_from_long (ctx, value->v_long, exception);
       break;
     case G_TYPE_ULONG:
-      return seed_value_from_ulong (ctx, *(gulong*)value, exception);
+      return seed_value_from_ulong (ctx, value->v_ulong, exception);
       break;
     case G_TYPE_INT64:
-      return seed_value_from_int64 (ctx, *(gint64*)value, exception);
+      return seed_value_from_int64 (ctx, value->v_int64, exception);
       break;
     case G_TYPE_UINT64:
-      return seed_value_from_uint64 (ctx, *(guint64*)value, exception);
+      return seed_value_from_uint64 (ctx, value->v_uint64, exception);
       break;
     case G_TYPE_NONE:
       return seed_make_null (ctx);
     default:
-      g_warning ("Unsupported fundamental type: %s",
+      g_warning ("Unsupported fundamental type in value_from_ffi_type: %s",
 		 g_type_name(g_type_fundamental (otype)));
       return seed_make_null (ctx);
     }
@@ -347,11 +347,11 @@ seed_ffi_function_call (SeedContext ctx,
 			const SeedValue arguments[],
 			SeedException *exception)
 {
+  GArgument rvalue;
   GArgument *gargs;
   ffi_type *rtype;
-  void *rvalue;
   ffi_type **atypes;
-  void **args;
+  gpointer *args;
   int i;
   ffi_cif cif;
 
@@ -363,23 +363,22 @@ seed_ffi_function_call (SeedContext ctx,
 			   priv->name, priv->n_args, argument_count);
       return seed_make_null (ctx);
     }
-  atypes = g_alloca (sizeof (ffi_type *) * (argument_count+1));
-  args = g_alloca (sizeof (gpointer) * (argument_count+1));
-  gargs = g_alloca (sizeof (GArgument) * (argument_count+1));
+  atypes = g_alloca (sizeof (ffi_type *) * (argument_count));
+  args = g_alloca (sizeof (gpointer) * (argument_count));
+  gargs = g_alloca (sizeof (GArgument) * (argument_count));
 
   for (i = 0; i < argument_count; i++)
     {
-      atypes[i] = gtype_to_ffi_type (ctx, arguments[i], priv->args[i], &gargs[i], args[i],exception);
+      atypes[i] = gtype_to_ffi_type (ctx, arguments[i], priv->args[i], &(gargs[i]), &args[i],exception);
     }
   rtype = return_type_to_ffi_type (priv->ret_val);
 		   
-  ffi_prep_cif (&cif, FFI_DEFAULT_ABI, argument_count, rtype, atypes);
+  if (ffi_prep_cif (&cif, FFI_DEFAULT_ABI, argument_count, rtype, atypes) != FFI_OK)
+    g_assert_not_reached();
   
-  rvalue = g_alloca (MAX (rtype->size, sizeof (ffi_arg)));
+  ffi_call (&cif, priv->symbol, &rvalue, args);
   
-  ffi_call (&cif, priv->symbol, rvalue, args);
-  
-  return value_from_ffi_type (ctx, priv->ret_val, rvalue, exception);
+  return value_from_ffi_type (ctx, priv->ret_val, &rvalue, exception);
 }
 
 static SeedValue

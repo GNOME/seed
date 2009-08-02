@@ -9,7 +9,8 @@ libseed_ffi_la_SOURCES = \
 	seed-ffi.c
 
 libseed_ffi_la_CFLAGS = \
-	-I@top_srcdir@/libseed/ \
+	-I@top_srcdir@/libseed/ \ 
+	-Wall \
 	$(GOBJECT_INTROSPECTION_CFLAGS) \
 	$(SEED_DEBUG_CFLAGS) \
 	$(SEED_PROFILE_CFLAGS)
