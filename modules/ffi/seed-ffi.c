@@ -41,6 +41,11 @@ typedef struct _seed_ffi_function_priv {
   SeedObject module_obj;
 } seed_ffi_function_priv;
 
+typedef struct _seed_ffi_library_priv {
+  GModule *mod;
+  GHashTable *symbols;
+} seed_ffi_library_priv;
+
 static ffi_type *
 gtype_to_ffi_type (SeedContext ctx, 
 		   SeedValue value,
@@ -75,9 +80,9 @@ gtype_to_ffi_type (SeedContext ctx,
       break;
     case G_TYPE_OBJECT:
       //    case G_TYPE_BOXED:
-      //    case G_TYPE_POINTER:
+    case G_TYPE_POINTER:
       return_type = &ffi_type_pointer;
-      garg->v_pointer = seed_value_to_object (ctx, value, exception);
+      garg->v_pointer = seed_pointer_get_pointer (ctx, value);
       *arg = (gpointer)garg;
       break;
     case G_TYPE_FLOAT:
@@ -142,7 +147,7 @@ return_type_to_ffi_type (GType otype)
       break;
     case G_TYPE_OBJECT:
       //    case G_TYPE_BOXED:
-      //    case G_TYPE_POINTER:
+    case G_TYPE_POINTER:
       return &ffi_type_pointer;
       break;
     case G_TYPE_FLOAT:
@@ -271,8 +276,9 @@ seed_ffi_function_finalize (SeedObject obj)
 }
 
 static SeedObject
-seed_ffi_make_function (SeedContext ctx, SeedObject module_obj, gpointer symbol, const gchar *name)
+seed_ffi_make_function (SeedContext ctx, SeedObject module_obj, gpointer symbol, const gchar *name, GHashTable *symbols)
 {
+  SeedValue ret;
   seed_ffi_function_priv *priv = 
     g_slice_alloc0 (sizeof (seed_ffi_function_priv));
   
@@ -280,7 +286,11 @@ seed_ffi_make_function (SeedContext ctx, SeedObject module_obj, gpointer symbol,
   priv->module_obj = module_obj;
   priv->name = g_strdup (name);
   
-  return seed_make_object (ctx, ffi_function_class, priv);
+  ret = seed_make_object (ctx, ffi_function_class, priv);
+  seed_value_protect (ctx, ret);
+
+  g_hash_table_insert (symbols, g_strdup (name), ret);
+  return ret;
 }
 
 static SeedValue
@@ -315,9 +325,9 @@ value_from_ffi_type (SeedContext ctx,
     case G_TYPE_UINT:
       return seed_value_from_uint (ctx, value->v_uint, exception);
       break;
-      //    case G_TYPE_POINTER:
-      //      return seed_ (ctx, *(gpointer*)value, exception);
-      //      break;
+    case G_TYPE_POINTER:
+      return seed_make_pointer (ctx, value->v_pointer);
+      break;
     case G_TYPE_LONG:
       return seed_value_from_long (ctx, value->v_long, exception);
       break;
@@ -387,21 +397,27 @@ seed_ffi_library_get_property (SeedContext ctx,
 			       SeedString property_name,
 			       SeedException *exception)
 {
+  SeedValue ret;
   GModule *mod;
   gchar *prop;
   gsize len = seed_string_get_maximum_size (property_name);
   gpointer symbol;
+  seed_ffi_library_priv *priv;
   
   prop = g_alloca (len);
   seed_string_to_utf8_buffer (property_name, prop, len);
   
-  mod = seed_object_get_private (this_object);
+  priv = seed_object_get_private (this_object);
+  mod = priv->mod;
   
+  if ((ret = g_hash_table_lookup (priv->symbols, prop)))
+    return ret;
+
   if (!g_module_symbol (mod, prop, &symbol))
     {
       return NULL;
     }
-  return seed_ffi_make_function (ctx, this_object, symbol, prop);
+  return seed_ffi_make_function (ctx, this_object, symbol, prop, priv->symbols);
 }
 			       
 
@@ -415,6 +431,7 @@ seed_ffi_construct_library (SeedContext ctx,
   GModule *mod;
   SeedObject ret;
   gchar *filename;
+  seed_ffi_library_priv *priv;
   
   if (argument_count != 1 && argument_count != 0)
     {
@@ -439,7 +456,14 @@ seed_ffi_construct_library (SeedContext ctx,
       return seed_make_null (ctx);
     }
   
-  ret = seed_make_object (ctx, ffi_library_class, mod);
+  priv = g_slice_alloc (sizeof (seed_ffi_library_priv));
+  priv->mod = mod;
+  
+  // TODO: Value destroy function.
+  priv->symbols = g_hash_table_new_full (g_str_hash, g_str_equal, 
+					 g_free, NULL);
+  
+  ret = seed_make_object (ctx, ffi_library_class, priv);
   
   g_free (filename);
   
@@ -449,9 +473,10 @@ seed_ffi_construct_library (SeedContext ctx,
 static void
 seed_ffi_library_finalize (SeedObject obj)
 {
-  GModule *mod = seed_object_get_private (obj);
+  seed_ffi_library_priv *priv;
+  priv = seed_object_get_private (obj);
   
-  g_module_close (mod);
+  g_module_close (priv->mod);
 }
 
 seed_static_value ffi_function_values [] = {
