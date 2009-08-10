@@ -21,7 +21,7 @@ There is a (very) introductory tutorial to Seed, covering the creation of a smal
 There is a document covering at a broad level, how things in a namespace are mapped to Seed when importing, <a href="mapping/mapping.html">here</a>.
 <div class="section"><b>C API</b></div>
 <p>
-The C API is documented <a href="reference/html/index.html">here</a>.
+The C API, some of the modules, and a small (but expanding) portion of the runtime API is documented <a href="reference/html/index.html">here</a>.
 </p>
 <div class="section"><b>Runtime</b></div>
 <p>
@@ -90,7 +90,7 @@ Seed has several C extension modules, to bind libraries not available from GObje
 
 <div class="subsection"><b>readline, sqlite, GtkBuilder, and sandbox</b></div>
 <p>
-Documented in a consistent manual (<a href="modules/html/index.html">html</a> <a href="modules/modules.pdf">pdf</a>)
+Documented in the main manual (<a href="reference/html/seed-Modules.html">html</a> <a href="modules/modules.pdf">pdf</a>)
 </p>
 
 <div class="subsection"><b>canvas</b></div>
