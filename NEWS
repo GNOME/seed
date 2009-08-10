@@ -1,3 +1,22 @@
+== Seed ?.?.?, "?" (2009.08.10) ==
+
+* Expanded and updated documentation; also available at:
+  	   http://library.gnome.org/devel/seed/0.8/
+
+* All JavaScript contexts now have a __script_path__ property, which
+  exposes the absolute, canonical path to the evaluated script
+
+* Add __init__.js functionality; if an imported folder contains __init__.js,
+  it will be evaluated with the imported context as the 'this' object
+
+* Fix bug which caused inheritance from a GType created in Seed to fail
+
+* Add "pretty" property installation, see:
+      	   tests/javascript/gtypes/gtype-property-nice.js
+
+* New FFI module, provides an interface for calling non-introspected
+  native C functions from JavaScript
+
 == Seed 0.8.5, "Self Portrait" (2009.07.10) ==
 
 * Significant reorganization and expansion of the reference documentation
