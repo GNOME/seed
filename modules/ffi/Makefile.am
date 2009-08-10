@@ -2,6 +2,12 @@ if BUILD_FFI_MODULE
 
 seedlibdir = ${libdir}/seed
 
+EXTRA_DIST = \
+	test-sin.js \
+	test-strcmp.js \
+	test-strdup.js \
+	test-xlib.js
+
 seedlib_LTLIBRARIES = \
 	libseed_ffi.la
 
