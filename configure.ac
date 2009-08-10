@@ -434,8 +434,10 @@ tests/javascript/structs/Makefile
 tests/c/Makefile
 doc/Makefile
 doc/modules/Makefile
+doc/modules/version.xml
 doc/tutorial-standalone/Makefile
 doc/reference/Makefile
+doc/reference/version.xml
 doc/mapping/Makefile
 examples/Makefile
 examples/clutter-pad/Makefile
