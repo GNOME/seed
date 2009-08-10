@@ -86,7 +86,7 @@ Seed has several C extension modules, to bind libraries not available from GObje
 
 <div class="subsection"><b>readline, sqlite, GtkBuilder, and sandbox</b></div>
 <p>
-Documented in the main manual (<a href="reference/html/seed-Modules.html">html</a> <a href="modules/modules.pdf">pdf</a>)
+Documented in the main manual (<a href="reference/html/modules.html">html</a> <a href="modules/modules.pdf">pdf</a>)
 </p>
 
 <div class="subsection"><b>canvas</b></div>
