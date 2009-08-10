@@ -28,6 +28,7 @@ function draw_arc(drawing_area){
 Gtk.init(Seed.argv);
 
 var w = new Gtk.Window();
+w.signal.hide.connect(Gtk.main_quit);
 var d = new Gtk.DrawingArea();
 w.add(d);
 
