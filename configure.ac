@@ -402,6 +402,7 @@ AC_CONFIG_FILES([
 seed.pc
 Makefile
 
+doc/index.html
 doc/conventions.html
 doc/runtime.html
 doc/tutorial-standalone/tutorial.html

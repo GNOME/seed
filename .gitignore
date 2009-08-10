@@ -201,3 +201,5 @@ libseed/seed-path.h
 modules/cairo/._seed-cairo.c
 modules/gettext/._gettext.c
 po/Makefile.in.in
+
+version.xml

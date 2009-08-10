@@ -1,7 +1,7 @@
 SUBDIRS = tutorial-standalone modules mapping reference
 
 EXTRA_DIST = \
-	index.html \
+	index.html.in \
 	runtime.html.in \
 	style.css \
 	conventions.html.in \

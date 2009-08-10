@@ -11,7 +11,7 @@
 </head>
 <body onload="sh_highlightDocument();">
 <div id="header">Seed Documentation</div>
-<div id="subheader">v.0.8</div>
+<div id="subheader">v.@VERSION@</div>
 <div class="section"><b>Tutorial</b></div>
 <p>
 There is a (very) introductory tutorial to Seed, covering the creation of a small GTK+ WebKit browser,  <a href="tutorial-standalone/tutorial.html">here</a>.
