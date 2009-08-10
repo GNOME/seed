@@ -369,7 +369,7 @@ seed_ffi_function_call (SeedContext ctx,
   
   if (argument_count != priv->n_args)
     {
-      seed_make_exception (ctx, exception, "ArgumentError", "%s expected %d arguments got %d",
+      seed_make_exception (ctx, exception, "ArgumentError", "%s expected %d arguments got %Zd",
 			   priv->name, priv->n_args, argument_count);
       return seed_make_null (ctx);
     }
@@ -437,7 +437,7 @@ seed_ffi_construct_library (SeedContext ctx,
     {
       seed_make_exception (ctx, exception, 
 			   "ArgumentError", 
-			   "ffi.Library constructor expects 1 argument (filename, or none to use NULL GModule), got %d", 
+			   "ffi.Library constructor expects 1 argument (filename, or none to use NULL GModule), got %Zd", 
 			   argument_count);
       return seed_make_null (ctx);
     }
