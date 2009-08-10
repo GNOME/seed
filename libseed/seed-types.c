@@ -2063,7 +2063,7 @@ seed_value_to_filename (JSContextRef ctx,
 /**
  * seed_value_from_filename:
  * @ctx: A #SeedContext.
- * @filename: The #gchar* filename to represent.
+ * @val: The #gchar* filename to represent.
  * @exception: A reference to a #SeedValue in which to store any exceptions.
  *             Pass %NULL to ignore exceptions.
  *
@@ -2076,12 +2076,12 @@ seed_value_to_filename (JSContextRef ctx,
  */
 JSValueRef
 seed_value_from_filename (JSContextRef ctx,
-			  const gchar * filename, JSValueRef * exception)
+			  const gchar * val, JSValueRef * exception)
 {
   GError *e = NULL;
   gchar *utf8;
 
-  utf8 = g_filename_to_utf8 (filename, -1, NULL, NULL, &e);
+  utf8 = g_filename_to_utf8 (val, -1, NULL, NULL, &e);
 
   if (e)
     {
