@@ -1,4 +1,0 @@
-* Why does 'new Pango.FontDescription()' fail?
-
-* Why does attaching to WebKit's navigation_policy_decision_requested 
-  signal automatically segfault Seed?
