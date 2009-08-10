@@ -1,7 +1,7 @@
-== Seed ?.?.?, "?" (2009.08.10) ==
+== Seed 2.27.90, "London Calling" (2009.08.10) ==
 
 * Expanded and updated documentation; also available at:
-  	   http://library.gnome.org/devel/seed/0.8/
+  	   http://library.gnome.org/devel/seed/unstable/
 
 * All JavaScript contexts now have a __script_path__ property, which
   exposes the absolute, canonical path to the evaluated script
