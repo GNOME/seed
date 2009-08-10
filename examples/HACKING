@@ -1,4 +1,4 @@
-The goal of this file is to tell you what each example serves as an example of, or a list of what kind of examples we have.
+The list of included examples now lives in doc/index.html
 
 == External Examples ==
 
@@ -6,82 +6,3 @@ The Lights Off and Same Seed examples now live in the gnome-games
 module (gsoc-seed-games branch). They use Clutter, SVGs, GConf, Gtk/GtkClutter,
 gettext, GnomeGamesSupport, GtkBuilder, Cairo, etc.
 
-== Large Examples ==
-
-browser/
-	- An incomplete WebKit-based web browser. Uses much of Gtk and WebKit.
-
-clutter-pad/
-	- A scratchpad for Seed+Clutter scripts, using GtkSourceView and GtkBuilder.
-
-clutter-shader/
-	- A GLSL shader example. Utilizes Gtk with Clutter, GtkSourceView,
-	  ClutterTexture, and Clutter Shader.
-
-clutter-transitions/
-	- A library of interesting slide transition animations; many are similar to
-	  those found in Keynote. Makes heavy use of Clutter 0.8.
-
-glib/
-	- A small collection of examples that utilize interesting parts of GLib.
-	  Threading, timeouts/timers, and reading the enivronment are all covered.
-
-opengl/
-	- Examples which use OpenGL-GLib. Includes the classic GLUT teapot, a Seed
-	  port of glxgears, and a simple colored triangle.
-
-pong/
-	- An incomplete implementation of Pong in Clutter.
-
-same-seed/
-	- An in-progress Clutter port of Same Gnome. Makes heavy use of the new
-	  Clutter 0.9 API, which is signficantly different from our older examples,
-	  which all use Clutter 0.8.
-
-turtle/
-	- Written in C, exposes an interface to Javascript as an embedding language.
-	  Simple turtle graphics demo.
-
-twitter/
-	- A simple Gtk Twitter client which was introduced in Ars Technica's article
-	  on Seed. Uses async network access, John Resig's pretty.js, etc.
-
-xml/
-	- Various examples that use the libxml C module to walk the DOM, perform
-	  XPath queries, etc.
-
-== Smaller Examples ==
-
-accelgroup.js: Proper use of Gtk key accelerators.
-actions.js: Gtk actions, for menus, toolbars, and accelerators.
-async-quine.js: A Quine which loads itself asynchronouosly.
-calculator.js: Simple Gtk widgets, packing, labels, signals. javascript eval.
-clutter-cairo.js: Draws into a Clutter context using our Canvas extension.
-clutter-cogl.js: Draw ripples from the mouse, using Clutter's COGL library.
-clutter-0.[8,9].js: Clutter, implementing custom Clutter animations, using
-                    Clutter effects (animations in 0.9), ClutterColor.
-dbus-banshee.js: Plays the song specified as an argument in Banshee, over DBUS.
-dbus-consolekit.js: Queries ConsoleKit over DBUS to determine if the invoking
-                    session is either local or remote.
-gconf.js: Getting a key out of gconf.
-gdkpixbufloader.js: Uses async network Gio to show a large picture from NASA.
-Gnio.js: Simple use of Gnio, performs an HTTP request.
-Gnio-server.js: Uses Gnio to run a cowsay server.
-gtkplug.js: Use of GtkPlug, to embed one process' GtkLabel in another's window.
-gtktextview.js: Demonstrates a simple use of the GtkTextView widget.
-gtktreeview.js: A quick example of using GtkTreeView from Seed.
-json-packing.js: Simple example of using JSON for Gtk packing.
-json-reddit.js: Loads Reddit JSON feed, prints out top stories.
-ls.js: A simple 'ls' implementation utilizing Gio, and Seed.argv.
-n-oscillator.js: GStreamer, Gtk.VScale
-notify-test.js: Demonstrates use of both libnotify and Gio file monitoring.
-pango-fontset.js: Lists all of the fonts available to Pango.
-pango.js: Quick manipulation of many Pango properties; Pango+Clutter.
-poppler.js: GtkDrawingArea, GtkToolbar, Poppler for rendering pdfs. GDK/Cairo.
-quine.js: Gio.simple_read (added in extensions/Gio.js)
-repl.js: Exceptions, Readline.
-soup.js: SoupMessage. Uses libsoup to perform an HTTP request.
-threaded-repl.js: Provides a REPL running in a second thread, allows live,
-				  REPL interaction with Gtk stuff.
-video.js: Quick example of Gstreamer video sources.
-vte-test.js: Make a VTE widget and attach it to things;

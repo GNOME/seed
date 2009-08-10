@@ -19,7 +19,7 @@ There is a (very) introductory tutorial to Seed, covering the creation of a smal
 <div class="section"><b>Mapping</b></div>
 <p>
 There is a document covering at a broad level, how things in a namespace are mapped to Seed when importing, <a href="mapping/mapping.html">here</a>.
-<div class="section"><b>C API</b></div>
+<div class="section"><b>Reference Manual</b></div>
 <p>
 The C API, some of the modules, and a small (but expanding) portion of the runtime API is documented <a href="reference/html/index.html">here</a>.
 </p>
@@ -30,59 +30,55 @@ Documentation on the Seed builtins and runtime is <a href="runtime.html">here</a
 <div class="section"><b>Examples</b></div>
 <p>
 Seed has a wide variety of examples <a href="http://git.gnome.org/cgit/seed/tree/examples">in git</a>. A partial index of some of the more useful examples is below:
+</p>
+<p><b>Large Examples</b></p>
 <ul>
-
-<li><a href="http://git.gnome.org/cgit/seed/tree/examples/accelgroup.js">accelgroup.js</a> - Demonstrates using GtkAccelGroup</li>
-<li><a href="http://git.gnome.org/cgit/seed/tree/examples/actions.js">actions.js</a> - Demonstrates the use of GConf actions</li>
-<li><a href="http://git.gnome.org/cgit/seed/tree/examples/async-quine.js">async-quine.js</a> - Reads itself with GIO using async calls</li>
-<li><a href="http://git.gnome.org/cgit/seed/tree/examples/broken">broken</a> - Several old examples, or old versions of examples which have not been updated </li>
-<li><a href="http://git.gnome.org/cgit/seed/tree/examples/browser">browser</a> - The simple WebKit browser outlined in the tutorial.</li>
-<li><a href="http://git.gnome.org/cgit/seed/tree/examples/calculator.js">calculator.js</a> - A simple GTK calculator.</li>
-<li><a href="http://git.gnome.org/cgit/seed/tree/examples/clutter-0.8.js">clutter-0.8.js</a> - A silly demo of Clutter 0.8.</li>
-<li><a href="http://git.gnome.org/cgit/seed/tree/examples/clutter-0.9.js">clutter-0.9.js</a> - The silly Clutter 0.8 demo ported to 0.9</li>
-<li><a href="http://git.gnome.org/cgit/seed/tree/examples/clutter-cairo.js">clutter-cairo.js</a> - Simple use of ClutterCairo (0.8)</li>
-<li><a href="http://git.gnome.org/cgit/seed/tree/examples/clutter-cogl.js">clutter-cogl.js</a> - Demonstrates usage of cogl for drawing in Clutter.</li>
-<li><a href="http://git.gnome.org/cgit/seed/tree/examples/clutter-pad">clutter-pad</a> - An example to prototype Clutter scripts using a GtkSourceView widget and a GtkClutter stage. Demonstrates usage of sandbox module and GtkBuilder.</li>
+<li><a href="http://git.gnome.org/cgit/seed/tree/examples/browser">browser</a> - An expanded version of the simple WebKit browser outlined in the tutorial</li>
+<li><a href="http://git.gnome.org/cgit/seed/tree/examples/clutter-pad">clutter-pad</a> - An example to prototype Clutter scripts using a GtkSourceView widget and a GtkClutter stage. Demonstrates usage of sandbox module and GtkBuilder</li>
 <li><a href="http://git.gnome.org/cgit/seed/tree/examples/clutter-shader">clutter-shader</a> - Demonstrates the use of Clutter Shaders and GtkSourceView</li>
-<li><a href="http://git.gnome.org/cgit/seed/tree/examples/clutter-transitions">clutter-transitions</a> - A library of slide transitions written with Clutter 0.9</li>
-<li><a href="http://git.gnome.org/cgit/seed/tree/examples/dbus/dbus-banshee.js">dbus-banshee</a> - Demonstrates the use of DBus to control Banshee. </li>
-<li><a href="http://git.gnome.org/cgit/seed/tree/examples/dbus/dbus-consolekit.js">dbus-consolekit</a> - Demonstrates the use of DBus to query ConsoleKit. </li>
-<li><a href="http://git.gnome.org/cgit/seed/tree/examples/dbus/dbus-networkmanager.js">dbus-networkmanager</a> - Demonstrates the use of DBus to query NetworkManager. </li>
+<li><a href="http://git.gnome.org/cgit/seed/tree/examples/pango.js">pango</a> - Demonstrates a bit more complicated Pango usage, and Clutter usage, to create a sort of font playground</li>
+<li><a href="http://git.gnome.org/cgit/seed/tree/examples/turtle">turtle</a> - a simple example of the C embedding API to create a logo like turtle</li>
+<li><a href="http://git.gnome.org/cgit/seed/tree/examples/twitter">twitter</a> - A moderately simple Gtk twitter client, demonstrates GIO, Gtk, GdkPixbuf.</li>
+</ul>
+<p><b>Small Examples</b></p>
+<ul>
+<li><a href="http://git.gnome.org/cgit/seed/tree/examples/accelgroup.js">accelgroup.js</a> - Demonstrates proper use of Gtk key accelerators</li>
+<li><a href="http://git.gnome.org/cgit/seed/tree/examples/actions.js">actions.js</a> - Gtk actions, for menus, toolbars, and accelerators</li>
+<li><a href="http://git.gnome.org/cgit/seed/tree/examples/async-quine.js">async-quine.js</a> - A Quine which loads itself asynchronously</li>
+<li><a href="http://git.gnome.org/cgit/seed/tree/examples/broken">broken</a> - Several old examples, or old versions of examples which have not been updated</li>
+<li><a href="http://git.gnome.org/cgit/seed/tree/examples/calculator.js">calculator.js</a> - A simple GTK calculator</li>
+<li><a href="http://git.gnome.org/cgit/seed/tree/examples/clutter-1.0.js">clutter-1.0.js</a> - A silly demo of Clutter 1.0</li>
+<li><a href="http://git.gnome.org/cgit/seed/tree/examples/clutter-cairo-1.0.js">clutter-cairo-1.0.js</a> - Simple use of Clutter 1.0's Cairo component</li>
+<li><a href="http://git.gnome.org/cgit/seed/tree/examples/clutter-cogl-1.0.js">clutter-cogl-1.0.js</a> - Demonstrates usage of COGL for drawing in Clutter</li>
+<li><a href="http://git.gnome.org/cgit/seed/tree/examples/dbus/dbus-banshee.js">dbus-banshee</a> - Demonstrates the use of DBus to control Banshee</li>
+<li><a href="http://git.gnome.org/cgit/seed/tree/examples/dbus/dbus-consolekit.js">dbus-consolekit</a> - Demonstrates the use of DBus to query ConsoleKit</li>
+<li><a href="http://git.gnome.org/cgit/seed/tree/examples/dbus/dbus-networkmanager.js">dbus-networkmanager</a> - Demonstrates the use of DBus to query NetworkManager</li>
 <li><a href="http://git.gnome.org/cgit/seed/tree/examples/gconf.js">gconf.js</a> - Simple GConf usage (reading keys)</li>
-<li><a href="http://git.gnome.org/cgit/seed/tree/examples/gdkpixbufloader.js">gdkpixbufloader.js</a> - Demonstrates reading an image with GIO and loading it in to a GdkPixbuf.</li>
-<li><a href="http://git.gnome.org/cgit/seed/tree/examples/glib">glib</a> - Several examples of using GLib, including timers, timeouts and threading. </li>
-<li><a href="http://git.gnome.org/cgit/seed/tree/examples/Gnio.js">Gnio.js</a> - Basic client usage of GIO.</li>
-<li><a href="http://git.gnome.org/cgit/seed/tree/examples/Gnio-server.js">Gnio-server.js</a> -Implementing a server using GIO </li>
-<li><a href="http://git.gnome.org/cgit/seed/tree/examples/gtkplug.js">gtkplug.js</a> - Demonstrates GtkPlug usage.</li>
-<li><a href="http://git.gnome.org/cgit/seed/tree/examples/gtktextview.js">gtktextview.js</a> - A very simple use of GtkTextView </li>
+<li><a href="http://git.gnome.org/cgit/seed/tree/examples/gdkpixbufloader.js">gdkpixbufloader.js</a> - Demonstrates reading an image with GIO and loading it in to a GdkPixbuf</li>
+<li><a href="http://git.gnome.org/cgit/seed/tree/examples/glib">glib</a> - Several examples of using GLib, including timers, timeouts and threading</li>
+<li><a href="http://git.gnome.org/cgit/seed/tree/examples/Gnio.js">Gnio.js</a> - Basic client usage of GIO</li>
+<li><a href="http://git.gnome.org/cgit/seed/tree/examples/Gnio-server.js">Gnio-server.js</a> -Implementing a server using GIO</li>
+<li><a href="http://git.gnome.org/cgit/seed/tree/examples/gtkplug.js">gtkplug.js</a> - Demonstrates GtkPlug usage</li>
+<li><a href="http://git.gnome.org/cgit/seed/tree/examples/gtktextview.js">gtktextview.js</a> - A very simple use of GtkTextView</li>
 <li><a href="http://git.gnome.org/cgit/seed/tree/examples/gtktreeview.js">gtktreeview.js</a> - Demonstrates the use of GtkTreeView</li>
-<li><a href="http://git.gnome.org/cgit/seed/tree/examples/json-reddit.js">json-reddit.js</a> - Uses GIO and JSON to parse the reddit homepage. </li>
-<li><a href="http://git.gnome.org/cgit/seed/tree/examples/ls.js">ls.js</a> - Enumerating a directory with GIO.</li>
-<li><a href="http://git.gnome.org/cgit/seed/tree/examples/n-oscillator.js">n-oscillator.js</a> - Demonstrates basic Gtk and GStreamer usage.</li>
-<li><a href="http://git.gnome.org/cgit/seed/tree/examples/notify-test.js">notify-test.js</a> - Usage of libnotify </li>
+<li><a href="http://git.gnome.org/cgit/seed/tree/examples/json-reddit.js">json-reddit.js</a> - Uses GIO and JSON to parse the reddit homepage</li>
+<li><a href="http://git.gnome.org/cgit/seed/tree/examples/ls.js">ls.js</a> - Enumerating a directory with GIO</li>
+<li><a href="http://git.gnome.org/cgit/seed/tree/examples/n-oscillator.js">n-oscillator.js</a> - Demonstrates basic Gtk and GStreamer usage</li>
+<li><a href="http://git.gnome.org/cgit/seed/tree/examples/notify-test.js">notify-test.js</a> - Usage of libnotify</li>
 <li><a href="http://git.gnome.org/cgit/seed/tree/examples/opengl">opengl</a> - Reimplementations of classic opengl examples in Seed (including glxgears!)</li>
-<li><a href="http://git.gnome.org/cgit/seed/tree/examples/pango-fontset.js">pango-fontset</a> - Demonstrates basic Pango usage (for querying font information) </li>
-<li><a href="http://git.gnome.org/cgit/seed/tree/examples/pango.js">pango</a> - Demonstrates a bit more complicated Pango usage, and Clutter usage, to create a sort of font playground. </li>
-<li><a href="http://git.gnome.org/cgit/seed/tree/examples/pong">pong</a> - A simple Clutter 0.8 game.</li>
+<li><a href="http://git.gnome.org/cgit/seed/tree/examples/pango-fontset.js">pango-fontset</a> - Demonstrates basic Pango usage (for querying font information)</li>
 <li><a href="http://git.gnome.org/cgit/seed/tree/examples/poppler.js">poppler.js</a> - A simple PDF viewer, demonstrates poppler and GTK</li>
 <li><a href="http://git.gnome.org/cgit/seed/tree/examples/quine.js">quine.js</a> - Reads itself with GIO</li>
 <li><a href="http://git.gnome.org/cgit/seed/tree/examples/repl.js">repl.js</a> - The Seed REPL</li>
-<li><a href="http://git.gnome.org/cgit/seed/tree/examples/soup.js">soup.js</a> - Basic client usage of soup.</li>
+<li><a href="http://git.gnome.org/cgit/seed/tree/examples/soup.js">soup.js</a> - Basic client usage of soup</li>
 <li><a href="http://git.gnome.org/cgit/seed/tree/examples/threaded-repl.js">threaded-repl.js</a> - An example of a REPL which runs async while a GTK program continues to run</li>
-<li><a href="http://git.gnome.org/cgit/seed/tree/examples/turtle">turtle</a> - a simple example of the C embedding API to create a logo like turtle.</li>
-<li><a href="http://git.gnome.org/cgit/seed/tree/examples/twitter">twitter</a> - A moderately simple Gtk twitter client, demonstrates GIO, Gtk, GdkPixbuf... </li>
-<li><a href="http://git.gnome.org/cgit/seed/tree/examples/video.js">video.js</a> - Runs the GStreamer video test.</li>
+<li><a href="http://git.gnome.org/cgit/seed/tree/examples/video.js">video.js</a> - Runs the GStreamer video test</li>
 <li><a href="http://git.gnome.org/cgit/seed/tree/examples/vte-test.js">vte-test.js</a> - A simple terminal using VTE</li>
-<li><a href="http://git.gnome.org/cgit/seed/tree/examples/xml/xml-dom.js">xml-dom</a> - Demonstrates the use of the libxml module for basic document access using DOM methods.</li>
-<li><a href="http://git.gnome.org/cgit/seed/tree/examples/xml/xml-tree.js">xml-tree</a> - Demonstrates the use of the libxml module for basic document access using the document tree. </li>
-<li><a href="http://git.gnome.org/cgit/seed/tree/examples/xml/xml-xpath.js">xml-xpath</a> - Demonstrates the use of the libxml module for basic document access using XPath. </li>
-<li><a href="http://git.gnome.org/cgit/seed/tree/examples/xml/weather.js">weather</a> - Demonstrates the use of XPath and Soup to check the weather using Yahoo. </li>
-
-
-
+<li><a href="http://git.gnome.org/cgit/seed/tree/examples/xml/xml-dom.js">xml-dom</a> - Demonstrates the use of the libxml module for basic document access using DOM methods</li>
+<li><a href="http://git.gnome.org/cgit/seed/tree/examples/xml/xml-tree.js">xml-tree</a> - Demonstrates the use of the libxml module for basic document access using the document tree</li>
+<li><a href="http://git.gnome.org/cgit/seed/tree/examples/xml/xml-xpath.js">xml-xpath</a> - Demonstrates the use of the libxml module for basic document access using XPath</li>
+<li><a href="http://git.gnome.org/cgit/seed/tree/examples/xml/weather.js">weather</a> - Demonstrates the use of XPath and Soup to check the weather using the Yahoo API</li>
 </ul>
-
-</p>
 <div class="section"><b>Native Modules</b></div>
 <p>
 Seed has several C extension modules, to bind libraries not available from GObject-introspection.
