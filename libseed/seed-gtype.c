@@ -468,9 +468,9 @@ seed_gtype_install_properties (JSContextRef ctx,
   JSObjectRef properties, property_def;
   JSValueRef jslength;
   guint i, length;
-  GType property_type;
+  GType property_type, object_type;
   GParamFlags flags;
-  JSValueRef jsname, jsflags, jsproperty_type, jsdefault_value;
+  JSValueRef jsname, jsflags, jsproperty_type, jsdefault_value, jsobject_type;
   JSValueRef jsnick, jsblurb, jsmin_value, jsmax_value;
   gchar *name , *nick, *blurb;
   GParamSpec *pspec;
@@ -542,8 +542,12 @@ seed_gtype_install_properties (JSContextRef ctx,
       jsdefault_value = seed_object_get_property (ctx, property_def,
 						  "default_value");
 
-      if (JSValueIsNull (ctx, jsdefault_value) || JSValueIsUndefined (ctx, jsdefault_value))
+      if (JSValueIsNull (ctx, jsdefault_value) ||
+	  JSValueIsUndefined (ctx, jsdefault_value))
 	{
+	  if(property_type == G_TYPE_OBJECT)
+	    continue;
+
 	  seed_make_exception (ctx, exception, "PropertyInstallationError",
 			       "Property of type %s requires default_value attribute",
 			       g_type_name(property_type));
@@ -720,13 +724,35 @@ seed_gtype_install_properties (JSContextRef ctx,
 							   jsdefault_value,
 							   exception), flags);
 	  break;
+	case G_TYPE_OBJECT:
+	  jsobject_type = seed_object_get_property (ctx, property_def,
+						    "object_type");
+
+	  if (JSValueIsNull (ctx, jsobject_type) ||
+	      !JSValueIsNumber (ctx, jsobject_type))
+	    object_type = G_TYPE_NONE;
+	  else
+	    object_type = seed_value_to_long (ctx, jsobject_type, exception);
+
+	  if(object_type == G_TYPE_NONE)
+	    {
+	      seed_make_exception (ctx, exception, "PropertyInstallationError",
+				   "Property of type %s requires object_type attribute",
+				   g_type_name(property_type));
+	      return property_count;
+	    }
+
+	  pspec = g_param_spec_object(name, nick, blurb,
+				      object_type, flags);
+	  break;
+	case G_TYPE_BOXED: // Boxed types TODO: this is almost certainly wrong
+	  pspec = g_param_spec_boxed(name, nick, blurb, type, flags);
+	  break;
+	default:
 	case G_TYPE_NONE:
 	  seed_make_exception (ctx, exception, "PropertyInstallationError",
 			       "Property requires type attribute");
 	  return property_count;
-	  break;
-	default: // Boxed types TODO: this is almost certainly wrong
-	  pspec = g_param_spec_boxed(name, nick, blurb, type, flags);
 	  break;
 	}
 
