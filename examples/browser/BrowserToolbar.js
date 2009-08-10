@@ -1,6 +1,7 @@
 Gtk = imports.gi.Gtk;
 
 BrowserSettings = imports.BrowserSettings;
+TabbedBrowser = imports.TabbedBrowser;
 
 BrowserToolbar = new GType({
     parent: Gtk.HBox.type,
@@ -16,22 +17,22 @@ BrowserToolbar = new GType({
 
         var back = function ()
         {
-            browser.current_tab().get_web_view().go_back();
+            TabbedBrowser.browser.current_tab().get_web_view().go_back();
         };
 
         var forward = function ()
         {
-            browser.current_tab().get_web_view().go_forward();
+            TabbedBrowser.browser.current_tab().get_web_view().go_forward();
         };
 
         var refresh = function ()
         {
-            browser.current_tab().get_web_view().reload();
+            TabbedBrowser.browser.current_tab().get_web_view().reload();
         };
 
         var browse = function (url)
         {
-            browser.current_tab().get_web_view().browse(url.text);
+            TabbedBrowser.browser.current_tab().get_web_view().browse(url.text);
         };
 
         // Public

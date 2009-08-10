@@ -24,11 +24,9 @@ TabbedBrowser = new GType({
 
         this.new_tab = function (url, new_web_view)
         {
-            var new_tab = new BrowserTab.BrowserTab();
+            var new_tab = new BrowserTab.BrowserTab({web_view: new_web_view});
 
-            if(new_web_view)
-                new_tab.set_web_view(new_web_view);
-            else
+            if(!new_web_view)
                 new_tab.get_web_view().browse(url);
 
             var tab_label = new Gtk.Label({label:"Untitled"});
