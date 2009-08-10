@@ -33,6 +33,7 @@ doc/modules/canvas.html
 doc/modules/multiprocessing.html
 doc/modules/readline.html
 doc/modules/sqlite.html
+doc/modules/html
 doc/reference/Makefile
 doc/reference/Makefile.in
 doc/reference/html-build.stamp
@@ -62,6 +63,13 @@ doc/reference/sgml-build.stamp
 doc/reference/sgml.stamp
 doc/reference/tmpl-build.stamp
 doc/reference/tmpl.stamp
+doc/reference/tmpl/seed-unused.sgml
+doc/reference/xml/seed-eval.xml
+doc/reference/xml/seed-jsclass.xml
+doc/reference/xml/seed-modules.xml
+doc/reference/xml/seed-nativefuncs.xml
+doc/reference/xml/seed-nativetypes.xml
+doc/reference/xml/seed-typeconversion.xml
 doc/reference/xml/api-index-deprecated.xml
 doc/reference/xml/api-index-full.xml
 doc/reference/xml/object_index.sgml
