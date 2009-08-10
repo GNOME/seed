@@ -176,6 +176,7 @@ src/main.gcno
 xmldocs.make
 
 .AppleDouble
+doc/index.html
 doc/html.stamp
 doc/mapping/mapping.html
 doc/modules/canvas/canvas.html
