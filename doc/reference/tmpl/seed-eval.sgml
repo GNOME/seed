@@ -112,3 +112,11 @@ seed_simple_evaluate(eng->context, "print('Hello, world!')", NULL);
 @Returns: 
 
 
+<!-- ##### FUNCTION seed_script_destroy ##### -->
+<para>
+
+</para>
+
+@s: 
+
+

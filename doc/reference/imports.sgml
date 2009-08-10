@@ -80,7 +80,7 @@ readline = imports.readline;
 </programlisting>
       </example>
 
-     <para>Seed searches the imports search path for native modules; if it finds a file with the given name, the prefix "seed_" and the same suffix as is used for shared libraries on your system (.so on Linux, .dylib on Mac OS X, etc.), it will assume this is a native module and load and initialize it as such. For example, the readline module loaded above is named <file>seed_readline.so</file> on a recent Linux machine.</para>
+     <para>Seed searches the imports search path for native modules; if it finds a file with the given name, the prefix "seed_" and the same suffix as is used for shared libraries on your system (.so on Linux, .dylib on Mac OS X, etc.), it will assume this is a native module and load and initialize it as such. For example, the readline module loaded above is named <filename>seed_readline.so</filename> on a recent Linux machine.</para>
 
     </refsect1>
 
