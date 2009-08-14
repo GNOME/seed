@@ -76,6 +76,14 @@ script = seed_make_script(ctx, "print(imports)", NULL, 0);
 @ctx: 
 
 
+<!-- ##### FUNCTION seed_context_collect ##### -->
+<para>
+
+</para>
+
+@ctx: 
+
+
 <!-- ##### FUNCTION seed_context_get_global_object ##### -->
 <para>
 

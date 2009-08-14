@@ -103,6 +103,21 @@ seed_context_unref (JSGlobalContextRef ctx)
 }
 
 /**
+ * seed_context_collect:
+ * @ctx: A #SeedContext.
+ *
+ * Instructs JavaScriptCore to make a garbage collection pass.
+ * The context parameter is currently unused, and a pass is made
+ * through all contexts.
+ *
+ */
+void
+seed_context_collect (JSGlobalContextRef ctx)
+{
+  JSGarbageCollect(ctx);
+}
+
+/**
  * seed_make_object:
  * @ctx: The #SeedContext in which to create the new object.
  * @class: The #SeedClass to use to create the new object, or %NULL to use the

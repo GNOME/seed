@@ -19,6 +19,7 @@ SeedContextGroup
 seed_context_create
 seed_context_ref
 seed_context_unref
+seed_context_collect
 seed_context_get_global_object
 seed_prepare_global_context
 seed_importer_add_global

@@ -105,6 +105,7 @@ SeedGlobalContext seed_context_create (SeedContextGroup group,
 				       SeedClass global_class);
 SeedGlobalContext seed_context_ref (SeedGlobalContext ctx);
 void seed_context_unref (SeedGlobalContext ctx);
+void seed_context_collect (SeedGlobalContext ctx);
 
 SeedObject seed_context_get_global_object (SeedContext ctx);
 
