@@ -14,6 +14,9 @@ AM_PROG_CC_C_O
 AC_PROG_LIBTOOL
 PKG_PROG_PKG_CONFIG
 
+# Use AM_SILENT_RULES if present
+m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
+
 changequote(,)dnl
 ensureflag() {
   flag="$1"; shift
@@ -397,7 +400,6 @@ dnl =============================gtk-doc=======================================
 GTK_DOC_CHECK(1.9)
 
 dnl =============================Output========================================
-SHAVE_INIT([scripts],[enable])
 AC_CONFIG_FILES([
 seed.pc
 Makefile
@@ -418,9 +420,6 @@ doc/modules/sqlite/Makefile
 doc/modules/sandbox/Makefile
 
 doc/mapping/mapping.html
-
-scripts/shave
-scripts/shave-libtool
 
 libseed/Makefile
 po/Makefile.in
