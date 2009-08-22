@@ -28,8 +28,8 @@
 
 SeedEngine *eng;
 
-void
-seed_repl (gint argc, gchar ** argv)
+static void
+seed_repl ()
 {
   SeedScript *script;
 
@@ -39,20 +39,20 @@ seed_repl (gint argc, gchar ** argv)
   g_free (script);
 }
 
-void
-seed_exec (gint argc, gchar ** argv)
+static void
+seed_exec (gchar * filename)
 {
   SeedObject global;
   SeedScript *script;
   SeedException e;
   gchar *buffer;
 
-  g_file_get_contents (argv[1], &buffer, 0, 0);
+  g_file_get_contents (filename, &buffer, 0, 0);
 
   if (!buffer)
     {
-      g_critical ("File %s not found!", argv[1]);
-      exit (1);
+      g_critical ("File %s not found!", filename);
+      exit (EXIT_FAILURE);
     }
 
   if (*buffer == '#')
@@ -61,27 +61,21 @@ seed_exec (gint argc, gchar ** argv)
 	buffer++;
       buffer++;
     }
-  script = seed_make_script (eng->context, buffer, argv[1], 1);
+
+  script = seed_make_script (eng->context, buffer, filename, 1);
+
   if ((e = seed_script_exception (script)))
     {
-      g_critical ("%s. %s in %s at line %d",
-		  seed_exception_get_name (eng->context, e),
-		  seed_exception_get_message (eng->context, e),
-		  seed_exception_get_file (eng->context, e),
-		  seed_exception_get_line (eng->context, e));
-      exit (1);
+      g_critical ("%s", seed_exception_to_string (eng->context, e));
+      exit (EXIT_FAILURE);
     }
 
   global = seed_context_get_global_object (eng->context);
-  seed_importer_add_global (global, argv[1]);
+  seed_importer_add_global (global, filename);
 
   seed_evaluate (eng->context, script, 0);
   if ((e = seed_script_exception (script)))
-    g_critical ("%s. %s in %s at line %d",
-		seed_exception_get_name (eng->context, e),
-		seed_exception_get_message (eng->context, e),
-		seed_exception_get_file (eng->context, e),
-		seed_exception_get_line (eng->context, e));
+    g_critical ("%s", seed_exception_to_string (eng->context, e));
 
   g_free (script);
 }
@@ -96,9 +90,9 @@ main (gint argc, gchar ** argv)
   seed_engine_set_search_path (eng, DEFAULT_PATH);
 
   if (argc == 1)
-    seed_repl (argc, argv);
+    seed_repl ();
   else
-    seed_exec (argc, argv);
+    seed_exec (argv[1]);
 
-  return 0;
+  return EXIT_SUCCESS;
 }
