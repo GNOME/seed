@@ -35,6 +35,7 @@ libseed_dbusnative_la_CFLAGS = \
 
 
 libseed_dbusnative_la_LDFLAGS = \
+	-module -avoid-version \
 	$(GOBJECT_INTROSPECTION_LDFLAGS) \
 	-L/lib \
 	-ldbus-1 \

@@ -17,6 +17,7 @@ libseed_sqlite_la_CFLAGS = \
 	$(SEED_PROFILE_CFLAGS)
 
 libseed_sqlite_la_LDFLAGS = \
+	-module -avoid-version \
 	$(GOBJECT_INTROSPECTION_LDFLAGS) \
 	$(SQLITE_LDFLAGS) \
 	$(SEED_DEBUG_LDFLAGS) \

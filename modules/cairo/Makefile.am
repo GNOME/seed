@@ -32,6 +32,7 @@ libseed_cairo_la_CFLAGS = \
 	$(SEED_PROFILE_CFLAGS)
 
 libseed_cairo_la_LDFLAGS = \
+	-module -avoid-version \
 	$(GOBJECT_INTROSPECTION_LDFLAGS) \
 	$(GDK_LDFLAGS) \
 	$(CAIRO_LDFLAGS) \

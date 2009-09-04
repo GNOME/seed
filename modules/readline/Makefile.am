@@ -16,6 +16,7 @@ libseed_readline_la_CFLAGS = \
 	$(SEED_PROFILE_CFLAGS)
 
 libseed_readline_la_LDFLAGS = \
+	-module -avoid-version \
 	-lreadline \
 	$(GOBJECT_INTROSPECTION_LDFLAGS) \
 	$(FFI_LDFLAGS) \

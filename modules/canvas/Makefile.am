@@ -17,6 +17,7 @@ libseed_canvas_la_CFLAGS = \
 	$(SEED_PROFILE_CFLAGS)
 
 libseed_canvas_la_LDFLAGS = \
+	-module -avoid-version \
 	$(GOBJECT_INTROSPECTION_LDFLAGS) \
 	$(CAIRO_LDFLAGS) \
 	$(SEED_PROFILE_LIBS)

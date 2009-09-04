@@ -17,6 +17,7 @@ libseed_multiprocessing_la_CFLAGS = \
 	$(SEED_PROFILE_CFLAGS)
 
 libseed_multiprocessing_la_LDFLAGS = \
+	-module -avoid-version \
 	$(GOBJECT_INTROSPECTION_LDFLAGS) \
 	$(SEED_PROFILE_LIBS)
 

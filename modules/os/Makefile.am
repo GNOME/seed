@@ -15,6 +15,7 @@ libseed_os_la_CFLAGS = \
 	$(SEED_PROFILE_CFLAGS)
 
 libseed_os_la_LDFLAGS = \
+	-module -avoid-version \
 	$(GOBJECT_INTROSPECTION_LDFLAGS) \
 	-lutil \
 	$(SEED_DEBUG_LDFLAGS) \

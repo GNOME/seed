@@ -17,6 +17,7 @@ AM_CPPFLAGS = \
 	$(SEED_PROFILE_CFLAGS)
 
 libseed_gtkbuilder_la_LDFLAGS = \
+	-module -avoid-version \
 	$(GTK_LDFLAGS) \
 	$(GOBJECT_INTROSPECTION_LDFLAGS) \
 	$(SEED_PROFILE_LIBS)

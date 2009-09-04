@@ -15,6 +15,7 @@ AM_CPPFLAGS = \
 	$(SEED_PROFILE_CFLAGS)
 
 libseed_gettext_la_LDFLAGS = \
+	-module -avoid-version \
 	$(GOBJECT_INTROSPECTION_LDFLAGS) \
 	$(SEED_PROFILE_LIBS)
 
