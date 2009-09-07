@@ -76,6 +76,8 @@ SeedEngine *seed_init (gint *argc, gchar ***argv);
 SeedEngine *seed_init_with_context_group (gint *argc, gchar ***argv,
 					  SeedContextGroup group);
 
+void seed_engine_destroy (SeedEngine *eng);
+
 SeedValue seed_simple_evaluate (SeedContext ctx,
 				gchar * source,
 				SeedException *exception);

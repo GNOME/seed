@@ -1295,6 +1295,16 @@ seed_parse_args (int *argc, char ***argv)
   return ret;
 }
 
+void
+seed_engine_destroy (SeedEngine *eng)
+{
+  JSValueUnprotect (eng->context, eng->global);
+  JSGlobalContextRelease (eng->context);
+  JSContextGroupRelease (eng->group);
+  
+  g_free (eng);
+}
+
 /**
  * seed_init_with_context_group:
  * @argc: A reference to the number of arguments remaining to parse.
