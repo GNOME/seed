@@ -64,6 +64,24 @@ static const GDebugKey seed_debug_keys[] = {
 };
 #endif /* SEED_ENABLE_DEBUG */
 
+static bool 
+seed_gobject_has_instance (JSContextRef ctx, JSObjectRef constructor,
+			  JSValueRef possible_instance, JSValueRef* exception)
+{
+  GType constructor_type, value_type;
+  if (JSValueIsNull (ctx, possible_instance) ||
+      !JSValueIsObject (ctx, possible_instance) ||
+      !JSValueIsObjectOfClass (ctx, possible_instance, gobject_class))
+    return FALSE;
+  
+  constructor_type = (GType) JSObjectGetPrivate (constructor);
+  value_type = G_OBJECT_TYPE ((GObject *)
+			      JSObjectGetPrivate ((JSObjectRef) possible_instance));
+
+  return g_type_is_a (value_type, constructor_type);
+}
+
+
 /**
  * seed_prepare_global_context:
  * @ctx: A #SeedContext on which to add the default set of global objects.
@@ -1102,7 +1120,7 @@ JSClassDefinition gobject_constructor_def = {
   NULL,				/* Get Property Names */
   NULL,				/* Call As Function */
   seed_gobject_constructor_invoked,	/* Call As Constructor */
-  NULL,				/* Has Instance */
+  seed_gobject_has_instance,				/* Has Instance */
   seed_gobject_constructor_convert_to_type
 };
 
@@ -1122,7 +1140,7 @@ JSClassDefinition gobject_named_constructor_def = {
   NULL,				/* Get Property Names */
   NULL,				/* Call As Function */
   seed_gobject_named_constructor_invoked,	/* Call As Constructor */
-  NULL,				/* Has Instance */
+  seed_gobject_has_instance,				/* Has Instance */
   seed_gobject_constructor_convert_to_type
 };
 
