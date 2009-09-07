@@ -987,6 +987,102 @@ seed_gvalue_from_seed_value (JSContextRef ctx,
 {
   if (G_IS_VALUE (ret))
     g_value_unset (ret);
+
+ if (type == G_TYPE_STRV)
+    {
+      gchar **result;
+      JSValueRef jslen;
+      guint length, i;
+      
+      if (JSValueIsNull (ctx, val) || !JSValueIsObject (ctx, val))
+	return FALSE;
+      
+      jslen = seed_object_get_property (ctx, (JSObjectRef) val, "length");
+      length = seed_value_to_uint (ctx, jslen, exception);
+      
+      result = g_new0 (gchar *, length+1);
+      
+      for (i = 0; i < length; i++)
+	{
+	  result[i] = seed_value_to_string (ctx,
+					    JSObjectGetPropertyAtIndex (ctx,
+									(JSObjectRef)
+									val,
+									i,
+									exception),
+					    exception);
+	  
+	}
+      result[i] = 0;
+      
+      g_value_init (ret, G_TYPE_STRV);
+      g_value_take_boxed (ret, result);
+      
+	return TRUE;
+    }
+  else if (g_type_is_a (type, G_TYPE_ENUM) && JSValueIsNumber (ctx, val))
+    {
+      g_value_init (ret, type);
+      g_value_set_enum (ret, seed_value_to_long (ctx, val, exception));
+      return TRUE;
+    }
+  else if (g_type_is_a (type, G_TYPE_FLAGS) && JSValueIsNumber (ctx, val))
+    {
+      g_value_init (ret, type);
+      g_value_set_flags (ret, seed_value_to_long (ctx, val, exception));
+      return TRUE;
+    }
+  else if (g_type_is_a (type, G_TYPE_OBJECT)
+	   && (JSValueIsNull (ctx, val) || seed_value_is_gobject (ctx, val)))
+    {
+      GObject *o = seed_value_to_object (ctx,
+					 val, exception);
+
+      if (o == NULL || g_type_is_a (G_OBJECT_TYPE (o), type))
+	{
+	  g_value_init (ret, G_TYPE_OBJECT);
+	  g_value_set_object (ret, o);
+
+	  return TRUE;
+	}
+    }
+  /* Boxed handling is broken. Will be fixed in struct overhall. */
+  else if (g_type_is_a (type, G_TYPE_BOXED))
+    {
+      gpointer p = seed_pointer_get_pointer (ctx, val);
+      if (p)
+	{
+	  g_value_init (ret, type);
+	  g_value_set_boxed (ret, p);
+	  return TRUE;
+	}
+      else
+	{
+	  if (JSValueIsObject (ctx, val))
+	    {
+	      GIBaseInfo *info = g_irepository_find_by_gtype (0, type);
+	      JSObjectRef new_struct;
+	      if (!info)
+		return FALSE;
+
+	      new_struct =
+		seed_construct_struct_type_with_parameters (ctx,
+							    info,
+							    (JSObjectRef)
+							    val, exception);
+	      p = seed_pointer_get_pointer (ctx, new_struct);
+	      if (p)
+		{
+		  g_value_init (ret, type);
+		  g_value_set_boxed (ret, p);
+		  g_base_info_unref (info);
+		  return TRUE;
+		}
+	      g_base_info_unref (info);
+	    }
+	}
+    }
+
   switch (type)
     {
     case G_TYPE_BOOLEAN:
@@ -1139,70 +1235,7 @@ seed_gvalue_from_seed_value (JSContextRef ctx,
       }
     }
 
-  if (g_type_is_a (type, G_TYPE_ENUM) && JSValueIsNumber (ctx, val))
-    {
-      g_value_init (ret, type);
-      g_value_set_enum (ret, seed_value_to_long (ctx, val, exception));
-      return TRUE;
-    }
-  else if (g_type_is_a (type, G_TYPE_FLAGS) && JSValueIsNumber (ctx, val))
-    {
-      g_value_init (ret, type);
-      g_value_set_flags (ret, seed_value_to_long (ctx, val, exception));
-      return TRUE;
-    }
-  else if (g_type_is_a (type, G_TYPE_OBJECT)
-	   && (JSValueIsNull (ctx, val) || seed_value_is_gobject (ctx, val)))
-    {
-      GObject *o = seed_value_to_object (ctx,
-					 val, exception);
-
-      if (o == NULL || g_type_is_a (G_OBJECT_TYPE (o), type))
-	{
-	  g_value_init (ret, G_TYPE_OBJECT);
-	  g_value_set_object (ret, o);
-
-	  return TRUE;
-	}
-    }
-  /* Boxed handling is broken. Will be fixed in struct overhall. */
-  else if (g_type_is_a (type, G_TYPE_BOXED))
-    {
-      gpointer p = seed_pointer_get_pointer (ctx, val);
-      if (p)
-	{
-	  g_value_init (ret, type);
-	  g_value_set_boxed (ret, p);
-	  return TRUE;
-	}
-      else
-	{
-	  if (JSValueIsObject (ctx, val))
-	    {
-	      GIBaseInfo *info = g_irepository_find_by_gtype (0, type);
-	      JSObjectRef new_struct;
-	      if (!info)
-		return FALSE;
-
-	      new_struct =
-		seed_construct_struct_type_with_parameters (ctx,
-							    info,
-							    (JSObjectRef)
-							    val, exception);
-	      p = seed_pointer_get_pointer (ctx, new_struct);
-	      if (p)
-		{
-		  g_value_init (ret, type);
-		  g_value_set_boxed (ret, p);
-		  g_base_info_unref (info);
-		  return TRUE;
-		}
-	      g_base_info_unref (info);
-	    }
-	}
-    }
-
-  return FALSE;
+   return FALSE;
 }
 
 /**
