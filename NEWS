@@ -1,3 +1,21 @@
+== Seed 2.28.0, "The Rise and Fall of Ziggy Stardust and the Spiders
+   from Mars" (2009.09.21) ==
+
+* First official stable release!
+
+== Seed 2.27.92, "Metal Machine Music" (2009.09.07) ==
+
+* Fix a bug in module building; modules are now versionless
+
+* The instanceof operator now works for GTypes
+
+* Add global support for G_TYPE_STRV
+
+== Seed 2.27.91, "Yellow Submarine" (2009.08.21) ==
+
+* Added seed_context_collect, to provide an interface for forcing
+  garbage collection manually
+
 == Seed 2.27.90, "London Calling" (2009.08.10) ==
 
 * Expanded and updated documentation; also available at:
