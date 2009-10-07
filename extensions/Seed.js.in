@@ -174,7 +174,7 @@ Seed.printf = function () { print(Seed.sprintf.apply(this, arguments)) };
 if(!imports.searchPath || (imports.searchPath.length == 0))
 {
 	imports.searchPath = [ "@GNOME_JS_DIR@",
-	                       "@prefix@/lib/seed",
+	                       "@libdir@/seed",
 	                       "@prefix@/share/seed",
 	                       "/usr/local/lib/seed",
 	                       "/usr/local/share/seed",
