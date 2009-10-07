@@ -8,7 +8,6 @@ SUBDIRS = po \
 	extensions \
 	modules \
 	tests \
-	examples \
 	doc
 
 seeddocdir = ${prefix}/share/doc/seed

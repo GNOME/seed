@@ -1,8 +1,0 @@
-The list of included examples now lives in doc/index.html
-
-== External Examples ==
-
-The Lights Off and Same Seed examples now live in the gnome-games
-module (gsoc-seed-games branch). They use Clutter, SVGs, GConf, Gtk/GtkClutter,
-gettext, GnomeGamesSupport, GtkBuilder, Cairo, etc.
-

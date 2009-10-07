@@ -305,29 +305,6 @@ fi
 AM_CONDITIONAL(BUILD_MPFR_MODULE, test "x$want_mpfr_module" = "xyes")
 AC_SUBST(BUILD_MPFR_MODULE)
 
-dnl =========================turtle example====================================
-AC_ARG_ENABLE(turtle-example,
-			  AC_HELP_STRING([--enable-turtle-example],
-							 [enable the turtle graphics example. [default=yes]]),
-			  [want_turtle_example=$enableval],[want_turtle_example="yes"])
-
-if test x"$want_turtle_example" == x"yes" ; then
-	PKG_CHECK_MODULES(GTK, gtk+-2.0)
-	AC_SUBST(GTK_CFLAGS)
-	AC_SUBST(GTK_LIBS)
-fi
-
-AM_CONDITIONAL(BUILD_TURTLE_EXAMPLE, test "x$want_turtle_example" = "xyes")
-AC_SUBST(BUILD_TURTLE_EXAMPLE)
-
-dnl =========================Install Examples==================================
-AC_ARG_ENABLE(examples,
-			  AC_HELP_STRING([--enable-examples],
-							 [install JavaScript examples. [default=yes]]),
-			  [enable_examples=$enableval],[enable_examples="yes"])
-AM_CONDITIONAL(BUILD_SEED_EXAMPLES, test "x$enable_examples" = "xyes")
-AC_SUBST(BUILD_SEED_EXAMPLES)
-
 dnl ===========================Profiling=======================================
 AC_ARG_ENABLE(profile,
 			  AC_HELP_STRING([--enable-profile],
@@ -439,17 +416,6 @@ doc/tutorial-standalone/Makefile
 doc/reference/Makefile
 doc/reference/version.xml
 doc/mapping/Makefile
-examples/Makefile
-examples/clutter-pad/Makefile
-examples/clutter-pad/examples/Makefile
-examples/clutter-shader/Makefile
-examples/glib/Makefile
-examples/browser/Makefile
-examples/turtle/Makefile
-examples/opengl/Makefile
-examples/twitter/Makefile
-examples/dbus/Makefile
-examples/xml/Makefile
 modules/Makefile
 modules/example/Makefile
 modules/sqlite/Makefile
@@ -480,7 +446,6 @@ Build Configuration:
 
 Installation:
    Prefix.....................$prefix
-   Install examples...........$enable_examples
 
 Modules:
    Canvas.....................$want_canvas_module
@@ -495,9 +460,6 @@ Modules:
    gettext....................$want_gettext_module
    mpfr.......................$want_mpfr_module
    ffi........................$want_ffi_module
-
-C Examples:
-   Turtle.....................$want_turtle_example
 "
 
 if test "x$want_readline_module" != "xyes"; then
