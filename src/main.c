@@ -23,10 +23,14 @@
 #include "../libseed/seed.h"
 #include "../libseed/seed-debug.h"
 #include <girepository.h>
+#include "config.h"
 
 #define DEFAULT_PATH "."
 
 SeedEngine *eng;
+gboolean seed_interpreter_arg_print_version;
+
+gboolean seed_interpreter_parse_args (int *argc, char ***argv);
 
 static void
 seed_repl ()
@@ -85,6 +89,15 @@ main (gint argc, gchar ** argv)
 {
   g_set_prgname ("seed");
   g_thread_init (0);
+  
+  seed_interpreter_parse_args(&argc, &argv);
+  
+  if (seed_interpreter_arg_print_version)
+    {
+      g_print("%s\n", "Seed " VERSION);
+      exit(EXIT_SUCCESS);
+    }
+
   eng = seed_init (&argc, &argv);
 
   seed_engine_set_search_path (eng, DEFAULT_PATH);

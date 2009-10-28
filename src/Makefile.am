@@ -3,7 +3,8 @@
 bin_PROGRAMS = seed
 
 seed_SOURCES = \
-	main.c
+	main.c \
+	args.c
 
 seed_CFLAGS = \
 	-DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \

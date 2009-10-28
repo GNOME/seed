@@ -1268,7 +1268,7 @@ static GOptionEntry seed_args[] = {
    "Disable Seed debugging", "FLAGS"},
 #endif /* SEED_ENABLE_DEBUG */
   {"seed-version", 0, 0, G_OPTION_ARG_NONE, &seed_arg_print_version,
-   "Print current version", 0},
+   "Print libseed version", 0},
   {NULL,},
 };
 
@@ -1300,7 +1300,7 @@ seed_parse_args (int *argc, char ***argv)
   /* Initiate any command line options from the backend */
 
   seed_group = seed_get_option_group ();
-  g_option_context_set_main_group (option_context, seed_group);
+  g_option_context_add_group (option_context, seed_group);
 
   if (!g_option_context_parse (option_context, argc, argv, &error))
     {

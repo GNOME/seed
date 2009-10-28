@@ -99,6 +99,8 @@ gchar *seed_exception_to_string (SeedContext ctx, SeedException exception);
 
 SeedValue seed_evaluate (SeedContext ctx, SeedScript * s, SeedObject this);
 
+GOptionGroup * seed_get_option_group (void);
+
 /*
  * seed-api.c
  */
@@ -430,6 +432,5 @@ seed_closure_invoke_with_context (SeedContext ctx, GClosure *closure, SeedValue 
 
 void
 seed_closure_warn_exception (GClosure *c, SeedContext ctx, SeedException exception);
-
 
 #endif

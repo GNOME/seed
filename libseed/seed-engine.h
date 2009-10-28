@@ -80,4 +80,6 @@ void seed_script_destroy (SeedScript * s);
 JSValueRef seed_simple_evaluate (JSContextRef ctx, const gchar * script,
 				 JSValueRef * exception);
 
+GOptionGroup * seed_get_option_group (void);
+
 #endif
