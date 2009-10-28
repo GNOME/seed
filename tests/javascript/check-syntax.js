@@ -2,7 +2,7 @@
 // Returns: 0
 // STDIN:
 // STDOUT:ONE\n\[null\]\nTWO\n\[null\]\nTHREE
-// STDERR:\n\*\* \(seed:[0-9]+\): CRITICAL \*\*: SyntaxError\. Parse error in \[undefined\] at line 1
+// STDERR:\n\*\* \(seed:[0-9]+\): CRITICAL \*\*: Line 1 in \[undefined\]: SyntaxError Parse error
 
 print("ONE");
 print(Seed.check_syntax("5+5;"));
