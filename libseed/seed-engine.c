@@ -25,6 +25,8 @@
 #include <stdarg.h>
 #include <string.h>
 
+#include "config.h"
+
 JSObjectRef function_proto;
 
 JSObjectRef seed_obj_ref;
@@ -45,6 +47,7 @@ GIBaseInfo *base_info_info = 0;
 GQuark js_ref_quark;
 
 guint seed_debug_flags = 0;	/* global seed debug flag */
+gboolean seed_arg_print_version = FALSE; // Flag to print version and quit
 
 __thread JSObjectRef seed_next_gobject_wrapper = NULL;
 
@@ -1264,6 +1267,8 @@ static GOptionEntry seed_args[] = {
   {"seed-no-debug", 0, 0, G_OPTION_ARG_CALLBACK, seed_arg_no_debug_cb,
    "Disable Seed debugging", "FLAGS"},
 #endif /* SEED_ENABLE_DEBUG */
+  {"seed-version", 0, 0, G_OPTION_ARG_NONE, &seed_arg_print_version,
+   "Print current version", 0},
   {NULL,},
 };
 
@@ -1344,13 +1349,18 @@ seed_init_with_context_group (gint * argc,
 {
 
   g_type_init ();
-  g_log_set_handler ("GLib-GObject", G_LOG_LEVEL_WARNING, seed_log_handler,
-		     0);
+  g_log_set_handler ("GLib-GObject", G_LOG_LEVEL_WARNING, seed_log_handler, 0);
 
   if ((argc != 0) && seed_parse_args (argc, argv) == FALSE)
     {
       SEED_NOTE (MISC, "failed to parse arguments.");
       return FALSE;
+    }
+  
+  if (seed_arg_print_version)
+    {
+      g_print("%s\n", "Seed " VERSION);
+      exit(EXIT_SUCCESS);
     }
 
   qname = g_quark_from_static_string ("js-type");
