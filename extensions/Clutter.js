@@ -43,3 +43,25 @@ Clutter.Actor.prototype.animate_with_timeline = function(mode, timeline, json)
     
     return animation;
 }
+
+Clutter.Actor.prototype.animate_with_alpha = function(alpha, json)
+{
+    var properties = new Array();
+    var endvalues = new Array();
+    for (var prop in json)	{
+	properties.push(prop);
+	endvalues.push(new Array(this.__property_type(prop), json[prop]));
+    }
+
+    var animation = 
+	this.animate_with_alphav(alpha, properties.length, 
+				    properties, endvalues);
+    
+    animations.push(animation);
+    animation.timeline.signal["completed"].connect(
+	function(timeline, obj){
+	    animations.splice(animations.indexOf(animation),1);
+	}, this);
+    
+    return animation;
+}
