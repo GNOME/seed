@@ -2021,11 +2021,16 @@ JSValueRef
 seed_value_from_string (JSContextRef ctx,
 			const gchar * val, JSValueRef * exception)
 {
-  JSStringRef jsstr = JSStringCreateWithUTF8CString (val);
-  JSValueRef valstr = JSValueMakeString (ctx, jsstr);
-  JSStringRelease (jsstr);
+  if (val == NULL)
+    return JSValueMakeNull (ctx);
+  else
+    {
+      JSStringRef jsstr = JSStringCreateWithUTF8CString (val);
+      JSValueRef valstr = JSValueMakeString (ctx, jsstr);
+      JSStringRelease (jsstr);
 
-  return valstr;
+      return valstr;
+    }
 }
 
 /**
