@@ -2118,22 +2118,26 @@ seed_value_from_filename (JSContextRef ctx,
 {
   GError *e = NULL;
   gchar *utf8;
-
-  utf8 = g_filename_to_utf8 (val, -1, NULL, NULL, &e);
-
-  if (e)
+  
+  if (val == NULL)
+    return JSValueMakeNull (ctx);
+  else
     {
-      seed_make_exception_from_gerror (ctx, exception, e);
-      g_error_free (e);
-      // TODO: FIXMEShould be JS Null maybe?
-      return NULL;
+      utf8 = g_filename_to_utf8 (val, -1, NULL, NULL, &e);
+
+      if (e)
+        {
+          seed_make_exception_from_gerror (ctx, exception, e);
+          g_error_free (e);
+          return JSValueMakeNull (ctx);
+        }
+
+      JSValueRef valstr = seed_value_from_string (ctx, utf8, exception);
+
+      g_free (utf8);
+
+      return valstr;
     }
-
-  JSValueRef valstr = seed_value_from_string (ctx, utf8, exception);
-
-  g_free (utf8);
-
-  return valstr;
 }
 
 /**
