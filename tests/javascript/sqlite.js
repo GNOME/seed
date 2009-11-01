@@ -1,7 +1,7 @@
 #!/usr/bin/env seed
 // Returns: 0
 // STDIN:
-// STDOUT:\{"t1key":"1","data":"This is sample data","num":"3\.0","timeEnter":""\}\n\{"t1key":"2","data":"More sample data","num":"6\.0","timeEnter":""\}\n\{"t1key":"3","data":"And a little more","num":"9\.0","timeEnter":""\}
+// STDOUT:\{"t1key":"1","data":"This is sample data","num":"3\.0","timeEnter":null\}\n\{"t1key":"2","data":"More sample data","num":"6\.0","timeEnter":null\}\n\{"t1key":"3","data":"And a little more","num":"9\.0","timeEnter":null\}
 // STDERR:
 Gio = imports.gi.Gio;
 sqlite = imports.sqlite;
