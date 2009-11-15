@@ -622,7 +622,8 @@ seed_engine_set_search_path (SeedEngine * eng, const gchar * path)
  * seed_engine_get_search_path:
  * @eng: A #SeedEngine, to get the currently set search path.
  *
- * Retrieves the search path for the imports system.
+ * Retrieves the search path for the imports system. The returned value is
+ * owned by the #SeedEngine, and shouldn't be freed by the application writer.
  *
  * Return value: A null-terminated array of strings containing the paths.
  *
