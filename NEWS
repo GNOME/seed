@@ -1,3 +1,14 @@
+== Seed 2.29.2 (2009.11.16) ==
+
+* Change semantics of seed_value_from_string and _from_filename; they 
+  now return JavaScript null if passed a null input value.
+
+* Seed interpreter adds --version argument
+
+* libseed adds --seed-version argument
+
+* Clutter extension wrapper for animate_with_alpha
+
 == Seed 2.28.0, "The Rise and Fall of Ziggy Stardust and the Spiders
    from Mars" (2009.09.21) ==
 
