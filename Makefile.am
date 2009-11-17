@@ -12,7 +12,6 @@ SUBDIRS = po \
 
 seeddocdir = ${prefix}/share/doc/seed
 seeddoc_DATA = \
-	RELEASE \
 	README \
 	COPYING \
 	AUTHORS \

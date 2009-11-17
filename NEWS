@@ -1,4 +1,4 @@
-== Seed 2.29.2 (2009.11.16) ==
+== Seed 2.29.2, "Never Mind the Bollocks" (2009.11.16) ==
 
 * Change semantics of seed_value_from_string and _from_filename; they 
   now return JavaScript null if passed a null input value.
@@ -191,7 +191,6 @@
 
 * Significant cleanup of all of the examples, a lot of them had bit
   rotted a bit, being written months ago.
-	
  
 == Seed 0.5, "Transformer" (2009.04.16) ==
 
