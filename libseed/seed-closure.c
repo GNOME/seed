@@ -98,20 +98,28 @@ seed_handle_closure (ffi_cif * cif, void *result, void **args, void *userdata)
 	  arg->v_uint32 = *(guint32 *) args[i];
 	  break;
 	case GI_TYPE_TAG_LONG:
+	  arg->v_long = *(glong *) args[i];
+	  break;
 	case GI_TYPE_TAG_INT64:
-	  arg->v_int64 = *(glong *) args[i];
+	  arg->v_int64 = *(gint64 *) args[i];
 	  break;
 	case GI_TYPE_TAG_ULONG:
+	  arg->v_ulong = *(gulong *) args[i];
+	  break;
 	case GI_TYPE_TAG_UINT64:
-	  arg->v_uint64 = *(glong *) args[i];
+	  arg->v_uint64 = *(guint64 *) args[i];
 	  break;
 	case GI_TYPE_TAG_INT:
+	  arg->v_int = *(gint *) args[i];
+	  break;
 	case GI_TYPE_TAG_SSIZE:
+	  arg->v_ssize = *(gssize *) args[i];
+	  break;
 	case GI_TYPE_TAG_SIZE:
-	  arg->v_int32 = *(gint *) args[i];
+	  arg->v_size = *(gsize *) args[i];
 	  break;
 	case GI_TYPE_TAG_UINT:
-	  arg->v_uint32 = *(guint *) args[i];
+	  arg->v_uint = *(guint *) args[i];
 	  break;
 	case GI_TYPE_TAG_FLOAT:
 	  arg->v_float = *(gfloat *) args[i];
@@ -199,7 +207,7 @@ seed_handle_closure (ffi_cif * cif, void *result, void **args, void *userdata)
       *(gint16 *) result = return_arg.v_int16;
       break;
     case GI_TYPE_TAG_UINT16:
-      return_arg.v_uint16 = *(guint16 *) args[i];
+      *(guint16 *) result = return_arg.v_uint16;
       break;
     case GI_TYPE_TAG_INT32:
       *(gint32 *) result = return_arg.v_int32;
@@ -208,20 +216,28 @@ seed_handle_closure (ffi_cif * cif, void *result, void **args, void *userdata)
       *(guint32 *) result = return_arg.v_uint32;
       break;
     case GI_TYPE_TAG_LONG:
+      *(glong *) result = return_arg.v_long;
+      break;
     case GI_TYPE_TAG_INT64:
-      *(glong *) result = return_arg.v_int64;
+      *(gint64 *) result = return_arg.v_int64;
       break;
     case GI_TYPE_TAG_ULONG:
+      *(gulong *) result = return_arg.v_ulong;
+      break;
     case GI_TYPE_TAG_UINT64:
-      *(glong *) result = return_arg.v_uint64;
+      *(guint64 *) result = return_arg.v_uint64;
       break;
     case GI_TYPE_TAG_INT:
+      *(gint *) result = return_arg.v_int;
+      break;
     case GI_TYPE_TAG_SSIZE:
+      *(gssize *) result = return_arg.v_ssize;
+      break;
     case GI_TYPE_TAG_SIZE:
-      *(gint *) result = return_arg.v_int32;
+      *(gsize *) result = return_arg.v_size;
       break;
     case GI_TYPE_TAG_UINT:
-      *(guint *) result = return_arg.v_uint32;
+      *(guint *) result = return_arg.v_uint;
       break;
     case GI_TYPE_TAG_FLOAT:
       *(gfloat *) result = return_arg.v_float;

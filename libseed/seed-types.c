@@ -485,12 +485,16 @@ seed_gi_make_argument (JSContextRef ctx,
       arg->v_uint32 = seed_value_to_uint (ctx, value, exception);
       break;
     case GI_TYPE_TAG_LONG:
+      arg->v_long = seed_value_to_long (ctx, value, exception);
+      break;
     case GI_TYPE_TAG_INT64:
-      arg->v_int64 = seed_value_to_long (ctx, value, exception);
+      arg->v_int64 = seed_value_to_int64 (ctx, value, exception);
       break;
     case GI_TYPE_TAG_ULONG:
+      arg->v_ulong = seed_value_to_ulong (ctx, value, exception);
+      break;
     case GI_TYPE_TAG_UINT64:
-      arg->v_uint64 = seed_value_to_ulong (ctx, value, exception);
+      arg->v_uint64 = seed_value_to_uint64 (ctx, value, exception);
       break;
     case GI_TYPE_TAG_INT:
       arg->v_int = seed_value_to_int (ctx, value, exception);
@@ -499,8 +503,10 @@ seed_gi_make_argument (JSContextRef ctx,
       arg->v_uint = seed_value_to_uint (ctx, value, exception);
       break;
     case GI_TYPE_TAG_SIZE:
+      arg->v_size = seed_value_to_size (ctx, value, exception);
+      break;
     case GI_TYPE_TAG_SSIZE:
-      arg->v_int = seed_value_to_int (ctx, value, exception);
+      arg->v_ssize = seed_value_to_ssize (ctx, value, exception);
       break;
     case GI_TYPE_TAG_FLOAT:
       arg->v_float = seed_value_to_float (ctx, value, exception);
@@ -758,18 +764,21 @@ seed_gi_argument_make_js (JSContextRef ctx,
     case GI_TYPE_TAG_UINT32:
       return seed_value_from_uint (ctx, arg->v_uint32, exception);
     case GI_TYPE_TAG_LONG:
+      return seed_value_from_long (ctx, arg->v_long, exception);
     case GI_TYPE_TAG_INT64:
-      return seed_value_from_long (ctx, arg->v_int64, exception);
+      return seed_value_from_int64 (ctx, arg->v_int64, exception);
     case GI_TYPE_TAG_ULONG:
+      return seed_value_from_ulong (ctx, arg->v_ulong, exception);
     case GI_TYPE_TAG_UINT64:
-      return seed_value_from_ulong (ctx, arg->v_uint64, exception);
+      return seed_value_from_uint64 (ctx, arg->v_uint64, exception);
     case GI_TYPE_TAG_INT:
       return seed_value_from_int (ctx, arg->v_int32, exception);
     case GI_TYPE_TAG_UINT:
       return seed_value_from_uint (ctx, arg->v_uint32, exception);
     case GI_TYPE_TAG_SSIZE:
+      return seed_value_from_ssize (ctx, arg->v_ssize, exception);
     case GI_TYPE_TAG_SIZE:
-      return seed_value_from_int (ctx, arg->v_int, exception);
+      return seed_value_from_size (ctx, arg->v_size, exception);
     case GI_TYPE_TAG_FLOAT:
       return seed_value_from_float (ctx, arg->v_float, exception);
     case GI_TYPE_TAG_DOUBLE:
@@ -1923,6 +1932,98 @@ seed_value_to_double (JSContextRef ctx,
  */
 JSValueRef
 seed_value_from_double (JSContextRef ctx, gdouble val, JSValueRef * exception)
+{
+  return JSValueMakeNumber (ctx, (gdouble) val);
+}
+
+/**
+ * seed_value_to_size:
+ * @ctx: A #SeedContext.
+ * @val: The #SeedValue to convert.
+ * @exception: A reference to a #SeedValue in which to store any exceptions.
+ *             Pass %NULL to ignore exceptions.
+ *
+ * Converts the given #SeedValue into a #gsize.
+ *
+ * Return value: The #gsize represented by @val, or %NULL if an exception
+ *               is raised during the conversion.
+ *
+ */
+gsize
+seed_value_to_size (JSContextRef ctx, JSValueRef val, JSValueRef * exception)
+{
+  if (!JSValueIsNumber (ctx, val) && !JSValueIsBoolean (ctx, val))
+    {
+      if (!JSValueIsNull (ctx, val))
+	seed_make_exception (ctx, exception, "ConversionError",
+			     "Can not convert Javascript value to" " gsize");
+      return 0;
+    }
+
+  return (gsize) JSValueToNumber (ctx, val, NULL);
+}
+
+/**
+ * seed_value_from_size:
+ * @ctx: A #SeedContext.
+ * @val: The #gsize to represent.
+ * @exception: A reference to a #SeedValue in which to store any exceptions.
+ *             Pass %NULL to ignore exceptions.
+ *
+ * Converts the given #gsize into a #SeedValue.
+ *
+ * Return value: A #SeedValue which represents @val, or %NULL if an exception
+ *               is raised during the conversion.
+ *
+ */
+JSValueRef
+seed_value_from_size (JSContextRef ctx, gsize val, JSValueRef * exception)
+{
+  return JSValueMakeNumber (ctx, (gdouble) val);
+}
+
+/**
+ * seed_value_to_ssize:
+ * @ctx: A #SeedContext.
+ * @val: The #SeedValue to convert.
+ * @exception: A reference to a #SeedValue in which to store any exceptions.
+ *             Pass %NULL to ignore exceptions.
+ *
+ * Converts the given #SeedValue into a #gssize.
+ *
+ * Return value: The #gssize represented by @val, or %NULL if an exception
+ *               is raised during the conversion.
+ *
+ */
+gssize
+seed_value_to_ssize (JSContextRef ctx, JSValueRef val, JSValueRef * exception)
+{
+  if (!JSValueIsNumber (ctx, val) && !JSValueIsBoolean (ctx, val))
+    {
+      if (!JSValueIsNull (ctx, val))
+	seed_make_exception (ctx, exception, "ConversionError",
+			     "Can not convert Javascript value to" " gssize");
+      return 0;
+    }
+
+  return (gssize) JSValueToNumber (ctx, val, NULL);
+}
+
+/**
+ * seed_value_from_ssize:
+ * @ctx: A #SeedContext.
+ * @val: The #gssize to represent.
+ * @exception: A reference to a #SeedValue in which to store any exceptions.
+ *             Pass %NULL to ignore exceptions.
+ *
+ * Converts the given #gssize into a #SeedValue.
+ *
+ * Return value: A #SeedValue which represents @val, or %NULL if an exception
+ *               is raised during the conversion.
+ *
+ */
+JSValueRef
+seed_value_from_ssize (JSContextRef ctx, gssize val, JSValueRef * exception)
 {
   return JSValueMakeNumber (ctx, (gdouble) val);
 }
