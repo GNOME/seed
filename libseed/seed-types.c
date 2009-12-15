@@ -678,7 +678,6 @@ seed_gi_make_argument (JSContextRef ctx,
 	      {
 		SeedNativeClosure *privates = seed_make_native_closure (ctx,
 									(GICallableInfo *) interface,
-									arg_info,
 									value);
 		arg->v_pointer = privates->closure;
 		g_base_info_unref (interface);
