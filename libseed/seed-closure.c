@@ -182,7 +182,7 @@ seed_handle_closure (ffi_cif * cif, void *result, void **args, void *userdata)
       exception = 0;
     }
 
-  seed_gi_make_argument (ctx, (JSValueRef) return_value, return_type, NULL,
+  seed_gi_make_argument (ctx, (JSValueRef) return_value, return_type,
 			 &return_arg, 0);
   switch (return_tag)
     {

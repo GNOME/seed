@@ -477,8 +477,7 @@ seed_gobject_method_invoked (JSContextRef ctx,
       else if (dir == GI_DIRECTION_IN || dir == GI_DIRECTION_INOUT)
 	{
 
-	  if (!seed_gi_make_argument (ctx, arguments[i],
-				      type_info, arg_info,
+	  if (!seed_gi_make_argument (ctx, arguments[i], type_info,
 				      &in_args[n_in_args++], exception))
 	    {
 	      seed_make_exception (ctx, exception,

@@ -241,8 +241,7 @@ seed_union_set_property (JSContextRef context,
 
   field_type = g_field_info_get_type (field);
 
-  seed_gi_make_argument (context, value, field_type, NULL, &field_value,
-			 exception);
+  seed_gi_make_argument (context, value, field_type, &field_value, exception);
   ret = g_field_info_set_field (field, priv->pointer, &field_value);
 
   g_base_info_unref ((GIBaseInfo *) field_type);
@@ -284,8 +283,7 @@ seed_struct_set_property (JSContextRef context,
 
   field_type = g_field_info_get_type (field);
 
-  seed_gi_make_argument (context, value, field_type, NULL, &field_value,
-			 exception);
+  seed_gi_make_argument (context, value, field_type, &field_value, exception);
   ret = g_field_info_set_field (field, priv->pointer, &field_value);
 
   g_base_info_unref ((GIBaseInfo *) field_type);
@@ -740,8 +738,8 @@ seed_construct_struct_type_with_parameters (JSContextRef ctx,
 					  (JSObjectRef) parameters,
 					  jsprop_name, NULL);
 
-      seed_gi_make_argument (ctx, jsprop_value, field_type, NULL,
-			     &field_value, exception);
+      seed_gi_make_argument (ctx, jsprop_value, field_type, &field_value,
+			     exception);
       g_field_info_set_field (field, object, &field_value);
 
       g_base_info_unref ((GIBaseInfo *) field_type);

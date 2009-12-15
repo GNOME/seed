@@ -446,8 +446,8 @@ gboolean
 seed_gi_make_argument (JSContextRef ctx,
 		       JSValueRef value,
 		       GITypeInfo * type_info,
-		       GIArgInfo * arg_info,
-		       GArgument * arg, JSValueRef * exception)
+		       GArgument * arg,
+		       JSValueRef * exception)
 {
   GITypeTag gi_tag = g_type_info_get_tag (type_info);
 
