@@ -1,3 +1,14 @@
+== Seed 2.29.4, "( )" (2009.12.17) ==
+
+* Improve type conversion portability; add seed_value_(to|from)_(s)size
+  functions.
+
+* Small random cleanup of unused arguments.
+
+== Seed 2.29.3 (2009.11.30) ==
+
+No changes.
+
 == Seed 2.29.2, "Never Mind the Bollocks" (2009.11.16) ==
 
 * Change semantics of seed_value_from_string and _from_filename; they 

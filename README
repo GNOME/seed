@@ -11,17 +11,17 @@ Dependencies (Ubuntu package name):
    * gobject-introspection (gobject-introspection)
    * gobject-introspection-glib (gobject-introspection-glib)
    * gir-repository (gobject-introspection-repository)
-   * webkit (libwebkit-1.0-4-dev)
+   * webkit (libwebkit-dev)
    * readline (libreadline-dev)
    * ffi (libffi-dev)
-   * gnome-js-common
+   * gnome-js-common (gnome-js-common)
 
 Recommended Dependencies (Ubuntu package name):
+   * gobject-introspection-freedesktop
    * sqlite3 (libsqlite3-dev)
    * soup (libsoup2.4-dev)
-   * clutter (libclutter-0.8-dev)
-   * clutter-gtk (libclutter-gtk-0.80dev)
-   * clutter-cairo (libclutter-cairo-0.8-dev)
+   * clutter (libclutter-1.0-dev)
+   * clutter-gtk (libclutter-gtk-0.10-dev)
    * cairo (libcairo-dev)
    * gtk-doc (gtk-doc-tools)
    * dbus (libdbus-1-dev)
