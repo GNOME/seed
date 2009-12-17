@@ -246,7 +246,8 @@ seed_gi_importer_handle_struct (JSContextRef ctx,
   GIFunctionInfo *finfo;
 
   struct_ref = JSObjectMake (ctx, seed_struct_constructor_class, info);
-
+  g_base_info_ref (info);
+  
   n_methods = g_struct_info_get_n_methods (info);
 
   for (i = 0; i < n_methods; i++)
@@ -295,6 +296,7 @@ seed_gi_importer_handle_union (JSContextRef ctx,
   GIFunctionInfo *finfo;
 
   union_ref = JSObjectMake (ctx, seed_struct_constructor_class, info);
+  g_base_info_ref (info);
 
   n_methods = g_union_info_get_n_methods (info);
 

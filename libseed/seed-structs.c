@@ -508,7 +508,7 @@ seed_union_prototype (JSContextRef ctx, GIBaseInfo * info)
   key = g_strjoin (NULL, namespace, name, NULL);
 
   proto = (JSObjectRef) g_hash_table_lookup (union_prototype_hash, key);
-
+  
   if (!proto)
     {
       proto = JSObjectMake (ctx, 0, 0);
