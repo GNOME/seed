@@ -268,18 +268,22 @@ static GIBaseInfo *
 seed_get_class_info_for_type (GType type)
 {
   GIBaseInfo *object_info;
-
+  
+  // Note to self: Investigate the entire premise of this function.
   while ((type = g_type_parent (type)))
     {
+      GIBaseInfo *ret;
+
       object_info = g_irepository_find_by_gtype (NULL, type);
       if (object_info)
 	{
-	  return
-	    (GIBaseInfo *) g_object_info_get_class_struct
-	    ((GIObjectInfo *) object_info);
+	  ret = g_object_info_get_class_struct ((GIObjectInfo *)object_info);
+	  g_base_info_unref (object_info);
+	  
+	  return ret;
 	}
-      g_base_info_unref (object_info);
     }
+  
   return NULL;
 }
 
