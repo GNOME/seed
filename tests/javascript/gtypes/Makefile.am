@@ -9,5 +9,6 @@ EXTRA_DIST = \
 	gtype-property-nice.js \
 	gtype-self.js \
 	gtype-extraprop.js \
+	gtype-gtype-class-init.js \
 	gtype-signal.js
 
