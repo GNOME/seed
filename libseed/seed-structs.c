@@ -690,7 +690,12 @@ seed_construct_struct_type_with_parameters (JSContextRef ctx,
     {
       size = g_union_info_get_size ((GIUnionInfo *) info);
     }
-  g_assert (size);
+  if (!size)
+    {
+      g_critical ("Struct/union of type: %s has size 0 in introspection data. Please check GIR",
+		  g_base_info_get_name (info));
+      g_assert(size);
+    }
   object = g_slice_alloc0 (size);
 
   SEED_NOTE (CONSTRUCTION,
