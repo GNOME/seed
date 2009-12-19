@@ -1052,7 +1052,7 @@ seed_gvalue_from_seed_value (JSContextRef ctx,
 
       if (o == NULL || g_type_is_a (G_OBJECT_TYPE (o), type))
 	{
-	  g_value_init (ret, G_TYPE_OBJECT);
+	  g_value_init (ret, type);
 	  g_value_set_object (ret, o);
 
 	  return TRUE;
