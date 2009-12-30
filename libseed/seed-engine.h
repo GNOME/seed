@@ -29,7 +29,7 @@ extern JSClassRef gobject_named_constructor_class;
 extern JSClassRef seed_struct_constructor_class;
 extern JSClassRef gobject_init_method_class;
 
-extern __thread JSObjectRef seed_next_gobject_wrapper;
+extern pthread_key_t seed_next_gobject_wrapper_key;
 
 extern JSClassRef seed_callback_class;
 extern SeedEngine *eng;

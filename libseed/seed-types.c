@@ -19,6 +19,7 @@
 
 #include "seed-private.h"
 #include <dlfcn.h>
+#include <pthread.h>
 
 JSClassRef gobject_class;
 JSClassRef gobject_method_class;
@@ -99,8 +100,8 @@ seed_wrap_object (JSContextRef ctx, GObject * object)
   if (user_data)
     return user_data;
 
-  if (seed_next_gobject_wrapper)
-    js_ref = seed_next_gobject_wrapper;
+  if (pthread_getspecific(seed_next_gobject_wrapper_key))
+    js_ref = pthread_getspecific(seed_next_gobject_wrapper_key);
   else
     js_ref = seed_make_wrapper_for_type (ctx, type);
 
@@ -114,7 +115,7 @@ seed_wrap_object (JSContextRef ctx, GObject * object)
 
   seed_add_signals_to_object (ctx, js_ref, object);
 
-  seed_next_gobject_wrapper = NULL;
+  pthread_setspecific(seed_next_gobject_wrapper_key, NULL);
 
   return js_ref;
 }

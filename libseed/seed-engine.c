@@ -24,6 +24,7 @@
 #include <sys/wait.h>
 #include <stdarg.h>
 #include <string.h>
+#include <pthread.h>
 
 #include "config.h"
 
@@ -49,8 +50,7 @@ GQuark js_ref_quark;
 guint seed_debug_flags = 0;	/* global seed debug flag */
 gboolean seed_arg_print_version = FALSE; // Flag to print version and quit
 
-__thread JSObjectRef seed_next_gobject_wrapper = NULL;
-
+pthread_key_t seed_next_gobject_wrapper_key;
 
 #ifdef SEED_ENABLE_DEBUG
 static const GDebugKey seed_debug_keys[] = {
@@ -187,7 +187,9 @@ seed_gobject_constructor_invoked (JSContextRef ctx,
   SEED_NOTE (INITIALIZATION, "Constructing object of type %s",
 	     g_type_name (type));
 
-  seed_next_gobject_wrapper = seed_make_wrapper_for_type (ctx, type);
+
+  pthread_setspecific (seed_next_gobject_wrapper_key, 
+		       seed_make_wrapper_for_type (ctx, type));
 
   while (i < nparams)
     {
@@ -206,7 +208,7 @@ seed_gobject_constructor_invoked (JSContextRef ctx,
 
       if (param_spec == NULL)
 	{
-	  JSObjectSetProperty (ctx, seed_next_gobject_wrapper, jsprop_name,
+	  JSObjectSetProperty (ctx, pthread_getspecific(seed_next_gobject_wrapper_key), jsprop_name,
 			       jsprop_value, 0, NULL);
 	  ++i;
 	  continue;
@@ -225,7 +227,7 @@ seed_gobject_constructor_invoked (JSContextRef ctx,
 	{
 	  g_free (params);
 	  JSPropertyNameArrayRelease (jsprops);
-	  seed_next_gobject_wrapper = NULL;
+	  pthread_setspecific(seed_next_gobject_wrapper_key, NULL);
 	  return 0;
 	}
       params[ri].name = prop_name;
@@ -936,7 +938,8 @@ seed_gobject_set_property (JSContextRef context,
   gsize length;
   gsize i, len;
 
-  if (seed_next_gobject_wrapper || JSValueIsNull (context, value))
+  if (pthread_getspecific(seed_next_gobject_wrapper_key) ||
+      JSValueIsNull (context, value))
     return 0;
 
 
@@ -1445,6 +1448,7 @@ SeedEngine *
 seed_init (gint * argc, gchar *** argv)
 {
   context_group = JSContextGroupCreate ();
+  pthread_key_create(&seed_next_gobject_wrapper_key, NULL);
 
   return seed_init_with_context_group (argc, argv, context_group);
 }
