@@ -36,9 +36,20 @@ static void
 seed_repl ()
 {
   SeedScript *script;
+  SeedException e;
 
   script = seed_make_script (eng->context, "repl = imports.repl", NULL, 0);
+
+  if ((e = seed_script_exception (script)))
+    {
+      g_critical ("%s", seed_exception_to_string (eng->context, e));
+      exit (EXIT_FAILURE);
+    }
+
   seed_evaluate (eng->context, script, 0);
+
+  if ((e = seed_script_exception (script)))
+    g_critical ("%s", seed_exception_to_string (eng->context, e));
 
   g_free (script);
 }
