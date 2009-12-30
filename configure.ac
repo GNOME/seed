@@ -74,18 +74,16 @@ fi
 AC_SUBST(FFI_LDFLAGS)
 AC_SUBST(FFI_CFLAGS)
 
-dnl =======================WebKit ContextGroup=================================
-case "$host_os" in
-	darwin*)
-		;;
-	*)
-		save_LIBS=$LIBS
-		LIBS=`pkg-config --libs webkit-1.0`
-		AC_CHECK_LIB(webkit-1.0, JSContextGroupCreate,,
-					 AC_MSG_ERROR([The installed version of WebKit is too old. Seed requires WebKit SVN revision 35442 or greater.]))
-		LIBS=$save_LIBS
-		;;
-esac
+dnl ==============================WebKit=======================================
+save_LIBS=$LIBS
+LIBS=`pkg-config --libs webkit-1.0`
+AC_CHECK_LIB(webkit-1.0, JSContextGroupCreate,,
+			 AC_MSG_ERROR([The installed version of WebKit is too old. Seed requires WebKit SVN revision 35442 or greater.]))
+LIBS=$save_LIBS
+
+PKG_CHECK_MODULES(WEBKIT, webkit-1.0)
+AC_SUBST(WEBKIT_CFLAGS)
+AC_SUBST(WEBKIT_LDFLAGS)
 
 dnl =========================Introspection=====================================
 PKG_CHECK_MODULES(GOBJECT_INTROSPECTION, gobject-introspection-1.0 >= 0.6.3)
@@ -115,8 +113,6 @@ fi
 
 AM_CONDITIONAL(BUILD_CANVAS_MODULE, test "x$want_canvas_module" = "xyes")
 AC_SUBST(BUILD_CANVAS_MODULE)
-
-
 
 dnl ==== readline ====
 AC_ARG_ENABLE(readline-module,
@@ -350,26 +346,6 @@ else
 fi
 
 AC_SUBST(SEED_DEBUG_CFLAGS)
-
-dnl ===========================Darwin Build====================================
-SEED_OSX_CFLAGS=
-SEED_OSX_LDFLAGS=
-
-case "$host_os" in
-	darwin*)
-		SEED_OSX_CFLAGS="-F/Applications/WebKit.app/Contents/Frameworks/10.5 -framework JavaScriptCore"
-		SEED_OSX_LDFLAGS="-F/Applications/WebKit.app/Contents/Frameworks/10.5 -framework JavaScriptCore"
-		;;
-	*)
-		PKG_CHECK_MODULES(WEBKIT, webkit-1.0)
-		AC_SUBST(WEBKIT_CFLAGS)
-		AC_SUBST(WEBKIT_LDFLAGS)
-	;;
-
-
-esac
-AC_SUBST(SEED_OSX_CFLAGS)
-AC_SUBST(SEED_OSX_LDFLAGS)
 
 AC_CHECK_HEADERS(pty.h)
 
