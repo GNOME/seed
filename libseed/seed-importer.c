@@ -17,9 +17,6 @@
  * Copyright (C) Robert Carr 2009 <carrr@rpi.edu>
  */
 
-// TODO: Don't use GNU libc extension canonicalize_file_name, don't use realpath?
-#define _GNU_SOURCE
-
 #include <gio/gio.h>
 #include <string.h>
 
@@ -694,7 +691,7 @@ seed_importer_handle_file (JSContextRef ctx,
 					g_path_get_dirname (file_path), NULL);
     }
 
-  normalized_path = canonicalize_file_name (absolute_path);
+  normalized_path = realpath (absolute_path, NULL);
 
   js_file_dirname = seed_value_from_string (ctx, normalized_path, NULL);
 
