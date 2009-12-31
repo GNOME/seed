@@ -17,8 +17,6 @@
  * Copyright (C) Robert Carr 2009 <carrr@rpi.edu>
  */
 
-#define _GNU_SOURCE
-
 #include "../../config.h"
 
 #include <unistd.h>
@@ -62,7 +60,7 @@ seed_os_realpath (SeedContext ctx,
       EXPECTED_EXCEPTION("os.realpath", "1 argument");
     }
   arg = seed_value_to_string (ctx, arguments[0], exception);
-  ret = canonicalize_file_name(arg);
+  ret = realpath(arg, NULL);
   g_free (arg);
 
   return seed_value_from_string (ctx, ret, exception);
