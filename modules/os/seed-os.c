@@ -17,6 +17,8 @@
  * Copyright (C) Robert Carr 2009 <carrr@rpi.edu>
  */
 
+#define _GNU_SOURCE
+
 #include "../../config.h"
 
 #include <unistd.h>
