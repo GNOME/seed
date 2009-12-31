@@ -187,16 +187,16 @@ if(!imports.searchPath || (imports.searchPath.length == 0))
 		
 		try
 		{
-		if(!GLib.path_is_absolute(__script_path__))
-		{
-			__script_path__ = GLib.build_filenamev([GLib.get_current_dir(),
-			                                      __script_path__]);
-		}
+			if(!GLib.path_is_absolute(__script_path__))
+			{
+				__script_path__ = GLib.build_filenamev([GLib.get_current_dir(),
+				                                      __script_path__]);
+			}
 		
-		__script_path__ = imports.os.realpath(__script_path__);
+			__script_path__ = imports.os.realpath(__script_path__);
 		
-		if(__script_path__ && __script_path__ != "")
-			imports.searchPath.push(__script_path__);
+			if(__script_path__ && __script_path__ != "")
+				imports.searchPath.push(__script_path__);
 		}
 		catch(e)
 		{
