@@ -377,7 +377,6 @@ doc/mapping/mapping.html
 libseed/Makefile
 po/Makefile.in
 src/Makefile
-extensions/Seed.js
 extensions/Makefile
 tests/Makefile
 tests/javascript/Makefile

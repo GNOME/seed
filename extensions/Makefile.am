@@ -5,3 +5,6 @@ extension_DATA = Gio.js Seed.js Gtk.js GObject.js Clutter.js Gst.js
 
 repldir=$(datadir)/seed
 repl_DATA = repl.js
+
+Seed.js: Seed.js.in
+	$(AM_V_GEN) $(SED) -e "s|%pkglibdir%|$(pkglibdir)|" -e "s|%pkgdatadir%|$(pkgdatadir)|" $< > $@
