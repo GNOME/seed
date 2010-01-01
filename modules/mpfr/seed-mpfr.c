@@ -24,6 +24,9 @@
 
 #include "seed-mpfr.h"
 
+SeedObject ns_ref;
+SeedClass mpfr_class;
+
 /* For now at least ignoring the ability to use gmp types since there is no gmp module */
 
 SeedEngine * eng;

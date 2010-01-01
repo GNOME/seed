@@ -41,6 +41,8 @@ JSClassRef seed_struct_constructor_class;
 
 JSContextGroupRef context_group;
 
+JSStringRef defaults_script;
+
 gchar *glib_message = 0;
 
 GIBaseInfo *base_info_info = 0;

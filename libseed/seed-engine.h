@@ -38,7 +38,7 @@ extern JSObjectRef seed_obj_ref;
 
 extern JSContextGroupRef context_group;
 
-JSStringRef defaults_script;
+extern JSStringRef defaults_script;
 
 typedef struct _SeedScript
 {

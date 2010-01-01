@@ -41,8 +41,8 @@
 #define DEF_SEED_MPFR_FUNC(name) SeedValue name( SeedContext,SeedObject,\
 SeedObject, gsize, const SeedValue[], SeedException*)
 
-SeedObject ns_ref;
-SeedClass mpfr_class;
+extern SeedObject ns_ref;
+extern SeedClass mpfr_class;
 
 typedef enum _seed_mpfr_t
 {
