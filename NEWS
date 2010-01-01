@@ -1,3 +1,13 @@
+== Seed 2.29.5, "Icky Thump" (2009.01.01) ==
+
+* Fix build on non-GNU platforms (primarily Mac OS X)
+
+* Distribute the REPL snippet with Seed again; the built-in REPL will work now
+
+* Fix segfault when accidentally protecting already-garbage-collected values
+
+* Fix segfault when accidentally unreffing nonexistant GIBaseInfos
+
 == Seed 2.29.4, "( )" (2009.12.17) ==
 
 * Improve type conversion portability; add seed_value_(to|from)_(s)size
