@@ -2315,7 +2315,7 @@ seed_validate_enum (GIEnumInfo * info, long val)
 {
   gint n, i;
   GIValueInfo *value_info;
-  glong value;
+  gint value; // TODO: investigate glong/gint mismatch w/ g_value_info_get_value
 
   n = g_enum_info_get_n_values (info);
   for (i = 0; i < n; i++)
