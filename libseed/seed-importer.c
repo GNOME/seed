@@ -122,7 +122,7 @@ seed_gi_importer_handle_enum (JSContextRef ctx,
   JSObjectRef enum_class;
   guint num_vals, i, j;
   gsize name_len;
-  glong value;
+  gint value; // TODO: investigate what's up with the glong/gint mystery here
   gchar *name;
   GIValueInfo *val;
 
