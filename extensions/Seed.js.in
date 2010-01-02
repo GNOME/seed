@@ -173,7 +173,7 @@ Seed.printf = function () { print(Seed.sprintf.apply(this, arguments)) };
 
 if(!imports.searchPath || (imports.searchPath.length == 0))
 {
-	imports.searchPath = [ "@GNOME_JS_DIR@",
+	imports.searchPath = [ "%gnomejsdir%",
 	                       "%pkglibdir%",
 	                       "%pkgdatadir%",
 	                       "/usr/local/lib/seed",

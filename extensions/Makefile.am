@@ -7,4 +7,4 @@ repldir=$(datadir)/seed
 repl_DATA = repl.js
 
 Seed.js: Seed.js.in
-	$(AM_V_GEN) $(SED) -e "s|%pkglibdir%|$(pkglibdir)|" -e "s|%pkgdatadir%|$(pkgdatadir)|" $< > $@
+	$(AM_V_GEN) $(SED) -e "s|%pkglibdir%|$(pkglibdir)|" -e "s|%pkgdatadir%|$(pkgdatadir)|" -e "s|%gnomejsdir%|$(GNOME_JS_DIR)|" $< > $@
