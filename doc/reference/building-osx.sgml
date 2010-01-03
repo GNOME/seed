@@ -15,56 +15,29 @@ How to compile Seed on Apple's Mac OS X
     <refsect1 id="build">
       <title>Installation Instructions</title>
       <itemizedlist>
-        <listitem><para>First, install whatever of the dependencies below you deem necessary (including, of course, all of the required ones).</para></listitem>
-        <listitem><para>Download a <ulink url="http://nightly.webkit.org">WebKit nightly</ulink> and install it to /Applications/WebKit.app</para></listitem>
-        <listitem><para>Add your MacPorts binaries folder to your path:</para>
+        <listitem><para>Install <ulink url="http://www.macports.org/">MacPorts</ulink> 1.8.1.</para></listitem>
+        <listitem><para>Add your MacPorts binaries and libraries folders to your path:</para>
         <para><command>$ export PATH=/opt/local/bin:$PATH</command></para>
+        <para><command>$ export LD_LIBRARY_PATH=/opt/local/lib</command></para>
         <para>Note: You may have installed MacPorts somewhere other than /opt/local. Keep that in mind.</para>
         </listitem>
-        <listitem><para>Build gobject-introspection, gir-repository, the other normal dependencies, and then Seed, as you normally would.</para></listitem>
+        <listitem><para>Check out the Seed MacPorts repository:</para>
+        <para><command>$ cd /opt</command></para>
+        <para><command>$ sudo mkdir hortont-ports</command></para>
+        <para><command>$ sudo chown [your username] hortont-ports</command></para>
+        <para><command>$ git clone http://hortont.com/hortont-ports.git</command></para>
+        <para>Then, edit the file <filename>/opt/local/etc/macports/sources.conf</filename>, adding the line:</para>
+        <para><command>file:///opt/hortont-ports</command></para>
+        <para>before the line (at the bottom of the file) that reads:</para>
+        <para><command>rsync://rsync.macports.org/release/ports/ [default]</command></para>
+        </listitem>
+        <listitem>
+        <para>Then, upgrade your currently installed ports (important!), then install seed:</para>
+        <para><command>$ sudo port sync</command></para>
+        <para><command>$ sudo port upgrade outdated</command></para>
+        <para><command>$ sudo port install seed</command></para>
+        </listitem>
     </itemizedlist>
     </refsect1>
   
-    <refsect1 id="dependencies">
-      <title>Required MacPorts Dependencies</title>
-      <para>
-        From MacPorts, install all of the following:
-      </para>
-      <itemizedlist>
-        <listitem>automake</listitem>
-        <listitem>autoconf</listitem>
-        <listitem>gtk-doc</listitem>
-        <listitem>gnome-common</listitem>
-        <listitem>glib2</listitem>
-        <listitem>libtool</listitem>
-        <listitem>pkgconfig</listitem>
-        <listitem>intltool</listitem>
-        <listitem>libffi</listitem>
-    </itemizedlist>
-    </refsect1>
-    
-    <refsect1 id="optdependencies">
-      <title>Optional MacPorts Dependencies</title>
-      <para>
-        While the following packages are optional, they are necessary for the proper functioning of Seed's library of examples.
-      </para>
-      <itemizedlist>
-        <listitem>cairo</listitem>
-        <listitem>readline</listitem>
-        <listitem>libsoup</listitem>
-        <listitem>sqlite3</listitem>
-        <listitem>gtk2</listitem>
-    </itemizedlist>
-    </refsect1>
-    
-    <refsect1 id="clutter">
-      <title>Optional External Dependencies</title>
-      <para>
-        While the following packages are optional, they are necessary for the proper functioning of Seed's library of examples. Unfortunately, they are not available in MacPorts, so you will have to install them manually.
-      </para>
-      <itemizedlist>
-        <listitem><ulink url="http://clutter-project.org">clutter-0.9</ulink></listitem>
-    </itemizedlist>
-    </refsect1>
-
 </refentry>
