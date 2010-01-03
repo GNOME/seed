@@ -600,7 +600,7 @@ seed_gobject_method_invoked (JSContextRef ctx,
 	  g_base_info_unref ((GIBaseInfo *) arg_info);
 	  continue;
 	}
-      jsout_val = seed_gi_argument_make_js (ctx, &out_args[out_args_pos],
+      jsout_val = seed_gi_argument_make_js (ctx, &out_values[out_args_pos],
 					    type_info, exception);
       out_args_pos++;
       if (!JSValueIsNull (ctx, arguments[i]) &&
