@@ -744,6 +744,46 @@ seed_gi_make_argument (JSContextRef ctx,
 }
 
 JSValueRef
+seed_gi_argument_make_js_gtype (JSContextRef ctx,
+			        GArgument * arg, GType type,
+			        JSValueRef * exception)
+{
+  switch (G_TYPE_FUNDAMENTAL(type))
+    {
+    case G_TYPE_BOOLEAN:
+      return seed_value_from_boolean (ctx, arg->v_boolean, exception);
+    case G_TYPE_CHAR:
+      return seed_value_from_char (ctx, arg->v_int8, exception);
+    case G_TYPE_UCHAR:
+      return seed_value_from_uchar (ctx, arg->v_uint8, exception);
+    case G_TYPE_INT:
+      return seed_value_from_int (ctx, arg->v_int32, exception);
+    case G_TYPE_UINT:
+      return seed_value_from_uint (ctx, arg->v_uint32, exception);
+    case G_TYPE_LONG:
+      return seed_value_from_long (ctx, arg->v_long, exception);
+    case G_TYPE_INT64:
+      return seed_value_from_int64 (ctx, arg->v_int64, exception);
+    case G_TYPE_ULONG:
+      return seed_value_from_ulong (ctx, arg->v_ulong, exception);
+    case G_TYPE_UINT64:
+      return seed_value_from_uint64 (ctx, arg->v_uint64, exception);
+    case G_TYPE_FLOAT:
+      return seed_value_from_float (ctx, arg->v_float, exception);
+    case G_TYPE_DOUBLE:
+      return seed_value_from_double (ctx, arg->v_double, exception);
+    case G_TYPE_STRING:
+      return seed_value_from_string (ctx, arg->v_string, exception);
+    case G_TYPE_POINTER:
+      return seed_make_pointer (ctx, arg->v_pointer);
+
+    // TODO: OTHER TYPES?
+    }
+
+  return JSValueMakeUndefined (ctx);
+}
+
+JSValueRef
 seed_gi_argument_make_js (JSContextRef ctx,
 			  GArgument * arg, GITypeInfo * type_info,
 			  JSValueRef * exception)
@@ -837,7 +877,7 @@ seed_gi_argument_make_js (JSContextRef ctx,
 		 || interface_type == GI_INFO_TYPE_FLAGS)
 	  {
 	    g_base_info_unref (interface);
-	    return seed_value_from_long (ctx, arg->v_long, exception);
+	    return seed_gi_argument_make_js_gtype (ctx, arg, g_base_info_get_type(type_info), exception);
 	  }
 	else if (interface_type == GI_INFO_TYPE_STRUCT)
 	  {
