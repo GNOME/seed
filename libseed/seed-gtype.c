@@ -906,7 +906,8 @@ seed_gtype_constructor_invoked (JSContextRef ctx,
     }
 
 
-  parent_type = (GType) seed_value_to_int (ctx, parent_ref, exception);
+  // TODO: GType is of variable length, so this is an incorrect fix
+  parent_type = (GType) seed_value_to_long (ctx, parent_ref, exception);
 
   SEED_NOTE (GTYPE, "Registering new GType with name: %s as child of %s.",
 	     new_name, g_type_name (parent_type));
