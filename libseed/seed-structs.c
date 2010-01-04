@@ -192,7 +192,7 @@ seed_union_get_property (JSContextRef context,
   cproperty_name = g_alloca (length * sizeof (gchar));
   JSStringGetUTF8CString (property_name, cproperty_name, length);
 
-  SEED_NOTE (STRUCTS, "Getting property on union of type: %s  "
+  SEED_NOTE (STRUCTS, "Getting property on union of type: %s "
 	     "with name %s \n",
 	     g_base_info_get_name (priv->info), cproperty_name);
 
