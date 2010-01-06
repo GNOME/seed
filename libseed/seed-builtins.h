@@ -23,6 +23,7 @@
 #include "seed-private.h"
 
 extern JSValueRef seed_print_ref;
+extern JSValueRef seed_printerr_ref;
 
 void seed_init_builtins (SeedEngine * local_eng, gint * argc, gchar *** argv);
 

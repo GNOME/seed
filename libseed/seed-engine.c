@@ -69,7 +69,7 @@ static const GDebugKey seed_debug_keys[] = {
 };
 #endif /* SEED_ENABLE_DEBUG */
 
-static bool 
+static bool
 seed_gobject_has_instance (JSContextRef ctx, JSObjectRef constructor,
 			  JSValueRef possible_instance, JSValueRef* exception)
 {
@@ -78,7 +78,7 @@ seed_gobject_has_instance (JSContextRef ctx, JSObjectRef constructor,
       !JSValueIsObject (ctx, possible_instance) ||
       !JSValueIsObjectOfClass (ctx, possible_instance, gobject_class))
     return FALSE;
-  
+
   constructor_type = (GType) JSObjectGetPrivate (constructor);
   value_type = G_OBJECT_TYPE ((GObject *)
 			      JSObjectGetPrivate ((JSObjectRef) possible_instance));
@@ -104,6 +104,7 @@ seed_prepare_global_context (JSContextRef ctx)
   seed_object_set_property (ctx, global, "GType", seed_gtype_constructor);
   seed_object_set_property (ctx, global, "Seed", seed_obj_ref);
   seed_object_set_property (ctx, global, "print", seed_print_ref);
+  seed_object_set_property (ctx, global, "printerr", seed_printerr_ref);
 
 
   JSEvaluateScript (ctx, defaults_script, NULL, NULL, 0, NULL);
@@ -1343,7 +1344,7 @@ seed_engine_destroy (SeedEngine *eng)
   JSValueUnprotect (eng->context, eng->global);
   JSGlobalContextRelease (eng->context);
   JSContextGroupRelease (eng->group);
-  
+
   g_free (eng);
 }
 
@@ -1375,7 +1376,7 @@ seed_init_with_context_group (gint * argc,
       SEED_NOTE (MISC, "failed to parse arguments.");
       return FALSE;
     }
-  
+
   if (seed_arg_print_version)
     {
       g_print("%s\n", "Seed " VERSION);
@@ -1469,3 +1470,4 @@ seed_init (gint * argc, gchar *** argv)
 
   return seed_init_with_context_group (argc, argv, context_group);
 }
+

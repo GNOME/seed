@@ -24,6 +24,7 @@
 #include <signal.h>
 
 JSValueRef seed_print_ref;
+JSValueRef seed_printerr_ref;
 
 static JSValueRef
 seed_include (JSContextRef ctx,
@@ -225,6 +226,31 @@ seed_print (JSContextRef ctx,
   buf = seed_value_to_string (ctx, arguments[0], exception);
 
   puts (buf);
+  g_free (buf);
+
+  return JSValueMakeUndefined (ctx);
+}
+
+static JSValueRef
+seed_printerr (JSContextRef ctx,
+	       JSObjectRef function,
+	       JSObjectRef this_object,
+	       size_t argumentCount,
+	       const JSValueRef arguments[],
+	       JSValueRef *exception)
+{
+  gchar *buf;
+  if (argumentCount != 1)
+    {
+      seed_make_exception (ctx, exception, "ArgumentError",
+			   "printerr expected 1 argument, got %zd",
+			   argumentCount);
+      return JSValueMakeNull (ctx);
+    }
+
+  buf = seed_value_to_string (ctx, arguments[0], exception);
+
+  g_printerr ("%s\n", buf);
   g_free (buf);
 
   return JSValueMakeUndefined (ctx);
@@ -486,6 +512,13 @@ seed_init_builtins (SeedEngine * local_eng, gint * argc, gchar *** argv)
   seed_object_set_property (local_eng->context, local_eng->global, "print",
 			    seed_print_ref);
   JSValueProtect (local_eng->context, seed_print_ref);
+
+  seed_printerr_ref =
+    JSObjectMakeFunctionWithCallback (local_eng->context, NULL, &seed_printerr);
+  seed_object_set_property (local_eng->context, obj, "printerr", seed_printerr_ref);
+  seed_object_set_property (local_eng->context, local_eng->global, "printerr",
+			    seed_printerr_ref);
+  JSValueProtect (local_eng->context, seed_printerr_ref);
 
   seed_create_function (local_eng->context,
 			"check_syntax", &seed_check_syntax, obj);
