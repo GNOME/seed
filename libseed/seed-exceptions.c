@@ -64,6 +64,9 @@ seed_make_exception (JSContextRef ctx,
       g_free (mes);
     }
 
+  // TODO: needs to create a global class named 'name', and this needs to
+  // be an instance of it, for integration with normal JS!
+
   exception_obj = JSObjectMake (ctx, 0, NULL);
   seed_object_set_property (ctx, exception_obj, "message", js_message_ref);
   seed_object_set_property (ctx, exception_obj, "name", js_name_ref);
