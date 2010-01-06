@@ -49,7 +49,10 @@ seed_repl ()
   seed_evaluate (eng->context, script, 0);
 
   if ((e = seed_script_exception (script)))
-    g_critical ("%s", seed_exception_to_string (eng->context, e));
+    {
+      g_critical ("%s", seed_exception_to_string (eng->context, e));
+      exit (EXIT_FAILURE);
+    }
 
   g_free (script);
 }
@@ -90,7 +93,10 @@ seed_exec (gchar * filename)
 
   seed_evaluate (eng->context, script, 0);
   if ((e = seed_script_exception (script)))
-    g_critical ("%s", seed_exception_to_string (eng->context, e));
+    {
+      g_critical ("%s", seed_exception_to_string (eng->context, e));
+      exit (EXIT_FAILURE);
+    }
 
   g_free (script);
 }
