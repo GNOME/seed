@@ -1,5 +1,7 @@
 noinst_PROGRAMS = test
 
+TESTS = test
+
 test_SOURCES =					\
 	main.c						\
 	basic.c						\
