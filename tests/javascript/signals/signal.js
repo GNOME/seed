@@ -1,18 +1,17 @@
 #!/usr/bin/env seed
-// Returns: 0
-// STDIN:
-// STDOUT:Window mapped.
-// STDERR:
 
-Gtk = imports.gi.Gtk;
-Gtk.init(Seed.argv);
+testsuite = imports.testsuite
+Gtk = imports.gi.Gtk
+Gtk.init(Seed.argv)
 
 function mapped(window)
 {
-    print("Window mapped.");
+    testsuite.assert(window == w)
 }
 
-w = new Gtk.Window();
-w.signal.map.connect(mapped);
+w = new Gtk.Window()
+w.signal.map.connect(mapped)
 
-w.show_all();
+w.show_all()
+
+testsuite.checkAsserts(1)

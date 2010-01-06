@@ -1,15 +1,13 @@
 #!/usr/bin/env seed
-// Returns: 0
-// STDIN:
-// STDOUT:0\n1
-// STDERR:
 
+testsuite = imports.testsuite
 Gtk = imports.gi.Gtk;
+
 Gtk.init(Seed.argv);
 
 var a = new Gtk.Button();
 var b = new Gtk.Button();
 var c = a;
 
-print(a == b);
-print(c == a);
+testsuite.assert(a != b);
+testsuite.assert(c == a);

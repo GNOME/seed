@@ -1,18 +1,21 @@
 #!/usr/bin/env seed
-// Returns: 0
-// STDIN:
-// STDOUT:Signal handler called
-// STDERR:
-Gtk = imports.gi.Gtk;
-Gtk.init(Seed.argv);
 
-function test(){
-    print("Signal handler called");
+testsuite = imports.testsuite
+Gtk = imports.gi.Gtk
+Gtk.init(Seed.argv)
+
+myglobal = 0
+
+function test()
+{
+    myglobal += 1234
 }
 
-w = new Gtk.Window();
-id = w.signal.map.connect(test);
-w.show_all();
-w.hide();
-w.signal.disconnect(id);
-w.show_all();
+w = new Gtk.Window()
+id = w.signal.map.connect(test)
+w.show_all()
+w.hide()
+w.signal.disconnect(id)
+w.show_all()
+
+testsuite.assert(myglobal == 1234)

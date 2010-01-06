@@ -1,23 +1,24 @@
 #!/usr/bin/env seed
-// Returns: 0
-// STDIN:
-// STDOUT:Window implements interfaces\nInterface: (Buildable|ImplementorIface)\nInterface: (Buildable|ImplementorIface)
-// STDERR:
 
-Gtk = imports.gi.Gtk;
-GIRepository = imports.gi.GIRepository;
+testsuite = imports.testsuite
+Gtk = imports.gi.Gtk
+GIRepository = imports.gi.GIRepository
 
-gir = GIRepository.IRepository.get_default();
+gir = GIRepository.IRepository.get_default()
 
-info = gir.find_by_gtype(Gtk.Window.type);
-print(GIRepository.base_info_get_name(info) + " implements interfaces");
+info = gir.find_by_gtype(Gtk.Window.type)
+testsuite.assert(GIRepository.base_info_get_name(info) == "Window")
 
-n = GIRepository.object_info_get_n_interfaces(info);
+n = GIRepository.object_info_get_n_interfaces(info)
 for (i = 0; i < n; i++)
 {
-	property = GIRepository.object_info_get_interface(info, i);
-	print("Interface: " + GIRepository.base_info_get_name(property));
-	GIRepository.base_info_unref(property);
+    property = GIRepository.object_info_get_interface(info, i)
+    propertyname = GIRepository.base_info_get_name(property)
+    testsuite.assert(propertyname == "Buildable" ||
+                     propertyname == "ImplementorIface")
+    GIRepository.base_info_unref(property)
 }
 
-GIRepository.base_info_unref(info);
+GIRepository.base_info_unref(info)
+
+testsuite.checkAsserts(3)

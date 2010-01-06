@@ -28,13 +28,10 @@ EXTRA_DIST = $(seeddoc_DATA) \
 
 DISTCHECK_CONFIGURE_FLAGS=--enable-gtk-doc
 
-test:
-	cd tests ; ./run-tests.py
-
 profile-reset:
 	find -name '*.gcda' -delete
 
-profile: profile-reset test
+profile: profile-reset check
 	cp libseed/*.c libseed/.libs/
 
 if PROFILE_MODULES

@@ -1,30 +1,41 @@
 #!/usr/bin/env seed
-// Returns: 0
-// STDIN:
-// STDOUT:1
-// STDERR:
 
-Gtk = imports.gi.Gtk;
-GObject = imports.gi.GObject;
-Gtk.init(Seed.argv);
+testsuite = imports.testsuite
+Gtk = imports.gi.Gtk
+GObject = imports.gi.GObject
+Gtk.init(Seed.argv)
 
-HelloWindowType = {
-parent: Gtk.Window.type,
-name: "HelloWindow",
-class_init: function(klass, prototype)
+HelloWindow = new GType({
+    parent: Gtk.Window.type,
+    name: "HelloWindow",
+    class_init: function(klass, prototype)
+    {
+        klass.c_install_property(GObject.param_spec_boolean(
+                                 "test",
+                                 "test property",
+                                 "A test property!",
+                                 false,
+                                 GObject.ParamFlags.CONSTRUCT | 
+                                     GObject.ParamFlags.READABLE | 
+                                     GObject.ParamFlags.WRITABLE))
+    },
+    init: function()
+    {
+        testsuite.assert(this.test == true)
+    }
+})
+
+w = new HelloWindow({test: true})
+
+testsuite.assert(w.test == true)
+
+try
 {
-	klass.c_install_property(GObject.param_spec_boolean("test",
-													  "test property",
-													  "A test property!",
-													  false,
-													  GObject.ParamFlags.CONSTRUCT | GObject.ParamFlags.READABLE | GObject.ParamFlags.WRITABLE));
-},
-init: function()
+    w.test = "arst"
+}
+catch(e)
 {
-  print(this.test);
-}};
+    testsuite.assert(e.name == "ConversionError")
+}
 
-HelloWindow = new GType(HelloWindowType);
-w = new HelloWindow({test: true});
-
-
+testsuite.checkAsserts(3)

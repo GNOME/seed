@@ -1,24 +1,23 @@
 #!/usr/bin/env seed
-// Returns: 0
-// STDIN:
-// STDOUT:Hello\nGoodbye
-// STDERR:
 
-Gtk = imports.gi.Gtk;
-Gtk.init(Seed.argv);
+testsuite = imports.testsuite
+Gtk = imports.gi.Gtk
+Gtk.init(Seed.argv)
 
 HelloWindowType = {
     parent: Gtk.Window.type,
     name: "HelloWindow",
     signals: [{name: "hello"}, {name: "goodbye"}]
-};
+}
 
-HelloWindow = new GType(HelloWindowType);
-w = new HelloWindow();
+HelloWindow = new GType(HelloWindowType)
+w = new HelloWindow()
 
-w.signal.hello.connect(function(){print("Hello");});
-w.signal.goodbye.connect(function(){print("Goodbye");});
+w.signal.hello.connect(function(){hello = 5})
+w.signal.goodbye.connect(function(){goodbye = 10})
 
-w.signal.hello.emit();
-w.signal.goodbye.emit();
+w.signal.hello.emit()
+w.signal.goodbye.emit()
 
+testsuite.assert(hello == 5)
+testsuite.assert(goodbye == 10)

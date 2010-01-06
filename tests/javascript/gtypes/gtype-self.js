@@ -1,21 +1,18 @@
 #!/usr/bin/env seed
-// Returns: 0
-// STDIN:
-// STDOUT:1
-// STDERR:
 
-Gtk = imports.gi.Gtk;
-Gtk.init(Seed.argv);
+testsuite = imports.testsuite
+Gtk = imports.gi.Gtk
+Gtk.init(Seed.argv)
 
-HelloWindowType = {
+HelloWindow = new GType({
     parent: Gtk.Window.type,
     name: "HelloWindow",
-    init: function(self){
-	print(this==self);
-    }};
+    init: function(self)
+    {
+	    testsuite.assert(this == self)
+    }
+})
 
-HelloWindow = new GType(HelloWindowType);
-w = new HelloWindow();
+w = new HelloWindow()
 
-w.show();
-
+testsuite.checkAsserts(1)

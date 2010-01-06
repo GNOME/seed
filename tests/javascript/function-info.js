@@ -1,12 +1,9 @@
 #!/usr/bin/env seed
-// Returns: 0
-// STDIN:
-// STDOUT:resize
-// STDERR:
 
-Gtk = imports.gi.Gtk;
-GIRepository = imports.gi.GIRepository;
+testsuite = imports.testsuite
+Gtk = imports.gi.Gtk
+GIRepository = imports.gi.GIRepository
 
-f = Gtk.Window.prototype.resize.info;
+f = Gtk.Window.prototype.resize.info
 
-print(GIRepository.base_info_get_name(f));
+testsuite.assert(GIRepository.base_info_get_name(f) == "resize")

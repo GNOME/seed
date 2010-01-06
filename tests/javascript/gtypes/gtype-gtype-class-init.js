@@ -1,30 +1,30 @@
 #!/usr/bin/env seed
-// Returns: 0
-// STDIN:
-// STDOUT:Class init
-// STDERR:
-Gtk = imports.gi.Gtk;
-Gtk.init(Seed.argv);
 
-HelloWindowType = {
- parent: Gtk.Window.type,
- name: "HelloWindow",
- init: function(){
-  }
-};
+testsuite = imports.testsuite
+Gtk = imports.gi.Gtk
+Gtk.init(Seed.argv)
 
-HelloWindow = new GType(HelloWindowType);
-w = new HelloWindow();
+HelloWindow = new GType({
+    parent: Gtk.Window.type,
+    name: "HelloWindow",
+    init: function()
+    {
+    }
+})
 
-InheritedWindowType = {
- parent: HelloWindow.type,
- name: "InheritedWindow",
- class_init: function(klass, prototype) {print("Class init")},
- init: function(){
-  }
-};
+w = new HelloWindow()
 
-InheritedWindow = new GType(InheritedWindowType);
+InheritedWindow = new GType({
+    parent: HelloWindow.type,
+    name: "InheritedWindow",
+    class_init: function(klass, prototype)
+    {
+        testsuite.assert(1)
+    },
+    init: function()
+    {
+    }
+})
 
-b = new InheritedWindow();
-
+b = new InheritedWindow()
+testsuite.checkAsserts(1)

@@ -1,33 +1,33 @@
 #!/usr/bin/env seed
-// Returns: 0
-// STDIN:
-// STDOUT:In klass init\nIn constructor for \[object HelloWindow\]\nPrototypes!\nIn map, verifying widget\.title : Hello!
-// STDERR:
 
-Gtk = imports.gi.Gtk;
-Gtk.init(Seed.argv);
+testsuite = imports.testsuite
+Gtk = imports.gi.Gtk
 
-HelloWindowType = {
+Gtk.init(Seed.argv)
+
+HelloWindow = new GType({
     parent: Gtk.Window.type,
     name: "HelloWindow",
     class_init: function(klass, prototype)
     {
-        prototype.message = "Prototypes!";
-        print("In klass init");
+        prototype.message = "Prototypes!"
     },
-    init: function(klass)
+    init: function(self)
     {
-        this.title = "Hello!";
-        print("In constructor for " + this);
-    }};
+        this.title = "Hello!"
+    }
+})
 
-HelloWindow = new GType(HelloWindowType);
-w = new HelloWindow();
-print(w.message);
+w = new HelloWindow()
+
+testsuite.assert(w.message = "Prototypes!")
+
 w.signal.map.connect(
-             function(widget)
-             {
-                 print("In map, verifying widget.title : " + widget.title);
-             });
-w.show();
+    function(widget)
+    {
+        testsuite.assert(widget.title == "Hello!")
+    })
 
+w.show()
+
+testsuite.checkAsserts(2)

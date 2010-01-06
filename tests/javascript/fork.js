@@ -1,16 +1,8 @@
 #!/usr/bin/env seed
-// Returns: 0
-// STDIN:
-// STDOUT:[AB]\n[AB]
-// STDERR:
-os = imports.os;
-var a = os.fork();
 
-if(a)
-{
-	print("A");
-}
-else
-{
-	print("B");
-}
+testsuite = imports.testsuite
+os = imports.os
+
+a = os.fork()
+
+testsuite.assert(a >= 0)

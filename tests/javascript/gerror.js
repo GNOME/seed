@@ -1,16 +1,14 @@
 #!/usr/bin/env seed
-// Returns: 0
-// STDIN:
-// STDOUT:GIoError Error opening file .* Is a directory
-// STDERR:
 
-Gio = imports.gi.Gio;
+testsuite = imports.testsuite
+Gio = imports.gi.Gio
 
 try
 {
-	Gio.simple_write(".", "test");
+	Gio.simple_write(".", "test")
+	testsuite.unreachable()
 }
 catch (e)
 {
-	print(e.name+" "+e.message);
+	testsuite.assert(e.name == "GIoError")
 }

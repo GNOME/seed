@@ -1,7 +1,15 @@
 #!/usr/bin/env seed
-// Returns: 1
-// STDIN:
-// STDOUT:
-// STDERR:\n\*\* \(seed:[0-9]+\): CRITICAL \*\*: Line 6 in .*\/syntax-test\.js: SyntaxError Parse error
 
-new = 3
+testsuite = imports.testsuite
+
+try
+{
+    eval("new = 3")
+    testsuite.unreachable()
+}
+catch(e)
+{
+    testsuite.assert(e instanceof SyntaxError)
+}
+
+testsuite.checkAsserts(1)

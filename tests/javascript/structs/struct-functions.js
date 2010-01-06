@@ -1,11 +1,10 @@
 #!/usr/bin/env seed
-// Returns: 0
-// STDIN:
-// STDOUT:
-// STDERR:
 
-GConf = imports.gi.GConf;
+testsuite = imports.testsuite
+GConf = imports.gi.GConf
 
-GConf.init(Seed.argv);
+GConf.init(Seed.argv)
 
-client = GConf.Client.get_default();
+client = GConf.Client.get_default()
+
+testsuite.assert(client != undefined)

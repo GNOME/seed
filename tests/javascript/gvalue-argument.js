@@ -1,8 +1,4 @@
 #!/usr/bin/env seed
-// Returns: 0
-// STDIN:
-// STDOUT:
-// STDERR:
 
 Gtk = imports.gi.Gtk;
 GObject = imports.gi.GObject

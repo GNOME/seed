@@ -1,31 +1,29 @@
 #!/usr/bin/env seed
-// Returns: 0
-// STDIN:
-// STDOUT:Hi\nHi\nbye
-// STDERR:
-Gtk = imports.gi.Gtk;
-Gtk.init(Seed.argv);
 
-HelloWindowType = {
- parent: Gtk.Window.type,
- name: "HelloWindow",
- init: function(){
-    print("Hi");
-  }
-};
+testsuite = imports.testsuite
+Gtk = imports.gi.Gtk
+Gtk.init(Seed.argv)
 
-HelloWindow = new GType(HelloWindowType);
-w = new HelloWindow();
+HelloWindow = new GType({
+    parent: Gtk.Window.type,
+    name: "HelloWindow",
+    init: function(self)
+    {
+        self.id = 5
+    }
+})
 
-InheritedWindowType = {
- parent: HelloWindow.type,
- name: "InheritedWindow",
- init: function(){
-    print("bye");
-  }
-};
+InheritedWindow = new GType({
+    parent: HelloWindow.type,
+    name: "InheritedWindow",
+    init: function(self)
+    {
+        self.id = 10
+    }
+})
 
-InheritedWindow = new GType(InheritedWindowType);
+w = new HelloWindow()
+b = new InheritedWindow()
 
-b = new InheritedWindow();
-
+testsuite.assert(w.id == 5)
+testsuite.assert(b.id == 10)

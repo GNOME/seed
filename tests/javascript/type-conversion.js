@@ -1,27 +1,29 @@
 #!/usr/bin/env seed
-// Returns: 0
-// STDIN:
-// STDOUT:Can not convert Javascript value to boolean\nCan not convert Javascript value to int
-// STDERR:
 
-Gtk = imports.gi.Gtk;
-Gtk.init(Seed.argv);
+testsuite = imports.testsuite
+Gtk = imports.gi.Gtk
+Gtk.init(Seed.argv)
 
-actor = new Gtk.Window();
-tests = [
-	"actor.accept_focus = 'hello'",
-	"actor.default_width = actor"];
+actor = new Gtk.Window()
 
-
-for ( i in tests )
+try
 {
-	try
-	{
-		eval(tests[i]);
-	}
-	catch (e)
-	{
-		print(e.message);
-	}
-
+    actor.accept_focus = 'hello'
+    testsuite.unreachable()
 }
+catch(e)
+{
+    testsuite.assert(e.message = "Can not convert Javascript value to boolean")
+}
+
+try
+{
+    actor.default_width = actor
+    testsuite.unreachable()
+}
+catch(e)
+{
+    testsuite.assert(e.message = "Can not convert Javascript value to int")
+}
+
+testsuite.checkAsserts(2)

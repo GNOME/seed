@@ -1,13 +1,13 @@
 #!/usr/bin/env seed
-// Returns: 0
-// STDIN:
-// STDOUT:x\ny\nwidth\nheight\nintersect\nunion
-// STDERR:
 
-Gdk = imports.gi.Gdk;
+testsuite = imports.testsuite
+Gdk = imports.gi.Gdk
 
-r = new Gdk.Rectangle();
+r = new Gdk.Rectangle()
 for (prop in r)
 {
-	print(prop);
+	testsuite.assert(prop == "x" || prop == "y" || prop == "width" || 
+	                 prop == "height" || prop == "intersect" || prop == "union")
 }
+
+testsuite.checkAsserts(6)

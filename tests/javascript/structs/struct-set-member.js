@@ -1,12 +1,9 @@
 #!/usr/bin/env seed
-// Returns: 0
-// STDIN:
-// STDOUT:0\n200
-// STDERR:
 
-Gdk = imports.gi.Gdk;
+testsuite = imports.testsuite
+Gdk = imports.gi.Gdk
 
-color = new Gdk.Color();
-print(color.red);
-color.red = 200;
-print(color.red);
+color = new Gdk.Color()
+testsuite.assert(color.red == 0)
+color.red = 200
+testsuite.assert(color.red == 200)

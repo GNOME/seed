@@ -1,19 +1,20 @@
 #!/usr/bin/env seed
-// Returns: 0
-// STDIN:
-// STDOUT:\[object GtkLabel\]\n\[object GtkButton\]
-// STDERR:
 
-Gtk = imports.gi.Gtk;
-Gtk.init(Seed.argv);
+testsuite = imports.testsuite
+Gtk = imports.gi.Gtk
+Gtk.init(Seed.argv)
 
-w = new Gtk.Window();
-vbox = new Gtk.VBox();
+w = new Gtk.Window()
+vbox = new Gtk.VBox()
 
-closure = function(widget){print(widget);};
-w.add(vbox);
+closure = function(widget) {
+    testsuite.assert(widget instanceof Gtk.Label || widget instanceof Gtk.Button)
+}
+w.add(vbox)
 
-vbox.pack_start(new Gtk.Label());
-vbox.pack_start(new Gtk.Button());
+vbox.pack_start(new Gtk.Label())
+vbox.pack_start(new Gtk.Button())
 
-vbox.foreach(closure);
+vbox.foreach(closure)
+
+testsuite.checkAsserts(2)

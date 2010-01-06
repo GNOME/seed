@@ -1,21 +1,19 @@
 #!/usr/bin/env seed
-// Returns: 0
-// STDIN:
-// STDOUT:\[object GtkButton\]\n1\n0\.5
-// STDERR:
 
-Gtk = imports.gi.Gtk;
-Gtk.init(Seed.argv);
+testsuite = imports.testsuite
+Gtk = imports.gi.Gtk
+Gtk.init(Seed.argv)
 
 function handle_opacity_change(obj, gobject, user_data)
 {
-	print(user_data);
-	print(user_data === button);
-	print(obj.opacity);
+	testsuite.assert(user_data instanceof Gtk.Button)
+	testsuite.assert(user_data === button)
+	testsuite.assert(obj.opacity == 0.5)
 }
 
-win = new Gtk.Window();
-button = new Gtk.Button();
-win.signal.connect("notify::opacity", handle_opacity_change, button);
-win.opacity = 0.5;
+win = new Gtk.Window()
+button = new Gtk.Button()
+win.signal.connect("notify::opacity", handle_opacity_change, button)
+win.opacity = 0.5
 
+testsuite.checkAsserts(3)

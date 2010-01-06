@@ -1,70 +1,71 @@
 #!/usr/bin/env seed
-// Returns: 0
-// STDIN:
-// STDOUT:1\n-124\n129\n-1235\n1387\n-123435\n133487\n-16323375\n13873737\n-16325\n33737\n-16325\n33737\n12\n143\n-1853\.12329101562\n-134543853\.12334\n8\n\["åäö","\/etc\/fstab"\]\n\["1","2","3"\]\n\["1","2","3"\]\n\["1","2","3"\]\n\["1","2","3"\]\nthanks,for,all,the,fish\n5\n0\n123\n0\n1\n42\n1\n2\n4\n15\n120\n120\.2357\n42\n19
-// STDERR:
 
-Everything = imports.gi.Everything;
-GObject = imports.gi.GObject;
+testsuite = imports.testsuite
+Everything = imports.gi.Everything
+GObject = imports.gi.GObject
+JSON = imports.JSON
 
-JSON = imports.JSON;
+assert = testsuite.assert
 
 with(Everything)
 {
-print(test_boolean(true));
-print(test_int8(-124));
-print(test_uint8(129));
-print(test_int16(-1235));
-print(test_uint16(1387));
-print(test_int32(-123435));
-print(test_uint32(133487));
-print(test_int64(-16323375));
-print(test_uint64(13873737));
-print(test_int(-16325));
-print(test_uint(33737));
-print(test_long(-16325));
-print(test_ulong(33737));
-print(test_ssize(12));
-print(test_size(143));
-print(test_float(-1853.12334));
-print(test_double(-134543853.12334));
-//Need support for: print(test_timet(1853));
-print(test_gtype(8));
+assert(test_boolean(true) == true)
+assert(test_int8(-124) == -124)
+assert(test_uint8(129) == 129)
+assert(test_int16(-1235) == -1235)
+assert(test_uint16(1387) == 1387)
+assert(test_int32(-123435) == -123435)
+assert(test_uint32(133487) == 133487)
+assert(test_int64(-16323375) == -16323375)
+assert(test_uint64(13873737) == 13873737)
+assert(test_int(-16325) == -16325)
+assert(test_uint(33737) == 33737)
+assert(test_long(-16325) == -16325)
+assert(test_ulong(33737) == 33737)
+assert(test_ssize(12) == 12)
+assert(test_size(143) == 143)
+assert(test_float(-1853.12334) > (-1853.12334 - 0.001))
+assert(test_float(-1853.12334) < (-1853.12334 + 0.001))
+assert(test_double(-134543853.12334) > (-134543853.12334 - 0.001))
+assert(test_double(-134543853.12334) < (-134543853.12334 + 0.001))
+//assert(test_timet(1853) == 1853)
+assert(test_gtype(8) == 8)
 
-print(JSON.stringify(test_filename_return()));
-print(JSON.stringify(test_glist_nothing_return()));
-print(JSON.stringify(test_glist_nothing_return2()));
-print(JSON.stringify(test_glist_container_return()));
-print(JSON.stringify(test_glist_everything_return()));
+assert(test_filename_return()[0] == "åäö")
+assert(test_filename_return()[1] == "/etc/fstab")
+assert(test_glist_nothing_return()[0] == "1")
+assert(test_glist_nothing_return2()[1] == "2")
+assert(test_glist_container_return()[2] == "3")
+assert(test_glist_everything_return()[1] == "2")
 
-//test_glist_nothing_in([2, 3, 4]);
+//test_glist_nothing_in([2, 3, 4])
 
-print(test_strv_out());
+assert(test_strv_out().toString() == "thanks,for,all,the,fish")
 
-// These are broken... Robb's working on them:
-print(test_closure(function () { return [GObject.TYPE_INT, 5]; }));
-print(test_closure_one_arg(function (a) { return [GObject.TYPE_INT, a]; }));
+assert(test_closure(function () { return [GObject.TYPE_INT, 5] }) == 5)
+assert(test_closure_one_arg(function (a) { return [GObject.TYPE_INT, a] }) == 0)
 
-print(test_value_return(123).get_int());
+assert(test_value_return(123).get_int() == 123)
 
-print(TestEnum.VALUE1);
-print(TestEnum.VALUE2);
-print(TestEnum.VALUE3);
-print(TestFlags.FLAG1);
-print(TestFlags.FLAG2);
-print(TestFlags.FLAG3);
+assert(TestEnum.VALUE1 == 0)
+assert(TestEnum.VALUE2 == 1)
+assert(TestEnum.VALUE3 == 42)
+assert(TestFlags.FLAG1 == 1)
+assert(TestFlags.FLAG2 == 2)
+assert(TestFlags.FLAG3 == 4)
 
-TestStructA.some_int = 15;
-print(TestStructA.some_int);
-TestStructA.some_int8 = 120;
-print(TestStructA.some_int8);
-TestStructA.some_double = 120.2357;
-print(TestStructA.some_double);
-TestStructA.some_enum = TestEnum.VALUE3;
-print(TestStructA.some_enum);
+TestStructA.some_int = 15
+assert(TestStructA.some_int == 15)
+TestStructA.some_int8 = 120
+assert(TestStructA.some_int8 == 120)
+TestStructA.some_double = 120.2357
+assert(TestStructA.some_double > (120.2357 - 0.001))
+assert(TestStructA.some_double < (120.2357 + 0.001))
+TestStructA.some_enum = TestEnum.VALUE3
+assert(TestStructA.some_enum == 42)
 
-TestStructB.some_int8 = 19;
-print(TestStructB.some_int8);
-//TestStructB.nested_a.some_double = 134.3455;
-//print(TestStructB.nested_a.some_double);
+TestStructB.some_int8 = 19
+assert(TestStructB.some_int8 == 19)
+//TestStructB.nested_a.some_double = 134.3455
+//print(TestStructB.nested_a.some_double)
 }

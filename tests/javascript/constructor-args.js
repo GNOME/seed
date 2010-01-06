@@ -1,9 +1,6 @@
 #!/usr/bin/env seed
-// Returns: 0
-// STDIN:
-// STDOUT:Constructor expects 1 argument, got 2\nConstructor expects object as argument
-// STDERR:
 
+testsuite = imports.testsuite
 Gtk = imports.gi.Gtk;
 Gtk.init(Seed.argv);
 
@@ -13,23 +10,27 @@ try
 }
 catch (e)
 {
-	print(e.message);
+	testsuite.unreachable()
 }
 
 try
 {
 	w = new Gtk.Window(1, 2);
+	testsuite.unreachable()
 }
 catch (e)
 {
-	print(e.message);
+	testsuite.assert(e.name == "ArgumentError") 
 }
 
 try
 {
 	w = new Gtk.Window("safA");
+	testsuite.unreachable()
 }
 catch (e)
 {
-	print(e.message);
+	testsuite.assert(e.name == "ArgumentError")
 }
+
+testsuite.checkAsserts(2)

@@ -1,8 +1,6 @@
 #!/usr/bin/env seed
-// Returns: 0
-// STDIN:
-// STDOUT:
-// STDERR:
+
+// TODO: this test doesn't do anything
 
 Gtk = imports.gi.Gtk;
 Gtk.init(Seed.argv);

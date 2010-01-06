@@ -1,17 +1,18 @@
 #!/usr/bin/env seed
-// Returns: 0
-// STDIN:
-// STDOUT:GType constructor expected GType for parent
-// STDERR:
 
-Gtk = imports.gi.Gtk;
-
+testsuite = imports.testsuite
+Gtk = imports.gi.Gtk
 
 HelloWindowType = {
     parent: "Mom",
     name: "HelloWindow"
-};
+}
 
-try{
-    HelloWindow = new GType(HelloWindowType);
-} catch (e) {print(e.message);}
+try
+{
+    HelloWindow = new GType(HelloWindowType)
+}
+catch (e)
+{
+    testsuite.assert(e.message == "GType constructor expected GType for parent")
+}

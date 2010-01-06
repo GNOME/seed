@@ -1,13 +1,12 @@
 #!/usr/bin/env seed
-// Returns: 0
-// STDIN:
-// STDOUT:Hello World
-// STDERR:
 
-Gtk = imports.gi.Gtk;
-Gtk.init(Seed.argv);
+testsuite = imports.testsuite
+Gtk = imports.gi.Gtk
 
-Gtk.Window.prototype.hello = "Hello World";
+Gtk.init(Seed.argv)
 
-a = new Gtk.Window();
-print(a.hello);
+Gtk.Window.prototype.hello = "Hello World"
+
+a = new Gtk.Window()
+
+testsuite.assert(a.hello == "Hello World")
