@@ -50,7 +50,7 @@ seed_mpfr_out_str (SeedContext ctx,
                    SeedObject this_object,
                    gsize argument_count,
                    const SeedValue args[],
-                   SeedException * exception)
+                   SeedException *exception)
 {
     gsize n;
     FILE* stream;
@@ -78,7 +78,7 @@ seed_mpfr_print (SeedContext ctx,
                  SeedObject this_object,
                  gsize argument_count,
                  const SeedValue args[],
-                 SeedException * exception)
+                 SeedException *exception)
 {
     mpfr_ptr op;
     mpfr_rnd_t rnd;
@@ -103,7 +103,7 @@ seed_mpfr_const_pi (SeedContext ctx,
                     SeedObject this_object,
                     gsize argument_count,
                     const SeedValue args[],
-                    SeedException * exception)
+                    SeedException *exception)
 {
     mpfr_rnd_t rnd;
     mpfr_ptr rop;
@@ -125,7 +125,7 @@ seed_mpfr_const_euler (SeedContext ctx,
                        SeedObject this_object,
                        gsize argument_count,
                        const SeedValue args[],
-                       SeedException * exception)
+                       SeedException *exception)
 {
     mpfr_rnd_t rnd;
     mpfr_ptr rop;
@@ -147,7 +147,7 @@ seed_mpfr_const_catalan (SeedContext ctx,
                          SeedObject this_object,
                          gsize argument_count,
                          const SeedValue args[],
-                         SeedException * exception)
+                         SeedException *exception)
 {
     mpfr_rnd_t rnd;
     mpfr_ptr rop;
@@ -169,7 +169,7 @@ seed_mpfr_get_d (SeedContext ctx,
                  SeedObject this_object,
                  gsize argument_count,
                  const SeedValue args[],
-                 SeedException * exception)
+                 SeedException *exception)
 {
     mpfr_rnd_t rnd;
     mpfr_ptr rop;
@@ -191,7 +191,7 @@ seed_mpfr_fits_ulong_p (SeedContext ctx,
                         SeedObject this_object,
                         gsize argument_count,
                         const SeedValue args[],
-                        SeedException * exception)
+                        SeedException *exception)
 {
     mpfr_rnd_t rnd;
     mpfr_ptr rop;
@@ -213,7 +213,7 @@ seed_mpfr_fits_slong_p (SeedContext ctx,
                         SeedObject this_object,
                         gsize argument_count,
                         const SeedValue args[],
-                        SeedException * exception)
+                        SeedException *exception)
 {
     mpfr_rnd_t rnd;
     mpfr_ptr rop;
@@ -235,7 +235,7 @@ seed_mpfr_fits_uint_p (SeedContext ctx,
                        SeedObject this_object,
                        gsize argument_count,
                        const SeedValue args[],
-                       SeedException * exception)
+                       SeedException *exception)
 {
     mpfr_rnd_t rnd;
     mpfr_ptr rop;
@@ -257,7 +257,7 @@ seed_mpfr_fits_sint_p (SeedContext ctx,
                        SeedObject this_object,
                        gsize argument_count,
                        const SeedValue args[],
-                       SeedException * exception)
+                       SeedException *exception)
 {
     mpfr_rnd_t rnd;
     mpfr_ptr rop;
@@ -279,7 +279,7 @@ seed_mpfr_fits_ushort_p (SeedContext ctx,
                          SeedObject this_object,
                          gsize argument_count,
                          const SeedValue args[],
-                         SeedException * exception)
+                         SeedException *exception)
 {
     mpfr_rnd_t rnd;
     mpfr_ptr rop;
@@ -301,7 +301,7 @@ seed_mpfr_fits_sshort_p (SeedContext ctx,
                          SeedObject this_object,
                          gsize argument_count,
                          const SeedValue args[],
-                         SeedException * exception)
+                         SeedException *exception)
 {
     mpfr_rnd_t rnd;
     mpfr_ptr rop;
@@ -323,7 +323,7 @@ seed_mpfr_fits_intmax_p (SeedContext ctx,
                          SeedObject this_object,
                          gsize argument_count,
                          const SeedValue args[],
-                         SeedException * exception)
+                         SeedException *exception)
 {
     mpfr_rnd_t rnd;
     mpfr_ptr rop;
@@ -345,7 +345,7 @@ seed_mpfr_fits_uintmax_p (SeedContext ctx,
                           SeedObject this_object,
                           gsize argument_count,
                           const SeedValue args[],
-                          SeedException * exception)
+                          SeedException *exception)
 {
     mpfr_rnd_t rnd;
     mpfr_ptr rop;
@@ -442,7 +442,7 @@ seed_mpfr_set (SeedContext ctx,
                SeedObject this_object,
                gsize argument_count,
                const SeedValue args[],
-               SeedException * exception)
+               SeedException *exception)
 {
     mpfr_rnd_t rnd;
     mpfr_ptr rop, op;
@@ -484,7 +484,7 @@ SeedValue seed_mpfr_set_inf (SeedContext ctx,
                              SeedObject this_object,
                              gsize argument_count,
                              const SeedValue args[],
-                             SeedException * exception)
+                             SeedException *exception)
 {
     mpfr_ptr rop;
     gint sign;
@@ -512,7 +512,7 @@ SeedValue seed_mpfr_set_nan (SeedContext ctx,
                              SeedObject this_object,
                              gsize argument_count,
                              const SeedValue args[],
-                             SeedException * exception)
+                             SeedException *exception)
 {
     mpfr_ptr rop;
 
@@ -530,7 +530,7 @@ SeedValue seed_mpfr_swap (SeedContext ctx,
                           SeedObject this_object,
                           gsize argument_count,
                           const SeedValue args[],
-                          SeedException * exception)
+                          SeedException *exception)
 {
     mpfr_ptr rop, op;
 
@@ -557,7 +557,7 @@ SeedValue seed_mpfr_can_round (SeedContext ctx,
                                SeedObject this_object,
                                gsize argument_count,
                                const SeedValue args[],
-                               SeedException * exception)
+                               SeedException *exception)
 {
     mpfr_rnd_t rnd1, rnd2;
     mpfr_ptr rop;
@@ -584,7 +584,7 @@ seed_mpfr_construct_with_set(SeedContext ctx,
                              SeedObject constructor,
                              gsize argument_count,
                              const SeedValue args[],
-                             SeedException* exception)
+                             SeedException*exception)
 {
     mpfr_prec_t prec;
     mpfr_rnd_t rnd;
@@ -660,7 +660,7 @@ seed_mpfr_construct(SeedContext ctx,
                     SeedObject constructor,
                     gsize argument_count,
                     const SeedValue args[],
-                    SeedException* exception)
+                    SeedException*exception)
 {
     mpfr_prec_t prec;
     mpfr_ptr newmp = (mpfr_ptr) g_malloc(sizeof(mpfr_t));
@@ -694,7 +694,7 @@ seed_mpfr_construct(SeedContext ctx,
 SeedValue seed_mpfr_get_version (SeedContext ctx,
                                  SeedObject this_object,
                                  SeedString property_name,
-                                 SeedException * exception)
+                                 SeedException *exception)
 {
     const gchar* str;
     SeedValue ret;
@@ -708,7 +708,7 @@ SeedValue seed_mpfr_get_version (SeedContext ctx,
 SeedValue seed_mpfr_get_patches (SeedContext ctx,
                                  SeedObject this_object,
                                  SeedString property_name,
-                                 SeedException * exception)
+                                 SeedException *exception)
 {
     const gchar* str;
     SeedValue ret;
@@ -723,7 +723,7 @@ static gboolean seed_mpfr_set_emin (SeedContext ctx,
                                     SeedObject this_object,
                                     SeedString property_name,
                                     SeedValue value,
-                                    SeedException* exception)
+                                    SeedException*exception)
 {
     mp_exp_t exp;
     gint ret;
@@ -738,7 +738,7 @@ static gboolean seed_mpfr_set_emax (SeedContext ctx,
                                     SeedObject this_object,
                                     SeedString property_name,
                                     SeedValue value,
-                                    SeedException * exception)
+                                    SeedException *exception)
 {
     mp_exp_t exp;
     gint ret;
@@ -752,7 +752,7 @@ static gboolean seed_mpfr_set_emax (SeedContext ctx,
 SeedValue seed_mpfr_get_emax (SeedContext ctx,
                               SeedObject this_object,
                               SeedString property_name,
-                              SeedException* exception)
+                              SeedException *exception)
 {
     mp_exp_t exp;
     exp = mpfr_get_emax();
@@ -847,7 +847,7 @@ gboolean seed_mpfr_set_overflow (SeedContext ctx,
                                  SeedObject this_object,
                                  SeedString property_name,
                                  SeedValue value,
-                                 SeedException * exception)
+                                 SeedException *exception)
 {
     gboolean setorclear;
     setorclear = seed_value_to_boolean(ctx, value, exception);
@@ -862,7 +862,7 @@ gboolean seed_mpfr_set_overflow (SeedContext ctx,
 SeedValue seed_mpfr_nanflag_p (SeedContext ctx,
                                SeedObject this_object,
                                SeedString property_name,
-                               SeedException* exception)
+                               SeedException*exception)
 {
     gint ret = mpfr_nanflag_p();
     return seed_value_from_int(ctx, ret, exception);
@@ -872,7 +872,7 @@ gboolean seed_mpfr_set_nanflag (SeedContext ctx,
                                 SeedObject this_object,
                                 SeedString property_name,
                                 SeedValue value,
-                                SeedException * exception)
+                                SeedException *exception)
 {
     gboolean setorclear;
     setorclear = seed_value_to_boolean(ctx, value, exception);
@@ -887,7 +887,7 @@ gboolean seed_mpfr_set_nanflag (SeedContext ctx,
 SeedValue seed_mpfr_inexflag_p (SeedContext ctx,
                                 SeedObject this_object,
                                 SeedString property_name,
-                                SeedException* exception)
+                                SeedException*exception)
 {
     gint ret = mpfr_inexflag_p();
     return seed_value_from_int(ctx, ret, exception);
@@ -897,7 +897,7 @@ gboolean seed_mpfr_set_inexflag (SeedContext ctx,
                                  SeedObject this_object,
                                  SeedString property_name,
                                  SeedValue value,
-                                 SeedException * exception)
+                                 SeedException *exception)
 {
     gboolean setorclear;
     setorclear = seed_value_to_boolean(ctx, value, exception);
@@ -912,7 +912,7 @@ gboolean seed_mpfr_set_inexflag (SeedContext ctx,
 SeedValue seed_mpfr_erangeflag_p (SeedContext ctx,
                                   SeedObject this_object,
                                   SeedString property_name,
-                                  SeedException* exception)
+                                  SeedException *exception)
 {
     gint ret = mpfr_erangeflag_p();
     return seed_value_from_int(ctx, ret, exception);
@@ -922,7 +922,7 @@ gboolean seed_mpfr_set_erangeflag (SeedContext ctx,
                                    SeedObject this_object,
                                    SeedString property_name,
                                    SeedValue value,
-                                   SeedException * exception)
+                                   SeedException *exception)
 {
     gboolean setorclear;
     setorclear = seed_value_to_boolean(ctx, value, exception);
@@ -940,7 +940,7 @@ seed_mpfr_subnormalize (SeedContext ctx,
                         SeedObject this_object,
                         gsize argument_count,
                         const SeedValue args[],
-                        SeedException * exception)
+                        SeedException *exception)
 {
     mpfr_rnd_t rnd;
     mpfr_ptr rop;
@@ -963,7 +963,7 @@ seed_mpfr_check_range (SeedContext ctx,
                        SeedObject this_object,
                        gsize argument_count,
                        const SeedValue args[],
-                       SeedException * exception)
+                       SeedException *exception)
 {
     mpfr_rnd_t rnd;
     mpfr_ptr rop;
