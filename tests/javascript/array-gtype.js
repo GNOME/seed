@@ -1,4 +1,4 @@
-#!/usr/bin/env seed
+#!../../src/seed
 
 Gtk = imports.gi.Gtk;
 GObject = imports.gi.GObject;

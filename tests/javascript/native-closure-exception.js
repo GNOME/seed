@@ -1,4 +1,4 @@
-#!/usr/bin/env seed
+#!../../src/seed
 
 // TODO: shouldn't the exception be passed back to the caller?
 

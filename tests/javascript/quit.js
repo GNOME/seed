@@ -1,4 +1,4 @@
-#!/usr/bin/env seed
+#!../../src/seed
 
 Seed.quit(0)
 imports.testsuite.unreachable()

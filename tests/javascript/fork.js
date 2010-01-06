@@ -1,4 +1,4 @@
-#!/usr/bin/env seed
+#!../../src/seed
 
 testsuite = imports.testsuite
 os = imports.os

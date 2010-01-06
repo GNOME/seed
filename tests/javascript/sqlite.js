@@ -1,4 +1,4 @@
-#!/usr/bin/env seed
+#!../../src/seed
 
 testsuite = imports.testsuite
 Gio = imports.gi.Gio

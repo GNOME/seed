@@ -1,4 +1,4 @@
-#!/usr/bin/env seed
+#!../../../src/seed
 
 // The way this test stood, it didn't make any sense. It still doesn't, but
 // at least now it's not fragile based on Gdk version, and will still be

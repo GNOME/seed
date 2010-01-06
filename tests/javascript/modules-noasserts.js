@@ -1,4 +1,4 @@
-#!/usr/bin/env seed
+#!../../src/seed
 
 // This test is merely to appease the coverage checker (calls init in each
 // module); it will also catch unresolved symbol errors in the modules.

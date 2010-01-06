@@ -1,4 +1,4 @@
-#!/usr/bin/env seed
+#!../../../src/seed
 // Returns: 0
 // STDIN:
 // STDOUT:

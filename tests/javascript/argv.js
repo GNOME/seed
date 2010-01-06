@@ -1,3 +1,3 @@
-#!/usr/bin/env seed
+#!../../src/seed
 
-imports.testsuite.assert(Seed.argv[0] == "seed")
+imports.testsuite.assert(Seed.argv[0].search("seed"))
