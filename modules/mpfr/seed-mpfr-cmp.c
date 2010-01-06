@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Seed.  If not, see <http://www.gnu.org/licenses/>.
  *
- * Copyright (C) Robert Carr 2009 <carrr@rpi.edu>
+ * Copyright (C) Matthew Arsenault 2009-2010 <arsenm2@rpi.edu>
  */
 
 #include <mpfr.h>
