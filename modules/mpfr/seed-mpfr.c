@@ -996,7 +996,7 @@ seed_static_value mpfr_ns_values[] =
     {"erangeflag", seed_mpfr_erangeflag_p, seed_mpfr_set_erangeflag, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
     {"version", seed_mpfr_get_version, NULL, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
     {"patches", seed_mpfr_get_patches, NULL, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
-    {NULL, 0, NULL, 0}
+    {NULL, NULL, NULL, 0}
 };
 
 seed_static_function mpfr_ns_funcs[] =
@@ -1127,7 +1127,7 @@ seed_static_value mpfr_values[] =
 {
     {"prec", seed_mpfr_get_prec, seed_mpfr_set_prec, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
     {"exp", seed_mpfr_get_exp, seed_mpfr_set_exp, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
-    {NULL, 0, NULL, 0}
+    {NULL, NULL, NULL, 0}
 };
 
 SeedObject

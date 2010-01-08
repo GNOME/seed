@@ -1033,7 +1033,7 @@ seed_static_function canvas_funcs[] = {
   {"finish", seed_canvas_finish, 0},
   {"showPage", seed_canvas_showpage, 0},
   {"destroy", seed_canvas_destroy, 0},
-  {0, 0, 0}
+  {NULL, NULL, 0}
 };
 
 seed_static_value canvas_properties[] = {
@@ -1045,7 +1045,7 @@ seed_static_value canvas_properties[] = {
   {"fillStyle", 0, seed_canvas_update_fill_style, 0},
   {"globalAlpha", 0, seed_canvas_update_global_alpha, 0},
   {"globalCompositeOperation", 0, seed_canvas_update_global_composite, 0},
-  {0, 0, 0, 0}
+  {NULL, NULL, NULL, 0}
 };
 
 SeedObject

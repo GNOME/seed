@@ -288,7 +288,7 @@ seed_static_function gettext_funcs[] = {
 	{"dcngettext", seed_gettext_dcngettext, 0},
 	{"setlocale", seed_gettext_setlocale, 0},
 	{"gettext", seed_gettext_gettext, 0},
-	{0, 0, 0}
+	{NULL, NULL, 0}
 };
 
 SeedObject

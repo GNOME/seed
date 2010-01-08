@@ -481,7 +481,7 @@ seed_ffi_library_finalize (SeedObject obj)
 
 seed_static_value ffi_function_values [] = {
   {"signature", seed_ffi_get_signature, seed_ffi_set_signature, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
-  {0, 0, 0, 0}
+  {NULL, NULL, NULL, 0}
 };
 
 SeedObject

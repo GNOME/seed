@@ -1734,8 +1734,8 @@ seed_static_value cairo_values[] = {
   {"operator", seed_cairo_get_operator, seed_cairo_set_operator, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
   {"tolerance", seed_cairo_get_tolerance, seed_cairo_set_tolerance, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
   {"matrix", seed_cairo_get_matrix, seed_cairo_set_matrix, SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
-  {"target", seed_cairo_get_target, 0, SEED_PROPERTY_ATTRIBUTE_READ_ONLY | SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
-  {0, 0, 0, 0}
+  {"target", seed_cairo_get_target, NULL, SEED_PROPERTY_ATTRIBUTE_READ_ONLY | SEED_PROPERTY_ATTRIBUTE_DONT_DELETE},
+  {NULL, NULL, NULL, 0}
 };
 
 seed_static_function cairo_funcs[] = {
@@ -1799,7 +1799,7 @@ seed_static_function cairo_funcs[] = {
   {"device_to_user", seed_cairo_device_to_user, 0},
   {"device_to_user_distance", seed_cairo_device_to_user_distance, 0},
   {"destroy", seed_cairo_destroy, 0},
-  {0, 0, 0}
+  {NULL, NULL, 0}
 };
 
 SeedObject

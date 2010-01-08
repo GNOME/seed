@@ -1362,8 +1362,8 @@ seed_js_dbus_signature_length (SeedContext ctx,
 }
 
 seed_static_value bus_values[] = {
-  {"unique_name", unique_name_getter, 0, 0},
-  {0,0,0, 0}
+  {"unique_name", unique_name_getter, NULL, 0},
+  {NULL, NULL, NULL, 0}
 };
 
 seed_static_function bus_funcs[] = {
@@ -1377,19 +1377,17 @@ seed_static_function bus_funcs[] = {
   {"unwatch_signal", seed_js_dbus_unwatch_signal, 0},
   {"emit_signal", seed_js_dbus_emit_signal, 0},
   {"start_service", seed_js_dbus_start_service, 0},
-  {0, 0, 0}
+  {NULL, NULL, 0}
 };
 
 seed_static_function dbus_funcs[] = {
-  {"signatureLength", seed_js_dbus_signature_length, 0}
-  ,
-  {0, 0, 0}
+  {"signatureLength", seed_js_dbus_signature_length, 0},
+  {NULL, NULL, 0}
 };
 
 seed_static_value dbus_values[] = {
-  {"localMachineID", seed_js_dbus_get_machine_id, 0, 0}
-  ,
-  {0, 0, 0, 0}
+  {"localMachineID", seed_js_dbus_get_machine_id, NULL, 0},
+  {NULL, NULL, NULL, 0}
 };
 
 static void

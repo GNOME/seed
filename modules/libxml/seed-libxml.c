@@ -450,65 +450,65 @@ seed_xml_xpathobj_get_value (SeedContext ctx,
 
 seed_static_function doc_funcs[] = {
   {"xpathNewContext", seed_xml_construct_xpath_context, 0},
-  {0, 0, 0}
+  {NULL, NULL, 0}
 };
 
 seed_static_value doc_values[] = {
-  {"root", seed_xml_doc_get_root, 0, 0},
-  {"name", seed_xml_node_get_name, 0, 0},
-  {"children", seed_xml_node_get_children, 0, 0},
-  {"parent", seed_xml_node_get_parent, 0, 0},
-  {"next", seed_xml_node_get_next, 0, 0},
-  {"prev", seed_xml_node_get_prev, 0, 0},
-  {"last", seed_xml_node_get_last, 0, 0},
-  {"doc", seed_xml_node_get_doc, 0, 0},
-  {"type", seed_xml_node_get_type, 0, 0},
-  {0, 0, 0, 0}
+  {"root", seed_xml_doc_get_root, NULL, 0},
+  {"name", seed_xml_node_get_name, NULL, 0},
+  {"children", seed_xml_node_get_children, NULL, 0},
+  {"parent", seed_xml_node_get_parent, NULL, 0},
+  {"next", seed_xml_node_get_next, NULL, 0},
+  {"prev", seed_xml_node_get_prev, NULL, 0},
+  {"last", seed_xml_node_get_last, NULL, 0},
+  {"doc", seed_xml_node_get_doc, NULL, 0},
+  {"type", seed_xml_node_get_type, NULL, 0},
+  {NULL, NULL, NULL, 0}
 };
 
 seed_static_function node_funcs[] = {
-  {0, 0, 0}
+  {NULL, NULL, 0}
 };
 
 seed_static_value node_values[] = {
-  {"name", seed_xml_node_get_name, 0, 0},
-  {"children", seed_xml_node_get_children, 0, 0},
-  {"parent", seed_xml_node_get_parent, 0, 0},
-  {"next", seed_xml_node_get_next, 0, 0},
-  {"prev", seed_xml_node_get_prev, 0, 0},
-  {"content", seed_xml_node_get_content, 0, 0},
-  {"last", seed_xml_node_get_last, 0, 0},
-  {"doc", seed_xml_node_get_doc, 0, 0},
-  {"type", seed_xml_node_get_type, 0, 0},
-  {"properties", seed_xml_node_get_properties, 0, 0},
-  {0, 0, 0, 0}
+  {"name", seed_xml_node_get_name, NULL, 0},
+  {"children", seed_xml_node_get_children, NULL, 0},
+  {"parent", seed_xml_node_get_parent, NULL, 0},
+  {"next", seed_xml_node_get_next, NULL, 0},
+  {"prev", seed_xml_node_get_prev, NULL, 0},
+  {"content", seed_xml_node_get_content, NULL, 0},
+  {"last", seed_xml_node_get_last, NULL, 0},
+  {"doc", seed_xml_node_get_doc, NULL, 0},
+  {"type", seed_xml_node_get_type, NULL, 0},
+  {"properties", seed_xml_node_get_properties, NULL, 0},
+  {NULL, NULL, NULL, 0}
 };
 
 seed_static_function attr_funcs[] = {
-  {0, 0, 0}
+  {NULL, NULL, 0}
 };
 
 seed_static_value attr_values[] = {
-  {"name", seed_xml_node_get_name, 0, 0},
-  {"children", seed_xml_node_get_children, 0, 0},
-  {"parent", seed_xml_node_get_parent, 0, 0},
-  {"next", seed_xml_node_get_next, 0, 0},
-  {"prev", seed_xml_node_get_prev, 0, 0},
-  {"last", seed_xml_node_get_last, 0, 0},
-  {"doc", seed_xml_node_get_doc, 0, 0},
-  {"type", seed_xml_node_get_type, 0, 0},
-  {0, 0, 0, 0}
+  {"name", seed_xml_node_get_name, NULL, 0},
+  {"children", seed_xml_node_get_children, NULL, 0},
+  {"parent", seed_xml_node_get_parent, NULL, 0},
+  {"next", seed_xml_node_get_next, NULL, 0},
+  {"prev", seed_xml_node_get_prev, NULL, 0},
+  {"last", seed_xml_node_get_last, NULL, 0},
+  {"doc", seed_xml_node_get_doc, NULL, 0},
+  {"type", seed_xml_node_get_type, NULL, 0},
+  {NULL, NULL, NULL, 0}
 };
 
 seed_static_function xpath_funcs[] = {
   {"xpathEval", seed_xml_xpath_eval, 0},
   {"xpathRegisterNs", seed_xml_xpath_register_ns, 0},
-  {0, 0, 0}
+  {NULL, NULL, 0}
 };
 
 seed_static_value xpathobj_values[] = {
-  {"value", seed_xml_xpathobj_get_value, 0, 0},
-  {0, 0, 0, 0}
+  {"value", seed_xml_xpathobj_get_value, NULL, 0},
+  {NULL, NULL, NULL, 0}
 };
 
 static void

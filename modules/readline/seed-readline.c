@@ -178,7 +178,7 @@ seed_static_function readline_funcs[] = {
 	{"done", seed_rl_done, 0},
 	{"buffer", seed_rl_buffer, 0},
 	{"insert", seed_rl_insert, 0},
-	{0, 0, 0}
+	{NULL, NULL, 0}
 };
 
 SeedObject

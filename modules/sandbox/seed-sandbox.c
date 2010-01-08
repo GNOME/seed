@@ -107,7 +107,7 @@ seed_static_function context_funcs[] = {
   {"eval", seed_context_eval, 0},
   {"add_globals", seed_sandbox_context_add_globals, 0},
   {"destroy", seed_sandbox_context_destroy, 0},
-  {0, 0, 0}
+  {NULL, NULL, 0}
 };
 
 SeedObject
