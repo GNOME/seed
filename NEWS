@@ -1,3 +1,20 @@
+== Seed 2.29.5.2, "Third Stage" (2009.01.07) ==
+
+* Move tests to automake-style 'make check', away from the previous,
+  Python-based 'make test' tool; all tests are now assertion-based, instead of
+  the previous output-based style
+
+* Fix various segfaults on Mac OS X (and possibly *BSD) related to 64-bit type
+  safety problems
+
+* Fix functionality of out arguments
+
+* Interpreter now returns non-zero status code if it exits with an exception
+
+== Seed 2.29.5.1, "Achtung Baby" (2009.01.01) ==
+
+* Fix "duplicate symbol" errors on non-Linux platforms
+
 == Seed 2.29.5, "Icky Thump" (2009.01.01) ==
 
 * Fix build on non-GNU platforms (primarily Mac OS X)
