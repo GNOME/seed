@@ -1065,7 +1065,8 @@ seed_static_function os_funcs[] = {
   {"ttyname", seed_os_ttyname, 0},
   {"tcgetpgrp", seed_os_tcgetpgrp, 0},
   {"tcsetpgrp", seed_os_tcsetpgrp, 0},
-  {"access", seed_os_access, 0}
+  {"access", seed_os_access, 0},
+  {0, 0, 0}
 };
 
 #define OS_DEFINE_ENUM(name, value) \

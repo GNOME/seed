@@ -183,7 +183,8 @@ SeedValue seed_pipe_add_watch(SeedContext ctx,
 seed_static_function pipe_funcs[] = {
   {"read", seed_pipe_read, 0},
   {"write", seed_pipe_write, 0},
-  {"add_watch", seed_pipe_add_watch, 0}
+  {"add_watch", seed_pipe_add_watch, 0},
+  {0, 0, 0}
 };
 
 SeedObject

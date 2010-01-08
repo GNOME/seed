@@ -182,10 +182,8 @@ SeedValue seed_sqlite_close(SeedContext ctx,
 }
 
 seed_static_function database_funcs[] = {
-  {"close", seed_sqlite_close, 0}
-  ,
-  {"exec", seed_sqlite_exec, 0}
-  ,
+  {"close", seed_sqlite_close, 0},
+  {"exec", seed_sqlite_exec, 0},
   {0, 0, 0}
 };
 

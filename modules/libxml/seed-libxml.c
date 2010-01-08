@@ -449,7 +449,8 @@ seed_xml_xpathobj_get_value (SeedContext ctx,
 
 
 seed_static_function doc_funcs[] = {
-  {"xpathNewContext", seed_xml_construct_xpath_context, 0}
+  {"xpathNewContext", seed_xml_construct_xpath_context, 0},
+  {0, 0, 0}
 };
 
 seed_static_value doc_values[] = {
