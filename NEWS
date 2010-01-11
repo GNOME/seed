@@ -1,4 +1,13 @@
-== Seed 2.29.5.2, "Third Stage" (2009.01.07) ==
+== Seed 2.29.5.3, "Twist and Shout" (2010.01.11) ==
+
+* Pass null structs through as "null" instead of empty seed_structs
+
+* Revert one of the 64-bit type safety commits from 2.29.5.2 until someone
+  can take a closer look at it; it broke enum typing on Linux
+
+* Fix potential segfault in various modules (missing null sentinels)
+
+== Seed 2.29.5.2, "Third Stage" (2010.01.07) ==
 
 * Move tests to automake-style 'make check', away from the previous,
   Python-based 'make test' tool; all tests are now assertion-based, instead of
@@ -11,7 +20,7 @@
 
 * Interpreter now returns non-zero status code if it exits with an exception
 
-== Seed 2.29.5.1, "Achtung Baby" (2009.01.01) ==
+== Seed 2.29.5.1, "Achtung Baby" (2010.01.01) ==
 
 * Fix "duplicate symbol" errors on non-Linux platforms
 
