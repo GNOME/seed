@@ -3,6 +3,7 @@ EXTRA_DIST = \
 	struct-set-member.js \
 	struct-constructor.js \
 	struct-nested-set.js \
+	struct-null.js \
 	struct-union-enumerate.js \
 	struct-enumerate.js \
 	struct-offsets.js \
@@ -13,6 +14,7 @@ TESTS = \
 	struct-set-member.js \
 	struct-constructor.js \
 	struct-nested-set.js \
+	struct-null.js \
 	struct-union-enumerate.js \
 	struct-enumerate.js \
 	struct-offsets.js
