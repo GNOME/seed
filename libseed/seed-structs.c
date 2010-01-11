@@ -627,6 +627,12 @@ JSObjectRef
 seed_make_struct (JSContextRef ctx, gpointer strukt, GIBaseInfo * info)
 {
   JSObjectRef object, proto;
+
+  if (strukt == NULL)
+    {
+      return JSValueMakeNull (ctx);
+    }
+
   seed_struct_privates *priv = g_slice_alloc (sizeof (seed_struct_privates));
 
   priv->info = info ? g_base_info_ref (info) : 0;
