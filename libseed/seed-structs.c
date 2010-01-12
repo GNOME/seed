@@ -541,6 +541,12 @@ JSObjectRef
 seed_make_union (JSContextRef ctx, gpointer younion, GIBaseInfo * info)
 {
   JSObjectRef object;
+
+  if (younion == NULL)
+    {
+      return JSValueMakeNull (ctx);
+    }
+
   seed_struct_privates *priv = g_slice_alloc (sizeof (seed_struct_privates));
 
   priv->pointer = younion;
@@ -659,7 +665,7 @@ seed_structs_init (void)
   seed_pointer_class = JSClassCreate (&seed_pointer_def);
   seed_struct_def.parentClass = seed_pointer_class;
   seed_struct_class = JSClassCreate (&seed_struct_def);
-  seed_union_def.parentClass = seed_union_class;
+  seed_union_def.parentClass = seed_pointer_class;
   seed_union_class = JSClassCreate (&seed_union_def);
   seed_boxed_def.parentClass = seed_struct_class;
   seed_boxed_class = JSClassCreate (&seed_boxed_def);

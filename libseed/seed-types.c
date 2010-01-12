@@ -542,8 +542,8 @@ seed_gi_make_argument (JSContextRef ctx,
 
 	arg->v_pointer = NULL;
 
-	if (interface_type == GI_INFO_TYPE_OBJECT
-	    || interface_type == GI_INFO_TYPE_INTERFACE)
+	if (interface_type == GI_INFO_TYPE_OBJECT ||
+	    interface_type == GI_INFO_TYPE_INTERFACE)
 	  {
 	    gobject = seed_value_to_object (ctx, value, exception);
 	    required_gtype =
@@ -584,9 +584,12 @@ seed_gi_make_argument (JSContextRef ctx,
 	    g_base_info_unref (interface);
 	    break;
 	  }
-	else if (interface_type == GI_INFO_TYPE_STRUCT)
+	else if (interface_type == GI_INFO_TYPE_STRUCT ||
+		 interface_type == GI_INFO_TYPE_UNION)
 	  {
 	    if (JSValueIsObjectOfClass (ctx, value, seed_struct_class))
+	      arg->v_pointer = seed_pointer_get_pointer (ctx, value);
+	    else if (JSValueIsObjectOfClass (ctx, value, seed_union_class))
 	      arg->v_pointer = seed_pointer_get_pointer (ctx, value);
 	    else
 	      {
