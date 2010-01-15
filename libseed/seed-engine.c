@@ -161,6 +161,21 @@ seed_gobject_constructor_invoked (JSContextRef ctx,
 
   oclass = g_type_class_ref (type);
 
+  // Check for an exception in class init (which may have just been called
+  // by g_type_class_ref, if this is the first construction of this class).
+  // Bubble up the exception, and clear it from the class's qdata so that
+  // this doesn't happen on subsequent construction.
+  GQuark class_init_exception_q =
+	g_quark_from_static_string("type-class-init-exception");
+  JSValueRef class_init_exception =
+	(JSValueRef)g_type_get_qdata(type, class_init_exception_q);
+  if(class_init_exception)
+    {
+      *exception = class_init_exception;
+      g_type_set_qdata(type, class_init_exception_q, NULL);
+      return (JSObjectRef) JSValueMakeNull (ctx);
+    }
+
   if (argumentCount > 1)
     {
       seed_make_exception (ctx, exception, "ArgumentError",

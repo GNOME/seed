@@ -782,9 +782,10 @@ seed_gtype_class_init (gpointer g_class, gpointer class_data)
   JSContextRef ctx;
   JSValueRef jsargs[2];
   GType type;
-  gchar *mes;
   JSValueRef exception = NULL;
   int initial_prop_count = 1;
+  GQuark class_init_exception_q = 
+  	g_quark_from_static_string("type-class-init-exception");
 
   priv = (SeedGClassPrivates *) class_data;
 
@@ -807,9 +808,7 @@ seed_gtype_class_init (gpointer g_class, gpointer class_data)
       JSGlobalContextRelease ((JSGlobalContextRef) ctx);
       if (exception)
 	{
-	  mes = seed_exception_to_string (ctx, exception);
-	  g_warning ("Exception in class init closure. %s \n", mes);
-	  g_free (mes);
+	  g_type_set_qdata(type, class_init_exception_q, (gpointer)exception);
 	}
       return;
     }
@@ -839,9 +838,7 @@ seed_gtype_class_init (gpointer g_class, gpointer class_data)
   JSObjectCallAsFunction (ctx, priv->func, 0, 2, jsargs, &exception);
   if (exception)
     {
-      mes = seed_exception_to_string (ctx, exception);
-      g_warning ("Exception in class init closure. %s \n", mes);
-      g_free (mes);
+      g_type_set_qdata(type, class_init_exception_q, (gpointer)exception);
     }
 
   JSGlobalContextRelease ((JSGlobalContextRef) ctx);
