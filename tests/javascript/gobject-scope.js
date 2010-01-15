@@ -1,4 +1,4 @@
-#!../../src/seed
+#!/usr/bin/env seed
 
 // TODO: this test doesn't actually test anything...
 

@@ -1,3 +1,3 @@
-#!../../src/seed
+#!/usr/bin/env seed
 
 Seed.include("json.js");
