@@ -26,12 +26,16 @@
 #include "config.h"
 
 extern gboolean seed_interpreter_arg_print_version;
+extern gchar *seed_interpreter_arg_exec_string;
 
 static GOptionEntry seed_args[] = {
   {"version", 0, 0, G_OPTION_ARG_NONE, &seed_interpreter_arg_print_version,
    "Print interpreter version", 0},
+  {"execute", 'e', 0, G_OPTION_ARG_STRING, &seed_interpreter_arg_exec_string,
+   "program passed in as string", "expression"},
   {NULL,},
 };
+
 
 static GOptionGroup *
 seed_interpreter_get_option_group (void)
@@ -62,7 +66,7 @@ seed_interpreter_parse_args (int *argc, char ***argv)
 
   interpreter_group = seed_interpreter_get_option_group ();
   g_option_context_set_main_group (option_context, interpreter_group);
-  g_option_context_add_group (option_context, seed_get_option_group());
+  g_option_context_add_group (option_context, seed_get_option_group ());
 
   if (!g_option_context_parse (option_context, argc, argv, &error))
     {

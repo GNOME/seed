@@ -29,6 +29,7 @@
 
 SeedEngine *eng;
 gboolean seed_interpreter_arg_print_version;
+gchar *seed_interpreter_arg_exec_string;
 
 gboolean seed_interpreter_parse_args (int *argc, char ***argv);
 
@@ -101,25 +102,60 @@ seed_exec (gchar * filename)
   g_free (script);
 }
 
+static void
+seed_exec_str ()
+{
+  SeedException e = NULL;
+  SeedValue val;
+  gchar *val_str;
+
+  val =
+    seed_simple_evaluate (eng->context, seed_interpreter_arg_exec_string, &e);
+
+  if (e)
+    {
+      g_critical ("%s", seed_exception_to_string (eng->context, e));
+      exit (EXIT_FAILURE);
+    }
+  else
+    {
+      val_str = seed_value_to_string (eng->context, val, &e);
+      if (e)
+	{
+	  g_critical ("%s", seed_exception_to_string (eng->context, e));
+	  exit (EXIT_FAILURE);
+	}
+
+      g_print ("%s\n", val_str);
+      g_free (seed_interpreter_arg_exec_string);
+      g_free (val_str);
+
+      exit (EXIT_SUCCESS);
+    }
+
+}
+
 gint
 main (gint argc, gchar ** argv)
 {
   g_set_prgname ("seed");
-  g_thread_init (0);
-  
-  seed_interpreter_parse_args(&argc, &argv);
-  
+  g_thread_init (NULL);
+
+  seed_interpreter_parse_args (&argc, &argv);
+
   if (seed_interpreter_arg_print_version)
     {
-      g_print("%s\n", "Seed " VERSION);
-      exit(EXIT_SUCCESS);
+      g_print ("%s\n", "Seed " VERSION);
+      exit (EXIT_SUCCESS);
     }
 
   eng = seed_init (&argc, &argv);
 
   seed_engine_set_search_path (eng, DEFAULT_PATH);
 
-  if (argc == 1)
+  if (seed_interpreter_arg_exec_string)
+    seed_exec_str ();
+  else if (argc == 1)
     seed_repl ();
   else
     seed_exec (argv[1]);
