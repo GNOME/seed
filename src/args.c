@@ -32,7 +32,7 @@ static GOptionEntry seed_args[] = {
   {"version", 0, 0, G_OPTION_ARG_NONE, &seed_interpreter_arg_print_version,
    "Print interpreter version", 0},
   {"execute", 'e', 0, G_OPTION_ARG_STRING, &seed_interpreter_arg_exec_string,
-   "program passed in as string", "expression"},
+   "Pass program in as string", "expression"},
   {NULL,},
 };
 
