@@ -215,6 +215,11 @@ complete_call (SeedContext ctx,
     }
 
   dbus_message_iter_init (reply, &arg_iter);
+  if (!dbus_message_iter_has_next(&arg_iter)) {
+	//empty reply
+	return FALSE;
+  }
+
   if (!seed_js_values_from_dbus (ctx, &arg_iter, &ret_values, exception))
     {
       SEED_NOTE(MODULE, "Failed to marshal dbus call reply back to JS");
@@ -281,7 +286,8 @@ pending_notify (DBusPendingCall * pending, void *user_data)
   /* argv[0] will be the return value if any, argv[1] we fill with exception if any */
   argv[0] = seed_make_null (ctx);
   argv[1] = seed_make_null (ctx);
-  complete_call (ctx, &argv[0], reply, &derror, &exception);
+  if (!complete_call (ctx, &argv[0], reply, &derror, &exception))
+	goto noreply;
   g_assert (!dbus_error_is_set (&derror));	/* not supposed to be left set by complete_call() */
 
   if (reply)
@@ -294,6 +300,13 @@ pending_notify (DBusPendingCall * pending, void *user_data)
     seed_closure_warn_exception(closure, ctx, exception);
   seed_context_unref (ctx);
   // TODO: Do something with exception
+
+  return;
+
+noreply:
+  if (reply)
+    dbus_message_unref (reply);
+  seed_context_unref (ctx);
 }
 
 static void
