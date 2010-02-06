@@ -125,9 +125,14 @@ seed_struct_constructor_invoked (JSContextRef ctx,
     {
       if (!JSValueIsObject (ctx, arguments[0]))
 	{
-	  seed_make_exception (ctx, exception, "ArgumentError",
-			       "Constructor expects object as argument");
-	  return (JSObjectRef) JSValueMakeNull (ctx);
+
+	  // new GObject.GValue()  can accept anything as a argument...
+          GType gtype = g_registered_type_info_get_g_type ((GIRegisteredTypeInfo *) info);
+          if (!g_type_is_a (gtype, G_TYPE_VALUE)) {
+            seed_make_exception (ctx, exception, "ArgumentError",
+                                 "Constructor expects object as argument");
+            return (JSObjectRef) JSValueMakeNull (ctx);
+          }
 	}
       parameters = (JSObjectRef) arguments[0];
     }

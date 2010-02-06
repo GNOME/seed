@@ -311,6 +311,15 @@ seed_struct_get_property (JSContextRef context,
 	     "with name %s \n",
 	     g_base_info_get_name (priv->info), cproperty_name);
 
+  // for a gvalue, it has a special property 'value' (read-only)
+  GType gtype = g_registered_type_info_get_g_type ((GIRegisteredTypeInfo *) priv->info);
+
+  if (g_type_is_a (gtype, G_TYPE_VALUE) && !g_strcmp0 (cproperty_name, "value")) 
+    {
+      return seed_value_from_gvalue ( context, ( GValue *) priv->pointer,  exception);
+ 
+    }
+
   field =
     seed_struct_find_field ((GIStructInfo *) priv->info, cproperty_name);
 
@@ -696,6 +705,21 @@ seed_construct_struct_type_with_parameters (JSContextRef ctx,
 
   if (type == GI_INFO_TYPE_STRUCT)
     {
+      GType gtype = g_registered_type_info_get_g_type ((GIRegisteredTypeInfo *) info);
+      if (g_type_is_a (gtype, G_TYPE_VALUE)) 
+        {
+          GValue *gval = g_slice_alloc0 (sizeof (GValue));
+          if (!parameters) 
+            {
+              seed_make_exception (ctx, exception, "ArgumentError",  "Missing Type in GValue constructor");
+              return (JSObjectRef) JSValueMakeNull (ctx);
+            }
+          SEED_NOTE (CONSTRUCTION, "Created a GValue  struct");
+          seed_gvalue_from_seed_value (ctx,   parameters , 0,  gval, exception);
+          ret = seed_make_struct (ctx, (gpointer)gval, info);
+          return ret;
+        }
+
       size = g_struct_info_get_size ((GIStructInfo *) info);
     }
   else
