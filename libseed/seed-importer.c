@@ -723,7 +723,7 @@ seed_importer_search (JSContextRef ctx, gchar * prop, JSValueRef * exception)
 
   GDir *dir;
   GError *e;
-  gchar *mentry;
+  gchar *mentry, *file_path, *file_basename, *file_dirname;
   GSList *path, *walk;
   JSObjectRef ret;
   gchar *prop_as_lib =
@@ -746,6 +746,22 @@ seed_importer_search (JSContextRef ctx, gchar * prop, JSValueRef * exception)
 	  walk = walk->next;
 	  continue;
 	}
+      // try as as string first - eg. imports['xxxx.js']
+      file_path = g_build_filename ((gchar *) walk->data, prop, NULL);
+      // we could check first here if file already has been loaded
+      // skipping another state (see importer above..)
+      
+      if (g_file_test (file_path, G_FILE_TEST_IS_REGULAR)) 
+        {
+          file_dirname = g_path_get_dirname(file_path);
+          file_basename = g_path_get_basename(file_path);
+          ret = seed_importer_handle_file ( ctx,  file_dirname, file_basename, exception);
+          g_free (file_path);
+          g_free (file_basename);
+          g_free (file_dirname);
+          return ret;
+        }
+      g_free (file_path);
       while ((entry = g_dir_read_name (dir)))
 	{
 	  mentry = g_strdup (entry);
