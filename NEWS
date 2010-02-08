@@ -1,3 +1,12 @@
+== Seed 2.29.90, "Fort Nightly" (2010.02.08) ==
+
+* To avoid potential filename collisions, the imports system now supports:
+  imports['somedir/somefile.js'] (Alan Knowles)
+
+* Fix crash involving gtk_tree_model_get_value (Alan Knowles)
+
+* Fix subtle crash in DBus bindings (Rob Taylor)
+
 == Seed 2.29.5.3, "Twist and Shout" (2010.01.11) ==
 
 * Pass null structs through as "null" instead of empty seed_structs
