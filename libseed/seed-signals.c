@@ -1,4 +1,5 @@
 /* -*- mode: C; indent-tabs-mode: t; tab-width: 8; c-basic-offset: 2; -*- */
+/* vim: set sw=2 ts=2 sts=2 et: */
 
 /*
  * This file is part of Seed, the GObject Introspection<->Javascript bindings.
@@ -47,8 +48,13 @@ seed_gobject_signal_connect (JSContextRef ctx,
   GSignalQuery query;
   GClosure *closure;
 
-  g_signal_query (g_signal_lookup (signal_name, G_OBJECT_TYPE (on_obj)),
-		  &query);
+  if (g_str_has_prefix (signal_name, "notify::"))
+    g_signal_query (g_signal_lookup ("notify", G_OBJECT_TYPE (on_obj)),
+                    &query);
+  else
+    g_signal_query (g_signal_lookup (signal_name, G_OBJECT_TYPE (on_obj)),
+                    &query);
+
 #ifdef SEED_ENABLE_DEBUG
   {
     guint function_arity = seed_value_to_uint (ctx,
@@ -402,8 +408,12 @@ seed_signal_holder_get_property (JSContextRef ctx,
       return NULL;
     }
 
-  if (!g_signal_lookup (signal_name, G_OBJECT_TYPE (gobj)))
+  if (!g_str_has_prefix (signal_name, "notify::") &&
+      !g_signal_lookup (signal_name, G_OBJECT_TYPE (gobj)))
     {
+      seed_make_exception (ctx, exception, "InvalidSignalName",
+			   "Failed to connect to %s. "
+			   "Invalid signal name.", signal_name);
       g_free (signal_name);
       return NULL;
     }
