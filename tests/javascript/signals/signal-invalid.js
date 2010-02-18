@@ -6,4 +6,13 @@ Gtk.init(Seed.argv)
 
 w = new Gtk.Window()
 
-testsuite.assert(w.signal.notasignal == undefined)
+try
+{
+    a = w.signal.notasignal;
+    testsuite.unreachable();
+}
+catch(e)
+{
+    testsuite.assert(e.message == "Failed to connect to notasignal. Invalid signal name.");
+}
+
