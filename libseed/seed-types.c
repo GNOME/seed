@@ -466,6 +466,10 @@ seed_gi_make_argument (JSContextRef ctx,
   switch (gi_tag)
     {
     case GI_TYPE_TAG_VOID:
+      // things like gio.outputstream.write use void pointers
+      if (g_type_info_is_pointer (type_info))
+          arg->v_string = seed_value_to_string (ctx, value, exception);
+
       break;
     case GI_TYPE_TAG_BOOLEAN:
       arg->v_boolean = seed_value_to_boolean (ctx, value, exception);
