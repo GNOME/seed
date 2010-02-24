@@ -507,7 +507,7 @@ seed_gobject_method_invoked (JSContextRef ctx,
 		!g_arg_info_may_be_null (arg_info) 
              )
             {
-	      seed_make_exception (ctx, exception,
+              seed_make_exception (ctx, exception,
 				   "ArgumentError",
 				   " argument %d must not be null for"
 				   " function: %s. \n",
