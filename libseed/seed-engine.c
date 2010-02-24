@@ -502,7 +502,22 @@ seed_gobject_method_invoked (JSContextRef ctx,
       else if (dir == GI_DIRECTION_IN || dir == GI_DIRECTION_INOUT)
 	{
 
-	  if (!seed_gi_make_argument (ctx, arguments[i], type_info,
+	  if (  
+		( !arguments[i] || JSValueIsNull (ctx, arguments[i]) ) &&
+		!g_arg_info_may_be_null (arg_info) 
+             )
+            {
+	      seed_make_exception (ctx, exception,
+				   "ArgumentError",
+				   " argument %d must not be null for"
+				   " function: %s. \n",
+				   i + 1,
+				   g_base_info_get_name ((GIBaseInfo *)
+							 info));
+	      goto arg_error;
+
+          }
+          if (!seed_gi_make_argument (ctx, arguments[i], type_info,
 				      &in_args[n_in_args++], exception))
 	    {
 	      seed_make_exception (ctx, exception,
@@ -512,7 +527,7 @@ seed_gobject_method_invoked (JSContextRef ctx,
 				   i + 1,
 				   g_base_info_get_name ((GIBaseInfo *)
 							 info));
-
+ arg_error:
 	      g_base_info_unref ((GIBaseInfo *) type_info);
 	      g_base_info_unref ((GIBaseInfo *) arg_info);
 	      g_free (in_args);
