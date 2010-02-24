@@ -291,7 +291,7 @@ seed_gi_make_jsarray (JSContextRef ctx,
       elements = g_alloca (sizeof (JSValueRef) * length);
 
       for (i = 0; i < length; ++i)
-          elements[i] = seed_value_from_int (ctx, ptr[i], exception);
+          elements[i] = seed_value_from_long (ctx, ptr[i], exception);
         
       return (JSValueRef) JSObjectMakeArray (ctx, length, elements, exception);
 
