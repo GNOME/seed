@@ -282,6 +282,21 @@ seed_gi_make_jsarray (JSContextRef ctx,
       ret = (JSValueRef) JSObjectMakeArray (ctx, length, elements, exception);
     }
 
+  if (element_type == GI_TYPE_TAG_GTYPE)
+    {
+      GType* ptr = (GType*)array;
+      length = 0;
+      while (ptr[length])  length++;
+    
+      elements = g_alloca (sizeof (JSValueRef) * length);
+
+      for (i = 0; i < length; ++i)
+          elements[i] = seed_value_from_int (ctx, ptr[i], exception);
+        
+      return (JSValueRef) JSObjectMakeArray (ctx, length, elements, exception);
+
+    }
+
   return ret;
 }
 
