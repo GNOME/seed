@@ -461,7 +461,9 @@ seed_gobject_method_invoked (JSContextRef ctx,
   GArgument *in_args;
   GArgument *out_args;
   GArgument *out_values;
-  guint n_args, n_in_args, n_out_args, i;
+  gint first_out = -1;
+  guint use_return_as_out = 0;
+  guint n_args, n_in_args, n_out_args, i; 
   guint in_args_pos, out_args_pos;
   GIArgInfo *arg_info;
   GITypeInfo *type_info;
@@ -489,15 +491,29 @@ seed_gobject_method_invoked (JSContextRef ctx,
 
   for (i = 0; (i < (n_args)); i++)
     {
-      SEED_NOTE (INVOCATION,
-		 "Converting arg: %d of function %s, exception is %p", i,
-		 g_base_info_get_name (info), exception);
+
       arg_info = g_callable_info_get_arg ((GICallableInfo *) info, i);
       dir = g_arg_info_get_direction (arg_info);
       type_info = g_arg_info_get_type (arg_info);
+
+      SEED_NOTE (INVOCATION,
+                "Converting arg: %s (%d) of function %s, exception is %p",  
+                 g_base_info_get_name ((GIBaseInfo *)arg_info),  i,
+                 g_base_info_get_name (info), exception);
+
+
+
       if (i + 1 > argumentCount)
-	{
-	  in_args[n_in_args++].v_pointer = 0;
+        {
+
+          if (dir == GI_DIRECTION_OUT)
+            {
+              GArgument *out_value = &out_values[n_out_args];
+              out_args[n_out_args++].v_pointer = out_value;
+            } 
+          else
+              in_args[n_in_args++].v_pointer = 0;   
+
 	}
       else if (dir == GI_DIRECTION_IN || dir == GI_DIRECTION_INOUT)
 	{
@@ -547,13 +563,15 @@ seed_gobject_method_invoked (JSContextRef ctx,
 	{
 	  GArgument *out_value = &out_values[n_out_args];
 	  out_args[n_out_args++].v_pointer = out_value;
+	  first_out = first_out > -1 ? first_out : i;
+
 	}
 
       g_base_info_unref ((GIBaseInfo *) type_info);
       g_base_info_unref ((GIBaseInfo *) arg_info);
     }
-  SEED_NOTE (INVOCATION, "Invoking method: %s with %d in arguments"
-	     " and %d out arguments",
+  SEED_NOTE (INVOCATION, "Invoking method: %s with %d 'in' arguments"
+	     " and %d 'out' arguments",
 	     g_base_info_get_name (info), n_in_args, n_out_args);
   if (g_function_info_invoke ((GIFunctionInfo *) info,
 			      in_args,
@@ -564,8 +582,23 @@ seed_gobject_method_invoked (JSContextRef ctx,
 
       type_info = g_callable_info_get_return_type ((GICallableInfo *) info);
       tag = g_type_info_get_tag (type_info);
-      if (tag == GI_TYPE_TAG_VOID)
-	retval_ref = JSValueMakeUndefined (ctx);
+
+      // might need to add g_type_info_is_pointer (type_info) check here..
+      
+      if (tag == GI_TYPE_TAG_VOID) 
+        {
+          // if we have no out args - returns undefined
+          // otherwise we return an object, and put the return values into that
+          // along with supporting the old object.value way
+          if (n_out_args < 1) 
+              retval_ref = JSValueMakeUndefined (ctx);
+          else 
+            {
+            
+             retval_ref = JSObjectMake (ctx, NULL, NULL);      
+             use_return_as_out = 1;
+            }
+        }
       else
 	{
 	  GIBaseInfo *interface;
@@ -624,7 +657,7 @@ seed_gobject_method_invoked (JSContextRef ctx,
       dir = g_arg_info_get_direction (arg_info);
       type_info = g_arg_info_get_type (arg_info);
 
-      if (dir == GI_DIRECTION_IN)
+      if (dir == GI_DIRECTION_IN || dir == GI_DIRECTION_INOUT) 
 	{
 	  seed_gi_release_in_arg (g_arg_info_get_ownership_transfer
 				  (arg_info), type_info,
@@ -636,15 +669,43 @@ seed_gobject_method_invoked (JSContextRef ctx,
 	  g_base_info_unref ((GIBaseInfo *) arg_info);
 	  continue;
 	}
+      
+      // we are now only dealing with out arguments.
       jsout_val = seed_gi_argument_make_js (ctx, &out_values[out_args_pos],
 					    type_info, exception);
       out_args_pos++;
-      if (!JSValueIsNull (ctx, arguments[i]) &&
-	  JSValueIsObject (ctx, arguments[i]))
-	{
-	  seed_object_set_property (ctx, (JSObjectRef) arguments[i],
-				    "value", jsout_val);
-	}
+
+
+
+      // old ? depreciated ? way to handle out args -> set 'value' on object that was send through.
+       
+      if ( (i < argumentCount) && 
+          !JSValueIsNull (ctx, arguments[i]) &&
+          JSValueIsObject (ctx, arguments[i]))
+        {
+          seed_object_set_property (ctx, (JSObjectRef) arguments[i],
+                                   "value", jsout_val);
+        }
+
+
+      // if we add it to the return argument and/or the first out arguement
+
+      if (use_return_as_out) 
+        {
+           seed_object_set_property (ctx, (JSObjectRef) retval_ref,
+                 g_base_info_get_name((GIBaseInfo*) arg_info) , jsout_val);
+        }
+       
+
+      if ( (first_out > -1) &&  
+          !JSValueIsNull (ctx, arguments[first_out]) &&
+          JSValueIsObject (ctx, arguments[first_out]) )
+       
+        {
+          seed_object_set_property (ctx, (JSObjectRef) arguments[first_out],
+                 g_base_info_get_name((GIBaseInfo*) arg_info) , jsout_val);
+        }
+
 
       g_base_info_unref ((GIBaseInfo *) arg_info);
       g_base_info_unref ((GIBaseInfo *) type_info);
