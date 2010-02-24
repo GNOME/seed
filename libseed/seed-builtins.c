@@ -327,14 +327,30 @@ seed_introspect (JSContextRef ctx,
   for (i = 0; i < nargs; ++i)
     {
       argument = JSObjectMake (ctx, NULL, NULL);
+      GIArgInfo* arg_info = g_callable_info_get_arg (info, i);
+      const gchar *arg_type =	seed_g_type_name_to_string (
+			g_arg_info_get_type(arg_info));
+      const gchar *arg_name =	g_base_info_get_name((GIBaseInfo*) arg_info);
+      GIDirection dir = g_arg_info_get_direction (arg_info);
 
-      const gchar *arg_name =
-	seed_g_type_name_to_string (g_arg_info_get_type
-				    (g_callable_info_get_arg (info, i)));
-
+     
       seed_object_set_property (ctx, argument, "type",
 				seed_value_from_string (ctx,
+							arg_type, exception));
+      seed_object_set_property (ctx, argument, "name",
+				seed_value_from_string (ctx,
 							arg_name, exception));
+
+      seed_object_set_property (ctx, argument, "allow_none",
+			seed_value_from_boolean (ctx,
+				g_arg_info_may_be_null (arg_info) ? 1 : 0, exception));
+
+
+      seed_object_set_property (ctx, argument, "direction",
+				seed_value_from_string (ctx,
+					dir == GI_DIRECTION_OUT ? "out" :
+						(dir == GI_DIRECTION_IN ? "in" : "inout")
+					, exception));
 
       JSObjectSetPropertyAtIndex (ctx, args_obj, i, argument, NULL);
     }
