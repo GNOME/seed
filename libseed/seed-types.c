@@ -923,6 +923,12 @@ seed_gi_argument_make_js (JSContextRef ctx,
 	  }
 	return ret;
       }
+    case GI_TYPE_TAG_ERROR:
+      {
+        JSValueRef ret;
+        seed_make_exception_from_gerror (ctx, &ret, (GError*) arg->v_pointer);
+        return ret;
+      }
 
     default:
       return FALSE;
