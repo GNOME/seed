@@ -518,21 +518,36 @@ seed_gobject_method_invoked (JSContextRef ctx,
       else if (dir == GI_DIRECTION_IN || dir == GI_DIRECTION_INOUT)
 	{
 
-	  if (  
-		( !arguments[i] || JSValueIsNull (ctx, arguments[i]) ) &&
-		!g_arg_info_may_be_null (arg_info) 
-             )
+	  if (  !g_arg_info_may_be_null (arg_info) ) 
             {
-              seed_make_exception (ctx, exception,
+  	      gboolean is_null = ( !arguments[i] || JSValueIsNull (ctx, arguments[i]) );
+
+              if (!is_null && (g_type_info_get_tag (type_info) == GI_TYPE_TAG_INTERFACE)) 
+                {
+                  // see if the pointer is null for struct/unions.
+                  GIBaseInfo *interface = g_type_info_get_interface (type_info);
+                  GIInfoType interface_type = g_base_info_get_type (interface);
+
+                  if ((interface_type == GI_INFO_TYPE_STRUCT || interface_type == GI_INFO_TYPE_UNION) &&
+                             seed_pointer_get_pointer (ctx, arguments[i]) == 0) 
+                      is_null = TRUE;
+                  
+                  g_base_info_unref (interface);
+                }
+
+              if (is_null) 
+                {
+                  seed_make_exception (ctx, exception,
 				   "ArgumentError",
 				   " argument %d must not be null for"
 				   " function: %s. \n",
 				   i + 1,
 				   g_base_info_get_name ((GIBaseInfo *)
 							 info));
-	      goto arg_error;
+                  goto arg_error;
+                }
+            }
 
-          }
           if (!seed_gi_make_argument (ctx, arguments[i], type_info,
 				      &in_args[n_in_args++], exception))
 	    {
