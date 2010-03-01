@@ -537,14 +537,16 @@ seed_gobject_method_invoked (JSContextRef ctx,
 
               if (is_null) 
                 {
-                  seed_make_exception (ctx, exception,
-				   "ArgumentError",
+                  // RE-INSTATE THIS CODE LATER.. - when gtk etc. has be release with fixes
+		  //seed_make_exception (ctx, exception,
+		  //   "ArgumentError",
+                  g_warning(      "ArgumentError - probably due to incorrect gir file (which may be fixed upstream)"
 				   " argument %d must not be null for"
 				   " function: %s. \n",
 				   i + 1,
 				   g_base_info_get_name ((GIBaseInfo *)
 							 info));
-                  goto arg_error;
+                  //goto arg_error;
                 }
             }
 
@@ -558,7 +560,9 @@ seed_gobject_method_invoked (JSContextRef ctx,
 				   i + 1,
 				   g_base_info_get_name ((GIBaseInfo *)
 							 info));
- arg_error:
+
+// FIXME - SEE NOTE ABOVE ABOUT gtk allow_null bugs
+// arg_error:
 	      g_base_info_unref ((GIBaseInfo *) type_info);
 	      g_base_info_unref ((GIBaseInfo *) arg_info);
 	      g_free (in_args);
