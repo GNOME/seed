@@ -674,7 +674,7 @@ seed_importer_handle_file (JSContextRef ctx,
   g_free (contents);
 
   file_contents = JSStringCreateWithUTF8CString (walk);
-  file_name = JSStringCreateWithUTF8CString (file);
+  file_name = JSStringCreateWithUTF8CString (canonical);
 
   nctx = JSGlobalContextCreateInGroup (context_group, 0);
   seed_prepare_global_context (nctx);
