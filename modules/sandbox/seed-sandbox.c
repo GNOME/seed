@@ -87,6 +87,25 @@ seed_sandbox_context_add_globals (SeedContext ctx,
   return seed_make_null (ctx);
 }
 
+static SeedValue
+seed_sandbox_context_get_global_object (SeedContext ctx,
+				  SeedObject function,
+				  SeedObject this_object,
+				  size_t argument_count,
+				  const SeedValue arguments[],
+				  SeedException * exception)
+{
+  SeedContext c = seed_object_get_private (this_object);
+  if (!c)
+    {
+      seed_make_exception (ctx, exception,
+			   "ArgumentError", "Context is destroyed");
+      return seed_make_undefined (ctx);
+    }
+   
+
+   return seed_context_get_global_object  (c);
+}
 
 static SeedValue
 seed_sandbox_context_destroy (SeedContext ctx,
@@ -107,6 +126,7 @@ seed_static_function context_funcs[] = {
   {"eval", seed_context_eval, 0},
   {"add_globals", seed_sandbox_context_add_globals, 0},
   {"destroy", seed_sandbox_context_destroy, 0},
+  {"get_global_object", seed_sandbox_context_get_global_object },
   {NULL, NULL, 0}
 };
 
