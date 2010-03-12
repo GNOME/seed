@@ -1448,24 +1448,10 @@ seed_engine_destroy (SeedEngine *eng)
   g_free (eng);
 }
 
-/**
- * seed_init_with_context_group:
- * @argc: A reference to the number of arguments remaining to parse.
- * @argv: A reference to an array of string arguments remaining to parse.
- * @group: A #SeedContextGroup within which to create the initial context.
- *
- * Initializes a new #SeedEngine. This involves initializing GLib, creating
- * an initial context (in #group) with all of the default globals, and
- * initializing various internal parts of Seed.
- *
- * This function should only be called once within a single Seed application.
- *
- * Return value: The newly created and initialized #SeedEngine.
- *
- */
+
 SeedEngine *
-seed_init_with_context_group (gint * argc,
-			      gchar *** argv, JSContextGroupRef group)
+seed_init_with_context_and_group (gint * argc,
+			      gchar *** argv, JSGlobalContextRef context, JSContextGroupRef group)
 {
 
   g_type_init ();
@@ -1491,7 +1477,7 @@ seed_init_with_context_group (gint * argc,
 
   context_group = group;
 
-  eng->context = JSGlobalContextCreateInGroup (context_group, NULL);
+  eng->context = context;
   eng->global = JSContextGetGlobalObject (eng->context);
   eng->group = context_group;
   eng->search_path = NULL;
@@ -1548,6 +1534,30 @@ seed_init_with_context_group (gint * argc,
   return eng;
 }
 
+
+
+/**
+ * seed_init_with_context_group:
+ * @argc: A reference to the number of arguments remaining to parse.
+ * @argv: A reference to an array of string arguments remaining to parse.
+ * @group: A #SeedContextGroup within which to create the initial context.
+ *
+ * Initializes a new #SeedEngine. This involves initializing GLib, creating
+ * an initial context (in #group) with all of the default globals, and
+ * initializing various internal parts of Seed.
+ *
+ * This function should only be called once within a single Seed application.
+ *
+ * Return value: The newly created and initialized #SeedEngine.
+ *
+ */
+SeedEngine *
+seed_init_with_context_group (gint * argc,
+			      gchar *** argv, JSContextGroupRef group)
+{
+  return seed_init_with_context_and_group (argc, argv, JSGlobalContextCreateInGroup (group, NULL), group);
+}
+
 /**
  * seed_init:
  * @argc: A reference to the number of arguments remaining to parse.
@@ -1570,4 +1580,14 @@ seed_init (gint * argc, gchar *** argv)
 
   return seed_init_with_context_group (argc, argv, context_group);
 }
+
+SeedEngine *
+seed_init_with_context (gint * argc, gchar *** argv, JSGlobalContextRef context)
+{
+  context_group = JSContextGroupCreate ();
+  pthread_key_create(&seed_next_gobject_wrapper_key, NULL);
+
+  return seed_init_with_context_and_group (argc, argv, context, context_group);
+}
+
 
