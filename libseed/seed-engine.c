@@ -537,13 +537,18 @@ seed_gobject_method_invoked (JSContextRef ctx,
 
               if (is_null) 
                 {
+                  GIBaseInfo *ctr = g_base_info_get_container((GIBaseInfo *) info);
+                  // note - ctr does not need unref'ing (see ginfo.c source for why)
+
                   // RE-INSTATE THIS CODE LATER.. - when gtk etc. has be release with fixes
 		  //seed_make_exception (ctx, exception,
 		  //   "ArgumentError",
                   g_warning(      "ArgumentError - probably due to incorrect gir file (which may be fixed upstream)"
 				   " argument %d must not be null for"
-				   " function: %s. \n",
+				   " function: %s%s%s \n",
 				   i + 1,
+				   ctr ? g_base_info_get_name ((GIBaseInfo *) ctr) : "",
+				   ctr ? "." : "",
 				   g_base_info_get_name ((GIBaseInfo *)
 							 info));
                   //goto arg_error;
