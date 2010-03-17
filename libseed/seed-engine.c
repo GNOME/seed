@@ -1453,7 +1453,23 @@ seed_engine_destroy (SeedEngine *eng)
   g_free (eng);
 }
 
-
+/**
+ * seed_init_with_context_and_group:
+ * @argc: A reference to the number of arguments remaining to parse.
+ * @argv: A reference to an array of string arguments remaining to parse.
+ * @context A reference to an existing JavascriptCore context
+ * @group: A #SeedContextGroup within which to create the initial context.
+ *
+ * Initializes a new #SeedEngine using an existing JavascriptCore context. 
+ * This involves initializing GLib, adding @instance to @group, adding the 
+ * default globals to the provided context, and initializing various internal
+ * parts of Seed.
+ *
+ * This function should only be called once within a single Seed application.
+ *
+ * Return value: The newly created and initialized #SeedEngine.
+ *
+ */
 SeedEngine *
 seed_init_with_context_and_group (gint * argc,
 			      gchar *** argv, JSGlobalContextRef context, JSContextGroupRef group)
@@ -1586,6 +1602,21 @@ seed_init (gint * argc, gchar *** argv)
   return seed_init_with_context_group (argc, argv, context_group);
 }
 
+/**
+ * seed_init_with_context:
+ * @argc: A reference to the number of arguments remaining to parse.
+ * @argv: A reference to an array of string arguments remaining to parse.
+ * @context A reference to an existing JavascriptCore context
+
+ * Initializes a new #SeedEngine using an existing JavascriptCore context. 
+ * This involves initializing GLib, adding the default globals to the provided
+ * @context and initializing various internal parts of Seed.
+ *
+ * This function should only be called once within a single Seed application.
+ *
+ * Return value: The newly created and initialized #SeedEngine.
+ *
+ */
 SeedEngine *
 seed_init_with_context (gint * argc, gchar *** argv, JSGlobalContextRef context)
 {
