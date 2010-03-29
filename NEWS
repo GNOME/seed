@@ -1,3 +1,14 @@
+== Seed 2.31.1, "The Black Album" (2010.03.29) ==
+
+* Support for returning arrays of GTypes
+
+* Support for GError types in various places
+
+* Rework out arguments - old style still works, also returns
+  dictionary with keys named after parameters
+
+* Support initialization using an existing JSGlobalContext
+
 == Seed 2.30.0, "Piano Man" (2010.03.29) ==
 
 * Second stable release!
