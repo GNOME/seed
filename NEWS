@@ -1,3 +1,13 @@
+== Seed 2.30.0, "Piano Man" (2010.03.29) ==
+
+* Second stable release!
+
+== Seed 2.29.91, "Greatest Hits" (2010.02.23) ==
+
+* Support void * arguments
+
+* Support connecting to notify:: signals everywhere
+
 == Seed 2.29.90, "Fort Nightly" (2010.02.08) ==
 
 * To avoid potential filename collisions, the imports system now supports:
