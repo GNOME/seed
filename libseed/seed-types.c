@@ -481,10 +481,28 @@ seed_gi_make_argument (JSContextRef ctx,
   switch (gi_tag)
     {
     case GI_TYPE_TAG_VOID:
-      // things like gio.outputstream.write use void pointers
+      
       if (g_type_info_is_pointer (type_info))
-          arg->v_string = seed_value_to_string (ctx, value, exception);
+      {
+        GObject *gobject;
+        if (JSValueIsString (ctx, value)) 
+          {
+          /* 
+            things like gio.outputstream.write use void pointers 
+            might need a few other types here.. 
+            not very well memory managed. - should be solved by bytearrays when
+            introspection implements it.  
+          */
+          arg->v_string = seed_value_to_string (ctx, value, exception); 
+          break;
+        }
+        /* gtk_statusicon_position_menu / gtk_menu_popup use the userdata for the Gobject */
+        gobject = seed_value_to_object (ctx, value, exception);
+        if (!gobject)
+          return FALSE;
 
+        arg->v_pointer = gobject;
+      }
       break;
     case GI_TYPE_TAG_BOOLEAN:
       arg->v_boolean = seed_value_to_boolean (ctx, value, exception);
