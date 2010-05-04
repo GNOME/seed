@@ -698,6 +698,7 @@ seed_construct_struct_type_with_parameters (JSContextRef ctx,
   gpointer object;
   GIInfoType type = g_base_info_get_type (info);
   JSObjectRef ret;
+  gboolean set_ret;
   gint nparams, i = 0;
   gsize length;
   GIFieldInfo *field = 0;
@@ -786,8 +787,13 @@ seed_construct_struct_type_with_parameters (JSContextRef ctx,
 
       seed_gi_make_argument (ctx, jsprop_value, field_type, &field_value,
 			     exception);
-      g_field_info_set_field (field, object, &field_value);
+      set_ret = g_field_info_set_field (field, object, &field_value);
 
+	  if (!set_ret) 
+		g_warning("Constructor setting property failed on struct of type: %s "
+			"with name %s \n",
+			g_base_info_get_name (info), prop_name);
+  
       g_base_info_unref ((GIBaseInfo *) field_type);
       g_base_info_unref ((GIBaseInfo *) field);
 
