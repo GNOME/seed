@@ -286,6 +286,11 @@ seed_struct_set_property (JSContextRef context,
   seed_gi_make_argument (context, value, field_type, &field_value, exception);
   ret = g_field_info_set_field (field, priv->pointer, &field_value);
 
+  if (!ret) 
+    g_warning("Setting property failed on struct of type: %s  "
+			"with name %s \n",
+			g_base_info_get_name (priv->info), cproperty_name);
+  
   g_base_info_unref ((GIBaseInfo *) field_type);
   g_base_info_unref ((GIBaseInfo *) field);
 
