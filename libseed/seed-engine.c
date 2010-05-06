@@ -524,12 +524,20 @@ seed_gobject_method_invoked (JSContextRef ctx,
 
               if (!is_null && (g_type_info_get_tag (type_info) == GI_TYPE_TAG_INTERFACE)) 
                 {
-                  // see if the pointer is null for struct/unions.
+                  /* see if the pointer is null for struct/unions. */
                   GIBaseInfo *interface = g_type_info_get_interface (type_info);
                   GIInfoType interface_type = g_base_info_get_type (interface);
+                  
+		  gboolean arg_is_object = JSValueIsObject (ctx, arguments[i]);
+		  gboolean is_struct_or_union = (
+		           interface_type == GI_INFO_TYPE_STRUCT ||
+		           interface_type == GI_INFO_TYPE_UNION
+		  );
 
-                  if ((interface_type == GI_INFO_TYPE_STRUCT || interface_type == GI_INFO_TYPE_UNION) &&
-                             seed_pointer_get_pointer (ctx, arguments[i]) == 0) 
+	          /* this test ignores non-objects being sent where interfaces are expected 
+	             hopefully our type manipluation code will pick that up. */
+                  if (is_struct_or_union && arg_is_object &&
+                        (seed_pointer_get_pointer (ctx, arguments[i]) == 0)) 
                       is_null = TRUE;
                   
                   g_base_info_unref (interface);
