@@ -196,7 +196,7 @@ if(!imports.searchPath || (imports.searchPath.length == 0))
 			__script_path__ = imports.os.realpath(__script_path__);
 		
 			if(__script_path__ && __script_path__ != "")
-				imports.searchPath.push(__script_path__);
+				imports.searchPath.unshift(__script_path__);
 		}
 		catch(e)
 		{
@@ -204,5 +204,5 @@ if(!imports.searchPath || (imports.searchPath.length == 0))
 		}
 	}
 
-	imports.searchPath.push(".");
+	imports.searchPath.unshift(".");
 }
