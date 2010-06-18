@@ -718,95 +718,79 @@ seed_importer_handle_file (JSContextRef ctx,
 }
 
 static JSObjectRef
-seed_importer_search (JSContextRef ctx, gchar * prop, JSValueRef * exception)
+seed_importer_search_dirs (JSContextRef ctx, GSList *path, gchar *prop, JSValueRef *exception)
 {
+    GSList *walk;
+    JSObjectRef ret, global;
+    JSValueRef script_path_prop;
+    gchar *prop_as_lib, *prop_as_js, *script_path;
 
-  GDir *dir;
-  GError *e;
-  gchar *mentry, *file_path, *file_basename, *file_dirname;
-  GSList *path, *walk;
-  JSObjectRef ret;
-  gchar *prop_as_lib =
-    g_strconcat ("libseed_", prop, ".", G_MODULE_SUFFIX, NULL);
-  gsize i, mentrylen;
+    prop_as_lib = g_strconcat ("libseed_", prop, ".", G_MODULE_SUFFIX, NULL);
+    prop_as_js = g_strconcat (prop, ".js", NULL);
 
-  path = seed_importer_get_search_path (ctx, exception);
+    // get the current script_path      
+    global = JSContextGetGlobalObject (ctx);
+    script_path_prop = seed_object_get_property (ctx, global, "__script_path__");
+    if (script_path_prop==NULL || JSValueIsUndefined (ctx, script_path_prop))
+        script_path = NULL;
+    else
+        script_path = seed_value_to_string (ctx, script_path_prop, exception);
 
-  walk = path;
-  while (walk)
-    {
-      e = NULL;
-      const gchar *entry;
+    ret = NULL;
+    walk = path;
+    while (walk) {
+        gchar *test_path = walk->data;
+        gchar *file_path;
+        
+        // replace '.' with current script_path if not null
+        if(script_path && !g_strcmp0(".",test_path))
+            test_path = script_path;
 
-      dir = g_dir_open ((gchar *) walk->data, 0, &e);
-      if (e)
-	{
-	  g_error_free (e);
-
-	  walk = walk->next;
-	  continue;
-	}
-      // try as as string first - eg. imports['xxxx.js']
-      file_path = g_build_filename ((gchar *) walk->data, prop, NULL);
-      // we could check first here if file already has been loaded
-      // skipping another state (see importer above..)
-      
-      if (g_file_test (file_path, G_FILE_TEST_IS_REGULAR)) 
-        {
-          file_dirname = g_path_get_dirname(file_path);
-          file_basename = g_path_get_basename(file_path);
-          ret = seed_importer_handle_file ( ctx,  file_dirname, file_basename, exception);
-          g_free (file_path);
-          g_free (file_basename);
-          g_free (file_dirname);
-          return ret;
+        // check if prop is a file or dir (imports['foo.js'] or imports.mydir)
+        file_path = g_build_filename (test_path, prop, NULL);
+        if (g_file_test (file_path, G_FILE_TEST_IS_REGULAR | G_FILE_TEST_IS_DIR)) {
+            ret = seed_importer_handle_file (ctx, test_path, prop, exception);
+            g_free (file_path);
+            break;
         }
-      g_free (file_path);
-      while ((entry = g_dir_read_name (dir)))
-	{
-	  mentry = g_strdup (entry);
+        g_free (file_path);
 
-	  mentrylen = strlen (mentry);
-	  for (i = 0; i < mentrylen; i++)
-	    {
-	      if (mentry[i] == '.')
-		mentry[i] = '\0';
-	    }
-	  if (!g_strcmp0 (mentry, prop))
-	    {
-	      ret =
-		seed_importer_handle_file (ctx, walk->data, entry, exception);
+        // check if prop is file ending with '.js'
+        file_path = g_build_filename (test_path, prop_as_js, NULL);
+        if (g_file_test (file_path, G_FILE_TEST_IS_REGULAR)) {
+            ret = seed_importer_handle_file (ctx, test_path, prop_as_js, exception);
+            g_free (file_path);
+            break;
+        }
+        g_free (file_path);
+      
+        // check if file is native module
+        file_path = g_build_filename (test_path, prop_as_lib, NULL);
+        if (g_file_test (file_path, G_FILE_TEST_IS_REGULAR)) {
+            ret = seed_importer_handle_native_module (ctx, test_path, prop_as_lib, exception);
+            g_free (file_path);
+            break;
+        }
+        g_free (file_path);
 
-	      g_dir_close (dir);
-	      g_free (mentry);
-	      g_free (prop_as_lib);
-	      seed_importer_free_search_path (path);
-
-	      return ret;
-	    }
-	  else if (!g_strcmp0 (entry, prop_as_lib))
-	    {
-	      ret =
-		seed_importer_handle_native_module (ctx, walk->data, entry,
-						    exception);
-	      g_dir_close (dir);
-	      g_free (mentry);
-	      g_free (prop_as_lib);
-	      seed_importer_free_search_path (path);
-
-	      return ret;
-	    }
-
-	  g_free (mentry);
-	}
-      g_dir_close (dir);
-
-      walk = walk->next;
+        walk = walk->next;
     }
 
-  seed_importer_free_search_path (path);
-  g_free (prop_as_lib);
-  return NULL;
+    g_free (prop_as_lib);
+    g_free (prop_as_js);
+    g_free (script_path);
+    
+    return ret;
+}
+
+static JSObjectRef
+seed_importer_search (JSContextRef ctx, gchar *prop, JSValueRef *exception)
+{
+    JSObjectRef ret = NULL;
+    GSList *path = seed_importer_get_search_path (ctx, exception);
+    ret = seed_importer_search_dirs (ctx, path, prop, exception);
+    seed_importer_free_search_path (path);
+    return ret;
 }
 
 static JSValueRef
@@ -836,58 +820,22 @@ seed_importer_get_property (JSContextRef ctx,
 
 static JSValueRef
 seed_importer_dir_get_property (JSContextRef ctx,
-				JSObjectRef object,
-				JSStringRef property_name,
-				JSValueRef * exception)
+                               JSObjectRef object,
+                               JSStringRef property_name,
+                               JSValueRef * exception)
 {
-  GError *e = NULL;
-  GDir *dir;
-  guint len, i;
-  gsize mentrylen;
-  const gchar *entry;
-  gchar *dir_path, *prop, *mentry;
-  JSObjectRef ret;
+    guint len;
+    gchar *prop;
+    GSList path;
 
-  dir_path = JSObjectGetPrivate (object);
+    path.data = JSObjectGetPrivate (object);
+    path.next = NULL;
 
-  len = JSStringGetMaximumUTF8CStringSize (property_name);
-  prop = g_alloca (len * sizeof (gchar));
-  JSStringGetUTF8CString (property_name, prop, len);
-
-  // TODO: GError
-  dir = g_dir_open (dir_path, 0, &e);
-  if (e)
-    {
-      seed_make_exception_from_gerror (ctx, exception, e);
-      g_error_free (e);
-
-      return NULL;
-    }
-  while ((entry = g_dir_read_name (dir)))
-    {
-      mentry = g_strdup (entry);
-      mentrylen = strlen (mentry);
-
-      for (i = 0; i < mentrylen; i++)
-	{
-	  if (mentry[i] == '.')
-	    mentry[i] = '\0';
-	}
-
-      if (!g_strcmp0 (mentry, prop))
-	{
-
-	  ret = seed_importer_handle_file (ctx, dir_path, entry, exception);
-	  g_dir_close (dir);
-	  g_free (mentry);
-
-	  return ret;
-	}
-      g_free (mentry);
-    }
-  g_dir_close (dir);
-
-  return NULL;
+    len = JSStringGetMaximumUTF8CStringSize (property_name);
+    prop = g_alloca (len * sizeof (gchar));
+    JSStringGetUTF8CString (property_name, prop, len);
+    
+    return seed_importer_search_dirs(ctx, &path, prop, exception);
 }
 
 static void
