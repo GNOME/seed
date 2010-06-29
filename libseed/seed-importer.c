@@ -573,21 +573,31 @@ seed_importer_get_search_path (JSContextRef ctx, JSValueRef * exception)
   return path;
 }
 
+/* forward reference */
+static JSObjectRef
+seed_importer_handle_file (JSContextRef ctx,
+			   const gchar * dir,
+			   const gchar * file, 
+			   JSValueRef * exception);
+
+
+
 static JSObjectRef
 seed_importer_handle_native_module (JSContextRef ctx,
 				    const gchar * dir,
-				    const gchar * file,
+				    const gchar * prop,
 				    JSValueRef * exception)
 {
   GModule *module;
   JSObjectRef module_obj;
   SeedModuleInitCallback init;
-  gchar *file_path = g_strconcat (dir, "/", file, NULL);
+  gchar *file_path = g_strconcat (dir, "/libseed_", prop, ".", G_MODULE_SUFFIX, NULL);
 
   SEED_NOTE (IMPORTER, "Trying native module: %s", file_path);
 
   if ((module_obj = g_hash_table_lookup (file_imports, file_path)))
     {
+      SEED_NOTE (IMPORTER, "Using existing global");
       g_free (file_path);
       return module_obj;
     }
@@ -609,6 +619,11 @@ seed_importer_handle_native_module (JSContextRef ctx,
   g_hash_table_insert (file_imports, file_path, module_obj);
   SEED_NOTE (IMPORTER, "Loaded native module");
 
+  //protect module_obj since the GC won't find the module in our file_imports cache
+  JSValueProtect (ctx, module_obj);
+  
+  file_path = g_strconcat ("libseed_", prop, ".js", NULL);
+  seed_importer_handle_file (ctx, dir, file_path, exception);
   g_free (file_path);
 
   return module_obj;
@@ -767,7 +782,7 @@ seed_importer_search_dirs (JSContextRef ctx, GSList *path, gchar *prop, JSValueR
         // check if file is native module
         file_path = g_build_filename (test_path, prop_as_lib, NULL);
         if (g_file_test (file_path, G_FILE_TEST_IS_REGULAR)) {
-            ret = seed_importer_handle_native_module (ctx, test_path, prop_as_lib, exception);
+            ret = seed_importer_handle_native_module (ctx, test_path, prop, exception);
             g_free (file_path);
             break;
         }
