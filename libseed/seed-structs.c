@@ -558,7 +558,7 @@ seed_make_union (JSContextRef ctx, gpointer younion, GIBaseInfo * info)
 
   if (younion == NULL)
     {
-      return JSValueMakeNull (ctx);
+      return (JSObjectRef) JSValueMakeNull (ctx);
     }
 
   seed_struct_privates *priv = g_slice_alloc (sizeof (seed_struct_privates));
@@ -650,7 +650,7 @@ seed_make_struct (JSContextRef ctx, gpointer strukt, GIBaseInfo * info)
 
   if (strukt == NULL)
     {
-      return JSValueMakeNull (ctx);
+      return (JSObjectRef) JSValueMakeNull (ctx);
     }
 
   seed_struct_privates *priv = g_slice_alloc (sizeof (seed_struct_privates));
