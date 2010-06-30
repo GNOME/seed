@@ -86,7 +86,13 @@ seed_sandbox_context_add_globals (SeedContext ctx,
 
   SeedObject g = seed_context_get_global_object (c);
   SeedObject global = seed_context_get_global_object (ctx);
-  seed_object_set_property (c, g, "__script_path__", seed_object_get_property (ctx, global, "__script_path__"));
+
+  SeedValue script_path = seed_object_get_property (ctx, global, "__script_path__"); 
+
+  seed_object_set_property (c, g, "__script_path__", 
+     (script_path && seed_value_is_object(ctx, script_path)) ?
+     script_path : seed_make_undefined(ctx)
+  );
     
   return seed_make_null (ctx);
 }
