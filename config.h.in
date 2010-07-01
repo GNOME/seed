@@ -24,8 +24,8 @@
 /* Define if your <locale.h> file defines LC_MESSAGES. */
 #undef HAVE_LC_MESSAGES
 
-/* Define to 1 if you have the `webkit-1.0' library (-lwebkit-1.0). */
-#undef HAVE_LIBWEBKIT_1_0
+/* Define to 1 if you have the `webkitgtk-3.0' library (-lwebkitgtk-3.0). */
+#undef HAVE_LIBWEBKITGTK_3_0
 
 /* Define to 1 if you have the <locale.h> header file. */
 #undef HAVE_LOCALE_H

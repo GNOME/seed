@@ -74,12 +74,12 @@ AC_SUBST(FFI_CFLAGS)
 
 dnl ==============================WebKit=======================================
 save_LIBS=$LIBS
-LIBS=`pkg-config --libs webkit-1.0`
-AC_CHECK_LIB(webkit-1.0, JSContextGroupCreate,,
+LIBS=`pkg-config --libs webkitgtk-3.0`
+AC_CHECK_LIB(webkitgtk-3.0, JSContextGroupCreate,,
 			 AC_MSG_ERROR([The installed version of WebKit is too old. Seed requires WebKit SVN revision 35442 or greater.]))
 LIBS=$save_LIBS
 
-PKG_CHECK_MODULES(WEBKIT, webkit-1.0)
+PKG_CHECK_MODULES(WEBKIT, webkitgtk-3.0)
 AC_SUBST(WEBKIT_CFLAGS)
 AC_SUBST(WEBKIT_LDFLAGS)
 
