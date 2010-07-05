@@ -849,6 +849,14 @@ seed_importer_dir_get_property (JSContextRef ctx,
     len = JSStringGetMaximumUTF8CStringSize (property_name);
     prop = g_alloca (len * sizeof (gchar));
     JSStringGetUTF8CString (property_name, prop, len);
+
+    /* These prevent print(imports.somefile) running "somefile/toString.js" 
+       Which is more than a little unexpected.. */
+
+    if (!g_strcmp0 (prop, "toString"))
+        return NULL;
+    if (!g_strcmp0 (prop, "valueOf"))
+        return NULL;
     
     return seed_importer_search_dirs(ctx, &path, prop, exception);
 }
