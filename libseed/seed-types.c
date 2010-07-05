@@ -168,6 +168,14 @@ seed_release_arg (GITransfer transfer,
 	  {
 	    interface_info = g_type_info_get_interface (type_info);
 
+	    GIInfoType interface_type = g_base_info_get_type (interface_info);
+	    if (interface_type == GI_INFO_TYPE_CALLBACK)
+	      {
+	        /* FIXME: - callback returns are not handled yet */
+	        g_base_info_unref (interface_info);
+	        break;
+	      }
+
 	    gtype =
 	      g_registered_type_info_get_g_type ((GIRegisteredTypeInfo *)
 						 interface_info);
@@ -888,7 +896,17 @@ seed_gi_argument_make_js (JSContextRef ctx,
 
 	    return strukt;
 	  }
+	else if (interface_type == GI_INFO_TYPE_CALLBACK)
+	  { 
+	    /* FIXME: return values of type callback are not handled yet. */
+	    g_base_info_unref (interface);
+	    return FALSE;
+	  }
+	/* fall through - other types?? */
+	g_base_info_unref (interface);
+	return FALSE;
       }
+
     case GI_TYPE_TAG_GLIST:
       {
 	GITypeInfo *list_type;
