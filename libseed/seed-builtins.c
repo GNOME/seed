@@ -225,7 +225,7 @@ seed_print (JSContextRef ctx,
 
   buf = seed_value_to_string (ctx, arguments[0], exception);
 
-  puts (buf);
+  g_print ("%s\n", buf);
   g_free (buf);
 
   return JSValueMakeUndefined (ctx);
