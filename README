@@ -2,7 +2,7 @@
 
 Seed is a library and interpreter, dynamically bridging (through gobject-introspection) the WebKit JavaScriptCore engine with the GObject type system. In a more concrete sense, Seed enables you to immediately write applications around a significant portion of the GNOME platform, and easily embed JavaScript as a scripting language in your GObject library.
 
-Seed requires a WebKit SVN revision newer than 35442. Keep in mind that some builds between this and HEAD still won't work with Seed, and performance has only improved, so try to keep an up-to-date version of WebKit if you're planning on working with Seed.
+Seed requires WebKitGtk+ 3.0 (built against gtk+-3.0).
 
 Website: http://live.gnome.org/Seed
 SVN: git://git.gnome.org/seed
