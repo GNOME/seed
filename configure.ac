@@ -73,10 +73,32 @@ AC_SUBST(FFI_LDFLAGS)
 AC_SUBST(FFI_CFLAGS)
 
 dnl ==============================WebKit=======================================
-PKG_CHECK_MODULES(WEBKIT, webkitgtk-3.0)
+m4_define([webkit_default], [gtk3])
+
+AC_ARG_WITH([webkit],
+            [AC_HELP_STRING([--with-seed-webkit=@<:@gtk-3.0/1.0@:>@],
+                            [Select the Webkit backend, default=gtk-3.0])],
+	    [],
+            [with_webkit=webkit_default])
+
+dnl=== support both 1.0 and 3.0 (default 3.0) ==
+AS_CASE([$with_webkit],
+	[gtk-3.0], [
+		PKG_CHECK_MODULES(WEBKIT, webkitgtk-3.0)
+	],
+	[1.0], [
+		save_LIBS=$LIBSma
+		LIBS=`pkg-config --libs webkit-1.0`
+		AC_CHECK_LIB(webkit-1.0, JSContextGroupCreate,,
+					 AC_MSG_ERROR([The installed version of WebKit is too old. Seed requires WebKit SVN revision 35442 or greater.]))
+		LIBS=$save_LIBS
+		PKG_CHECK_MODULES(WEBKIT, webkit-1.0)
+	],
+
+	[AC_MSG_ERROR([Invalid argument for --with-webkit])]
+)
 AC_SUBST(WEBKIT_CFLAGS)
 AC_SUBST(WEBKIT_LDFLAGS)
-
 dnl =========================Introspection=====================================
 PKG_CHECK_MODULES(GOBJECT_INTROSPECTION, gobject-introspection-1.0 >= 0.6.14)
 AC_SUBST(GOBJECT_INTROSPECTION_CFLAGS)
