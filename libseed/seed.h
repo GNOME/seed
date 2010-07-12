@@ -318,9 +318,7 @@ typedef gboolean (*SeedObjectSetPropertyCallback) (SeedContext ctx,
 						   SeedException * e);
 typedef gboolean (*SeedObjectDeletePropertyCallback) (SeedContext ctx,
 						      SeedObject object,
-						      SeedString
-						      property_name,
-						      SeedValue value,
+						      SeedString property_name,
 						      SeedException * e);
 /* TODO: Have to decide on accumulator API
 //typedef void (*SeedObjectGetPropertyNamesCallback) (SeedContext ctx, */
