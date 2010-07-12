@@ -1,3 +1,17 @@
+== Seed 2.31.5, "Elephant" (2010.07.11) ==
+
+* Seed now requires WebKitGtk+-3.0, built against Gtk+-3.0
+
+* Support for passing GObjects as userdata
+
+* Support for redirection of Seed.print via set_print_handler
+
+* Support __script_path__ within Seed sandboxes
+
+* Fixes to importer to not expose toString/valueOf files
+
+* Additional warnings in various potential error cases
+
 == Seed 2.31.1, "The Black Album" (2010.03.29) ==
 
 * Support for returning arrays of GTypes
