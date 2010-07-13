@@ -457,6 +457,7 @@ seed_gobject_method_invoked (JSContextRef ctx,
   GIBaseInfo *info;
   GObject *object = NULL;
   gboolean instance_method = TRUE;
+  gboolean is_caller_allocates = FALSE;
   GArgument retval;
   GArgument *in_args;
   GArgument *out_args;
@@ -467,6 +468,7 @@ seed_gobject_method_invoked (JSContextRef ctx,
   guint in_args_pos, out_args_pos;
   GIArgInfo *arg_info;
   GITypeInfo *type_info;
+  GIBaseInfo *iface_info;
   GIDirection dir;
   JSValueRef retval_ref;
   GError *error = 0;
@@ -495,6 +497,34 @@ seed_gobject_method_invoked (JSContextRef ctx,
       arg_info = g_callable_info_get_arg ((GICallableInfo *) info, i);
       dir = g_arg_info_get_direction (arg_info);
       type_info = g_arg_info_get_type (arg_info);
+      is_caller_allocates =  (dir == GI_DIRECTION_OUT) && g_arg_info_is_caller_allocates (arg_info);
+      iface_info = NULL;
+
+      /* caller allocates only applies to structures but GI has
+      * no way to denote that yet, so we only use caller allocates
+      * if we see  a structure
+      */
+      if (is_caller_allocates) 
+        {
+          GITypeTag type_tag = g_type_info_get_tag (type_info);
+
+          is_caller_allocates = FALSE;
+
+
+          if (type_tag  == GI_TYPE_TAG_INTERFACE) 
+            {
+              GIInfoType info_type;
+
+              iface_info = g_type_info_get_interface (type_info);
+              g_assert (info != NULL);
+              info_type = g_base_info_get_type (iface_info);
+
+              if (info_type == GI_INFO_TYPE_STRUCT)
+              is_caller_allocates = TRUE;
+            }
+         }	
+
+
 
       SEED_NOTE (INVOCATION,
                 "Converting arg: %s (%d) of function %s, exception is %p",  
@@ -509,7 +539,15 @@ seed_gobject_method_invoked (JSContextRef ctx,
           if (dir == GI_DIRECTION_OUT)
             {
               GArgument *out_value = &out_values[n_out_args];
-              out_args[n_out_args++].v_pointer = out_value;
+              out_values[n_out_args].v_pointer = NULL;
+              out_args[n_out_args].v_pointer = out_value;
+              if (is_caller_allocates) 
+                {
+                  gsize size = g_struct_info_get_size ( (GIStructInfo *) iface_info) ;
+                  out_args[n_out_args].v_pointer = g_malloc0 (size);
+                  out_values[n_out_args].v_pointer = out_args[n_out_args].v_pointer;
+                }
+              n_out_args++;
             } 
           else
               in_args[n_in_args++].v_pointer = 0;   
@@ -578,6 +616,7 @@ seed_gobject_method_invoked (JSContextRef ctx,
 // arg_error:
 	      g_base_info_unref ((GIBaseInfo *) type_info);
 	      g_base_info_unref ((GIBaseInfo *) arg_info);
+	      if (iface_info) g_base_info_unref (iface_info); 
 	      g_free (in_args);
 	      g_free (out_args);
 	      g_free (out_values);
@@ -594,13 +633,22 @@ seed_gobject_method_invoked (JSContextRef ctx,
       else if (dir == GI_DIRECTION_OUT)
 	{
 	  GArgument *out_value = &out_values[n_out_args];
-	  out_args[n_out_args++].v_pointer = out_value;
+	  out_values[n_out_args].v_pointer = NULL;
+	  out_args[n_out_args].v_pointer = out_value;
+	  if (is_caller_allocates) 
+	    {
+	      gsize size = g_struct_info_get_size ( (GIStructInfo *) iface_info) ;
+	      out_args[n_out_args].v_pointer = g_malloc0 (size);
+ 	      out_values[n_out_args].v_pointer = out_args[n_out_args].v_pointer;
+	    }
+	  n_out_args++;
 	  first_out = first_out > -1 ? first_out : i;
 
 	}
 
       g_base_info_unref ((GIBaseInfo *) type_info);
       g_base_info_unref ((GIBaseInfo *) arg_info);
+      if (iface_info) g_base_info_unref (iface_info); 
     }
   SEED_NOTE (INVOCATION, "Invoking method: %s with %d 'in' arguments"
 	     " and %d 'out' arguments",
@@ -678,6 +726,7 @@ seed_gobject_method_invoked (JSContextRef ctx,
       g_error_free (error);
       g_free (out_values);
 
+      // FIXME - caller allocates needs freeing.
       return JSValueMakeNull (ctx);
     }
 
@@ -688,8 +737,12 @@ seed_gobject_method_invoked (JSContextRef ctx,
       arg_info = g_callable_info_get_arg ((GICallableInfo *) info, i);
       dir = g_arg_info_get_direction (arg_info);
       type_info = g_arg_info_get_type (arg_info);
+      is_caller_allocates =  (dir == GI_DIRECTION_OUT) && g_arg_info_is_caller_allocates (arg_info);
+      iface_info = NULL;
 
-      if (dir == GI_DIRECTION_IN || dir == GI_DIRECTION_INOUT) 
+    
+
+      if (dir == GI_DIRECTION_IN || dir == GI_DIRECTION_INOUT)
 	{
 	  seed_gi_release_in_arg (g_arg_info_get_ownership_transfer
 				  (arg_info), type_info,
@@ -702,14 +755,53 @@ seed_gobject_method_invoked (JSContextRef ctx,
 	  continue;
 	}
       
-      // we are now only dealing with out arguments.
+      // we are now only dealing with OUT arguments.
       jsout_val = seed_gi_argument_make_js (ctx, &out_values[out_args_pos],
 					    type_info, exception);
-      out_args_pos++;
+  
 
 
+     /* caller allocates only applies to structures but GI has
+      * no way to denote that yet, so we only use caller allocates
+      * if we see  a structure
+      */
+      if (is_caller_allocates) 
+        {
+          GITypeTag type_tag = g_type_info_get_tag (type_info);
+
+          is_caller_allocates = FALSE;
+
+
+          if (type_tag  == GI_TYPE_TAG_INTERFACE) 
+            {
+              GIInfoType info_type;
+
+              iface_info = g_type_info_get_interface (type_info);
+              g_assert (info != NULL);
+              info_type = g_base_info_get_type (iface_info);
+
+              if (info_type == GI_INFO_TYPE_STRUCT)
+                is_caller_allocates = TRUE;
+
+              g_base_info_unref ( iface_info );
+            }
+         }	
+
+
+
+      // make sure we do not free the caller allocates when we free the values.
+      // Not sure if we need it - python does this..
+      //if (is_caller_allocates) 
+      //  {
+      //     // gvalues  - do we need to unset...           
+      //     //if (g_registered_type_info_get_g_type ( (GIRegisteredTypeInfo *) iface_info) == G_TYPE_VALUE)
+      //      //   g_value_unset ( (GValue *) state->args[i]);
+      //     
+      //  }
 
       // old ? depreciated ? way to handle out args -> set 'value' on object that was send through.
+
+      out_args_pos++;
        
       if ( (i < argumentCount) && 
           !JSValueIsNull (ctx, arguments[i]) &&
