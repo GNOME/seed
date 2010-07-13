@@ -389,6 +389,10 @@ seed_gi_make_array (JSContextRef ctx,
 	*array_p = dblresult;
       }
       break;
+
+#if GOBJECT_INTROSPECTION_VERSION_MAJOR == 0 && GOBJECT_INTROSPECTION_VERSION_MINOR < 9
+    case GI_TYPE_TAG_INT:
+#endif
     case GI_TYPE_TAG_INT32:
       {
 	gint *intresult;
@@ -512,6 +516,31 @@ seed_gi_make_argument (JSContextRef ctx,
         arg->v_pointer = gobject;
       }
       break;
+
+#if GOBJECT_INTROSPECTION_VERSION_MAJOR == 0 && GOBJECT_INTROSPECTION_VERSION_MINOR < 9
+    case GI_TYPE_TAG_LONG:
+      arg->v_long = seed_value_to_long (ctx, value, exception);
+      break;
+    case GI_TYPE_TAG_ULONG:
+      arg->v_ulong = seed_value_to_ulong (ctx, value, exception);
+      break;
+    case GI_TYPE_TAG_INT:
+      arg->v_int = seed_value_to_int (ctx, value, exception);
+      break;
+    case GI_TYPE_TAG_UINT:
+      arg->v_uint = seed_value_to_uint (ctx, value, exception);
+      break;
+    case GI_TYPE_TAG_SIZE:
+      arg->v_size = seed_value_to_size (ctx, value, exception);
+      break;
+    case GI_TYPE_TAG_SSIZE:
+      arg->v_ssize = seed_value_to_ssize (ctx, value, exception);
+      break;
+    case GI_TYPE_TAG_TIME_T:
+      arg->v_long = seed_value_to_time_t (ctx, value, exception);
+      break;
+#endif
+
     case GI_TYPE_TAG_BOOLEAN:
       arg->v_boolean = seed_value_to_boolean (ctx, value, exception);
       break;
@@ -778,6 +807,24 @@ seed_gi_argument_make_js (JSContextRef ctx,
   GITypeTag gi_tag = g_type_info_get_tag (type_info);
   switch (gi_tag)
     {
+
+#if GOBJECT_INTROSPECTION_VERSION_MAJOR == 0 && GOBJECT_INTROSPECTION_VERSION_MINOR < 9
+    case GI_TYPE_TAG_LONG:
+      return seed_value_from_long (ctx, arg->v_long, exception);
+    case GI_TYPE_TAG_ULONG:
+      return seed_value_from_ulong (ctx, arg->v_ulong, exception);
+    case GI_TYPE_TAG_INT:
+      return seed_value_from_int (ctx, arg->v_int32, exception);
+    case GI_TYPE_TAG_UINT:
+      return seed_value_from_uint (ctx, arg->v_uint32, exception);
+    case GI_TYPE_TAG_SSIZE:
+      return seed_value_from_ssize (ctx, arg->v_ssize, exception);
+    case GI_TYPE_TAG_SIZE:
+      return seed_value_from_size (ctx, arg->v_size, exception);
+    case GI_TYPE_TAG_TIME_T:
+      return seed_value_from_time_t (ctx, arg->v_long, exception);
+#endif
+
     case GI_TYPE_TAG_VOID:
       return JSValueMakeUndefined (ctx);
     case GI_TYPE_TAG_BOOLEAN:

@@ -100,9 +100,17 @@ AS_CASE([$with_webkit],
 AC_SUBST(WEBKIT_CFLAGS)
 AC_SUBST(WEBKIT_LDFLAGS)
 dnl =========================Introspection=====================================
+
 PKG_CHECK_MODULES(GOBJECT_INTROSPECTION, gobject-introspection-1.0 >= 0.6.14)
 AC_SUBST(GOBJECT_INTROSPECTION_CFLAGS)
 AC_SUBST(GOBJECT_INTROSPECTION_LDFLAGS)
+
+GOBJECT_INTROSPECTION_VERSION_MAJOR=`$PKG_CONFIG --modversion gobject-introspection-1.0 | cut -d . -f 1`
+GOBJECT_INTROSPECTION_VERSION_MINOR=`$PKG_CONFIG --modversion gobject-introspection-1.0 | cut -d . -f 2`
+AC_SUBST(GOBJECT_INTROSPECTION_VERSION_MAJOR)
+AC_SUBST(GOBJECT_INTROSPECTION_VERSION_MINOR)
+
+
 
 dnl ========================GNOME-js common====================================
 PKG_CHECK_MODULES(GNOME_JS, gnome-js-common)
