@@ -248,6 +248,18 @@ AC_ARG_ENABLE(os-module,
 AM_CONDITIONAL(BUILD_OS_MODULE, test "x$want_os_module" = "xyes")
 AC_SUBST(BUILD_OS_MODULE)
 
+
+dnl ==== DynamicObject ====
+AC_ARG_ENABLE(dynamicobject-module,
+                          AC_HELP_STRING([--enable-dynamicobject-module],
+                                     [enable the DynamicObject Seed module. [default=yes]]),
+ 		[want_dynamicobject_module=$enableval],[want_dynamicobject_module="yes"])
+
+
+AM_CONDITIONAL(BUILD_DYNAMICOBJECT_MODULE, test "x$want_dynamicobject_module" = "xyes")
+AC_SUBST(BUILD_DYNAMICOBJECT_MODULE)
+
+ 
 dnl ==== gtkbuilder ====
 AC_ARG_ENABLE(gtkbuilder-module,
 			  AC_HELP_STRING([--enable-gtkbuilder-module],
@@ -429,6 +441,7 @@ modules/gtkbuilder/Makefile
 modules/gettext/Makefile
 modules/mpfr/Makefile
 modules/ffi/Makefile
+modules/DynamicObject/Makefile
 
 libseed/seed-path.h
 ])
@@ -457,6 +470,7 @@ Modules:
    gettext....................$want_gettext_module
    mpfr.......................$want_mpfr_module
    ffi........................$want_ffi_module
+   Dynamic Object.............$want_dynamicobject_module
 "
 
 if test "x$want_readline_module" != "xyes"; then
