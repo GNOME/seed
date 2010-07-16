@@ -785,7 +785,7 @@ seed_object_copy_property_names (JSContextRef ctx, JSObjectRef object)
       name = JSPropertyNameArrayGetNameAtIndex (names, i);
       max_length = JSStringGetMaximumUTF8CStringSize (name);
       c_name = (gchar *) g_malloc (max_length * sizeof (gchar));
-      JSStringGetUTF8CString (name, c_name, length);
+      JSStringGetUTF8CString (name, c_name, max_length);
       ret[i] = c_name;
 
     }
