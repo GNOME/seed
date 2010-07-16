@@ -390,7 +390,7 @@ seed_gi_make_array (JSContextRef ctx,
       }
       break;
 
-#if GOBJECT_INTROSPECTION_VERSION_MAJOR == 0 && GOBJECT_INTROSPECTION_VERSION_MINOR < 9
+#if GOBJECT_INTROSPECTION_VERSION >= 0x000900
     case GI_TYPE_TAG_INT:
 #endif
     case GI_TYPE_TAG_INT32:
@@ -517,7 +517,7 @@ seed_gi_make_argument (JSContextRef ctx,
       }
       break;
 
-#if GOBJECT_INTROSPECTION_VERSION_MAJOR == 0 && GOBJECT_INTROSPECTION_VERSION_MINOR < 9
+#if GOBJECT_INTROSPECTION_VERSION >= 0x000900
     case GI_TYPE_TAG_LONG:
       arg->v_long = seed_value_to_long (ctx, value, exception);
       break;
@@ -808,7 +808,7 @@ seed_gi_argument_make_js (JSContextRef ctx,
   switch (gi_tag)
     {
 
-#if GOBJECT_INTROSPECTION_VERSION_MAJOR == 0 && GOBJECT_INTROSPECTION_VERSION_MINOR < 9
+#if GOBJECT_INTROSPECTION_VERSION >= 0x000900
     case GI_TYPE_TAG_LONG:
       return seed_value_from_long (ctx, arg->v_long, exception);
     case GI_TYPE_TAG_ULONG:

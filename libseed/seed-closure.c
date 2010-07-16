@@ -76,7 +76,7 @@ seed_handle_closure (ffi_cif * cif, void *result, void **args, void *userdata)
 
       switch (tag)
 	{
-#if GOBJECT_INTROSPECTION_VERSION_MAJOR == 0 && GOBJECT_INTROSPECTION_VERSION_MINOR < 9
+#if GOBJECT_INTROSPECTION_VERSION >= 0x000900
 	case GI_TYPE_TAG_LONG:
 	  arg->v_long = *(glong *) args[i];
 	  break;
@@ -195,7 +195,7 @@ seed_handle_closure (ffi_cif * cif, void *result, void **args, void *userdata)
 			 &return_arg, 0);
   switch (return_tag)
     {
-#if GOBJECT_INTROSPECTION_VERSION_MAJOR == 0 && GOBJECT_INTROSPECTION_VERSION_MINOR < 9
+#if GOBJECT_INTROSPECTION_VERSION >= 0x000900
     case GI_TYPE_TAG_LONG:
       *(glong *) result = return_arg.v_long;
       break;
