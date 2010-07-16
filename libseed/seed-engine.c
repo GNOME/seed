@@ -457,7 +457,10 @@ seed_gobject_method_invoked (JSContextRef ctx,
   GIBaseInfo *info;
   GObject *object = NULL;
   gboolean instance_method = TRUE;
+#if GOBJECT_INTROSPECTION_VERSION > 0x000613
   gboolean is_caller_allocates = FALSE;
+  GIBaseInfo *iface_info;
+#endif  
   GArgument retval;
   GArgument *in_args;
   GArgument *out_args;
@@ -468,7 +471,7 @@ seed_gobject_method_invoked (JSContextRef ctx,
   guint in_args_pos, out_args_pos;
   GIArgInfo *arg_info;
   GITypeInfo *type_info;
-  GIBaseInfo *iface_info;
+  
   GIDirection dir;
   JSValueRef retval_ref;
   GError *error = 0;
@@ -497,6 +500,7 @@ seed_gobject_method_invoked (JSContextRef ctx,
       arg_info = g_callable_info_get_arg ((GICallableInfo *) info, i);
       dir = g_arg_info_get_direction (arg_info);
       type_info = g_arg_info_get_type (arg_info);
+#if GOBJECT_INTROSPECTION_VERSION > 0x000613
       is_caller_allocates =  (dir == GI_DIRECTION_OUT) && g_arg_info_is_caller_allocates (arg_info);
       iface_info = NULL;
 
@@ -523,7 +527,7 @@ seed_gobject_method_invoked (JSContextRef ctx,
               is_caller_allocates = TRUE;
             }
          }	
-
+#endif
 
 
       SEED_NOTE (INVOCATION,
@@ -541,12 +545,14 @@ seed_gobject_method_invoked (JSContextRef ctx,
               GArgument *out_value = &out_values[n_out_args];
               out_values[n_out_args].v_pointer = NULL;
               out_args[n_out_args].v_pointer = out_value;
+#if GOBJECT_INTROSPECTION_VERSION > 0x000613			  
               if (is_caller_allocates) 
                 {
                   gsize size = g_struct_info_get_size ( (GIStructInfo *) iface_info) ;
                   out_args[n_out_args].v_pointer = g_malloc0 (size);
                   out_values[n_out_args].v_pointer = out_args[n_out_args].v_pointer;
                 }
+#endif
               n_out_args++;
             } 
           else
@@ -616,7 +622,9 @@ seed_gobject_method_invoked (JSContextRef ctx,
 // arg_error:
 	      g_base_info_unref ((GIBaseInfo *) type_info);
 	      g_base_info_unref ((GIBaseInfo *) arg_info);
+#if GOBJECT_INTROSPECTION_VERSION > 0x000613		  
 	      if (iface_info) g_base_info_unref (iface_info); 
+#endif
 	      g_free (in_args);
 	      g_free (out_args);
 	      g_free (out_values);
@@ -635,12 +643,14 @@ seed_gobject_method_invoked (JSContextRef ctx,
 	  GArgument *out_value = &out_values[n_out_args];
 	  out_values[n_out_args].v_pointer = NULL;
 	  out_args[n_out_args].v_pointer = out_value;
+#if GOBJECT_INTROSPECTION_VERSION > 0x000613	  
 	  if (is_caller_allocates) 
 	    {
 	      gsize size = g_struct_info_get_size ( (GIStructInfo *) iface_info) ;
 	      out_args[n_out_args].v_pointer = g_malloc0 (size);
  	      out_values[n_out_args].v_pointer = out_args[n_out_args].v_pointer;
 	    }
+#endif
 	  n_out_args++;
 	  first_out = first_out > -1 ? first_out : i;
 
@@ -648,7 +658,9 @@ seed_gobject_method_invoked (JSContextRef ctx,
 
       g_base_info_unref ((GIBaseInfo *) type_info);
       g_base_info_unref ((GIBaseInfo *) arg_info);
+#if GOBJECT_INTROSPECTION_VERSION > 0x000613	  	  
       if (iface_info) g_base_info_unref (iface_info); 
+#endif
     }
   SEED_NOTE (INVOCATION, "Invoking method: %s with %d 'in' arguments"
 	     " and %d 'out' arguments",
@@ -737,9 +749,10 @@ seed_gobject_method_invoked (JSContextRef ctx,
       arg_info = g_callable_info_get_arg ((GICallableInfo *) info, i);
       dir = g_arg_info_get_direction (arg_info);
       type_info = g_arg_info_get_type (arg_info);
+#if GOBJECT_INTROSPECTION_VERSION > 0x000613	  
       is_caller_allocates =  (dir == GI_DIRECTION_OUT) && g_arg_info_is_caller_allocates (arg_info);
       iface_info = NULL;
-
+#endif
     
 
       if (dir == GI_DIRECTION_IN || dir == GI_DIRECTION_INOUT)
@@ -760,7 +773,7 @@ seed_gobject_method_invoked (JSContextRef ctx,
 					    type_info, exception);
   
 
-
+#if GOBJECT_INTROSPECTION_VERSION > 0x000613
      /* caller allocates only applies to structures but GI has
       * no way to denote that yet, so we only use caller allocates
       * if we see  a structure
@@ -800,7 +813,7 @@ seed_gobject_method_invoked (JSContextRef ctx,
       //  }
 
       // old ? depreciated ? way to handle out args -> set 'value' on object that was send through.
-
+#endif
       out_args_pos++;
        
       if ( (i < argumentCount) && 
