@@ -148,6 +148,9 @@ gboolean seed_value_is_number (SeedContext ctx, SeedValue value);
 void seed_value_unprotect (SeedContext ctx, SeedValue value);
 void seed_value_protect (SeedContext ctx, SeedValue value);
 
+SeedValue seed_value_from_gvalue (SeedContext ctx,
+				  GValue * gval, SeedException * exception);
+
 gboolean seed_value_to_boolean (SeedContext ctx,
 				SeedValue val, SeedException * exception);
 
