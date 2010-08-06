@@ -84,7 +84,7 @@ AC_ARG_WITH([webkit],
 dnl=== support both 1.0 and 3.0 (default 3.0) ==
 AS_CASE([$with_webkit],
 	[gtk-3.0], [
-		PKG_CHECK_MODULES(WEBKIT, webkitgtk-3.0)
+		WEBKIT_PC=webkitgtk-3.0
 	],
 	[1.0], [
 		save_LIBS=$LIBSma
@@ -92,11 +92,13 @@ AS_CASE([$with_webkit],
 		AC_CHECK_LIB(webkit-1.0, JSContextGroupCreate,,
 					 AC_MSG_ERROR([The installed version of WebKit is too old. Seed requires WebKit SVN revision 35442 or greater.]))
 		LIBS=$save_LIBS
-		PKG_CHECK_MODULES(WEBKIT, webkit-1.0)
+		WEBKIT_PC=webkit-1.0
 	],
 
 	[AC_MSG_ERROR([Invalid argument for --with-webkit])]
 )
+PKG_CHECK_MODULES(WEBKIT, $WEBKIT_PC)
+AC_SUBST(WEBKIT_PC)
 AC_SUBST(WEBKIT_CFLAGS)
 AC_SUBST(WEBKIT_LDFLAGS)
 dnl =========================Introspection=====================================

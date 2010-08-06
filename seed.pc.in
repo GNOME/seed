@@ -5,7 +5,7 @@ bindir=@bindir@
 includedir=@includedir@
 
 Cflags: -I${includedir}/seed
-Requires: webkitgtk-3.0 gobject-introspection-1.0 glib-2.0 gobject-2.0 gmodule-2.0 gthread-2.0
+Requires: @WEBKIT_PC@ gobject-introspection-1.0 glib-2.0 gobject-2.0 gmodule-2.0 gthread-2.0
 Libs: -L${libdir} -lseed
 
 Name: Seed
