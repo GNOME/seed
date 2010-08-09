@@ -89,8 +89,9 @@ AS_CASE([$with_webkit],
 	[1.0], [
 		save_LIBS=$LIBSma
 		LIBS=`pkg-config --libs webkit-1.0`
-		AC_CHECK_LIB(webkit-1.0, JSContextGroupCreate,,
-					 AC_MSG_ERROR([The installed version of WebKit is too old. Seed requires WebKit SVN revision 35442 or greater.]))
+		AC_CHECK_LIB(webkitgtk-1.0, JSContextGroupCreate,,
+					    AC_CHECK_LIB(webkit-1.0, JSContextGroupCreate,,
+								     AC_MSG_ERROR([The installed version of WebKit is too old. Seed requires WebKit SVN revision 35442 or greater.])))
 		LIBS=$save_LIBS
 		WEBKIT_PC=webkit-1.0
 	],
