@@ -17,9 +17,12 @@ libseed_readline_la_CFLAGS = \
 
 libseed_readline_la_LDFLAGS = \
 	-module -avoid-version \
-	-lreadline \
 	$(GOBJECT_INTROSPECTION_LDFLAGS) \
-	$(FFI_LDFLAGS) \
+	$(FFI_LDFLAGS)
+
+libseed_readline_la_LIBADD = \
+	$(top_builddir)/libseed/libseed.la \
+	-lreadline \
 	$(SEED_PROFILE_LIBS) 
 
 endif

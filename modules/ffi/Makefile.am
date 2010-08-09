@@ -25,8 +25,11 @@ libseed_ffi_la_CFLAGS = \
 libseed_ffi_la_LDFLAGS = \
 	-module -avoid-version \
 	$(GOBJECT_INTROSPECTION_LDFLAGS) \
-	$(SEED_PROFILE_LIBS) \
 	$(FFI_LDFLAGS)
+
+libseed_ffi_la_LIBADD = \
+	$(top_builddir)/libseed/libseed.la \
+	$(SEED_PROFILE_LIBS)
 
 endif
 

@@ -20,7 +20,11 @@ libseed_sqlite_la_LDFLAGS = \
 	-module -avoid-version \
 	$(GOBJECT_INTROSPECTION_LDFLAGS) \
 	$(SQLITE_LDFLAGS) \
-	$(SEED_DEBUG_LDFLAGS) \
+	$(SEED_DEBUG_LDFLAGS)
+
+libseed_sqlite_la_LIBADD = \
+	$(top_builddir)/libseed/libseed.la \
+	$(SQLITE_LIBS) \
 	$(SEED_PROFILE_LIBS)
 
 endif

@@ -20,7 +20,10 @@ AM_CPPFLAGS = \
 libseed_libxml_la_LDFLAGS = \
 	-module -avoid-version \
 	$(LIBXML_LDFLAGS) \
-	$(GOBJECT_INTROSPECTION_LDFLAGS) \
+	$(GOBJECT_INTROSPECTION_LDFLAGS)
+
+libseed_libxml_la_LIBADD = \
+	$(top_builddir)/libseed/libseed.la \
 	$(SEED_PROFILE_LIBS)
 
 extensionsdir=$(datadir)/seed/extensions

@@ -19,7 +19,10 @@ AM_CPPFLAGS = \
 libseed_gtkbuilder_la_LDFLAGS = \
 	-module -avoid-version \
 	$(GTK_LDFLAGS) \
-	$(GOBJECT_INTROSPECTION_LDFLAGS) \
+	$(GOBJECT_INTROSPECTION_LDFLAGS)
+
+libseed_gtkbuilder_la_LIBADD = \
+	$(top_builddir)/libseed/libseed.la \
 	$(SEED_PROFILE_LIBS)
 
 endif

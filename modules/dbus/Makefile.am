@@ -37,10 +37,13 @@ libseed_dbusnative_la_CFLAGS = \
 libseed_dbusnative_la_LDFLAGS = \
 	-module -avoid-version \
 	$(GOBJECT_INTROSPECTION_LDFLAGS) \
-	-L/lib \
-	-ldbus-1 \
 	$(DBUS_LDFLAGS) \
+	-L/lib
+
+libseed_dbusnative_la_LIBADD = \
+	-ldbus-1 \
 	-ldbus-glib-1 \
+	$(top_builddir)/libseed/libseed.la \
 	$(SEED_PROFILE_LIBS)
 
 

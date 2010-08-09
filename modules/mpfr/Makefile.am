@@ -19,10 +19,11 @@ AM_CPPFLAGS = \
 
 libseed_mpfr_la_LDFLAGS = \
 	-module -avoid-version \
-	$(GOBJECT_INTROSPECTION_LDFLAGS) \
-	$(SEED_PROFILE_LIBS)
+	$(GOBJECT_INTROSPECTION_LDFLAGS)
 
-libseed_mpfr_la_LIBADD = -lmpfr -lgmp
+libseed_mpfr_la_LIBADD = -lmpfr -lgmp \
+	$(top_builddir)/libseed/libseed.la \
+	$(SEED_PROFILE_LIBS)
 
 EXTRA_DIST = seed-mpfr.h
 

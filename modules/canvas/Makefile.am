@@ -19,7 +19,10 @@ libseed_canvas_la_CFLAGS = \
 libseed_canvas_la_LDFLAGS = \
 	-module -avoid-version \
 	$(GOBJECT_INTROSPECTION_LDFLAGS) \
-	$(CAIRO_LDFLAGS) \
+	$(CAIRO_LDFLAGS)
+
+libseed_canvas_la_LIBADD = \
+	$(top_builddir)/libseed/libseed.la \
 	$(SEED_PROFILE_LIBS)
 
 endif

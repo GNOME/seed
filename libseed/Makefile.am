@@ -36,12 +36,14 @@ libseed_la_CFLAGS = \
 	-DGOBJECT_INTROSPECTION_VERSION=$(GOBJECT_INTROSPECTION_VERSION)
 
 libseed_la_LDFLAGS = \
-	-no-undefined \
+	$(FFI_LDFLAGS)
+
+libseed_la_LIBADD = \
 	$(GOBJECT_INTROSPECTION_LIBS) \
 	$(WEBKIT_LIBS) \
 	$(SEED_PROFILE_LIBS) \
 	$(SEED_OSX_LIBS) \
-	$(FFI_LDFLAGS)
+	$(FFI_LIBS) -ldl
 
 seedheaders_HEADERS = seed.h seed-debug.h seed-module.h
 

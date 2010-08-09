@@ -16,7 +16,10 @@ AM_CPPFLAGS = \
 
 libseed_example_la_LDFLAGS = \
 	-module -avoid-version \
-	$(GOBJECT_INTROSPECTION_LDFLAGS) \
+	$(GOBJECT_INTROSPECTION_LDFLAGS)
+
+libseed_example_la_LIBADD = \
+	$(top_builddir)/libseed/libseed.la \
 	$(SEED_PROFILE_LIBS)
 
 endif
