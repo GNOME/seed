@@ -1,3 +1,18 @@
+== Seed 2.31.91, "Write About Love" (2010.08.30) ==
+
+* Seed now optionally supports both WebKitGtk+-1.0 and 3.0
+
+* Dynamic Object module - provides support for implementing
+  underlying object callbacks in JavaScript (see commit d31aca)
+
+* Implement caller-allocated out arguments
+
+* Expose seed_value_from_gvalue() through the API
+
+* Fix unusable seed_object_copy_property_names()
+
+* Fix various build system issues
+
 == Seed 2.31.5, "Elephant" (2010.07.11) ==
 
 * Seed now requires WebKitGtk+-3.0, built against Gtk+-3.0
