@@ -76,14 +76,14 @@ dnl ==============================WebKit=======================================
 m4_define([webkit_default], [gtk-3.0])
 
 AC_ARG_WITH([webkit],
-            [AC_HELP_STRING([--with-webkit=@<:@gtk-3.0/1.0@:>@],
-                            [Select the Webkit backend, default=gtk-3.0])],
+            [AC_HELP_STRING([--with-webkit=@<:@3.0/1.0@:>@],
+                            [Select the Webkit backend, default=3.0])],
 	    [],
             [with_webkit=webkit_default])
 
 dnl=== support both 1.0 and 3.0 (default 3.0) ==
 AS_CASE([$with_webkit],
-	[gtk-3.0], [
+	[3.0], [
 		WEBKIT_PC=webkitgtk-3.0
 	],
 	[1.0], [
