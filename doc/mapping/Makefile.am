@@ -1,5 +1,5 @@
 
-tutorialdir=$(datadir)/doc/seed/mapping
+tutorialdir=$(docdir)/mapping
 tutorial_DATA = \
 	mapping.html \
 	enum-mapping.png

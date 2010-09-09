@@ -10,8 +10,7 @@ SUBDIRS = po \
 	tests \
 	doc
 
-seeddocdir = ${prefix}/share/doc/seed
-seeddoc_DATA = \
+doc_DATA = \
 	README \
 	COPYING \
 	AUTHORS \
@@ -23,8 +22,7 @@ pkgconfigdir = $(libdir)/pkgconfig
 
 man_MANS = doc/seed.1
 
-EXTRA_DIST = $(seeddoc_DATA) \
-	$(pkgconfig_DATA)
+EXTRA_DIST = $(pkgconfig_DATA)
 
 DISTCHECK_CONFIGURE_FLAGS=--enable-gtk-doc
 

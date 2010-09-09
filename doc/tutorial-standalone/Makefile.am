@@ -1,5 +1,5 @@
 
-tutorialdir=$(datadir)/doc/seed/tutorial
+tutorialdir=$(docdir)/tutorial
 tutorial_DATA = \
 	1.js \
 	2.js \

@@ -1,4 +1,4 @@
-modulesdir = $(datadir)/doc/seed/modules
+modulesdir = $(docdir)/modules
 modules_DATA = \
 	multiprocessing.html
 EXTRA_DIST = \

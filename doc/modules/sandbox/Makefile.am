@@ -6,7 +6,5 @@ sandbox-funcs.xml: $(top_builddir)/src/seed $(top_srcdir)/doc/modules/sandbox/sa
 CLEANFILES=sandbox-funcs.xml
 
 sandboxdocsdir = \
-	$(datadir)/doc/seed/modules/sandbox/html
+	$(docdir)/modules/sandbox/html
 sandboxdocs_DATA = sandbox-funcs.xml
-
-

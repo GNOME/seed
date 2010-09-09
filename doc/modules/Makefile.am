@@ -7,14 +7,11 @@ html/index.html: version.xml book.xml sqlite/sqlite.xml sqlite/sqlite-funcs.xml 
 	gtkdoc-mkhtml "Seed" book.xml;
 	mv *.html *.css *.png *.sgml *.devhelp* html
 
-bookdir = $(datadir)/doc/seed/modules/html
+bookdir = $(docdir)/modules/html
 book_DATA = html/index.html
 
 install-data-local:
-	cp -r html $(DESTDIR)$(datadir)/doc/seed/modules
+	cp -r html $(DESTDIR)$(docdir)/modules
 
 CLEANFILES = html/*
 endif 
-
-
-

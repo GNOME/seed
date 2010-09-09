@@ -6,7 +6,7 @@ readline-funcs.xml: $(top_builddir)/src/seed $(top_srcdir)/doc/modules/readline/
 CLEANFILES=readline-funcs.xml
 
 readlinedocsdir = \
-	$(datadir)/doc/seed/modules/readline/html
+	$(docdir)/modules/readline/html
 readlinedocs_DATA = readline-funcs.xml
 
 #index.html: readline-funcs.xml

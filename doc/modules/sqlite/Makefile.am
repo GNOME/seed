@@ -6,7 +6,7 @@ sqlite-funcs.xml: $(top_builddir)/src/seed $(top_srcdir)/doc/modules/sqlite/sqli
 CLEANFILES=sqlite-funcs.xml
 
 sqlitedocsdir = \
-	$(datadir)/doc/seed/modules/sqlite/html
+	$(docdir)/modules/sqlite/html
 sqlitedocs_DATA = sqlite-funcs.xml
 
 #index.html: sqlite-funcs.xml
