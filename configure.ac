@@ -73,7 +73,7 @@ AC_SUBST(FFI_LDFLAGS)
 AC_SUBST(FFI_CFLAGS)
 
 dnl ==============================WebKit=======================================
-m4_define([webkit_default], [gtk-3.0])
+m4_define([webkit_default], [3.0])
 
 AC_ARG_WITH([webkit],
             [AC_HELP_STRING([--with-webkit=@<:@3.0/1.0@:>@],
