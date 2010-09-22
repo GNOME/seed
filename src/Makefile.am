@@ -20,7 +20,8 @@ seed_LDFLAGS = \
 	$(SEED_PROFILE_LIBS) \
 	$(LIBFFI_LDFLAGS) \
 	$(GOBJECT_INTROSPECTION_LDFLAGS) \
-	$(WEBKIT_LDFLAGS)
+	$(WEBKIT_LDFLAGS) \
+	$(GTHREAD_LIBS)
 
 seed_LDADD = \
 	../libseed/libseed.la

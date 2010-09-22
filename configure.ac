@@ -120,6 +120,9 @@ PKG_CHECK_MODULES(GNOME_JS, gnome-js-common)
 GNOME_JS_DIR=`pkg-config --variable=moduledir gnome-js-common`
 AC_SUBST(GNOME_JS_DIR)
 
+dnl ========================GThread============================================
+PKG_CHECK_MODULES(GTHREAD, gthread-2.0)
+
 dnl =============================Modules=======================================
 dnl ==== canvas ====
 AC_ARG_ENABLE(canvas-module,
