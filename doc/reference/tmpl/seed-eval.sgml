@@ -49,6 +49,9 @@ seed_simple_evaluate(eng->context, "print('Hello, world!')", NULL);
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### STRUCT SeedScript ##### -->
 <para>
 

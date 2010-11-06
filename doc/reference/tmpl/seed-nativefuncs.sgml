@@ -59,6 +59,9 @@ int main(gint argc, gchar ** argv)
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### USER_FUNCTION SeedFunctionCallback ##### -->
 <para>
 

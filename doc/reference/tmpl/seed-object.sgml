@@ -17,6 +17,9 @@ Long description
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### TYPEDEF SeedObject ##### -->
 <para>
 
@@ -217,7 +220,6 @@ Long description
 @ctx: 
 @object: 
 @property_name: 
-@value: 
 @e: 
 @Returns: 
 
@@ -227,6 +229,7 @@ Long description
 
 </para>
 
+@void: 
 
 
 <!-- ##### USER_FUNCTION SeedObjectCallAsFunctionCallback ##### -->

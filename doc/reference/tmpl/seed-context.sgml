@@ -31,6 +31,9 @@ script = seed_make_script(ctx, "print(imports)", NULL, 0);
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### TYPEDEF SeedContext ##### -->
 <para>
 

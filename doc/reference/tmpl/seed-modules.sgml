@@ -104,6 +104,9 @@ hello.say_hello_to("Tim");
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### MACRO CHECK_ARG_COUNT ##### -->
 <para>
 

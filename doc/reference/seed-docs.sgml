@@ -17,7 +17,6 @@
     <title>Seed Overview</title>
     <xi:include href="introduction.sgml"/>
     <xi:include href="building.sgml"/>
-    <xi:include href="building-osx.sgml"/>
     <xi:include href="contact.sgml"/>
   </part>
   

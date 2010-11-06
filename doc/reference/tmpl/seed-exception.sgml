@@ -72,6 +72,9 @@ SeedValue random_callback(SeedContext ctx,
 <!-- ##### SECTION Stability_Level ##### -->
 
 
+<!-- ##### SECTION Image ##### -->
+
+
 <!-- ##### TYPEDEF SeedException ##### -->
 <para>
 
