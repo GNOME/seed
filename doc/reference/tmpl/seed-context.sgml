@@ -6,7 +6,7 @@ Self-contained JavaScript execution environments
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
-A #SeedContext provides a complete "universe" for the execution of JavaScript. You can use seed_context_new() to create a sandboxed context that lacks the import system, so it can be used to execute somewhat untrusted JavaScript (as it has no way to access the rest of your system). You can also expose the default set of globals (including "print", "imports", and "Seed") to create more powerful but still self-contained environments within which to execute code.
+A #SeedContext provides a complete "universe" for the execution of JavaScript. You can use seed_context_create() to create a sandboxed context that lacks the import system, so it can be used to execute somewhat untrusted JavaScript (as it has no way to access the rest of your system). You can also expose the default set of globals (including "print", "imports", and "Seed") to create more powerful but still self-contained environments within which to execute code.
 </para>
 
 <example>
@@ -57,9 +57,9 @@ script = seed_make_script(ctx, "print(imports)", NULL, 0);
 
 </para>
 
-@group: 
-@global_class: 
-@Returns: 
+@group:
+@global_class:
+@Returns:
 
 
 <!-- ##### FUNCTION seed_context_ref ##### -->
@@ -67,8 +67,8 @@ script = seed_make_script(ctx, "print(imports)", NULL, 0);
 
 </para>
 
-@ctx: 
-@Returns: 
+@ctx:
+@Returns:
 
 
 <!-- ##### FUNCTION seed_context_unref ##### -->
@@ -76,7 +76,7 @@ script = seed_make_script(ctx, "print(imports)", NULL, 0);
 
 </para>
 
-@ctx: 
+@ctx:
 
 
 <!-- ##### FUNCTION seed_context_collect ##### -->
@@ -84,7 +84,7 @@ script = seed_make_script(ctx, "print(imports)", NULL, 0);
 
 </para>
 
-@ctx: 
+@ctx:
 
 
 <!-- ##### FUNCTION seed_context_get_global_object ##### -->
@@ -92,8 +92,8 @@ script = seed_make_script(ctx, "print(imports)", NULL, 0);
 
 </para>
 
-@ctx: 
-@Returns: 
+@ctx:
+@Returns:
 
 
 <!-- ##### FUNCTION seed_prepare_global_context ##### -->
@@ -101,7 +101,7 @@ script = seed_make_script(ctx, "print(imports)", NULL, 0);
 
 </para>
 
-@ctx: 
+@ctx:
 
 
 <!-- ##### FUNCTION seed_importer_add_global ##### -->
@@ -109,8 +109,8 @@ script = seed_make_script(ctx, "print(imports)", NULL, 0);
 
 </para>
 
-@ctx: 
-@name: 
+@ctx:
+@name:
 
 
 <!-- ##### FUNCTION seed_importer_set_search_path ##### -->
@@ -118,7 +118,7 @@ script = seed_make_script(ctx, "print(imports)", NULL, 0);
 
 </para>
 
-@ctx: 
-@search_path: 
+@ctx:
+@search_path:
 
 
