@@ -2787,7 +2787,7 @@ test_io_confirm_streams_data(DBusConnection  *connection,
      * you wanted to block. But don't block.
      */
     while (io_input_stream != NULL) {
-        g_main_iteration(TRUE);
+        g_main_context_iteration(NULL, TRUE);
     }
 
     big_dbus_append_json_entry_STRING(out_iter,
