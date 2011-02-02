@@ -1,6 +1,6 @@
 if BUILD_OS_MODULE
 
-seedlibdir = ${libdir}/seed
+seedlibdir = ${libdir}/seed@SEED_GTK_VERSION@
 
 seedlib_LTLIBRARIES = \
 	libseed_os.la
@@ -20,7 +20,7 @@ libseed_os_la_LDFLAGS = \
 	$(SEED_DEBUG_LDFLAGS)
 
 libseed_os_la_LIBADD = \
-	$(top_builddir)/libseed/libseed.la \
+	$(top_builddir)/libseed/libseed@SEED_GTK_VERSION@.la \
 	-lutil \
 	$(SEED_PROFILE_LIBS)
 

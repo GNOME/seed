@@ -1,6 +1,6 @@
 if BUILD_CANVAS_MODULE
 
-seedlibdir = ${libdir}/seed
+seedlibdir = ${libdir}/seed@SEED_GTK_VERSION@
 EXTRA_DIST=run-tests.js
 
 seedlib_LTLIBRARIES = \
@@ -22,7 +22,7 @@ libseed_canvas_la_LDFLAGS = \
 	$(CAIRO_LDFLAGS)
 
 libseed_canvas_la_LIBADD = \
-	$(top_builddir)/libseed/libseed.la \
+	$(top_builddir)/libseed/libseed@SEED_GTK_VERSION@.la \
 	$(SEED_PROFILE_LIBS)
 
 endif

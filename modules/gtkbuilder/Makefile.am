@@ -1,6 +1,6 @@
 if BUILD_GTKBUILDER_MODULE
 
-seedlibdir = ${libdir}/seed
+seedlibdir = ${libdir}/seed@SEED_GTK_VERSION@
 
 seedlib_LTLIBRARIES = \
 	libseed_gtkbuilder.la
@@ -22,7 +22,7 @@ libseed_gtkbuilder_la_LDFLAGS = \
 	$(GOBJECT_INTROSPECTION_LDFLAGS)
 
 libseed_gtkbuilder_la_LIBADD = \
-	$(top_builddir)/libseed/libseed.la \
+	$(top_builddir)/libseed/libseed@SEED_GTK_VERSION@.la \
 	$(SEED_PROFILE_LIBS)
 
 endif

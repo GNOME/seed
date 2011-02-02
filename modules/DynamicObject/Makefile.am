@@ -1,6 +1,6 @@
 if BUILD_DYNAMICOBJECT_MODULE
 
-seedlibdir = ${libdir}/seed
+seedlibdir = ${libdir}/seed@SEED_GTK_VERSION@
 
 seedlib_LTLIBRARIES = \
 	libseed_DynamicObject.la

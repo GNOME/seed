@@ -1,6 +1,6 @@
 if BUILD_MPFR_MODULE
 
-seedlibdir = ${libdir}/seed
+seedlibdir = ${libdir}/seed@SEED_GTK_VERSION@
 
 seedlib_LTLIBRARIES = \
 	libseed_mpfr.la
@@ -22,7 +22,7 @@ libseed_mpfr_la_LDFLAGS = \
 	$(GOBJECT_INTROSPECTION_LDFLAGS)
 
 libseed_mpfr_la_LIBADD = -lmpfr -lgmp \
-	$(top_builddir)/libseed/libseed.la \
+	$(top_builddir)/libseed/libseed@SEED_GTK_VERSION@.la \
 	$(SEED_PROFILE_LIBS)
 
 EXTRA_DIST = seed-mpfr.h

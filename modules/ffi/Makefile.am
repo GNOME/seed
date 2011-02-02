@@ -1,6 +1,6 @@
 if BUILD_FFI_MODULE
 
-seedlibdir = ${libdir}/seed
+seedlibdir = ${libdir}/seed@SEED_GTK_VERSION@
 
 EXTRA_DIST = \
 	test-sin.js \
@@ -28,7 +28,7 @@ libseed_ffi_la_LDFLAGS = \
 	$(FFI_LDFLAGS)
 
 libseed_ffi_la_LIBADD = \
-	$(top_builddir)/libseed/libseed.la \
+	$(top_builddir)/libseed/libseed@SEED_GTK_VERSION@.la \
 	$(SEED_PROFILE_LIBS)
 
 endif

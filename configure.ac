@@ -85,6 +85,8 @@ dnl=== support both 1.0 and 3.0 (default 3.0) ==
 AS_CASE([$with_webkit],
 	[3.0], [
 		WEBKIT_PC=webkitgtk-3.0
+		SEED_GTK_VERSION=-gtk3
+		AC_SUBST(SEED_GTK_VERSION)
 	],
 	[1.0], [
 		save_LIBS=$LIBSma

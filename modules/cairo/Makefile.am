@@ -8,7 +8,7 @@ EXTRA_DIST = seed-cairo-enums.h \
              seed-cairo-pdf-surface.h \
              seed-cairo-surface.h
 
-seedlibdir = ${libdir}/seed
+seedlibdir = ${libdir}/seed@SEED_GTK_VERSION@
 
 seedlib_LTLIBRARIES = \
 	libseed_cairo.la
@@ -38,7 +38,7 @@ libseed_cairo_la_LDFLAGS = \
 	$(CAIRO_LDFLAGS)
 
 libseed_cairo_la_LIBADD = \
-	$(top_builddir)/libseed/libseed.la
+	$(top_builddir)/libseed/libseed@SEED_GTK_VERSION@.la
 	$(SEED_PROFILE_LIBS)
 
 endif

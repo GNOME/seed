@@ -20,5 +20,5 @@ test_LDFLAGS = \
 	$(GOBJECT_INTROSPECTION_LIBS)
 
 test_LDADD = \
-	../../libseed/libseed.la
+	../../libseed/libseed@SEED_GTK_VERSION@.la
 

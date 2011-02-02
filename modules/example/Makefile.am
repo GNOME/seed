@@ -1,6 +1,6 @@
 if BUILD_EXAMPLE_MODULE
 
-seedlibdir = ${libdir}/seed
+seedlibdir = ${libdir}/seed@SEED_GTK_VERSION@
 
 seedlib_LTLIBRARIES = \
 	libseed_example.la
@@ -19,7 +19,7 @@ libseed_example_la_LDFLAGS = \
 	$(GOBJECT_INTROSPECTION_LDFLAGS)
 
 libseed_example_la_LIBADD = \
-	$(top_builddir)/libseed/libseed.la \
+	$(top_builddir)/libseed/libseed@SEED_GTK_VERSION@.la \
 	$(SEED_PROFILE_LIBS)
 
 endif

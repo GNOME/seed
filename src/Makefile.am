@@ -24,4 +24,4 @@ seed_LDFLAGS = \
 	$(GTHREAD_LIBS)
 
 seed_LDADD = \
-	../libseed/libseed.la
+	../libseed/libseed@SEED_GTK_VERSION@.la

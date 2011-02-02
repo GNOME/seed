@@ -8,10 +8,10 @@ EXTRA_DIST = dbus2js.py \
 			 lang.js \
 			 dbus-exports.h
 
-moduledir = $(datadir)/seed
+moduledir = $(datadir)/seed@SEED_GTK_VERSION@
 module_DATA = dbus.js lang.js
 
-seedlibdir = ${libdir}/seed
+seedlibdir = ${libdir}/seed@SEED_GTK_VERSION@
 
 seedlib_LTLIBRARIES = \
 	libseed_dbusnative.la
@@ -43,7 +43,7 @@ libseed_dbusnative_la_LDFLAGS = \
 libseed_dbusnative_la_LIBADD = \
 	-ldbus-1 \
 	-ldbus-glib-1 \
-	$(top_builddir)/libseed/libseed.la \
+	$(top_builddir)/libseed/libseed@SEED_GTK_VERSION@.la \
 	$(SEED_PROFILE_LIBS)
 
 

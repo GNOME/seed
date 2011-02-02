@@ -1,7 +1,7 @@
 lib_LTLIBRARIES = \
-	libseed.la
+	libseed@SEED_GTK_VERSION@.la
 
-libseed_la_SOURCES = \
+libseed@SEED_GTK_VERSION@_la_SOURCES = \
 	seed-closure.c \
 	seed-api.c \
 	seed-closure.h \
@@ -25,7 +25,7 @@ libseed_la_SOURCES = \
 	seed-importer.h \
 	seed-path.h
 
-libseed_la_CFLAGS = \
+libseed@SEED_GTK_VERSION@_la_CFLAGS = \
 	-Wall \
 	$(GOBJECT_INTROSPECTION_CFLAGS) \
 	$(WEBKIT_CFLAGS) \
@@ -35,10 +35,10 @@ libseed_la_CFLAGS = \
 	$(FFI_CFLAGS) \
 	-DGOBJECT_INTROSPECTION_VERSION=$(GOBJECT_INTROSPECTION_VERSION)
 
-libseed_la_LDFLAGS = \
+libseed@SEED_GTK_VERSION@_la_LDFLAGS = \
 	$(FFI_LDFLAGS)
 
-libseed_la_LIBADD = \
+libseed@SEED_GTK_VERSION@_la_LIBADD = \
 	$(GOBJECT_INTROSPECTION_LIBS) \
 	$(WEBKIT_LIBS) \
 	$(SEED_PROFILE_LIBS) \
@@ -47,5 +47,5 @@ libseed_la_LIBADD = \
 
 seedheaders_HEADERS = seed.h seed-debug.h seed-module.h
 
-seedheadersdir = $(pkgincludedir)
+seedheadersdir = $(pkgincludedir)@SEED_GTK_VERSION@
 

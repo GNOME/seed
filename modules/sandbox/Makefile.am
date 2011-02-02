@@ -1,4 +1,4 @@
-seedlibdir = ${libdir}/seed
+seedlibdir = ${libdir}/seed@SEED_GTK_VERSION@
 
 seedlib_LTLIBRARIES = \
 	libseed_sandbox.la
@@ -18,7 +18,7 @@ libseed_sandbox_la_LDFLAGS = \
 	$(GOBJECT_INTROSPECTION_LDFLAGS)
 
 libseed_sandbox_la_LIBADD = \
-	$(top_builddir)/libseed/libseed.la \
+	$(top_builddir)/libseed/libseed@SEED_GTK_VERSION@.la \
 	$(SEED_PROFILE_LIBS)
 
 
