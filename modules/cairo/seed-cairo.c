@@ -118,7 +118,7 @@ seed_cairo_construct_context (SeedContext ctx,
 }
 
 static SeedObject
-seed_cairo_construct_context_from_drawable (SeedContext ctx,
+seed_cairo_construct_context_from_window (SeedContext ctx,
 					    SeedObject constructor,
 					    size_t argument_count,
 					    const SeedValue arguments[],
@@ -130,13 +130,13 @@ seed_cairo_construct_context_from_drawable (SeedContext ctx,
       EXPECTED_EXCEPTION ("Context", "1 argument");
     }
   obj = seed_value_to_object (ctx, arguments[0], exception);
-  if (!GDK_IS_DRAWABLE(obj))
+  if (!GDK_IS_WINDOW(obj))
     {
-      seed_make_exception (ctx, exception, "ArgumentError", "Context.from_drawable requires a GdkDrawable argument");
+      seed_make_exception (ctx, exception, "ArgumentError", "Context.from_window requires a GdkWindow argument");
       return seed_make_null (ctx);
     }
 
-  return seed_object_from_cairo_context (ctx, gdk_cairo_create (GDK_DRAWABLE (obj)));
+  return seed_object_from_cairo_context (ctx, gdk_cairo_create (GDK_WINDOW (obj)));
 }
 
 static SeedObject
@@ -1834,14 +1834,14 @@ seed_module_init(SeedEngine * local_eng)
   gdk_context_constructor_ref = seed_make_constructor (eng->context,
 						       NULL,
 						       //				   seed_cairo_context_class,
-						       seed_cairo_construct_context_from_drawable);
+						       seed_cairo_construct_context_from_window);
   steal_context_constructor_ref = seed_make_constructor (eng->context,
 						       NULL,
 						       //				   seed_cairo_context_class,
 						       seed_cairo_construct_context_steal);
 
   seed_object_set_property (eng->context, namespace_ref, "Context", context_constructor_ref);
-  seed_object_set_property (eng->context, context_constructor_ref, "from_drawable", gdk_context_constructor_ref);
+  seed_object_set_property (eng->context, context_constructor_ref, "from_window", gdk_context_constructor_ref);
   seed_object_set_property (eng->context, context_constructor_ref, "steal", steal_context_constructor_ref);
 
   return namespace_ref;
