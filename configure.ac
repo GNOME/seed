@@ -136,7 +136,11 @@ if test x"$want_canvas_module" == x"yes" ; then
 	PKG_CHECK_MODULES(CAIRO, cairo)
 	AC_SUBST(CAIRO_CFLAGS)
 	AC_SUBST(CAIRO_LDFLAGS)
-	PKG_CHECK_MODULES(GDK, gdk-2.0)
+	if test x"$with_webkit" == x"3.0" ; then
+		PKG_CHECK_MODULES(GDK, gdk-3.0)
+	else
+		PKG_CHECK_MODULES(GDK, gdk-2.0)
+	fi
 	AC_SUBST(GDK_CFLAGS)
 	AC_SUBST(GDK_LDFLAGS)
 fi
@@ -275,7 +279,11 @@ AC_ARG_ENABLE(gtkbuilder-module,
 			  [want_gtkbuilder_module=$enableval],[want_gtkbuilder_module="yes"])
 
 if test x"$want_gtkbuilder_module" == x"yes" ; then
-   PKG_CHECK_MODULES(GTK, gtk+-2.0)
+   if test x"$with_webkit" == x"3.0" ; then
+	PKG_CHECK_MODULES(GTK, gtk+-3.0)
+   else
+	PKG_CHECK_MODULES(GTK, gtk+-2.0)
+   fi
    AC_SUBST(GTK_CFLAGS)
    AC_SUBST(GTK_LDFLAGS)
 fi
