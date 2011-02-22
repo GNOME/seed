@@ -1,3 +1,9 @@
+== Seed 2.91.90 (2011.02.22) ==
+
+* Fix build with GTK+3
+
+* Change soname for GTK+3 version
+
 == Seed 2.31.91, "Write About Love" (2010.08.30) ==
 
 * Seed now optionally supports both WebKitGtk+-1.0 and 3.0
