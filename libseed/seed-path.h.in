@@ -1,1 +1,1 @@
-#define SEED_PREFIX_PATH "@prefix@""/share/seed/"
+#define SEED_PREFIX_PATH "@prefix@""/share/seed@SEED_GTK_VERSION@/"
