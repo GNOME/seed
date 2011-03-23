@@ -1567,16 +1567,22 @@ seed_engine_destroy (SeedEngine *eng)
 }
 
 /**
- * seed_init_with_context_and_group:
+ * seed_init_constrained_with_context_and_group:
  * @argc: A reference to the number of arguments remaining to parse.
  * @argv: A reference to an array of string arguments remaining to parse.
  * @context A reference to an existing JavascriptCore context
  * @group: A #SeedContextGroup within which to create the initial context.
  *
- * Initializes a new #SeedEngine using an existing JavascriptCore context. 
- * This involves initializing GLib, adding @instance to @group, adding the 
- * default globals to the provided context, and initializing various internal
- * parts of Seed.
+ * Initializes an empty new #SeedEngine. The Javascript context of this engine is
+ * *not* filled with any builtins functions and the import system.
+ *
+ * The javascript code executed with this engine can't import arbitrary
+ * GObject introspected librairies.
+ *
+ * Use this when control over what is exposed in the Javascript context is required,
+ * for security concerns for example.
+ * GObject instances can be selectively exposed by calling @seed_engine_expose_gobject.
+ * Namespaces can be selectively exposed by calling
  *
  * This function should only be called once within a single Seed application.
  *
@@ -1584,10 +1590,11 @@ seed_engine_destroy (SeedEngine *eng)
  *
  */
 SeedEngine *
-seed_init_with_context_and_group (gint * argc,
-			      gchar *** argv, JSGlobalContextRef context, JSContextGroupRef group)
+seed_init_constrained_with_context_and_group (gint * argc,
+                                                     gchar *** argv,
+                                                     JSGlobalContextRef context,
+                                                     JSContextGroupRef group)
 {
-
   g_type_init ();
   g_log_set_handler ("GLib-GObject", G_LOG_LEVEL_WARNING, seed_log_handler, 0);
 
@@ -1645,16 +1652,40 @@ seed_init_with_context_and_group (gint * argc,
 
   g_irepository_require (g_irepository_get_default (), "GObject", NULL, 0, 0);
   g_irepository_require (g_irepository_get_default (), "GIRepository",
-			 NULL, 0, 0);
+                         NULL, 0, 0);
 
-  seed_initialize_importer (eng->context, eng->global);
-
-  seed_init_builtins (eng, argc, argv);
-  seed_closures_init ();
   seed_structs_init ();
+  seed_closures_init ();
 
+  return eng;
+}
+
+/**
+ * seed_init_with_context_and_group:
+ * @argc: A reference to the number of arguments remaining to parse.
+ * @argv: A reference to an array of string arguments remaining to parse.
+ * @context A reference to an existing JavascriptCore context
+ * @group: A #SeedContextGroup within which to create the initial context.
+ *
+ * Initializes a new #SeedEngine using an existing JavascriptCore context.
+ * This involves initializing GLib, adding @instance to @group, adding the
+ * default globals to the provided context, and initializing various internal
+ * parts of Seed.
+ *
+ * This function should only be called once within a single Seed application.
+ *
+ * Return value: The newly created and initialized #SeedEngine.
+ *
+ */
+SeedEngine *
+seed_init_with_context_and_group (gint * argc,
+			      gchar *** argv, JSGlobalContextRef context, JSContextGroupRef group)
+{
+
+  eng = seed_init_constrained_with_context_and_group (argc, argv, context, group);
+  seed_init_builtins (eng, argc, argv);
+  seed_initialize_importer (eng->context, eng->global);
   seed_gtype_init (eng);
-
 
   defaults_script =
     JSStringCreateWithUTF8CString ("Seed.include(\"" SEED_PREFIX_PATH
@@ -1739,4 +1770,110 @@ seed_init_with_context (gint * argc, gchar *** argv, JSGlobalContextRef context)
   return seed_init_with_context_and_group (argc, argv, context, context_group);
 }
 
+/**
+ * seed_init_constrained:
+ * @argc: A reference to the number of arguments remaining to parse.
+ * @argv: A reference to an array of string arguments remaining to parse.
+ *
+ * Initializes an empty new #SeedEngine. The Javascript context of this engine is
+ * *not* filled with any builtins functions and the import system.
+ *
+ * The javascript code executed with this engine can't import arbitrary
+ * GObject introspected librairies.
+ *
+ * Use this when control over what is exposed in the Javascript context is required,
+ * for security concerns for example.
+ * GObject instances can be selectively exposed by calling @seed_engine_expose_gobject.
+ * Namespaces can be selectively exposed by calling
+ *
+ * This function should only be called once within a single Seed application.
+ *
+ * Return value: The newly created and initialized #SeedEngine.
+ *
+ */
+SeedEngine *
+seed_init_constrained (gint * argc, gchar *** argv)
+{
+  context_group = JSContextGroupCreate ();
+  pthread_key_create(&seed_next_gobject_wrapper_key, NULL);
 
+  return seed_init_constrained_with_context_and_group(argc, argv,
+                                                             JSGlobalContextCreateInGroup (context_group, NULL),
+                                                             context_group);
+}
+
+/*
+ * seed_engine_expose_gobject:
+ * @engine:
+ * @name: The name of the global javascript variable pointing to @object
+ * @object: The #GObject instance that will be exposed in the the javascript context
+ * @gir_namespace: The Introspection namespace containing the type of the provided
+ * object.
+ *
+ * Expose a GObject instance to the global Javascript context and makes it accessible
+ * under the provided @js_name
+ *
+ * return: the SeedValue representing @object, NULL in case of error
+ */
+JSValueRef
+seed_engine_expose_gobject (SeedEngine *engine,
+                            gchar *js_name,
+                            GObject *object,
+                            gchar *gir_namespace,
+                            JSValueRef * exception)
+{
+  GError *error = NULL;
+
+  g_assert (engine != NULL && gir_namespace != NULL && js_name != NULL);
+
+  GITypelib *type_lib = g_irepository_require (g_irepository_get_default(),
+                                               gir_namespace, NULL, 0, &error);
+  if (type_lib == NULL)
+  {
+    seed_make_exception_from_gerror (engine->context, exception, error);
+    g_error_free (error);
+    return NULL;
+  }
+
+  JSValueRef obj_js_value = seed_value_from_object (engine->context,
+                                                    G_OBJECT(object),
+                                                    exception);
+  g_return_val_if_fail (obj_js_value != NULL, NULL);
+
+  g_return_val_if_fail (engine->global != NULL, NULL);
+
+  gboolean ok = seed_object_set_property (engine->context,
+                                          engine->global, js_name, obj_js_value);
+  g_return_val_if_fail (ok == TRUE, NULL);
+
+  return obj_js_value;
+}
+
+/*
+ * seed_engine_expose_namespace:
+ * @engine:
+ * @namespace: Name of the GIR Namespace that should be exposed in the JS context.
+ *
+ * Expose a GIR namespace in the global Javascript context and makes it accessible
+ * under a variable named after the namespace (ex: the namespace 'Notify' is held
+ * by the 'Notify' javascript variable.
+ *
+ * return: the SeedValue representing @namespace in the javascript context,
+ *  NULL in case of error
+ */
+JSValueRef
+seed_engine_expose_namespace (SeedEngine *engine,
+                              gchar *namespace_name,
+                              JSValueRef *exception)
+{
+  g_assert (engine != NULL && namespace_name != NULL);
+
+  JSValueRef namespace = seed_gi_importer_do_namespace (engine->context,
+                                                        namespace_name, exception);
+  g_return_val_if_fail (namespace != NULL, NULL);
+  gboolean ok = seed_object_set_property (engine->context,
+                                           engine->global, namespace_name, namespace);
+  g_return_val_if_fail (ok == TRUE, FALSE);
+
+  return namespace;
+}

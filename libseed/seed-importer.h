@@ -25,5 +25,7 @@
 extern JSObjectRef importer;
 
 void seed_initialize_importer (JSContextRef ctx, JSObjectRef global);
+JSObjectRef seed_gi_importer_do_namespace (JSContextRef ctx,
+                                           gchar * namespace, JSValueRef * exception);
 
 #endif

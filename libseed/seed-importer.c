@@ -371,7 +371,7 @@ seed_gi_importer_get_version (JSContextRef ctx,
   return version;
 }
 
-static JSObjectRef
+JSObjectRef
 seed_gi_importer_do_namespace (JSContextRef ctx,
 			       gchar * namespace, JSValueRef * exception)
 {
@@ -379,9 +379,12 @@ seed_gi_importer_do_namespace (JSContextRef ctx,
   JSObjectRef namespace_ref;
   GError *e = NULL;
   guint n, i;
-  gchar *version;
+  gchar *version = NULL;
   gchar *jsextension;
   JSStringRef extension_script;
+
+  if (gi_imports == NULL)
+    gi_imports = g_hash_table_new (g_str_hash, g_str_equal);
 
   if ((namespace_ref = g_hash_table_lookup (gi_imports, namespace)))
     {
@@ -390,7 +393,8 @@ seed_gi_importer_do_namespace (JSContextRef ctx,
       return namespace_ref;
     }
 
-  version = seed_gi_importer_get_version (ctx, namespace, exception);
+  if (gi_importer_versions != NULL)
+    version = seed_gi_importer_get_version (ctx, namespace, exception);
   if (!g_irepository_require (NULL, namespace, version, 0, &e))
     {
       seed_make_exception_from_gerror (ctx, exception, e);
@@ -398,7 +402,8 @@ seed_gi_importer_do_namespace (JSContextRef ctx,
       g_free (version);
       return NULL;
     }
-  g_free (version);
+  if (version != NULL)
+    g_free (version);
 
   n = g_irepository_get_n_infos (NULL, namespace);
 

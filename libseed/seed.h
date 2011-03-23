@@ -80,6 +80,11 @@ SeedEngine *seed_init_with_context_group (gint *argc, gchar ***argv,
 					  SeedContextGroup group);
 SeedEngine *seed_init_with_context_and_group (gint * argc,gchar *** argv,
 					  SeedGlobalContext context, SeedContextGroup group);
+SeedEngine *seed_init_constrained (gint * argc, gchar *** argv);
+SeedEngine *seed_init_constrained_with_context_and_group (gint * argc,
+                                                                 gchar *** argv,
+                                                                 SeedGlobalContext context,
+                                                                 SeedContextGroup group);
 void seed_engine_destroy (SeedEngine *eng);
 
 SeedValue seed_simple_evaluate (SeedContext ctx,
@@ -103,6 +108,10 @@ gchar *seed_exception_to_string (SeedContext ctx, SeedException exception);
 
 SeedValue seed_evaluate (SeedContext ctx, SeedScript * s, SeedObject this);
 
+SeedValue
+seed_engine_expose_gobject (SeedEngine *engine, gchar *js_name, GObject *object, gchar *gir_namespace, SeedException exception);
+SeedValue
+seed_engine_expose_namespace (SeedEngine *engine, gchar *namespace_name, SeedException exception);
 GOptionGroup * seed_get_option_group (void);
 
 /*
