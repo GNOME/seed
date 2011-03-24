@@ -474,11 +474,11 @@ seed_gi_make_array (JSContextRef ctx,
 }
 
 gboolean
-seed_gi_make_argument (JSContextRef ctx,
-		       JSValueRef value,
-		       GITypeInfo * type_info,
-		       GArgument * arg,
-		       JSValueRef * exception)
+seed_value_to_gi_argument (JSContextRef ctx,
+			   JSValueRef value,
+			   GITypeInfo * type_info,
+			   GArgument * arg,
+			   JSValueRef * exception)
 {
   GITypeTag gi_tag = g_type_info_get_tag (type_info);
 
@@ -800,9 +800,9 @@ seed_gi_make_argument (JSContextRef ctx,
 }
 
 JSValueRef
-seed_gi_argument_make_js (JSContextRef ctx,
-			  GArgument * arg, GITypeInfo * type_info,
-			  JSValueRef * exception)
+seed_value_from_gi_argument (JSContextRef ctx,
+			     GArgument * arg, GITypeInfo * type_info,
+			     JSValueRef * exception)
 {
   GITypeTag gi_tag = g_type_info_get_tag (type_info);
   switch (gi_tag)
@@ -936,8 +936,8 @@ seed_gi_argument_make_js (JSContextRef ctx,
 
 	    larg.v_pointer = list->data;
 	    ival =
-	      (JSValueRef) seed_gi_argument_make_js (ctx, &larg,
-						     list_type, exception);
+	      (JSValueRef) seed_value_from_gi_argument (ctx, &larg,
+							list_type, exception);
 	    if (!ival)
 	      ival = JSValueMakeNull (ctx);
 	    JSObjectSetPropertyAtIndex (ctx, ret, i, ival, NULL);
@@ -962,8 +962,8 @@ seed_gi_argument_make_js (JSContextRef ctx,
 	  {
 	    larg.v_pointer = list->data;
 	    ival =
-	      (JSValueRef) seed_gi_argument_make_js (ctx, &larg,
-						     list_type, exception);
+	      (JSValueRef) seed_value_from_gi_argument (ctx, &larg,
+							list_type, exception);
 	    if (!ival)
 	      ival = JSValueMakeNull (ctx);
 	    JSObjectSetPropertyAtIndex (ctx, ret, i, ival, NULL);

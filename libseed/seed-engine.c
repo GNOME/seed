@@ -607,8 +607,8 @@ seed_gobject_method_invoked (JSContextRef ctx,
                 }
             }
 
-          if (!seed_gi_make_argument (ctx, arguments[i], type_info,
-				      &in_args[n_in_args++], exception))
+          if (!seed_value_to_gi_argument (ctx, arguments[i], type_info,
+					  &in_args[n_in_args++], exception))
 	    {
 	      seed_make_exception (ctx, exception,
 				   "ArgumentError",
@@ -718,7 +718,7 @@ seed_gobject_method_invoked (JSContextRef ctx,
 
 	    }
 	  retval_ref =
-	    seed_gi_argument_make_js (ctx, &retval, type_info, exception);
+	    seed_value_from_gi_argument (ctx, &retval, type_info, exception);
 
 	  if (sunk)
 	    g_object_unref (G_OBJECT (retval.v_pointer));
@@ -769,8 +769,8 @@ seed_gobject_method_invoked (JSContextRef ctx,
 	}
       
       // we are now only dealing with OUT arguments.
-      jsout_val = seed_gi_argument_make_js (ctx, &out_values[out_args_pos],
-					    type_info, exception);
+      jsout_val = seed_value_from_gi_argument (ctx, &out_values[out_args_pos],
+					       type_info, exception);
   
 
 #if GOBJECT_INTROSPECTION_VERSION > 0x000613

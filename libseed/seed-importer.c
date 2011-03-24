@@ -348,7 +348,7 @@ seed_gi_importer_handle_constant (JSContextRef ctx,
 
   g_constant_info_get_value (info, &argument);
   constant_value =
-    seed_gi_argument_make_js (ctx, &argument, constant_type, exception);
+    seed_value_from_gi_argument (ctx, &argument, constant_type, exception);
   seed_object_set_property (ctx, namespace_ref,
 			    g_base_info_get_name ((GIBaseInfo *) info),
 			    constant_value);

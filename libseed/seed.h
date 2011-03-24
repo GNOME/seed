@@ -166,6 +166,16 @@ gboolean seed_value_to_gvalue (SeedContext ctx,
 SeedValue seed_value_from_gvalue (SeedContext ctx,
 				  GValue * gval, SeedException * exception);
 
+gboolean seed_value_to_gi_argument (SeedContext ctx,
+				    SeedValue value,
+				    GITypeInfo * type_info,
+				    GArgument * arg, SeedValue * exception);
+
+SeedValue seed_value_from_gi_argument (SeedContext ctx,
+				       GArgument * arg,
+				       GITypeInfo * type_info,
+				       SeedException * exception);
+
 gboolean seed_value_to_boolean (SeedContext ctx,
 				SeedValue val, SeedException * exception);
 

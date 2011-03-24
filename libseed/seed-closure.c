@@ -171,7 +171,7 @@ seed_handle_closure (ffi_cif * cif, void *result, void **args, void *userdata)
 	default:
 	  arg->v_pointer = 0;
 	}
-      jsargs[i] = seed_gi_argument_make_js (ctx, arg, arg_type, 0);
+      jsargs[i] = seed_value_from_gi_argument (ctx, arg, arg_type, 0);
       seed_gi_release_arg (g_arg_info_get_ownership_transfer (arg_info),
 			      arg_type, arg);
       g_base_info_unref ((GIBaseInfo *) arg_info);
@@ -191,7 +191,7 @@ seed_handle_closure (ffi_cif * cif, void *result, void **args, void *userdata)
       exception = 0;
     }
 
-  seed_gi_make_argument (ctx, (JSValueRef) return_value, return_type,
+  seed_value_to_gi_argument (ctx, (JSValueRef) return_value, return_type,
 			 &return_arg, 0);
   switch (return_tag)
     {

@@ -37,14 +37,15 @@ JSValueRef seed_object_get_property (JSContextRef ctx,
 gboolean seed_object_set_property (JSContextRef ctx, JSObjectRef object,
 				   const gchar * name, JSValueRef value);
 
-gboolean seed_gi_make_argument (JSContextRef ctx,
-				JSValueRef value,
-				GITypeInfo * type_info,
-				GArgument * arg, JSValueRef * exception);
-JSValueRef seed_gi_argument_make_js (JSContextRef ctx,
-				     GArgument * arg,
-				     GITypeInfo * type_info,
-				     JSValueRef * exception);
+gboolean seed_value_to_gi_argument (JSContextRef ctx,
+				    JSValueRef value,
+				    GITypeInfo * type_info,
+				    GArgument * arg, JSValueRef * exception);
+
+JSValueRef seed_value_from_gi_argument (JSContextRef ctx,
+				        GArgument * arg,
+				        GITypeInfo * type_info,
+				        JSValueRef * exception);
 
 gboolean seed_gi_release_arg (GITransfer transfer,
 			      GITypeInfo * type_info, GArgument * arg);
