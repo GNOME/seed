@@ -231,7 +231,7 @@ seed_gtype_builtin_get_property (GObject * object,
 
   seed_prepare_global_context (ctx);
 
-  seed_gvalue_from_seed_value (ctx, jsval, spec->value_type, value, 0);
+  seed_value_to_gvalue (ctx, jsval, spec->value_type, value, 0);
 
   g_free (name);
   JSGlobalContextRelease ((JSGlobalContextRef) ctx);

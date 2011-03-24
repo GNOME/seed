@@ -194,8 +194,8 @@ seed_signal_marshal_func (GClosure * closure,
   if (ret && !JSValueIsNull (ctx, ret)
       && (seed_closure->return_type != G_TYPE_NONE))
     {
-      seed_gvalue_from_seed_value (ctx, ret, seed_closure->return_type,
-				   return_value, &exception);
+      seed_value_to_gvalue (ctx, ret, seed_closure->return_type,
+			    return_value, &exception);
     }
 
   if (exception)
@@ -249,9 +249,9 @@ seed_gobject_signal_emit (JSContextRef ctx,
   g_value_init (&params[0], G_TYPE_OBJECT);
   g_value_set_object (&params[0], privates->object);
   for (i = 0; i < argumentCount; i++)
-    seed_gvalue_from_seed_value (ctx, arguments[i],
-				 query.param_types[i],
-				 &params[i + 1], exception);
+    seed_value_to_gvalue (ctx, arguments[i],
+			  query.param_types[i],
+			  &params[i + 1], exception);
 
 
   if (query.return_type != G_TYPE_NONE)

@@ -721,7 +721,7 @@ seed_construct_struct_type_with_parameters (JSContextRef ctx,
               return (JSObjectRef) JSValueMakeNull (ctx);
             }
           SEED_NOTE (CONSTRUCTION, "Created a GValue  struct");
-          seed_gvalue_from_seed_value (ctx,   parameters , 0,  gval, exception);
+          seed_value_to_gvalue (ctx,   parameters , 0,  gval, exception);
           ret = seed_make_struct (ctx, (gpointer)gval, info);
           return ret;
         }

@@ -27,14 +27,15 @@ extern GQuark js_ref_quark;
 JSValueRef seed_value_from_gvalue (JSContextRef ctx,
 				   GValue * gval, JSValueRef * exception);
 
+gboolean seed_value_to_gvalue (JSContextRef ctx,
+			       JSValueRef val, GType type,
+			       GValue * gval, JSValueRef * exception);
+
 JSValueRef seed_object_get_property (JSContextRef ctx,
 				     JSObjectRef val, const gchar * name);
 
 gboolean seed_object_set_property (JSContextRef ctx, JSObjectRef object,
 				   const gchar * name, JSValueRef value);
-gboolean seed_gvalue_from_seed_value (JSContextRef ctx,
-				      JSValueRef val, GType type,
-				      GValue * gval, JSValueRef * exception);
 
 gboolean seed_gi_make_argument (JSContextRef ctx,
 				JSValueRef value,

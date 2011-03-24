@@ -243,8 +243,8 @@ seed_gobject_constructor_invoked (JSContextRef ctx,
       else
 	type = param_spec->value_type;
 
-      seed_gvalue_from_seed_value (ctx, jsprop_value,
-				   type, &params[ri].value, exception);
+      seed_value_to_gvalue (ctx, jsprop_value,
+			    type, &params[ri].value, exception);
 
       if (*exception)
 	{
@@ -1209,7 +1209,7 @@ seed_gobject_set_property (JSContextRef context,
   else
     type = spec->value_type;
 
-  seed_gvalue_from_seed_value (context, value, type, &gval, exception);
+  seed_value_to_gvalue (context, value, type, &gval, exception);
   if (*exception)
     {
       return FALSE;

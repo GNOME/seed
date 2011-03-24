@@ -451,9 +451,9 @@ seed_gi_make_array (JSContextRef ctx,
 		    elem = JSObjectGetPropertyAtIndex (ctx,
 						       (JSObjectRef) array,
 						       i, exception);
-		    seed_gvalue_from_seed_value (ctx, elem,
-						 (GType) 0,
-						 &gvalresult[i], exception);
+		    seed_value_to_gvalue (ctx, elem,
+					  (GType) 0,
+					  &gvalresult[i], exception);
 		  }
 		*array_p = gvalresult;
 
@@ -657,10 +657,10 @@ seed_gi_make_argument (JSContextRef ctx,
 		else if (type == G_TYPE_VALUE)
 		  {
 		    GValue *gval = g_slice_alloc0 (sizeof (GValue));
-		    seed_gvalue_from_seed_value (ctx,
-						 value,
-						 (GType) NULL,
-						 gval, exception);
+		    seed_value_to_gvalue (ctx,
+					  value,
+					  (GType) NULL,
+					  gval, exception);
 		    arg->v_pointer = gval;
 
 		    g_base_info_unref (interface);
@@ -1069,9 +1069,9 @@ seed_value_from_gvalue (JSContextRef ctx,
 }
 
 gboolean
-seed_gvalue_from_seed_value (JSContextRef ctx,
-			     JSValueRef val,
-			     GType type, GValue * ret, JSValueRef * exception)
+seed_value_to_gvalue (JSContextRef ctx,
+		      JSValueRef val,
+		      GType type, GValue * ret, JSValueRef * exception)
 {
   if (G_IS_VALUE (ret))
     g_value_unset (ret);
@@ -1282,8 +1282,8 @@ seed_gvalue_from_seed_value (JSContextRef ctx,
 					      exception);
 		if (type)	// Prevents recursion.
 		  {
-		    return seed_gvalue_from_seed_value (ctx, val,
-							type, ret, exception);
+		    return seed_value_to_gvalue (ctx, val,
+						 type, ret, exception);
 		  }
 		// TODO: FIXME: Handle better?
 		else
