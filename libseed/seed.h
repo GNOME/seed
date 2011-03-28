@@ -24,6 +24,8 @@
 #ifndef _SEED_H
 #define _SEED_H
 
+G_BEGIN_DECLS
+
 typedef gpointer SeedString;
 typedef gpointer SeedValue;
 typedef gpointer SeedObject;
@@ -106,7 +108,7 @@ guint seed_exception_get_line (SeedContext ctx, SeedException exception);
 gchar *seed_exception_get_file (SeedContext ctx, SeedException exception);
 gchar *seed_exception_to_string (SeedContext ctx, SeedException exception);
 
-SeedValue seed_evaluate (SeedContext ctx, SeedScript * s, SeedObject this);
+SeedValue seed_evaluate (SeedContext ctx, SeedScript * s, SeedObject this_object);
 
 SeedValue
 seed_engine_expose_gobject (SeedEngine *engine, gchar *js_name, GObject *object, gchar *gir_namespace, SeedException exception);
@@ -263,7 +265,7 @@ SeedValue seed_object_get_property_at_index (SeedContext ctx,
 
 SeedValue seed_object_call (SeedContext ctx,
 			    SeedObject object,
-			    SeedObject this,
+			    SeedObject this_object,
 			    gsize argument_count,
 			    const SeedValue arguments[],
 			    SeedException * exception);
@@ -273,8 +275,8 @@ GObject *seed_value_to_object (SeedContext ctx,
 SeedValue seed_value_from_object (SeedContext ctx,
 				  GObject * val, SeedException * exception);
 
-SeedObject seed_make_object (SeedContext ctx, SeedClass class,
-			     gpointer private);
+SeedObject seed_make_object (SeedContext ctx, SeedClass klass,
+			     gpointer private_object);
 
 gpointer seed_object_get_private (SeedObject object);
 void seed_object_set_private (SeedObject object, gpointer value);
@@ -287,7 +289,7 @@ SeedObject
 seed_object_get_prototype (SeedContext ctx, SeedObject obj);
 
 gboolean
-seed_object_is_of_class (SeedContext ctx, SeedObject obj, SeedClass class);
+seed_object_is_of_class (SeedContext ctx, SeedObject obj, SeedClass klass);
 
 SeedValue seed_make_pointer (SeedContext ctx, gpointer pointer);
 
@@ -410,7 +412,7 @@ typedef struct _seed_class_definition
 SeedClass seed_create_class (seed_class_definition * def);
 
 SeedObject seed_make_constructor (SeedContext ctx,
-				  SeedClass class,
+				  SeedClass klass,
 				  SeedObjectCallAsConstructorCallback constructor);
 
 void seed_engine_set_search_path (SeedEngine * eng, const gchar * path);
@@ -446,5 +448,7 @@ seed_closure_invoke_with_context (SeedContext ctx, GClosure *closure, SeedValue 
 
 void
 seed_closure_warn_exception (GClosure *c, SeedContext ctx, SeedException exception);
+
+G_END_DECLS
 
 #endif
