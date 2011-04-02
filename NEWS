@@ -1,3 +1,13 @@
+== Seed 3.0.0, "Evacuate the Dancefloor" (2011.04.01) ==
+
+* Allow the creation of constrained SeedEngine contexts
+
+* Expose seed_value_(to|from)_gi_argument and seed_value_to_gvalue as public API
+
+* Make seed.h C++ friendly
+
+* Take GTK+ version into account in the prefix path
+
 == Seed 2.91.90 (2011.02.22) ==
 
 * Fix build with GTK+3
