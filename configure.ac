@@ -110,7 +110,7 @@ PKG_CHECK_MODULES(GOBJECT_INTROSPECTION, gobject-introspection-1.0 >= 0.6.3)
 AC_SUBST(GOBJECT_INTROSPECTION_CFLAGS)
 AC_SUBST(GOBJECT_INTROSPECTION_LDFLAGS)
 
-GOBJECT_INTROSPECTION_VERSION=`$PKG_CONFIG --modversion gobject-introspection-1.0 |  $AWK '{ split($1, a , ".") ; printf "0x%02d%02d%02d", a[1], a[2], a[3] }'`
+GOBJECT_INTROSPECTION_VERSION=`$PKG_CONFIG --modversion gobject-introspection-1.0 |  $AWK '{ split($1, a , ".") ; printf "0x%02d%02d%02d", a[[1]], a[[2]], a[[3]] }'`
 
 AC_SUBST(GOBJECT_INTROSPECTION_VERSION)
 
