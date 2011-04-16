@@ -77,6 +77,7 @@ seed_handle_closure (ffi_cif * cif, void *result, void **args, void *userdata)
       switch (tag)
 	{
 #if GOBJECT_INTROSPECTION_VERSION >= 0x000900
+#if GOBJECT_INTROSPECTION_VERSION < 0x001000
 	case GI_TYPE_TAG_LONG:
 	  arg->v_long = *(glong *) args[i];
 	  break;
@@ -95,6 +96,7 @@ seed_handle_closure (ffi_cif * cif, void *result, void **args, void *userdata)
 	case GI_TYPE_TAG_UINT:
 	  arg->v_uint = *(guint *) args[i];
 	  break;
+#endif
 #endif
 	case GI_TYPE_TAG_BOOLEAN:
 	  arg->v_boolean = *(gboolean *) args[i];
@@ -196,6 +198,7 @@ seed_handle_closure (ffi_cif * cif, void *result, void **args, void *userdata)
   switch (return_tag)
     {
 #if GOBJECT_INTROSPECTION_VERSION >= 0x000900
+#if GOBJECT_INTROSPECTION_VERSION < 0x001000
     case GI_TYPE_TAG_LONG:
       *(glong *) result = return_arg.v_long;
       break;
@@ -214,6 +217,7 @@ seed_handle_closure (ffi_cif * cif, void *result, void **args, void *userdata)
     case GI_TYPE_TAG_UINT:
       *(guint *) result = return_arg.v_uint;
       break;
+#endif
 #endif
     case GI_TYPE_TAG_BOOLEAN:
       *(gboolean *) result = return_arg.v_boolean;
