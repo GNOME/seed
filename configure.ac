@@ -132,11 +132,11 @@ AC_ARG_ENABLE(canvas-module,
 							 [enable the canvas Seed module. [default=yes]]),
 			  [want_canvas_module=$enableval],[want_canvas_module="yes"])
 
-if test x"$want_canvas_module" == x"yes" ; then
+if test x"$want_canvas_module" = x"yes" ; then
 	PKG_CHECK_MODULES(CAIRO, cairo)
 	AC_SUBST(CAIRO_CFLAGS)
 	AC_SUBST(CAIRO_LDFLAGS)
-	if test x"$with_webkit" == x"3.0" ; then
+	if test x"$with_webkit" = x"3.0" ; then
 		PKG_CHECK_MODULES(GDK, gdk-3.0)
 	else
 		PKG_CHECK_MODULES(GDK, gdk-2.0)
@@ -153,7 +153,7 @@ AC_ARG_ENABLE(readline-module,
 			  AC_HELP_STRING([--enable-readline-module],
 							 [enable the readline Seed module. [default=yes]]),
 			  [want_readline_module=$enableval],[want_readline_module="yes"])
-if test x"$want_readline_module" == x"yes" ; then
+if test x"$want_readline_module" = x"yes" ; then
 	AC_CHECK_HEADER([readline/readline.h],,AC_MSG_ERROR([the readline library is not installed.]))
 fi
 
@@ -176,7 +176,7 @@ AC_ARG_ENABLE(sqlite-module,
 							 [enable the sqlite Seed module. [default=yes]]),
 			  [want_sqlite_module=$enableval],[want_sqlite_module="yes"])
 
-if test x"$want_sqlite_module" == x"yes" ; then
+if test x"$want_sqlite_module" = x"yes" ; then
 	PKG_CHECK_MODULES(SQLITE, sqlite3)
 	AC_SUBST(SQLITE_CFLAGS)
 	AC_SUBST(SQLITE_LDFLAGS)
@@ -204,7 +204,7 @@ AC_ARG_ENABLE(dbus-module,
 AM_CONDITIONAL(BUILD_DBUS_MODULE, test "x$want_dbus_module" = "xyes")
 AC_SUBST(BUILD_DBUS_MODULE)
 
-if test x"$want_dbus_module" == x"yes" ; then
+if test x"$want_dbus_module" = x"yes" ; then
 	PKG_CHECK_MODULES(DBUS, dbus-1)
 	AC_SUBST(DBUS_CFLAGS)
 	AC_SUBST(DBUS_LDFLAGS)
@@ -241,7 +241,7 @@ AC_ARG_ENABLE(libxml-module,
 							 [enable the libxml Seed module. [default=yes]]),
 			  [want_libxml_module=$enableval],[want_libxml_module="yes"])
 
-if test x"$want_libxml_module" == x"yes" ; then
+if test x"$want_libxml_module" = x"yes" ; then
    PKG_CHECK_MODULES(LIBXML, libxml-2.0)
    AC_SUBST(LIBXML_CFLAGS)
    AC_SUBST(LIBXML_LDFLAGS)
@@ -278,8 +278,8 @@ AC_ARG_ENABLE(gtkbuilder-module,
 							 [enable the gtkbuilder Seed module. [default=yes]]),
 			  [want_gtkbuilder_module=$enableval],[want_gtkbuilder_module="yes"])
 
-if test x"$want_gtkbuilder_module" == x"yes" ; then
-   if test x"$with_webkit" == x"3.0" ; then
+if test x"$want_gtkbuilder_module" = x"yes" ; then
+   if test x"$with_webkit" = x"3.0" ; then
 	PKG_CHECK_MODULES(GTK, gtk+-3.0)
    else
 	PKG_CHECK_MODULES(GTK, gtk+-2.0)
@@ -298,7 +298,7 @@ AC_ARG_ENABLE(cairo-module,
 							 [enable the cairo Seed module. [default=yes]]),
 			  [want_cairo_module=$enableval],[want_cairo_module="yes"])
 
-if test x"$want_cairo_module" == x"yes" ; then
+if test x"$want_cairo_module" = x"yes" ; then
 	PKG_CHECK_MODULES(CAIRO, cairo)
 	AC_SUBST(CAIRO_CFLAGS)
 	AC_SUBST(CAIRO_LDFLAGS)
@@ -323,7 +323,7 @@ AC_ARG_ENABLE(mpfr-module,
 							 [enable the mpfr Seed module. [default=yes]]),
 			  [want_mpfr_module=$enableval],[want_mpfr_module="yes"])
 
-if test x"$want_mpfr_module" == x"yes" ; then
+if test x"$want_mpfr_module" = x"yes" ; then
 	AC_TRY_CPP([#include <mpfr.h>], have_mpfr_h=yes, have_mpfr_h=no)
 	if test x"$have_mpfr_h" = x"yes"; then
 		save_LIBS=$LIBS
