@@ -390,10 +390,8 @@ seed_gi_make_array (JSContextRef ctx,
       }
       break;
 
-#if GOBJECT_INTROSPECTION_VERSION >= 0x000900
-#if GOBJECT_INTROSPECTION_VERSION < 0x001000
+#if GOBJECT_INTROSPECTION_VERSION < 0x000900
     case GI_TYPE_TAG_INT:
-#endif
 #endif
     case GI_TYPE_TAG_INT32:
       {
@@ -519,8 +517,7 @@ seed_value_to_gi_argument (JSContextRef ctx,
       }
       break;
 
-#if GOBJECT_INTROSPECTION_VERSION >= 0x000900
-#if GOBJECT_INTROSPECTION_VERSION < 0x001000
+#if GOBJECT_INTROSPECTION_VERSION < 0x000900
     case GI_TYPE_TAG_LONG:
       arg->v_long = seed_value_to_long (ctx, value, exception);
       break;
@@ -542,7 +539,6 @@ seed_value_to_gi_argument (JSContextRef ctx,
     case GI_TYPE_TAG_TIME_T:
       arg->v_long = seed_value_to_time_t (ctx, value, exception);
       break;
-#endif
 #endif
 
     case GI_TYPE_TAG_BOOLEAN:
@@ -812,8 +808,7 @@ seed_value_from_gi_argument (JSContextRef ctx,
   switch (gi_tag)
     {
 
-#if GOBJECT_INTROSPECTION_VERSION >= 0x000900
-#if GOBJECT_INTROSPECTION_VERSION < 0x001000
+#if GOBJECT_INTROSPECTION_VERSION < 0x000900
     case GI_TYPE_TAG_LONG:
       return seed_value_from_long (ctx, arg->v_long, exception);
     case GI_TYPE_TAG_ULONG:
@@ -828,7 +823,6 @@ seed_value_from_gi_argument (JSContextRef ctx,
       return seed_value_from_size (ctx, arg->v_size, exception);
     case GI_TYPE_TAG_TIME_T:
       return seed_value_from_time_t (ctx, arg->v_long, exception);
-#endif
 #endif
     case GI_TYPE_TAG_VOID:
       return JSValueMakeUndefined (ctx);
