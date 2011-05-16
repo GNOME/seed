@@ -49,7 +49,7 @@ function cb_print_phone(results) {
     print(results.phone);
 }
 
-db.exec("select from people where name='John Smith';", cb_print_phone);
+db.exec("select * from people where name='John Smith';", cb_print_phone);
 db.close();
       </programlisting>
     </example>
