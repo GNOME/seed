@@ -18,6 +18,7 @@
  */
 
 #include "seed-private.h"
+#include <sys/types.h>
 #include <sys/mman.h>
 
 JSClassRef seed_native_callback_class;

@@ -20,8 +20,10 @@
 #ifndef _SEED_PRIVATE_H
 #define _SEED_PRIVATE_H
 
-#include <stdlib.h>
 #include <sys/types.h>
+#include <pthread.h>
+
+#include <stdlib.h>
 #include <JavaScriptCore/JavaScript.h>
 #include <glib.h>
 #include <glib-object.h>
