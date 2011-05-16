@@ -19,6 +19,7 @@ autom4te.cache
 compile
 config.guess
 config.h
+config.in.h
 config.log
 config.status
 config.sub
