@@ -38,7 +38,7 @@
 #include <termios.h>
 #if defined(__OpenBSD__)
 #include <util.h>
-#else
+#elif defined(__FreeBSD__)
 #include <libutil.h>
 #endif
 #include <unistd.h>
