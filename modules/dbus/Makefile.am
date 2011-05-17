@@ -30,6 +30,7 @@ libseed_dbusnative_la_CFLAGS = \
 	-I@top_srcdir@/libseed/ \
 	$(GOBJECT_INTROSPECTION_CFLAGS) \
 	$(DBUS_CFLAGS) \
+	$(DBUSGLIB_CFLAGS) \
 	$(SEED_DEBUG_CFLAGS) \
 	$(SEED_PROFILE_CFLAGS)
 
@@ -38,6 +39,7 @@ libseed_dbusnative_la_LDFLAGS = \
 	-module -avoid-version \
 	$(GOBJECT_INTROSPECTION_LDFLAGS) \
 	$(DBUS_LDFLAGS) \
+	$(DBUSGLIB_LDFLAGS) \
 	-L/lib
 
 libseed_dbusnative_la_LIBADD = \
