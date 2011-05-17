@@ -1,3 +1,15 @@
+== Seed 3.1.1 (2011.05.17) ==
+
+* Add preliminary support for FreeBSD and OpenBSD, at least
+
+* Fix DBus module build problems
+
+* Fix typo in documentation
+
+* Fix build-time errors with recent dash as sh
+
+* Update Seed to follow recent gobject-introspection changes
+
 == Seed 3.0.0, "Evacuate the Dancefloor" (2011.04.01) ==
 
 * Allow the creation of constrained SeedEngine contexts
