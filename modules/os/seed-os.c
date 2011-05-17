@@ -36,9 +36,7 @@
 #include <sys/types.h>
 #include <sys/ioctl.h>
 #include <termios.h>
-#if defined(__OpenBSD__)
-#include <util.h>
-#elif defined(__FreeBSD__)
+#if defined(__FreeBSD__)
 #include <libutil.h>
 #endif
 #include <unistd.h>

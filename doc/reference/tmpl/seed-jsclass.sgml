@@ -76,7 +76,7 @@ to work with future versions of JSCore).
 </para>
 
 @ctx: 
-@class: 
+@klass: 
 @constructor: 
 @Returns: 
 

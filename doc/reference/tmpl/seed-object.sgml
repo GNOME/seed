@@ -32,8 +32,8 @@ Long description
 </para>
 
 @ctx: 
-@class: 
-@private: 
+@klass: 
+@private_object: 
 @Returns: 
 
 
@@ -56,7 +56,7 @@ Long description
 
 @ctx: 
 @object: 
-@this: 
+@this_object: 
 @argument_count: 
 @arguments: 
 @exception: 
@@ -94,7 +94,7 @@ Long description
 
 @ctx: 
 @obj: 
-@class: 
+@klass: 
 @Returns: 
 
 
