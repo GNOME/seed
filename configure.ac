@@ -105,6 +105,8 @@ PKG_CHECK_MODULES(WEBKIT, $WEBKIT_PC)
 AC_SUBST(WEBKIT_PC)
 AC_SUBST(WEBKIT_CFLAGS)
 AC_SUBST(WEBKIT_LDFLAGS)
+AC_SUBST(SEED_GTK_VERSION)
+
 dnl =========================Introspection=====================================
 
 PKG_CHECK_MODULES(GOBJECT_INTROSPECTION, gobject-introspection-1.0 >= 0.6.3)
