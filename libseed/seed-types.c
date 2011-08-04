@@ -151,6 +151,7 @@ seed_release_arg (GITransfer transfer,
 	    case GI_TYPE_TAG_GTYPE:
 	    case GI_TYPE_TAG_FLOAT:
 	    case GI_TYPE_TAG_UINT8:
+            case GI_TYPE_TAG_UINT32:
 	      g_free (arg->v_pointer);
 	      break;
 	    case GI_TYPE_TAG_INTERFACE:
@@ -464,6 +465,22 @@ seed_gi_make_array (JSContextRef ctx,
 
 	g_base_info_unref (interface);
       }
+    case GI_TYPE_TAG_UINT32:
+      {
+        guint32 *uintresult;
+
+        uintresult = g_new0 (guint32, length + 1);
+
+        for (i = 0; i < length; i++)
+          {
+            elem = JSObjectGetPropertyAtIndex (ctx,
+                                               (JSObjectRef) array,
+                                               i, exception);
+	    uintresult[i] = seed_value_to_uint (ctx, elem, exception);
+          }
+        *array_p = uintresult;
+      }
+      break;
     default:
       seed_make_exception (ctx, exception, "ArgumentError",
 			   "Unhandled array element type");
