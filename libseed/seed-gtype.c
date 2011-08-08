@@ -1031,10 +1031,12 @@ seed_define_gtype_functions (JSContextRef ctx)
 						 "GObject", "ObjectClass");
 
   proto = seed_struct_prototype (ctx, objectclass_info);
-
+/*
+  // paramspec is remove in newer versions of introspeciton - removing
+  // until we can work out how to replace this.
   paramspec_info = g_irepository_find_by_name (NULL, "GObject", "ParamSpec");
   proto = seed_struct_prototype (ctx, paramspec_info);
-
+*/
   seed_create_function (ctx, "get", &seed_param_getter_invoked, proto);
   seed_create_function (ctx, "set", &seed_param_setter_invoked, proto);
 }

@@ -24,6 +24,7 @@ libseed_libxml_la_LDFLAGS = \
 
 libseed_libxml_la_LIBADD = \
 	$(top_builddir)/libseed/libseed@SEED_GTK_VERSION@.la \
+	$(LIBXML_LIBS) \
 	$(SEED_PROFILE_LIBS)
 
 extensionsdir=$(datadir)/seed@SEED_GTK_VERSION@/extensions
