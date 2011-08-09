@@ -874,10 +874,45 @@ seed_value_from_gi_argument (JSContextRef ctx,
     case GI_TYPE_TAG_ARRAY:
       {
 	GITypeInfo *param_type;
+        GIArrayType array_type;
 	JSValueRef ret;
 
 	if (arg->v_pointer == NULL)
 	  return JSValueMakeNull (ctx);
+
+        array_type = g_type_info_get_array_type (type_info);
+
+        if (array_type == GI_ARRAY_TYPE_PTR_ARRAY)
+          {
+            JSObjectRef ret_ptr_array;
+            GITypeInfo *array_type_info;
+            GPtrArray *ptr = arg->v_pointer;
+            GArgument larg;
+            int length = 0;
+            int i;
+
+            if (!ptr)
+              break;
+
+            length = ptr->len;
+            array_type_info = g_type_info_get_param_type (type_info, 0);
+            ret_ptr_array = JSObjectMakeArray (ctx, 0, NULL, exception);
+
+            for (i = 0; i < length; ++i) 
+              {
+                JSValueRef ival;
+
+                larg.v_pointer =  g_ptr_array_index(ptr, i);
+                ival = (JSValueRef) seed_value_from_gi_argument (ctx, &larg,
+                                                                 array_type_info, exception);
+                if (!ival)
+                  ival = JSValueMakeNull (ctx);
+
+                JSObjectSetPropertyAtIndex (ctx, ret_ptr_array, i, ival, NULL);
+              }
+            return ret_ptr_array;
+          }
+
 	if (!g_type_info_is_zero_terminated (type_info))
 	  break;
 
