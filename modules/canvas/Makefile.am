@@ -23,6 +23,7 @@ libseed_canvas_la_LDFLAGS = \
 
 libseed_canvas_la_LIBADD = \
 	$(top_builddir)/libseed/libseed@SEED_GTK_VERSION@.la \
+	$(CAIRO_LIBS) \
 	$(SEED_PROFILE_LIBS)
 
 endif

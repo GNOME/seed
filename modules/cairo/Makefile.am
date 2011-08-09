@@ -38,7 +38,9 @@ libseed_cairo_la_LDFLAGS = \
 	$(CAIRO_LDFLAGS)
 
 libseed_cairo_la_LIBADD = \
-	$(top_builddir)/libseed/libseed@SEED_GTK_VERSION@.la
+	$(top_builddir)/libseed/libseed@SEED_GTK_VERSION@.la \
+	$(GDK_LIBS) \
+	$(CAIRO_LIBS) \
 	$(SEED_PROFILE_LIBS)
 
 endif

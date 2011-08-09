@@ -23,6 +23,7 @@ libseed_gtkbuilder_la_LDFLAGS = \
 
 libseed_gtkbuilder_la_LIBADD = \
 	$(top_builddir)/libseed/libseed@SEED_GTK_VERSION@.la \
+	$(GTK_LIBS) \
 	$(SEED_PROFILE_LIBS)
 
 endif
