@@ -574,7 +574,8 @@ seed_importer_get_search_path (JSContextRef ctx, JSValueRef * exception)
 				    exception);
       entry = seed_value_to_string (ctx, entry_ref, exception);
 
-      path = g_slist_append (path, entry);
+      if (g_file_test (entry, G_FILE_TEST_EXISTS) == TRUE)
+        path = g_slist_append (path, entry);
     }
 
   return path;
