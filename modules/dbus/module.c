@@ -209,16 +209,14 @@ complete_call (SeedContext ctx,
       seed_make_exception (ctx, exception, "DBusError",
 			   "DBus error: %s: %s",
 			   derror->name, derror->message);
+      SEED_NOTE(MODULE, "DBus error: %s: %s",
+			   derror->name, derror->message);
       dbus_error_free (derror);
 
       return FALSE;
     }
 
   dbus_message_iter_init (reply, &arg_iter);
-  if (!dbus_message_iter_has_next(&arg_iter)) {
-	//empty reply
-	return FALSE;
-  }
 
   if (!seed_js_values_from_dbus (ctx, &arg_iter, &ret_values, exception))
     {
@@ -256,7 +254,6 @@ static void
 pending_notify (DBusPendingCall * pending, void *user_data)
 {
   SeedException exception = NULL;
-  SeedContext ctx;
   GClosure *closure;
   SeedValue argv[2];
   DBusMessage *reply;
@@ -268,18 +265,17 @@ pending_notify (DBusPendingCall * pending, void *user_data)
               "Notified of reply to async call closure %p",
 	    closure);
 
-//    if (context == NULL) {
-  SEED_NOTE(MODULE,
+   if (closure == NULL) {
+        SEED_NOTE(MODULE,
             "Closure destroyed before we could complete pending call");
-  //  return;
-//    }
+         return;
+    }
 
   /* reply may be NULL if none received? I think it may never be if
    * we've already been notified, but be safe here.
    */
 
-  ctx = seed_context_create (group, NULL);
-  seed_prepare_global_context (ctx);
+  
   reply = dbus_pending_call_steal_reply (pending);
 
   dbus_error_init (&derror);
@@ -295,7 +291,7 @@ pending_notify (DBusPendingCall * pending, void *user_data)
 
   if (exception)
 	  argv[1] = exception;
-  seed_closure_invoke_with_context (ctx, closure, &argv[0], 2, &exception);
+  seed_closure_invoke(closure, &argv[0], 2, &exception);
   if (exception && seed_value_is_object (ctx, exception))
     seed_closure_warn_exception(closure, ctx, exception);
   seed_context_unref (ctx);
@@ -304,6 +300,8 @@ pending_notify (DBusPendingCall * pending, void *user_data)
   return;
 
 noreply:
+    SEED_NOTE(MODULE,
+            "No reply recieved from complete_call");
   if (reply)
     dbus_message_unref (reply);
   seed_context_unref (ctx);
