@@ -20,7 +20,7 @@ HelloWindow = new GType({
 
 w = new HelloWindow()
 
-testsuite.assert(w.message = "Prototypes!")
+testsuite.assert(w.message == "Prototypes!")
 
 w.signal.map.connect(
     function(widget)
