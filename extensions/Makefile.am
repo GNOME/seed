@@ -1,7 +1,7 @@
 EXTRA_DIST= Gio.js Seed.js.in Gtk.js GObject.js Clutter.js Gst.js repl.js
 
 extensiondir=$(datadir)/seed@SEED_GTK_VERSION@/extensions
-extension_DATA = Gio.js Seed.js Gtk.js GObject.js Clutter.js Gst.js
+extension_DATA = GLib.js Gio.js Seed.js Gtk.js GObject.js Clutter.js Gst.js
 
 repldir=$(datadir)/seed@SEED_GTK_VERSION@
 repl_DATA = repl.js
