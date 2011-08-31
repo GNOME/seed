@@ -42,7 +42,7 @@ seed_closure_finalize (JSObjectRef object)
 }
 
 static void
-seed_handle_closure (ffi_cif * cif, void *result, void **args, void *userdata)
+seed_handle_closure (ffi_cif * cif, void *result, void **args, gpointer userdata)
 {
   SeedNativeClosure *privates = userdata;
   gint num_args, i;
@@ -54,7 +54,8 @@ seed_handle_closure (ffi_cif * cif, void *result, void **args, void *userdata)
   GITypeInfo *arg_type;
   GITypeTag tag;
   GArgument rarg, return_arg;
-  JSContextRef ctx = JSGlobalContextCreateInGroup (context_group, 0);
+  JSContextRef ctx =  JSGlobalContextCreateInGroup (
+      context_group, 0);
   GArgument *arg = &rarg;
   gchar *mes;
 
@@ -319,6 +320,7 @@ seed_make_native_closure (JSContextRef ctx,
   cif = g_new0 (ffi_cif, 1);
 
   privates = g_new0 (SeedNativeClosure, 1);
+  privates->ctx = ctx;
   privates->info = (GICallableInfo *) g_base_info_ref ((GIBaseInfo *) info);
   privates->function = function;
   privates->cif = cif;
