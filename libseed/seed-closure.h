@@ -35,7 +35,6 @@ typedef struct _SeedClosure
 
 typedef struct _SeedNativeClosure
 {
-  JSContextRef ctx;
   GICallableInfo *info;
   JSValueRef function;
 
