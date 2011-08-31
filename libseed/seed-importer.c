@@ -466,7 +466,7 @@ seed_gi_importer_do_namespace (JSContextRef ctx,
 
   jsextension = g_strdup_printf ("imports.extensions.%s", namespace);
   extension_script = JSStringCreateWithUTF8CString (jsextension);
-  JSEvaluateScript (ctx, extension_script, NULL, NULL, 0, NULL);
+  JSEvaluateScript (ctx, extension_script, NULL, NULL, 0, exception);
   JSStringRelease (extension_script);
   g_free (jsextension);
 

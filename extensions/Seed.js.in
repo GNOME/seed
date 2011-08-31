@@ -1,4 +1,39 @@
-GLib = imports.gi.GLib;
+if(!imports.searchPath || (imports.searchPath.length == 0))
+{
+	imports.searchPath = [ "%gnomejsdir%",
+	                       "%pkglibdir%",
+	                       "%pkgdatadir%",
+	                       "/usr/local/lib/seed",
+	                       "/usr/local/share/seed",
+	                       "/usr/lib/seed",
+	                       "/usr/share/seed" ];
+
+        GLib = imports.gi.GLib;
+	if(Seed.argv.length > 1)
+	{
+		__script_path__ = GLib.path_get_dirname(Seed.argv[1]);
+		
+		try
+		{
+			if(!GLib.path_is_absolute(__script_path__))
+			{
+				__script_path__ = GLib.build_filenamev([GLib.get_current_dir(),
+				                                      __script_path__]);
+			}
+		
+			__script_path__ = imports.os.realpath(__script_path__);
+		
+			if(__script_path__ && __script_path__ != "")
+				imports.searchPath.unshift(__script_path__);
+		}
+		catch(e)
+		{
+			print(imports.JSON.stringify(e));
+		}
+	}
+
+	imports.searchPath.unshift(".");
+}
 
 Seed.sprintf = function ()
 {
@@ -170,39 +205,3 @@ Seed.thread_repl = function()
 }
 
 Seed.printf = function () { print(Seed.sprintf.apply(this, arguments)) };
-
-if(!imports.searchPath || (imports.searchPath.length == 0))
-{
-	imports.searchPath = [ "%gnomejsdir%",
-	                       "%pkglibdir%",
-	                       "%pkgdatadir%",
-	                       "/usr/local/lib/seed",
-	                       "/usr/local/share/seed",
-	                       "/usr/lib/seed",
-	                       "/usr/share/seed" ];
-
-	if(Seed.argv.length > 1)
-	{
-		__script_path__ = GLib.path_get_dirname(Seed.argv[1]);
-		
-		try
-		{
-			if(!GLib.path_is_absolute(__script_path__))
-			{
-				__script_path__ = GLib.build_filenamev([GLib.get_current_dir(),
-				                                      __script_path__]);
-			}
-		
-			__script_path__ = imports.os.realpath(__script_path__);
-		
-			if(__script_path__ && __script_path__ != "")
-				imports.searchPath.unshift(__script_path__);
-		}
-		catch(e)
-		{
-			print(imports.JSON.stringify(e));
-		}
-	}
-
-	imports.searchPath.unshift(".");
-}
