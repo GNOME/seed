@@ -1081,6 +1081,12 @@ seed_value_from_gvalue (JSContextRef ctx,
       return seed_make_pointer (ctx, g_value_get_param (gval));
     }
 
+  if (g_type_is_a (G_VALUE_TYPE (gval), G_TYPE_STRV))
+    {
+      return seed_value_from_strv(ctx, g_value_get_boxed (gval), exception);
+    }
+
+
   if (g_type_is_a (G_VALUE_TYPE (gval), G_TYPE_ENUM) ||
       g_type_is_a (G_VALUE_TYPE (gval), G_TYPE_FLAGS))
     return seed_value_from_long (ctx, gval->data[0].v_long, exception);
@@ -2502,4 +2508,36 @@ out:
 		       "TypeError",
 		       "Unable to convert JavaScript value to time_t");
   return 0;
+}
+
+/**
+ * seed_value_from_strv:
+ * @ctx: A #SeedContext.
+ * @val: The #GStrv to wrap.
+ * @exception: A reference to a #SeedValue in which to store any exceptions.
+ *             Pass %NULL to ignore exceptions.
+ *
+ * Wraps @val in a #SeedValue.
+ *
+ * Return value: A #SeedValue which wraps @val, or %NULL if an exception
+ *               is raised during the conversion.
+ *
+ */
+JSValueRef
+seed_value_from_strv (JSContextRef ctx,
+		      GStrv * val, JSValueRef * exception)
+{
+      GArray *js_string_array = g_array_new (FALSE, FALSE, sizeof(gpointer));
+      for (; *val != NULL; val++)
+	{
+	  JSStringRef js_string = JSStringCreateWithUTF8CString((char*)*val);
+	  js_string_array = g_array_append_val(js_string_array, js_string);
+	}
+      JSValueRef res = JSObjectMakeArray (ctx,
+					  js_string_array->len,
+					  (JSValueRef*)js_string_array->data,
+					  exception);
+      g_array_free (js_string_array, FALSE);
+
+      return res;
 }
