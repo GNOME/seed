@@ -1,6 +1,5 @@
 EXTRA_DIST = \
 	gtype-class-init-exception.js \
-	gtype-property.js \
 	gtype-typerror.js \
 	gtype.js \
 	gtype-gtype.js \
