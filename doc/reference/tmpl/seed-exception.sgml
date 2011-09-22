@@ -90,7 +90,7 @@ SeedValue random_callback(SeedContext ctx,
 @exception: 
 @name: 
 @message: 
-@Varargs: 
+@...: 
 
 
 <!-- ##### FUNCTION seed_exception_get_name ##### -->
