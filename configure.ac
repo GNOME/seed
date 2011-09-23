@@ -392,10 +392,10 @@ AC_ARG_ENABLE(debug,
 
 if test "x$enable_debug" = "xyes"; then
 	SEED_DEBUG_CFLAGS="-DSEED_ENABLE_DEBUG -g"
-	CFLAGS="-O0 -Wall"
+	CFLAGS="$CFLAGS -O0 -Wall"
 else
 	SEED_DEBUG_CFLAGS="-DG_DISABLE_ASSERT -DG_DISABLE_CHECKS -DG_DISABLE_CAST_CHECKS"
-	CFLAGS="-Wall"
+	CFLAGS="$CFLAGS -Wall"
 	
 	if test "x$need_debug" = "xyes"; then
 		AC_MSG_ERROR([debug must be enabled in order to enable profiling.])
