@@ -11,7 +11,6 @@ EXTRA_DIST = \
     constructor-args.js \
     constructor-prototype.js \
     enum.js \
-    everything.js \
     fork.js \
     function-info.js \
     gdk-event.js \
@@ -49,7 +48,6 @@ TESTS = \
     constructor-args.js \
     constructor-prototype.js \
     enum.js \
-    everything.js \
     fork.js \
     function-info.js \
     gdk-event.js \

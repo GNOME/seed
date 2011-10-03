@@ -1,13 +1,14 @@
 #!/usr/bin/env seed
 
-testsuite = imports.testsuite
-Gdk = imports.gi.Gdk
+testsuite = imports.testsuite;
+Gdk = imports.gi.Gdk;
+cairo = imports.gi.cairo;
 
-r = new Gdk.Rectangle()
+r = new cairo.RectangleInt()
 for (prop in r)
-{
+{ 
 	testsuite.assert(prop == "x" || prop == "y" || prop == "width" || 
-	                 prop == "height" || prop == "intersect" || prop == "union")
+	                 prop == "height")
 }
 
-testsuite.checkAsserts(6)
+testsuite.checkAsserts(4)

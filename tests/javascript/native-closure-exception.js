@@ -25,4 +25,4 @@ catch(e)
 }
 
 //testsuite.checkAsserts
-print("This test doesn't work yet...")
+print("This test doesn't work yet... since callbacks might be async - should it ever work?")
