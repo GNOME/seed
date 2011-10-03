@@ -569,21 +569,29 @@ seed_gobject_method_invoked (JSContextRef ctx,
               if (!is_null && (g_type_info_get_tag (type_info) == GI_TYPE_TAG_INTERFACE)) 
                 {
                   /* see if the pointer is null for struct/unions. */
-                  GIBaseInfo *interface = g_type_info_get_interface (type_info);
-                  GIInfoType interface_type = g_base_info_get_type (interface);
+		  GIBaseInfo *interface = g_type_info_get_interface (type_info);
+		  GIInfoType interface_type = g_base_info_get_type (interface);
                   
 		  gboolean arg_is_object = JSValueIsObject (ctx, arguments[i]);
+
+		  gboolean is_gvalue = (interface_type == GI_INFO_TYPE_STRUCT) &&
+			!g_strcmp0(g_base_info_get_name((GIBaseInfo *)interface), "Value") &&
+			!g_strcmp0(g_base_info_get_namespace((GIBaseInfo *)interface), "GObject");
+              
+                                
 		  gboolean is_struct_or_union = (
-		           interface_type == GI_INFO_TYPE_STRUCT ||
-		           interface_type == GI_INFO_TYPE_UNION
+			interface_type == GI_INFO_TYPE_STRUCT ||
+			interface_type == GI_INFO_TYPE_UNION
 		  );
 
 	          /* this test ignores non-objects being sent where interfaces are expected 
-	             hopefully our type manipluation code will pick that up. */
-                  if (is_struct_or_union && arg_is_object &&
-                        (seed_pointer_get_pointer (ctx, arguments[i]) == 0)) 
+	             hopefully our type manipluation code will pick that up.
+	             The only exception to this is GObject.GValues which are arrays.
+	             */
+                  if (!is_gvalue && is_struct_or_union && arg_is_object &&
+                        (seed_pointer_get_pointer (ctx, arguments[i]) == 0)) {
                       is_null = TRUE;
-                  
+                  }
                   g_base_info_unref (interface);
                 }
 
@@ -896,6 +904,7 @@ seed_gobject_define_property_from_function_info (JSContextRef ctx,
   if (!g_strcmp0 (name, "new"))
     name = "c_new";
   seed_object_set_property (ctx, object, name, method_ref);
+  
   seed_object_set_property (ctx, method_ref, "info",
 			    seed_make_struct (ctx,
 					      g_base_info_ref ((GIBaseInfo *)
