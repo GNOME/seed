@@ -4,6 +4,7 @@ EXTRA_DIST = \
 	gtype.js \
 	gtype-gtype.js \
 	gtype-signal-args.js \
+	gtype-signal-order-bug663289.js \
 	gtype-property-construct.js \
 	gtype-property-nice.js \
 	gtype-self.js \
@@ -18,6 +19,7 @@ TESTS = \
 	gtype.js \
 	gtype-gtype.js \
 	gtype-signal-args.js \
+	gtype-signal-order-bug663289.js \
 	gtype-property-construct.js \
 	gtype-property-nice.js \
 	gtype-self.js \

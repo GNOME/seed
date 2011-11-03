@@ -429,7 +429,11 @@ seed_gtype_install_signals (JSContextRef ctx,
 	return_type = seed_value_to_long (ctx, jsreturn_type, exception);
 
       jsparams = seed_object_get_property (ctx, signal_def, "parameters");
-
+      
+      // reset params..
+      param_types = NULL;
+      n_params = 0;
+      
       if (!JSValueIsNull (ctx, jsparams) && JSValueIsObject (ctx, jsparams))
 	{
 	  n_params =
