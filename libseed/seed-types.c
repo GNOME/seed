@@ -1314,9 +1314,17 @@ seed_value_to_gvalue (JSContextRef ctx,
 	// TODO: FIXME: This whole undefined type area
 	// needs some heaaavy improvement.
 
+	if (type == 0 && seed_value_is_gobject(ctx, val))
+	  {
+	    GObject *o = seed_value_to_object (ctx, val, exception);
+
+	    g_value_init (ret, G_OBJECT_TYPE(o));
+	    g_value_set_object (ret, o);
+	    return TRUE;
+	  }
 	// Support [GObject.TYPE_INT, 3]
 	// TODO: FIXME: Might crash.
-	if (type == 0 && JSValueIsObject (ctx, val))
+	else if (type == 0 && JSValueIsObject (ctx, val))
 	  {
 	    // TODO: FIXME: Better array test like the cool one on reddit.
 	    guint length = seed_value_to_int (ctx,
