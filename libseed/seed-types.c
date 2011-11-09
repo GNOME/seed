@@ -1389,7 +1389,7 @@ seed_value_to_gvalue (JSContextRef ctx,
  * @object: A #SeedObject
  * @name: The property to get, should be a valid JavaScript identifier
  *
- * Returns: The value of the property or %NULL
+ * Returns: The value of the property or the undefined value
  */
 JSValueRef
 seed_object_get_property (JSContextRef ctx,
@@ -1446,8 +1446,7 @@ seed_object_set_property (JSContextRef ctx, JSObjectRef object,
  * Converts the given #SeedValue into a #gboolean. Keep in mind that this will
  * not convert a JavaScript number type, only a boolean.
  *
- * Return value: The #gboolean represented by @val, or %NULL if an exception
- *               is raised during the conversion.
+ * Return value: The #gboolean represented by @val.
  *
  */
 gboolean
@@ -1478,8 +1477,7 @@ seed_value_to_boolean (JSContextRef ctx,
  *
  * Converts the given #gboolean into a #SeedValue.
  *
- * Return value: A #SeedValue which represents @val, or %NULL if an exception
- *               is raised during the conversion.
+ * Return value: A #SeedValue which represents @val.
  *
  */
 JSValueRef
@@ -1498,8 +1496,7 @@ seed_value_from_boolean (JSContextRef ctx,
  *
  * Converts the given #SeedValue into a #guint.
  *
- * Return value: The #guint represented by @val, or %NULL if an exception
- *               is raised during the conversion.
+ * Return value: The #guint represented by @val.
  *
  */
 guint
@@ -1528,8 +1525,7 @@ seed_value_to_uint (JSContextRef ctx, JSValueRef val, JSValueRef * exception)
  *
  * Converts the given #guint into a #SeedValue.
  *
- * Return value: A #SeedValue which represents @val, or %NULL if an exception
- *               is raised during the conversion.
+ * Return value: A #SeedValue which represents @val.
  *
  */
 JSValueRef
@@ -1547,8 +1543,7 @@ seed_value_from_uint (JSContextRef ctx, guint val, JSValueRef * exception)
  *
  * Converts the given #SeedValue into a #gint.
  *
- * Return value: The #gint represented by @val, or %NULL if an exception
- *               is raised during the conversion.
+ * Return value: The #gint represented by @val.
  *
  */
 gint
@@ -1574,8 +1569,7 @@ seed_value_to_int (JSContextRef ctx, JSValueRef val, JSValueRef * exception)
  *
  * Converts the given #gint into a #SeedValue.
  *
- * Return value: A #SeedValue which represents @val, or %NULL if an exception
- *               is raised during the conversion.
+ * Return value: A #SeedValue which represents @val.
  *
  */
 JSValueRef
@@ -1593,8 +1587,7 @@ seed_value_from_int (JSContextRef ctx, gint val, JSValueRef * exception)
  *
  * Converts the given #SeedValue into a #gchar.
  *
- * Return value: The #gchar represented by @val, or %NULL if an exception
- *               is raised during the conversion.
+ * Return value: The #gchar represented by @val.
  *
  */
 gchar
@@ -1631,8 +1624,7 @@ seed_value_to_char (JSContextRef ctx, JSValueRef val, JSValueRef * exception)
  *
  * Converts the given #gchar into a #SeedValue.
  *
- * Return value: A #SeedValue which represents @val, or %NULL if an exception
- *               is raised during the conversion.
+ * Return value: A #SeedValue which represents @val.
  *
  */
 JSValueRef
@@ -1650,8 +1642,7 @@ seed_value_from_char (JSContextRef ctx, gchar val, JSValueRef * exception)
  *
  * Converts the given #SeedValue into a #guchar.
  *
- * Return value: The #guchar represented by @val, or %NULL if an exception
- *               is raised during the conversion.
+ * Return value: The #guchar represented by @val.
  *
  */
 guchar
@@ -1688,8 +1679,7 @@ seed_value_to_uchar (JSContextRef ctx, JSValueRef val, JSValueRef * exception)
  *
  * Converts the given #guchar into a #SeedValue.
  *
- * Return value: A #SeedValue which represents @val, or %NULL if an exception
- *               is raised during the conversion.
+ * Return value: A #SeedValue which represents @val.
  *
  */
 JSValueRef
@@ -1707,8 +1697,7 @@ seed_value_from_uchar (JSContextRef ctx, guchar val, JSValueRef * exception)
  *
  * Converts the given #SeedValue into a #gshort.
  *
- * Return value: The #gshort represented by @val, or %NULL if an exception
- *               is raised during the conversion.
+ * Return value: The #gshort represented by @val.
  *
  */
 gshort
@@ -1734,8 +1723,7 @@ seed_value_to_short (JSContextRef ctx, JSValueRef val, JSValueRef * exception)
  *
  * Converts the given #gshort into a #SeedValue.
  *
- * Return value: A #SeedValue which represents @val, or %NULL if an exception
- *               is raised during the conversion.
+ * Return value: A #SeedValue which represents @val.
  *
  */
 JSValueRef
@@ -1753,8 +1741,7 @@ seed_value_from_short (JSContextRef ctx, gshort val, JSValueRef * exception)
  *
  * Converts the given #SeedValue into a #gushort.
  *
- * Return value: The #gushort represented by @val, or %NULL if an exception
- *               is raised during the conversion.
+ * Return value: The #gushort represented by @val.
  *
  */
 gushort
@@ -1781,8 +1768,7 @@ seed_value_to_ushort (JSContextRef ctx, JSValueRef val,
  *
  * Converts the given #gushort into a #SeedValue.
  *
- * Return value: A #SeedValue which represents @val, or %NULL if an exception
- *               is raised during the conversion.
+ * Return value: A #SeedValue which represents @val.
  *
  */
 JSValueRef
@@ -1800,8 +1786,7 @@ seed_value_from_ushort (JSContextRef ctx, gushort val, JSValueRef * exception)
  *
  * Converts the given #SeedValue into a #glong.
  *
- * Return value: The #glong represented by @val, or %NULL if an exception
- *               is raised during the conversion.
+ * Return value: The #glong represented by @val.
  *
  */
 glong
@@ -1827,8 +1812,7 @@ seed_value_to_long (JSContextRef ctx, JSValueRef val, JSValueRef * exception)
  *
  * Converts the given #glong into a #SeedValue.
  *
- * Return value: A #SeedValue which represents @val, or %NULL if an exception
- *               is raised during the conversion.
+ * Return value: A #SeedValue which represents @val.
  *
  */
 JSValueRef
@@ -1846,8 +1830,7 @@ seed_value_from_long (JSContextRef ctx, glong val, JSValueRef * exception)
  *
  * Converts the given #SeedValue into a #gulong.
  *
- * Return value: The #gulong represented by @val, or %NULL if an exception
- *               is raised during the conversion.
+ * Return value: The #gulong represented by @val.
  *
  */
 gulong
@@ -1874,8 +1857,7 @@ seed_value_to_ulong (JSContextRef ctx, JSValueRef val, JSValueRef * exception)
  *
  * Converts the given #gulong into a #SeedValue.
  *
- * Return value: A #SeedValue which represents @val, or %NULL if an exception
- *               is raised during the conversion.
+ * Return value: A #SeedValue which represents @val.
  *
  */
 JSValueRef
@@ -1893,8 +1875,7 @@ seed_value_from_ulong (JSContextRef ctx, gulong val, JSValueRef * exception)
  *
  * Converts the given #SeedValue into a #gint64.
  *
- * Return value: The #gint64 represented by @val, or %NULL if an exception
- *               is raised during the conversion.
+ * Return value: The #gint64 represented by @val.
  *
  */
 gint64
@@ -1921,8 +1902,7 @@ seed_value_to_int64 (JSContextRef ctx, JSValueRef val, JSValueRef * exception)
  *
  * Converts the given #gint64 into a #SeedValue.
  *
- * Return value: A #SeedValue which represents @val, or %NULL if an exception
- *               is raised during the conversion.
+ * Return value: A #SeedValue which represents @val.
  *
  */
 JSValueRef
@@ -1940,8 +1920,7 @@ seed_value_from_int64 (JSContextRef ctx, gint64 val, JSValueRef * exception)
  *
  * Converts the given #SeedValue into a #guint64.
  *
- * Return value: The #guint64 represented by @val, or %NULL if an exception
- *               is raised during the conversion.
+ * Return value: The #guint64 represented by @val.
  *
  */
 guint64
@@ -1970,8 +1949,7 @@ seed_value_to_uint64 (JSContextRef ctx,
  *
  * Converts the given #guint64 into a #SeedValue.
  *
- * Return value: A #SeedValue which represents @val, or %NULL if an exception
- *               is raised during the conversion.
+ * Return value: A #SeedValue which represents @val.
  *
  */
 JSValueRef
@@ -1989,8 +1967,7 @@ seed_value_from_uint64 (JSContextRef ctx, guint64 val, JSValueRef * exception)
  *
  * Converts the given #SeedValue into a #gfloat.
  *
- * Return value: The #gfloat represented by @val, or %NULL if an exception
- *               is raised during the conversion.
+ * Return value: The #gfloat represented by @val.
  *
  */
 gfloat
@@ -2016,8 +1993,7 @@ seed_value_to_float (JSContextRef ctx, JSValueRef val, JSValueRef * exception)
  *
  * Converts the given #gfloat into a #SeedValue.
  *
- * Return value: A #SeedValue which represents @val, or %NULL if an exception
- *               is raised during the conversion.
+ * Return value: A #SeedValue which represents @val.
  *
  */
 JSValueRef
@@ -2035,8 +2011,7 @@ seed_value_from_float (JSContextRef ctx, gfloat val, JSValueRef * exception)
  *
  * Converts the given #SeedValue into a #gdouble.
  *
- * Return value: The #gdouble represented by @val, or %NULL if an exception
- *               is raised during the conversion.
+ * Return value: The #gdouble represented by @val.
  *
  */
 gdouble
@@ -2063,8 +2038,7 @@ seed_value_to_double (JSContextRef ctx,
  *
  * Converts the given #gdouble into a #SeedValue.
  *
- * Return value: A #SeedValue which represents @val, or %NULL if an exception
- *               is raised during the conversion.
+ * Return value: A #SeedValue which represents @val.
  *
  */
 JSValueRef
@@ -2082,8 +2056,7 @@ seed_value_from_double (JSContextRef ctx, gdouble val, JSValueRef * exception)
  *
  * Converts the given #SeedValue into a #gsize.
  *
- * Return value: The #gsize represented by @val, or %NULL if an exception
- *               is raised during the conversion.
+ * Return value: The #gsize represented by @val.
  *
  */
 gsize
@@ -2109,8 +2082,7 @@ seed_value_to_size (JSContextRef ctx, JSValueRef val, JSValueRef * exception)
  *
  * Converts the given #gsize into a #SeedValue.
  *
- * Return value: A #SeedValue which represents @val, or %NULL if an exception
- *               is raised during the conversion.
+ * Return value: A #SeedValue which represents @val.
  *
  */
 JSValueRef
@@ -2128,8 +2100,7 @@ seed_value_from_size (JSContextRef ctx, gsize val, JSValueRef * exception)
  *
  * Converts the given #SeedValue into a #gssize.
  *
- * Return value: The #gssize represented by @val, or %NULL if an exception
- *               is raised during the conversion.
+ * Return value: The #gssize represented by @val.
  *
  */
 gssize
@@ -2155,8 +2126,7 @@ seed_value_to_ssize (JSContextRef ctx, JSValueRef val, JSValueRef * exception)
  *
  * Converts the given #gssize into a #SeedValue.
  *
- * Return value: A #SeedValue which represents @val, or %NULL if an exception
- *               is raised during the conversion.
+ * Return value: A #SeedValue which represents @val.
  *
  */
 JSValueRef
@@ -2185,8 +2155,7 @@ seed_value_from_ssize (JSContextRef ctx, gssize val, JSValueRef * exception)
  * If the #SeedValue is an object, the string returned is that obtained by
  * calling .toString() on said object.
  *
- * Return value: The #gchar* represented by @val, or %NULL if an exception
- *               is raised during the conversion.
+ * Return value: The #gchar* represented by @val.
  *
  */
 gchar *
@@ -2250,8 +2219,7 @@ seed_value_to_string (JSContextRef ctx,
  *
  * Converts the given #gchar* string into a #SeedValue.
  *
- * Return value: A #SeedValue which represents @val, or %NULL if an exception
- *               is raised during the conversion.
+ * Return value: A #SeedValue which represents @val.
  *
  */
 JSValueRef
@@ -2281,8 +2249,7 @@ seed_value_from_string (JSContextRef ctx,
  * Converts a string representation of the given binary string
  * into a #SeedValue.
  *
- * Return value: A #SeedValue which represents @bytes as a string, or %NULL
- *               if an exception is raised during the conversion.
+ * Return value: A #SeedValue which represents @bytes as a string.
  *
  */
 JSValueRef
@@ -2345,8 +2312,7 @@ seed_value_to_filename (JSContextRef ctx,
  * Converts the given #gchar* filename into a #SeedValue, respecting the 
  * character set used for filenames on the local machine.
  *
- * Return value: A #SeedValue which represents @val, or %NULL if an exception
- *               is raised during the conversion.
+ * Return value: A #SeedValue which represents @val.
  *
  */
 JSValueRef
@@ -2429,8 +2395,7 @@ seed_value_to_object (JSContextRef ctx,
  *
  * Wraps @val in a #SeedValue.
  *
- * Return value: A #SeedValue which wraps @val, or %NULL if an exception
- *               is raised during the conversion.
+ * Return value: A #SeedValue which wraps @val.
  *
  */
 JSValueRef
@@ -2519,8 +2484,7 @@ out:
  *
  * Wraps @val in a #SeedValue.
  *
- * Return value: A #SeedValue which wraps @val, or %NULL if an exception
- *               is raised during the conversion.
+ * Return value: A #SeedValue which wraps @val.
  *
  */
 JSValueRef
