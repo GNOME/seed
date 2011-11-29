@@ -90,14 +90,10 @@ AS_CASE([$with_webkit],
 	                AC_CHECK_LIB(javascriptcoregtk-3.0, JSContextGroupCreate,WEBKIT_PC=javascriptcoregtk-3.0)) 
 	],
 	[1.0], [
-		save_LIBS=$LIBSma
-		LIBS=`pkg-config --libs webkit-1.0`
-		WEBKIT_PC=webkitgtk-1.0
-		AC_CHECK_LIB(webkitgtk-1.0, JSContextGroupCreate,,
+		AC_CHECK_LIB(webkitgtk-1.0, JSContextGroupCreate,WEBKIT_PC=webkitgtk-1.0,
 	                AC_CHECK_LIB(javascriptcoregtk-1.0, JSContextGroupCreate,WEBKIT_PC=javascriptcoregtk-1.0, 
 				AC_CHECK_LIB(webkit-1.0, JSContextGroupCreate,WEBKIT_PC=webkit-1.0,
 					AC_MSG_ERROR([The installed version of WebKit is too old. Seed requires WebKit SVN revision 35442 or greater.]))))
-		LIBS=$save_LIBS
 	],
 
 	[AC_MSG_ERROR([Invalid argument for --with-webkit])]
