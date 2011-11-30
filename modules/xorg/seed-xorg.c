@@ -46,8 +46,10 @@ SeedValue seed_xorg_screensaverinfo_get_idletime(SeedContext ctx,
   
   if (display != NULL) {
 	  XScreenSaverQueryInfo(display, DefaultRootWindow(display), info);
-	  rc = info->idle;  
+	  rc = info->idle;
+	  XCloseDisplay(display);
   }
+  
 
   XFree(info);  
   return  seed_value_from_int(ctx, rc, exception);
