@@ -188,6 +188,35 @@ fi
 AM_CONDITIONAL(BUILD_SQLITE_MODULE, test "x$want_sqlite_module" = "xyes")
 AC_SUBST(BUILD_SQLITE_MODULE)
 
+
+dnl ==== xorg ====
+AC_ARG_ENABLE(xorg-module,
+			  AC_HELP_STRING([--enable-xorg-module],
+							 [enable the xorg Seed module. [default=no]]),
+			  [want_xorg_module=$enableval],[want_xorg_module="no"])
+
+if test x"$want_xorg_module" = x"yes" ; then
+	 
+	PKG_CHECK_MODULES(LIBXSS, [xscrnsaver], [
+		AC_DEFINE(USE_LIBXSS, 1, [Use XScreenSaver for idleness])
+		AC_SUBST(LIBXSS_CFLAGS)
+		AC_SUBST(LIBXSS_LIBS)
+		] , [
+	  echo ""
+	  echo "configure: error: "
+	  echo "XScreenSaver development headers not found."
+	  echo "Use --disable-screensaver if you do not need it."
+	  echo "If you're using debian or ubuntu,install it by"
+	  echo "\"sudo apt-get install libxss-dev\""
+	  echo ""
+	  exit -1
+	   ])
+fi
+
+AM_CONDITIONAL(BUILD_XORG_MODULE, test "x$want_xorg_module" = "xyes")
+AC_SUBST(BUILD_XORG_MODULE)
+
+
 dnl ==== Example ====
 AC_ARG_ENABLE(example-module,
 			  AC_HELP_STRING([--enable-example-module],
@@ -447,6 +476,7 @@ doc/mapping/Makefile
 modules/Makefile
 modules/example/Makefile
 modules/sqlite/Makefile
+modules/xorg/Makefile
 modules/canvas/Makefile
 modules/readline/Makefile
 modules/multiprocessing/Makefile
@@ -482,6 +512,7 @@ Modules:
    multiprocessing............$want_multiprocessing_module
    readline...................$want_readline_module
    SQLite.....................$want_sqlite_module
+   XOrg.......................$want_xorg_module
    DBus.......................$want_dbus_module
    libxml.....................$want_libxml_module
    cairo......................$want_cairo_module
