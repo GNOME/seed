@@ -205,8 +205,8 @@ if test x"$want_xorg_module" = x"yes" ; then
 	  echo ""
 	  echo "configure: error: "
 	  echo "XScreenSaver development headers not found."
-	  echo "Use --disable-screensaver if you do not need it."
-	  echo "If you're using debian or ubuntu,install it by"
+	  echo "Use --enable-xorg-module=no if you do not need it."
+	  echo "If you're using debian or ubuntu, install it by"
 	  echo "\"sudo apt-get install libxss-dev\""
 	  echo ""
 	  exit -1
