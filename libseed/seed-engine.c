@@ -465,6 +465,7 @@ seed_gobject_method_invoked (JSContextRef ctx,
   GArgument *in_args;
   GArgument *out_args;
   GArgument *out_values;
+  gint *out_pos;
   gint first_out = -1;
   guint use_return_as_out = 0;
   guint n_args, n_in_args, n_out_args, i; 
@@ -486,6 +487,7 @@ seed_gobject_method_invoked (JSContextRef ctx,
 
   n_args = g_callable_info_get_n_args ((GICallableInfo *) info);
 
+  out_pos = g_new0 (gint, n_args + 1);
   in_args = g_new0 (GArgument, n_args + 1);
   out_args = g_new0 (GArgument, n_args + 1);
   out_values = g_new0 (GArgument, n_args + 1);
@@ -545,6 +547,9 @@ seed_gobject_method_invoked (JSContextRef ctx,
               GArgument *out_value = &out_values[n_out_args];
               out_values[n_out_args].v_pointer = NULL;
               out_args[n_out_args].v_pointer = out_value;
+	      
+	      out_pos[ i ] = n_out_args;
+	      
 #if GOBJECT_INTROSPECTION_VERSION > 0x000613			  
               if (is_caller_allocates) 
                 {
@@ -635,6 +640,7 @@ seed_gobject_method_invoked (JSContextRef ctx,
 #endif
 	      g_free (in_args);
 	      g_free (out_args);
+	      g_free (out_pos);
 	      g_free (out_values);
 
 	      return JSValueMakeNull (ctx);
@@ -743,6 +749,7 @@ seed_gobject_method_invoked (JSContextRef ctx,
 
       g_free (in_args);
       g_free (out_args);
+      g_free (out_pos);
       g_error_free (error);
       g_free (out_values);
 
@@ -777,10 +784,22 @@ seed_gobject_method_invoked (JSContextRef ctx,
 	}
       
       // we are now only dealing with OUT arguments.
-      jsout_val = seed_value_from_gi_argument (ctx, &out_values[out_args_pos],
-					       type_info, exception);
+      
+      // if the type_info is an array with a length position, we
+      // need to send that as well, so it can be used to build the seed value.
+      {
+	gint length_arg_pos = g_type_info_get_array_length(type_info);
+	gint array_len = 0;
+	if (length_arg_pos > -1) {
+	  
+	  array_len = ( &out_values[  out_pos[length_arg_pos] ] )->v_int;
+	}
+	
+	
+	jsout_val = seed_value_from_gi_argument_with_length (ctx, &out_values[out_args_pos],
+						 type_info, exception, array_len);
   
-
+      }
 #if GOBJECT_INTROSPECTION_VERSION > 0x000613
      /* caller allocates only applies to structures but GI has
       * no way to denote that yet, so we only use caller allocates
@@ -858,6 +877,7 @@ seed_gobject_method_invoked (JSContextRef ctx,
 
   g_free (in_args);
   g_free (out_args);
+  g_free (out_pos);
   g_free (out_values);
   return retval_ref;
 }

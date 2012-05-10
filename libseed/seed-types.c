@@ -818,8 +818,24 @@ seed_value_to_gi_argument (JSContextRef ctx,
 
 JSValueRef
 seed_value_from_gi_argument (JSContextRef ctx,
-			     GArgument * arg, GITypeInfo * type_info,
+			     GArgument * arg,
+			     GITypeInfo * type_info,
 			     JSValueRef * exception)
+{
+  
+ return seed_value_from_gi_argument_with_length (ctx,
+			      arg,
+			      type_info,
+			      exception,
+			     0);
+}
+  
+JSValueRef
+seed_value_from_gi_argument_with_length (JSContextRef ctx,
+			     GArgument * arg,
+			     GITypeInfo * type_info,
+			     JSValueRef * exception,
+			     gint array_len)
 {
   GITypeTag gi_tag = g_type_info_get_tag (type_info);
   switch (gi_tag)
@@ -882,6 +898,13 @@ seed_value_from_gi_argument (JSContextRef ctx,
 
         array_type = g_type_info_get_array_type (type_info);
 
+	//SEED_NOTE (INVOCATION,
+        //        "seed_value_from_gi_argument: array_type = %d  C=%d, ARRAY=%d, PTR_ARRAY=%d BYTE_ARRAY=%d",  
+        //        array_type,  GI_ARRAY_TYPE_C, GI_ARRAY_TYPE_ARRAY, GI_ARRAY_TYPE_PTR_ARRAY, GI_ARRAY_TYPE_BYTE_ARRAY); 
+
+
+
+
         if (array_type == GI_ARRAY_TYPE_PTR_ARRAY)
           {
             JSObjectRef ret_ptr_array;
@@ -912,9 +935,37 @@ seed_value_from_gi_argument (JSContextRef ctx,
               }
             return ret_ptr_array;
           }
+	
+	// technically gir has arrays of bytes, eg.
+	// <array length="2" zero-terminated="0" c:type="gchar**"><type name="guint8"/>
+	// example : g_file_get_contents..
+	// we can treat this as a string.. - it's a bit flakey, we should really use
+	// Uint8Array - need to check the webkit API for this..
+	if (!g_type_info_is_zero_terminated (type_info) && array_type == GI_ARRAY_TYPE_C)
+	  {
+	    GITypeInfo *array_type_info = g_type_info_get_param_type (type_info, 0);
+	    if (GI_TYPE_TAG_UINT8 == g_type_info_get_tag (array_type_info)) {
+	      // got a stringy array..
+	        if (arg->v_pointer == 0)
+		{
+		  return JSValueMakeNull (ctx);
+		}
+		// we should check g_type_info_get_array_fixed_size
+		// we are assuming that this is the array_len from the call..
+	        return seed_value_from_binary_string (ctx, arg->v_pointer, array_len, exception);
+ 
+	    }
+	     
+	  }
+        
+	
+	
+	  
 
-	if (!g_type_info_is_zero_terminated (type_info))
+	if (!g_type_info_is_zero_terminated (type_info)) {
+	   
 	  break;
+	}
 
 	param_type = g_type_info_get_param_type (type_info, 0);
 
@@ -2256,6 +2307,8 @@ seed_value_from_string (JSContextRef ctx,
  *
  * Converts a string representation of the given binary string
  * into a #SeedValue.
+ *
+ * FIXME - should use BinaryArray really
  *
  * Return value: A #SeedValue which represents @bytes as a string.
  *
