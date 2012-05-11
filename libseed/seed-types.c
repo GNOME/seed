@@ -889,8 +889,9 @@ seed_value_from_gi_argument_with_length (JSContextRef ctx,
       return seed_value_from_int (ctx, arg->v_int, exception);
     case GI_TYPE_TAG_ARRAY:
       {
-	GITypeInfo *param_type;
+
         GIArrayType array_type;
+	GITypeInfo *array_type_info;
 	JSValueRef ret;
 
 	if (arg->v_pointer == NULL)
@@ -898,27 +899,22 @@ seed_value_from_gi_argument_with_length (JSContextRef ctx,
 
         array_type = g_type_info_get_array_type (type_info);
 
+	array_type_info = g_type_info_get_param_type (type_info, 0);
+	
 	//SEED_NOTE (INVOCATION,
         //        "seed_value_from_gi_argument: array_type = %d  C=%d, ARRAY=%d, PTR_ARRAY=%d BYTE_ARRAY=%d",  
         //        array_type,  GI_ARRAY_TYPE_C, GI_ARRAY_TYPE_ARRAY, GI_ARRAY_TYPE_PTR_ARRAY, GI_ARRAY_TYPE_BYTE_ARRAY); 
 
 
-
-
         if (array_type == GI_ARRAY_TYPE_PTR_ARRAY)
           {
             JSObjectRef ret_ptr_array;
-            GITypeInfo *array_type_info;
             GPtrArray *ptr = arg->v_pointer;
             GArgument larg;
             int length = 0;
             int i;
 
-            if (!ptr)
-              break;
-
             length = ptr->len;
-            array_type_info = g_type_info_get_param_type (type_info, 0);
             ret_ptr_array = JSObjectMakeArray (ctx, 0, NULL, exception);
 
             for (i = 0; i < length; ++i) 
@@ -933,7 +929,10 @@ seed_value_from_gi_argument_with_length (JSContextRef ctx,
 
                 JSObjectSetPropertyAtIndex (ctx, ret_ptr_array, i, ival, NULL);
               }
-            return ret_ptr_array;
+	    
+	    g_base_info_unref ((GIBaseInfo *) array_type_info);
+            
+	    return ret_ptr_array;
           }
 	
 	// technically gir has arrays of bytes, eg.
@@ -941,38 +940,34 @@ seed_value_from_gi_argument_with_length (JSContextRef ctx,
 	// example : g_file_get_contents..
 	// we can treat this as a string.. - it's a bit flakey, we should really use
 	// Uint8Array - need to check the webkit API for this..
-	if (!g_type_info_is_zero_terminated (type_info) && array_type == GI_ARRAY_TYPE_C)
+	
+	if  (
+	        !g_type_info_is_zero_terminated (type_info)
+	      && array_type == GI_ARRAY_TYPE_C
+	      && GI_TYPE_TAG_UINT8 == g_type_info_get_tag (array_type_info)
+	      && array_len > -1
+	    )
 	  {
-	    GITypeInfo *array_type_info = g_type_info_get_param_type (type_info, 0);
-	    if (GI_TYPE_TAG_UINT8 == g_type_info_get_tag (array_type_info)) {
-	      // got a stringy array..
-	        if (arg->v_pointer == 0)
-		{
-		  return JSValueMakeNull (ctx);
-		}
-		// we should check g_type_info_get_array_fixed_size
-		// we are assuming that this is the array_len from the call..
-	        return seed_value_from_binary_string (ctx, arg->v_pointer, array_len, exception);
+	    // got a stringy array..
+	    // we should check g_type_info_get_array_fixed_size
+	    // we are assuming that this is the array_len from the call..
+	    g_base_info_unref ((GIBaseInfo *) array_type_info);
+	    
+	    return seed_value_from_binary_string (ctx, arg->v_pointer, array_len, exception);
  
-	    }
-	     
 	  }
         
-	
-	
-	  
 
-	if (!g_type_info_is_zero_terminated (type_info)) {
-	   
-	  break;
-	}
-
-	param_type = g_type_info_get_param_type (type_info, 0);
-
-	ret = seed_gi_make_jsarray (ctx, arg->v_pointer, param_type,
+	if (!g_type_info_is_zero_terminated (type_info))
+	  {
+	    g_base_info_unref ((GIBaseInfo *) array_type_info);
+	    break;
+	  }
+ 
+	ret = seed_gi_make_jsarray (ctx, arg->v_pointer, array_type_info,
 				    exception);
 
-	g_base_info_unref ((GIBaseInfo *) param_type);
+	g_base_info_unref ((GIBaseInfo *) array_type_info);
 
 	return ret;
       }
@@ -2222,7 +2217,7 @@ seed_value_to_string (JSContextRef ctx,
 		      JSValueRef val, JSValueRef * exception)
 {
   JSStringRef jsstr = NULL;
-  JSValueRef func, str;
+  JSValueRef func;
   gchar *buf = NULL;
   gint length;
 
@@ -2247,10 +2242,11 @@ seed_value_to_string (JSContextRef ctx,
 	{
 	  func =
 	    seed_object_get_property (ctx, (JSObjectRef) val, "toString");
+	    
 	  if (!JSValueIsNull (ctx, func) &&
 	      JSValueIsObject (ctx, func) &&
 	      JSObjectIsFunction (ctx, (JSObjectRef) func))
-	    str =
+	    //str = ... we dump the return value!?!
 	      JSObjectCallAsFunction (ctx, (JSObjectRef) func,
 				      (JSObjectRef) val, 0, NULL, NULL);
 	}
@@ -2318,15 +2314,31 @@ seed_value_from_binary_string (JSContextRef ctx,
 			       const gchar * bytes,
 			       gint n_bytes, JSValueRef * exception)
 {
-  JSValueRef ret;
+  JSStringRef jsstr;
+  JSValueRef valstr;
+  JSChar *jchar;
+  gint i;
+  
+  if (bytes == NULL)
+    {
+      return JSValueMakeNull (ctx);
+    }
+  
+  jchar =   g_alloca (sizeof (JSChar) * n_bytes);
+  
+  for(i =0; i < n_bytes; i++)
+    {
+      jchar[i] = bytes[i]; 
+    }
+    // do we leak memory here?
 
-  gchar *nstr = g_alloca ((n_bytes + 1) * sizeof (gchar));
-  g_strlcpy (nstr, bytes, n_bytes);
-  nstr[n_bytes] = '\0';
+  
+  jsstr = JSStringCreateWithCharacters((const JSChar*)jchar, n_bytes);
+  valstr = JSValueMakeString (ctx, jsstr);
+  JSStringRelease (jsstr);
 
-  ret = seed_value_from_string (ctx, nstr, exception);
-
-  return ret;
+  return valstr;
+  
 }
 
 /**
