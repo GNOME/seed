@@ -47,11 +47,12 @@ JSValueRef seed_value_from_gi_argument (JSContextRef ctx,
 				        GITypeInfo * type_info,
 				        JSValueRef * exception);
 
-JSValueRef seed_value_from_gi_argument_with_length (JSContextRef ctx,
+JSValueRef seed_value_from_gi_argument_full (JSContextRef ctx,
 				        GArgument * arg,
 				        GITypeInfo * type_info,
 				        JSValueRef * exception,
-                                        gint array_len);
+                                        gint array_len,
+                                        GITypeTag gi_tag);
 gboolean seed_gi_release_arg (GITransfer transfer,
 			      GITypeInfo * type_info, GArgument * arg);
 

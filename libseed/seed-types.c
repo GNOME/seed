@@ -824,25 +824,28 @@ seed_value_from_gi_argument (JSContextRef ctx,
 			     JSValueRef * exception)
 {
   
- return seed_value_from_gi_argument_with_length (
+ return seed_value_from_gi_argument_full (
                             ctx,
 			    arg,
 			    type_info,
 			    exception,
-			    0);
+			    0,
+                            g_type_info_get_tag (type_info) );
 }
   
 JSValueRef
-seed_value_from_gi_argument_with_length (JSContextRef ctx,
+seed_value_from_gi_argument_full (JSContextRef ctx,
 			     GArgument * arg,
 			     GITypeInfo * type_info,
 			     JSValueRef * exception,
-			     gint array_len)
+			     gint array_len,
+                             GITypeTag gi_tag
+                             )
 {
-  GITypeTag gi_tag = g_type_info_get_tag (type_info);
+  
   //seed_value_from_gi_argument_with_length : g_type_tag_to_string(gi_tag)
    SEED_NOTE (INVOCATION,
-            "seed_value_from_gi_argument_with_length: arg_type = %s ",
+            "seed_value_from_gi_argument_full: arg_type = %s ",
             g_type_tag_to_string(gi_tag)
             ); 
 
@@ -1003,13 +1006,15 @@ seed_value_from_gi_argument_with_length (JSContextRef ctx,
             JSValueRef ret;
             GITypeTag etype = g_enum_info_get_storage_type (interface); 
 	    
+            // needs GITypeInfo - we are sending it  GIBaseInfo
             
-            ret =  seed_value_from_gi_argument_with_length (
+            ret =  seed_value_from_gi_argument_full (
                             ctx,
 			    arg,
-			    interface,
+			    type_info,
 			    exception,
-			    0);
+			    0,
+                            etype);
             g_base_info_unref (interface);
             return ret;
 	  }

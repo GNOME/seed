@@ -690,7 +690,9 @@ seed_gobject_method_invoked (JSContextRef ctx,
       tag = g_type_info_get_tag (type_info);
 
       // might need to add g_type_info_is_pointer (type_info) check here..
-      
+       SEED_NOTE (INVOCATION, "method: %s returned value of type %s ",
+	    g_base_info_get_name (info),  g_type_tag_to_string(tag)
+        );
       if (tag == GI_TYPE_TAG_VOID) 
         {
           // if we have no out args - returns undefined
@@ -796,8 +798,8 @@ seed_gobject_method_invoked (JSContextRef ctx,
 	}
 	
 	
-	jsout_val = seed_value_from_gi_argument_with_length (ctx, &out_values[out_args_pos],
-						 type_info, exception, array_len);
+	jsout_val = seed_value_from_gi_argument_full (ctx, &out_values[out_args_pos],
+						 type_info, exception, array_len, g_type_info_get_tag (type_info) );
   
       }
 #if GOBJECT_INTROSPECTION_VERSION > 0x000613
