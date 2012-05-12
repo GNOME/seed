@@ -638,7 +638,8 @@ seed_value_to_gi_argument (JSContextRef ctx,
 	else if (interface_type == GI_INFO_TYPE_ENUM ||
 		 interface_type == GI_INFO_TYPE_FLAGS)
 	  {
-	    arg->v_long = seed_value_to_long (ctx, value, exception);
+	    // this might need fixing...
+            arg->v_long = seed_value_to_long (ctx, value, exception);
 	    if (!(interface_type == GI_INFO_TYPE_FLAGS)
 		&& !seed_validate_enum ((GIEnumInfo *) interface,
 					arg->v_long))
@@ -823,11 +824,12 @@ seed_value_from_gi_argument (JSContextRef ctx,
 			     JSValueRef * exception)
 {
   
- return seed_value_from_gi_argument_with_length (ctx,
-			      arg,
-			      type_info,
-			      exception,
-			     0);
+ return seed_value_from_gi_argument_with_length (
+                            ctx,
+			    arg,
+			    type_info,
+			    exception,
+			    0);
 }
   
 JSValueRef
@@ -838,6 +840,12 @@ seed_value_from_gi_argument_with_length (JSContextRef ctx,
 			     gint array_len)
 {
   GITypeTag gi_tag = g_type_info_get_tag (type_info);
+  //seed_value_from_gi_argument_with_length : g_type_tag_to_string(gi_tag)
+   SEED_NOTE (INVOCATION,
+            "seed_value_from_gi_argument_with_length: arg_type = %s ",
+            g_type_tag_to_string(gi_tag)
+            ); 
+
   switch (gi_tag)
     {
 
@@ -990,9 +998,24 @@ seed_value_from_gi_argument_with_length (JSContextRef ctx,
 	    g_base_info_unref (interface);
 	    return seed_value_from_object (ctx, arg->v_pointer, exception);
 	  }
-	else if (interface_type == GI_INFO_TYPE_ENUM
-		 || interface_type == GI_INFO_TYPE_FLAGS)
+        else if (interface_type == GI_INFO_TYPE_ENUM)
 	  {
+            JSValueRef ret;
+            GITypeTag etype = g_enum_info_get_storage_type (interface); 
+	    
+            
+            ret =  seed_value_from_gi_argument_with_length (
+                            ctx,
+			    arg,
+			    interface,
+			    exception,
+			    0);
+            g_base_info_unref (interface);
+            return ret;
+	  }
+	else if ( interface_type == GI_INFO_TYPE_FLAGS)
+	  {
+             
 	    g_base_info_unref (interface);
 	    return seed_value_from_long (ctx, arg->v_long, exception);
 	  }
