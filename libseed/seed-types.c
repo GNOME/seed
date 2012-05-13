@@ -961,7 +961,11 @@ seed_value_from_gi_argument_full (JSContextRef ctx,
 	    // we are assuming that this is the array_len from the call..
 	    g_base_info_unref ((GIBaseInfo *) array_type_info);
 	    
-	    return seed_value_from_binary_string (ctx, arg->v_pointer, array_len, exception);
+	    ret = seed_value_from_binary_string (ctx, arg->v_pointer, array_len, exception);
+	    // always free arg...
+	    g_free(arg->v_pointer);
+	
+	    return ret;
  
 	  }
         
@@ -2362,7 +2366,7 @@ seed_value_from_binary_string (JSContextRef ctx,
   jsstr = JSStringCreateWithCharacters((const JSChar*)jchar, n_bytes);
   valstr = JSValueMakeString (ctx, jsstr);
   JSStringRelease (jsstr);
-
+  
   return valstr;
   
 }
