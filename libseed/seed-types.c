@@ -838,7 +838,7 @@ seed_value_from_gi_argument_full (JSContextRef ctx,
 			     GArgument * arg,
 			     GITypeInfo * type_info,
 			     JSValueRef * exception,
-			     gint array_len,
+			     guint64 array_len,
                              GITypeTag gi_tag
                              )
 {
@@ -912,10 +912,7 @@ seed_value_from_gi_argument_full (JSContextRef ctx,
 
 	array_type_info = g_type_info_get_param_type (type_info, 0);
 	
-	//SEED_NOTE (INVOCATION,
-        //        "seed_value_from_gi_argument: array_type = %d  C=%d, ARRAY=%d, PTR_ARRAY=%d BYTE_ARRAY=%d",  
-        //        array_type,  GI_ARRAY_TYPE_C, GI_ARRAY_TYPE_ARRAY, GI_ARRAY_TYPE_PTR_ARRAY, GI_ARRAY_TYPE_BYTE_ARRAY); 
-
+	
 
         if (array_type == GI_ARRAY_TYPE_PTR_ARRAY)
           {
@@ -951,12 +948,12 @@ seed_value_from_gi_argument_full (JSContextRef ctx,
 	// example : g_file_get_contents..
 	// we can treat this as a string.. - it's a bit flakey, we should really use
 	// Uint8Array - need to check the webkit API for this..
-	
+	 
 	if  (
 	        !g_type_info_is_zero_terminated (type_info)
 	      && array_type == GI_ARRAY_TYPE_C
 	      && GI_TYPE_TAG_UINT8 == g_type_info_get_tag (array_type_info)
-	      && array_len > -1
+	      && array_len > 0
 	    )
 	  {
 	    // got a stringy array..
@@ -2344,22 +2341,23 @@ seed_value_from_binary_string (JSContextRef ctx,
 {
   JSStringRef jsstr;
   JSValueRef valstr;
-  JSChar *jchar;
+  JSChar* jchar;
   gint i;
-  
+    
+    SEED_NOTE (INVOCATION, "Creating binary string of length %d ",
+                n_bytes);
+    
   if (bytes == NULL)
     {
       return JSValueMakeNull (ctx);
     }
   
   jchar =   g_alloca (sizeof (JSChar) * n_bytes);
-  
-  for(i =0; i < n_bytes; i++)
+  for(i =0;i < n_bytes; i++)
     {
-      jchar[i] = bytes[i]; 
+      jchar[i] = bytes[i];
     }
-    // do we leak memory here?
-
+  // this may leak...
   
   jsstr = JSStringCreateWithCharacters((const JSChar*)jchar, n_bytes);
   valstr = JSValueMakeString (ctx, jsstr);

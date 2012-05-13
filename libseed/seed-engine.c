@@ -498,7 +498,7 @@ seed_gobject_method_invoked (JSContextRef ctx,
 
   for (i = 0; (i < (n_args)); i++)
     {
-
+      out_pos[i] = -1;
       arg_info = g_callable_info_get_arg ((GICallableInfo *) info, i);
       dir = g_arg_info_get_direction (arg_info);
       type_info = g_arg_info_get_type (arg_info);
@@ -649,6 +649,7 @@ seed_gobject_method_invoked (JSContextRef ctx,
 	    {
 	      GArgument *out_value = &out_values[n_out_args];
 	      out_args[n_out_args++].v_pointer = out_value;
+              out_pos[ i ] = n_out_args;
 	    }
 
 	}
@@ -657,6 +658,7 @@ seed_gobject_method_invoked (JSContextRef ctx,
 	  GArgument *out_value = &out_values[n_out_args];
 	  out_values[n_out_args].v_pointer = NULL;
 	  out_args[n_out_args].v_pointer = out_value;
+          out_pos[ i ] = n_out_args;
 #if GOBJECT_INTROSPECTION_VERSION > 0x000613	  
 	  if (is_caller_allocates) 
 	    {
@@ -791,10 +793,31 @@ seed_gobject_method_invoked (JSContextRef ctx,
       // need to send that as well, so it can be used to build the seed value.
       {
 	gint length_arg_pos = g_type_info_get_array_length(type_info);
-	gint array_len = 0;
+	guint64 array_len = 0;
 	if (length_arg_pos > -1) {
-	  
-	  array_len = ( &out_values[  out_pos[length_arg_pos] ] )->v_int;
+            JSValueRef jsarray_len;
+            GIArgInfo *array_arg_info;
+            GITypeInfo *array_type_info;
+            
+            g_assert (out_pos[length_arg_pos] > -1);
+            
+            array_arg_info = g_callable_info_get_arg ((GICallableInfo *) info, length_arg_pos);
+            array_type_info = g_arg_info_get_type (array_arg_info);
+            jsarray_len = seed_value_from_gi_argument (ctx,  &out_values[  out_pos[length_arg_pos] ],
+						 array_type_info, exception);
+            
+            array_len =  seed_value_to_uint64(ctx, jsarray_len, exception);
+            
+            // this may work, but the above should be more accurate..
+            //array_len =  (&out_values[  out_pos[length_arg_pos] ])->v_uint32;
+                                     
+            SEED_NOTE (INVOCATION, "Getting length from OUTPOS=%d,  ORIGPOS=%d :  result = %d",
+                 out_pos[length_arg_pos],  length_arg_pos, array_len);
+            // free stuff.
+            JSValueUnprotect(ctx, jsarray_len);
+            g_base_info_unref ((GIBaseInfo *) array_type_info);
+	    g_base_info_unref ((GIBaseInfo *) array_arg_info);
+            
 	}
 	
 	
