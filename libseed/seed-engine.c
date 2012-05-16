@@ -459,7 +459,7 @@ seed_gobject_method_invoked (JSContextRef ctx,
   gboolean instance_method = TRUE;
   gboolean is_caller_allocates = FALSE;
   gboolean *caller_allocated;
-  GIBaseInfo *iface_info;
+  GIBaseInfo *iface_info = NULL;
   GArgument retval;
   GArgument *in_args;
   GArgument *out_args;
@@ -507,7 +507,6 @@ seed_gobject_method_invoked (JSContextRef ctx,
       arg_info 		= g_callable_info_get_arg ((GICallableInfo *) info, i);
       dir 		= g_arg_info_get_direction (arg_info);
       type_info       	= g_arg_info_get_type (arg_info);
-      iface_info 	= NULL;
       is_caller_allocates = FALSE;
       
 #if GOBJECT_INTROSPECTION_VERSION > 0x000613
@@ -672,9 +671,10 @@ seed_gobject_method_invoked (JSContextRef ctx,
 
       g_base_info_unref ((GIBaseInfo *) type_info);
       g_base_info_unref ((GIBaseInfo *) arg_info);
+      if (iface_info) g_base_info_unref (iface_info); 
+      iface_info = NULL;
       type_info = NULL;
       arg_info = NULL;
-      if (iface_info) g_base_info_unref (iface_info); 
     }
     
     
@@ -779,7 +779,6 @@ seed_gobject_method_invoked (JSContextRef ctx,
       arg_info = g_callable_info_get_arg ((GICallableInfo *) info, i);
       dir = g_arg_info_get_direction (arg_info);
       type_info = g_arg_info_get_type (arg_info);
-      iface_info = NULL; 
       // since we succesfully called, we can presume that 
       
       if (dir == GI_DIRECTION_IN || dir == GI_DIRECTION_INOUT)
