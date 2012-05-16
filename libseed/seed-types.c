@@ -962,7 +962,7 @@ seed_value_from_gi_argument_full (JSContextRef ctx,
 	    g_base_info_unref ((GIBaseInfo *) array_type_info);
 	    
 	    ret = seed_value_from_binary_string (ctx, arg->v_pointer, array_len, exception);
-	    // always free arg...
+	    // always free arg... what about when we do not own it...?
 	    g_free(arg->v_pointer);
 	
 	    return ret;
@@ -2356,7 +2356,7 @@ seed_value_from_binary_string (JSContextRef ctx,
       return JSValueMakeNull (ctx);
     }
   
-  jchar =   g_alloca (sizeof (JSChar) * n_bytes);
+  jchar =  g_new0(JSChar, n_bytes); 
   for(i =0;i < n_bytes; i++)
     {
       jchar[i] = bytes[i];
@@ -2365,6 +2365,7 @@ seed_value_from_binary_string (JSContextRef ctx,
   
   jsstr = JSStringCreateWithCharacters((const JSChar*)jchar, n_bytes);
   valstr = JSValueMakeString (ctx, jsstr);
+  g_free(jchar);
   JSStringRelease (jsstr);
   
   return valstr;
