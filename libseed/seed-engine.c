@@ -457,10 +457,9 @@ seed_gobject_method_invoked (JSContextRef ctx,
   GIBaseInfo *info;
   GObject *object = NULL;
   gboolean instance_method = TRUE;
-#if GOBJECT_INTROSPECTION_VERSION > 0x000613
   gboolean is_caller_allocates = FALSE;
+  gboolean *caller_allocated;
   GIBaseInfo *iface_info;
-#endif  
   GArgument retval;
   GArgument *in_args;
   GArgument *out_args;
@@ -470,14 +469,15 @@ seed_gobject_method_invoked (JSContextRef ctx,
   guint use_return_as_out = 0;
   guint n_args, n_in_args, n_out_args, i; 
   guint in_args_pos, out_args_pos;
-  GIArgInfo *arg_info;
-  GITypeInfo *type_info;
-  
+  GIArgInfo *arg_info   = NULL;
+  GITypeInfo *type_info = NULL;
+  GITypeTag tag;
   GIDirection dir;
   JSValueRef retval_ref;
   GError *error = 0;
 
   info = JSObjectGetPrivate (function);
+  
   // We just want to check if there IS an object, not actually throw an
   // exception if we don't get it.
   if (!this_object || !
@@ -492,20 +492,27 @@ seed_gobject_method_invoked (JSContextRef ctx,
   out_args = g_new0 (GArgument, n_args + 1);
   out_values = g_new0 (GArgument, n_args + 1);
   n_in_args = n_out_args = 0;
-
+  caller_allocated = g_new0 (gboolean, n_args + 1);
+  
+  // start buy pushing the object onto the call stack.
+  
   if (instance_method)
     in_args[n_in_args++].v_pointer = object;
 
+    
+  // now loop through all the other args.  
   for (i = 0; (i < (n_args)); i++)
     {
-      out_pos[i] = -1;
-      arg_info = g_callable_info_get_arg ((GICallableInfo *) info, i);
-      dir = g_arg_info_get_direction (arg_info);
-      type_info = g_arg_info_get_type (arg_info);
+      out_pos[i] 	= -1;
+      arg_info 		= g_callable_info_get_arg ((GICallableInfo *) info, i);
+      dir 		= g_arg_info_get_direction (arg_info);
+      type_info       	= g_arg_info_get_type (arg_info);
+      iface_info 	= NULL;
+      is_caller_allocates = FALSE;
+      
 #if GOBJECT_INTROSPECTION_VERSION > 0x000613
       is_caller_allocates =  (dir == GI_DIRECTION_OUT) && g_arg_info_is_caller_allocates (arg_info);
-      iface_info = NULL;
-
+      
       /* caller allocates only applies to structures but GI has
       * no way to denote that yet, so we only use caller allocates
       * if we see  a structure
@@ -526,7 +533,7 @@ seed_gobject_method_invoked (JSContextRef ctx,
               info_type = g_base_info_get_type (iface_info);
 
               if (info_type == GI_INFO_TYPE_STRUCT)
-              is_caller_allocates = TRUE;
+		is_caller_allocates = TRUE;
             }
          }	
 #endif
@@ -550,14 +557,14 @@ seed_gobject_method_invoked (JSContextRef ctx,
 	      
 	      out_pos[ i ] = n_out_args;
 	      
-#if GOBJECT_INTROSPECTION_VERSION > 0x000613			  
               if (is_caller_allocates) 
                 {
                   gsize size = g_struct_info_get_size ( (GIStructInfo *) iface_info) ;
-                  out_args[n_out_args].v_pointer = g_malloc0 (size);
+                  out_args[n_out_args].v_pointer = g_malloc0 (size);		  
                   out_values[n_out_args].v_pointer = out_args[n_out_args].v_pointer;
+		  caller_allocated[i] = TRUE;
+
                 }
-#endif
               n_out_args++;
             } 
           else
@@ -631,19 +638,10 @@ seed_gobject_method_invoked (JSContextRef ctx,
 				   g_base_info_get_name ((GIBaseInfo *)
 							 info));
 
-// FIXME - SEE NOTE ABOVE ABOUT gtk allow_null bugs
-// arg_error:
-	      g_base_info_unref ((GIBaseInfo *) type_info);
-	      g_base_info_unref ((GIBaseInfo *) arg_info);
-#if GOBJECT_INTROSPECTION_VERSION > 0x000613		  
-	      if (iface_info) g_base_info_unref (iface_info); 
-#endif
-	      g_free (in_args);
-	      g_free (out_args);
-	      g_free (out_pos);
-	      g_free (out_values);
 
-	      return JSValueMakeNull (ctx);
+	      retval_ref = JSValueMakeNull (ctx);
+	      goto invoke_return;
+		 
 	    }
 	  if (dir == GI_DIRECTION_INOUT)
 	    {
@@ -659,14 +657,14 @@ seed_gobject_method_invoked (JSContextRef ctx,
 	  out_values[n_out_args].v_pointer = NULL;
 	  out_args[n_out_args].v_pointer = out_value;
           out_pos[ i ] = n_out_args;
-#if GOBJECT_INTROSPECTION_VERSION > 0x000613	  
 	  if (is_caller_allocates) 
 	    {
 	      gsize size = g_struct_info_get_size ( (GIStructInfo *) iface_info) ;
 	      out_args[n_out_args].v_pointer = g_malloc0 (size);
  	      out_values[n_out_args].v_pointer = out_args[n_out_args].v_pointer;
+	      caller_allocated[i] = TRUE;
+
 	    }
-#endif
 	  n_out_args++;
 	  first_out = first_out > -1 ? first_out : i;
 
@@ -674,92 +672,105 @@ seed_gobject_method_invoked (JSContextRef ctx,
 
       g_base_info_unref ((GIBaseInfo *) type_info);
       g_base_info_unref ((GIBaseInfo *) arg_info);
-#if GOBJECT_INTROSPECTION_VERSION > 0x000613	  	  
+      type_info = NULL;
+      arg_info = NULL;
       if (iface_info) g_base_info_unref (iface_info); 
-#endif
     }
+    
+    
+  // --- Finished building the args, now call the method / function.
+  
+    
   SEED_NOTE (INVOCATION, "Invoking method: %s with %d 'in' arguments"
 	     " and %d 'out' arguments",
 	     g_base_info_get_name (info), n_in_args, n_out_args);
-  if (g_function_info_invoke ((GIFunctionInfo *) info,
+  if (!g_function_info_invoke ((GIFunctionInfo *) info,
 			      in_args,
 			      n_in_args,
 			      out_args, n_out_args, &retval, &error))
     {
-      GITypeTag tag;
-
-      type_info = g_callable_info_get_return_type ((GICallableInfo *) info);
-      tag = g_type_info_get_tag (type_info);
-
-      // might need to add g_type_info_is_pointer (type_info) check here..
-       SEED_NOTE (INVOCATION, "method: %s returned value of type %s ",
-	    g_base_info_get_name (info),  g_type_tag_to_string(tag)
-        );
-      if (tag == GI_TYPE_TAG_VOID) 
-        {
-          // if we have no out args - returns undefined
-          // otherwise we return an object, and put the return values into that
-          // along with supporting the old object.value way
-          if (n_out_args < 1) 
-              retval_ref = JSValueMakeUndefined (ctx);
-          else 
-            {
-            
-             retval_ref = JSObjectMake (ctx, NULL, NULL);      
-             use_return_as_out = 1;
-            }
-        }
-      else
-	{
-	  GIBaseInfo *interface;
-	  gboolean sunk = FALSE;
-
-	  if (tag == GI_TYPE_TAG_INTERFACE)
-	    {
-	      GIInfoType interface_type;
-
-	      interface = g_type_info_get_interface (type_info);
-	      interface_type = g_base_info_get_type (interface);
-	      g_base_info_unref (interface);
-
-	      if (interface_type == GI_INFO_TYPE_OBJECT ||
-		  interface_type == GI_INFO_TYPE_INTERFACE)
-		{
-		  if (G_IS_OBJECT (retval.v_pointer))
-		    {
-		      sunk =
-			G_IS_INITIALLY_UNOWNED (G_OBJECT (retval.v_pointer));
-		      if (sunk)
-			g_object_ref_sink (G_OBJECT (retval.v_pointer));
-		    }
-		}
-
-	    }
-	  retval_ref =
-	    seed_value_from_gi_argument (ctx, &retval, type_info, exception);
-
-	  if (sunk)
-	    g_object_unref (G_OBJECT (retval.v_pointer));
-	  else
-	    seed_gi_release_arg (g_callable_info_get_caller_owns
-				 ((GICallableInfo *) info),
-				 type_info, &retval);
-	}
-      g_base_info_unref ((GIBaseInfo *) type_info);
-    }
-  else
-    {
+ 
+      // failed...
       seed_make_exception_from_gerror (ctx, exception, error);
-
-      g_free (in_args);
-      g_free (out_args);
-      g_free (out_pos);
       g_error_free (error);
-      g_free (out_values);
-
-      // FIXME - caller allocates needs freeing.
-      return JSValueMakeNull (ctx);
+      retval_ref = JSValueMakeNull (ctx);
+      goto invoke_return;
+      
     }
+    
+    // -- returned OK..  
+    
+    type_info = g_callable_info_get_return_type ((GICallableInfo *) info);
+    tag = g_type_info_get_tag (type_info);
+
+    // might need to add g_type_info_is_pointer (type_info) check here..
+    
+    if (tag == GI_TYPE_TAG_VOID) 
+      {
+	// if we have no out args - returns undefined
+	// otherwise we return an object, and put the return values into that
+	// along with supporting the old object.value way
+	if (n_out_args < 1) 
+	    retval_ref = JSValueMakeUndefined (ctx);
+	else 
+	  {
+	   retval_ref = JSObjectMake (ctx, NULL, NULL);      
+	   use_return_as_out = 1;
+	  }
+      }
+    else
+      {
+	
+	// not a void return.
+	
+	GIBaseInfo *interface;
+	gboolean sunk = FALSE;
+
+	// for most returns we just pump it though our type convert calls.
+	// however gobjects are different, if they are not owned by anybody,
+	// then we add a ref so that it can not be destroyed during this process.
+	// this ref is removed after we have converted it to a JSObject.
+	
+	if (tag == GI_TYPE_TAG_INTERFACE)
+	  {
+	    GIInfoType interface_type;
+
+	    interface = g_type_info_get_interface (type_info);
+	    interface_type = g_base_info_get_type (interface);
+	    g_base_info_unref (interface);
+
+	    if (interface_type == GI_INFO_TYPE_OBJECT ||
+		interface_type == GI_INFO_TYPE_INTERFACE)
+	      {
+		if (G_IS_OBJECT (retval.v_pointer))
+		  {
+		    sunk =
+		      G_IS_INITIALLY_UNOWNED (G_OBJECT (retval.v_pointer));
+		    if (sunk)
+		      g_object_ref_sink (G_OBJECT (retval.v_pointer));
+		  }
+	      }
+
+	  }
+	  
+	retval_ref =
+	  seed_value_from_gi_argument (ctx, &retval, type_info, exception);
+
+
+	  
+	if (sunk)
+	  g_object_unref (G_OBJECT (retval.v_pointer));
+	else
+	  seed_gi_release_arg (g_callable_info_get_caller_owns
+			       ((GICallableInfo *) info),
+			       type_info, &retval);
+      }
+    if (type_info)  g_base_info_unref ((GIBaseInfo *) type_info);
+    type_info = NULL;
+      
+      
+  // finished with return.. now go thorugh the args and handle any out/inout etc..  
+      
 
   in_args_pos = out_args_pos = 0;
   for (i = 0; (i < n_args); i++)
@@ -768,12 +779,9 @@ seed_gobject_method_invoked (JSContextRef ctx,
       arg_info = g_callable_info_get_arg ((GICallableInfo *) info, i);
       dir = g_arg_info_get_direction (arg_info);
       type_info = g_arg_info_get_type (arg_info);
-#if GOBJECT_INTROSPECTION_VERSION > 0x000613	  
-      is_caller_allocates =  (dir == GI_DIRECTION_OUT) && g_arg_info_is_caller_allocates (arg_info);
-      iface_info = NULL;
-#endif
-    
-
+      iface_info = NULL; 
+      // since we succesfully called, we can presume that 
+      
       if (dir == GI_DIRECTION_IN || dir == GI_DIRECTION_INOUT)
 	{
 	  seed_gi_release_in_arg (g_arg_info_get_ownership_transfer
@@ -784,6 +792,9 @@ seed_gobject_method_invoked (JSContextRef ctx,
 
 	  g_base_info_unref ((GIBaseInfo *) type_info);
 	  g_base_info_unref ((GIBaseInfo *) arg_info);
+	  type_info = NULL;
+	  arg_info = NULL;
+      
 	  continue;
 	}
       
@@ -817,7 +828,7 @@ seed_gobject_method_invoked (JSContextRef ctx,
             JSValueUnprotect(ctx, jsarray_len);
             g_base_info_unref ((GIBaseInfo *) array_type_info);
 	    g_base_info_unref ((GIBaseInfo *) array_arg_info);
-            
+      
 	}
 	
 	
@@ -825,47 +836,26 @@ seed_gobject_method_invoked (JSContextRef ctx,
 						 type_info, exception, array_len, g_type_info_get_tag (type_info) );
   
       }
-#if GOBJECT_INTROSPECTION_VERSION > 0x000613
      /* caller allocates only applies to structures but GI has
       * no way to denote that yet, so we only use caller allocates
       * if we see  a structure
       */
-      if (is_caller_allocates) 
-        {
-          GITypeTag type_tag = g_type_info_get_tag (type_info);
-
-          is_caller_allocates = FALSE;
-
-
-          if (type_tag  == GI_TYPE_TAG_INTERFACE) 
-            {
-              GIInfoType info_type;
-
-              iface_info = g_type_info_get_interface (type_info);
-              g_assert (info != NULL);
-              info_type = g_base_info_get_type (iface_info);
-
-              if (info_type == GI_INFO_TYPE_STRUCT)
-                is_caller_allocates = TRUE;
-
-              g_base_info_unref ( iface_info );
-            }
-         }	
-
-
-
-      // make sure we do not free the caller allocates when we free the values.
-      // Not sure if we need it - python does this..
-      //if (is_caller_allocates) 
-      //  {
-      //     // gvalues  - do we need to unset...           
-      //     //if (g_registered_type_info_get_g_type ( (GIRegisteredTypeInfo *) iface_info) == G_TYPE_VALUE)
-      //      //   g_value_unset ( (GValue *) state->args[i]);
-      //     
-      //  }
+     
+      if (caller_allocated[i]) {
+	
+	// this is the old python code..
+	// if we are going to do this, the caching the iface_info at the top would be a better idea.
+	
+	//if (g_registered_type_info_get_g_type ( (GIRegisteredTypeInfo *) iface_info) == G_TYPE_VALUE)
+	//     g_value_unset ( (GValue *) state->args[i]);
+        
+	
+	// clear the caller allocated flag so it's not free'd at the end.. 
+	caller_allocated[i] = FALSE;
+      }
+ 
 
       // old ? depreciated ? way to handle out args -> set 'value' on object that was send through.
-#endif
       out_args_pos++;
        
       if ( (i < argumentCount) && 
@@ -898,13 +888,33 @@ seed_gobject_method_invoked (JSContextRef ctx,
 
       g_base_info_unref ((GIBaseInfo *) arg_info);
       g_base_info_unref ((GIBaseInfo *) type_info);
+      type_info = NULL;
+      arg_info = NULL;
+      
     }
 
+invoke_return:
+
+// clean up everything..
+  for (i = 0; (i < (n_args)); i++)
+      if (caller_allocated[i])
+	  g_free(out_args[out_pos[i]].v_pointer);
+ 
+  g_free(caller_allocated);
+  
+  if (type_info)  g_base_info_unref ((GIBaseInfo *) type_info);
+  if (arg_info)   g_base_info_unref ((GIBaseInfo *) arg_info);
+  if (iface_info) g_base_info_unref (iface_info); 
+    
   g_free (in_args);
   g_free (out_args);
   g_free (out_pos);
   g_free (out_values);
   return retval_ref;
+
+  
+  
+  
 }
 
 static JSObjectRef
