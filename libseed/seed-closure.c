@@ -288,6 +288,9 @@ seed_handle_closure (ffi_cif * cif, void *result, void **args, gpointer userdata
       *(gpointer *) result = 0;
     }
   g_base_info_unref ((GIBaseInfo *) return_type);
+  
+  JSGarbageCollect(ctx);
+
   JSGlobalContextRelease ((JSGlobalContextRef) ctx);
 }
 
