@@ -805,18 +805,33 @@ seed_gobject_method_invoked (JSContextRef ctx,
 	gint length_arg_pos = g_type_info_get_array_length(type_info);
 	guint64 array_len = 0;
 	if (length_arg_pos > -1) {
-            JSValueRef jsarray_len;
-            GIArgInfo *array_arg_info;
+             GIArgInfo *array_arg_info;
             GITypeInfo *array_type_info;
+            GArgument *array_len_arg;
             
             g_assert (out_pos[length_arg_pos] > -1);
             
+            
             array_arg_info = g_callable_info_get_arg ((GICallableInfo *) info, length_arg_pos);
             array_type_info = g_arg_info_get_type (array_arg_info);
-            jsarray_len = seed_value_from_gi_argument (ctx,  &out_values[  out_pos[length_arg_pos] ],
-						 array_type_info, exception);
             
-            array_len =  seed_value_to_uint64(ctx, jsarray_len, exception);
+            array_len_arg = &out_values[  out_pos[length_arg_pos] ] ;
+            
+            array_len = 0;
+            switch(   g_type_info_get_tag (array_type_info) )
+            {
+              // not sure if the non-unsigned  versions are need as length should not be -ve..
+              case GI_TYPE_TAG_INT8: array_len = (guint64) array_len_arg->v_int8; break;
+              case GI_TYPE_TAG_UINT8:array_len = (guint64) array_len_arg->v_uint8; break;
+              case GI_TYPE_TAG_INT16:  array_len =(guint64) array_len_arg->v_int16; break;
+              case GI_TYPE_TAG_UINT16: array_len =(guint64) array_len_arg->v_uint16; break;
+              case GI_TYPE_TAG_INT32:  array_len =(guint64) array_len_arg->v_int32; break;
+              case GI_TYPE_TAG_UINT32: array_len =(guint64) array_len_arg->v_uint32; break;
+              case GI_TYPE_TAG_INT64: array_len = (guint64) array_len_arg->v_int64; break;
+              case GI_TYPE_TAG_UINT64: array_len = (guint64) array_len_arg->v_uint64; break;
+              default: g_assert(1==0); break;
+              
+           } 
             
             // this may work, but the above should be more accurate..
             //array_len =  (&out_values[  out_pos[length_arg_pos] ])->v_uint32;
@@ -824,7 +839,7 @@ seed_gobject_method_invoked (JSContextRef ctx,
             SEED_NOTE (INVOCATION, "Getting length from OUTPOS=%d,  ORIGPOS=%d :  result = %d",
                  out_pos[length_arg_pos],  length_arg_pos, array_len);
             // free stuff.
-            JSValueUnprotect(ctx, jsarray_len);
+            
             g_base_info_unref ((GIBaseInfo *) array_type_info);
 	    g_base_info_unref ((GIBaseInfo *) array_arg_info);
       
