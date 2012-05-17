@@ -287,7 +287,6 @@ seed_handle_closure (ffi_cif * cif, void *result, void **args, gpointer userdata
     default:
       *(gpointer *) result = 0;
     }
-
   g_base_info_unref ((GIBaseInfo *) return_type);
   JSGlobalContextRelease ((JSGlobalContextRef) ctx);
 }
@@ -299,9 +298,7 @@ seed_make_native_closure (JSContextRef ctx,
 {
   ffi_cif *cif;
   ffi_closure *closure;
-  ffi_type **arg_types;
   GITypeInfo *return_type;
-  gint num_args;
   SeedNativeClosure *privates;
   JSObjectRef cached;
 
@@ -314,9 +311,7 @@ seed_make_native_closure (JSContextRef ctx,
       return (SeedNativeClosure *) JSObjectGetPrivate (cached);
     }
 
-  num_args = g_callable_info_get_n_args (info);
   return_type = g_callable_info_get_return_type (info);
-  arg_types = (ffi_type **) g_new0 (ffi_type *, num_args + 1);
   cif = g_new0 (ffi_cif, 1);
 
   privates = g_new0 (SeedNativeClosure, 1);
