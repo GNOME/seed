@@ -475,6 +475,8 @@ seed_gobject_method_invoked (JSContextRef ctx,
   GIDirection dir;
   JSValueRef retval_ref;
   GError *error = 0;
+  gint length_arg_pos = 0;
+  guint64 array_len = 0;
 
   info = JSObjectGetPrivate (function);
   
@@ -753,11 +755,21 @@ seed_gobject_method_invoked (JSContextRef ctx,
 
 	  }
 	  
+	length_arg_pos = g_type_info_get_array_length(type_info);
+	SEED_NOTE (INVOCATION, "length_arg_pos=%d\n", length_arg_pos);
+	if (length_arg_pos < 0)
+	  {
+	    array_len = 0;
+	  }
+	else
+	  {
+	    array_len =  (&out_values[  out_pos[length_arg_pos] ])->v_uint32;
+	  }
+	SEED_NOTE (INVOCATION, "array_len=%d\n", array_len);
 	retval_ref =
-	  seed_value_from_gi_argument (ctx, &retval, type_info, exception);
+	  seed_value_from_gi_argument_full (ctx, &retval, type_info, exception,
+					    array_len, tag);
 
-
-	  
 	if (sunk)
 	  g_object_unref (G_OBJECT (retval.v_pointer));
 	else
@@ -771,7 +783,6 @@ seed_gobject_method_invoked (JSContextRef ctx,
       
   // finished with return.. now go thorugh the args and handle any out/inout etc..  
       
-
   in_args_pos = out_args_pos = 0;
   for (i = 0; (i < n_args); i++)
     {
@@ -802,8 +813,8 @@ seed_gobject_method_invoked (JSContextRef ctx,
       // if the type_info is an array with a length position, we
       // need to send that as well, so it can be used to build the seed value.
       {
-	gint length_arg_pos = g_type_info_get_array_length(type_info);
-	guint64 array_len = 0;
+	length_arg_pos = g_type_info_get_array_length(type_info);
+	array_len = 0;
 	if (length_arg_pos > -1) {
              GIArgInfo *array_arg_info;
             GITypeInfo *array_type_info;

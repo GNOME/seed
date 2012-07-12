@@ -963,7 +963,7 @@ seed_value_from_gi_argument_full (JSContextRef ctx,
 	    
 	    ret = seed_value_from_binary_string (ctx, arg->v_pointer, array_len, exception);
 	    // always free arg... what about when we do not own it...?
-	    g_free(arg->v_pointer);
+	    //g_free(arg->v_pointer);
 	
 	    return ret;
  
