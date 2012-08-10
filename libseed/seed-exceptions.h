@@ -35,6 +35,7 @@ G_GNUC_PRINTF (4, 5);
      gchar *seed_exception_get_message (JSContextRef ctx, JSValueRef e);
      guint seed_exception_get_line (JSContextRef ctx, JSValueRef e);
      gchar *seed_exception_get_file (JSContextRef ctx, JSValueRef e);
+     gchar *seed_exception_get_stack (JSContextRef ctx, JSValueRef e);
      gchar *seed_exception_to_string (JSContextRef ctx, JSValueRef e);
 
 #endif

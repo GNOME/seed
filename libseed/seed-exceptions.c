@@ -208,6 +208,28 @@ seed_exception_get_file (JSContextRef ctx, JSValueRef e)
   line = seed_object_get_property (ctx, (JSObjectRef) e, "sourceURL");
   return seed_value_to_string (ctx, line, 0);
 }
+/**
+ * seed_exception_get_stack:
+ * @ctx: A #SeedContext.
+ * @exception: A reference to a #SeedException.
+ *
+ * Retrieves the backtrace stack (if available..
+ *
+ * Return value: A #gchar* representing the name of the file from which
+ *               @exception was thrown.
+ *
+ */
+gchar *
+seed_exception_get_stack (JSContextRef ctx, JSValueRef e)
+{
+  JSValueRef stack ;
+  g_assert ((e));
+  if (!JSValueIsObject (ctx, e))
+    return 0;
+  stack = seed_object_get_property (ctx, (JSObjectRef) e, "stack");
+  return seed_value_to_string (ctx, stack , 0);
+}
+
 
 /**
  * seed_exception_to_string:
@@ -226,14 +248,15 @@ gchar *
 seed_exception_to_string (JSContextRef ctx, JSValueRef e)
 {
   guint line;
-  gchar *mes, *name, *file, *ret;
+  gchar *mes, *name, *file, *ret, *stack;
 
   line = seed_exception_get_line (ctx, e);
   mes = seed_exception_get_message (ctx, e);
   file = seed_exception_get_file (ctx, e);
   name = seed_exception_get_name (ctx, e);
+  stack = seed_exception_get_stack (ctx, e);
 
-  ret = g_strdup_printf ("Line %d in %s: %s %s", line, file, name, mes);
+  ret = g_strdup_printf ("Line %d in %s: %s %s\n\nStack:\n%s", line, file, name, mes, stack);
 
   g_free (mes);
   g_free (file);
