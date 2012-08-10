@@ -262,8 +262,20 @@ seed_gobject_constructor_invoked (JSContextRef ctx,
   if (jsprops)
     JSPropertyNameArrayRelease (jsprops);
 
+     SEED_NOTE (INITIALIZATION, "G_TYPE_IS_INSTANTIATABLE  = %d  G_TYPE_IS_ABSTRACT = %d",
+	    G_TYPE_IS_INSTANTIATABLE(type) , G_TYPE_IS_ABSTRACT(type));
 
-  gobject = g_object_newv (type, ri, params);
+
+    
+    if (! G_TYPE_IS_INSTANTIATABLE(type) ||  G_TYPE_IS_ABSTRACT(type) ) {        
+        seed_make_exception (ctx, exception, "ArgumentError",
+			   "Type can not be created - not INSTANTIATABLE");
+
+        return (JSObjectRef) JSValueMakeNull (ctx);
+    }
+         
+    
+    gobject = g_object_newv (type, ri, params);
 
 
   if (G_IS_INITIALLY_UNOWNED (gobject) && !g_object_is_floating (gobject))
