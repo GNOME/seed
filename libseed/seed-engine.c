@@ -1715,6 +1715,8 @@ seed_init_constrained_with_context_and_group (gint * argc,
   qprototype = g_quark_from_static_string ("js-prototype");
   js_ref_quark = g_quark_from_static_string ("js-ref");
 
+  pthread_key_create(&seed_next_gobject_wrapper_key, NULL);
+
   eng = (SeedEngine *) g_malloc (sizeof (SeedEngine));
 
   context_group = group;
@@ -1842,7 +1844,6 @@ SeedEngine *
 seed_init (gint * argc, gchar *** argv)
 {
   context_group = JSContextGroupCreate ();
-  pthread_key_create(&seed_next_gobject_wrapper_key, NULL);
 
   return seed_init_with_context_group (argc, argv, context_group);
 }
@@ -1866,7 +1867,6 @@ SeedEngine *
 seed_init_with_context (gint * argc, gchar *** argv, JSGlobalContextRef context)
 {
   context_group = JSContextGroupCreate ();
-  pthread_key_create(&seed_next_gobject_wrapper_key, NULL);
 
   return seed_init_with_context_and_group (argc, argv, context, context_group);
 }
@@ -1896,7 +1896,6 @@ SeedEngine *
 seed_init_constrained (gint * argc, gchar *** argv)
 {
   context_group = JSContextGroupCreate ();
-  pthread_key_create(&seed_next_gobject_wrapper_key, NULL);
 
   return seed_init_constrained_with_context_and_group(argc, argv,
                                                              JSGlobalContextCreateInGroup (context_group, NULL),
