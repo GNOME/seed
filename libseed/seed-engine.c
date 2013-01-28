@@ -1866,7 +1866,7 @@ seed_init (gint * argc, gchar *** argv)
 SeedEngine *
 seed_init_with_context (gint * argc, gchar *** argv, JSGlobalContextRef context)
 {
-  context_group = JSContextGroupCreate ();
+  context_group = JSContextGetGroup (context);
 
   return seed_init_with_context_and_group (argc, argv, context, context_group);
 }
