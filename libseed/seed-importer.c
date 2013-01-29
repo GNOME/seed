@@ -975,7 +975,29 @@ seed_importer_set_search_path (JSContextRef ctx, gchar ** search_path)
 
   array = JSObjectMakeArray (ctx, length, array_elem, NULL);
   seed_object_set_property (ctx, imports, "searchPath", array);
+}
 
+void
+seed_importer_add_search_path (JSContextRef ctx, gchar *search_path)
+{
+  GSList *paths, *l;
+  GPtrArray *tmp;
+
+  tmp = g_ptr_array_new ();
+
+  paths = seed_importer_get_search_path (ctx, NULL);
+  for (l = paths; l != NULL; l = g_slist_next (l))
+    {
+      g_ptr_array_add (tmp, l->data);
+    }
+
+  g_ptr_array_add (tmp, search_path);
+  g_ptr_array_add (tmp, NULL);
+
+  seed_importer_set_search_path (ctx, (gchar **) tmp->pdata);
+
+  g_ptr_array_unref (tmp);
+  seed_importer_free_search_path (paths);
 }
 
 JSClassDefinition importer_class_def = {
