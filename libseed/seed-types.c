@@ -2598,7 +2598,7 @@ seed_value_from_strv (JSContextRef ctx,
       GArray *js_string_array = g_array_new (FALSE, FALSE, sizeof(gpointer));
       for (; *val != NULL; val++)
 	{
-	  JSStringRef js_string = JSStringCreateWithUTF8CString((char*)*val);
+	  JSStringRef js_string = seed_value_from_string (ctx, *val, exception);
 	  js_string_array = g_array_append_val(js_string_array, js_string);
 	}
       JSValueRef res = JSObjectMakeArray (ctx,
