@@ -400,14 +400,16 @@ seed_closure_invoke_with_context (JSContextRef ctx, GClosure * closure,
 }
 
 GClosure *
-seed_closure_new (JSContextRef ctx, JSObjectRef function,
-		  JSObjectRef user_data, const gchar * description)
+seed_closure_new_for_signal (JSContextRef ctx, JSObjectRef function,
+			     JSObjectRef user_data, const gchar * description,
+			     guint signal_id)
 {
   GClosure *closure;
 
   closure = g_closure_new_simple (sizeof (SeedClosure), 0);
   g_closure_add_finalize_notifier (closure, 0, closure_invalidated);
-  g_closure_set_marshal (closure, seed_signal_marshal_func);
+  g_closure_set_meta_marshal (closure, GUINT_TO_POINTER (signal_id),
+                              seed_signal_marshal_func);
 
   JSValueProtect (ctx, function);
   ((SeedClosure *) closure)->function = function;
@@ -421,6 +423,14 @@ seed_closure_new (JSContextRef ctx, JSObjectRef function,
     ((SeedClosure *) closure)->description = g_strdup (description);
 
   return closure;
+}
+
+GClosure *
+seed_closure_new (JSContextRef ctx, JSObjectRef function,
+		  JSObjectRef user_data, const gchar * description)
+{
+  return seed_closure_new_for_signal (ctx, function, user_data, description,
+                                      0);
 }
 
 void

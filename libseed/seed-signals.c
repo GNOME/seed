@@ -73,7 +73,8 @@ seed_gobject_signal_connect (JSContextRef ctx,
   }
 #endif
 
-  closure = seed_closure_new (ctx, func, user_data, "signal handler");
+  closure = seed_closure_new_for_signal (ctx, func, user_data, "signal handler", query.signal_id);
+
   // This seems wrong...
   ((SeedClosure *) closure)->return_type = query.return_type;
   return g_signal_connect_closure (on_obj, signal_name, closure, FALSE);
@@ -151,13 +152,31 @@ seed_signal_marshal_func (GClosure * closure,
 			  GValue * return_value,
 			  guint n_param_values,
 			  const GValue * param_values,
-			  gpointer invocation_hint, gpointer marshall_data)
+			  gpointer invocation_hint, gpointer marshal_data)
 {
   SeedClosure *seed_closure = (SeedClosure *) closure;
   JSValueRef *args, exception = 0;
   JSValueRef ret = 0;
   guint i;
   gchar *mes;
+  GSignalQuery signal_query = { 0, };
+
+  if (marshal_data)
+    {
+      /* Inspired from gjs/gi/value.c:closure_marshal() */
+      /* we are used for a signal handler */
+      guint signal_id;
+
+      signal_id = GPOINTER_TO_UINT(marshal_data);
+
+      g_signal_query(signal_id, &signal_query);
+
+      if (!signal_query.signal_id)
+          g_error("Signal handler being called on invalid signal");
+
+      if (signal_query.n_params + 1 != n_param_values)
+          g_error("Signal handler being called with wrong number of parameters");
+  }
 
   JSContextRef ctx = JSGlobalContextCreateInGroup (context_group,
 						   0);
@@ -169,7 +188,8 @@ seed_signal_marshal_func (GClosure * closure,
 
   for (i = 0; i < n_param_values; i++)
     {
-      args[i] = seed_value_from_gvalue (ctx, (GValue *) & param_values[i], 0);
+      args[i] = seed_value_from_gvalue_for_signal (ctx,
+                    (GValue *) & param_values[i], 0, &signal_query, i);
 
       if (!args[i])
 	g_error ("Error in signal marshal. "

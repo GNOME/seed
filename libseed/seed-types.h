@@ -27,6 +27,10 @@ extern GQuark js_ref_quark;
 JSValueRef seed_value_from_gvalue (JSContextRef ctx,
 				   GValue * gval, JSValueRef * exception);
 
+JSValueRef seed_value_from_gvalue_for_signal (JSContextRef ctx,
+				   GValue * gval, JSValueRef * exception,
+				   GSignalQuery *signal_query, gint arg_n);
+
 gboolean seed_value_to_gvalue (JSContextRef ctx,
 			       JSValueRef val, GType type,
 			       GValue * gval, JSValueRef * exception);

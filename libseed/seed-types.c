@@ -1257,8 +1257,9 @@ seed_value_from_gi_argument_full (JSContextRef ctx,
 }
 
 JSValueRef
-seed_value_from_gvalue (JSContextRef ctx,
-			GValue * gval, JSValueRef * exception)
+seed_value_from_gvalue_for_signal (JSContextRef ctx, GValue * gval,
+				   JSValueRef * exception,
+				   GSignalQuery *signal_query, gint arg_n)
 {
   if (!G_IS_VALUE (gval))
     {
@@ -1295,7 +1296,44 @@ seed_value_from_gvalue (JSContextRef ctx,
       return seed_value_from_string (ctx, (gchar *)
 				     g_value_get_string (gval), exception);
     case G_TYPE_POINTER:
-      return seed_make_pointer (ctx, g_value_get_pointer (gval));
+      if (signal_query)
+        {
+          JSValueRef res;
+          GArgument arg;
+          GIBaseInfo *obj;
+          GISignalInfo *signal_info;
+          GIArgInfo *arg_info;
+          GITypeInfo type_info;
+
+          obj = g_irepository_find_by_gtype(NULL, signal_query->itype);
+          if (!obj)
+            return NULL;
+
+          signal_info = g_object_info_find_signal((GIObjectInfo *) obj,
+                            signal_query->signal_name);
+
+          if (!signal_info) {
+              g_base_info_unref((GIBaseInfo *) obj);
+              return NULL;
+          }
+
+          arg_info = g_callable_info_get_arg(signal_info, arg_n - 1);
+          g_arg_info_load_type(arg_info, &type_info);
+
+          arg.v_pointer = g_value_get_pointer(gval);
+
+          res = seed_value_from_gi_argument (ctx, &arg, &type_info, exception);
+
+          g_base_info_unref((GIBaseInfo*)arg_info);
+          g_base_info_unref((GIBaseInfo*)signal_info);
+          g_base_info_unref((GIBaseInfo*)obj);
+
+          return res;
+        }
+      else
+        {
+          return seed_make_pointer (ctx, g_value_get_pointer (gval));
+        }
     case G_TYPE_PARAM:
       // Might need to dup and make a boxed.
       return seed_make_pointer (ctx, g_value_get_param (gval));
@@ -1343,6 +1381,13 @@ seed_value_from_gvalue (JSContextRef ctx,
     }
 
   return NULL;
+}
+
+JSValueRef
+seed_value_from_gvalue (JSContextRef ctx,
+			GValue * gval, JSValueRef * exception)
+{
+  return seed_value_from_gvalue_for_signal(ctx, gval, exception, NULL, 0);
 }
 
 gboolean

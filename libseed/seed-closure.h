@@ -52,6 +52,14 @@ GClosure *seed_closure_new (JSContextRef ctx,
 			    JSObjectRef function,
 			    JSObjectRef user_data, const gchar * description);
 
+
+GClosure *seed_closure_new_for_signal (JSContextRef ctx,
+				       JSObjectRef function,
+				       JSObjectRef user_data,
+				       const gchar *description,
+				       guint signal_id);
+
+
 JSObjectRef seed_closure_get_callable (GClosure * c);
 
 JSValueRef
