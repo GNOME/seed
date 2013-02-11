@@ -163,6 +163,27 @@ seed_release_arg (GITransfer transfer,
 	  g_base_info_unref ((GIBaseInfo *) param_type);
 	}
       break;
+    case GI_TYPE_TAG_GHASH:
+      {
+        GITypeInfo *val_param_info;
+        GHashTableIter iter;
+        GArgument value;
+
+        val_param_info = g_type_info_get_param_type (type_info, 1);
+        g_assert(val_param_info != NULL);
+
+        /* release the hashtable's values */
+        g_hash_table_iter_init (&iter, arg->v_pointer);
+        while (g_hash_table_iter_next (&iter, NULL, &value.v_pointer))
+          {
+            seed_release_arg (GI_TRANSFER_EVERYTHING, val_param_info,
+                              g_type_info_get_tag (val_param_info), &value);
+          }
+
+        /* release the hashtable's keys and the hashtable itself */
+        g_hash_table_destroy (arg->v_pointer);
+	break;
+      }
     case GI_TYPE_TAG_INTERFACE:
       {
 	if (arg->v_pointer)
@@ -253,6 +274,7 @@ seed_gi_release_in_arg (GITransfer transfer,
     case GI_TYPE_TAG_UTF8:
     case GI_TYPE_TAG_FILENAME:
     case GI_TYPE_TAG_ARRAY:
+    case GI_TYPE_TAG_GHASH:
       return seed_release_arg (GI_TRANSFER_EVERYTHING,
 			       type_info, type_tag, arg);
     default:
@@ -809,6 +831,82 @@ seed_value_to_gi_argument (JSContextRef ctx,
 	    break;
 	  }
       }
+    case GI_TYPE_TAG_GHASH:
+      {
+        GITypeInfo *key_param_info, *val_param_info;
+        GHashTable *hash_table;
+
+        JSPropertyNameArrayRef jsprops = 0;
+        JSStringRef jsprop_name;
+        JSValueRef jsprop_value;
+        int i, nparams = 0;
+
+        if (!JSValueIsObject (ctx, value))
+          {
+            return FALSE;
+          }
+
+        if (JSValueIsNull (ctx, value))
+          {
+            arg->v_pointer = NULL;
+            break;
+          }
+
+        key_param_info = g_type_info_get_param_type (type_info, 0);
+        g_assert(key_param_info != NULL);
+        if (g_type_info_get_tag (key_param_info) != GI_TYPE_TAG_UTF8)
+          {
+            /* Functions requesting a hash table with non-string keys are
+             * not supported */
+            return FALSE;
+          }
+
+        val_param_info = g_type_info_get_param_type (type_info, 1);
+        g_assert(val_param_info != NULL);
+
+        jsprops = JSObjectCopyPropertyNames (ctx, (JSObjectRef) value);
+        nparams = JSPropertyNameArrayGetCount (jsprops);
+
+        /* keys are strings and the destructor is g_free
+         * values will be freed in seed_release_arg
+         */
+        hash_table = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
+
+        for (i = 0; i < nparams; i++)
+          {
+            char *prop_name;
+            int length;
+            GArgument hash_arg;
+
+            jsprop_name = JSPropertyNameArrayGetNameAtIndex (jsprops, i);
+
+            length = JSStringGetMaximumUTF8CStringSize (jsprop_name);
+            prop_name = g_malloc (length * sizeof (gchar));
+            JSStringGetUTF8CString (jsprop_name, prop_name, length);
+
+            jsprop_value = JSObjectGetProperty (ctx,
+                                                (JSObjectRef) value,
+                                                jsprop_name, NULL);
+
+            if (!seed_value_to_gi_argument (ctx, jsprop_value,
+                                        val_param_info,
+                                        &hash_arg,
+                                        exception))
+              {
+                g_hash_table_destroy (hash_table);
+                g_base_info_unref ((GIBaseInfo *) val_param_info);
+                return FALSE;
+              }
+
+            g_hash_table_insert (hash_table,
+                                 prop_name,
+                                 hash_arg.v_pointer);
+          }
+
+        arg->v_pointer = hash_table;
+
+        break;
+      }
     default:
       return FALSE;
 
@@ -1096,6 +1194,53 @@ seed_value_from_gi_argument_full (JSContextRef ctx,
 	    i++;
 	  }
 	return ret;
+      }
+    case GI_TYPE_TAG_GHASH:
+      {
+        GITypeInfo *key_type;
+        GITypeTag key_type_tag;
+        GITypeInfo *value_type;
+        JSObjectRef ret;
+        GHashTable *hash_table;
+        GHashTableIter iter;
+        gpointer key, value;
+
+        key_type = g_type_info_get_param_type (type_info, 0);
+        key_type_tag = g_type_info_get_tag (key_type);
+
+        if ((key_type_tag != GI_TYPE_TAG_UTF8) &&
+            (key_type_tag != GI_TYPE_TAG_FILENAME))
+          {
+            char *error_message = g_strdup_printf ("Unable to make object from hash table indexed with values of type %s", g_type_tag_to_string (key_type_tag));
+            seed_make_exception (ctx, exception, "ArgumentError",
+                                 error_message);
+            g_free (error_message);
+            return JSValueMakeNull (ctx);
+          }
+
+        value_type = g_type_info_get_param_type (type_info, 1);
+
+        ret = JSObjectMake (ctx, NULL, NULL);
+
+        hash_table = arg->v_pointer;
+        g_hash_table_iter_init (&iter, hash_table);
+
+        while (g_hash_table_iter_next (&iter, &key, &value))
+          {
+            JSStringRef js_key;
+            GArgument value_arg;
+            JSValueRef value_jsval;
+
+            js_key = JSStringCreateWithUTF8CString ((const char*) key);
+
+            value_arg.v_string = value;
+            value_jsval = seed_value_from_gi_argument_full (ctx, &value_arg,
+                                                                 value_type, exception, 0, key_type_tag);
+
+            JSObjectSetProperty (ctx, ret, js_key, value_jsval, 0, NULL);
+          }
+
+        return ret;
       }
     case GI_TYPE_TAG_ERROR:
       {
