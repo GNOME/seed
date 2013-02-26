@@ -1,3 +1,6 @@
+
+TESTS_ENVIRONMENT = PATH=$(top_builddir)/src:$$PATH
+
 EXTRA_DIST = \
 	struct-functions.js \
 	struct-set-member.js \

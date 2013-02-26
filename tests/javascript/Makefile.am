@@ -1,3 +1,6 @@
+
+TESTS_ENVIRONMENT = PATH=$(top_builddir)/src:$$PATH
+
 SUBDIRS = gtypes signals structs
 
 EXTRA_DIST = \

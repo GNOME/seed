@@ -1,3 +1,7 @@
+
+TESTS_ENVIRONMENT = PATH=$(top_builddir)/src:$$PATH
+
+
 EXTRA_DIST = \
 	gtype-class-init-exception.js \
 	gtype-typerror.js \

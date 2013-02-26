@@ -1,3 +1,7 @@
+
+TESTS_ENVIRONMENT = PATH=$(top_builddir)/src:$$PATH
+
+
 EXTRA_DIST = \
 	signal-connect.js \
 	signal-disconnect.js \

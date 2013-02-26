@@ -163,6 +163,7 @@ seed_signal_marshal_func (GClosure * closure,
 						   0);
 
   seed_prepare_global_context (ctx);
+  SEED_NOTE (INVOCATION, "Signal Marshal: ");
 
   args = g_newa (JSValueRef, n_param_values + 1);
 
@@ -206,6 +207,7 @@ seed_signal_marshal_func (GClosure * closure,
     }
 
   JSGlobalContextRelease ((JSGlobalContextRef) ctx);
+  JSGarbageCollect(ctx);
 
 }
 
