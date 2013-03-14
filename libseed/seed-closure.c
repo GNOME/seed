@@ -375,7 +375,7 @@ seed_closure_invoke (GClosure * closure, JSValueRef * args, guint argc,
   seed_prepare_global_context (ctx);
   for (i = 0; i < argc; i++)
     real_args[i] = args[i];
-  args[argc] =
+  real_args[argc] =
     ((SeedClosure *) closure)->user_data ? ((SeedClosure *) closure)->
     user_data : JSValueMakeNull (ctx);
 
@@ -398,7 +398,7 @@ seed_closure_invoke_with_context (JSContextRef ctx, GClosure * closure,
 
   for (i = 0; i < argc; i++)
     real_args[i] = args[i];
-  args[argc] =
+  real_args[argc] =
     ((SeedClosure *) closure)->user_data ? ((SeedClosure *) closure)->
     user_data : JSValueMakeNull (ctx);
 
