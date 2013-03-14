@@ -368,20 +368,13 @@ seed_closure_invoke (GClosure * closure, JSValueRef * args, guint argc,
 		     JSValueRef * exception)
 {
   JSContextRef ctx = JSGlobalContextCreateInGroup (context_group, 0);
-  JSValueRef *real_args = g_newa (JSValueRef, argc + 1);
   JSValueRef ret;
-  guint i;
 
   seed_prepare_global_context (ctx);
-  for (i = 0; i < argc; i++)
-    real_args[i] = args[i];
-  real_args[argc] =
-    ((SeedClosure *) closure)->user_data ? ((SeedClosure *) closure)->
-    user_data : JSValueMakeNull (ctx);
 
   ret =
-    JSObjectCallAsFunction (ctx, ((SeedClosure *) closure)->function, NULL,
-			    argc + 1, real_args, exception);
+    seed_closure_invoke_with_context (ctx, closure, args, argc, exception);
+
   JSGlobalContextRelease ((JSGlobalContextRef) ctx);
 
   return ret;
@@ -393,7 +386,6 @@ seed_closure_invoke_with_context (JSContextRef ctx, GClosure * closure,
 				  JSValueRef * exception)
 {
   JSValueRef *real_args = g_newa (JSValueRef, argc + 1);
-  JSValueRef ret;
   guint i;
 
   for (i = 0; i < argc; i++)
@@ -402,11 +394,9 @@ seed_closure_invoke_with_context (JSContextRef ctx, GClosure * closure,
     ((SeedClosure *) closure)->user_data ? ((SeedClosure *) closure)->
     user_data : JSValueMakeNull (ctx);
 
-  ret =
+  return
     JSObjectCallAsFunction (ctx, ((SeedClosure *) closure)->function, NULL,
 			    argc + 1, real_args, exception);
-
-  return ret;
 }
 
 GClosure *
