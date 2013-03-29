@@ -99,6 +99,7 @@ void
 seed_prepare_global_context (JSContextRef ctx)
 {
   JSObjectRef global = JSContextGetGlobalObject (ctx);
+  JSStringRef check_sprintf =  JSStringCreateWithUTF8CString ("sprintf");
 
   seed_object_set_property (ctx, global, "imports", importer);
   seed_object_set_property (ctx, global, "GType", seed_gtype_constructor);
@@ -106,8 +107,11 @@ seed_prepare_global_context (JSContextRef ctx)
   seed_object_set_property (ctx, global, "print", seed_print_ref);
   seed_object_set_property (ctx, global, "printerr", seed_printerr_ref);
 
-
-  JSEvaluateScript (ctx, defaults_script, NULL, NULL, 0, NULL);
+  /* No need to re-import Seed.js if not needed. */
+  if (!JSObjectHasProperty( ctx, seed_obj_ref,  check_sprintf)) {
+    JSEvaluateScript (ctx, defaults_script, NULL, NULL, 0, NULL);
+  }
+  JSStringRelease (check_sprintf);
 }
 
 static JSObjectRef
