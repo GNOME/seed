@@ -230,6 +230,53 @@ seed_gi_importer_handle_object (JSContextRef ctx,
     }
 }
 
+static void
+seed_gi_importer_handle_iface (JSContextRef ctx,
+			       JSObjectRef namespace_ref,
+			       GIObjectInfo * info, JSValueRef * exception)
+{
+  GType type;
+
+  type = g_registered_type_info_get_g_type ((GIRegisteredTypeInfo *) info);
+
+  if (type != 0)
+    {
+      GIFunctionInfo *finfo;
+      GIFunctionInfoFlags flags;
+      JSObjectRef constructor_ref;
+      guint i, n_methods;
+
+      constructor_ref =
+	JSObjectMake (ctx, gobject_constructor_class, (gpointer) type);
+
+      seed_object_set_property (ctx, constructor_ref,
+				"type",
+				seed_value_from_long (ctx, type, exception));
+      n_methods = g_interface_info_get_n_methods (info);
+      for (i = 0; i < n_methods; i++)
+	{
+	  finfo = g_interface_info_get_method (info, i);
+	  flags = g_function_info_get_flags (finfo);
+	  if (!(flags & GI_FUNCTION_IS_METHOD))
+	    {
+	      seed_gobject_define_property_from_function_info
+		(ctx, finfo, constructor_ref, FALSE);
+	    }
+	  else
+	    {
+	      g_base_info_unref ((GIBaseInfo *) finfo);
+	    }
+	}
+
+      seed_object_set_property (ctx, namespace_ref,
+				g_base_info_get_name ((GIBaseInfo *) info),
+				constructor_ref);
+      seed_object_set_property (ctx, constructor_ref,
+				"prototype",
+				seed_gobject_get_prototype_for_gtype (type));
+    }
+}
+
 /*
  * Set up prototype and constructor for structs. Same semantics as objects except
  * for the type.
@@ -438,6 +485,10 @@ seed_gi_importer_do_namespace (JSContextRef ctx,
 	  seed_gi_importer_handle_object (ctx, namespace_ref,
 					  (GIObjectInfo *) info, exception);
 	  break;
+	case GI_INFO_TYPE_INTERFACE:
+	  seed_gi_importer_handle_iface (ctx, namespace_ref,
+					 (GIObjectInfo *) info, exception);
+	  break;
 	case GI_INFO_TYPE_STRUCT:
 	  seed_gi_importer_handle_struct (ctx, namespace_ref,
 					  (GIStructInfo *) info, exception);
@@ -457,6 +508,9 @@ seed_gi_importer_do_namespace (JSContextRef ctx,
 					    exception);
 	  break;
 	default:
+	  SEED_NOTE (IMPORTER, "Unhandled type %s for %s",
+	             g_info_type_to_string (info_type),
+	             g_base_info_get_name (info));
 	  break;
 	}
       g_base_info_unref (info);
