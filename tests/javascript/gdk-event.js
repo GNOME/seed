@@ -25,4 +25,4 @@ win.show()
 
 Gtk.main()
 
-testsuite.checkAsserts(4)
+testsuite.checkAsserts(2)
