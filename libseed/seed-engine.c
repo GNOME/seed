@@ -1000,13 +1000,14 @@ seed_gobject_define_property_from_function_info (JSContextRef ctx,
   if (!g_strcmp0 (name, "new"))
     name = "c_new";
   seed_object_set_property (ctx, object, name, method_ref);
-  
+  /*
+    //  Disabled as this crashes in a recursive loop now
   seed_object_set_property (ctx, method_ref, "info",
 			    seed_make_struct (ctx,
 					      g_base_info_ref ((GIBaseInfo *)
 							       info),
 					      base_info_info));
-
+  */
 }
 
 static void
@@ -1801,7 +1802,7 @@ seed_init_with_context_and_group (gint * argc,
   JSEvaluateScript (eng->context, defaults_script, NULL, NULL, 0, NULL);
 
   base_info_info =
-    g_irepository_find_by_name (0, "GIRepository", "IBaseInfo");
+    g_irepository_find_by_name (0, "GIRepository", "BaseInfo");
 
   return eng;
 }
