@@ -2,7 +2,7 @@
 
 testsuite = imports.testsuite
 
-input = Seed.spawn("/usr/bin/env seed modules-noasserts.js");
+input = Seed.spawn(Seed.argv[0] + " modules-noasserts.js");
 
 testsuite.assert(input.stdout == "Hello Seed Module World\n")
 
