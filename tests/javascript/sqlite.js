@@ -1,5 +1,9 @@
 #!/usr/bin/env seed
 
+// this may not be the real build location... - but push it on the stack 
+imports.searchPath.unshift('../../modules/sqlite/.libs');
+
+
 testsuite = imports.testsuite
 Gio = imports.gi.Gio
 sqlite = imports.sqlite
