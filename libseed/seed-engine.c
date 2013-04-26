@@ -1153,6 +1153,7 @@ static void
 seed_gobject_finalize (JSObjectRef object)
 {
   GObject *gobject;
+  JSObjectRef js_ref;
 
   gobject = (GObject *) JSObjectGetPrivate ((JSObjectRef) object);
   if (!gobject)
@@ -1166,13 +1167,17 @@ seed_gobject_finalize (JSObjectRef object)
 	     g_type_name (G_OBJECT_TYPE (gobject)), gobject,
 	     gobject->ref_count);
 
-  if (g_object_get_data (gobject, "js-ref"))
+  js_ref = g_object_get_data (gobject, "js-ref");
+  if (js_ref)
     {
       g_object_set_data_full (gobject, "js-ref", NULL, NULL);
 
-      g_object_remove_toggle_ref (gobject, seed_toggle_ref, 0);
+      g_object_remove_toggle_ref (gobject, seed_toggle_ref, js_ref);
     }
-  g_object_run_dispose (gobject);
+  else
+    {
+      g_object_run_dispose (gobject);
+    }
 }
 
 static JSValueRef
