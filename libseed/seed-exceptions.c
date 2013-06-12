@@ -261,6 +261,7 @@ seed_exception_to_string (JSContextRef ctx, JSValueRef e)
   g_free (mes);
   g_free (file);
   g_free (name);
+  g_free (stack);
 
   return ret;
 }
