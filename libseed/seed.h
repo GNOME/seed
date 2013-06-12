@@ -106,6 +106,7 @@ gchar *seed_exception_get_name (SeedContext ctx, SeedException exception);
 gchar *seed_exception_get_message (SeedContext ctx, SeedException exception);
 guint seed_exception_get_line (SeedContext ctx, SeedException exception);
 gchar *seed_exception_get_file (SeedContext ctx, SeedException exception);
+gchar *seed_exception_get_stack (SeedContext ctx, SeedException exception);
 gchar *seed_exception_to_string (SeedContext ctx, SeedException exception);
 
 SeedValue seed_evaluate (SeedContext ctx, SeedScript * s, SeedObject this_object);
