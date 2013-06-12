@@ -415,7 +415,8 @@ void
 seed_script_destroy (SeedScript * s)
 {
   seed_string_unref (s->script);
-  seed_string_unref (s->source_url);
+  if (s->source_url)
+    seed_string_unref (s->source_url);
 
   g_free (s);
 }
