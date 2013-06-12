@@ -196,7 +196,7 @@ seed_object_call (JSContextRef ctx,
  * @js: A string representing the contents of the script.
  * @source_url: The filename of the script, for reference in errors, or %NULL.
  * @line_number: The line number of the beginning of the script, for reference
- *               in error messages, or %NULL.
+ *               in error messages, or 0.
  *
  * Creates a new #SeedScript instance with @js as the contents, then
  * checks for proper syntax.
