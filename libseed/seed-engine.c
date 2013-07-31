@@ -1346,6 +1346,29 @@ seed_gobject_set_property (JSContextRef context,
 }
 
 static JSValueRef
+seed_gobject_convert_to_type (JSContextRef ctx,
+                              JSObjectRef object,
+                              JSType type, JSValueRef * exception)
+{
+  GObject *obj;
+  gchar *as_string;
+
+  if (type == kJSTypeString)
+    {
+      JSValueRef ret;
+      obj = (GObject *) JSObjectGetPrivate (object);
+
+      as_string =
+	g_strdup_printf ("[gobject %s %p]", G_OBJECT_TYPE_NAME (obj), obj);
+      ret = seed_value_from_string (ctx, as_string, exception);
+      g_free (as_string);
+
+      return ret;
+    }
+  return FALSE;
+}
+
+static JSValueRef
 seed_gobject_constructor_convert_to_type (JSContextRef ctx,
 					  JSObjectRef object,
 					  JSType type, JSValueRef * exception)
@@ -1393,7 +1416,7 @@ JSClassDefinition gobject_def = {
   NULL,				/* Call As Function */
   NULL,				/* Call As Constructor */
   NULL,				/* Has Instance */
-  NULL				/* Convert To Type */
+  seed_gobject_convert_to_type  /* Convert To Type */
 };
 
 JSClassDefinition gobject_method_def = {
