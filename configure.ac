@@ -4,6 +4,7 @@ AC_INIT(seed, 3.8.2)
 AM_INIT_AUTOMAKE([1.7 -Wno-portability])
 AM_MAINTAINER_MODE([enable])
 AC_CONFIG_HEADERS([config.h])
+AC_CONFIG_MACRO_DIR([m4])
 
 AC_CANONICAL_HOST
 
