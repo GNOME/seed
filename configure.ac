@@ -129,6 +129,9 @@ PKG_CHECK_MODULES(GTHREAD, gthread-2.0)
 dnl ========================GIO================================================
 PKG_CHECK_MODULES(GIO, gio-2.0)
 
+dnl ========================GModule================================================
+PKG_CHECK_MODULES(GMODULE, gmodule-no-export-2.0)
+
 dnl =============================Modules=======================================
 dnl ==== canvas ====
 AC_ARG_ENABLE(canvas-module,
