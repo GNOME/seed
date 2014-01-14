@@ -52,7 +52,7 @@
 SeedObject os_namespace;
 
 #define EXPECTED_EXCEPTION(name, argnum)				\
-  seed_make_exception (ctx, exception, "ArgumentError", name " expected " argnum " got %Zd", argument_count); \
+  seed_make_exception (ctx, exception, "ArgumentError", name " expected " argnum " got %zd", argument_count); \
   return seed_make_undefined (ctx);
 
 SeedValue

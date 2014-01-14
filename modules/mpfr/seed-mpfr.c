@@ -612,7 +612,7 @@ seed_mpfr_construct_with_set(SeedContext ctx,
             break;
         default:
             seed_make_exception (ctx, exception, "ArgumentError",
-                                 "mpfr_t constructor.set expected 2 or 3 arguments got %Zd", argument_count);
+                                 "mpfr_t constructor.set expected 2 or 3 arguments got %zd", argument_count);
             return seed_make_undefined (ctx);
     }
 
@@ -684,7 +684,7 @@ seed_mpfr_construct(SeedContext ctx,
             break;
         default:
             seed_make_exception (ctx, exception, "ArgumentError",
-                                 "mpfr_t constructor expected 0 or 1 arguments got %Zd", argument_count);
+                                 "mpfr_t constructor expected 0 or 1 arguments got %zd", argument_count);
             return seed_make_undefined (ctx);
     }
 

@@ -38,7 +38,7 @@ SeedValue random_callback(SeedContext ctx,
     if(argument_count != 1)
     {
         seed_make_exception(ctx, exception, "ArgumentError",
-                            "wrong number of arguments; expected 1, got %Zd",
+                            "wrong number of arguments; expected 1, got %zd",
                             argument_count);
         return seed_make_undefined(ctx);
     }
