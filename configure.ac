@@ -271,6 +271,11 @@ AC_ARG_ENABLE(ffi-module,
 AM_CONDITIONAL(BUILD_FFI_MODULE, test "x$want_ffi_module" = "xyes")
 AC_SUBST(BUILD_FFI_MODULE)
 
+dnl ==== libdl ====
+AC_CHECK_LIB([c], [dlsym], [LIBDL=""],
+	[AC_CHECK_LIB([dl], [dlsym], [LIBDL="-ldl"])])
+AC_SUBST(LIBDL)
+
 dnl ==== libxml ====
 AC_ARG_ENABLE(libxml-module,
 			  AC_HELP_STRING([--enable-libxml-module],
