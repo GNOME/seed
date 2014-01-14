@@ -45,7 +45,7 @@ libseed@SEED_GTK_VERSION@_la_LIBADD = \
 	$(SEED_OSX_LIBS) \
 	$(GIO_LIBS) \
 	$(GMODULE_LIBS) \
-	$(FFI_LIBS) -ldl
+	$(FFI_LIBS) $(LIBDL)
 
 seedheaders_HEADERS = seed.h seed-debug.h seed-module.h
 
