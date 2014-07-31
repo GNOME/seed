@@ -8,6 +8,8 @@
   <shortdesc xml:lang="en">GNOME WebKit Javascript bindings</shortdesc>
   <homepage rdf:resource="http://live.gnome.org/Seed" />
   <category rdf:resource="http://api.gnome.org/doap-extensions#core" />
+  <programming-language>C</programming-language>
+  <programming-language>JavaScript</programming-language>
 
   <maintainer>
     <foaf:Person>
