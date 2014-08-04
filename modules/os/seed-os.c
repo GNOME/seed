@@ -66,26 +66,16 @@ seed_os_realpath (SeedContext ctx,
   SeedValue sv;
   gchar *arg;
   gchar *resolved_path;
-  gchar *ret;
-  gsize path_max;
 
   if (argument_count != 1)
     {
       EXPECTED_EXCEPTION("os.realpath", "1 argument");
     }
   arg = seed_value_to_string (ctx, arguments[0], exception);
-#ifdef PATH_MAX
-  path_max = PATH_MAX;
-#else
-  path_max = pathconf (arg, _PC_PATH_MAX);
-  if (path_max <= 0)
-    path_max = 4096;
-#endif
-  resolved_path = (gchar *) g_malloc (path_max);
-  ret = realpath(arg, resolved_path);
+  resolved_path = realpath (arg, NULL);
   g_free (arg);
 
-  sv = seed_value_from_string (ctx, ret, exception);
+  sv = seed_value_from_string (ctx, resolved_path, exception);
   g_free (resolved_path);
 
   return sv;

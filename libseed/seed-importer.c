@@ -713,9 +713,8 @@ seed_importer_handle_file (JSContextRef ctx,
   JSValueRef js_file_dirname;
   JSObjectRef global, c_global;
   JSStringRef file_contents, file_name;
-  gchar *contents, *walk, *file_path, *canonical, *absolute_path, *normalp;
-  gchar *normalized_path;
-  gsize path_max;
+  gchar *contents, *walk, *file_path, *canonical, *absolute_path;
+  char *normalized_path;
 
   file_path = g_build_filename (dir, file, NULL);
   canonical = seed_importer_canonicalize_path (file_path);
@@ -769,17 +768,9 @@ seed_importer_handle_file (JSContextRef ctx,
 					g_path_get_dirname (file_path), NULL);
     }
 
-#ifdef PATH_MAX
-  path_max = PATH_MAX;
-#else
-  path_max = pathconf (absolute_path, _PC_PATH_MAX);
-  if (path_max <= 0)
-    path_max = 4096;
-#endif
-  normalized_path = (gchar *) g_malloc (path_max);
-  normalp = realpath (absolute_path, normalized_path);
+  normalized_path = realpath (absolute_path, NULL);
 
-  js_file_dirname = seed_value_from_string (ctx, normalp, NULL);
+  js_file_dirname = seed_value_from_string (ctx, normalized_path, NULL);
 
   seed_object_set_property (nctx, global, "__script_path__", js_file_dirname);
 
