@@ -19,6 +19,9 @@ libseed_DynamicObject_la_LDFLAGS = \
 	$(GOBJECT_INTROSPECTION_LDFLAGS) \
 	$(SEED_PROFILE_LIBS)
 
+libseed_DynamicObject_la_LIBADD = \
+	$(top_builddir)/libseed/libseed@SEED_GTK_VERSION@.la
+
 endif
 
 
