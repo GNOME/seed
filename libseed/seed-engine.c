@@ -489,6 +489,7 @@ seed_gobject_method_invoked (JSContextRef ctx,
   GITypeInfo *type_info = NULL;
   GITypeTag tag;
   GIDirection dir;
+  GITransfer transfer;
   JSValueRef retval_ref;
   GError *error = 0;
   gint length_arg_pos = 0;
@@ -525,6 +526,7 @@ seed_gobject_method_invoked (JSContextRef ctx,
       arg_info 		= g_callable_info_get_arg ((GICallableInfo *) info, i);
       dir 		= g_arg_info_get_direction (arg_info);
       type_info       	= g_arg_info_get_type (arg_info);
+      transfer       	= g_arg_info_get_ownership_transfer (arg_info);
       is_caller_allocates = FALSE;
       
 #if GOBJECT_INTROSPECTION_VERSION > 0x000613
@@ -644,7 +646,7 @@ seed_gobject_method_invoked (JSContextRef ctx,
                 }
             }
 
-          if (!seed_value_to_gi_argument (ctx, arguments[i], type_info,
+          if (!seed_value_to_gi_argument (ctx, arguments[i], type_info, transfer,
 					  &in_args[n_in_args++], exception))
 	    {
 	      seed_make_exception (ctx, exception,

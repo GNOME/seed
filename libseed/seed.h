@@ -170,6 +170,7 @@ SeedValue seed_value_from_gvalue (SeedContext ctx,
 gboolean seed_value_to_gi_argument (SeedContext ctx,
 				    SeedValue value,
 				    GITypeInfo * type_info,
+                                    GITransfer   transfer,
 				    GArgument * arg, SeedValue * exception);
 
 SeedValue seed_value_from_gi_argument (SeedContext ctx,

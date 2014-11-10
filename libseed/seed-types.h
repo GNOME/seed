@@ -44,6 +44,7 @@ gboolean seed_object_set_property (JSContextRef ctx, JSObjectRef object,
 gboolean seed_value_to_gi_argument (JSContextRef ctx,
 				    JSValueRef value,
 				    GITypeInfo * type_info,
+                                    GITransfer   transfer,
 				    GArgument * arg, JSValueRef * exception);
 
 JSValueRef seed_value_from_gi_argument (JSContextRef ctx,

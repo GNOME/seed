@@ -516,6 +516,7 @@ gboolean
 seed_value_to_gi_argument (JSContextRef ctx,
 			   JSValueRef value,
 			   GITypeInfo * type_info,
+                           GITransfer   transfer,
 			   GArgument * arg,
 			   JSValueRef * exception)
 {
@@ -654,6 +655,9 @@ seed_value_to_gi_argument (JSContextRef ctx,
 	      }
 
 	    arg->v_pointer = gobject;
+            // FIXME: This has to be done for other types too
+            if (transfer == GI_TRANSFER_EVERYTHING)
+              g_object_ref (gobject);
 	    g_base_info_unref (interface);
 	    break;
 	  }
@@ -890,6 +894,7 @@ seed_value_to_gi_argument (JSContextRef ctx,
 
             if (!seed_value_to_gi_argument (ctx, jsprop_value,
                                         val_param_info,
+                                        GI_TRANSFER_NOTHING,
                                         &hash_arg,
                                         exception))
               {
