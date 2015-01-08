@@ -42,7 +42,7 @@ seed_toggle_ref (gpointer data, GObject * object, gboolean is_last_ref)
 {
   JSValueRef wrapper;
 
-  if (!g_object_get_data (object, "js-ref"))
+  if (!g_object_get_qdata (object, js_ref_quark))
     return;
 
   wrapper = (JSValueRef) data;

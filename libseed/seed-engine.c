@@ -1169,10 +1169,15 @@ seed_gobject_finalize (JSObjectRef object)
 	     g_type_name (G_OBJECT_TYPE (gobject)), gobject,
 	     gobject->ref_count);
 
-  js_ref = g_object_get_data (gobject, "js-ref");
+  js_ref = g_object_get_qdata (gobject, js_ref_quark);
   if (js_ref)
     {
-      g_object_set_data_full (gobject, "js-ref", NULL, NULL);
+      /* Steal the qdata here as otherwise we will call
+       * JSValueUnprotect() from the destroy notify of
+       * the qdata, which is not allowed to be called
+       * from a finalizer!
+       */
+      g_object_steal_qdata (gobject, js_ref_quark);
 
       g_object_remove_toggle_ref (gobject, seed_toggle_ref, js_ref);
     }
