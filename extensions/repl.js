@@ -26,17 +26,39 @@ bind_cr = function(){
     lastLastLength = buffer.length;
 }
 
-function complete_obj_get_obj(text)
+function complete_class_field(klass, klass_part, field_part)
+{
+    var properties = Object.getOwnPropertyNames(klass);
+    completions = properties;
+    completions = completions.filter(function(s) { return s.indexOf(field_part) == 0; });
+    completions = completions.map(function(s){ return klass_part + '.' + s });
+}
+
+function complete_object_field(obj, obj_part, field_part)
+{
+    var klass = obj.constructor;  
+    var properties = Object.getOwnPropertyNames(obj);
+    var methods = Object.getOwnPropertyNames(klass.prototype); // there's also Object.getPrototypeOf()
+    completions = properties.concat(methods);
+    completions = completions.filter(function(s) { return s.indexOf(field_part) == 0; });
+    completions = completions.map(function(s){ return obj_part + '.' + s });    
+}
+
+function complete_parse(text)
 {
     try
     {
-	var a = text.split('.');    a.pop();
-	var obj_str = a.join('.');
-	var obj = context.eval(obj_str);
-	return (typeof obj == "object" ? obj : null);
+	var a = text.split('.');    
+	var field_part = a.pop();  // first letters of field to complete
+	var obj_part = a.join('.');
+	var obj = context.eval(obj_part);
+	if (typeof obj == "object")
+	    complete_object_field(obj, obj_part, field_part);
+	if (typeof obj == "function")
+	    complete_class_field(obj, obj_part, field_part);
     }
     catch (e)
-    { return null; }
+    {  }
 }
 
 var completions = [];
@@ -47,24 +69,15 @@ function complete(text, state)
 
     if (!state) // new word to complete
     {
-	var obj = complete_obj_get_obj(text);
-	if (!obj)
-	    return null;
-	var a = text.split('.');
-	var field_part = a.pop();  // first letters of field to complete
-	var obj_part = a.join('.');
-	var klass = obj.constructor;
-	var properties = Object.getOwnPropertyNames(obj);
-	var methods = Object.getOwnPropertyNames(klass.prototype);
-	completions = properties.concat(methods);
-	completions = completions.filter(function(s) { return s.indexOf(field_part) == 0; });
-	completions = completions.map(function(s){ return obj_part + '.' + s });
+	completions = [];
+	complete_parse(text);
     }
-
+    
     if (state == completions.length)
 	return null;
     return completions[state];
 }
+
 
 readline.bind('\n', bind_cr);
 readline.bind('\r', bind_cr);
