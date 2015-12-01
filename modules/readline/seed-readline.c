@@ -109,6 +109,55 @@ seed_rl_buffer(SeedContext ctx,
     return seed_value_from_string(ctx, rl_line_buffer, exception);
 }
 
+static SeedObject seed_rl_completion_entry_function_obj = NULL;
+
+static gchar*
+seed_rl_completion_entry_function_proxy(const gchar *text, int state)
+{
+  SeedContext ctx = seed_context_create(eng->group, NULL);
+  SeedValue exception = 0;
+  SeedValue args[2];
+  SeedObject obj = seed_rl_completion_entry_function_obj;
+  SeedValue ret;
+  gchar *bret = NULL;
+
+  args[0] = seed_value_from_string(ctx, text, &exception);
+  args[1] = seed_value_from_int(ctx, state, &exception);
+  
+  ret = seed_object_call(ctx, obj, 0, 2, args, &exception);
+  if (exception)
+  {
+    gchar *mes = seed_exception_to_string(ctx, exception);
+    g_warning("Exception in readline completion entry closure. %s \n", mes);
+  }
+  if (!seed_value_is_null(ctx, ret))
+    bret = seed_value_to_string(ctx, ret, &exception);
+  seed_context_unref((SeedContext) ctx);
+  return bret;
+}
+
+static SeedValue
+seed_rl_completion_entry_function(SeedContext ctx,
+				  SeedObject function,
+				  SeedObject this_object,
+				  size_t argument_count,
+				  const SeedValue arguments[],
+				  SeedValue * exception)
+{
+  CHECK_ARG_COUNT("readline.completion_entry_function", 1);
+
+  if (seed_value_is_null(ctx, arguments[0]))
+  {
+    rl_completion_entry_function = NULL;
+    return seed_make_null(ctx);    
+  }
+
+  // FIXME: should ref this guy ??
+  seed_rl_completion_entry_function_obj = arguments[0];
+  rl_completion_entry_function = seed_rl_completion_entry_function_proxy;
+  return seed_make_null(ctx);
+}
+
 static SeedValue
 seed_rl_insert(SeedContext ctx,
                SeedObject function,
@@ -174,7 +223,9 @@ seed_readline(SeedContext ctx,
 seed_static_function readline_funcs[]
   = { { "readline", seed_readline, 0 }, { "bind", seed_readline_bind, 0 },
       { "done", seed_rl_done, 0 },      { "buffer", seed_rl_buffer, 0 },
-      { "insert", seed_rl_insert, 0 },  { NULL, NULL, 0 } };
+      { "insert", seed_rl_insert, 0 },  
+      { "completion_entry", seed_rl_completion_entry_function, 0},
+      { NULL, NULL, 0 } };
 
 SeedObject
 seed_module_init(SeedEngine* local_eng)
