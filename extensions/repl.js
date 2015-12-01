@@ -26,6 +26,14 @@ bind_cr = function(){
     lastLastLength = buffer.length;
 }
 
+function complete_globals(text)
+{
+    var glob = context.eval("(function(){ return this; })();");  // global object
+    var properties = Object.getOwnPropertyNames(glob);
+    completions = properties;
+    completions = completions.filter(function(s) { return s.indexOf(text) == 0; });
+}
+
 function complete_class_field(klass, klass_part, field_part)
 {
     var properties = Object.getOwnPropertyNames(klass);
@@ -36,9 +44,9 @@ function complete_class_field(klass, klass_part, field_part)
 
 function complete_object_field(obj, obj_part, field_part)
 {
-    var klass = obj.constructor;  
     var properties = Object.getOwnPropertyNames(obj);
-    var methods = Object.getOwnPropertyNames(klass.prototype); // there's also Object.getPrototypeOf()
+//    var methods = Object.getOwnPropertyNames(obj.constructor.prototype);
+    var methods = Object.getOwnPropertyNames(Object.getPrototypeOf(obj));  // better (eg imports.os)
     completions = properties.concat(methods);
     completions = completions.filter(function(s) { return s.indexOf(field_part) == 0; });
     completions = completions.map(function(s){ return obj_part + '.' + s });    
@@ -48,6 +56,12 @@ function complete_parse(text)
 {
     try
     {
+	if (text.indexOf('.') == -1)
+	{
+	    complete_globals(text);
+	    return;
+	}
+	
 	var a = text.split('.');    
 	var field_part = a.pop();  // first letters of field to complete
 	var obj_part = a.join('.');
