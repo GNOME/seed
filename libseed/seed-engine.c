@@ -25,6 +25,7 @@
 #include <stdarg.h>
 #include <string.h>
 #include <pthread.h>
+#include "seed-signals.h"
 
 #include "config.h"
 
@@ -1402,6 +1403,8 @@ JSStaticFunction gobject_static_funcs[] = {
   {"__debug_ref_count", seed_gobject_ref_count, 0}
   ,
   {"__property_type", seed_gobject_property_type, 0}
+  ,
+  {"connect", seed_gobject_signal_connect_by_name, 0}
   ,
   {0, 0, 0}
 };

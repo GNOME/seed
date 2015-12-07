@@ -80,7 +80,7 @@ seed_gobject_signal_connect (JSContextRef ctx,
   return g_signal_connect_closure (on_obj, signal_name, closure, FALSE);
 }
 
-static JSValueRef
+JSValueRef
 seed_gobject_signal_connect_by_name (JSContextRef ctx,
 				     JSObjectRef function,
 				     JSObjectRef thisObject,

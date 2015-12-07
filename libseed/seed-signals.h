@@ -39,6 +39,13 @@ gulong seed_gobject_signal_connect (JSContextRef ctx,
 				    JSObjectRef this_obj,
 				    JSObjectRef user_data);
 
+JSValueRef
+seed_gobject_signal_connect_by_name (JSContextRef ctx,
+				     JSObjectRef function,
+				     JSObjectRef thisObject,
+				     size_t argumentCount,
+				     const JSValueRef arguments[],
+				     JSValueRef * exception);
 
 JSClassDefinition *seed_get_signal_class (void);
 extern JSClassRef gobject_signal_class;
