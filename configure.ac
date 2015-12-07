@@ -77,18 +77,24 @@ dnl ==============================WebKit=======================================
 m4_define([webkit_default], [3.0])
 
 AC_ARG_WITH([webkit],
-            [AC_HELP_STRING([--with-webkit=@<:@3.0/1.0@:>@],
+            [AC_HELP_STRING([--with-webkit=@<:@4.0/3.0/1.0@:>@],
                             [Select the Webkit backend, default=3.0])],
 	    [],
             [with_webkit=webkit_default])
 
-dnl=== support both 1.0 and 3.0 (default 3.0) ==
+dnl=== support all 1.0, 3.0 and 4.0 (default 3.0) ==
 AS_CASE([$with_webkit],
 	[3.0], [
 		WEBKIT_PC=webkitgtk-3.0
 		SEED_GTK_VERSION=-gtk3
 		AC_CHECK_LIB(webkitgtk-3.0, JSContextGroupCreate,,
 	                AC_CHECK_LIB(javascriptcoregtk-3.0, JSContextGroupCreate,WEBKIT_PC=javascriptcoregtk-3.0)) 
+	],
+	[4.0], [
+		WEBKIT_PC=webkitgtk-4.0
+		SEED_GTK_VERSION=-gtk4
+		AC_CHECK_LIB(webkitgtk-4.0, JSContextGroupCreate,,
+	                AC_CHECK_LIB(javascriptcoregtk-4.0, JSContextGroupCreate,WEBKIT_PC=javascriptcoregtk-4.0))
 	],
 	[1.0], [
 		AC_CHECK_LIB(webkitgtk-1.0, JSContextGroupCreate,WEBKIT_PC=webkitgtk-1.0,
