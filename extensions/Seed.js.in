@@ -8,7 +8,7 @@ if(!imports.searchPath || (imports.searchPath.length == 0))
 	                       "/usr/lib/seed",
 	                       "/usr/share/seed" ];
 
-        GLib = imports.gi.GLib;
+        const GLib = imports.gi.GLib;
 	if(Seed.argv.length > 1)
 	{
 		__script_path__ = GLib.path_get_dirname(Seed.argv[1]);
