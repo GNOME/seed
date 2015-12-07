@@ -25,6 +25,7 @@
 
 JSValueRef seed_print_ref;
 JSValueRef seed_printerr_ref;
+JSValueRef seed_log_error_ref;
 
 static JSValueRef
 seed_include (JSContextRef ctx,
@@ -227,6 +228,36 @@ seed_print (JSContextRef ctx,
 
   g_print ("%s\n", buf);
   g_free (buf);
+
+  return JSValueMakeUndefined (ctx);
+}
+
+static JSValueRef
+seed_log_error (JSContextRef ctx,
+	    JSObjectRef function,
+	    JSObjectRef this_object,
+	    size_t argumentCount,
+	    const JSValueRef arguments[], JSValueRef * exception)
+{
+  gchar *buf1;
+  gchar *buf2 = NULL;
+  if (argumentCount != 1 && argumentCount != 2)
+    {
+      seed_make_exception (ctx, exception, "ArgumentError",
+			   "logError expected 1 or 2 argument, got %zd",
+			   argumentCount);
+      return JSValueMakeNull (ctx);
+    }
+
+  buf1 = seed_value_to_string (ctx, arguments[0], exception);
+  if (argumentCount == 2) {
+    buf2 = seed_value_to_string (ctx, arguments[1], exception);
+    g_print ("%s - %s\n", buf1, buf2);
+  } else {
+    g_print ("%s\n", buf1);
+  }
+  g_free (buf1);
+  g_free (buf2);
 
   return JSValueMakeUndefined (ctx);
 }
@@ -534,6 +565,8 @@ seed_init_builtins (SeedEngine * local_eng, gint * argc, gchar *** argv)
   seed_object_set_property (local_eng->context, obj, "print", seed_print_ref);
   seed_object_set_property (local_eng->context, local_eng->global, "print",
 			    seed_print_ref);
+  seed_object_set_property (local_eng->context, local_eng->global, "log",
+			    seed_print_ref);
   JSValueProtect (local_eng->context, seed_print_ref);
 
   seed_printerr_ref =
@@ -542,6 +575,12 @@ seed_init_builtins (SeedEngine * local_eng, gint * argc, gchar *** argv)
   seed_object_set_property (local_eng->context, local_eng->global, "printerr",
 			    seed_printerr_ref);
   JSValueProtect (local_eng->context, seed_printerr_ref);
+
+  seed_log_error_ref =
+    JSObjectMakeFunctionWithCallback (local_eng->context, NULL, &seed_log_error);
+  seed_object_set_property (local_eng->context, local_eng->global, "logError",
+			    seed_log_error_ref);
+  JSValueProtect (local_eng->context, seed_log_error_ref);
 
   seed_create_function (local_eng->context,
 			"check_syntax", &seed_check_syntax, obj);
