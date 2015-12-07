@@ -469,7 +469,7 @@ seed_argv_get_property (JSContextRef ctx,
   SeedArgvPrivates *priv;
   gchar *cproperty_name;
   gsize length;
-  guint index;
+  gint index;
 
   priv = JSObjectGetPrivate (object);
   if (!priv->argc)
@@ -483,7 +483,14 @@ seed_argv_get_property (JSContextRef ctx,
       return seed_value_from_int (ctx, priv->argc, exception);
     }
   index = atoi (cproperty_name);
-  return seed_value_from_string (ctx, priv->argv[index], exception);
+  if (index >= 0 && index < priv->argc) {
+	  return seed_value_from_string (ctx, priv->argv[index], exception);
+  } else {
+	  seed_make_exception (ctx, exception, "ArgumentError",
+			  "ArgumentCount "
+			  "%d, got %d", priv->argc, index);
+	  return JSValueMakeNull (ctx);
+  }
 }
 
 JSClassDefinition seed_argv_def = {
