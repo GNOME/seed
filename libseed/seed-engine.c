@@ -414,8 +414,8 @@ seed_gobject_init_method_invoked (JSContextRef ctx,
 
   if (argumentCount == 1)
     {
-      if (JSValueIsNull (ctx, arguments[0])
-	  || !JSValueIsObject (ctx, arguments[0]))
+      if (!JSValueIsNull (ctx, arguments[0])
+	  && !JSValueIsObject (ctx, arguments[0]))
 
 	{
 	  seed_make_exception (ctx, exception,
@@ -423,6 +423,10 @@ seed_gobject_init_method_invoked (JSContextRef ctx,
 			       "init method expects an array object as argument");
 	  return JSValueMakeUndefined (ctx);
 	}
+      if (JSValueIsNull (ctx, arguments[0]))
+    {
+      priv = NULL;
+    } else
       if (JSValueIsObjectOfClass (ctx, arguments[0], seed_argv_class))
 	{
 	  priv = JSObjectGetPrivate ((JSObjectRef) arguments[0]);
