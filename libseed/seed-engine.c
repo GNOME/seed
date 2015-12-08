@@ -32,6 +32,7 @@
 JSObjectRef function_proto;
 
 JSObjectRef seed_obj_ref;
+JSObjectRef ARGV_obj_ref;
 
 GQuark qname;
 GQuark qprototype;

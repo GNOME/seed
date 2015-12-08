@@ -546,11 +546,66 @@ JSClassDefinition seed_argv_def = {
 
 JSClassRef seed_argv_class;
 
+static JSValueRef
+seed_ARGV_get_property (JSContextRef ctx,
+			JSObjectRef object,
+			JSStringRef property_name, JSValueRef * exception)
+{
+  SeedArgvPrivates *priv;
+  gchar *cproperty_name;
+  gsize length;
+  gint index;
+
+  priv = JSObjectGetPrivate (object);
+  if (!priv->argc)
+    return JSValueMakeUndefined (ctx);
+  length = JSStringGetMaximumUTF8CStringSize (property_name);
+  cproperty_name = g_alloca (length * sizeof (gchar));
+  JSStringGetUTF8CString (property_name, cproperty_name, length);
+
+  if (!g_strcmp0 (cproperty_name, "length"))
+    {
+      return seed_value_from_int (ctx, priv->argc-2, exception);
+    }
+  index = atoi (cproperty_name);
+  if (index >= 0 && index < priv->argc-2) {
+	  return seed_value_from_string (ctx, priv->argv[index+2], exception);
+  } else {
+	  seed_make_exception (ctx, exception, "ArgumentError",
+			  "ArgumentCount "
+			  "%d, got %d", priv->argc-2, index);
+	  return JSValueMakeNull (ctx);
+  }
+}
+
+JSClassDefinition seed_ARGV_def = {
+  0,				/* Version, always 0 */
+  kJSClassAttributeNoAutomaticPrototype,	/* JSClassAttributes */
+  "argv_array",			/* Class Name */
+  NULL,				/* Parent Class */
+  NULL,				/* Static Values */
+  NULL,
+  NULL,
+  NULL,
+  NULL,				/* Has Property */
+  seed_ARGV_get_property,	/* Get Property */
+  NULL,
+  NULL,				/* Delete Property */
+  NULL,				/* Get Property Names */
+  NULL,				/* Call As Function */
+  NULL,				/* Call As Constructor */
+  NULL,				/* Has Instance */
+  NULL				/* Convert To Type */
+};
+
+JSClassRef seed_ARGV_class;
+
 void
 seed_init_builtins (SeedEngine * local_eng, gint * argc, gchar *** argv)
 {
   SeedArgvPrivates *priv;
-  JSObjectRef arrayObj;
+  JSObjectRef argvArrayObj;
+  JSObjectRef ARGVArrayObj;
   JSObjectRef obj =
     (JSObjectRef) seed_object_get_property (local_eng->context,
 					    local_eng->global,
@@ -596,8 +651,13 @@ seed_init_builtins (SeedEngine * local_eng, gint * argc, gchar *** argv)
   priv->argc = argc ? *argc : 0;
 
   seed_argv_class = JSClassCreate (&seed_argv_def);
-  arrayObj = JSObjectMake (local_eng->context, seed_argv_class, priv);
+  argvArrayObj = JSObjectMake (local_eng->context, seed_argv_class, priv);
 
-  seed_object_set_property (local_eng->context, obj, "argv", arrayObj);
+  seed_object_set_property (local_eng->context, obj, "argv", argvArrayObj);
+
+  seed_ARGV_class = JSClassCreate (&seed_ARGV_def);
+  ARGVArrayObj = JSObjectMake (local_eng->context, seed_ARGV_class, priv);
+
+  seed_object_set_property (local_eng->context, local_eng->global, "ARGV", ARGVArrayObj);
 
 }
