@@ -202,10 +202,19 @@ seed_gi_importer_handle_object (JSContextRef ctx,
 						      finfo);
 	      const gchar *fname =
 		g_base_info_get_name ((GIBaseInfo *) finfo);
-	      if (g_strrstr (fname, "new_") == fname)
-		fname += 4;
-	      else if (!g_strcmp0 (fname, "new"))
-		fname = "c_new";
+	      if (g_strrstr (fname, "new_") == fname) {
+		      // To be compatible with gjs, we need to have a method with new_, too.
+		      seed_object_set_property (ctx,
+						constructor_ref, fname, constructor);
+		      fname += 4;
+	      }
+
+	      else if (!g_strcmp0 (fname, "new")) {
+		      // To be compatible with gjs, we need to have new as function, too.
+		      seed_object_set_property (ctx,
+						constructor_ref, fname, constructor);
+		      fname = "c_new";
+	      }
 
 	      seed_object_set_property (ctx,
 					constructor_ref, fname, constructor);
@@ -309,10 +318,17 @@ seed_gi_importer_handle_struct (JSContextRef ctx,
 						  gobject_named_constructor_class,
 						  finfo);
 	  const gchar *fname = g_base_info_get_name ((GIBaseInfo *) finfo);
-	  if (g_str_has_prefix (fname, "new_"))
-	    fname += 4;
-	  else if (!g_strcmp0 (fname, "new"))
-	    fname = "c_new";
+      if (g_strrstr (fname, "new_") == fname) {
+	      // To be compatible with gjs, we need to have a method with new_, too.
+	      seed_object_set_property (ctx, struct_ref, fname, constructor);
+	      fname += 4;
+      }
+
+      else if (!g_strcmp0 (fname, "new")) {
+	      // To be compatible with gjs, we need to have new as function, too.
+	      seed_object_set_property (ctx, struct_ref, fname, constructor);
+	      fname = "c_new";
+      }
 
 	  seed_object_set_property (ctx, struct_ref, fname, constructor);
 	}

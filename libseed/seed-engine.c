@@ -1005,8 +1005,11 @@ seed_gobject_define_property_from_function_info (JSContextRef ctx,
   JSObjectSetPrototype (ctx, method_ref, function_proto);
 
   name = g_base_info_get_name ((GIBaseInfo *) info);
-  if (!g_strcmp0 (name, "new"))
+  if (!g_strcmp0 (name, "new")) {
+    // To be compatible with gjs, we need to have new as function, too.
+    seed_object_set_property (ctx, object, name, method_ref);
     name = "c_new";
+  }
   seed_object_set_property (ctx, object, name, method_ref);
   /*
     //  Disabled as this crashes in a recursive loop now
@@ -1528,7 +1531,9 @@ JSClassDefinition gobject_named_constructor_def = {
   NULL,				/* Set Property */
   NULL,				/* Delete Property */
   NULL,				/* Get Property Names */
-  NULL,				/* Call As Function */
+  // To be compatible with gjs you need to be able to call named
+  // constructors without the new in front
+  seed_gobject_method_invoked,				/* Call As Function */
   seed_gobject_named_constructor_invoked,	/* Call As Constructor */
   seed_gobject_has_instance,				/* Has Instance */
   seed_gobject_constructor_convert_to_type
