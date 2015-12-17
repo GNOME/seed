@@ -520,6 +520,7 @@ modules/mpfr/Makefile
 modules/ffi/Makefile
 modules/DynamicObject/Makefile
 
+modules/gjs/system/Makefile
 extensions/gjs/Makefile
 modules/gjs/Makefile
 
