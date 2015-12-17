@@ -32,7 +32,10 @@
 JSObjectRef function_proto;
 
 JSObjectRef seed_obj_ref;
+#ifdef SEED_ENABLE_GJSCOMPAT
 JSObjectRef ARGV_obj_ref;
+JSObjectRef window_obj_ref;
+#endif
 
 GQuark qname;
 GQuark qprototype;
@@ -111,6 +114,7 @@ seed_prepare_global_context (JSContextRef ctx)
   seed_object_set_property (ctx, global, "Seed", seed_obj_ref);
 #ifdef SEED_ENABLE_GJSCOMPAT
   seed_object_set_property (ctx, global, "ARGV", ARGV_obj_ref);
+  seed_object_set_property (ctx, global, "window", window_obj_ref);
 #endif
   seed_object_set_property (ctx, global, "print", seed_print_ref);
   seed_object_set_property (ctx, global, "printerr", seed_printerr_ref);
@@ -1816,6 +1820,11 @@ seed_init_constrained_with_context_and_group (gint * argc,
   seed_object_set_property (eng->context, eng->global, "Seed", seed_obj_ref);
   JSValueProtect (eng->context, seed_obj_ref);
 
+#ifdef SEED_ENABLE_GJSCOMPAT
+  window_obj_ref = JSObjectMake (eng->context, NULL, NULL);
+  seed_object_set_property (eng->context, eng->global, "window", window_obj_ref);
+  JSValueProtect (eng->context, window_obj_ref);
+#endif
   g_irepository_require (g_irepository_get_default (), "GObject", NULL, 0, 0);
   g_irepository_require (g_irepository_get_default (), "GIRepository",
                          NULL, 0, 0);
