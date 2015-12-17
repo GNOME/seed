@@ -53,6 +53,9 @@ GQuark js_ref_quark;
 
 guint seed_debug_flags = 0;	/* global seed debug flag */
 gboolean seed_arg_print_version = FALSE; // Flag to print version and quit
+#ifdef SEED_ENABLE_GJSCOMPAT
+gboolean seed_arg_gjs_compatiblity = FALSE;
+#endif
 
 pthread_key_t seed_next_gobject_wrapper_key;
 
@@ -106,6 +109,9 @@ seed_prepare_global_context (JSContextRef ctx)
   seed_object_set_property (ctx, global, "imports", importer);
   seed_object_set_property (ctx, global, "GType", seed_gtype_constructor);
   seed_object_set_property (ctx, global, "Seed", seed_obj_ref);
+#ifdef SEED_ENABLE_GJSCOMPAT
+  seed_object_set_property (ctx, global, "ARGV", ARGV_obj_ref);
+#endif
   seed_object_set_property (ctx, global, "print", seed_print_ref);
   seed_object_set_property (ctx, global, "printerr", seed_printerr_ref);
 
@@ -1659,6 +1665,10 @@ static GOptionEntry seed_args[] = {
   {"seed-no-debug", 0, 0, G_OPTION_ARG_CALLBACK, seed_arg_no_debug_cb,
    "Disable Seed debugging", "FLAGS"},
 #endif /* SEED_ENABLE_DEBUG */
+#ifdef SEED_ENABLE_GJSCOMPAT
+   {"seed-gjs-compatibility", 0, 0, G_OPTION_ARG_NONE, &seed_arg_gjs_compatiblity,
+   "Enable gjs compatibility", 0},
+#endif /* SEED_ENABLE_GJSCOMPAT */
   {"seed-version", 0, 0, G_OPTION_ARG_NONE, &seed_arg_print_version,
    "Print libseed version", 0},
   {NULL,},

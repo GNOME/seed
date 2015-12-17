@@ -54,4 +54,8 @@ struct _SeedEngine
 #include "seed-exceptions.h"
 #include "seed-importer.h"
 
+#ifdef SEED_ENABLE_GJSCOMPAT
+extern gboolean seed_arg_gjs_compatiblity;
+#endif
+
 #endif

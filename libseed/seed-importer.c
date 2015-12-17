@@ -811,6 +811,46 @@ seed_importer_handle_file (JSContextRef ctx,
   return global;
 }
 
+static JSObjectRef seed_importer_try_load (JSContextRef ctx,
+		const gchar *test_path,
+		const gchar *script_path,
+		const gchar *prop,
+		const gchar *prop_as_js,
+		const gchar *prop_as_lib,
+		JSValueRef *exception)
+{
+    gchar *file_path = NULL;
+    JSObjectRef ret = NULL;
+    // replace '.' with current script_path if not null
+    if(script_path && !g_strcmp0(".",test_path))
+        test_path = script_path;
+
+    // check if prop is a file or dir (imports['foo.js'] or imports.mydir)
+    file_path = g_build_filename (test_path, prop, NULL);
+    if (g_file_test (file_path, G_FILE_TEST_IS_REGULAR | G_FILE_TEST_IS_DIR)) {
+        ret = seed_importer_handle_file (ctx, test_path, prop, exception);
+        g_free (file_path);
+        return ret;
+    }
+
+    // check if prop is file ending with '.js'
+    file_path = g_build_filename (test_path, prop_as_js, NULL);
+    if (g_file_test (file_path, G_FILE_TEST_IS_REGULAR)) {
+        ret = seed_importer_handle_file (ctx, test_path, prop_as_js, exception);
+        g_free (file_path);
+        return ret;
+    }
+
+    // check if file is native module
+    file_path = g_build_filename (test_path, prop_as_lib, NULL);
+    if (g_file_test (file_path, G_FILE_TEST_IS_REGULAR)) {
+        ret = seed_importer_handle_native_module (ctx, test_path, prop, exception);
+        g_free (file_path);
+        return ret;
+    }
+    return ret;
+}
+
 static JSObjectRef
 seed_importer_search_dirs (JSContextRef ctx, GSList *path, gchar *prop, JSValueRef *exception)
 {
@@ -832,43 +872,28 @@ seed_importer_search_dirs (JSContextRef ctx, GSList *path, gchar *prop, JSValueR
 
     ret = NULL;
     walk = path;
-    while (walk) {
-        gchar *test_path = walk->data;
-        gchar *file_path;
-        
-        // replace '.' with current script_path if not null
-        if(script_path && !g_strcmp0(".",test_path))
-            test_path = script_path;
+#ifdef SEED_ENABLE_GJSCOMPAT
+    if (seed_arg_gjs_compatiblity) {
+		while (walk) {
+			gchar *test_path = g_strconcat(walk->data, "/gjs", NULL);
 
-        // check if prop is a file or dir (imports['foo.js'] or imports.mydir)
-        file_path = g_build_filename (test_path, prop, NULL);
-        if (g_file_test (file_path, G_FILE_TEST_IS_REGULAR | G_FILE_TEST_IS_DIR)) {
-            ret = seed_importer_handle_file (ctx, test_path, prop, exception);
-            g_free (file_path);
-            break;
-        }
-        g_free (file_path);
-
-        // check if prop is file ending with '.js'
-        file_path = g_build_filename (test_path, prop_as_js, NULL);
-        if (g_file_test (file_path, G_FILE_TEST_IS_REGULAR)) {
-            ret = seed_importer_handle_file (ctx, test_path, prop_as_js, exception);
-            g_free (file_path);
-            break;
-        }
-        g_free (file_path);
-      
-        // check if file is native module
-        file_path = g_build_filename (test_path, prop_as_lib, NULL);
-        if (g_file_test (file_path, G_FILE_TEST_IS_REGULAR)) {
-            ret = seed_importer_handle_native_module (ctx, test_path, prop, exception);
-            g_free (file_path);
-            break;
-        }
-        g_free (file_path);
-
-        walk = walk->next;
+			ret = seed_importer_try_load (ctx, test_path, script_path, prop, prop_as_js,
+					prop_as_lib, exception);
+			g_free (test_path);
+			walk = walk->next;
+		}
     }
+#endif
+    if (!ret) {
+		walk = path;
+		while (walk) {
+			gchar *test_path = walk->data;
+
+			ret = seed_importer_try_load (ctx, test_path, script_path, prop, prop_as_js,
+					prop_as_lib, exception);
+			walk = walk->next;
+		}
+	}
 
     g_free (prop_as_lib);
     g_free (prop_as_js);
