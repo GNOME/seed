@@ -207,3 +207,5 @@ modules/gettext/._gettext.c
 po/Makefile.in.in
 
 version.xml
+/compile_commands.json
+/.ycm_extra_conf.pyc
