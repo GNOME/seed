@@ -1,5 +1,5 @@
 #ifndef _SEED_CAIRO_IMAGE_SURFACE
-#define _SEED_CAIRO_IMAGE_SURFACe
+#define _SEED_CAIRO_IMAGE_SURFACE
 
 #include <seed.h>
 #include <cairo/cairo.h>
