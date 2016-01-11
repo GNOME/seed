@@ -88,7 +88,6 @@ seed_gobject_signal_connect_by_name (JSContextRef ctx,
 				     const JSValueRef arguments[],
 				     JSValueRef * exception)
 {
-  GType obj_type;
   JSObjectRef user_data = NULL;
   gchar *signal_name;
   GObject *obj;
@@ -120,7 +119,6 @@ seed_gobject_signal_connect_by_name (JSContextRef ctx,
 
   signal_name = seed_value_to_string (ctx, arguments[0], exception);
   obj = (GObject *) JSObjectGetPrivate (thisObject);
-  obj_type = G_OBJECT_TYPE (obj);
 
   id = seed_gobject_signal_connect (ctx, signal_name, obj,
 				    (JSObjectRef) arguments[1], NULL,
@@ -135,12 +133,9 @@ void
 seed_add_signals_to_object (JSContextRef ctx,
 			    JSObjectRef object_ref, GObject * obj)
 {
-  GType type;
-  JSObjectRef signals_ref;
-
   g_assert (obj);
 
-  type = G_OBJECT_TYPE (obj);
+  JSObjectRef signals_ref;
 
   signals_ref = JSObjectMake (ctx, signal_holder_class, obj);
 

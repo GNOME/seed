@@ -443,7 +443,6 @@ invoke_js_async_from_dbus(SeedContext ctx,
 
     reply = NULL;
     thrown = FALSE;
-    argc = 0;
     argv = NULL;
 
     if (!seed_js_values_from_dbus(ctx, &arg_iter, &values, exception))
@@ -725,9 +724,7 @@ exports_new (SeedContext ctx,
 	     DBusBusType which_bus)
 {
   SeedObject exports;
-  SeedObject global;
 
-  global = seed_context_get_global_object (ctx);
   if (!seed_js_exports_class)
     {
       seed_class_definition def = seed_empty_class;

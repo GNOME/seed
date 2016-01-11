@@ -310,12 +310,10 @@ noreply:
 static void
 pending_free_closure (void *data)
 {
-  GClosure *closure;
+  GClosure *closure = data;
 
-  closure = data;
-
-  g_closure_invalidate (data);
-  g_closure_unref (data);
+  g_closure_invalidate (closure);
+  g_closure_unref (closure);
 }
 
 
@@ -601,7 +599,6 @@ signal_handler_callback (DBusConnection * connection,
 {
   SeedContext ctx;
   SignalHandler *handler;
-  SeedValue ret_val;
   DBusMessageIter arg_iter;
   GArray *arguments;
   SeedException exception;
@@ -634,7 +631,7 @@ signal_handler_callback (DBusConnection * connection,
   SEED_NOTE(MODULE,
           "Invoking closure on signal received, %d args",
 	    arguments->len);
-  ret_val = seed_closure_invoke_with_context (ctx, handler->closure,
+  seed_closure_invoke_with_context (ctx, handler->closure,
 					      (SeedValue *) arguments->data,
 					      arguments->len, &exception);
 

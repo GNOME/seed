@@ -243,6 +243,10 @@ seed_union_set_property (JSContextRef context,
 
   seed_value_to_gi_argument (context, value, field_type, GI_TRANSFER_NOTHING, &field_value, exception);
   ret = g_field_info_set_field (field, priv->pointer, &field_value);
+  if (!ret) 
+    g_warning("Setting property failed on union of type: %s  "
+			"with name %s \n",
+			g_base_info_get_name (priv->info), cproperty_name);
 
   g_base_info_unref ((GIBaseInfo *) field_type);
   g_base_info_unref ((GIBaseInfo *) field);
