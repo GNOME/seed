@@ -139,7 +139,9 @@ gint
 main (gint argc, gchar ** argv)
 {
   g_set_prgname ("seed");
+#if !GLIB_CHECK_VERSION(2, 32, 0)
   g_thread_init (NULL);
+#endif
 
   seed_interpreter_parse_args (&argc, &argv);
 

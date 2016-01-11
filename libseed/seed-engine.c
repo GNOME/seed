@@ -1763,7 +1763,9 @@ seed_init_constrained_with_context_and_group (gint * argc,
                                                      JSGlobalContextRef context,
                                                      JSContextGroupRef group)
 {
+#if !GLIB_CHECK_VERSION(2, 36, 0)
   g_type_init ();
+#endif
   g_log_set_handler ("GLib-GObject", G_LOG_LEVEL_WARNING, seed_log_handler, 0);
 
   if ((argc != 0) && seed_parse_args (argc, argv) == FALSE)
