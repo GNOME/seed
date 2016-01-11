@@ -31,7 +31,7 @@ SeedClass mpfr_class;
 
 SeedEngine * eng;
 
-inline seed_mpfr_t
+seed_mpfr_t
 seed_mpfr_arg_type(SeedContext ctx, SeedValue arg, SeedException exept)
 {
     if ( seed_value_is_object_of_class(ctx, arg, mpfr_class) )

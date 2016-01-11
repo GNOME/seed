@@ -52,7 +52,7 @@ typedef enum _seed_mpfr_t
     SEED_MPFR_STRING = 1 << 3,
 } seed_mpfr_t;
 
-inline seed_mpfr_t seed_mpfr_arg_type(SeedContext, SeedValue, SeedException);
+seed_mpfr_t seed_mpfr_arg_type(SeedContext, SeedValue, SeedException);
 
 DEF_SEED_MPFR_FUNC(seed_mpfr_neg);
 DEF_SEED_MPFR_FUNC(seed_mpfr_abs);
