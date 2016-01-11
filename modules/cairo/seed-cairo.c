@@ -1201,7 +1201,7 @@ seed_cairo_curve_to (SeedContext ctx,
   x3 = seed_value_to_double (ctx, arguments[4], exception);
   y3 = seed_value_to_double (ctx, arguments[5], exception);
 
-  cairo_curve_to (cr, x1, y2, x2, y2, x3, y3);
+  cairo_curve_to (cr, x1, y1, x2, y2, x3, y3);
   return seed_make_undefined (ctx);
 }
 
@@ -1228,7 +1228,7 @@ seed_cairo_rel_curve_to (SeedContext ctx,
   x3 = seed_value_to_double (ctx, arguments[4], exception);
   y3 = seed_value_to_double (ctx, arguments[5], exception);
 
-  cairo_rel_curve_to (cr, x1, y2, x2, y2, x3, y3);
+  cairo_rel_curve_to (cr, x1, y1, x2, y2, x3, y3);
   return seed_make_undefined (ctx);
 }
 
