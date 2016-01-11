@@ -38,7 +38,7 @@ seed_include (JSContextRef ctx,
 
   GDir *dir;
   gchar *import_file, *abs_path;
-  gchar *buffer, *walk;
+  gchar *walk, *buffer = NULL;
   guint i, len;
 
   if (argumentCount != 1)
@@ -126,7 +126,7 @@ seed_scoped_include (JSContextRef ctx,
   JSStringRef file_contents, file_name;
   GDir *dir;
   gchar *import_file, *abs_path;
-  gchar *buffer, *walk;
+  gchar *walk, *buffer = NULL;
   guint i;
 
   if (argumentCount != 1)

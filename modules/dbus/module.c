@@ -872,7 +872,7 @@ seed_js_dbus_call(SeedContext ctx,
     DBusMessage *reply;
     DBusConnection *bus_connection;
     DBusBusType bus_type;
-    SeedValue retval;
+    SeedValue retval = NULL;
 
     if (argument_count < 8)
       {
