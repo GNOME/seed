@@ -881,6 +881,9 @@ seed_importer_search_dirs (JSContextRef ctx, GSList *path, gchar *prop, JSValueR
 					prop_as_lib, exception);
 			g_free (test_path);
 			walk = walk->next;
+
+			if (ret)
+			    break;
 		}
     }
 #endif
@@ -892,6 +895,9 @@ seed_importer_search_dirs (JSContextRef ctx, GSList *path, gchar *prop, JSValueR
 			ret = seed_importer_try_load (ctx, test_path, script_path, prop, prop_as_js,
 					prop_as_lib, exception);
 			walk = walk->next;
+
+			if (ret)
+			    break;
 		}
 	}
 
