@@ -873,8 +873,6 @@ seed_value_to_format (JSContextRef ctx,
   const gchar *c;
   guint i = 0;
 
-  c = format;
-
   va_start (argp, exception);
 
   for (c = format; *c; c++)
