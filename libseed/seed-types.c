@@ -1274,7 +1274,7 @@ seed_value_from_gvalue_for_signal (JSContextRef ctx, GValue * gval,
       return seed_value_from_boolean (ctx,
 				      g_value_get_boolean (gval), exception);
     case G_TYPE_CHAR:
-      return seed_value_from_char (ctx, g_value_get_char (gval), exception);
+      return seed_value_from_char (ctx, g_value_get_schar (gval), exception);
     case G_TYPE_UCHAR:
       return seed_value_from_uchar (ctx, g_value_get_uchar (gval), exception);
     case G_TYPE_INT:
@@ -1518,7 +1518,7 @@ seed_value_to_gvalue (JSContextRef ctx,
     case G_TYPE_CHAR:
       {
 	g_value_init (ret, G_TYPE_CHAR);
-	g_value_set_char (ret, seed_value_to_char (ctx, val, exception));
+	g_value_set_schar (ret, seed_value_to_char (ctx, val, exception));
 	return TRUE;
       }
     case G_TYPE_UCHAR:
