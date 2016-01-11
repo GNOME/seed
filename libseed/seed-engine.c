@@ -799,7 +799,7 @@ seed_gobject_method_invoked (JSContextRef ctx,
 	  {
 	    array_len =  (&out_values[  out_pos[length_arg_pos] ])->v_uint32;
 	  }
-	SEED_NOTE (INVOCATION, "array_len=%d\n", array_len);
+	SEED_NOTE (INVOCATION, "array_len=%" G_GUINT64_FORMAT "\n", array_len);
 	retval_ref =
 	  seed_value_from_gi_argument_full (ctx, &retval, type_info, exception,
 					    array_len, tag);
@@ -881,7 +881,7 @@ seed_gobject_method_invoked (JSContextRef ctx,
             // this may work, but the above should be more accurate..
             //array_len =  (&out_values[  out_pos[length_arg_pos] ])->v_uint32;
                                      
-            SEED_NOTE (INVOCATION, "Getting length from OUTPOS=%d,  ORIGPOS=%d :  result = %d",
+            SEED_NOTE (INVOCATION, "Getting length from OUTPOS=%d,  ORIGPOS=%d :  result = %" G_GUINT64_FORMAT,
                  out_pos[length_arg_pos],  length_arg_pos, array_len);
             // free stuff.
             
