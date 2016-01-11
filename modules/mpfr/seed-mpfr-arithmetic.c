@@ -58,13 +58,13 @@ SeedValue seed_mpfr_add (SeedContext ctx,
         {
             op1 = seed_object_get_private(args[0]);
             dop2 = seed_value_to_double(ctx, args[1], exception);
-            mpfr_add_d(rop, op1, dop2, rnd);
+            ret = mpfr_add_d(rop, op1, dop2, rnd);
         }
         else
         {
             dop2 = seed_value_to_double(ctx, args[0], exception);
             op1 = seed_object_get_private(args[1]);
-            mpfr_add_d(rop, op1, dop2, rnd);
+            ret = mpfr_add_d(rop, op1, dop2, rnd);
         }
     }
     else if ( (argt1 & argt2) == SEED_MPFR_DOUBLE )
@@ -119,13 +119,13 @@ SeedValue seed_mpfr_sub (SeedContext ctx,
         {
             op1 = seed_object_get_private(args[0]);
             dop2 = seed_value_to_double(ctx, args[1], exception);
-            mpfr_sub_d(rop, op1, dop2, rnd);
+            ret = mpfr_sub_d(rop, op1, dop2, rnd);
         }
         else
         {
             dop1 = seed_value_to_double(ctx, args[0], exception);
             op2 = seed_object_get_private(args[1]);
-            mpfr_d_sub(rop, dop1, op2, rnd);
+            ret = mpfr_d_sub(rop, dop1, op2, rnd);
         }
     }
     else if ( (argt1 & argt2) == SEED_MPFR_DOUBLE )
@@ -180,13 +180,13 @@ SeedValue seed_mpfr_mul (SeedContext ctx,
         {
             op1 = seed_object_get_private(args[0]);
             dop2 = seed_value_to_double(ctx, args[1], exception);
-            mpfr_mul_d(rop, op1, dop2, rnd);
+            ret = mpfr_mul_d(rop, op1, dop2, rnd);
         }
         else
         {
             dop2 = seed_value_to_double(ctx, args[0], exception);
             op1 = seed_object_get_private(args[1]);
-            mpfr_mul_d(rop, op1, dop2, rnd);
+            ret = mpfr_mul_d(rop, op1, dop2, rnd);
         }
     }
     else if ( (argt1 & argt2) == SEED_MPFR_DOUBLE )
@@ -241,13 +241,13 @@ SeedValue seed_mpfr_div (SeedContext ctx,
         {
             op1 = seed_object_get_private(args[0]);
             dop2 = seed_value_to_double(ctx, args[1], exception);
-            mpfr_div_d(rop, op1, dop2, rnd);
+            ret = mpfr_div_d(rop, op1, dop2, rnd);
         }
         else
         {
             dop1 = seed_value_to_double(ctx, args[0], exception);
             op2 = seed_object_get_private(args[1]);
-            mpfr_d_div(rop, dop1, op2, rnd);
+            ret = mpfr_d_div(rop, dop1, op2, rnd);
         }
     }
     else if ( (argt1 & argt2) == SEED_MPFR_DOUBLE )
