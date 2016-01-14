@@ -104,18 +104,12 @@ gjs_gc (SeedContext ctx,
 			size_t argumentCount,
 			const SeedValue arguments[], SeedException * exception)
 {
-/*static SeedValue
-gjs_gc(SeedContext context,
-       unsigned   argc,
-       SeedValue      *vp)
-{
-    JS::CallArgs argv = JS::CallArgsFromVp (argc, vp);
-    if (!gjs_parse_call_args(context, "gc", "", argv))
-        return FALSE;
-    JS_GC(JS_GetRuntime(context));
-    argv.rval().set(JSVAL_VOID);
-    return TRUE;*/
-	return seed_value_from_boolean (ctx, TRUE, exception);
+    if (argumentCount != 0) {
+         NUMARG_EXPECTED_EXCEPTION("gc", "0 arguments");
+    }
+
+    seed_context_collect(ctx);
+	return seed_make_undefined (ctx);
 }
 
 static SeedValue
