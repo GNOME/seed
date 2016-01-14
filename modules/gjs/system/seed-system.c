@@ -34,6 +34,10 @@
 
 #define GJS_COMPAT_VERSION (1 * 100 + 40) * 100 + 0
 
+#define NUMARG_EXPECTED_EXCEPTION(name, argc) \
+    seed_make_exception (ctx, exception, "ArgumentError", name " expected " argc  " but got %zd", argumentCount); \
+    return seed_make_undefined(ctx);
+
 static SeedValue
 gjs_address_of (SeedContext ctx,
 			SeedObject function,
@@ -41,30 +45,21 @@ gjs_address_of (SeedContext ctx,
 			size_t argumentCount,
 			const SeedValue arguments[], SeedException * exception)
 {
-/*static SeedValue
-gjs_address_of(SeedContext context,
-               unsigned   argc,
-               SeedValue      *vp)
-{
-    JS::CallArgs argv = JS::CallArgsFromVp (argc, vp);
-    SeedObject  *target_obj;
-    bool ret;
-    char *pointer_string;
-    SeedValue  retval;
+    if (argumentCount != 1) {
+        NUMARG_EXPECTED_EXCEPTION("addressOf", "1 argument")
+    }
 
-    if (!gjs_parse_call_args(context, "addressOf", "o", argv, "object", &target_obj))
-        return FALSE;
+    SeedValue targetValue = arguments[0];
+    if (!seed_value_is_object(ctx, targetValue)) {
+        seed_make_exception (ctx, exception, "ArgumentError", "addressOf expects an object");
+        return seed_make_undefined(ctx);
+    }
 
-    pointer_string = g_strdup_printf("%p", target_obj);
-
-    ret = gjs_string_from_utf8(context, pointer_string, -1, &retval);
+    char *pointer_string = g_strdup_printf("%p", targetValue);
+    SeedValue ret = seed_value_from_string(ctx, pointer_string, exception);
     g_free(pointer_string);
 
-    if (ret)
-        argv.rval().set(retval);
-
-    return ret;*/
-	return seed_value_from_boolean (ctx, TRUE, exception);
+    return ret;
 }
 
 static SeedValue
