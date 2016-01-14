@@ -26,6 +26,7 @@
 
 #include <sys/types.h>
 #include <unistd.h>
+#include <stdlib.h>
 #include <time.h>
 
 #include <glib.h>
@@ -119,18 +120,22 @@ gjs_exit (SeedContext ctx,
 			size_t argumentCount,
 			const SeedValue arguments[], SeedException * exception)
 {
-/*static SeedValue
-gjs_exit(SeedContext context,
-         unsigned   argc,
-         SeedValue      *vp)
-{
-    JS::CallArgs argv = JS::CallArgsFromVp (argc, vp);
-    gint32 ecode;
-    if (!gjs_parse_call_args(context, "exit", "i", argv, "ecode", &ecode))
-        return FALSE;
-    exit(ecode);
-    return TRUE;*/
-	return seed_value_from_boolean (ctx, TRUE, exception);
+    gint32 ret = EXIT_SUCCESS;
+    if (argumentCount > 1) {
+        NUMARG_EXPECTED_EXCEPTION("exit", "none or 1 argument");
+    }
+
+    if (argumentCount == 1) {
+        SeedValue target = arguments[0];
+        if (seed_value_is_number(ctx, target)) {
+            ret = seed_value_to_int(ctx, target, exception);
+        } else {
+            seed_make_exception (ctx, exception, "ArgumentError", "exit expects a number argument");
+            ret = EXIT_FAILURE;
+        }
+    }
+
+    exit(ret);
 }
 
 static SeedValue
