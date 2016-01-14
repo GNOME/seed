@@ -89,18 +89,12 @@ gjs_breakpoint (SeedContext ctx,
 			size_t argumentCount,
 			const SeedValue arguments[], SeedException * exception)
 {
-/*static SeedValue
-gjs_breakpoint(SeedContext context,
-               unsigned   argc,
-               SeedValue      *vp)
-{
-    JS::CallArgs argv = JS::CallArgsFromVp (argc, vp);
-    if (!gjs_parse_call_args(context, "breakpoint", "", argv))
-        return FALSE;
+    if (argumentCount != 0) {
+         NUMARG_EXPECTED_EXCEPTION("breakpoint", "0 arguments");
+    }
+
     G_BREAKPOINT();
-    argv.rval().set(JSVAL_VOID);
-    return TRUE;*/
-	return seed_value_from_boolean (ctx, TRUE, exception);
+	return seed_make_undefined (ctx);
 }
 
 static SeedValue
