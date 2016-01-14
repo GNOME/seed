@@ -145,24 +145,11 @@ gjs_clear_date_caches (SeedContext ctx,
 			size_t argumentCount,
 			const SeedValue arguments[], SeedException * exception)
 {
-/*static SeedValue
-gjs_clear_date_caches(SeedContext context,
-             unsigned   argc,
-             SeedValue      *vp)
-{
-    JS::CallReceiver rec = JS::CallReceiverFromVp(vp);
-    JS_BeginRequest(context);
-
-    // Workaround for a bug in SpiderMonkey where tzset is not called before
-    // localtime_r, see https://bugzilla.mozilla.org/show_bug.cgi?id=1004706
-    tzset();
-
-    JS_ClearDateCaches(context);
-    JS_EndRequest(context);
-
-    rec.rval().set(JSVAL_VOID);
-    return TRUE;*/
-	return seed_value_from_boolean (ctx, TRUE, exception);
+    // This is provided just for compatibility as javascriptcore doesn't provide the same
+    // feature.
+    // I'm not even sure that this is needed for webkit.
+    seed_make_exception (ctx, exception, "ImplementationError", "clearDateCache is not implemented.");
+    return seed_make_undefined(ctx);
 }
 
 static seed_static_function module_funcs[] = {
