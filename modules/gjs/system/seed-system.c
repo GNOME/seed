@@ -69,31 +69,17 @@ gjs_refcount (SeedContext ctx,
 			size_t argumentCount,
 			const SeedValue arguments[], SeedException * exception)
 {
-/*static SeedValue
-gjs_refcount(SeedContext context,
-             unsigned   argc,
-             SeedValue      *vp)
-{
-    JS::CallArgs argv = JS::CallArgsFromVp (argc, vp);
-    SeedValue  retval;
-    SeedObject  *target_obj;
-    GObject *obj;
+    if (argumentCount != 1) {
+         NUMARG_EXPECTED_EXCEPTION("refcount", "1 argument");
+    }
 
-    if (!gjs_parse_call_args(context, "refcount", "o", argv, "object", &target_obj))
-        return FALSE;
+    SeedValue targetValue = arguments[0];
+    GObject *object = seed_value_to_object (ctx, targetValue, exception);
+    if (!object)
+        return seed_make_undefined(ctx);
 
-    if (!gjs_typecheck_object(context, target_obj,
-                              G_TYPE_OBJECT, TRUE))
-        return FALSE;
-
-    obj = gjs_g_object_from_object(context, target_obj);
-    if (obj == NULL)
-        return FALSE;
-
-    retval = INT_TO_JSVAL(obj->ref_count);
-    argv.rval().set(retval);
-    return TRUE;*/
-	return seed_value_from_boolean (ctx, TRUE, exception);
+    SeedValue ret = seed_value_from_uint64(ctx, object->ref_count, exception);
+    return ret;
 }
 
 static SeedValue
