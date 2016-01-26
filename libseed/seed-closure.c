@@ -166,6 +166,7 @@ seed_handle_closure (ffi_cif * cif, void *result, void **args, gpointer userdata
 	  }
 	case GI_TYPE_TAG_GLIST:
 	case GI_TYPE_TAG_GSLIST:
+	case GI_TYPE_TAG_GHASH:
 	  arg->v_pointer = *(gpointer *) args[i];
 	  break;
 	default:
@@ -280,6 +281,7 @@ seed_handle_closure (ffi_cif * cif, void *result, void **args, gpointer userdata
       }
     case GI_TYPE_TAG_GLIST:
     case GI_TYPE_TAG_GSLIST:
+    case GI_TYPE_TAG_GHASH:
       *(gpointer *) result = return_arg.v_pointer;
       break;
     default:

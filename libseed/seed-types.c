@@ -1221,11 +1221,18 @@ seed_value_from_gi_argument_full (JSContextRef ctx,
             return JSValueMakeNull (ctx);
           }
 
+        hash_table = arg->v_pointer;
+        if (!hash_table)
+          {
+            seed_make_exception (ctx, exception, "ArgumentError",
+                                 "Unable to make hash table indexed with values of type %s", g_type_tag_to_string (key_type_tag));
+            return JSValueMakeNull (ctx);
+          }
+
         value_type = g_type_info_get_param_type (type_info, 1);
 
         ret = JSObjectMake (ctx, NULL, NULL);
 
-        hash_table = arg->v_pointer;
         g_hash_table_iter_init (&iter, hash_table);
 
         while (g_hash_table_iter_next (&iter, &key, &value))
