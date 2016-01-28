@@ -333,7 +333,7 @@ seed_gi_make_jsarray (JSContextRef ctx,
 
 static gboolean
 seed_gi_make_array_from_string (JSContextRef ctx,
-                                JSValueRef value,
+                                JSStringRef js_string,
                                 GITypeInfo *param_type,
                                 void **array_p,
                                 JSValueRef *exception)
@@ -343,33 +343,25 @@ seed_gi_make_array_from_string (JSContextRef ctx,
 
     // This could be handled by the case where the value is an object,
     // however, getting length from a string crashs inside JSC. So,
-    // we're now proper handling strings here.
-    JSStringRef js_string = JSValueToStringCopy(ctx, value, exception);
-    size_t length = JSStringGetLength(js_string);
-    const JSChar *js_ptr = JSStringGetCharactersPtr(js_string);
+    // we're now proper handling strings here
+    size_t length = JSStringGetMaximumUTF8CStringSize (js_string);
+    gchar *buffer = g_malloc (length * sizeof (gchar));
+    JSStringGetUTF8CString (js_string, buffer, length);
 
     switch (element_type)
       {
         case GI_TYPE_TAG_UINT8:
           {
-            guint8 *guint8result;
-            guint8result = g_new0 (guint8, length + 1);
-            for (int i = 0; i < length; i++)
-            {
-                guint8result[i] = js_ptr[i];
-            }
-            *array_p = guint8result;
+            *array_p = buffer;
             break;
           }
         default:
           {
-              JSStringRelease(js_string);
               seed_make_exception (ctx, exception, "ArgumentError",
                                    "Unhandled array element type");
               return FALSE;
           }
       }
-    JSStringRelease(js_string);
     return TRUE;
 }
 
@@ -850,12 +842,15 @@ seed_value_to_gi_argument (JSContextRef ctx,
             GITypeInfo *param_type;
             param_type = g_type_info_get_param_type (type_info, 0);
 
-            if (!seed_gi_make_array_from_string (ctx, value, param_type,
+            JSStringRef js_string = JSValueToStringCopy(ctx, value, exception);
+            if (!seed_gi_make_array_from_string (ctx, js_string, param_type,
                                          &arg->v_pointer, exception))
               {
-                    g_base_info_unref ((GIBaseInfo *) param_type);
-                    return FALSE;
+                 g_base_info_unref ((GIBaseInfo *) param_type);
+                 JSStringRelease(js_string);
+                 return FALSE;
               }
+            JSStringRelease(js_string);
             g_base_info_unref ((GIBaseInfo *) param_type);
             break;
           }
