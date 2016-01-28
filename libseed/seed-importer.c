@@ -419,6 +419,7 @@ seed_gi_importer_handle_constant (JSContextRef ctx,
 			    constant_value);
 
   g_base_info_unref ((GIBaseInfo *) constant_type);
+  g_constant_info_free_value(info, &argument);
 }
 
 static gchar *
@@ -645,7 +646,9 @@ seed_importer_get_search_path (JSContextRef ctx, JSValueRef * exception)
       entry = seed_value_to_string (ctx, entry_ref, exception);
 
       if (g_file_test (entry, G_FILE_TEST_EXISTS) == TRUE)
-        path = g_slist_append (path, entry);
+          path = g_slist_append (path, entry);
+      else
+          g_free(entry);
     }
 
   return path;
@@ -832,6 +835,7 @@ static JSObjectRef seed_importer_try_load (JSContextRef ctx,
         g_free (file_path);
         return ret;
     }
+    g_free (file_path);
 
     // check if prop is file ending with '.js'
     file_path = g_build_filename (test_path, prop_as_js, NULL);
@@ -840,6 +844,7 @@ static JSObjectRef seed_importer_try_load (JSContextRef ctx,
         g_free (file_path);
         return ret;
     }
+    g_free (file_path);
 
     // check if file is native module
     file_path = g_build_filename (test_path, prop_as_lib, NULL);
@@ -848,6 +853,8 @@ static JSObjectRef seed_importer_try_load (JSContextRef ctx,
         g_free (file_path);
         return ret;
     }
+    g_free (file_path);
+
     return ret;
 }
 

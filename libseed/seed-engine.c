@@ -1053,7 +1053,7 @@ seed_gobject_add_methods_for_interfaces (JSContextRef ctx,
 	  seed_gobject_define_property_from_function_info
 	    (ctx, function, object, TRUE);
 	}
-      // g_base_info_unref((GIBaseInfo*)interface);
+      g_base_info_unref((GIBaseInfo*)interface);
     }
 }
 
