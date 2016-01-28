@@ -1402,7 +1402,7 @@ seed_value_from_gvalue_for_signal (JSContextRef ctx, GValue * gval,
 
   if (g_type_is_a (G_VALUE_TYPE (gval), G_TYPE_STRV))
     {
-      return seed_value_from_strv(ctx, g_value_get_boxed (gval), exception);
+      return seed_value_from_strv(ctx, (GStrv *) g_value_get_boxed (gval), exception);
     }
 
 
@@ -2849,7 +2849,7 @@ seed_value_from_strv (JSContextRef ctx,
       GArray *js_string_array = g_array_new (FALSE, FALSE, sizeof(gpointer));
       for (; *val != NULL; val++)
 	{
-	  JSStringRef js_string = seed_value_from_string (ctx, *val, exception);
+	  JSValueRef js_string = seed_value_from_string (ctx, (char *)*val, exception);
 	  js_string_array = g_array_append_val(js_string_array, js_string);
 	}
       JSValueRef res = JSObjectMakeArray (ctx,
