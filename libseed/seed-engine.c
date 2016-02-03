@@ -466,6 +466,7 @@ seed_gobject_method_invoked(JSContextRef ctx,
     GIBaseInfo* iface_info = NULL;
     GArgument retval;
     GArgument* in_args;
+    gint* skipped_args;
     GArgument* out_args;
     GArgument* out_values;
     gint* out_pos;
@@ -496,13 +497,15 @@ seed_gobject_method_invoked(JSContextRef ctx,
 
     out_pos = g_new0(gint, n_args + 1);
     in_args = g_new0(GArgument, n_args + 1);
+    skipped_args = g_new0(gint, n_args + 1);
     out_args = g_new0(GArgument, n_args + 1);
     out_values = g_new0(GArgument, n_args + 1);
     n_in_args = n_out_args = 0;
     caller_allocated = g_new0(gboolean, n_args + 1);
 
-    // start buy pushing the object onto the call stack.
+    memset(skipped_args, 0, n_args);
 
+    // start buy pushing the object onto the call stack.
     if (instance_method)
         in_args[n_in_args++].v_pointer = object;
 
@@ -564,7 +567,7 @@ seed_gobject_method_invoked(JSContextRef ctx,
                     caller_allocated[i] = TRUE;
                 }
                 n_out_args++;
-            } else
+            } else if (!skipped_args[i])
                 in_args[n_in_args++].v_pointer = 0;
 
         } else if (dir == GI_DIRECTION_IN || dir == GI_DIRECTION_INOUT) {
@@ -631,18 +634,34 @@ seed_gobject_method_invoked(JSContextRef ctx,
                 }
             }
 
-            if (!seed_value_to_gi_argument(ctx, arguments[i], type_info,
-                                           transfer, &in_args[n_in_args++],
-                                           exception)) {
-                seed_make_exception(ctx, exception, "ArgumentError",
-                                    "Unable to make argument %d for"
-                                    " function: %s. \n",
-                                    i + 1,
-                                    g_base_info_get_name((GIBaseInfo*) info));
+            guint out_length = 0;
+            if (!skipped_args[i])
+                if (!seed_value_to_gi_argument_with_out_length(
+                      ctx, arguments[i], type_info, transfer,
+                      &in_args[n_in_args++], &out_length, exception)) {
+                    seed_make_exception(ctx, exception, "ArgumentError",
+                                        "Unable to make argument %d for"
+                                        " function: %s. \n",
+                                        i + 1, g_base_info_get_name(
+                                                 (GIBaseInfo*) info));
 
-                retval_ref = JSValueMakeNull(ctx);
-                goto invoke_return;
+                    retval_ref = JSValueMakeNull(ctx);
+                    goto invoke_return;
+                }
+
+            // check if what we did we did on an array,
+            // if yes, fill the g_type_info_get_array_length() position with the
+            // size of the array and mark it as already skipped.
+            GITypeTag type_tag = g_type_info_get_tag(type_info);
+            gint array_len_pos = g_type_info_get_array_length(type_info);
+            if (type_tag == GI_TYPE_TAG_ARRAY
+                && g_type_info_get_array_type(type_info) == GI_ARRAY_TYPE_C
+                && array_len_pos >= 0) {
+                n_in_args++;
+                skipped_args[array_len_pos] = 1;
+                in_args[array_len_pos + 1].v_uint64 = out_length;
             }
+
             if (dir == GI_DIRECTION_INOUT) {
                 GArgument* out_value = &out_values[n_out_args];
                 out_args[n_out_args++].v_pointer = out_value;

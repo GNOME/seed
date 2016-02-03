@@ -315,7 +315,9 @@ static gboolean
 seed_gi_make_array_from_string(JSContextRef ctx,
                                JSStringRef js_string,
                                GITypeInfo* param_type,
+                               guint length,
                                void** array_p,
+                               guint* out_array_length,
                                JSValueRef* exception)
 {
     GITypeTag element_type;
@@ -324,9 +326,8 @@ seed_gi_make_array_from_string(JSContextRef ctx,
     // This could be handled by the case where the value is an object,
     // however, getting length from a string crashs inside JSC. So,
     // we're now proper handling strings here
-    size_t length = JSStringGetMaximumUTF8CStringSize(js_string);
     gchar* buffer = g_malloc(length * sizeof(gchar));
-    JSStringGetUTF8CString(js_string, buffer, length);
+    guint real_size = JSStringGetUTF8CString(js_string, buffer, length);
 
     switch (element_type) {
         case GI_TYPE_TAG_UINT8: {
@@ -339,6 +340,9 @@ seed_gi_make_array_from_string(JSContextRef ctx,
             return FALSE;
         }
     }
+    if (out_array_length)
+        *out_array_length = real_size;
+
     return TRUE;
 }
 
@@ -490,12 +494,13 @@ seed_gi_make_array(JSContextRef ctx,
 }
 
 gboolean
-seed_value_to_gi_argument(JSContextRef ctx,
-                          JSValueRef value,
-                          GITypeInfo* type_info,
-                          GITransfer transfer,
-                          GArgument* arg,
-                          JSValueRef* exception)
+seed_value_to_gi_argument_with_out_length(JSContextRef ctx,
+                                          JSValueRef value,
+                                          GITypeInfo* type_info,
+                                          GITransfer transfer,
+                                          GArgument* arg,
+                                          guint* out_array_length,
+                                          JSValueRef* exception)
 {
     GITypeTag gi_tag = g_type_info_get_tag(type_info);
 
@@ -750,8 +755,10 @@ seed_value_to_gi_argument(JSContextRef ctx,
 
                 JSStringRef js_string
                   = JSValueToStringCopy(ctx, value, exception);
+                size_t length = JSStringGetMaximumUTF8CStringSize(js_string);
                 if (!seed_gi_make_array_from_string(ctx, js_string, param_type,
-                                                    &arg->v_pointer,
+                                                    length, &arg->v_pointer,
+                                                    out_array_length,
                                                     exception)) {
                     g_base_info_unref((GIBaseInfo*) param_type);
                     JSStringRelease(js_string);
@@ -781,6 +788,9 @@ seed_value_to_gi_argument(JSContextRef ctx,
                     g_base_info_unref((GIBaseInfo*) param_type);
                     return FALSE;
                 }
+                if (out_array_length != NULL)
+                    *out_array_length = length;
+
                 g_base_info_unref((GIBaseInfo*) param_type);
                 break;
             }
@@ -857,6 +867,19 @@ seed_value_to_gi_argument(JSContextRef ctx,
             return FALSE;
     }
     return TRUE;
+}
+
+gboolean
+seed_value_to_gi_argument(JSContextRef ctx,
+                          JSValueRef value,
+                          GITypeInfo* type_info,
+                          GITransfer transfer,
+                          GArgument* arg,
+                          JSValueRef* exception)
+{
+    return seed_value_to_gi_argument_with_out_length(ctx, value, type_info,
+                                                     transfer, arg, NULL,
+                                                     exception);
 }
 
 JSValueRef

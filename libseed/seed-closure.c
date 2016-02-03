@@ -185,6 +185,7 @@ seed_handle_closure(ffi_cif* cif, void* result, void** args, gpointer userdata)
 
     seed_value_to_gi_argument(ctx, (JSValueRef) return_value, return_type,
                               GI_TRANSFER_NOTHING, &return_arg, 0);
+
     switch (return_tag) {
 #if GOBJECT_INTROSPECTION_VERSION < 0x000900
         case GI_TYPE_TAG_LONG:
