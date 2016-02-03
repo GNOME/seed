@@ -25,14 +25,13 @@
 extern JSValueRef seed_print_ref;
 extern JSValueRef seed_printerr_ref;
 
-void seed_init_builtins (SeedEngine * local_eng, gint * argc, gchar *** argv);
+void seed_init_builtins(SeedEngine* local_eng, gint* argc, gchar*** argv);
 
 extern JSClassRef seed_argv_class;
 typedef struct _SeedArgvPrivates
 {
-  gchar **argv;
-  gint argc;
+    gchar** argv;
+    gint argc;
 } SeedArgvPrivates;
-
 
 #endif

@@ -10,41 +10,41 @@
 
 #define INVALID_SIGNAL_ID (-1)
 
-typedef struct {
-    DBusBusType            bus_type;
-    int                    refcount;
-    char                  *sender;
-    char                  *path;
-    char                  *iface;
-    char                  *name;
-    BigDBusSignalHandler   handler;
-    void                  *data;
-    GDestroyNotify         data_dnotify;
-    int                    id;
-    unsigned int           matching : 1;
-    unsigned int           destroyed : 1;
+typedef struct
+{
+    DBusBusType bus_type;
+    int refcount;
+    char* sender;
+    char* path;
+    char* iface;
+    char* name;
+    BigDBusSignalHandler handler;
+    void* data;
+    GDestroyNotify data_dnotify;
+    int id;
+    unsigned int matching : 1;
+    unsigned int destroyed : 1;
 } BigSignalWatcher;
 
-static GSList *pending_signal_watchers = NULL;
+static GSList* pending_signal_watchers = NULL;
 
-static void signal_watcher_remove (DBusConnection   *connection,
-                                   BigDBusInfo      *info,
-                                   BigSignalWatcher *watcher);
-
+static void signal_watcher_remove(DBusConnection* connection,
+                                  BigDBusInfo* info,
+                                  BigSignalWatcher* watcher);
 
 static int global_handler_id = 0;
 
 static BigSignalWatcher*
-signal_watcher_new(DBusBusType                  bus_type,
-                   const char                  *sender,
-                   const char                  *path,
-                   const char                  *iface,
-                   const char                  *name,
-                   BigDBusSignalHandler         handler,
-                   void                        *data,
-                   GDestroyNotify               data_dnotify)
+signal_watcher_new(DBusBusType bus_type,
+                   const char* sender,
+                   const char* path,
+                   const char* iface,
+                   const char* name,
+                   BigDBusSignalHandler handler,
+                   void* data,
+                   GDestroyNotify data_dnotify)
 {
-    BigSignalWatcher *watcher;
+    BigSignalWatcher* watcher;
 
     watcher = g_slice_new0(BigSignalWatcher);
 
@@ -64,23 +64,23 @@ signal_watcher_new(DBusBusType                  bus_type,
 }
 
 static void
-signal_watcher_dnotify(BigSignalWatcher *watcher)
+signal_watcher_dnotify(BigSignalWatcher* watcher)
 {
     if (watcher->data_dnotify != NULL) {
-        (* watcher->data_dnotify) (watcher->data);
+        (*watcher->data_dnotify)(watcher->data);
         watcher->data_dnotify = NULL;
     }
     watcher->destroyed = TRUE;
 }
 
 static void
-signal_watcher_ref(BigSignalWatcher *watcher)
+signal_watcher_ref(BigSignalWatcher* watcher)
 {
     watcher->refcount += 1;
 }
 
 static void
-signal_watcher_unref(BigSignalWatcher *watcher)
+signal_watcher_unref(BigSignalWatcher* watcher)
 {
     watcher->refcount -= 1;
 
@@ -97,9 +97,9 @@ signal_watcher_unref(BigSignalWatcher *watcher)
 }
 
 static char*
-signal_watcher_build_match_rule(BigSignalWatcher *watcher)
+signal_watcher_build_match_rule(BigSignalWatcher* watcher)
 {
-    GString *s;
+    GString* s;
 
     s = g_string_new("type='signal'");
 
@@ -122,10 +122,8 @@ signal_watcher_build_match_rule(BigSignalWatcher *watcher)
     return g_string_free(s, FALSE);
 }
 
-
 static GSList*
-signal_watcher_table_lookup(GHashTable *table,
-                            const char *key)
+signal_watcher_table_lookup(GHashTable* table, const char* key)
 {
     if (table == NULL) {
         return NULL;
@@ -135,11 +133,11 @@ signal_watcher_table_lookup(GHashTable *table,
 }
 
 static void
-signal_watcher_list_free(void *data)
+signal_watcher_list_free(void* data)
 {
-    GSList *l = data;
+    GSList* l = data;
     while (l != NULL) {
-        GSList *next = l->next;
+        GSList* next = l->next;
         signal_watcher_unref(l->data);
         g_slist_free_1(l);
         l = next;
@@ -147,25 +145,22 @@ signal_watcher_list_free(void *data)
 }
 
 static void
-signal_watcher_table_add(GHashTable      **table_p,
-                         const char       *key,
-                         BigSignalWatcher *watcher)
+signal_watcher_table_add(GHashTable** table_p,
+                         const char* key,
+                         BigSignalWatcher* watcher)
 {
-    GSList *list;
-    char *original_key;
+    GSList* list;
+    char* original_key;
 
     if (*table_p == NULL) {
         list = NULL;
         original_key = g_strdup(key);
-        *table_p = g_hash_table_new_full(g_str_hash,
-                                         g_str_equal,
-                                         g_free,
+        *table_p = g_hash_table_new_full(g_str_hash, g_str_equal, g_free,
                                          signal_watcher_list_free);
     } else {
-        if (!g_hash_table_lookup_extended(*table_p,
-                                          key,
-                                          (gpointer*)&original_key,
-                                          (gpointer*)&list)) {
+        if (!g_hash_table_lookup_extended(*table_p, key,
+                                          (gpointer*) &original_key,
+                                          (gpointer*) &list)) {
             original_key = g_strdup(key);
             list = NULL;
         }
@@ -179,21 +174,19 @@ signal_watcher_table_add(GHashTable      **table_p,
 }
 
 static void
-signal_watcher_table_remove(GHashTable       *table,
-                            const char       *key,
-                            BigSignalWatcher *watcher)
+signal_watcher_table_remove(GHashTable* table,
+                            const char* key,
+                            BigSignalWatcher* watcher)
 {
-    GSList *list;
-    GSList *l;
-    char *original_key;
+    GSList* list;
+    GSList* l;
+    char* original_key;
 
     if (table == NULL)
         return; /* Never lazily-created the table, nothing ever added */
 
-    if (!g_hash_table_lookup_extended(table,
-                                      key,
-                                      (gpointer*)&original_key,
-                                      (gpointer*)&list)) {
+    if (!g_hash_table_lookup_extended(table, key, (gpointer*) &original_key,
+                                      (gpointer*) &list)) {
         return;
     }
 
@@ -214,10 +207,10 @@ signal_watcher_table_remove(GHashTable       *table,
 }
 
 static void
-signal_emitter_name_appeared(DBusConnection *connection,
-                             const char     *name,
-                             const char     *new_owner_unique_name,
-                             void           *data)
+signal_emitter_name_appeared(DBusConnection* connection,
+                             const char* name,
+                             const char* new_owner_unique_name,
+                             void* data)
 {
     /* We don't need to do anything here, we installed a name watch so
      * we could call big_dbus_get_watched_name_owner() to dispatch
@@ -226,26 +219,25 @@ signal_emitter_name_appeared(DBusConnection *connection,
 }
 
 static void
-signal_emitter_name_vanished(DBusConnection *connection,
-                             const char     *name,
-                             const char     *old_owner_unique_name,
-                             void           *data)
+signal_emitter_name_vanished(DBusConnection* connection,
+                             const char* name,
+                             const char* old_owner_unique_name,
+                             void* data)
 {
-    big_debug(BIG_DEBUG_UTIL_DBUS,
-              "Signal emitter '%s' is now gone",
-              name);
+    big_debug(BIG_DEBUG_UTIL_DBUS, "Signal emitter '%s' is now gone", name);
 
     /* If a watcher is matching on a unique name sender, once the unique
      * name goes away, the watcher can never see anything so nuke it.
      */
     if (*name == ':') {
-        GSList *list;
-        BigDBusInfo *info;
+        GSList* list;
+        BigDBusInfo* info;
 
         info = _big_dbus_ensure_info(connection);
 
-        list = signal_watcher_table_lookup(info->signal_watchers_by_unique_sender,
-                                           name);
+        list
+          = signal_watcher_table_lookup(info->signal_watchers_by_unique_sender,
+                                        name);
 
         if (list == NULL)
             return;
@@ -261,17 +253,15 @@ signal_emitter_name_vanished(DBusConnection *connection,
     }
 }
 
-static BigDBusWatchNameFuncs signal_emitter_name_funcs = {
-    signal_emitter_name_appeared,
-    signal_emitter_name_vanished
-};
+static BigDBusWatchNameFuncs signal_emitter_name_funcs
+  = { signal_emitter_name_appeared, signal_emitter_name_vanished };
 
 static void
-signal_watcher_set_matching(DBusConnection   *connection,
-                            BigSignalWatcher *watcher,
-                            gboolean          matching)
+signal_watcher_set_matching(DBusConnection* connection,
+                            BigSignalWatcher* watcher,
+                            gboolean matching)
 {
-    char *rule;
+    char* rule;
 
     if (watcher->matching == (matching != FALSE)) {
         return;
@@ -291,8 +281,8 @@ signal_watcher_set_matching(DBusConnection   *connection,
     rule = signal_watcher_build_match_rule(watcher);
 
     if (matching)
-        dbus_bus_add_match(connection,
-                           rule, NULL); /* asking for error would make this block */
+        dbus_bus_add_match(connection, rule,
+                           NULL); /* asking for error would make this block */
     else
         dbus_bus_remove_match(connection, rule, NULL);
 
@@ -306,115 +296,102 @@ signal_watcher_set_matching(DBusConnection   *connection,
          * the watcher if the unique name goes away
          */
         if (matching) {
-            big_dbus_watch_name(watcher->bus_type,
-                                watcher->sender,
-                                0,
-                                &signal_emitter_name_funcs,
-                                NULL);
+            big_dbus_watch_name(watcher->bus_type, watcher->sender, 0,
+                                &signal_emitter_name_funcs, NULL);
         } else {
-            big_dbus_unwatch_name(watcher->bus_type,
-                                  watcher->sender,
-                                  &signal_emitter_name_funcs,
-                                  NULL);
+            big_dbus_unwatch_name(watcher->bus_type, watcher->sender,
+                                  &signal_emitter_name_funcs, NULL);
         }
     }
 }
 
 static void
-signal_watcher_add(DBusConnection   *connection,
-                   BigDBusInfo      *info,
-                   BigSignalWatcher *watcher)
+signal_watcher_add(DBusConnection* connection,
+                   BigDBusInfo* info,
+                   BigSignalWatcher* watcher)
 {
     gboolean in_some_table;
 
     signal_watcher_set_matching(connection, watcher, TRUE);
 
-    info->all_signal_watchers = g_slist_prepend(info->all_signal_watchers, watcher);
+    info->all_signal_watchers
+      = g_slist_prepend(info->all_signal_watchers, watcher);
     signal_watcher_ref(watcher);
 
     in_some_table = FALSE;
 
     if (watcher->sender && *(watcher->sender) == ':') {
         signal_watcher_table_add(&info->signal_watchers_by_unique_sender,
-                                 watcher->sender,
-                                 watcher);
+                                 watcher->sender, watcher);
         in_some_table = TRUE;
     }
 
     if (watcher->path) {
-        signal_watcher_table_add(&info->signal_watchers_by_path,
-                                 watcher->path,
+        signal_watcher_table_add(&info->signal_watchers_by_path, watcher->path,
                                  watcher);
         in_some_table = TRUE;
     }
 
     if (watcher->iface) {
         signal_watcher_table_add(&info->signal_watchers_by_iface,
-                                 watcher->iface,
-                                 watcher);
+                                 watcher->iface, watcher);
         in_some_table = TRUE;
     }
 
     if (watcher->name) {
         signal_watcher_table_add(&info->signal_watchers_by_signal,
-                                 watcher->name,
-                                 watcher);
+                                 watcher->name, watcher);
         in_some_table = TRUE;
     }
 
     if (!in_some_table) {
-        info->signal_watchers_in_no_table =
-            g_slist_prepend(info->signal_watchers_in_no_table,
-                            watcher);
+        info->signal_watchers_in_no_table
+          = g_slist_prepend(info->signal_watchers_in_no_table, watcher);
         signal_watcher_ref(watcher);
     }
 }
 
 static void
-signal_watcher_remove(DBusConnection   *connection,
-                      BigDBusInfo      *info,
-                      BigSignalWatcher *watcher)
+signal_watcher_remove(DBusConnection* connection,
+                      BigDBusInfo* info,
+                      BigSignalWatcher* watcher)
 {
     gboolean in_some_table;
 
     signal_watcher_set_matching(connection, watcher, FALSE);
 
-    info->all_signal_watchers = g_slist_remove(info->all_signal_watchers, watcher);
+    info->all_signal_watchers
+      = g_slist_remove(info->all_signal_watchers, watcher);
 
     in_some_table = FALSE;
 
     if (watcher->sender && *(watcher->sender) == ':') {
         signal_watcher_table_remove(info->signal_watchers_by_unique_sender,
-                                    watcher->sender,
-                                    watcher);
+                                    watcher->sender, watcher);
         in_some_table = TRUE;
     }
 
     if (watcher->path) {
         signal_watcher_table_remove(info->signal_watchers_by_path,
-                                    watcher->path,
-                                    watcher);
+                                    watcher->path, watcher);
         in_some_table = TRUE;
     }
 
     if (watcher->iface) {
         signal_watcher_table_remove(info->signal_watchers_by_iface,
-                                    watcher->iface,
-                                    watcher);
+                                    watcher->iface, watcher);
         in_some_table = TRUE;
     }
 
     if (watcher->name) {
         signal_watcher_table_remove(info->signal_watchers_by_signal,
-                                    watcher->name,
-                                    watcher);
+                                    watcher->name, watcher);
         in_some_table = TRUE;
     }
 
     if (!in_some_table) {
-        info->signal_watchers_in_no_table =
-            g_slist_remove(info->signal_watchers_in_no_table,
-                           watcher);
+        info->signal_watchers_in_no_table
+          = g_slist_remove(info->signal_watchers_in_no_table, watcher);
         signal_watcher_unref(watcher);
     }
 
@@ -433,14 +410,14 @@ signal_watcher_remove(DBusConnection   *connection,
  * callback needs to be first.
  */
 void
-_big_dbus_process_pending_signal_watchers(DBusConnection *connection,
-                                          BigDBusInfo    *info)
+_big_dbus_process_pending_signal_watchers(DBusConnection* connection,
+                                          BigDBusInfo* info)
 {
-    GSList *remaining;
+    GSList* remaining;
 
     remaining = NULL;
     while (pending_signal_watchers) {
-        BigSignalWatcher *watcher = pending_signal_watchers->data;
+        BigSignalWatcher* watcher = pending_signal_watchers->data;
         pending_signal_watchers = g_slist_delete_link(pending_signal_watchers,
                                                       pending_signal_watchers);
 
@@ -460,8 +437,7 @@ _big_dbus_process_pending_signal_watchers(DBusConnection *connection,
 }
 
 static void
-signal_watchers_disconnected(DBusConnection *connection,
-                             BigDBusInfo    *info)
+signal_watchers_disconnected(DBusConnection* connection, BigDBusInfo* info)
 {
     /* None should be pending on this bus, because at start of
      * _big_dbus_signal_watch_filter_message() we process all the pending ones.
@@ -469,26 +445,23 @@ signal_watchers_disconnected(DBusConnection *connection,
      * another bus. Anyway bottom line we can ignore pending_signal_watchers
      * in here.
      */
-    GSList *list;
-    GSList *destroyed;
+    GSList* list;
+    GSList* destroyed;
 
     /* Build a separate list to destroy to avoid re-entrancy as we are
      * walking the list
      */
     destroyed = NULL;
-    for (list = info->all_signal_watchers;
-         list != NULL;
-         list = list->next) {
-        BigSignalWatcher *watcher = list->data;
+    for (list = info->all_signal_watchers; list != NULL; list = list->next) {
+        BigSignalWatcher* watcher = list->data;
         if (watcher->sender && *(watcher->sender) == ':') {
-            destroyed = g_slist_prepend(destroyed,
-                                        watcher);
+            destroyed = g_slist_prepend(destroyed, watcher);
             signal_watcher_ref(watcher);
         }
     }
 
     while (destroyed != NULL) {
-        BigSignalWatcher *watcher = destroyed->data;
+        BigSignalWatcher* watcher = destroyed->data;
         destroyed = g_slist_delete_link(destroyed, destroyed);
 
         signal_watcher_remove(connection, info, watcher);
@@ -497,46 +470,39 @@ signal_watchers_disconnected(DBusConnection *connection,
 }
 
 static void
-concat_candidates(GSList    **candidates_p,
-                  GHashTable *table,
-                  const char *key)
+concat_candidates(GSList** candidates_p, GHashTable* table, const char* key)
 {
-    GSList *list;
+    GSList* list;
 
     list = signal_watcher_table_lookup(table, key);
     if (list == NULL)
         return;
 
-    *candidates_p = g_slist_concat(*candidates_p,
-                                   g_slist_copy(list));
+    *candidates_p = g_slist_concat(*candidates_p, g_slist_copy(list));
 }
 
 static int
-direct_cmp(gconstpointer a,
-           gconstpointer b)
+direct_cmp(gconstpointer a, gconstpointer b)
 {
     /* gcc dislikes pointer math on void* so cast */
-    return ((const char*)a) - ((const char*)b);
+    return ((const char*) a) - ((const char*) b);
 }
 
 static gboolean
-signal_watcher_watches(BigDBusInfo      *info,
-                       BigSignalWatcher *watcher,
-                       const char       *sender,
-                       const char       *path,
-                       const char       *iface,
-                       const char       *name)
+signal_watcher_watches(BigDBusInfo* info,
+                       BigSignalWatcher* watcher,
+                       const char* sender,
+                       const char* path,
+                       const char* iface,
+                       const char* name)
 {
-    if (watcher->path &&
-        strcmp(watcher->path, path) != 0)
+    if (watcher->path && strcmp(watcher->path, path) != 0)
         return FALSE;
 
-    if (watcher->iface &&
-        strcmp(watcher->iface, iface) != 0)
+    if (watcher->iface && strcmp(watcher->iface, iface) != 0)
         return FALSE;
 
-    if (watcher->name &&
-        strcmp(watcher->name, name) != 0)
+    if (watcher->name && strcmp(watcher->name, name) != 0)
         return FALSE;
 
     /* "sender" from message is always the unique name, but
@@ -546,17 +512,15 @@ signal_watcher_watches(BigDBusInfo      *info,
     if (watcher->sender == NULL)
         return TRUE;
 
-
-    if (* (watcher->sender) == ':') {
+    if (*(watcher->sender) == ':') {
         return strcmp(watcher->sender, sender) == 0;
     } else {
-        const char *owner;
+        const char* owner;
 
-        owner = big_dbus_get_watched_name_owner(info->bus_type,
-                                                watcher->sender);
+        owner
+          = big_dbus_get_watched_name_owner(info->bus_type, watcher->sender);
 
-        if (owner != NULL &&
-            strcmp(sender, owner) == 0)
+        if (owner != NULL && strcmp(sender, owner) == 0)
             return TRUE;
         else
             return FALSE;
@@ -564,9 +528,9 @@ signal_watcher_watches(BigDBusInfo      *info,
 }
 
 DBusHandlerResult
-_big_dbus_signal_watch_filter_message(DBusConnection *connection,
-                                      DBusMessage    *message,
-                                      void           *data)
+_big_dbus_signal_watch_filter_message(DBusConnection* connection,
+                                      DBusMessage* message,
+                                      void* data)
 {
     /* Two things we're looking for
      * 1) signals
@@ -574,13 +538,13 @@ _big_dbus_signal_watch_filter_message(DBusConnection *connection,
      *    we want to destroy notify when it vanishes or
      *    when the bus disconnects.
      */
-    BigDBusInfo *info;
-    const char *sender;
-    const char *path;
-    const char *iface;
-    const char *name;
-    GSList *candidates;
-    BigSignalWatcher *previous;
+    BigDBusInfo* info;
+    const char* sender;
+    const char* path;
+    const char* iface;
+    const char* name;
+    GSList* candidates;
+    BigSignalWatcher* previous;
 
     info = _big_dbus_ensure_info(connection);
 
@@ -603,35 +567,28 @@ _big_dbus_signal_watch_filter_message(DBusConnection *connection,
     g_assert(iface != NULL);
     g_assert(name != NULL);
 
-    big_debug(BIG_DEBUG_UTIL_DBUS,
-              "Signal from %s %s.%s sender %s",
-              path, iface, name, sender ? sender : "(none)");
+    big_debug(BIG_DEBUG_UTIL_DBUS, "Signal from %s %s.%s sender %s", path,
+              iface, name, sender ? sender : "(none)");
 
     candidates = NULL;
 
     if (sender != NULL) {
-        concat_candidates(&candidates,
-                          info->signal_watchers_by_unique_sender,
+        concat_candidates(&candidates, info->signal_watchers_by_unique_sender,
                           sender);
     }
-    concat_candidates(&candidates,
-                      info->signal_watchers_by_path,
-                      path);
-    concat_candidates(&candidates,
-                      info->signal_watchers_by_iface,
-                      iface);
-    concat_candidates(&candidates,
-                      info->signal_watchers_by_signal,
-                      name);
-    candidates = g_slist_concat(candidates,
-                                g_slist_copy(info->signal_watchers_in_no_table));
+    concat_candidates(&candidates, info->signal_watchers_by_path, path);
+    concat_candidates(&candidates, info->signal_watchers_by_iface, iface);
+    concat_candidates(&candidates, info->signal_watchers_by_signal, name);
+    candidates
+      = g_slist_concat(candidates,
+                       g_slist_copy(info->signal_watchers_in_no_table));
 
     /* Sort so we can find dups */
     candidates = g_slist_sort(candidates, direct_cmp);
 
     previous = NULL;
     while (candidates != NULL) {
-        BigSignalWatcher *watcher;
+        BigSignalWatcher* watcher;
 
         watcher = candidates->data;
         candidates = g_slist_delete_link(candidates, candidates);
@@ -641,9 +598,7 @@ _big_dbus_signal_watch_filter_message(DBusConnection *connection,
 
         previous = watcher;
 
-        if (!signal_watcher_watches(info,
-                                    watcher,
-                                    sender, path, iface, name))
+        if (!signal_watcher_watches(info, watcher, sender, path, iface, name))
             continue;
 
         /* destroyed would happen if e.g. removed while we are going
@@ -656,9 +611,7 @@ _big_dbus_signal_watch_filter_message(DBusConnection *connection,
 
         signal_watcher_ref(watcher);
 
-        (* watcher->handler) (connection,
-                              message,
-                              watcher->data);
+        (*watcher->handler)(connection, message, watcher->data);
 
         signal_watcher_unref(watcher);
     }
@@ -676,20 +629,19 @@ _big_dbus_signal_watch_filter_message(DBusConnection *connection,
 }
 
 int
-big_dbus_watch_signal(DBusBusType                  bus_type,
-                      const char                  *sender,
-                      const char                  *path,
-                      const char                  *iface,
-                      const char                  *name,
-                      BigDBusSignalHandler         handler,
-                      void                        *data,
-                      GDestroyNotify               data_dnotify)
+big_dbus_watch_signal(DBusBusType bus_type,
+                      const char* sender,
+                      const char* path,
+                      const char* iface,
+                      const char* name,
+                      BigDBusSignalHandler handler,
+                      void* data,
+                      GDestroyNotify data_dnotify)
 {
-    BigSignalWatcher *watcher;
-    DBusConnection *weak;
+    BigSignalWatcher* watcher;
+    DBusConnection* weak;
 
-    watcher = signal_watcher_new(bus_type, sender, path,
-                                 iface, name, handler,
+    watcher = signal_watcher_new(bus_type, sender, path, iface, name, handler,
                                  data, data_dnotify);
 
     /* If we're already connected, it's essential to get the
@@ -716,7 +668,8 @@ big_dbus_watch_signal(DBusBusType                  bus_type,
         signal_watcher_add(weak, _big_dbus_ensure_info(weak), watcher);
         signal_watcher_unref(watcher);
     } else {
-        pending_signal_watchers = g_slist_prepend(pending_signal_watchers, watcher);
+        pending_signal_watchers
+          = g_slist_prepend(pending_signal_watchers, watcher);
         _big_dbus_ensure_connect_idle(bus_type);
     }
 
@@ -725,15 +678,15 @@ big_dbus_watch_signal(DBusBusType                  bus_type,
 
 /* Does the watcher match a removal request? */
 static gboolean
-signal_watcher_matches(BigSignalWatcher     *watcher,
-                       DBusBusType           bus_type,
-                       const char           *sender,
-                       const char           *path,
-                       const char           *iface,
-                       const char           *name,
-                       int                   id,
-                       BigDBusSignalHandler  handler,
-                       void                 *data)
+signal_watcher_matches(BigSignalWatcher* watcher,
+                       DBusBusType bus_type,
+                       const char* sender,
+                       const char* path,
+                       const char* iface,
+                       const char* name,
+                       int id,
+                       BigDBusSignalHandler handler,
+                       void* data)
 {
     /* If we have an ID, check that first. If it matches, we are
      * done
@@ -770,44 +723,36 @@ signal_watcher_matches(BigSignalWatcher     *watcher,
 }
 
 static void
-unwatch_signal(DBusBusType                  bus_type,
-               const char                  *sender,
-               const char                  *path,
-               const char                  *iface,
-               const char                  *name,
-               int                          id,
-               BigDBusSignalHandler         handler,
-               void                        *data)
+unwatch_signal(DBusBusType bus_type,
+               const char* sender,
+               const char* path,
+               const char* iface,
+               const char* name,
+               int id,
+               BigDBusSignalHandler handler,
+               void* data)
 {
-    GSList *list;
-    DBusConnection *weak;
-    BigDBusInfo *info;
+    GSList* list;
+    DBusConnection* weak;
+    BigDBusInfo* info;
 
     /* Always remove only ONE watcher (the first one we find) */
 
     weak = _big_dbus_get_weak_ref(bus_type);
 
     /* First see if it's still pending */
-    for (list = pending_signal_watchers;
-         list != NULL;
-         list = list->next) {
-        if (signal_watcher_matches(list->data,
-                                   bus_type,
-                                   sender,
-                                   path,
-                                   iface,
-                                   name,
-                                   id,
-                                   handler,
-                                   data)) {
-            BigSignalWatcher *watcher = list->data;
-            pending_signal_watchers = g_slist_remove_link(pending_signal_watchers,
-                                                          list);
+    for (list = pending_signal_watchers; list != NULL; list = list->next) {
+        if (signal_watcher_matches(list->data, bus_type, sender, path, iface,
+                                   name, id, handler, data)) {
+            BigSignalWatcher* watcher = list->data;
+            pending_signal_watchers
+              = g_slist_remove_link(pending_signal_watchers, list);
 
             if (weak != NULL)
                 signal_watcher_set_matching(weak, watcher, FALSE);
 
-            signal_watcher_dnotify(watcher); /* destroy even if we don't finalize */
+            signal_watcher_dnotify(
+              watcher); /* destroy even if we don't finalize */
             signal_watcher_unref(watcher);
             return;
         }
@@ -823,18 +768,9 @@ unwatch_signal(DBusBusType                  bus_type,
 
     info = _big_dbus_ensure_info(weak);
 
-    for (list = info->all_signal_watchers;
-         list != NULL;
-         list = list->next) {
-        if (signal_watcher_matches(list->data,
-                                   bus_type,
-                                   sender,
-                                   path,
-                                   iface,
-                                   name,
-                                   id,
-                                   handler,
-                                   data)) {
+    for (list = info->all_signal_watchers; list != NULL; list = list->next) {
+        if (signal_watcher_matches(list->data, bus_type, sender, path, iface,
+                                   name, id, handler, data)) {
             signal_watcher_remove(weak, info, list->data);
             /* note that "list" node is now invalid */
             return;
@@ -847,36 +783,23 @@ unwatch_signal(DBusBusType                  bus_type,
 }
 
 void
-big_dbus_unwatch_signal(DBusBusType                  bus_type,
-                        const char                  *sender,
-                        const char                  *path,
-                        const char                  *iface,
-                        const char                  *name,
-                        BigDBusSignalHandler         handler,
-                        void                        *data)
+big_dbus_unwatch_signal(DBusBusType bus_type,
+                        const char* sender,
+                        const char* path,
+                        const char* iface,
+                        const char* name,
+                        BigDBusSignalHandler handler,
+                        void* data)
 {
-    unwatch_signal(bus_type,
-                   sender,
-                   path,
-                   iface,
-                   name,
-                   INVALID_SIGNAL_ID,
-                   handler,
-                   data);
+    unwatch_signal(bus_type, sender, path, iface, name, INVALID_SIGNAL_ID,
+                   handler, data);
 }
 
 void
-big_dbus_unwatch_signal_by_id(DBusBusType                  bus_type,
-                              int                          id)
+big_dbus_unwatch_signal_by_id(DBusBusType bus_type, int id)
 {
-    unwatch_signal(bus_type,
-                   NULL,
-                   NULL,
-                   NULL,
-                   NULL,
-                   id,
-                   (BigDBusSignalHandler)NULL,
-                   NULL);
+    unwatch_signal(bus_type, NULL, NULL, NULL, NULL, id,
+                   (BigDBusSignalHandler) NULL, NULL);
 }
 
 #if BIG_BUILD_TESTS
@@ -892,29 +815,29 @@ big_dbus_unwatch_signal_by_id(DBusBusType                  bus_type,
 #include <sys/wait.h>
 
 static pid_t test_service_pid = 0;
-static BigDBusProxy *test_service_proxy = NULL;
+static BigDBusProxy* test_service_proxy = NULL;
 
-static GMainLoop *outer_loop = NULL;
-static GMainLoop *inner_loop = NULL;
+static GMainLoop* outer_loop = NULL;
+static GMainLoop* inner_loop = NULL;
 
 static int n_running_children = 0;
 
-typedef struct {
-    const char *sender;
-    const char *path;
-    const char *iface;
-    const char *member;
+typedef struct
+{
+    const char* sender;
+    const char* path;
+    const char* iface;
+    const char* member;
 } SignalWatchTest;
 
-static SignalWatchTest watch_tests[] = {
-    { NULL, NULL, NULL, NULL },
-    { "com.litl.TestService", NULL, NULL, NULL },
-    { NULL, "/com/litl/test/object42", NULL, NULL },
-    { NULL, NULL, "com.litl.TestIface", NULL },
-    { NULL, NULL, NULL, "TheSignal" }
-};
+static SignalWatchTest watch_tests[]
+  = { { NULL, NULL, NULL, NULL },
+      { "com.litl.TestService", NULL, NULL, NULL },
+      { NULL, "/com/litl/test/object42", NULL, NULL },
+      { NULL, NULL, "com.litl.TestIface", NULL },
+      { NULL, NULL, NULL, "TheSignal" } };
 
-static void do_test_service_child (void);
+static void do_test_service_child(void);
 
 /* quit when all children are gone */
 static void
@@ -962,7 +885,8 @@ static void
 kill_child(void)
 {
     if (kill(test_service_pid, SIGTERM) < 0) {
-        g_error("Test service was no longer around... it must have failed somehow (%s)",
+        g_error("Test service was no longer around... it must have failed "
+                "somehow (%s)",
                 strerror(errno));
     }
 
@@ -973,31 +897,28 @@ static int signal_received_count = 0;
 static int destroy_notify_count = 0;
 
 static void
-the_destroy_notifier(void *data)
+the_destroy_notifier(void* data)
 {
-    big_debug(BIG_DEBUG_IN_TESTS,
-              "got destroy notification on signal watch");
+    big_debug(BIG_DEBUG_IN_TESTS, "got destroy notification on signal watch");
     destroy_notify_count += 1;
 }
 
 static void
-the_destroy_notifier_that_quits(void *data)
+the_destroy_notifier_that_quits(void* data)
 {
     the_destroy_notifier(data);
     g_main_loop_quit(inner_loop);
 }
 
 static void
-expect_receive_signal_handler(DBusConnection *connection,
-                              DBusMessage    *message,
-                              void           *data)
+expect_receive_signal_handler(DBusConnection* connection,
+                              DBusMessage* message,
+                              void* data)
 {
-    big_debug(BIG_DEBUG_IN_TESTS,
-              "dbus signal watch handler called");
+    big_debug(BIG_DEBUG_IN_TESTS, "dbus signal watch handler called");
 
-    g_assert(dbus_message_is_signal(message,
-                                    "com.litl.TestIface",
-                                    "TheSignal"));
+    g_assert(
+      dbus_message_is_signal(message, "com.litl.TestIface", "TheSignal"));
 
     signal_received_count += 1;
 
@@ -1005,73 +926,51 @@ expect_receive_signal_handler(DBusConnection *connection,
 }
 
 static void
-test_match_combo(const char *sender,
-                 const char *path,
-                 const char *iface,
-                 const char *member)
+test_match_combo(const char* sender,
+                 const char* path,
+                 const char* iface,
+                 const char* member)
 {
     signal_received_count = 0;
     destroy_notify_count = 0;
 
-    big_debug(BIG_DEBUG_IN_TESTS,
-              "Watching %s %s %s %s",
-              sender,
-              path,
-              iface,
+    big_debug(BIG_DEBUG_IN_TESTS, "Watching %s %s %s %s", sender, path, iface,
               member);
 
-    big_dbus_watch_signal(DBUS_BUS_SESSION,
-                          sender,
-                          path,
-                          iface,
-                          member,
-                          expect_receive_signal_handler,
-                          GINT_TO_POINTER(1),
+    big_dbus_watch_signal(DBUS_BUS_SESSION, sender, path, iface, member,
+                          expect_receive_signal_handler, GINT_TO_POINTER(1),
                           the_destroy_notifier);
 
-    big_dbus_proxy_call_json_async(test_service_proxy,
-                                   "emitTheSignal",
-                                   NULL,
-                                   NULL,
-                                   NULL,
-                                   NULL);
+    big_dbus_proxy_call_json_async(test_service_proxy, "emitTheSignal", NULL,
+                                   NULL, NULL, NULL);
     g_main_loop_run(inner_loop);
 
     g_assert(signal_received_count == 1);
     g_assert(destroy_notify_count == 0);
 
-    big_dbus_unwatch_signal(DBUS_BUS_SESSION,
-                            sender,
-                            path,
-                            iface,
-                            member,
-                            expect_receive_signal_handler,
-                            GINT_TO_POINTER(1));
+    big_dbus_unwatch_signal(DBUS_BUS_SESSION, sender, path, iface, member,
+                            expect_receive_signal_handler, GINT_TO_POINTER(1));
 
     g_assert(destroy_notify_count == 1);
 }
 
 static gboolean
-run_signal_tests_idle(void *data)
+run_signal_tests_idle(void* data)
 {
     int i;
-    const char *unique_name;
+    const char* unique_name;
 
     for (i = 0; i < (int) G_N_ELEMENTS(watch_tests); ++i) {
-        SignalWatchTest *test = &watch_tests[i];
+        SignalWatchTest* test = &watch_tests[i];
 
-        test_match_combo(test->sender,
-                         test->path,
-                         test->iface,
-                         test->member);
+        test_match_combo(test->sender, test->path, test->iface, test->member);
     }
 
     /* Now try on the unique bus name */
 
     unique_name = big_dbus_proxy_get_bus_name(test_service_proxy);
 
-    test_match_combo(unique_name,
-                     NULL, NULL, NULL);
+    test_match_combo(unique_name, NULL, NULL, NULL);
 
     /* Now test we get destroy notify when the unique name disappears
      * on killing the child.
@@ -1079,15 +978,10 @@ run_signal_tests_idle(void *data)
     signal_received_count = 0;
     destroy_notify_count = 0;
 
-    big_debug(BIG_DEBUG_IN_TESTS,
-              "Watching unique name %s",
-              unique_name);
+    big_debug(BIG_DEBUG_IN_TESTS, "Watching unique name %s", unique_name);
 
-    big_dbus_watch_signal(DBUS_BUS_SESSION,
-                          unique_name,
-                          NULL, NULL, NULL,
-                          expect_receive_signal_handler,
-                          GINT_TO_POINTER(1),
+    big_dbus_watch_signal(DBUS_BUS_SESSION, unique_name, NULL, NULL, NULL,
+                          expect_receive_signal_handler, GINT_TO_POINTER(1),
                           the_destroy_notifier_that_quits);
 
     /* kill owner of unique_name */
@@ -1101,11 +995,8 @@ run_signal_tests_idle(void *data)
     g_assert(destroy_notify_count > 0);
     g_assert(destroy_notify_count < 2);
 
-    big_dbus_unwatch_signal(DBUS_BUS_SESSION,
-                            unique_name,
-                            NULL, NULL, NULL,
-                            expect_receive_signal_handler,
-                            GINT_TO_POINTER(1));
+    big_dbus_unwatch_signal(DBUS_BUS_SESSION, unique_name, NULL, NULL, NULL,
+                            expect_receive_signal_handler, GINT_TO_POINTER(1));
 
     g_assert(signal_received_count == 0);
     g_assert(destroy_notify_count == 1);
@@ -1115,41 +1006,35 @@ run_signal_tests_idle(void *data)
 }
 
 static void
-on_test_service_appeared(DBusConnection *connection,
-                         const char     *name,
-                         const char     *new_owner_unique_name,
-                         void           *data)
+on_test_service_appeared(DBusConnection* connection,
+                         const char* name,
+                         const char* new_owner_unique_name,
+                         void* data)
 {
-    big_debug(BIG_DEBUG_IN_TESTS,
-              "%s appeared",
-              name);
+    big_debug(BIG_DEBUG_IN_TESTS, "%s appeared", name);
 
     inner_loop = g_main_loop_new(NULL, FALSE);
 
-    test_service_proxy =
-        big_dbus_proxy_new(connection, new_owner_unique_name,
-                           "/com/litl/test/object42",
-                           "com.litl.TestIface");
+    test_service_proxy
+      = big_dbus_proxy_new(connection, new_owner_unique_name,
+                           "/com/litl/test/object42", "com.litl.TestIface");
 
     g_idle_add(run_signal_tests_idle, NULL);
 }
 
 static void
-on_test_service_vanished(DBusConnection *connection,
-                         const char     *name,
-                         const char     *old_owner_unique_name,
-                         void           *data)
+on_test_service_vanished(DBusConnection* connection,
+                         const char* name,
+                         const char* old_owner_unique_name,
+                         void* data)
 {
-    big_debug(BIG_DEBUG_IN_TESTS,
-              "%s vanished", name);
+    big_debug(BIG_DEBUG_IN_TESTS, "%s vanished", name);
 
     another_child_down();
 }
 
-static BigDBusWatchNameFuncs watch_test_service_funcs = {
-    on_test_service_appeared,
-    on_test_service_vanished
-};
+static BigDBusWatchNameFuncs watch_test_service_funcs
+  = { on_test_service_appeared, on_test_service_vanished };
 
 void
 bigtest_test_func_util_dbus_signals_client(void)
@@ -1175,11 +1060,8 @@ bigtest_test_func_util_dbus_signals_client(void)
     /* We rely on the child-forking test functions being called first */
     g_assert(test_service_pid != 0);
 
-    big_dbus_watch_name(DBUS_BUS_SESSION,
-                        "com.litl.TestService",
-                        0,
-                        &watch_test_service_funcs,
-                        NULL);
+    big_dbus_watch_name(DBUS_BUS_SESSION, "com.litl.TestService", 0,
+                        &watch_test_service_funcs, NULL);
 
     outer_loop = g_main_loop_new(NULL, FALSE);
 
@@ -1188,8 +1070,7 @@ bigtest_test_func_util_dbus_signals_client(void)
     if (test_service_proxy != NULL)
         g_object_unref(test_service_proxy);
 
-    big_debug(BIG_DEBUG_IN_TESTS,
-              "waitpid() for first child");
+    big_debug(BIG_DEBUG_IN_TESTS, "waitpid() for first child");
 
     result = waitpid(test_service_pid, &status, 0);
     if (result < 0) {
@@ -1197,11 +1078,13 @@ bigtest_test_func_util_dbus_signals_client(void)
     }
 
     if (WIFEXITED(status) && WEXITSTATUS(status) != 0) {
-        g_error("Forked dbus service child exited with error code %d", WEXITSTATUS(status));
+        g_error("Forked dbus service child exited with error code %d",
+                WEXITSTATUS(status));
     }
 
     if (WIFSIGNALED(status) && WTERMSIG(status) != SIGTERM) {
-        g_error("Forked dbus service child exited on wrong signal number %d", WTERMSIG(status));
+        g_error("Forked dbus service child exited on wrong signal number %d",
+                WTERMSIG(status));
     }
 
     big_debug(BIG_DEBUG_IN_TESTS, "dbus signals test completed");
@@ -1224,90 +1107,74 @@ bigtest_test_func_util_dbus_signals_client(void)
  */
 
 static gboolean currently_have_test_service = FALSE;
-static GObject *test_service_object = NULL;
+static GObject* test_service_object = NULL;
 
 static void
-test_service_emit_the_signal(DBusConnection  *connection,
-                             DBusMessage     *message,
-                             DBusMessageIter *in_iter,
-                             DBusMessageIter *out_iter,
-                             void            *data,
-                             DBusError       *error)
+test_service_emit_the_signal(DBusConnection* connection,
+                             DBusMessage* message,
+                             DBusMessageIter* in_iter,
+                             DBusMessageIter* out_iter,
+                             void* data,
+                             DBusError* error)
 {
-    DBusMessage *signal;
+    DBusMessage* signal;
 
     signal = dbus_message_new_signal("/com/litl/test/object42",
-                                     "com.litl.TestIface",
-                                     "TheSignal");
+                                     "com.litl.TestIface", "TheSignal");
     dbus_connection_send(connection, signal, NULL);
     dbus_message_unref(signal);
 }
 
-static BigDBusJsonMethod test_service_methods[] = {
-    { "emitTheSignal", test_service_emit_the_signal, NULL }
-};
+static BigDBusJsonMethod test_service_methods[]
+  = { { "emitTheSignal", test_service_emit_the_signal, NULL } };
 
 static void
-on_test_service_acquired(DBusConnection *connection,
-                         const char     *name,
-                         void           *data)
+on_test_service_acquired(DBusConnection* connection,
+                         const char* name,
+                         void* data)
 {
     g_assert(!currently_have_test_service);
     currently_have_test_service = TRUE;
 
-    big_debug(BIG_DEBUG_IN_TESTS,
-              "com.litl.TestService acquired by child");
+    big_debug(BIG_DEBUG_IN_TESTS, "com.litl.TestService acquired by child");
 
-    big_dbus_register_json(connection,
-                           "com.litl.TestIface",
+    big_dbus_register_json(connection, "com.litl.TestIface",
                            test_service_methods,
                            G_N_ELEMENTS(test_service_methods));
 
     test_service_object = g_object_new(G_TYPE_OBJECT, NULL);
 
-    big_dbus_register_g_object(connection,
-                               "/com/litl/test/object42",
-                               test_service_object,
-                               "com.litl.TestIface");
+    big_dbus_register_g_object(connection, "/com/litl/test/object42",
+                               test_service_object, "com.litl.TestIface");
 }
 
 static void
-on_test_service_lost(DBusConnection *connection,
-                     const char     *name,
-                     void           *data)
+on_test_service_lost(DBusConnection* connection, const char* name, void* data)
 {
     g_assert(currently_have_test_service);
     currently_have_test_service = FALSE;
 
-    big_debug(BIG_DEBUG_IN_TESTS,
-              "com.litl.TestService lost by child");
+    big_debug(BIG_DEBUG_IN_TESTS, "com.litl.TestService lost by child");
 
-    big_dbus_unregister_g_object(connection,
-                                 "/com/litl/test/object42");
+    big_dbus_unregister_g_object(connection, "/com/litl/test/object42");
 
-    big_dbus_unregister_json(connection,
-                             "com.litl.TestIface");
+    big_dbus_unregister_json(connection, "com.litl.TestIface");
 }
 
-static BigDBusNameOwnerFuncs test_service_funcs = {
-    "com.litl.TestService",
-    DBUS_BUS_SESSION,
-    on_test_service_acquired,
-    on_test_service_lost
-};
+static BigDBusNameOwnerFuncs test_service_funcs
+  = { "com.litl.TestService", DBUS_BUS_SESSION, on_test_service_acquired,
+      on_test_service_lost };
 
 static void
 do_test_service_child(void)
 {
-    GMainLoop *loop;
+    GMainLoop* loop;
 
     g_type_init();
 
     loop = g_main_loop_new(NULL, FALSE);
 
-    big_dbus_acquire_name(DBUS_BUS_SESSION,
-                          &test_service_funcs,
-                          NULL);
+    big_dbus_acquire_name(DBUS_BUS_SESSION, &test_service_funcs, NULL);
 
     g_main_loop_run(loop);
 

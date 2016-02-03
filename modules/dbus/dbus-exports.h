@@ -8,9 +8,9 @@
 
 G_BEGIN_DECLS
 
-gboolean seed_js_define_dbus_exports (SeedContext ctx,
-				      SeedObject object,
-				      DBusBusType which_bus);
+gboolean seed_js_define_dbus_exports(SeedContext ctx,
+                                     SeedObject object,
+                                     DBusBusType which_bus);
 
 G_END_DECLS
 

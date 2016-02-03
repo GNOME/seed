@@ -43,14 +43,13 @@
  *
  */
 
-#define CHECK_ARG_COUNT(name, argnum) \
-	if ( argument_count != argnum ) \
-	{ \
-		seed_make_exception (ctx, exception, "ArgumentError", \
-		                     "wrong number of arguments; expected %s, got %zd", \
-		                     #argnum, argument_count); \
-		return seed_make_undefined (ctx); \
-	}
+#define CHECK_ARG_COUNT(name, argnum)                                          \
+    if (argument_count != argnum) {                                            \
+        seed_make_exception(ctx, exception, "ArgumentError",                   \
+                            "wrong number of arguments; expected %s, got %zd", \
+                            #argnum, argument_count);                          \
+        return seed_make_undefined(ctx);                                       \
+    }
 
 /**
  * DEFINE_ENUM_MEMBER:
@@ -64,9 +63,9 @@
  * &num;defines as well.
  *
  */
-#define DEFINE_ENUM_MEMBER(holder, member) \
-	seed_object_set_property(ctx, holder, #member, \
-	                         seed_value_from_long(ctx, member, NULL))
+#define DEFINE_ENUM_MEMBER(holder, member)                                     \
+    seed_object_set_property(ctx, holder, #member,                             \
+                             seed_value_from_long(ctx, member, NULL))
 
 /**
  * DEFINE_ENUM_MEMBER_EXT:
@@ -85,8 +84,8 @@
  * </programlisting>
  *
  */
-#define DEFINE_ENUM_MEMBER_EXT(holder, name, val) \
-	seed_object_set_property(ctx, holder, name, \
-	                         seed_value_from_long(ctx, val, NULL))
+#define DEFINE_ENUM_MEMBER_EXT(holder, name, val)                              \
+    seed_object_set_property(ctx, holder, name,                                \
+                             seed_value_from_long(ctx, val, NULL))
 
 #endif

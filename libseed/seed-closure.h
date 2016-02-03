@@ -24,58 +24,57 @@
 
 typedef struct _SeedClosure
 {
-  GClosure closure;
+    GClosure closure;
 
-  JSObjectRef function;
-  JSValueRef user_data;
+    JSObjectRef function;
+    JSValueRef user_data;
 
-  GType return_type;
-  gchar *description;
+    GType return_type;
+    gchar* description;
 } SeedClosure;
 
 typedef struct _SeedNativeClosure
 {
-  JSContextRef ctx;
-  GICallableInfo *info;
-  JSValueRef function;
+    JSContextRef ctx;
+    GICallableInfo* info;
+    JSValueRef function;
 
-  ffi_closure *closure;
-  ffi_cif *cif;
+    ffi_closure* closure;
+    ffi_cif* cif;
 } SeedNativeClosure;
 
 extern JSClassRef seed_native_callback_class;
 
-SeedNativeClosure *seed_make_native_closure (JSContextRef ctx,
-					     GICallableInfo * info,
-					     JSValueRef function);
-GClosure *seed_closure_new (JSContextRef ctx,
-			    JSObjectRef function,
-			    JSObjectRef user_data, const gchar * description);
+SeedNativeClosure* seed_make_native_closure(JSContextRef ctx,
+                                            GICallableInfo* info,
+                                            JSValueRef function);
+GClosure* seed_closure_new(JSContextRef ctx,
+                           JSObjectRef function,
+                           JSObjectRef user_data,
+                           const gchar* description);
 
+GClosure* seed_closure_new_for_signal(JSContextRef ctx,
+                                      JSObjectRef function,
+                                      JSObjectRef user_data,
+                                      const gchar* description,
+                                      guint signal_id);
 
-GClosure *seed_closure_new_for_signal (JSContextRef ctx,
-				       JSObjectRef function,
-				       JSObjectRef user_data,
-				       const gchar *description,
-				       guint signal_id);
+JSObjectRef seed_closure_get_callable(GClosure* c);
 
+JSValueRef seed_closure_invoke(GClosure* closure,
+                               JSValueRef* args,
+                               guint argc,
+                               JSValueRef* exception);
+JSValueRef seed_closure_invoke_with_context(JSContextRef ctx,
+                                            GClosure* closure,
+                                            JSValueRef* args,
+                                            guint argc,
+                                            JSValueRef* exception);
 
-JSObjectRef seed_closure_get_callable (GClosure * c);
+void seed_closure_warn_exception(GClosure* c,
+                                 JSContextRef ctx,
+                                 JSValueRef exception);
 
-JSValueRef
-seed_closure_invoke (GClosure * closure, JSValueRef * args, guint argc,
-		     JSValueRef * exception);
-JSValueRef seed_closure_invoke_with_context (JSContextRef ctx,
-					     GClosure * closure,
-					     JSValueRef * args, guint argc,
-					     JSValueRef * exception);
-
-void
-seed_closure_warn_exception (GClosure * c,
-			     JSContextRef ctx, JSValueRef exception);
-
-
-
-void seed_closures_init ();
+void seed_closures_init();
 
 #endif

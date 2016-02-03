@@ -4,6 +4,6 @@
 #include <seed.h>
 #include <cairo/cairo.h>
 
-void seed_define_cairo_image_surface (SeedContext ctx, SeedObject namespace_ref);
+void seed_define_cairo_image_surface(SeedContext ctx, SeedObject namespace_ref);
 
 #endif

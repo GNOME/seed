@@ -22,7 +22,7 @@
 
 #include "seed-private.h"
 
-void seed_gtype_init (SeedEngine * eng);
+void seed_gtype_init(SeedEngine* eng);
 
 extern JSObjectRef seed_gtype_constructor;
 

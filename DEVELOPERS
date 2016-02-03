@@ -1,0 +1,20 @@
+=== DEVELOPERS ===
+
+==== Coding Style ====
+
+To contribute to seed, the developers needs to be aware of some coding style rules.
+
+It's basically based on the coding style from Mozilla [https://developer.mozilla.org/en-US/docs/Mozilla/Developer_guide/Coding_Style] with
+a few differences.
+
+So, tl:dl:
+    * Use four spaces to indent.
+    * Indent after brakets
+    * Pointers always on left of var name, glues to the type.
+
+
+To ease the developer's life, there's a .clang-format to autoformat the source code. Developers are invited to used that tool
+before submitting a patch.
+
+To use that tool, call:
+    clang-format -i filename.c

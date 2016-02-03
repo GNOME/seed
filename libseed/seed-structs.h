@@ -21,36 +21,37 @@
 extern JSClassRef seed_struct_class;
 extern JSClassRef seed_union_class;
 
-JSObjectRef seed_make_union (JSContextRef ctx, gpointer younion,
-			     GIBaseInfo * info);
-JSObjectRef seed_make_struct (JSContextRef ctx, gpointer strukt,
-			      GIBaseInfo * info);
-JSObjectRef seed_make_boxed (JSContextRef ctx,
-			     gpointer boxed, GIBaseInfo * info);
+JSObjectRef seed_make_union(JSContextRef ctx,
+                            gpointer younion,
+                            GIBaseInfo* info);
+JSObjectRef seed_make_struct(JSContextRef ctx,
+                             gpointer strukt,
+                             GIBaseInfo* info);
+JSObjectRef seed_make_boxed(JSContextRef ctx, gpointer boxed, GIBaseInfo* info);
 
-JSObjectRef seed_make_pointer (JSContextRef ctx, gpointer pointer);
+JSObjectRef seed_make_pointer(JSContextRef ctx, gpointer pointer);
 
-JSValueRef
-seed_field_get_value (JSContextRef ctx,
-		      gpointer object,
-		      GIFieldInfo * field, JSValueRef * exception);
+JSValueRef seed_field_get_value(JSContextRef ctx,
+                                gpointer object,
+                                GIFieldInfo* field,
+                                JSValueRef* exception);
 
-gpointer seed_pointer_get_pointer (JSContextRef ctx, JSValueRef strukt);
-void seed_pointer_set_free (JSContextRef ctx,
-			    JSValueRef pointer, gboolean free_pointer);
+gpointer seed_pointer_get_pointer(JSContextRef ctx, JSValueRef strukt);
+void seed_pointer_set_free(JSContextRef ctx,
+                           JSValueRef pointer,
+                           gboolean free_pointer);
 
-GIFieldInfo *seed_struct_find_field (GIStructInfo * info, gchar * field_name);
-GIFieldInfo *seed_union_find_field (GIUnionInfo * info, gchar * field_name);
+GIFieldInfo* seed_struct_find_field(GIStructInfo* info, gchar* field_name);
+GIFieldInfo* seed_union_find_field(GIUnionInfo* info, gchar* field_name);
 
-JSObjectRef
-seed_construct_struct_type_with_parameters (JSContextRef ctx,
-					    GIBaseInfo * info,
-					    JSObjectRef parameters,
-					    JSValueRef * exception);
+JSObjectRef seed_construct_struct_type_with_parameters(JSContextRef ctx,
+                                                       GIBaseInfo* info,
+                                                       JSObjectRef parameters,
+                                                       JSValueRef* exception);
 
-JSObjectRef seed_union_prototype (JSContextRef ctx, GIBaseInfo * info);
-JSObjectRef seed_struct_prototype (JSContextRef ctx, GIBaseInfo * info);
+JSObjectRef seed_union_prototype(JSContextRef ctx, GIBaseInfo* info);
+JSObjectRef seed_struct_prototype(JSContextRef ctx, GIBaseInfo* info);
 
-void seed_structs_init ();
+void seed_structs_init();
 
 #endif

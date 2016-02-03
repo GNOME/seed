@@ -21,12 +21,13 @@
 
 #include "seed-mpfr.h"
 
-SeedValue seed_mpfr_sin (SeedContext ctx,
-                         SeedObject function,
-                         SeedObject this_object,
-                         gsize argument_count,
-                         const SeedValue args[],
-                         SeedException *exception)
+SeedValue
+seed_mpfr_sin(SeedContext ctx,
+              SeedObject function,
+              SeedObject this_object,
+              gsize argument_count,
+              const SeedValue args[],
+              SeedException* exception)
 {
     mpfr_rnd_t rnd;
     mpfr_ptr rop, op;
@@ -37,12 +38,9 @@ SeedValue seed_mpfr_sin (SeedContext ctx,
     rop = seed_object_get_private(this_object);
     rnd = seed_value_to_mpfr_rnd_t(ctx, args[1], exception);
 
-    if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) )
-    {
+    if (seed_value_is_object_of_class(ctx, args[0], mpfr_class)) {
         op = seed_object_get_private(args[0]);
-    }
-    else
-    {
+    } else {
         TYPE_EXCEPTION("mpfr.sin", "mpfr_t");
     }
 
@@ -51,12 +49,13 @@ SeedValue seed_mpfr_sin (SeedContext ctx,
     return seed_value_from_int(ctx, ret, exception);
 }
 
-SeedValue seed_mpfr_cos (SeedContext ctx,
-                         SeedObject function,
-                         SeedObject this_object,
-                         gsize argument_count,
-                         const SeedValue args[],
-                         SeedException *exception)
+SeedValue
+seed_mpfr_cos(SeedContext ctx,
+              SeedObject function,
+              SeedObject this_object,
+              gsize argument_count,
+              const SeedValue args[],
+              SeedException* exception)
 {
     mpfr_rnd_t rnd;
     mpfr_ptr rop, op;
@@ -67,12 +66,9 @@ SeedValue seed_mpfr_cos (SeedContext ctx,
     rop = seed_object_get_private(this_object);
     rnd = seed_value_to_mpfr_rnd_t(ctx, args[1], exception);
 
-    if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) )
-    {
+    if (seed_value_is_object_of_class(ctx, args[0], mpfr_class)) {
         op = seed_object_get_private(args[0]);
-    }
-    else
-    {
+    } else {
         TYPE_EXCEPTION("mpfr.cos", "mpfr_t");
     }
 
@@ -81,12 +77,13 @@ SeedValue seed_mpfr_cos (SeedContext ctx,
     return seed_value_from_int(ctx, ret, exception);
 }
 
-SeedValue seed_mpfr_tan (SeedContext ctx,
-                         SeedObject function,
-                         SeedObject this_object,
-                         gsize argument_count,
-                         const SeedValue args[],
-                         SeedException *exception)
+SeedValue
+seed_mpfr_tan(SeedContext ctx,
+              SeedObject function,
+              SeedObject this_object,
+              gsize argument_count,
+              const SeedValue args[],
+              SeedException* exception)
 {
     mpfr_rnd_t rnd;
     mpfr_ptr rop, op;
@@ -97,12 +94,9 @@ SeedValue seed_mpfr_tan (SeedContext ctx,
     rop = seed_object_get_private(this_object);
     rnd = seed_value_to_mpfr_rnd_t(ctx, args[1], exception);
 
-    if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) )
-    {
+    if (seed_value_is_object_of_class(ctx, args[0], mpfr_class)) {
         op = seed_object_get_private(args[0]);
-    }
-    else
-    {
+    } else {
         TYPE_EXCEPTION("mpfr.tan", "mpfr_t");
     }
 
@@ -111,12 +105,13 @@ SeedValue seed_mpfr_tan (SeedContext ctx,
     return seed_value_from_int(ctx, ret, exception);
 }
 
-SeedValue seed_mpfr_csc (SeedContext ctx,
-                         SeedObject function,
-                         SeedObject this_object,
-                         gsize argument_count,
-                         const SeedValue args[],
-                         SeedException *exception)
+SeedValue
+seed_mpfr_csc(SeedContext ctx,
+              SeedObject function,
+              SeedObject this_object,
+              gsize argument_count,
+              const SeedValue args[],
+              SeedException* exception)
 {
     mpfr_rnd_t rnd;
     mpfr_ptr rop, op;
@@ -127,12 +122,9 @@ SeedValue seed_mpfr_csc (SeedContext ctx,
     rop = seed_object_get_private(this_object);
     rnd = seed_value_to_mpfr_rnd_t(ctx, args[1], exception);
 
-    if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) )
-    {
+    if (seed_value_is_object_of_class(ctx, args[0], mpfr_class)) {
         op = seed_object_get_private(args[0]);
-    }
-    else
-    {
+    } else {
         TYPE_EXCEPTION("mpfr.csc", "mpfr_t");
     }
 
@@ -141,12 +133,13 @@ SeedValue seed_mpfr_csc (SeedContext ctx,
     return seed_value_from_int(ctx, ret, exception);
 }
 
-SeedValue seed_mpfr_sec (SeedContext ctx,
-                         SeedObject function,
-                         SeedObject this_object,
-                         gsize argument_count,
-                         const SeedValue args[],
-                         SeedException *exception)
+SeedValue
+seed_mpfr_sec(SeedContext ctx,
+              SeedObject function,
+              SeedObject this_object,
+              gsize argument_count,
+              const SeedValue args[],
+              SeedException* exception)
 {
     mpfr_rnd_t rnd;
     mpfr_ptr rop, op;
@@ -157,12 +150,9 @@ SeedValue seed_mpfr_sec (SeedContext ctx,
     rop = seed_object_get_private(this_object);
     rnd = seed_value_to_mpfr_rnd_t(ctx, args[1], exception);
 
-    if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) )
-    {
+    if (seed_value_is_object_of_class(ctx, args[0], mpfr_class)) {
         op = seed_object_get_private(args[0]);
-    }
-    else
-    {
+    } else {
         TYPE_EXCEPTION("mpfr.sec", "mpfr_t");
     }
 
@@ -171,12 +161,13 @@ SeedValue seed_mpfr_sec (SeedContext ctx,
     return seed_value_from_int(ctx, ret, exception);
 }
 
-SeedValue seed_mpfr_cot (SeedContext ctx,
-                         SeedObject function,
-                         SeedObject this_object,
-                         gsize argument_count,
-                         const SeedValue args[],
-                         SeedException *exception)
+SeedValue
+seed_mpfr_cot(SeedContext ctx,
+              SeedObject function,
+              SeedObject this_object,
+              gsize argument_count,
+              const SeedValue args[],
+              SeedException* exception)
 {
     mpfr_rnd_t rnd;
     mpfr_ptr rop, op;
@@ -187,12 +178,9 @@ SeedValue seed_mpfr_cot (SeedContext ctx,
     rop = seed_object_get_private(this_object);
     rnd = seed_value_to_mpfr_rnd_t(ctx, args[1], exception);
 
-    if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) )
-    {
+    if (seed_value_is_object_of_class(ctx, args[0], mpfr_class)) {
         op = seed_object_get_private(args[0]);
-    }
-    else
-    {
+    } else {
         TYPE_EXCEPTION("mpfr.cot", "mpfr_t");
     }
 
@@ -201,12 +189,13 @@ SeedValue seed_mpfr_cot (SeedContext ctx,
     return seed_value_from_int(ctx, ret, exception);
 }
 
-SeedValue seed_mpfr_asin (SeedContext ctx,
-                          SeedObject function,
-                          SeedObject this_object,
-                          gsize argument_count,
-                          const SeedValue args[],
-                          SeedException *exception)
+SeedValue
+seed_mpfr_asin(SeedContext ctx,
+               SeedObject function,
+               SeedObject this_object,
+               gsize argument_count,
+               const SeedValue args[],
+               SeedException* exception)
 {
     mpfr_rnd_t rnd;
     mpfr_ptr rop, op;
@@ -217,12 +206,9 @@ SeedValue seed_mpfr_asin (SeedContext ctx,
     rop = seed_object_get_private(this_object);
     rnd = seed_value_to_mpfr_rnd_t(ctx, args[1], exception);
 
-    if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) )
-    {
+    if (seed_value_is_object_of_class(ctx, args[0], mpfr_class)) {
         op = seed_object_get_private(args[0]);
-    }
-    else
-    {
+    } else {
         TYPE_EXCEPTION("mpfr.asin", "mpfr_t");
     }
 
@@ -231,13 +217,13 @@ SeedValue seed_mpfr_asin (SeedContext ctx,
     return seed_value_from_int(ctx, ret, exception);
 }
 
-
-SeedValue seed_mpfr_acos (SeedContext ctx,
-                          SeedObject function,
-                          SeedObject this_object,
-                          gsize argument_count,
-                          const SeedValue args[],
-                          SeedException *exception)
+SeedValue
+seed_mpfr_acos(SeedContext ctx,
+               SeedObject function,
+               SeedObject this_object,
+               gsize argument_count,
+               const SeedValue args[],
+               SeedException* exception)
 {
     mpfr_rnd_t rnd;
     mpfr_ptr rop, op;
@@ -248,12 +234,9 @@ SeedValue seed_mpfr_acos (SeedContext ctx,
     rop = seed_object_get_private(this_object);
     rnd = seed_value_to_mpfr_rnd_t(ctx, args[1], exception);
 
-    if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) )
-    {
+    if (seed_value_is_object_of_class(ctx, args[0], mpfr_class)) {
         op = seed_object_get_private(args[0]);
-    }
-    else
-    {
+    } else {
         TYPE_EXCEPTION("mpfr.acos", "mpfr_t");
     }
 
@@ -262,12 +245,13 @@ SeedValue seed_mpfr_acos (SeedContext ctx,
     return seed_value_from_int(ctx, ret, exception);
 }
 
-SeedValue seed_mpfr_atan (SeedContext ctx,
-                          SeedObject function,
-                          SeedObject this_object,
-                          gsize argument_count,
-                          const SeedValue args[],
-                          SeedException *exception)
+SeedValue
+seed_mpfr_atan(SeedContext ctx,
+               SeedObject function,
+               SeedObject this_object,
+               gsize argument_count,
+               const SeedValue args[],
+               SeedException* exception)
 {
     mpfr_rnd_t rnd;
     mpfr_ptr rop, op;
@@ -278,12 +262,9 @@ SeedValue seed_mpfr_atan (SeedContext ctx,
     rop = seed_object_get_private(this_object);
     rnd = seed_value_to_mpfr_rnd_t(ctx, args[1], exception);
 
-    if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) )
-    {
+    if (seed_value_is_object_of_class(ctx, args[0], mpfr_class)) {
         op = seed_object_get_private(args[0]);
-    }
-    else
-    {
+    } else {
         TYPE_EXCEPTION("mpfr.atan", "mpfr_t");
     }
 
@@ -292,15 +273,15 @@ SeedValue seed_mpfr_atan (SeedContext ctx,
     return seed_value_from_int(ctx, ret, exception);
 }
 
-
 /* log functions */
 
-SeedValue seed_mpfr_log (SeedContext ctx,
-                         SeedObject function,
-                         SeedObject this_object,
-                         gsize argument_count,
-                         const SeedValue args[],
-                         SeedException *exception)
+SeedValue
+seed_mpfr_log(SeedContext ctx,
+              SeedObject function,
+              SeedObject this_object,
+              gsize argument_count,
+              const SeedValue args[],
+              SeedException* exception)
 {
     mpfr_rnd_t rnd;
     mpfr_ptr rop, op;
@@ -311,12 +292,9 @@ SeedValue seed_mpfr_log (SeedContext ctx,
     rop = seed_object_get_private(this_object);
     rnd = seed_value_to_mpfr_rnd_t(ctx, args[1], exception);
 
-    if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) )
-    {
+    if (seed_value_is_object_of_class(ctx, args[0], mpfr_class)) {
         op = seed_object_get_private(args[0]);
-    }
-    else
-    {
+    } else {
         TYPE_EXCEPTION("mpfr.log", "mpfr_t");
     }
 
@@ -325,12 +303,13 @@ SeedValue seed_mpfr_log (SeedContext ctx,
     return seed_value_from_int(ctx, ret, exception);
 }
 
-SeedValue seed_mpfr_log2 (SeedContext ctx,
-                          SeedObject function,
-                          SeedObject this_object,
-                          gsize argument_count,
-                          const SeedValue args[],
-                          SeedException *exception)
+SeedValue
+seed_mpfr_log2(SeedContext ctx,
+               SeedObject function,
+               SeedObject this_object,
+               gsize argument_count,
+               const SeedValue args[],
+               SeedException* exception)
 {
     mpfr_rnd_t rnd;
     mpfr_ptr rop, op;
@@ -341,12 +320,9 @@ SeedValue seed_mpfr_log2 (SeedContext ctx,
     rop = seed_object_get_private(this_object);
     rnd = seed_value_to_mpfr_rnd_t(ctx, args[1], exception);
 
-    if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) )
-    {
+    if (seed_value_is_object_of_class(ctx, args[0], mpfr_class)) {
         op = seed_object_get_private(args[0]);
-    }
-    else
-    {
+    } else {
         TYPE_EXCEPTION("mpfr.log2", "mpfr_t");
     }
 
@@ -355,12 +331,13 @@ SeedValue seed_mpfr_log2 (SeedContext ctx,
     return seed_value_from_int(ctx, ret, exception);
 }
 
-SeedValue seed_mpfr_log10 (SeedContext ctx,
-                           SeedObject function,
-                           SeedObject this_object,
-                           gsize argument_count,
-                           const SeedValue args[],
-                           SeedException *exception)
+SeedValue
+seed_mpfr_log10(SeedContext ctx,
+                SeedObject function,
+                SeedObject this_object,
+                gsize argument_count,
+                const SeedValue args[],
+                SeedException* exception)
 {
     mpfr_rnd_t rnd;
     mpfr_ptr rop, op;
@@ -371,12 +348,9 @@ SeedValue seed_mpfr_log10 (SeedContext ctx,
     rop = seed_object_get_private(this_object);
     rnd = seed_value_to_mpfr_rnd_t(ctx, args[1], exception);
 
-    if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) )
-    {
+    if (seed_value_is_object_of_class(ctx, args[0], mpfr_class)) {
         op = seed_object_get_private(args[0]);
-    }
-    else
-    {
+    } else {
         TYPE_EXCEPTION("mpfr.log10", "mpfr_t");
     }
 
@@ -387,12 +361,13 @@ SeedValue seed_mpfr_log10 (SeedContext ctx,
 
 /* hyperbolic trig functions */
 
-SeedValue seed_mpfr_sinh (SeedContext ctx,
-                          SeedObject function,
-                          SeedObject this_object,
-                          gsize argument_count,
-                          const SeedValue args[],
-                          SeedException *exception)
+SeedValue
+seed_mpfr_sinh(SeedContext ctx,
+               SeedObject function,
+               SeedObject this_object,
+               gsize argument_count,
+               const SeedValue args[],
+               SeedException* exception)
 {
     mpfr_rnd_t rnd;
     mpfr_ptr rop, op;
@@ -403,12 +378,9 @@ SeedValue seed_mpfr_sinh (SeedContext ctx,
     rop = seed_object_get_private(this_object);
     rnd = seed_value_to_mpfr_rnd_t(ctx, args[1], exception);
 
-    if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) )
-    {
+    if (seed_value_is_object_of_class(ctx, args[0], mpfr_class)) {
         op = seed_object_get_private(args[0]);
-    }
-    else
-    {
+    } else {
         TYPE_EXCEPTION("mpfr.sinh", "mpfr_t");
     }
 
@@ -417,12 +389,13 @@ SeedValue seed_mpfr_sinh (SeedContext ctx,
     return seed_value_from_int(ctx, ret, exception);
 }
 
-SeedValue seed_mpfr_cosh (SeedContext ctx,
-                          SeedObject function,
-                          SeedObject this_object,
-                          gsize argument_count,
-                          const SeedValue args[],
-                          SeedException *exception)
+SeedValue
+seed_mpfr_cosh(SeedContext ctx,
+               SeedObject function,
+               SeedObject this_object,
+               gsize argument_count,
+               const SeedValue args[],
+               SeedException* exception)
 {
     mpfr_rnd_t rnd;
     mpfr_ptr rop, op;
@@ -433,12 +406,9 @@ SeedValue seed_mpfr_cosh (SeedContext ctx,
     rop = seed_object_get_private(this_object);
     rnd = seed_value_to_mpfr_rnd_t(ctx, args[1], exception);
 
-    if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) )
-    {
+    if (seed_value_is_object_of_class(ctx, args[0], mpfr_class)) {
         op = seed_object_get_private(args[0]);
-    }
-    else
-    {
+    } else {
         TYPE_EXCEPTION("mpfr.cosh", "mpfr_t");
     }
 
@@ -447,12 +417,13 @@ SeedValue seed_mpfr_cosh (SeedContext ctx,
     return seed_value_from_int(ctx, ret, exception);
 }
 
-SeedValue seed_mpfr_tanh (SeedContext ctx,
-                          SeedObject function,
-                          SeedObject this_object,
-                          gsize argument_count,
-                          const SeedValue args[],
-                          SeedException *exception)
+SeedValue
+seed_mpfr_tanh(SeedContext ctx,
+               SeedObject function,
+               SeedObject this_object,
+               gsize argument_count,
+               const SeedValue args[],
+               SeedException* exception)
 {
     mpfr_rnd_t rnd;
     mpfr_ptr rop, op;
@@ -463,12 +434,9 @@ SeedValue seed_mpfr_tanh (SeedContext ctx,
     rop = seed_object_get_private(this_object);
     rnd = seed_value_to_mpfr_rnd_t(ctx, args[1], exception);
 
-    if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) )
-    {
+    if (seed_value_is_object_of_class(ctx, args[0], mpfr_class)) {
         op = seed_object_get_private(args[0]);
-    }
-    else
-    {
+    } else {
         TYPE_EXCEPTION("mpfr.tanh", "mpfr_t");
     }
 
@@ -477,13 +445,13 @@ SeedValue seed_mpfr_tanh (SeedContext ctx,
     return seed_value_from_int(ctx, ret, exception);
 }
 
-
-SeedValue seed_mpfr_sech (SeedContext ctx,
-                          SeedObject function,
-                          SeedObject this_object,
-                          gsize argument_count,
-                          const SeedValue args[],
-                          SeedException *exception)
+SeedValue
+seed_mpfr_sech(SeedContext ctx,
+               SeedObject function,
+               SeedObject this_object,
+               gsize argument_count,
+               const SeedValue args[],
+               SeedException* exception)
 {
     mpfr_rnd_t rnd;
     mpfr_ptr rop, op;
@@ -494,12 +462,9 @@ SeedValue seed_mpfr_sech (SeedContext ctx,
     rop = seed_object_get_private(this_object);
     rnd = seed_value_to_mpfr_rnd_t(ctx, args[1], exception);
 
-    if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) )
-    {
+    if (seed_value_is_object_of_class(ctx, args[0], mpfr_class)) {
         op = seed_object_get_private(args[0]);
-    }
-    else
-    {
+    } else {
         TYPE_EXCEPTION("mpfr.sech", "mpfr_t");
     }
 
@@ -508,12 +473,13 @@ SeedValue seed_mpfr_sech (SeedContext ctx,
     return seed_value_from_int(ctx, ret, exception);
 }
 
-SeedValue seed_mpfr_csch (SeedContext ctx,
-                          SeedObject function,
-                          SeedObject this_object,
-                          gsize argument_count,
-                          const SeedValue args[],
-                          SeedException *exception)
+SeedValue
+seed_mpfr_csch(SeedContext ctx,
+               SeedObject function,
+               SeedObject this_object,
+               gsize argument_count,
+               const SeedValue args[],
+               SeedException* exception)
 {
     mpfr_rnd_t rnd;
     mpfr_ptr rop, op;
@@ -524,12 +490,9 @@ SeedValue seed_mpfr_csch (SeedContext ctx,
     rop = seed_object_get_private(this_object);
     rnd = seed_value_to_mpfr_rnd_t(ctx, args[1], exception);
 
-    if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) )
-    {
+    if (seed_value_is_object_of_class(ctx, args[0], mpfr_class)) {
         op = seed_object_get_private(args[0]);
-    }
-    else
-    {
+    } else {
         TYPE_EXCEPTION("mpfr.csch", "mpfr_t");
     }
 
@@ -538,12 +501,13 @@ SeedValue seed_mpfr_csch (SeedContext ctx,
     return seed_value_from_int(ctx, ret, exception);
 }
 
-SeedValue seed_mpfr_coth (SeedContext ctx,
-                          SeedObject function,
-                          SeedObject this_object,
-                          gsize argument_count,
-                          const SeedValue args[],
-                          SeedException *exception)
+SeedValue
+seed_mpfr_coth(SeedContext ctx,
+               SeedObject function,
+               SeedObject this_object,
+               gsize argument_count,
+               const SeedValue args[],
+               SeedException* exception)
 {
     mpfr_rnd_t rnd;
     mpfr_ptr rop, op;
@@ -554,12 +518,9 @@ SeedValue seed_mpfr_coth (SeedContext ctx,
     rop = seed_object_get_private(this_object);
     rnd = seed_value_to_mpfr_rnd_t(ctx, args[1], exception);
 
-    if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) )
-    {
+    if (seed_value_is_object_of_class(ctx, args[0], mpfr_class)) {
         op = seed_object_get_private(args[0]);
-    }
-    else
-    {
+    } else {
         TYPE_EXCEPTION("mpfr.coth", "mpfr_t");
     }
 
@@ -570,12 +531,13 @@ SeedValue seed_mpfr_coth (SeedContext ctx,
 
 /* inverse hyperbolic trig */
 
-SeedValue seed_mpfr_asinh (SeedContext ctx,
-                           SeedObject function,
-                           SeedObject this_object,
-                           gsize argument_count,
-                           const SeedValue args[],
-                           SeedException *exception)
+SeedValue
+seed_mpfr_asinh(SeedContext ctx,
+                SeedObject function,
+                SeedObject this_object,
+                gsize argument_count,
+                const SeedValue args[],
+                SeedException* exception)
 {
     mpfr_rnd_t rnd;
     mpfr_ptr rop, op;
@@ -586,12 +548,9 @@ SeedValue seed_mpfr_asinh (SeedContext ctx,
     rop = seed_object_get_private(this_object);
     rnd = seed_value_to_mpfr_rnd_t(ctx, args[1], exception);
 
-    if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) )
-    {
+    if (seed_value_is_object_of_class(ctx, args[0], mpfr_class)) {
         op = seed_object_get_private(args[0]);
-    }
-    else
-    {
+    } else {
         TYPE_EXCEPTION("mpfr.asinh", "mpfr_t");
     }
 
@@ -600,12 +559,13 @@ SeedValue seed_mpfr_asinh (SeedContext ctx,
     return seed_value_from_int(ctx, ret, exception);
 }
 
-SeedValue seed_mpfr_acosh (SeedContext ctx,
-                           SeedObject function,
-                           SeedObject this_object,
-                           gsize argument_count,
-                           const SeedValue args[],
-                           SeedException *exception)
+SeedValue
+seed_mpfr_acosh(SeedContext ctx,
+                SeedObject function,
+                SeedObject this_object,
+                gsize argument_count,
+                const SeedValue args[],
+                SeedException* exception)
 {
     mpfr_rnd_t rnd;
     mpfr_ptr rop, op;
@@ -616,12 +576,9 @@ SeedValue seed_mpfr_acosh (SeedContext ctx,
     rop = seed_object_get_private(this_object);
     rnd = seed_value_to_mpfr_rnd_t(ctx, args[1], exception);
 
-    if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) )
-    {
+    if (seed_value_is_object_of_class(ctx, args[0], mpfr_class)) {
         op = seed_object_get_private(args[0]);
-    }
-    else
-    {
+    } else {
         TYPE_EXCEPTION("mpfr.acosh", "mpfr_t");
     }
 
@@ -630,12 +587,13 @@ SeedValue seed_mpfr_acosh (SeedContext ctx,
     return seed_value_from_int(ctx, ret, exception);
 }
 
-SeedValue seed_mpfr_atanh (SeedContext ctx,
-                           SeedObject function,
-                           SeedObject this_object,
-                           gsize argument_count,
-                           const SeedValue args[],
-                           SeedException *exception)
+SeedValue
+seed_mpfr_atanh(SeedContext ctx,
+                SeedObject function,
+                SeedObject this_object,
+                gsize argument_count,
+                const SeedValue args[],
+                SeedException* exception)
 {
     mpfr_rnd_t rnd;
     mpfr_ptr rop, op;
@@ -646,12 +604,9 @@ SeedValue seed_mpfr_atanh (SeedContext ctx,
     rop = seed_object_get_private(this_object);
     rnd = seed_value_to_mpfr_rnd_t(ctx, args[1], exception);
 
-    if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) )
-    {
+    if (seed_value_is_object_of_class(ctx, args[0], mpfr_class)) {
         op = seed_object_get_private(args[0]);
-    }
-    else
-    {
+    } else {
         TYPE_EXCEPTION("mpfr.atanh", "mpfr_t");
     }
 
@@ -660,12 +615,13 @@ SeedValue seed_mpfr_atanh (SeedContext ctx,
     return seed_value_from_int(ctx, ret, exception);
 }
 
-SeedValue seed_mpfr_log1p (SeedContext ctx,
-                           SeedObject function,
-                           SeedObject this_object,
-                           gsize argument_count,
-                           const SeedValue args[],
-                           SeedException *exception)
+SeedValue
+seed_mpfr_log1p(SeedContext ctx,
+                SeedObject function,
+                SeedObject this_object,
+                gsize argument_count,
+                const SeedValue args[],
+                SeedException* exception)
 {
     mpfr_rnd_t rnd;
     mpfr_ptr rop, op;
@@ -676,12 +632,9 @@ SeedValue seed_mpfr_log1p (SeedContext ctx,
     rop = seed_object_get_private(this_object);
     rnd = seed_value_to_mpfr_rnd_t(ctx, args[1], exception);
 
-    if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) )
-    {
+    if (seed_value_is_object_of_class(ctx, args[0], mpfr_class)) {
         op = seed_object_get_private(args[0]);
-    }
-    else
-    {
+    } else {
         TYPE_EXCEPTION("mpfr.log1p", "mpfr_t");
     }
 
@@ -690,12 +643,13 @@ SeedValue seed_mpfr_log1p (SeedContext ctx,
     return seed_value_from_int(ctx, ret, exception);
 }
 
-SeedValue seed_mpfr_expm1 (SeedContext ctx,
-                           SeedObject function,
-                           SeedObject this_object,
-                           gsize argument_count,
-                           const SeedValue args[],
-                           SeedException *exception)
+SeedValue
+seed_mpfr_expm1(SeedContext ctx,
+                SeedObject function,
+                SeedObject this_object,
+                gsize argument_count,
+                const SeedValue args[],
+                SeedException* exception)
 {
     mpfr_rnd_t rnd;
     mpfr_ptr rop, op;
@@ -706,12 +660,9 @@ SeedValue seed_mpfr_expm1 (SeedContext ctx,
     rop = seed_object_get_private(this_object);
     rnd = seed_value_to_mpfr_rnd_t(ctx, args[1], exception);
 
-    if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) )
-    {
+    if (seed_value_is_object_of_class(ctx, args[0], mpfr_class)) {
         op = seed_object_get_private(args[0]);
-    }
-    else
-    {
+    } else {
         TYPE_EXCEPTION("mpfr.expm1", "mpfr_t");
     }
 
@@ -720,12 +671,13 @@ SeedValue seed_mpfr_expm1 (SeedContext ctx,
     return seed_value_from_int(ctx, ret, exception);
 }
 
-SeedValue seed_mpfr_li2 (SeedContext ctx,
-                         SeedObject function,
-                         SeedObject this_object,
-                         gsize argument_count,
-                         const SeedValue args[],
-                         SeedException *exception)
+SeedValue
+seed_mpfr_li2(SeedContext ctx,
+              SeedObject function,
+              SeedObject this_object,
+              gsize argument_count,
+              const SeedValue args[],
+              SeedException* exception)
 {
     mpfr_rnd_t rnd;
     mpfr_ptr rop, op;
@@ -736,12 +688,9 @@ SeedValue seed_mpfr_li2 (SeedContext ctx,
     rop = seed_object_get_private(this_object);
     rnd = seed_value_to_mpfr_rnd_t(ctx, args[1], exception);
 
-    if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) )
-    {
+    if (seed_value_is_object_of_class(ctx, args[0], mpfr_class)) {
         op = seed_object_get_private(args[0]);
-    }
-    else
-    {
+    } else {
         TYPE_EXCEPTION("mpfr.li2", "mpfr_t");
     }
 
@@ -750,12 +699,13 @@ SeedValue seed_mpfr_li2 (SeedContext ctx,
     return seed_value_from_int(ctx, ret, exception);
 }
 
-SeedValue seed_mpfr_gamma (SeedContext ctx,
-                           SeedObject function,
-                           SeedObject this_object,
-                           gsize argument_count,
-                           const SeedValue args[],
-                           SeedException *exception)
+SeedValue
+seed_mpfr_gamma(SeedContext ctx,
+                SeedObject function,
+                SeedObject this_object,
+                gsize argument_count,
+                const SeedValue args[],
+                SeedException* exception)
 {
     mpfr_rnd_t rnd;
     mpfr_ptr rop, op;
@@ -766,12 +716,9 @@ SeedValue seed_mpfr_gamma (SeedContext ctx,
     rop = seed_object_get_private(this_object);
     rnd = seed_value_to_mpfr_rnd_t(ctx, args[1], exception);
 
-    if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) )
-    {
+    if (seed_value_is_object_of_class(ctx, args[0], mpfr_class)) {
         op = seed_object_get_private(args[0]);
-    }
-    else
-    {
+    } else {
         TYPE_EXCEPTION("mpfr.gamma", "mpfr_t");
     }
 
@@ -780,12 +727,13 @@ SeedValue seed_mpfr_gamma (SeedContext ctx,
     return seed_value_from_int(ctx, ret, exception);
 }
 
-SeedValue seed_mpfr_lngamma (SeedContext ctx,
-                             SeedObject function,
-                             SeedObject this_object,
-                             gsize argument_count,
-                             const SeedValue args[],
-                             SeedException *exception)
+SeedValue
+seed_mpfr_lngamma(SeedContext ctx,
+                  SeedObject function,
+                  SeedObject this_object,
+                  gsize argument_count,
+                  const SeedValue args[],
+                  SeedException* exception)
 {
     mpfr_rnd_t rnd;
     mpfr_ptr rop, op;
@@ -796,12 +744,9 @@ SeedValue seed_mpfr_lngamma (SeedContext ctx,
     rop = seed_object_get_private(this_object);
     rnd = seed_value_to_mpfr_rnd_t(ctx, args[1], exception);
 
-    if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) )
-    {
+    if (seed_value_is_object_of_class(ctx, args[0], mpfr_class)) {
         op = seed_object_get_private(args[0]);
-    }
-    else
-    {
+    } else {
         TYPE_EXCEPTION("mpfr.lngamma", "mpfr_t");
     }
 
@@ -810,12 +755,13 @@ SeedValue seed_mpfr_lngamma (SeedContext ctx,
     return seed_value_from_int(ctx, ret, exception);
 }
 
-SeedValue seed_mpfr_zeta (SeedContext ctx,
-                          SeedObject function,
-                          SeedObject this_object,
-                          gsize argument_count,
-                          const SeedValue args[],
-                          SeedException *exception)
+SeedValue
+seed_mpfr_zeta(SeedContext ctx,
+               SeedObject function,
+               SeedObject this_object,
+               gsize argument_count,
+               const SeedValue args[],
+               SeedException* exception)
 {
     mpfr_rnd_t rnd;
     mpfr_ptr rop, op;
@@ -827,30 +773,26 @@ SeedValue seed_mpfr_zeta (SeedContext ctx,
     rop = seed_object_get_private(this_object);
     rnd = seed_value_to_mpfr_rnd_t(ctx, args[1], exception);
 
-    if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) )
-    {
+    if (seed_value_is_object_of_class(ctx, args[0], mpfr_class)) {
         op = seed_object_get_private(args[0]);
         ret = mpfr_zeta(rop, op, rnd);
-    }
-    else if ( seed_value_is_number(ctx, args[0]) )
-    {
+    } else if (seed_value_is_number(ctx, args[0])) {
         uiop = seed_value_to_ulong(ctx, args[0], exception);
         ret = mpfr_zeta_ui(rop, uiop, rnd);
-    }
-    else
-    {
+    } else {
         TYPE_EXCEPTION("mpfr.zeta", "mpfr_t or unsigned int");
     }
 
     return seed_value_from_int(ctx, ret, exception);
 }
 
-SeedValue seed_mpfr_erf (SeedContext ctx,
-                         SeedObject function,
-                         SeedObject this_object,
-                         gsize argument_count,
-                         const SeedValue args[],
-                         SeedException *exception)
+SeedValue
+seed_mpfr_erf(SeedContext ctx,
+              SeedObject function,
+              SeedObject this_object,
+              gsize argument_count,
+              const SeedValue args[],
+              SeedException* exception)
 {
     mpfr_rnd_t rnd;
     mpfr_ptr rop, op;
@@ -861,12 +803,9 @@ SeedValue seed_mpfr_erf (SeedContext ctx,
     rop = seed_object_get_private(this_object);
     rnd = seed_value_to_mpfr_rnd_t(ctx, args[1], exception);
 
-    if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) )
-    {
+    if (seed_value_is_object_of_class(ctx, args[0], mpfr_class)) {
         op = seed_object_get_private(args[0]);
-    }
-    else
-    {
+    } else {
         TYPE_EXCEPTION("mpfr.erf", "mpfr_t");
     }
 
@@ -875,12 +814,13 @@ SeedValue seed_mpfr_erf (SeedContext ctx,
     return seed_value_from_int(ctx, ret, exception);
 }
 
-SeedValue seed_mpfr_erfc (SeedContext ctx,
-                          SeedObject function,
-                          SeedObject this_object,
-                          gsize argument_count,
-                          const SeedValue args[],
-                          SeedException *exception)
+SeedValue
+seed_mpfr_erfc(SeedContext ctx,
+               SeedObject function,
+               SeedObject this_object,
+               gsize argument_count,
+               const SeedValue args[],
+               SeedException* exception)
 {
     mpfr_rnd_t rnd;
     mpfr_ptr rop, op;
@@ -891,12 +831,9 @@ SeedValue seed_mpfr_erfc (SeedContext ctx,
     rop = seed_object_get_private(this_object);
     rnd = seed_value_to_mpfr_rnd_t(ctx, args[1], exception);
 
-    if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) )
-    {
+    if (seed_value_is_object_of_class(ctx, args[0], mpfr_class)) {
         op = seed_object_get_private(args[0]);
-    }
-    else
-    {
+    } else {
         TYPE_EXCEPTION("mpfr.erfc", "mpfr_t");
     }
 
@@ -906,12 +843,13 @@ SeedValue seed_mpfr_erfc (SeedContext ctx,
 }
 
 /* bessel functions */
-SeedValue seed_mpfr_j0 (SeedContext ctx,
-                        SeedObject function,
-                        SeedObject this_object,
-                        gsize argument_count,
-                        const SeedValue args[],
-                        SeedException *exception)
+SeedValue
+seed_mpfr_j0(SeedContext ctx,
+             SeedObject function,
+             SeedObject this_object,
+             gsize argument_count,
+             const SeedValue args[],
+             SeedException* exception)
 {
     mpfr_rnd_t rnd;
     mpfr_ptr rop, op;
@@ -922,12 +860,9 @@ SeedValue seed_mpfr_j0 (SeedContext ctx,
     rop = seed_object_get_private(this_object);
     rnd = seed_value_to_mpfr_rnd_t(ctx, args[1], exception);
 
-    if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) )
-    {
+    if (seed_value_is_object_of_class(ctx, args[0], mpfr_class)) {
         op = seed_object_get_private(args[0]);
-    }
-    else
-    {
+    } else {
         TYPE_EXCEPTION("mpfr.j0", "mpfr_t");
     }
 
@@ -936,12 +871,13 @@ SeedValue seed_mpfr_j0 (SeedContext ctx,
     return seed_value_from_int(ctx, ret, exception);
 }
 
-SeedValue seed_mpfr_j1 (SeedContext ctx,
-                        SeedObject function,
-                        SeedObject this_object,
-                        gsize argument_count,
-                        const SeedValue args[],
-                        SeedException *exception)
+SeedValue
+seed_mpfr_j1(SeedContext ctx,
+             SeedObject function,
+             SeedObject this_object,
+             gsize argument_count,
+             const SeedValue args[],
+             SeedException* exception)
 {
     mpfr_rnd_t rnd;
     mpfr_ptr rop, op;
@@ -952,12 +888,9 @@ SeedValue seed_mpfr_j1 (SeedContext ctx,
     rop = seed_object_get_private(this_object);
     rnd = seed_value_to_mpfr_rnd_t(ctx, args[1], exception);
 
-    if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) )
-    {
+    if (seed_value_is_object_of_class(ctx, args[0], mpfr_class)) {
         op = seed_object_get_private(args[0]);
-    }
-    else
-    {
+    } else {
         TYPE_EXCEPTION("mpfr.j1", "mpfr_t");
     }
 
@@ -966,12 +899,13 @@ SeedValue seed_mpfr_j1 (SeedContext ctx,
     return seed_value_from_int(ctx, ret, exception);
 }
 
-SeedValue seed_mpfr_jn (SeedContext ctx,
-                        SeedObject function,
-                        SeedObject this_object,
-                        gsize argument_count,
-                        const SeedValue args[],
-                        SeedException *exception)
+SeedValue
+seed_mpfr_jn(SeedContext ctx,
+             SeedObject function,
+             SeedObject this_object,
+             gsize argument_count,
+             const SeedValue args[],
+             SeedException* exception)
 {
     mpfr_rnd_t rnd;
     mpfr_ptr rop, op;
@@ -982,21 +916,15 @@ SeedValue seed_mpfr_jn (SeedContext ctx,
     rop = seed_object_get_private(this_object);
     rnd = seed_value_to_mpfr_rnd_t(ctx, args[2], exception);
 
-    if ( seed_value_is_object_of_class(ctx, args[1], mpfr_class) )
-    {
+    if (seed_value_is_object_of_class(ctx, args[1], mpfr_class)) {
         op = seed_object_get_private(args[1]);
-    }
-    else
-    {
+    } else {
         TYPE_EXCEPTION("mpfr.jn", "mpfr_t");
     }
 
-    if ( seed_value_is_number(ctx, args[0]) )
-    {
+    if (seed_value_is_number(ctx, args[0])) {
         n = seed_value_to_int(ctx, args[0], exception);
-    }
-    else
-    {
+    } else {
         TYPE_EXCEPTION("mpfr.jn", "int");
     }
 
@@ -1005,12 +933,13 @@ SeedValue seed_mpfr_jn (SeedContext ctx,
     return seed_value_from_int(ctx, ret, exception);
 }
 
-SeedValue seed_mpfr_y0 (SeedContext ctx,
-                        SeedObject function,
-                        SeedObject this_object,
-                        gsize argument_count,
-                        const SeedValue args[],
-                        SeedException *exception)
+SeedValue
+seed_mpfr_y0(SeedContext ctx,
+             SeedObject function,
+             SeedObject this_object,
+             gsize argument_count,
+             const SeedValue args[],
+             SeedException* exception)
 {
     mpfr_rnd_t rnd;
     mpfr_ptr rop, op;
@@ -1021,12 +950,9 @@ SeedValue seed_mpfr_y0 (SeedContext ctx,
     rop = seed_object_get_private(this_object);
     rnd = seed_value_to_mpfr_rnd_t(ctx, args[1], exception);
 
-    if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) )
-    {
+    if (seed_value_is_object_of_class(ctx, args[0], mpfr_class)) {
         op = seed_object_get_private(args[0]);
-    }
-    else
-    {
+    } else {
         TYPE_EXCEPTION("mpfr.y0", "mpfr_t");
     }
 
@@ -1035,12 +961,13 @@ SeedValue seed_mpfr_y0 (SeedContext ctx,
     return seed_value_from_int(ctx, ret, exception);
 }
 
-SeedValue seed_mpfr_y1 (SeedContext ctx,
-                        SeedObject function,
-                        SeedObject this_object,
-                        gsize argument_count,
-                        const SeedValue args[],
-                        SeedException *exception)
+SeedValue
+seed_mpfr_y1(SeedContext ctx,
+             SeedObject function,
+             SeedObject this_object,
+             gsize argument_count,
+             const SeedValue args[],
+             SeedException* exception)
 {
     mpfr_rnd_t rnd;
     mpfr_ptr rop, op;
@@ -1051,12 +978,9 @@ SeedValue seed_mpfr_y1 (SeedContext ctx,
     rop = seed_object_get_private(this_object);
     rnd = seed_value_to_mpfr_rnd_t(ctx, args[1], exception);
 
-    if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) )
-    {
+    if (seed_value_is_object_of_class(ctx, args[0], mpfr_class)) {
         op = seed_object_get_private(args[0]);
-    }
-    else
-    {
+    } else {
         TYPE_EXCEPTION("mpfr.y1", "mpfr_t");
     }
 
@@ -1065,12 +989,13 @@ SeedValue seed_mpfr_y1 (SeedContext ctx,
     return seed_value_from_int(ctx, ret, exception);
 }
 
-SeedValue seed_mpfr_yn (SeedContext ctx,
-                        SeedObject function,
-                        SeedObject this_object,
-                        gsize argument_count,
-                        const SeedValue args[],
-                        SeedException *exception)
+SeedValue
+seed_mpfr_yn(SeedContext ctx,
+             SeedObject function,
+             SeedObject this_object,
+             gsize argument_count,
+             const SeedValue args[],
+             SeedException* exception)
 {
     mpfr_rnd_t rnd;
     mpfr_ptr rop, op;
@@ -1081,21 +1006,15 @@ SeedValue seed_mpfr_yn (SeedContext ctx,
     rop = seed_object_get_private(this_object);
     rnd = seed_value_to_mpfr_rnd_t(ctx, args[2], exception);
 
-    if ( seed_value_is_object_of_class(ctx, args[1], mpfr_class) )
-    {
+    if (seed_value_is_object_of_class(ctx, args[1], mpfr_class)) {
         op = seed_object_get_private(args[1]);
-    }
-    else
-    {
+    } else {
         TYPE_EXCEPTION("mpfr.yn", "mpfr_t");
     }
 
-    if ( seed_value_is_number(ctx, args[0]) )
-    {
+    if (seed_value_is_number(ctx, args[0])) {
         n = seed_value_to_int(ctx, args[0], exception);
-    }
-    else
-    {
+    } else {
         TYPE_EXCEPTION("mpfr.yn", "int");
     }
 
@@ -1104,12 +1023,13 @@ SeedValue seed_mpfr_yn (SeedContext ctx,
     return seed_value_from_int(ctx, ret, exception);
 }
 
-SeedValue seed_mpfr_fma (SeedContext ctx,
-                         SeedObject function,
-                         SeedObject this_object,
-                         gsize argument_count,
-                         const SeedValue args[],
-                         SeedException *exception)
+SeedValue
+seed_mpfr_fma(SeedContext ctx,
+              SeedObject function,
+              SeedObject this_object,
+              gsize argument_count,
+              const SeedValue args[],
+              SeedException* exception)
 {
     mpfr_rnd_t rnd;
     mpfr_ptr rop, op1, op2, op3;
@@ -1120,16 +1040,13 @@ SeedValue seed_mpfr_fma (SeedContext ctx,
     rop = seed_object_get_private(this_object);
     rnd = seed_value_to_mpfr_rnd_t(ctx, args[3], exception);
 
-    if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) &&
-         seed_value_is_object_of_class(ctx, args[1], mpfr_class) &&
-         seed_value_is_object_of_class(ctx, args[2], mpfr_class))
-    {
+    if (seed_value_is_object_of_class(ctx, args[0], mpfr_class)
+        && seed_value_is_object_of_class(ctx, args[1], mpfr_class)
+        && seed_value_is_object_of_class(ctx, args[2], mpfr_class)) {
         op1 = seed_object_get_private(args[0]);
         op2 = seed_object_get_private(args[1]);
         op3 = seed_object_get_private(args[2]);
-    }
-    else
-    {
+    } else {
         TYPE_EXCEPTION("mpfr.fma", "mpfr_t");
     }
 
@@ -1138,12 +1055,13 @@ SeedValue seed_mpfr_fma (SeedContext ctx,
     return seed_value_from_int(ctx, ret, exception);
 }
 
-SeedValue seed_mpfr_fms (SeedContext ctx,
-                         SeedObject function,
-                         SeedObject this_object,
-                         gsize argument_count,
-                         const SeedValue args[],
-                         SeedException *exception)
+SeedValue
+seed_mpfr_fms(SeedContext ctx,
+              SeedObject function,
+              SeedObject this_object,
+              gsize argument_count,
+              const SeedValue args[],
+              SeedException* exception)
 {
     mpfr_rnd_t rnd;
     mpfr_ptr rop, op1, op2, op3;
@@ -1154,16 +1072,13 @@ SeedValue seed_mpfr_fms (SeedContext ctx,
     rop = seed_object_get_private(this_object);
     rnd = seed_value_to_mpfr_rnd_t(ctx, args[3], exception);
 
-    if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) &&
-         seed_value_is_object_of_class(ctx, args[1], mpfr_class) &&
-         seed_value_is_object_of_class(ctx, args[2], mpfr_class))
-    {
+    if (seed_value_is_object_of_class(ctx, args[0], mpfr_class)
+        && seed_value_is_object_of_class(ctx, args[1], mpfr_class)
+        && seed_value_is_object_of_class(ctx, args[2], mpfr_class)) {
         op1 = seed_object_get_private(args[0]);
         op2 = seed_object_get_private(args[1]);
         op3 = seed_object_get_private(args[2]);
-    }
-    else
-    {
+    } else {
         TYPE_EXCEPTION("mpfr.fms", "mpfr_t");
     }
 
@@ -1172,12 +1087,13 @@ SeedValue seed_mpfr_fms (SeedContext ctx,
     return seed_value_from_int(ctx, ret, exception);
 }
 
-SeedValue seed_mpfr_agm (SeedContext ctx,
-                         SeedObject function,
-                         SeedObject this_object,
-                         gsize argument_count,
-                         const SeedValue args[],
-                         SeedException *exception)
+SeedValue
+seed_mpfr_agm(SeedContext ctx,
+              SeedObject function,
+              SeedObject this_object,
+              gsize argument_count,
+              const SeedValue args[],
+              SeedException* exception)
 {
     mpfr_rnd_t rnd;
     mpfr_ptr rop, op1, op2;
@@ -1188,14 +1104,11 @@ SeedValue seed_mpfr_agm (SeedContext ctx,
     rop = seed_object_get_private(this_object);
     rnd = seed_value_to_mpfr_rnd_t(ctx, args[2], exception);
 
-    if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) &&
-         seed_value_is_object_of_class(ctx, args[1], mpfr_class))
-    {
+    if (seed_value_is_object_of_class(ctx, args[0], mpfr_class)
+        && seed_value_is_object_of_class(ctx, args[1], mpfr_class)) {
         op1 = seed_object_get_private(args[0]);
         op2 = seed_object_get_private(args[1]);
-    }
-    else
-    {
+    } else {
         TYPE_EXCEPTION("mpfr.agm", "mpfr_t");
     }
 
@@ -1204,12 +1117,13 @@ SeedValue seed_mpfr_agm (SeedContext ctx,
     return seed_value_from_int(ctx, ret, exception);
 }
 
-SeedValue seed_mpfr_hypot (SeedContext ctx,
-                           SeedObject function,
-                           SeedObject this_object,
-                           gsize argument_count,
-                           const SeedValue args[],
-                           SeedException *exception)
+SeedValue
+seed_mpfr_hypot(SeedContext ctx,
+                SeedObject function,
+                SeedObject this_object,
+                gsize argument_count,
+                const SeedValue args[],
+                SeedException* exception)
 {
     mpfr_rnd_t rnd;
     mpfr_ptr rop, op1, op2;
@@ -1220,14 +1134,11 @@ SeedValue seed_mpfr_hypot (SeedContext ctx,
     rop = seed_object_get_private(this_object);
     rnd = seed_value_to_mpfr_rnd_t(ctx, args[2], exception);
 
-    if ( seed_value_is_object_of_class(ctx, args[0], mpfr_class) &&
-         seed_value_is_object_of_class(ctx, args[1], mpfr_class))
-    {
+    if (seed_value_is_object_of_class(ctx, args[0], mpfr_class)
+        && seed_value_is_object_of_class(ctx, args[1], mpfr_class)) {
         op1 = seed_object_get_private(args[0]);
         op2 = seed_object_get_private(args[1]);
-    }
-    else
-    {
+    } else {
         TYPE_EXCEPTION("mpfr.hypot", "mpfr_t");
     }
 
@@ -1236,27 +1147,28 @@ SeedValue seed_mpfr_hypot (SeedContext ctx,
     return seed_value_from_int(ctx, ret, exception);
 }
 
-SeedValue seed_mpfr_free_cache (SeedContext ctx,
-                                SeedObject function,
-                                SeedObject this_object,
-                                gsize argument_count,
-                                const SeedValue args[],
-                                SeedException *exception)
+SeedValue
+seed_mpfr_free_cache(SeedContext ctx,
+                     SeedObject function,
+                     SeedObject this_object,
+                     gsize argument_count,
+                     const SeedValue args[],
+                     SeedException* exception)
 {
     CHECK_ARG_COUNT("mpfr.free_cache", 0);
     mpfr_free_cache();
     return seed_make_null(ctx);
 }
 
-SeedValue seed_mpfr_clear_flags (SeedContext ctx,
-                                 SeedObject function,
-                                 SeedObject this_object,
-                                 gsize argument_count,
-                                 const SeedValue args[],
-                                 SeedException *exception)
+SeedValue
+seed_mpfr_clear_flags(SeedContext ctx,
+                      SeedObject function,
+                      SeedObject this_object,
+                      gsize argument_count,
+                      const SeedValue args[],
+                      SeedException* exception)
 {
     CHECK_ARG_COUNT("mpfr.clear_flags", 0);
     mpfr_clear_flags();
     return seed_make_null(ctx);
 }
-

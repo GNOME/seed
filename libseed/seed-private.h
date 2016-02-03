@@ -36,11 +36,11 @@ typedef struct _SeedEngine SeedEngine;
 
 struct _SeedEngine
 {
-  JSGlobalContextRef context;
-  JSObjectRef global;
-  gchar **search_path;
+    JSGlobalContextRef context;
+    JSObjectRef global;
+    gchar** search_path;
 
-  JSContextGroupRef group;
+    JSContextGroupRef group;
 };
 
 #include "seed-debug.h"

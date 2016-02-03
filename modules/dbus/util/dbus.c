@@ -16,9 +16,10 @@
 #include "log.h"
 #include "glib.h"
 
-typedef struct {
-    const BigDBusConnectFuncs *funcs;
-    void *data;
+typedef struct
+{
+    const BigDBusConnectFuncs* funcs;
+    void* data;
     unsigned int opened : 1;
 } ConnectFuncs;
 
@@ -29,84 +30,90 @@ typedef enum {
     NAME_NOT_OWNED
 } NameOwnershipState;
 
-typedef struct {
-    char *name;
-    const BigDBusJsonMethod *methods;
+typedef struct
+{
+    char* name;
+    const BigDBusJsonMethod* methods;
     int n_methods;
 } BigJsonIface;
 
-typedef struct {
+typedef struct
+{
     DBusBusType bus_type;
     /* If prev_state != state then we may need to notify */
     NameOwnershipState prev_state;
     NameOwnershipState state;
-    const BigDBusNameOwnerFuncs *funcs;
-    void *data;
+    const BigDBusNameOwnerFuncs* funcs;
+    void* data;
     unsigned int id;
 } BigNameOwnershipMonitor;
 
-typedef struct {
-    char *name;
-    char *current_owner;
-    GSList *watchers;
+typedef struct
+{
+    char* name;
+    char* current_owner;
+    GSList* watchers;
 } BigNameWatch;
 
-typedef struct {
+typedef struct
+{
     BigDBusWatchNameFlags flags;
-    const BigDBusWatchNameFuncs *funcs;
-    void *data;
+    const BigDBusWatchNameFuncs* funcs;
+    void* data;
     DBusBusType bus_type;
-    BigNameWatch *watch;
+    BigNameWatch* watch;
     guint notify_idle;
     int refcount;
     guint destroyed : 1;
 } BigNameWatcher;
 
-typedef struct {
+typedef struct
+{
     DBusBusType bus_type;
-    char *name;
-    BigNameWatcher *watcher;
+    char* name;
+    BigNameWatcher* watcher;
 } BigPendingNameWatcher;
 
-static DBusConnection *session_bus_weak_ref = NULL;
-static GSList *session_bus_weak_refs = NULL;
-static DBusConnection *system_bus_weak_ref = NULL;
-static GSList *system_bus_weak_refs = NULL;
+static DBusConnection* session_bus_weak_ref = NULL;
+static GSList* session_bus_weak_refs = NULL;
+static DBusConnection* system_bus_weak_ref = NULL;
+static GSList* system_bus_weak_refs = NULL;
 static guint session_connect_idle_id = 0;
 static guint system_connect_idle_id = 0;
-static GSList *all_connect_funcs = NULL;
+static GSList* all_connect_funcs = NULL;
 
-static GSList *pending_name_ownership_monitors = NULL;
-static GSList *pending_name_watchers = NULL;
+static GSList* pending_name_ownership_monitors = NULL;
+static GSList* pending_name_watchers = NULL;
 
 #define BIG_DBUS_NAME_OWNER_MONITOR_INVALID_ID 0
 
 static unsigned int global_monitor_id = 0;
 
-static DBusHandlerResult disconnect_filter_message             (DBusConnection   *connection,
-                                                                DBusMessage      *message,
-                                                                void             *data);
-static DBusHandlerResult name_ownership_monitor_filter_message (DBusConnection   *connection,
-                                                                DBusMessage      *message,
-                                                                void             *data);
-static void              process_name_ownership_monitors       (DBusConnection   *connection,
-                                                                BigDBusInfo      *info);
-static void              name_watch_remove_watcher             (BigNameWatch     *watch,
-                                                                BigNameWatcher   *watcher);
-static DBusHandlerResult name_watch_filter_message             (DBusConnection   *connection,
-                                                                DBusMessage      *message,
-                                                                void             *data);
-static void              process_pending_name_watchers         (DBusConnection   *connection,
-                                                                BigDBusInfo      *info);
-static void              json_iface_free                       (BigJsonIface     *iface);
-static void              info_free                             (BigDBusInfo      *info);
-static gboolean          notify_watcher_name_appeared          (gpointer data);
+static DBusHandlerResult disconnect_filter_message(DBusConnection* connection,
+                                                   DBusMessage* message,
+                                                   void* data);
+static DBusHandlerResult name_ownership_monitor_filter_message(
+  DBusConnection* connection,
+  DBusMessage* message,
+  void* data);
+static void process_name_ownership_monitors(DBusConnection* connection,
+                                            BigDBusInfo* info);
+static void name_watch_remove_watcher(BigNameWatch* watch,
+                                      BigNameWatcher* watcher);
+static DBusHandlerResult name_watch_filter_message(DBusConnection* connection,
+                                                   DBusMessage* message,
+                                                   void* data);
+static void process_pending_name_watchers(DBusConnection* connection,
+                                          BigDBusInfo* info);
+static void json_iface_free(BigJsonIface* iface);
+static void info_free(BigDBusInfo* info);
+static gboolean notify_watcher_name_appeared(gpointer data);
 
 static dbus_int32_t info_slot = -1;
 BigDBusInfo*
-_big_dbus_ensure_info(DBusConnection *connection)
+_big_dbus_ensure_info(DBusConnection* connection)
 {
-    BigDBusInfo *info;
+    BigDBusInfo* info;
 
     dbus_connection_allocate_data_slot(&info_slot);
 
@@ -124,32 +131,33 @@ _big_dbus_ensure_info(DBusConnection *connection)
         else
             g_error("Unknown bus type opened in %s", __FILE__);
 
-        info->json_ifaces = g_hash_table_new_full(g_str_hash, g_str_equal,
-                                                  NULL, (GFreeFunc) json_iface_free);
+        info->json_ifaces = g_hash_table_new_full(g_str_hash, g_str_equal, NULL,
+                                                  (GFreeFunc) json_iface_free);
         info->name_watches = g_hash_table_new(g_str_hash, g_str_equal);
-        dbus_connection_set_data(connection, info_slot, info, (DBusFreeFunction) info_free);
+        dbus_connection_set_data(connection, info_slot, info,
+                                 (DBusFreeFunction) info_free);
 
-        dbus_connection_add_filter(connection, name_ownership_monitor_filter_message,
-                                   NULL, NULL);
-        dbus_connection_add_filter(connection, name_watch_filter_message,
-                                   NULL, NULL);
-        dbus_connection_add_filter(connection, _big_dbus_signal_watch_filter_message,
-                                   NULL, NULL);
+        dbus_connection_add_filter(connection,
+                                   name_ownership_monitor_filter_message, NULL,
+                                   NULL);
+        dbus_connection_add_filter(connection, name_watch_filter_message, NULL,
+                                   NULL);
+        dbus_connection_add_filter(connection,
+                                   _big_dbus_signal_watch_filter_message, NULL,
+                                   NULL);
 
         /* Important: disconnect_filter_message() must be LAST so
          * it runs last when the disconnect message arrives.
          */
-        dbus_connection_add_filter(connection, disconnect_filter_message,
-                                   NULL, NULL);
+        dbus_connection_add_filter(connection, disconnect_filter_message, NULL,
+                                   NULL);
 
         /* caution, this could get circular if proxy_new() goes back around
          * and tries to use dbus.c - but we'll fix it when it happens.
          * Also, this refs the connection ...
          */
-        info->driver_proxy =
-            big_dbus_proxy_new(connection,
-                               DBUS_SERVICE_DBUS,
-                               DBUS_PATH_DBUS,
+        info->driver_proxy
+          = big_dbus_proxy_new(connection, DBUS_SERVICE_DBUS, DBUS_PATH_DBUS,
                                DBUS_INTERFACE_DBUS);
     }
 
@@ -157,9 +165,9 @@ _big_dbus_ensure_info(DBusConnection *connection)
 }
 
 void
-_big_dbus_dispose_info(DBusConnection *connection)
+_big_dbus_dispose_info(DBusConnection* connection)
 {
-    BigDBusInfo *info;
+    BigDBusInfo* info;
 
     if (info_slot < 0)
         return;
@@ -168,8 +176,7 @@ _big_dbus_dispose_info(DBusConnection *connection)
 
     if (info != NULL) {
 
-        big_debug(BIG_DEBUG_UTIL_DBUS,
-                  "Disposing info on connection %p",
+        big_debug(BIG_DEBUG_UTIL_DBUS, "Disposing info on connection %p",
                   connection);
 
         /* the driver proxy refs the connection, we want
@@ -192,15 +199,15 @@ _big_dbus_get_weak_ref(DBusBusType which_bus)
     } else if (which_bus == DBUS_BUS_SYSTEM) {
         return system_bus_weak_ref;
     }
-    
+
     g_assert_not_reached();
     return NULL;
 }
 
 static DBusHandlerResult
-disconnect_filter_message(DBusConnection   *connection,
-                          DBusMessage      *message,
-                          void             *data)
+disconnect_filter_message(DBusConnection* connection,
+                          DBusMessage* message,
+                          void* data)
 {
     /* We should be running after all other filters */
     if (dbus_message_is_signal(message, DBUS_INTERFACE_LOCAL, "Disconnected")) {
@@ -222,23 +229,20 @@ static DBusConnection*
 try_connecting(DBusBusType which_bus)
 {
 
-    DBusGConnection *gconnection;
-    DBusConnection *connection;
-    GError *error;
+    DBusGConnection* gconnection;
+    DBusConnection* connection;
+    GError* error;
 
     connection = _big_dbus_get_weak_ref(which_bus);
     if (connection != NULL)
         return connection;
 
-    big_debug(BIG_DEBUG_UTIL_DBUS,
-              "trying to connect to message bus");
+    big_debug(BIG_DEBUG_UTIL_DBUS, "trying to connect to message bus");
 
     error = NULL;
-    gconnection = dbus_g_bus_get(which_bus,
-                                 &error);
+    gconnection = dbus_g_bus_get(which_bus, &error);
     if (gconnection == NULL) {
-        big_debug(BIG_DEBUG_UTIL_DBUS,
-                  "bus connection failed: %s",
+        big_debug(BIG_DEBUG_UTIL_DBUS, "bus connection failed: %s",
                   error->message);
         g_error_free(error);
         return NULL;
@@ -249,38 +253,35 @@ try_connecting(DBusBusType which_bus)
     /* Disable this because all our apps will be well-behaved! */
     dbus_connection_set_exit_on_disconnect(connection, FALSE);
 
-    if (which_bus == DBUS_BUS_SESSION &&
-        session_bus_weak_ref == NULL) {
-        GSList *l;
+    if (which_bus == DBUS_BUS_SESSION && session_bus_weak_ref == NULL) {
+        GSList* l;
         session_bus_weak_ref = connection;
         for (l = session_bus_weak_refs; l != NULL; l = l->next) {
-            DBusConnection **connection_p = l->data;
+            DBusConnection** connection_p = l->data;
             *connection_p = session_bus_weak_ref;
         }
-    } else if (which_bus == DBUS_BUS_SYSTEM &&
-               system_bus_weak_ref == NULL) {
-        GSList *l;
+    } else if (which_bus == DBUS_BUS_SYSTEM && system_bus_weak_ref == NULL) {
+        GSList* l;
         system_bus_weak_ref = connection;
         for (l = system_bus_weak_refs; l != NULL; l = l->next) {
-            DBusConnection **connection_p = l->data;
+            DBusConnection** connection_p = l->data;
             *connection_p = system_bus_weak_ref;
         }
     }
 
     dbus_g_connection_unref(gconnection); /* rely on libdbus holding a ref */
 
-    big_debug(BIG_DEBUG_UTIL_DBUS,
-              "Successfully connected");
+    big_debug(BIG_DEBUG_UTIL_DBUS, "Successfully connected");
 
     return connection;
 }
 
 static gboolean
-connect_idle(void *data)
+connect_idle(void* data)
 {
-    GSList *l;
-    DBusConnection *connection;
-    BigDBusInfo *info;
+    GSList* l;
+    DBusConnection* connection;
+    BigDBusInfo* info;
     DBusBusType bus_type;
 
     bus_type = GPOINTER_TO_INT(data);
@@ -293,7 +294,8 @@ connect_idle(void *data)
         g_assert_not_reached();
 
     big_debug(BIG_DEBUG_UTIL_DBUS,
-              "connection idle with %d connect listeners to traverse", g_slist_length(all_connect_funcs));
+              "connection idle with %d connect listeners to traverse",
+              g_slist_length(all_connect_funcs));
 
     connection = try_connecting(bus_type);
     if (connection == NULL) {
@@ -328,12 +330,12 @@ connect_idle(void *data)
      */
 
     for (l = all_connect_funcs; l != NULL; l = l->next) {
-        ConnectFuncs *f;
+        ConnectFuncs* f;
         f = l->data;
 
         if (!f->opened && f->funcs->which_bus == bus_type) {
             f->opened = TRUE;
-            (* f->funcs->opened) (connection, f->data);
+            (*f->funcs->opened)(connection, f->data);
         }
     }
 
@@ -354,11 +356,13 @@ _big_dbus_ensure_connect_idle(DBusBusType bus_type)
 {
     if (bus_type == DBUS_BUS_SESSION) {
         if (session_connect_idle_id == 0) {
-            session_connect_idle_id = g_idle_add(connect_idle, GINT_TO_POINTER(bus_type));
+            session_connect_idle_id
+              = g_idle_add(connect_idle, GINT_TO_POINTER(bus_type));
         }
     } else if (bus_type == DBUS_BUS_SYSTEM) {
         if (system_connect_idle_id == 0) {
-            system_connect_idle_id = g_idle_add(connect_idle, GINT_TO_POINTER(bus_type));
+            system_connect_idle_id
+              = g_idle_add(connect_idle, GINT_TO_POINTER(bus_type));
         }
     } else {
         g_assert_not_reached();
@@ -366,11 +370,11 @@ _big_dbus_ensure_connect_idle(DBusBusType bus_type)
 }
 
 static void
-internal_add_connect_funcs(const BigDBusConnectFuncs *funcs,
-                           void                      *data,
-                           gboolean                   sync_notify)
+internal_add_connect_funcs(const BigDBusConnectFuncs* funcs,
+                           void* data,
+                           gboolean sync_notify)
 {
-    ConnectFuncs *f;
+    ConnectFuncs* f;
 
     f = g_slice_new0(ConnectFuncs);
     f->funcs = funcs;
@@ -386,13 +390,13 @@ internal_add_connect_funcs(const BigDBusConnectFuncs *funcs,
          * (we have a weak ref != NULL) then notify
          * right away before we return.
          */
-        DBusConnection *connection;
+        DBusConnection* connection;
 
         connection = _big_dbus_get_weak_ref(f->funcs->which_bus);
 
         if (connection != NULL && !f->opened) {
             f->opened = TRUE;
-            (* f->funcs->opened) (connection, f->data);
+            (*f->funcs->opened)(connection, f->data);
         }
     }
 }
@@ -402,8 +406,7 @@ internal_add_connect_funcs(const BigDBusConnectFuncs *funcs,
  * main loop.
  */
 void
-big_dbus_add_connect_funcs(const BigDBusConnectFuncs *funcs,
-                           void                      *data)
+big_dbus_add_connect_funcs(const BigDBusConnectFuncs* funcs, void* data)
 {
     internal_add_connect_funcs(funcs, data, FALSE);
 }
@@ -412,25 +415,23 @@ big_dbus_add_connect_funcs(const BigDBusConnectFuncs *funcs,
  * we are already connected.
  */
 void
-big_dbus_add_connect_funcs_sync_notify(const BigDBusConnectFuncs *funcs,
-                                       void                      *data)
+big_dbus_add_connect_funcs_sync_notify(const BigDBusConnectFuncs* funcs,
+                                       void* data)
 {
     internal_add_connect_funcs(funcs, data, TRUE);
 }
 
 void
-big_dbus_remove_connect_funcs(const BigDBusConnectFuncs *funcs,
-                              void                      *data)
+big_dbus_remove_connect_funcs(const BigDBusConnectFuncs* funcs, void* data)
 {
-    ConnectFuncs *f;
-    GSList *l;
+    ConnectFuncs* f;
+    GSList* l;
 
     f = NULL;
     for (l = all_connect_funcs; l != NULL; l = l->next) {
         f = l->data;
 
-        if (f->funcs == funcs &&
-            f->data == data)
+        if (f->funcs == funcs && f->data == data)
             break;
     }
 
@@ -445,15 +446,16 @@ big_dbus_remove_connect_funcs(const BigDBusConnectFuncs *funcs,
 }
 
 void
-big_dbus_add_bus_weakref(DBusBusType      which_bus,
-                         DBusConnection **connection_p)
+big_dbus_add_bus_weakref(DBusBusType which_bus, DBusConnection** connection_p)
 {
     if (which_bus == DBUS_BUS_SESSION) {
         *connection_p = session_bus_weak_ref;
-        session_bus_weak_refs = g_slist_prepend(session_bus_weak_refs, connection_p);
+        session_bus_weak_refs
+          = g_slist_prepend(session_bus_weak_refs, connection_p);
     } else if (which_bus == DBUS_BUS_SYSTEM) {
         *connection_p = system_bus_weak_ref;
-        system_bus_weak_refs = g_slist_prepend(system_bus_weak_refs, connection_p);
+        system_bus_weak_refs
+          = g_slist_prepend(system_bus_weak_refs, connection_p);
     } else {
         g_assert_not_reached();
     }
@@ -462,15 +464,17 @@ big_dbus_add_bus_weakref(DBusBusType      which_bus,
 }
 
 void
-big_dbus_remove_bus_weakref(DBusBusType      which_bus,
-                            DBusConnection **connection_p)
+big_dbus_remove_bus_weakref(DBusBusType which_bus,
+                            DBusConnection** connection_p)
 {
     if (which_bus == DBUS_BUS_SESSION) {
         *connection_p = NULL;
-        session_bus_weak_refs = g_slist_remove(session_bus_weak_refs, connection_p);
+        session_bus_weak_refs
+          = g_slist_remove(session_bus_weak_refs, connection_p);
     } else if (which_bus == DBUS_BUS_SYSTEM) {
         *connection_p = NULL;
-        system_bus_weak_refs = g_slist_remove(system_bus_weak_refs, connection_p);
+        system_bus_weak_refs
+          = g_slist_remove(system_bus_weak_refs, connection_p);
     } else {
         g_assert_not_reached();
     }
@@ -483,11 +487,11 @@ big_dbus_try_connecting_now(DBusBusType which_bus)
 }
 
 static BigJsonIface*
-json_iface_new(const char *name,
-               const BigDBusJsonMethod *methods,
+json_iface_new(const char* name,
+               const BigDBusJsonMethod* methods,
                int n_methods)
 {
-    BigJsonIface *iface;
+    BigJsonIface* iface;
 
     iface = g_slice_new0(BigJsonIface);
     iface->name = g_strdup(name);
@@ -498,18 +502,18 @@ json_iface_new(const char *name,
 }
 
 static void
-json_iface_free(BigJsonIface *iface)
+json_iface_free(BigJsonIface* iface)
 {
     g_free(iface->name);
     g_slice_free(BigJsonIface, iface);
 }
 
 static BigNameOwnershipMonitor*
-name_ownership_monitor_new(DBusBusType                  bus_type,
-                           const BigDBusNameOwnerFuncs *funcs,
-                           void                        *data)
+name_ownership_monitor_new(DBusBusType bus_type,
+                           const BigDBusNameOwnerFuncs* funcs,
+                           void* data)
 {
-    BigNameOwnershipMonitor *monitor;
+    BigNameOwnershipMonitor* monitor;
 
     monitor = g_slice_new0(BigNameOwnershipMonitor);
     monitor->bus_type = bus_type;
@@ -519,20 +523,20 @@ name_ownership_monitor_new(DBusBusType                  bus_type,
     monitor->data = data;
     monitor->id = ++global_monitor_id;
 
-    return  monitor;
+    return monitor;
 }
 
 static void
-name_ownership_monitor_free(BigNameOwnershipMonitor *monitor)
+name_ownership_monitor_free(BigNameOwnershipMonitor* monitor)
 {
 
     g_slice_free(BigNameOwnershipMonitor, monitor);
 }
 
 static BigNameWatch*
-name_watch_new(const char *name)
+name_watch_new(const char* name)
 {
-    BigNameWatch *watch;
+    BigNameWatch* watch;
 
     watch = g_slice_new0(BigNameWatch);
     watch->name = g_strdup(name);
@@ -549,7 +553,7 @@ name_watch_new(const char *name)
 }
 
 static void
-name_watch_free(BigNameWatch *watch)
+name_watch_free(BigNameWatch* watch)
 {
     g_assert(watch->watchers == NULL);
 
@@ -559,12 +563,12 @@ name_watch_free(BigNameWatch *watch)
 }
 
 static BigNameWatcher*
-name_watcher_new(BigDBusWatchNameFlags        flags,
-                 const BigDBusWatchNameFuncs *funcs,
-                 void                        *data,
-                 DBusBusType                  bus_type)
+name_watcher_new(BigDBusWatchNameFlags flags,
+                 const BigDBusWatchNameFuncs* funcs,
+                 void* data,
+                 DBusBusType bus_type)
 {
-    BigNameWatcher *watcher;
+    BigNameWatcher* watcher;
 
     watcher = g_slice_new0(BigNameWatcher);
     watcher->flags = flags;
@@ -578,13 +582,13 @@ name_watcher_new(BigDBusWatchNameFlags        flags,
 }
 
 static void
-name_watcher_ref(BigNameWatcher *watcher)
+name_watcher_ref(BigNameWatcher* watcher)
 {
     watcher->refcount += 1;
 }
 
 static void
-name_watcher_unref(BigNameWatcher *watcher)
+name_watcher_unref(BigNameWatcher* watcher)
 {
     watcher->refcount -= 1;
 
@@ -593,10 +597,10 @@ name_watcher_unref(BigNameWatcher *watcher)
 }
 
 static void
-info_free(BigDBusInfo *info)
+info_free(BigDBusInfo* info)
 {
-    void *key;
-    void *value;
+    void* key;
+    void* value;
 
     big_debug(BIG_DEBUG_UTIL_DBUS,
               "Destroy notify invoked on bus connection info for %p",
@@ -620,20 +624,20 @@ info_free(BigDBusInfo *info)
 
     while (info->name_ownership_monitors != NULL) {
         name_ownership_monitor_free(info->name_ownership_monitors->data);
-        info->name_ownership_monitors = g_slist_remove(info->name_ownership_monitors,
-                                                       info->name_ownership_monitors->data);
+        info->name_ownership_monitors
+          = g_slist_remove(info->name_ownership_monitors,
+                           info->name_ownership_monitors->data);
     }
 
-    while ((value = g_hash_table_lookup(info->name_watches, &key)))
-    {
-        BigNameWatch *watch = value;
-        
+    while ((value = g_hash_table_lookup(info->name_watches, &key))) {
+        BigNameWatch* watch = value;
+
         while (watch->watchers) {
             name_watch_remove_watcher(watch, watch->watchers->data);
         }
-        
+
         name_watch_free(watch);
-        g_hash_table_steal (info->name_watches, &key);
+        g_hash_table_steal(info->name_watches, &key);
     }
 
     if (info->signal_watchers_by_unique_sender) {
@@ -658,34 +662,33 @@ info_free(BigDBusInfo *info)
 }
 
 static DBusHandlerResult
-name_ownership_monitor_filter_message(DBusConnection *connection,
-                                      DBusMessage    *message,
-                                      void           *data)
+name_ownership_monitor_filter_message(DBusConnection* connection,
+                                      DBusMessage* message,
+                                      void* data)
 {
-    BigDBusInfo *info;
+    BigDBusInfo* info;
     gboolean states_changed;
 
     info = _big_dbus_ensure_info(connection);
 
     states_changed = FALSE;
 
-    if (dbus_message_is_signal(message, DBUS_INTERFACE_DBUS, "NameLost") &&
-        dbus_message_has_sender(message, DBUS_SERVICE_DBUS)) {
-        const char *name = NULL;
-        if (dbus_message_get_args(message, NULL,
-                                  DBUS_TYPE_STRING, &name,
+    if (dbus_message_is_signal(message, DBUS_INTERFACE_DBUS, "NameLost")
+        && dbus_message_has_sender(message, DBUS_SERVICE_DBUS)) {
+        const char* name = NULL;
+        if (dbus_message_get_args(message, NULL, DBUS_TYPE_STRING, &name,
                                   DBUS_TYPE_INVALID)) {
-            GSList *l;
+            GSList* l;
 
             big_debug(BIG_DEBUG_UTIL_DBUS, "Lost name %s", name);
 
             for (l = info->name_ownership_monitors; l != NULL; l = l->next) {
-                BigNameOwnershipMonitor *monitor;
+                BigNameOwnershipMonitor* monitor;
 
                 monitor = l->data;
 
-                if (monitor->state == NAME_PRIMARY_OWNER &&
-                    strcmp(name, monitor->funcs->name) == 0) {
+                if (monitor->state == NAME_PRIMARY_OWNER
+                    && strcmp(name, monitor->funcs->name) == 0) {
                     monitor->prev_state = monitor->state;
                     monitor->state = NAME_NOT_OWNED;
                     states_changed = TRUE;
@@ -695,23 +698,23 @@ name_ownership_monitor_filter_message(DBusConnection *connection,
         } else {
             big_debug(BIG_DEBUG_UTIL_DBUS, "NameLost has wrong arguments???");
         }
-    } else if (dbus_message_is_signal(message, DBUS_INTERFACE_DBUS, "NameAcquired") &&
-               dbus_message_has_sender(message, DBUS_SERVICE_DBUS)) {
-        const char *name = NULL;
-        if (dbus_message_get_args(message, NULL,
-                                  DBUS_TYPE_STRING, &name,
+    } else if (dbus_message_is_signal(message, DBUS_INTERFACE_DBUS,
+                                      "NameAcquired")
+               && dbus_message_has_sender(message, DBUS_SERVICE_DBUS)) {
+        const char* name = NULL;
+        if (dbus_message_get_args(message, NULL, DBUS_TYPE_STRING, &name,
                                   DBUS_TYPE_INVALID)) {
-            GSList *l;
+            GSList* l;
 
             big_debug(BIG_DEBUG_UTIL_DBUS, "Acquired name %s", name);
 
             for (l = info->name_ownership_monitors; l != NULL; l = l->next) {
-                BigNameOwnershipMonitor *monitor;
+                BigNameOwnershipMonitor* monitor;
 
                 monitor = l->data;
 
-                if (monitor->state != NAME_PRIMARY_OWNER &&
-                    strcmp(name, monitor->funcs->name) == 0) {
+                if (monitor->state != NAME_PRIMARY_OWNER
+                    && strcmp(name, monitor->funcs->name) == 0) {
                     monitor->prev_state = monitor->state;
                     monitor->state = NAME_PRIMARY_OWNER;
                     states_changed = TRUE;
@@ -719,15 +722,17 @@ name_ownership_monitor_filter_message(DBusConnection *connection,
                 }
             }
         } else {
-            big_debug(BIG_DEBUG_UTIL_DBUS, "NameAcquired has wrong arguments???");
+            big_debug(BIG_DEBUG_UTIL_DBUS,
+                      "NameAcquired has wrong arguments???");
         }
-    } else if (dbus_message_is_signal(message, DBUS_INTERFACE_LOCAL, "Disconnected")) {
-        GSList *l;
+    } else if (dbus_message_is_signal(message, DBUS_INTERFACE_LOCAL,
+                                      "Disconnected")) {
+        GSList* l;
 
         big_debug(BIG_DEBUG_UTIL_DBUS, "Disconnected in %s", G_STRFUNC);
 
         for (l = info->name_ownership_monitors; l != NULL; l = l->next) {
-            BigNameOwnershipMonitor *monitor;
+            BigNameOwnershipMonitor* monitor;
 
             monitor = l->data;
 
@@ -739,7 +744,8 @@ name_ownership_monitor_filter_message(DBusConnection *connection,
             }
         }
 
-        /* FIXME move the monitors back to the pending list so they'll be found on reconnect */
+        /* FIXME move the monitors back to the pending list so they'll be found
+         * on reconnect */
     }
 
     if (states_changed)
@@ -749,28 +755,26 @@ name_ownership_monitor_filter_message(DBusConnection *connection,
 }
 
 static void
-process_name_ownership_monitors(DBusConnection *connection,
-                                BigDBusInfo    *info)
+process_name_ownership_monitors(DBusConnection* connection, BigDBusInfo* info)
 {
-    GSList *l;
+    GSList* l;
     gboolean connected;
-    GSList *still_pending;
+    GSList* still_pending;
 
     /* First pull anything out of pending queue */
 
     still_pending = NULL;
     while (pending_name_ownership_monitors != NULL) {
-        BigNameOwnershipMonitor *monitor;
+        BigNameOwnershipMonitor* monitor;
 
         monitor = pending_name_ownership_monitors->data;
-        pending_name_ownership_monitors =
-            g_slist_remove(pending_name_ownership_monitors,
+        pending_name_ownership_monitors
+          = g_slist_remove(pending_name_ownership_monitors,
                            pending_name_ownership_monitors->data);
 
         if (monitor->bus_type == info->bus_type) {
-            info->name_ownership_monitors =
-                g_slist_prepend(info->name_ownership_monitors,
-                                monitor);
+            info->name_ownership_monitors
+              = g_slist_prepend(info->name_ownership_monitors, monitor);
         } else {
             still_pending = g_slist_prepend(still_pending, monitor);
         }
@@ -784,7 +788,7 @@ process_name_ownership_monitors(DBusConnection *connection,
 
     if (connected) {
         for (l = info->name_ownership_monitors; l != NULL; l = l->next) {
-            BigNameOwnershipMonitor *monitor;
+            BigNameOwnershipMonitor* monitor;
 
             monitor = l->data;
 
@@ -798,17 +802,17 @@ process_name_ownership_monitors(DBusConnection *connection,
                     flags |= DBUS_NAME_FLAG_DO_NOT_QUEUE;
 
                 dbus_error_init(&derror);
-                result = dbus_bus_request_name(connection,
-                                               monitor->funcs->name,
-                                               flags,
-                                               &derror);
+                result = dbus_bus_request_name(connection, monitor->funcs->name,
+                                               flags, &derror);
 
                 /* log 'error' word only when one occurred */
                 if (derror.message != NULL) {
-                    big_debug(BIG_DEBUG_UTIL_DBUS, "Requested name %s result %d error %s",
+                    big_debug(BIG_DEBUG_UTIL_DBUS,
+                              "Requested name %s result %d error %s",
                               monitor->funcs->name, result, derror.message);
                 } else {
-                    big_debug(BIG_DEBUG_UTIL_DBUS, "Requested name %s result %d",
+                    big_debug(BIG_DEBUG_UTIL_DBUS,
+                              "Requested name %s result %d",
                               monitor->funcs->name, result);
                 }
 
@@ -827,8 +831,8 @@ process_name_ownership_monitors(DBusConnection *connection,
 
                 monitor->prev_state = monitor->state;
 
-                if (result == DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER ||
-                    result == DBUS_REQUEST_NAME_REPLY_ALREADY_OWNER) {
+                if (result == DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER
+                    || result == DBUS_REQUEST_NAME_REPLY_ALREADY_OWNER) {
                     monitor->state = NAME_PRIMARY_OWNER;
                 } else if (result == DBUS_REQUEST_NAME_REPLY_IN_QUEUE) {
                     monitor->state = NAME_IN_QUEUE;
@@ -848,7 +852,7 @@ process_name_ownership_monitors(DBusConnection *connection,
      */
     l = g_slist_copy(info->name_ownership_monitors);
     while (l != NULL) {
-        BigNameOwnershipMonitor *monitor;
+        BigNameOwnershipMonitor* monitor;
 
         monitor = l->data;
         l = g_slist_remove(l, l->data);
@@ -859,25 +863,28 @@ process_name_ownership_monitors(DBusConnection *connection,
             if (monitor->state == NAME_PRIMARY_OWNER) {
                 big_debug(BIG_DEBUG_UTIL_DBUS, "Notifying acquired %s",
                           monitor->funcs->name);
-                (* monitor->funcs->acquired) (connection, monitor->funcs->name, monitor->data);
+                (*monitor->funcs->acquired)(connection, monitor->funcs->name,
+                                            monitor->data);
             } else if (monitor->state != NAME_PRIMARY_OWNER) {
                 big_debug(BIG_DEBUG_UTIL_DBUS, "Notifying lost %s",
                           monitor->funcs->name);
-                (* monitor->funcs->lost) (connection, monitor->funcs->name, monitor->data);
+                (*monitor->funcs->lost)(connection, monitor->funcs->name,
+                                        monitor->data);
             }
         }
     }
 }
 
 unsigned int
-big_dbus_acquire_name (DBusBusType                  bus_type,
-                       const BigDBusNameOwnerFuncs *funcs,
-                       void                        *data)
+big_dbus_acquire_name(DBusBusType bus_type,
+                      const BigDBusNameOwnerFuncs* funcs,
+                      void* data)
 {
-    BigNameOwnershipMonitor *monitor;
+    BigNameOwnershipMonitor* monitor;
 
     monitor = name_ownership_monitor_new(bus_type, funcs, data);
-    pending_name_ownership_monitors = g_slist_prepend(pending_name_ownership_monitors, monitor);
+    pending_name_ownership_monitors
+      = g_slist_prepend(pending_name_ownership_monitors, monitor);
 
     _big_dbus_ensure_connect_idle(bus_type);
 
@@ -885,15 +892,15 @@ big_dbus_acquire_name (DBusBusType                  bus_type,
 }
 
 static void
-release_name_internal (DBusBusType                  bus_type,
-                       const BigDBusNameOwnerFuncs *funcs,
-                       void                        *data,
-                       unsigned int                 id)
+release_name_internal(DBusBusType bus_type,
+                      const BigDBusNameOwnerFuncs* funcs,
+                      void* data,
+                      unsigned int id)
 {
-    BigDBusInfo *info;
-    GSList *l;
-    BigNameOwnershipMonitor *monitor;
-    DBusConnection *connection;
+    BigDBusInfo* info;
+    GSList* l;
+    BigNameOwnershipMonitor* monitor;
+    DBusConnection* connection;
 
     connection = _big_dbus_get_weak_ref(bus_type);
     if (!connection)
@@ -905,14 +912,13 @@ release_name_internal (DBusBusType                  bus_type,
     for (l = pending_name_ownership_monitors; l; l = l->next) {
         monitor = l->data;
         /* If the id is valid an matches, we are done */
-        if (monitor->state == NAME_PRIMARY_OWNER &&
-            ((id != BIG_DBUS_NAME_OWNER_MONITOR_INVALID_ID && monitor->id == id) ||
-             (monitor->funcs == funcs &&
-              monitor->data == data))) {
+        if (monitor->state == NAME_PRIMARY_OWNER
+            && ((id != BIG_DBUS_NAME_OWNER_MONITOR_INVALID_ID
+                 && monitor->id == id)
+                || (monitor->funcs == funcs && monitor->data == data))) {
             dbus_bus_release_name(connection, monitor->funcs->name, NULL);
-            pending_name_ownership_monitors =
-                g_slist_remove(pending_name_ownership_monitors,
-                               monitor);
+            pending_name_ownership_monitors
+              = g_slist_remove(pending_name_ownership_monitors, monitor);
             name_ownership_monitor_free(monitor);
             /* If the monitor was in the pending list it
              * can't be in the processed list
@@ -924,13 +930,13 @@ release_name_internal (DBusBusType                  bus_type,
     for (l = info->name_ownership_monitors; l; l = l->next) {
         monitor = l->data;
         /* If the id is valid an matches, we are done */
-        if (monitor->state == NAME_PRIMARY_OWNER &&
-            ((id != BIG_DBUS_NAME_OWNER_MONITOR_INVALID_ID && monitor->id == id) ||
-             (monitor->funcs == funcs &&
-              monitor->data == data))) {
+        if (monitor->state == NAME_PRIMARY_OWNER
+            && ((id != BIG_DBUS_NAME_OWNER_MONITOR_INVALID_ID
+                 && monitor->id == id)
+                || (monitor->funcs == funcs && monitor->data == data))) {
             dbus_bus_release_name(connection, monitor->funcs->name, NULL);
-            info->name_ownership_monitors = g_slist_remove(info->name_ownership_monitors,
-                                                           monitor);
+            info->name_ownership_monitors
+              = g_slist_remove(info->name_ownership_monitors, monitor);
             name_ownership_monitor_free(monitor);
             break;
         }
@@ -938,30 +944,29 @@ release_name_internal (DBusBusType                  bus_type,
 }
 
 void
-big_dbus_release_name_by_id (DBusBusType  bus_type,
-                             unsigned int id)
+big_dbus_release_name_by_id(DBusBusType bus_type, unsigned int id)
 {
     release_name_internal(bus_type, NULL, NULL, id);
 }
 
 void
-big_dbus_release_name (DBusBusType                  bus_type,
-                       const BigDBusNameOwnerFuncs *funcs,
-                       void                        *data)
+big_dbus_release_name(DBusBusType bus_type,
+                      const BigDBusNameOwnerFuncs* funcs,
+                      void* data)
 {
     release_name_internal(bus_type, funcs, data,
                           BIG_DBUS_NAME_OWNER_MONITOR_INVALID_ID);
 }
 
 static void
-notify_name_owner_changed(DBusConnection *connection,
-                          const char     *name,
-                          const char     *new_owner)
+notify_name_owner_changed(DBusConnection* connection,
+                          const char* name,
+                          const char* new_owner)
 {
-    BigDBusInfo *info;
-    BigNameWatch *watch;
+    BigDBusInfo* info;
+    BigNameWatch* watch;
     GSList *l, *watchers;
-    gchar *old_owner;
+    gchar* old_owner;
 
     info = _big_dbus_ensure_info(connection);
 
@@ -973,9 +978,9 @@ notify_name_owner_changed(DBusConnection *connection,
     if (watch == NULL)
         return;
 
-    if ((watch->current_owner == new_owner) ||
-        (watch->current_owner && new_owner &&
-         strcmp(watch->current_owner, new_owner) == 0)) {
+    if ((watch->current_owner == new_owner)
+        || (watch->current_owner && new_owner
+            && strcmp(watch->current_owner, new_owner) == 0)) {
         /* No change */
         return;
     }
@@ -983,7 +988,7 @@ notify_name_owner_changed(DBusConnection *connection,
     /* we copy the list before iterating, because the
      * callbacks may modify it */
     watchers = g_slist_copy(watch->watchers);
-    g_slist_foreach(watchers, (GFunc)name_watcher_ref, NULL);
+    g_slist_foreach(watchers, (GFunc) name_watcher_ref, NULL);
 
     /* copy the old owner in case the watch is removed in
      * the callbacks */
@@ -991,10 +996,8 @@ notify_name_owner_changed(DBusConnection *connection,
 
     /* vanish the old owner */
     if (old_owner != NULL) {
-        for (l = watchers;
-             l != NULL;
-             l = l->next) {
-            BigNameWatcher *watcher = l->data;
+        for (l = watchers; l != NULL; l = l->next) {
+            BigNameWatcher* watcher = l->data;
 
             if (watcher->notify_idle != 0) {
                 /* Name owner changed before we notified
@@ -1011,10 +1014,8 @@ notify_name_owner_changed(DBusConnection *connection,
             }
 
             if (!watcher->destroyed) {
-                (* watcher->funcs->vanished) (connection,
-                                              name,
-                                              old_owner,
-                                              watcher->data);
+                (*watcher->funcs->vanished)(connection, name, old_owner,
+                                            watcher->data);
             }
         }
     }
@@ -1031,43 +1032,38 @@ notify_name_owner_changed(DBusConnection *connection,
 
     /* appear the new owner */
     if (new_owner != NULL) {
-        for (l = watchers;
-             l != NULL;
-             l = l->next) {
-            BigNameWatcher *watcher = l->data;
+        for (l = watchers; l != NULL; l = l->next) {
+            BigNameWatcher* watcher = l->data;
 
             if (!watcher->destroyed) {
-                (* watcher->funcs->appeared) (connection,
-                                              name,
-                                              new_owner,
-                                              watcher->data);
+                (*watcher->funcs->appeared)(connection, name, new_owner,
+                                            watcher->data);
             }
         }
     }
 
     /* now destroy our copy */
-    g_slist_foreach(watchers, (GFunc)name_watcher_unref, NULL);
+    g_slist_foreach(watchers, (GFunc) name_watcher_unref, NULL);
     g_slist_free(watchers);
 
     g_free(old_owner);
 }
 
 static DBusHandlerResult
-name_watch_filter_message(DBusConnection *connection,
-                          DBusMessage    *message,
-                          void           *data)
+name_watch_filter_message(DBusConnection* connection,
+                          DBusMessage* message,
+                          void* data)
 {
-    BigDBusInfo *info;
+    BigDBusInfo* info;
 
     info = _big_dbus_ensure_info(connection);
 
-    if (dbus_message_is_signal(message, DBUS_INTERFACE_DBUS, "NameOwnerChanged") &&
-        dbus_message_has_sender(message, DBUS_SERVICE_DBUS)) {
-        const char *name = NULL;
-        const char *old_owner = NULL;
-        const char *new_owner = NULL;
-        if (dbus_message_get_args(message, NULL,
-                                  DBUS_TYPE_STRING, &name,
+    if (dbus_message_is_signal(message, DBUS_INTERFACE_DBUS, "NameOwnerChanged")
+        && dbus_message_has_sender(message, DBUS_SERVICE_DBUS)) {
+        const char* name = NULL;
+        const char* old_owner = NULL;
+        const char* new_owner = NULL;
+        if (dbus_message_get_args(message, NULL, DBUS_TYPE_STRING, &name,
                                   DBUS_TYPE_STRING, &old_owner,
                                   DBUS_TYPE_STRING, &new_owner,
                                   DBUS_TYPE_INVALID)) {
@@ -1076,13 +1072,16 @@ name_watch_filter_message(DBusConnection *connection,
 
             notify_name_owner_changed(connection, name, new_owner);
         } else {
-            big_debug(BIG_DEBUG_UTIL_DBUS, "NameOwnerChanged has wrong arguments???");
+            big_debug(BIG_DEBUG_UTIL_DBUS,
+                      "NameOwnerChanged has wrong arguments???");
         }
-    } else if (dbus_message_is_signal(message, DBUS_INTERFACE_LOCAL, "Disconnected")) {
+    } else if (dbus_message_is_signal(message, DBUS_INTERFACE_LOCAL,
+                                      "Disconnected")) {
 
         big_debug(BIG_DEBUG_UTIL_DBUS, "Disconnected in %s", G_STRFUNC);
 
-        /* FIXME set all current owners to NULL, and move watches back to the pending
+        /* FIXME set all current owners to NULL, and move watches back to the
+         * pending
          * list so they are found on reconnect.
          */
     }
@@ -1090,31 +1089,25 @@ name_watch_filter_message(DBusConnection *connection,
     return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 }
 
-
 void
-_big_dbus_set_matching_name_owner_changed(DBusConnection *connection,
-                                          const char     *bus_name,
-                                          gboolean        matched)
+_big_dbus_set_matching_name_owner_changed(DBusConnection* connection,
+                                          const char* bus_name,
+                                          gboolean matched)
 {
-    char *s;
+    char* s;
 
-    big_debug(BIG_DEBUG_UTIL_DBUS,
-              "%s NameOwnerChanged on name '%s'",
-              matched ? "Matching" : "No longer matching",
-              bus_name);
+    big_debug(BIG_DEBUG_UTIL_DBUS, "%s NameOwnerChanged on name '%s'",
+              matched ? "Matching" : "No longer matching", bus_name);
 
-    s = g_strdup_printf("type='signal',sender='"
-                        DBUS_SERVICE_DBUS
-                        "',interface='"
-                        DBUS_INTERFACE_DBUS
-                        "',member='"
+    s = g_strdup_printf("type='signal',sender='" DBUS_SERVICE_DBUS
+                        "',interface='" DBUS_INTERFACE_DBUS "',member='"
                         "NameOwnerChanged"
                         "',arg0='%s'",
                         bus_name);
 
     if (matched)
-        dbus_bus_add_match(connection,
-                           s, NULL); /* asking for error would make this block */
+        dbus_bus_add_match(connection, s,
+                           NULL); /* asking for error would make this block */
     else
         dbus_bus_remove_match(connection, s, NULL);
 
@@ -1122,36 +1115,29 @@ _big_dbus_set_matching_name_owner_changed(DBusConnection *connection,
 }
 
 static void
-on_start_service_reply(BigDBusProxy    *proxy,
-                       DBusMessage     *message,
-                       void            *data)
+on_start_service_reply(BigDBusProxy* proxy, DBusMessage* message, void* data)
 {
-    big_debug(BIG_DEBUG_UTIL_DBUS,
-              "Got successful reply to service start");
+    big_debug(BIG_DEBUG_UTIL_DBUS, "Got successful reply to service start");
 }
 
 static void
-on_start_service_error(BigDBusProxy    *proxy,
-                       const char      *error_name,
-                       const char      *error_message,
-                       void            *data)
+on_start_service_error(BigDBusProxy* proxy,
+                       const char* error_name,
+                       const char* error_message,
+                       void* data)
 {
-    big_debug(BIG_DEBUG_UTIL_DBUS,
-              "Got error starting service: %s: %s",
+    big_debug(BIG_DEBUG_UTIL_DBUS, "Got error starting service: %s: %s",
               error_name, error_message);
 }
 
 void
-big_dbus_start_service(DBusConnection *connection,
-                       const char     *name)
+big_dbus_start_service(DBusConnection* connection, const char* name)
 {
-    DBusMessage *message;
+    DBusMessage* message;
     dbus_uint32_t flags;
-    BigDBusInfo *info;
+    BigDBusInfo* info;
 
-    big_debug(BIG_DEBUG_UTIL_DBUS,
-              "Starting service '%s'",
-              name);
+    big_debug(BIG_DEBUG_UTIL_DBUS, "Starting service '%s'", name);
 
     info = _big_dbus_ensure_info(connection);
 
@@ -1159,15 +1145,10 @@ big_dbus_start_service(DBusConnection *connection,
                                              "StartServiceByName");
 
     flags = 0;
-    if (dbus_message_append_args(message,
-                                 DBUS_TYPE_STRING, &name,
-                                 DBUS_TYPE_UINT32, &flags,
-                                 DBUS_TYPE_INVALID)) {
-        big_dbus_proxy_send(info->driver_proxy,
-                            message,
-                            on_start_service_reply,
-                            on_start_service_error,
-                            NULL);
+    if (dbus_message_append_args(message, DBUS_TYPE_STRING, &name,
+                                 DBUS_TYPE_UINT32, &flags, DBUS_TYPE_INVALID)) {
+        big_dbus_proxy_send(info->driver_proxy, message, on_start_service_reply,
+                            on_start_service_error, NULL);
     } else {
         big_debug(BIG_DEBUG_UTIL_DBUS,
                   "No memory appending args to StartServiceByName");
@@ -1176,18 +1157,19 @@ big_dbus_start_service(DBusConnection *connection,
     dbus_message_unref(message);
 }
 
-typedef struct {
-    DBusConnection *connection;
-    char *name;
+typedef struct
+{
+    DBusConnection* connection;
+    char* name;
     BigDBusWatchNameFlags flags;
 } GetOwnerRequest;
 
 static GetOwnerRequest*
-get_owner_request_new(DBusConnection       *connection,
-                      const char           *name,
+get_owner_request_new(DBusConnection* connection,
+                      const char* name,
                       BigDBusWatchNameFlags flags)
 {
-    GetOwnerRequest *gor;
+    GetOwnerRequest* gor;
 
     gor = g_slice_new0(GetOwnerRequest);
     gor->connection = connection;
@@ -1199,7 +1181,7 @@ get_owner_request_new(DBusConnection       *connection,
 }
 
 static void
-get_owner_request_free(GetOwnerRequest *gor)
+get_owner_request_free(GetOwnerRequest* gor)
 {
     dbus_connection_unref(gor->connection);
     g_free(gor->name);
@@ -1207,11 +1189,10 @@ get_owner_request_free(GetOwnerRequest *gor)
 }
 
 static void
-on_get_owner_reply(DBusPendingCall *pending,
-                   void            *user_data)
+on_get_owner_reply(DBusPendingCall* pending, void* user_data)
 {
-    DBusMessage *reply;
-    GetOwnerRequest *gor;
+    DBusMessage* reply;
+    GetOwnerRequest* gor;
 
     gor = user_data;
 
@@ -1222,53 +1203,41 @@ on_get_owner_reply(DBusPendingCall *pending,
     }
 
     if (dbus_message_get_type(reply) == DBUS_MESSAGE_TYPE_METHOD_RETURN) {
-        const char *current_owner = NULL;
+        const char* current_owner = NULL;
 
-        if (!dbus_message_get_args(reply, NULL,
-                                   DBUS_TYPE_STRING, &current_owner,
-                                   DBUS_TYPE_INVALID)) {
-            big_debug(BIG_DEBUG_UTIL_DBUS,
-                      "GetNameOwner has wrong args '%s'",
+        if (!dbus_message_get_args(reply, NULL, DBUS_TYPE_STRING,
+                                   &current_owner, DBUS_TYPE_INVALID)) {
+            big_debug(BIG_DEBUG_UTIL_DBUS, "GetNameOwner has wrong args '%s'",
                       dbus_message_get_signature(reply));
         } else {
-            big_debug(BIG_DEBUG_UTIL_DBUS,
-                      "Got owner '%s' for name '%s'",
+            big_debug(BIG_DEBUG_UTIL_DBUS, "Got owner '%s' for name '%s'",
                       current_owner, gor->name);
             if (current_owner != NULL) {
-                notify_name_owner_changed(gor->connection,
-                                          gor->name,
+                notify_name_owner_changed(gor->connection, gor->name,
                                           current_owner);
             }
         }
     } else if (dbus_message_get_type(reply) == DBUS_MESSAGE_TYPE_ERROR) {
         if (g_str_equal(dbus_message_get_error_name(reply),
                         DBUS_ERROR_NAME_HAS_NO_OWNER)) {
-            big_debug(BIG_DEBUG_UTIL_DBUS,
-                      "'%s' was not running",
-                      gor->name);
+            big_debug(BIG_DEBUG_UTIL_DBUS, "'%s' was not running", gor->name);
             if (gor->flags & BIG_DBUS_NAME_START_IF_NOT_FOUND) {
-                big_debug(BIG_DEBUG_UTIL_DBUS,
-                          "  (starting it up)");
+                big_debug(BIG_DEBUG_UTIL_DBUS, "  (starting it up)");
                 big_dbus_start_service(gor->connection, gor->name);
             } else {
                 /* no owner for now, notify app */
-                notify_name_owner_changed(gor->connection,
-                                          gor->name,
-                                          "");
+                notify_name_owner_changed(gor->connection, gor->name, "");
             }
         } else {
             big_debug(BIG_DEBUG_UTIL_DBUS,
-                      "Error getting owner of name '%s': %s",
-                      gor->name,
+                      "Error getting owner of name '%s': %s", gor->name,
                       dbus_message_get_error_name(reply));
 
             /* Notify no owner for now, ensuring the app
              * gets advised "appeared" or "vanished",
              * one or the other.
              */
-            notify_name_owner_changed(gor->connection,
-                                      gor->name,
-                                      "");
+            notify_name_owner_changed(gor->connection, gor->name, "");
         }
     } else {
         big_debug(BIG_DEBUG_UTIL_DBUS,
@@ -1279,41 +1248,35 @@ on_get_owner_reply(DBusPendingCall *pending,
 }
 
 static void
-request_name_owner(DBusConnection *connection,
-                   BigDBusInfo    *info,
-                   BigNameWatch   *watch)
+request_name_owner(DBusConnection* connection,
+                   BigDBusInfo* info,
+                   BigNameWatch* watch)
 {
-    DBusMessage *message;
-    DBusPendingCall *call;
+    DBusMessage* message;
+    DBusPendingCall* call;
 
-    message = dbus_message_new_method_call(DBUS_SERVICE_DBUS,
-                                           DBUS_PATH_DBUS,
-                                           DBUS_INTERFACE_DBUS,
-                                           "GetNameOwner");
+    message = dbus_message_new_method_call(DBUS_SERVICE_DBUS, DBUS_PATH_DBUS,
+                                           DBUS_INTERFACE_DBUS, "GetNameOwner");
     if (message == NULL)
         g_error("no memory");
 
-    if (!dbus_message_append_args(message,
-                                  DBUS_TYPE_STRING, &watch->name,
+    if (!dbus_message_append_args(message, DBUS_TYPE_STRING, &watch->name,
                                   DBUS_TYPE_INVALID))
         g_error("no memory");
 
     call = NULL;
     dbus_connection_send_with_reply(connection, message, &call, -1);
     if (call != NULL) {
-        GetOwnerRequest *gor;
+        GetOwnerRequest* gor;
         BigDBusWatchNameFlags flags;
-        GSList *l;
+        GSList* l;
 
-        big_debug(BIG_DEBUG_UTIL_DBUS,
-                  "Sent GetNameOwner for '%s'",
+        big_debug(BIG_DEBUG_UTIL_DBUS, "Sent GetNameOwner for '%s'",
                   watch->name);
 
         flags = 0;
-        for (l = watch->watchers;
-             l != NULL;
-             l = l->next) {
-            BigNameWatcher *watcher = l->data;
+        for (l = watch->watchers; l != NULL; l = l->next) {
+            BigNameWatcher* watcher = l->data;
 
             if (watcher->flags & BIG_DBUS_NAME_START_IF_NOT_FOUND)
                 flags |= BIG_DBUS_NAME_START_IF_NOT_FOUND;
@@ -1321,9 +1284,9 @@ request_name_owner(DBusConnection *connection,
 
         gor = get_owner_request_new(connection, watch->name, flags);
 
-        if (!dbus_pending_call_set_notify(call, on_get_owner_reply,
-                                          gor,
-                                          (DBusFreeFunction) get_owner_request_free))
+        if (!dbus_pending_call_set_notify(call, on_get_owner_reply, gor,
+                                          (DBusFreeFunction)
+                                            get_owner_request_free))
             g_error("no memory");
 
         /* the connection will hold a ref to the pending call */
@@ -1338,8 +1301,8 @@ request_name_owner(DBusConnection *connection,
 static gboolean
 notify_watcher_name_appeared(gpointer data)
 {
-    BigNameWatcher *watcher;
-    DBusConnection *connection;
+    BigNameWatcher* watcher;
+    DBusConnection* connection;
 
     watcher = data;
     watcher->notify_idle = 0;
@@ -1349,20 +1312,18 @@ notify_watcher_name_appeared(gpointer data)
     if (!connection)
         return FALSE;
 
-    (* watcher->funcs->appeared) (connection,
-                                  watcher->watch->name,
-                                  watcher->watch->current_owner,
-                                  watcher->data);
+    (*watcher->funcs->appeared)(connection, watcher->watch->name,
+                                watcher->watch->current_owner, watcher->data);
     return FALSE;
 }
 
 static void
-create_watch_for_watcher(DBusConnection *connection,
-                         BigDBusInfo    *info,
-                         const char     *name,
-                         BigNameWatcher *watcher)
+create_watch_for_watcher(DBusConnection* connection,
+                         BigDBusInfo* info,
+                         const char* name,
+                         BigNameWatcher* watcher)
 {
-    BigNameWatch *watch;
+    BigNameWatch* watch;
 
     watch = g_hash_table_lookup(info->name_watches, name);
     if (watch == NULL) {
@@ -1372,7 +1333,8 @@ create_watch_for_watcher(DBusConnection *connection,
 
         watch->watchers = g_slist_prepend(watch->watchers, watcher);
 
-        _big_dbus_set_matching_name_owner_changed(connection, watch->name, TRUE);
+        _big_dbus_set_matching_name_owner_changed(connection, watch->name,
+                                                  TRUE);
 
         request_name_owner(connection, info, watch);
     } else {
@@ -1381,42 +1343,37 @@ create_watch_for_watcher(DBusConnection *connection,
     name_watcher_ref(watcher);
 
     watcher->watch = watch;
-
 }
 
 static void
-process_pending_name_watchers(DBusConnection *connection,
-                              BigDBusInfo    *info)
+process_pending_name_watchers(DBusConnection* connection, BigDBusInfo* info)
 {
-    GSList *still_pending;
+    GSList* still_pending;
 
     still_pending = NULL;
     while (pending_name_watchers != NULL) {
-        BigPendingNameWatcher *pending;
-        BigNameWatch *watch;
+        BigPendingNameWatcher* pending;
+        BigNameWatch* watch;
 
         pending = pending_name_watchers->data;
-        pending_name_watchers = g_slist_remove(pending_name_watchers,
-                                               pending_name_watchers->data);
+        pending_name_watchers
+          = g_slist_remove(pending_name_watchers, pending_name_watchers->data);
 
         if (pending->bus_type != info->bus_type) {
             still_pending = g_slist_prepend(still_pending, pending);
             continue;
         }
 
-        create_watch_for_watcher(connection,
-                                 info,
-                                 pending->name,
+        create_watch_for_watcher(connection, info, pending->name,
                                  pending->watcher);
 
         watch = pending->watcher->watch;
 
         /* If we already know the owner, let the new watcher know */
         if (watch->current_owner != NULL) {
-            (* pending->watcher->funcs->appeared) (connection,
-                                                   watch->name,
-                                                   watch->current_owner,
-                                                   pending->watcher->data);
+            (*pending->watcher->funcs->appeared)(connection, watch->name,
+                                                 watch->current_owner,
+                                                 pending->watcher->data);
         }
 
         g_free(pending->name);
@@ -1429,11 +1386,9 @@ process_pending_name_watchers(DBusConnection *connection,
 }
 
 static void
-name_watch_remove_watcher(BigNameWatch     *watch,
-                          BigNameWatcher   *watcher)
+name_watch_remove_watcher(BigNameWatch* watch, BigNameWatcher* watcher)
 {
-    watch->watchers = g_slist_remove(watch->watchers,
-                                     watcher);
+    watch->watchers = g_slist_remove(watch->watchers, watcher);
 
     if (watcher->notify_idle) {
         g_source_remove(watcher->notify_idle);
@@ -1445,47 +1400,41 @@ name_watch_remove_watcher(BigNameWatch     *watch,
 }
 
 void
-big_dbus_watch_name(DBusBusType                  bus_type,
-                    const char                  *name,
-                    BigDBusWatchNameFlags        flags,
-                    const BigDBusWatchNameFuncs *funcs,
-                    void                        *data)
+big_dbus_watch_name(DBusBusType bus_type,
+                    const char* name,
+                    BigDBusWatchNameFlags flags,
+                    const BigDBusWatchNameFuncs* funcs,
+                    void* data)
 {
-    BigNameWatcher *watcher;
-    DBusConnection *connection;
+    BigNameWatcher* watcher;
+    DBusConnection* connection;
 
-    big_debug(BIG_DEBUG_UTIL_DBUS,
-              "Adding watch on name '%s'",
-              name);
+    big_debug(BIG_DEBUG_UTIL_DBUS, "Adding watch on name '%s'", name);
 
     watcher = name_watcher_new(flags, funcs, data, bus_type);
 
     connection = _big_dbus_get_weak_ref(bus_type);
 
     if (connection) {
-        BigDBusInfo *info;
+        BigDBusInfo* info;
 
         info = _big_dbus_ensure_info(connection);
 
-        create_watch_for_watcher(connection,
-                                 info,
-                                 name,
-                                 watcher);
+        create_watch_for_watcher(connection, info, name, watcher);
         /* The initial reference is now transferred to the watch */
         name_watcher_unref(watcher);
 
         /* If we already know the owner, notify the user in an idle */
         if (watcher->watch->current_owner) {
-            watcher->notify_idle =
-                g_idle_add_full(G_PRIORITY_DEFAULT_IDLE,
-                                notify_watcher_name_appeared,
-                                watcher,
-                                (GDestroyNotify)name_watcher_unref);
+            watcher->notify_idle
+              = g_idle_add_full(G_PRIORITY_DEFAULT_IDLE,
+                                notify_watcher_name_appeared, watcher,
+                                (GDestroyNotify) name_watcher_unref);
             name_watcher_ref(watcher);
         }
 
     } else {
-        BigPendingNameWatcher *pending;
+        BigPendingNameWatcher* pending;
 
         pending = g_slice_new0(BigPendingNameWatcher);
 
@@ -1500,20 +1449,18 @@ big_dbus_watch_name(DBusBusType                  bus_type,
 }
 
 void
-big_dbus_unwatch_name(DBusBusType                  bus_type,
-                      const char                  *name,
-                      const BigDBusWatchNameFuncs *funcs,
-                      void                        *data)
+big_dbus_unwatch_name(DBusBusType bus_type,
+                      const char* name,
+                      const BigDBusWatchNameFuncs* funcs,
+                      void* data)
 {
-    DBusConnection *connection;
-    BigDBusInfo *info;
-    BigNameWatch *watch;
-    GSList *l;
-    BigNameWatcher *watcher;
+    DBusConnection* connection;
+    BigDBusInfo* info;
+    BigNameWatch* watch;
+    GSList* l;
+    BigNameWatcher* watcher;
 
-    big_debug(BIG_DEBUG_UTIL_DBUS,
-              "Removing watch on name '%s'",
-              name);
+    big_debug(BIG_DEBUG_UTIL_DBUS, "Removing watch on name '%s'", name);
 
     connection = _big_dbus_get_weak_ref(bus_type);
     if (connection == NULL) {
@@ -1542,14 +1489,13 @@ big_dbus_unwatch_name(DBusBusType                  bus_type,
     for (l = watch->watchers; l != NULL; l = l->next) {
         watcher = l->data;
 
-        if (watcher->funcs == funcs &&
-            watcher->data == data)
+        if (watcher->funcs == funcs && watcher->data == data)
             break;
     }
 
     if (l == NULL) {
-        g_warning("Could not find a watch on %s matching %p %p",
-                  name, funcs, data);
+        g_warning("Could not find a watch on %s matching %p %p", name, funcs,
+                  data);
         return;
     }
     g_assert(l->data == watcher);
@@ -1560,19 +1506,19 @@ big_dbus_unwatch_name(DBusBusType                  bus_type,
     if (watch->watchers == NULL) {
         g_hash_table_remove(info->name_watches, watch->name);
 
-        _big_dbus_set_matching_name_owner_changed(connection, watch->name, FALSE);
+        _big_dbus_set_matching_name_owner_changed(connection, watch->name,
+                                                  FALSE);
 
         name_watch_free(watch);
     }
 }
 
 const char*
-big_dbus_get_watched_name_owner(DBusBusType   bus_type,
-                                const char   *name)
+big_dbus_get_watched_name_owner(DBusBusType bus_type, const char* name)
 {
-    DBusConnection *connection;
-    BigNameWatch *watch;
-    BigDBusInfo *info;
+    DBusConnection* connection;
+    BigNameWatch* watch;
+    BigDBusInfo* info;
 
     connection = _big_dbus_get_weak_ref(bus_type);
     if (connection == NULL) {
@@ -1595,13 +1541,13 @@ big_dbus_get_watched_name_owner(DBusBusType   bus_type,
 }
 
 void
-big_dbus_register_json(DBusConnection          *connection,
-                       const char              *iface_name,
-                       const BigDBusJsonMethod *methods,
-                       int                      n_methods)
+big_dbus_register_json(DBusConnection* connection,
+                       const char* iface_name,
+                       const BigDBusJsonMethod* methods,
+                       int n_methods)
 {
-    BigDBusInfo *info;
-    BigJsonIface *iface;
+    BigDBusInfo* info;
+    BigJsonIface* iface;
 
     info = _big_dbus_ensure_info(connection);
 
@@ -1611,27 +1557,26 @@ big_dbus_register_json(DBusConnection          *connection,
 }
 
 void
-big_dbus_unregister_json(DBusConnection *connection,
-                         const char     *iface_name)
+big_dbus_unregister_json(DBusConnection* connection, const char* iface_name)
 {
-    BigDBusInfo *info;
+    BigDBusInfo* info;
 
     info = _big_dbus_ensure_info(connection);
 
     g_hash_table_remove(info->json_ifaces, iface_name);
 }
 
-typedef struct {
-    DBusConnection *connection;
-    GObject *gobj;
-    char *iface_name;
+typedef struct
+{
+    DBusConnection* connection;
+    GObject* gobj;
+    char* iface_name;
 } BigDBusGObject;
 
 static void
-gobj_path_unregistered(DBusConnection  *connection,
-                       void            *user_data)
+gobj_path_unregistered(DBusConnection* connection, void* user_data)
 {
-    BigDBusGObject *g;
+    BigDBusGObject* g;
 
     g = user_data;
 
@@ -1645,25 +1590,24 @@ gobj_path_unregistered(DBusConnection  *connection,
 }
 
 static DBusHandlerResult
-gobj_path_message(DBusConnection  *connection,
-                  DBusMessage     *message,
-                  void            *user_data)
+gobj_path_message(DBusConnection* connection,
+                  DBusMessage* message,
+                  void* user_data)
 {
-    BigDBusGObject *g;
-    BigDBusInfo *info;
-    BigJsonIface *iface;
-    const char *message_iface;
-    const char *message_method;
+    BigDBusGObject* g;
+    BigDBusInfo* info;
+    BigJsonIface* iface;
+    const char* message_iface;
+    const char* message_method;
     DBusError derror;
     int i;
-    const BigDBusJsonMethod *method;
+    const BigDBusJsonMethod* method;
     DBusMessageIter arg_iter, dict_iter;
 
     info = _big_dbus_ensure_info(connection);
     g = user_data;
 
-    big_debug(BIG_DEBUG_UTIL_DBUS,
-              "Received message to iface %s gobj %p",
+    big_debug(BIG_DEBUG_UTIL_DBUS, "Received message to iface %s gobj %p",
               g->iface_name, g->gobj);
 
     if (g->gobj == NULL) {
@@ -1680,24 +1624,23 @@ gobj_path_message(DBusConnection  *connection,
 
     /* FIXME implement Introspectable() just to enable dbus debugger */
 
-    if (message_iface != NULL &&
-        strcmp(message_iface, g->iface_name) != 0) {
+    if (message_iface != NULL && strcmp(message_iface, g->iface_name) != 0) {
 
-        dbus_set_error(&derror, DBUS_ERROR_UNKNOWN_METHOD,
-                       "Interface '%s' not implemented by this object, did you mean '%s'?",
-                       message_iface, g->iface_name);
+        dbus_set_error(
+          &derror, DBUS_ERROR_UNKNOWN_METHOD,
+          "Interface '%s' not implemented by this object, did you mean '%s'?",
+          message_iface, g->iface_name);
 
         goto out;
     }
 
-    iface = g_hash_table_lookup(info->json_ifaces,
-                                g->iface_name);
+    iface = g_hash_table_lookup(info->json_ifaces, g->iface_name);
     if (iface == NULL) {
-        g_warning("Object registered with iface %s but that iface is not registered",
-                  g->iface_name);
+        g_warning(
+          "Object registered with iface %s but that iface is not registered",
+          g->iface_name);
         dbus_set_error(&derror, DBUS_ERROR_UNKNOWN_METHOD,
-                       "Bug - '%s' is not registered",
-                       g->iface_name);
+                       "Bug - '%s' is not registered", g->iface_name);
         goto out;
     }
 
@@ -1712,15 +1655,16 @@ gobj_path_message(DBusConnection  *connection,
 
     if (method == NULL) {
         dbus_set_error(&derror, DBUS_ERROR_UNKNOWN_METHOD,
-                       "Interface '%s' has no method '%s'",
-                       g->iface_name, message_method);
+                       "Interface '%s' has no method '%s'", g->iface_name,
+                       message_method);
         goto out;
     }
 
     if (!dbus_message_has_signature(message, "a{sv}")) {
-        dbus_set_error(&derror, DBUS_ERROR_INVALID_ARGS,
-                       "Method %s.%s should have 1 argument which is a dictionary",
-                       g->iface_name, message_method);
+        dbus_set_error(
+          &derror, DBUS_ERROR_INVALID_ARGS,
+          "Method %s.%s should have 1 argument which is a dictionary",
+          g->iface_name, message_method);
         goto out;
     }
 
@@ -1728,26 +1672,22 @@ gobj_path_message(DBusConnection  *connection,
     dbus_message_iter_recurse(&arg_iter, &dict_iter);
 
     if (method->sync_func != NULL) {
-        DBusMessage *reply;
+        DBusMessage* reply;
         DBusMessageIter out_arg_iter, out_dict_iter;
 
         reply = dbus_message_new_method_return(message);
         if (reply == NULL) {
-            dbus_set_error(&derror, DBUS_ERROR_NO_MEMORY,
-                           "No memory");
+            dbus_set_error(&derror, DBUS_ERROR_NO_MEMORY, "No memory");
             goto out;
         }
 
         dbus_message_iter_init_append(reply, &out_arg_iter);
-        dbus_message_iter_open_container(&out_arg_iter,
-                                         DBUS_TYPE_ARRAY, "{sv}",
+        dbus_message_iter_open_container(&out_arg_iter, DBUS_TYPE_ARRAY, "{sv}",
                                          &out_dict_iter);
 
         g_object_ref(g->gobj);
-        (* method->sync_func) (connection, message,
-                               &dict_iter, &out_dict_iter,
-                               g->gobj,
-                               &derror);
+        (*method->sync_func)(connection, message, &dict_iter, &out_dict_iter,
+                             g->gobj, &derror);
         g_object_unref(g->gobj);
 
         dbus_message_iter_close_container(&out_arg_iter, &out_dict_iter);
@@ -1759,21 +1699,17 @@ gobj_path_message(DBusConnection  *connection,
 
     } else if (method->async_func != NULL) {
         g_object_ref(g->gobj);
-        (* method->async_func) (connection, message,
-                                &dict_iter,
-                                g->gobj);
+        (*method->async_func)(connection, message, &dict_iter, g->gobj);
         g_object_unref(g->gobj);
     } else {
         g_warning("Method %s does not have any implementation", method->name);
     }
 
- out:
+out:
     if (dbus_error_is_set(&derror)) {
-        DBusMessage *reply;
+        DBusMessage* reply;
 
-        reply = dbus_message_new_error(message,
-                                       derror.name,
-                                       derror.message);
+        reply = dbus_message_new_error(message, derror.name, derror.message);
         dbus_error_free(&derror);
 
         if (reply != NULL) {
@@ -1792,9 +1728,7 @@ gobj_path_message(DBusConnection  *connection,
 }
 
 static DBusObjectPathVTable gobj_vtable = {
-    gobj_path_unregistered,
-    gobj_path_message,
-    NULL,
+    gobj_path_unregistered, gobj_path_message, NULL,
 };
 
 /* Note that because of how this works, each object can be registered
@@ -1802,19 +1736,19 @@ static DBusObjectPathVTable gobj_vtable = {
  * but we'll fix it when we need it.
  */
 void
-big_dbus_register_g_object(DBusConnection *connection,
-                           const char     *path,
-                           GObject        *gobj,
-                           const char     *iface_name)
+big_dbus_register_g_object(DBusConnection* connection,
+                           const char* path,
+                           GObject* gobj,
+                           const char* iface_name)
 {
-    BigDBusGObject *g;
+    BigDBusGObject* g;
 
     g = g_slice_new0(BigDBusGObject);
     g->iface_name = g_strdup(iface_name);
     g->gobj = gobj;
 
-    if (!dbus_connection_register_object_path(connection, path,
-                                              &gobj_vtable, g)) {
+    if (!dbus_connection_register_object_path(connection, path, &gobj_vtable,
+                                              g)) {
         g_warning("Failed to register object path %s", path);
     }
 
@@ -1822,30 +1756,31 @@ big_dbus_register_g_object(DBusConnection *connection,
 }
 
 void
-big_dbus_unregister_g_object (DBusConnection *connection,
-                              const char     *path)
+big_dbus_unregister_g_object(DBusConnection* connection, const char* path)
 {
     dbus_connection_unregister_object_path(connection, path);
 }
 
 static void
-open_json_entry(DBusMessageIter *dict_iter,
-                const char      *key,
-                const char      *signature,
-                DBusMessageIter *entry_iter,
-                DBusMessageIter *variant_iter)
+open_json_entry(DBusMessageIter* dict_iter,
+                const char* key,
+                const char* signature,
+                DBusMessageIter* entry_iter,
+                DBusMessageIter* variant_iter)
 {
-    dbus_message_iter_open_container(dict_iter, DBUS_TYPE_DICT_ENTRY, NULL, entry_iter);
+    dbus_message_iter_open_container(dict_iter, DBUS_TYPE_DICT_ENTRY, NULL,
+                                     entry_iter);
 
     dbus_message_iter_append_basic(entry_iter, DBUS_TYPE_STRING, &key);
 
-    dbus_message_iter_open_container(entry_iter, DBUS_TYPE_VARIANT, signature, variant_iter);
+    dbus_message_iter_open_container(entry_iter, DBUS_TYPE_VARIANT, signature,
+                                     variant_iter);
 }
 
 static void
-close_json_entry(DBusMessageIter *dict_iter,
-                 DBusMessageIter *entry_iter,
-                 DBusMessageIter *variant_iter)
+close_json_entry(DBusMessageIter* dict_iter,
+                 DBusMessageIter* entry_iter,
+                 DBusMessageIter* variant_iter)
 {
     dbus_message_iter_close_container(entry_iter, variant_iter);
 
@@ -1853,12 +1788,12 @@ close_json_entry(DBusMessageIter *dict_iter,
 }
 
 static void
-open_json_entry_array(DBusMessageIter *dict_iter,
-                      const char      *key,
-                      int              array_element_type,
-                      DBusMessageIter *entry_iter,
-                      DBusMessageIter *variant_iter,
-                      DBusMessageIter *array_iter)
+open_json_entry_array(DBusMessageIter* dict_iter,
+                      const char* key,
+                      int array_element_type,
+                      DBusMessageIter* entry_iter,
+                      DBusMessageIter* variant_iter,
+                      DBusMessageIter* array_iter)
 {
     char buf[3];
     buf[0] = 'a';
@@ -1867,14 +1802,15 @@ open_json_entry_array(DBusMessageIter *dict_iter,
 
     open_json_entry(dict_iter, key, buf, entry_iter, variant_iter);
 
-    dbus_message_iter_open_container(variant_iter, DBUS_TYPE_ARRAY, &buf[1], array_iter);
+    dbus_message_iter_open_container(variant_iter, DBUS_TYPE_ARRAY, &buf[1],
+                                     array_iter);
 }
 
 static void
-close_json_entry_array(DBusMessageIter *dict_iter,
-                       DBusMessageIter *entry_iter,
-                       DBusMessageIter *variant_iter,
-                       DBusMessageIter *array_iter)
+close_json_entry_array(DBusMessageIter* dict_iter,
+                       DBusMessageIter* entry_iter,
+                       DBusMessageIter* variant_iter,
+                       DBusMessageIter* array_iter)
 {
     dbus_message_iter_close_container(variant_iter, array_iter);
 
@@ -1882,10 +1818,10 @@ close_json_entry_array(DBusMessageIter *dict_iter,
 }
 
 void
-big_dbus_append_json_entry (DBusMessageIter *dict_iter,
-                            const char      *key,
-                            int              dbus_type,
-                            void            *basic_value_p)
+big_dbus_append_json_entry(DBusMessageIter* dict_iter,
+                           const char* key,
+                           int dbus_type,
+                           void* basic_value_p)
 {
     DBusMessageIter entry_iter, variant_iter;
     char buf[2];
@@ -1901,138 +1837,128 @@ big_dbus_append_json_entry (DBusMessageIter *dict_iter,
 }
 
 void
-big_dbus_append_json_entry_STRING (DBusMessageIter *dict_iter,
-                                   const char      *key,
-                                   const char      *value)
+big_dbus_append_json_entry_STRING(DBusMessageIter* dict_iter,
+                                  const char* key,
+                                  const char* value)
 {
     big_dbus_append_json_entry(dict_iter, key, DBUS_TYPE_STRING, &value);
 }
 
 void
-big_dbus_append_json_entry_INT32 (DBusMessageIter *dict_iter,
-                                  const char      *key,
-                                  dbus_int32_t     value)
+big_dbus_append_json_entry_INT32(DBusMessageIter* dict_iter,
+                                 const char* key,
+                                 dbus_int32_t value)
 {
     big_dbus_append_json_entry(dict_iter, key, DBUS_TYPE_INT32, &value);
 }
 
 void
-big_dbus_append_json_entry_DOUBLE (DBusMessageIter *dict_iter,
-                                   const char      *key,
-                                   double           value)
+big_dbus_append_json_entry_DOUBLE(DBusMessageIter* dict_iter,
+                                  const char* key,
+                                  double value)
 {
     big_dbus_append_json_entry(dict_iter, key, DBUS_TYPE_DOUBLE, &value);
 }
 
 void
-big_dbus_append_json_entry_BOOLEAN (DBusMessageIter *dict_iter,
-                                  const char      *key,
-                                  dbus_bool_t      value)
+big_dbus_append_json_entry_BOOLEAN(DBusMessageIter* dict_iter,
+                                   const char* key,
+                                   dbus_bool_t value)
 {
     big_dbus_append_json_entry(dict_iter, key, DBUS_TYPE_BOOLEAN, &value);
 }
 
-/* when coming from a dynamic language, we don't know what type of array '[]' is supposed to be */
+/* when coming from a dynamic language, we don't know what type of array '[]' is
+ * supposed to be */
 void
-big_dbus_append_json_entry_EMPTY_ARRAY (DBusMessageIter  *dict_iter,
-                                        const char       *key)
+big_dbus_append_json_entry_EMPTY_ARRAY(DBusMessageIter* dict_iter,
+                                       const char* key)
 {
     DBusMessageIter entry_iter, variant_iter, array_iter;
 
-    /* so just say VARIANT even though there won't be any elements in the array */
-    open_json_entry_array(dict_iter, key, DBUS_TYPE_VARIANT, &entry_iter, &variant_iter, &array_iter);
+    /* so just say VARIANT even though there won't be any elements in the array
+     */
+    open_json_entry_array(dict_iter, key, DBUS_TYPE_VARIANT, &entry_iter,
+                          &variant_iter, &array_iter);
 
     close_json_entry_array(dict_iter, &entry_iter, &variant_iter, &array_iter);
 }
 
 void
-big_dbus_append_json_entry_STRING_ARRAY (DBusMessageIter  *dict_iter,
-                                         const char       *key,
-                                         const char      **value)
+big_dbus_append_json_entry_STRING_ARRAY(DBusMessageIter* dict_iter,
+                                        const char* key,
+                                        const char** value)
 {
     DBusMessageIter entry_iter, variant_iter, array_iter;
     int i;
 
-    open_json_entry_array(dict_iter, key, DBUS_TYPE_STRING, &entry_iter, &variant_iter, &array_iter);
+    open_json_entry_array(dict_iter, key, DBUS_TYPE_STRING, &entry_iter,
+                          &variant_iter, &array_iter);
 
     for (i = 0; value[i] != NULL; ++i) {
-        dbus_message_iter_append_basic(&array_iter, DBUS_TYPE_STRING, &value[i]);
+        dbus_message_iter_append_basic(&array_iter, DBUS_TYPE_STRING,
+                                       &value[i]);
     }
 
     close_json_entry_array(dict_iter, &entry_iter, &variant_iter, &array_iter);
 }
 
 gboolean
-big_dbus_message_iter_get_gsize(DBusMessageIter  *iter,
-                                gsize            *value_p)
+big_dbus_message_iter_get_gsize(DBusMessageIter* iter, gsize* value_p)
 {
     switch (dbus_message_iter_get_arg_type(iter)) {
-    case DBUS_TYPE_INT32:
-        {
+        case DBUS_TYPE_INT32: {
             dbus_int32_t v;
             dbus_message_iter_get_basic(iter, &v);
             if (v < 0)
                 return FALSE;
             *value_p = v;
-        }
-        break;
-    case DBUS_TYPE_UINT32:
-        {
+        } break;
+        case DBUS_TYPE_UINT32: {
             dbus_uint32_t v;
             dbus_message_iter_get_basic(iter, &v);
             *value_p = v;
-        }
-        break;
-    case DBUS_TYPE_INT64:
-        {
+        } break;
+        case DBUS_TYPE_INT64: {
             dbus_int64_t v;
             dbus_message_iter_get_basic(iter, &v);
             if (v < 0)
                 return FALSE;
-            if (((guint64)v) > G_MAXSIZE)
+            if (((guint64) v) > G_MAXSIZE)
                 return FALSE;
             *value_p = v;
-        }
-        break;
-    case DBUS_TYPE_UINT64:
-        {
+        } break;
+        case DBUS_TYPE_UINT64: {
             dbus_uint64_t v;
             dbus_message_iter_get_basic(iter, &v);
             if (v > G_MAXSIZE)
                 return FALSE;
             *value_p = v;
-        }
-        break;
-    default:
-        return FALSE;
+        } break;
+        default:
+            return FALSE;
     }
 
     return TRUE;
 }
 
 gboolean
-big_dbus_message_iter_get_gssize(DBusMessageIter  *iter,
-                                 gssize           *value_p)
+big_dbus_message_iter_get_gssize(DBusMessageIter* iter, gssize* value_p)
 {
     switch (dbus_message_iter_get_arg_type(iter)) {
-    case DBUS_TYPE_INT32:
-        {
+        case DBUS_TYPE_INT32: {
             dbus_int32_t v;
             dbus_message_iter_get_basic(iter, &v);
             *value_p = v;
-        }
-        break;
-    case DBUS_TYPE_UINT32:
-        {
+        } break;
+        case DBUS_TYPE_UINT32: {
             dbus_uint32_t v;
             dbus_message_iter_get_basic(iter, &v);
             if (v > (guint32) G_MAXSSIZE)
                 return FALSE;
             *value_p = v;
-        }
-        break;
-    case DBUS_TYPE_INT64:
-        {
+        } break;
+        case DBUS_TYPE_INT64: {
             dbus_int64_t v;
             dbus_message_iter_get_basic(iter, &v);
             if (v > (gint64) G_MAXSSIZE)
@@ -2040,19 +1966,16 @@ big_dbus_message_iter_get_gssize(DBusMessageIter  *iter,
             if (v < (gint64) G_MINSSIZE)
                 return FALSE;
             *value_p = v;
-        }
-        break;
-    case DBUS_TYPE_UINT64:
-        {
+        } break;
+        case DBUS_TYPE_UINT64: {
             dbus_uint64_t v;
             dbus_message_iter_get_basic(iter, &v);
             if (v > (guint64) G_MAXSSIZE)
                 return FALSE;
             *value_p = v;
-        }
-        break;
-    default:
-        return FALSE;
+        } break;
+        default:
+            return FALSE;
     }
 
     return TRUE;
@@ -2073,23 +1996,27 @@ big_dbus_message_iter_get_gssize(DBusMessageIter  *iter,
 #include <sys/wait.h>
 
 static pid_t test_service_pid = 0;
-static BigDBusProxy *test_service_proxy = NULL;
+static BigDBusProxy* test_service_proxy = NULL;
 
 static pid_t test_io_pid = 0;
-static BigDBusProxy *test_io_proxy = NULL;
+static BigDBusProxy* test_io_proxy = NULL;
 
-static GMainLoop *client_loop = NULL;
+static GMainLoop* client_loop = NULL;
 
 static int n_running_children = 0;
 
-static BigDBusInputStream  *input_from_io_service;
-static BigDBusOutputStream *output_to_io_service;
+static BigDBusInputStream* input_from_io_service;
+static BigDBusOutputStream* output_to_io_service;
 
-static const char stream_data_to_io_service[] = "This is sent from the main test process to the IO service.";
-static const char stream_data_from_io_service[] = "This is sent from the IO service to the main test process. The quick brown fox, etc.";
+static const char stream_data_to_io_service[]
+  = "This is sent from the main test process to the IO service.";
+static const char stream_data_from_io_service[] = "This is sent from the IO "
+                                                  "service to the main test "
+                                                  "process. The quick brown "
+                                                  "fox, etc.";
 
-static void do_test_service_child (void);
-static void do_test_io_child      (void);
+static void do_test_service_child(void);
+static void do_test_io_child(void);
 
 /* quit when all children are gone */
 static void
@@ -2104,16 +2031,16 @@ another_child_down(void)
 }
 
 static const char*
-extract_string_arg(DBusMessageIter *in_iter,
-                   const char      *prop_name,
-                   DBusError       *error)
+extract_string_arg(DBusMessageIter* in_iter,
+                   const char* prop_name,
+                   DBusError* error)
 {
-    const char *s;
+    const char* s;
 
     s = NULL;
     while (dbus_message_iter_get_arg_type(in_iter) == DBUS_TYPE_DICT_ENTRY) {
         DBusMessageIter entry_iter, variant_iter;
-        const char *key;
+        const char* key;
 
         dbus_message_iter_recurse(in_iter, &entry_iter);
 
@@ -2123,7 +2050,8 @@ extract_string_arg(DBusMessageIter *in_iter,
             dbus_message_iter_next(&entry_iter);
 
             dbus_message_iter_recurse(&entry_iter, &variant_iter);
-            if (dbus_message_iter_get_arg_type(&variant_iter) != DBUS_TYPE_STRING) {
+            if (dbus_message_iter_get_arg_type(&variant_iter)
+                != DBUS_TYPE_STRING) {
                 dbus_set_error(error, DBUS_ERROR_INVALID_ARGS,
                                "Value of '%s' prop should be a string",
                                prop_name);
@@ -2136,8 +2064,8 @@ extract_string_arg(DBusMessageIter *in_iter,
         }
     }
 
-    dbus_set_error(error, DBUS_ERROR_INVALID_ARGS,
-                   "No '%s' prop provided", prop_name);
+    dbus_set_error(error, DBUS_ERROR_INVALID_ARGS, "No '%s' prop provided",
+                   prop_name);
     return NULL;
 }
 
@@ -2199,22 +2127,23 @@ fork_child_test_io(void)
 }
 
 static void
-on_expected_fnf_error_reply_kill_child(BigDBusProxy    *proxy,
-                                       const char      *error_name,
-                                       const char      *error_message,
-                                       void            *data)
+on_expected_fnf_error_reply_kill_child(BigDBusProxy* proxy,
+                                       const char* error_name,
+                                       const char* error_message,
+                                       void* data)
 {
     big_debug(BIG_DEBUG_IN_TESTS,
               "got expected error reply to alwaysErrorSync, killing child");
 
     /* We were expecting an error, good. */
     if (strcmp(error_name, DBUS_ERROR_FILE_NOT_FOUND) != 0) {
-        g_error("Got error we did not expect %s: %s",
-                error_name, error_message);
+        g_error("Got error we did not expect %s: %s", error_name,
+                error_message);
     }
 
     if (kill(test_service_pid, SIGTERM) < 0) {
-        g_error("Test service was no longer around... it must have failed somehow (%s)",
+        g_error("Test service was no longer around... it must have failed "
+                "somehow (%s)",
                 strerror(errno));
     }
 
@@ -2222,148 +2151,132 @@ on_expected_fnf_error_reply_kill_child(BigDBusProxy    *proxy,
 }
 
 static void
-on_unexpected_error_reply(BigDBusProxy    *proxy,
-                          const char      *error_name,
-                          const char      *error_message,
-                          void            *data)
+on_unexpected_error_reply(BigDBusProxy* proxy,
+                          const char* error_name,
+                          const char* error_message,
+                          void* data)
 {
-    const char *context_text = data;
+    const char* context_text = data;
 
-    g_error("Got error %s: '%s' context was: %s",
-            error_name, error_message, context_text);
+    g_error("Got error %s: '%s' context was: %s", error_name, error_message,
+            context_text);
 }
 
 static void
-on_get_always_error_reply(BigDBusProxy    *proxy,
-                          DBusMessage     *message,
-                          DBusMessageIter *return_value_iter,
-                          void            *data)
+on_get_always_error_reply(BigDBusProxy* proxy,
+                          DBusMessage* message,
+                          DBusMessageIter* return_value_iter,
+                          void* data)
 {
-    g_error("alwaysError json method supposed to return an error always, not a valid reply");
+    g_error("alwaysError json method supposed to return an error always, not a "
+            "valid reply");
 }
 
 static void
-on_get_some_stuff_reply(BigDBusProxy    *proxy,
-                        DBusMessage     *message,
-                        DBusMessageIter *return_value_iter,
-                        void            *data)
+on_get_some_stuff_reply(BigDBusProxy* proxy,
+                        DBusMessage* message,
+                        DBusMessageIter* return_value_iter,
+                        void* data)
 {
-    big_debug(BIG_DEBUG_IN_TESTS,
-              "reply received to getSomeStuffSync");
+    big_debug(BIG_DEBUG_IN_TESTS, "reply received to getSomeStuffSync");
 
     /* FIXME look at the return value to see if it's what
      * the test service sends
      */
 
-    big_dbus_proxy_call_json_async(test_service_proxy,
-                                   "alwaysErrorSync",
+    big_dbus_proxy_call_json_async(test_service_proxy, "alwaysErrorSync",
                                    on_get_always_error_reply,
-                                   on_expected_fnf_error_reply_kill_child,
-                                   NULL,
+                                   on_expected_fnf_error_reply_kill_child, NULL,
                                    NULL);
 }
 
 static void
-on_test_service_appeared(DBusConnection *connection,
-                         const char     *name,
-                         const char     *new_owner_unique_name,
-                         void           *data)
+on_test_service_appeared(DBusConnection* connection,
+                         const char* name,
+                         const char* new_owner_unique_name,
+                         void* data)
 {
     dbus_int32_t v_INT32;
 
-    big_debug(BIG_DEBUG_IN_TESTS,
-              "%s appeared",
-              name);
+    big_debug(BIG_DEBUG_IN_TESTS, "%s appeared", name);
 
-    test_service_proxy =
-        big_dbus_proxy_new(connection, new_owner_unique_name,
-                           "/com/litl/test/object42",
-                           "com.litl.TestIface");
+    test_service_proxy
+      = big_dbus_proxy_new(connection, new_owner_unique_name,
+                           "/com/litl/test/object42", "com.litl.TestIface");
     v_INT32 = 42;
-    big_dbus_proxy_call_json_async(test_service_proxy,
-                                   "getSomeStuffSync",
-                                   on_get_some_stuff_reply,
-                                   on_unexpected_error_reply,
-                                   "getSomeStuffSync call from on_test_service_appeared",
-                                   "yourNameIs", DBUS_TYPE_STRING, &name,
-                                   "yourUniqueNameIs", DBUS_TYPE_STRING, &new_owner_unique_name,
-                                   "anIntegerIs", DBUS_TYPE_INT32, &v_INT32,
-                                   NULL);
+    big_dbus_proxy_call_json_async(
+      test_service_proxy, "getSomeStuffSync", on_get_some_stuff_reply,
+      on_unexpected_error_reply,
+      "getSomeStuffSync call from on_test_service_appeared", "yourNameIs",
+      DBUS_TYPE_STRING, &name, "yourUniqueNameIs", DBUS_TYPE_STRING,
+      &new_owner_unique_name, "anIntegerIs", DBUS_TYPE_INT32, &v_INT32, NULL);
 }
 
 static void
-on_test_service_vanished(DBusConnection *connection,
-                         const char     *name,
-                         const char     *old_owner_unique_name,
-                         void           *data)
+on_test_service_vanished(DBusConnection* connection,
+                         const char* name,
+                         const char* old_owner_unique_name,
+                         void* data)
 {
-    big_debug(BIG_DEBUG_IN_TESTS,
-              "%s vanished", name);
+    big_debug(BIG_DEBUG_IN_TESTS, "%s vanished", name);
 
     another_child_down();
 }
 
-static BigDBusWatchNameFuncs watch_test_service_funcs = {
-    on_test_service_appeared,
-    on_test_service_vanished
-};
+static BigDBusWatchNameFuncs watch_test_service_funcs
+  = { on_test_service_appeared, on_test_service_vanished };
 
 static void
-on_confirm_streams_reply(BigDBusProxy    *proxy,
-                         DBusMessage     *message,
-                         DBusMessageIter *return_value_iter,
-                         void            *data)
+on_confirm_streams_reply(BigDBusProxy* proxy,
+                         DBusMessage* message,
+                         DBusMessageIter* return_value_iter,
+                         void* data)
 {
-    const char *received;
+    const char* received;
 
-    received = extract_string_arg(return_value_iter,
-                                  "received",
-                                  NULL);
+    received = extract_string_arg(return_value_iter, "received", NULL);
     g_assert(received != NULL);
 
     if (strcmp(received, stream_data_to_io_service) != 0) {
         g_error("We sent the child process '%s' but it says it got '%s'",
-                stream_data_to_io_service,
-                received);
+                stream_data_to_io_service, received);
     }
 
-    big_debug(BIG_DEBUG_IN_TESTS,
-              "com.litl.TestIO says it got: '%s'", received);
+    big_debug(BIG_DEBUG_IN_TESTS, "com.litl.TestIO says it got: '%s'",
+              received);
 
     /* We've exchanged all our streams - time to kill the TestIO
      * child process
      */
     big_debug(BIG_DEBUG_IN_TESTS, "Sending TERM to TestIO child");
     if (kill(test_io_pid, SIGTERM) < 0) {
-        g_error("Test IO service was no longer around... it must have failed somehow (%s)",
+        g_error("Test IO service was no longer around... it must have failed "
+                "somehow (%s)",
                 strerror(errno));
     }
 }
 
 static void
-on_setup_streams_reply(BigDBusProxy    *proxy,
-                       DBusMessage     *message,
-                       DBusMessageIter *return_value_iter,
-                       void            *data)
+on_setup_streams_reply(BigDBusProxy* proxy,
+                       DBusMessage* message,
+                       DBusMessageIter* return_value_iter,
+                       void* data)
 {
-    const char *stream_path;
+    const char* stream_path;
     gsize total;
     gssize result;
     gsize read_size;
-    GError *error;
-    GString *str;
+    GError* error;
+    GString* str;
     char buf[10];
 
-    big_debug(BIG_DEBUG_IN_TESTS,
-              "Got reply to setupStreams");
+    big_debug(BIG_DEBUG_IN_TESTS, "Got reply to setupStreams");
 
-    stream_path = extract_string_arg(return_value_iter,
-                                     "stream",
-                                     NULL);
+    stream_path = extract_string_arg(return_value_iter, "stream", NULL);
     g_assert(stream_path != NULL);
 
-    output_to_io_service =
-        big_dbus_output_stream_new(big_dbus_proxy_get_connection(proxy),
+    output_to_io_service
+      = big_dbus_output_stream_new(big_dbus_proxy_get_connection(proxy),
                                    dbus_message_get_sender(message),
                                    stream_path);
 
@@ -2375,10 +2288,7 @@ on_setup_streams_reply(BigDBusProxy    *proxy,
 
     error = NULL;
     result = g_output_stream_write(G_OUTPUT_STREAM(output_to_io_service),
-                                   stream_data_to_io_service,
-                                   10,
-                                   NULL,
-                                   &error);
+                                   stream_data_to_io_service, 10, NULL, &error);
     if (result < 0) {
         g_error("Error writing to output stream: %s", error->message);
         g_error_free(error);
@@ -2389,8 +2299,7 @@ on_setup_streams_reply(BigDBusProxy    *proxy,
     }
 
     if (!g_output_stream_write_all(G_OUTPUT_STREAM(output_to_io_service),
-                                   stream_data_to_io_service + 10,
-                                   total - 10,
+                                   stream_data_to_io_service + 10, total - 10,
                                    NULL, NULL, &error)) {
         g_error("Error writing all to output stream: %s", error->message);
         g_error_free(error);
@@ -2399,12 +2308,14 @@ on_setup_streams_reply(BigDBusProxy    *proxy,
     /* flush should do nothing here, and is not needed, but
      * just calling it to test it
      */
-    if (!g_output_stream_flush(G_OUTPUT_STREAM(output_to_io_service), NULL, &error)) {
+    if (!g_output_stream_flush(G_OUTPUT_STREAM(output_to_io_service), NULL,
+                               &error)) {
         g_error("Error flushing output stream: %s", error->message);
         g_error_free(error);
     }
 
-    if (!g_output_stream_close(G_OUTPUT_STREAM(output_to_io_service), NULL, &error)) {
+    if (!g_output_stream_close(G_OUTPUT_STREAM(output_to_io_service), NULL,
+                               &error)) {
         g_error("Error closing output stream: %s", error->message);
         g_error_free(error);
     }
@@ -2420,16 +2331,15 @@ on_setup_streams_reply(BigDBusProxy    *proxy,
 
     while (TRUE) {
         /* test get_received() */
-        g_assert(big_dbus_input_stream_get_received(input_from_io_service) <= strlen(stream_data_from_io_service));
+        g_assert(big_dbus_input_stream_get_received(input_from_io_service)
+                 <= strlen(stream_data_from_io_service));
 
         /* This is a blocking read... in production code, you would
          * want to use the ready-to-read signal instead to avoid
          * blocking when there is nothing to read.
          */
-        result = g_input_stream_read(G_INPUT_STREAM(input_from_io_service),
-                                     buf,
-                                     read_size,
-                                     NULL, &error);
+        result = g_input_stream_read(G_INPUT_STREAM(input_from_io_service), buf,
+                                     read_size, NULL, &error);
         if (result < 0) {
             g_error("Error reading %d bytes from input stream: %s",
                     (int) read_size, error->message);
@@ -2447,7 +2357,8 @@ on_setup_streams_reply(BigDBusProxy    *proxy,
             read_size += 1;
     }
 
-    if (!g_input_stream_close(G_INPUT_STREAM(input_from_io_service), NULL, &error)) {
+    if (!g_input_stream_close(G_INPUT_STREAM(input_from_io_service), NULL,
+                              &error)) {
         g_error("Error closing input stream: %s", error->message);
         g_error_free(error);
     }
@@ -2456,45 +2367,38 @@ on_setup_streams_reply(BigDBusProxy    *proxy,
 
     /* Now make the confirmStreams call
      */
-    big_debug(BIG_DEBUG_IN_TESTS,
-              "Confirming to com.litl.TestIO we got: '%s'", str->str);
+    big_debug(BIG_DEBUG_IN_TESTS, "Confirming to com.litl.TestIO we got: '%s'",
+              str->str);
 
-    big_dbus_proxy_call_json_async(test_io_proxy,
-                                   "confirmStreamsData",
-                                   on_confirm_streams_reply,
-                                   on_unexpected_error_reply,
-                                   "confirmStreamsData call from on_setup_streams_reply",
-                                   "received", DBUS_TYPE_STRING, &str->str,
-                                   NULL);
+    big_dbus_proxy_call_json_async(
+      test_io_proxy, "confirmStreamsData", on_confirm_streams_reply,
+      on_unexpected_error_reply,
+      "confirmStreamsData call from on_setup_streams_reply", "received",
+      DBUS_TYPE_STRING, &str->str, NULL);
 
     g_string_free(str, TRUE);
 }
 
 static void
-on_test_io_appeared(DBusConnection *connection,
-                    const char     *name,
-                    const char     *new_owner_unique_name,
-                    void           *data)
+on_test_io_appeared(DBusConnection* connection,
+                    const char* name,
+                    const char* new_owner_unique_name,
+                    void* data)
 {
-    const char *stream_path;
+    const char* stream_path;
 
-    big_debug(BIG_DEBUG_IN_TESTS,
-              "%s appeared",
-              name);
+    big_debug(BIG_DEBUG_IN_TESTS, "%s appeared", name);
 
-    test_io_proxy =
-        big_dbus_proxy_new(connection, new_owner_unique_name,
-                           "/com/litl/test/object47",
-                           "com.litl.TestIO");
+    test_io_proxy
+      = big_dbus_proxy_new(connection, new_owner_unique_name,
+                           "/com/litl/test/object47", "com.litl.TestIO");
 
-    input_from_io_service =
-        g_object_new(BIG_TYPE_DBUS_INPUT_STREAM, NULL);
+    input_from_io_service = g_object_new(BIG_TYPE_DBUS_INPUT_STREAM, NULL);
     big_dbus_input_stream_attach(input_from_io_service, connection);
 
     stream_path = big_dbus_input_stream_get_path(input_from_io_service);
 
-    big_dbus_proxy_call_json_async(test_io_proxy,
-                                   "setupStreams",
+    big_dbus_proxy_call_json_async(test_io_proxy, "setupStreams",
                                    on_setup_streams_reply,
                                    on_unexpected_error_reply,
                                    "setupStreams call from on_test_io_appeared",
@@ -2503,21 +2407,18 @@ on_test_io_appeared(DBusConnection *connection,
 }
 
 static void
-on_test_io_vanished(DBusConnection *connection,
-                    const char     *name,
-                    const char     *old_owner_unique_name,
-                    void           *data)
+on_test_io_vanished(DBusConnection* connection,
+                    const char* name,
+                    const char* old_owner_unique_name,
+                    void* data)
 {
-    big_debug(BIG_DEBUG_IN_TESTS,
-              "%s vanished", name);
+    big_debug(BIG_DEBUG_IN_TESTS, "%s vanished", name);
 
     another_child_down();
 }
 
-static BigDBusWatchNameFuncs watch_test_io_funcs = {
-    on_test_io_appeared,
-    on_test_io_vanished
-};
+static BigDBusWatchNameFuncs watch_test_io_funcs
+  = { on_test_io_appeared, on_test_io_vanished };
 
 void
 bigtest_test_func_util_dbus_client(void)
@@ -2552,17 +2453,11 @@ bigtest_test_func_util_dbus_client(void)
     g_assert(test_service_pid != 0);
     g_assert(test_io_pid != 0);
 
-    big_dbus_watch_name(DBUS_BUS_SESSION,
-                        "com.litl.TestService",
-                        0,
-                        &watch_test_service_funcs,
-                        NULL);
+    big_dbus_watch_name(DBUS_BUS_SESSION, "com.litl.TestService", 0,
+                        &watch_test_service_funcs, NULL);
 
-    big_dbus_watch_name(DBUS_BUS_SESSION,
-                        "com.litl.TestIO",
-                        0,
-                        &watch_test_io_funcs,
-                        NULL);
+    big_dbus_watch_name(DBUS_BUS_SESSION, "com.litl.TestIO", 0,
+                        &watch_test_io_funcs, NULL);
 
     client_loop = g_main_loop_new(NULL, FALSE);
 
@@ -2576,8 +2471,7 @@ bigtest_test_func_util_dbus_client(void)
 
     /* child was killed already, or should have been */
 
-    big_debug(BIG_DEBUG_IN_TESTS,
-              "waitpid() for first child");
+    big_debug(BIG_DEBUG_IN_TESTS, "waitpid() for first child");
 
     result = waitpid(test_service_pid, &status, 0);
     if (result < 0) {
@@ -2585,15 +2479,16 @@ bigtest_test_func_util_dbus_client(void)
     }
 
     if (WIFEXITED(status) && WEXITSTATUS(status) != 0) {
-        g_error("Forked dbus service child exited with error code %d", WEXITSTATUS(status));
+        g_error("Forked dbus service child exited with error code %d",
+                WEXITSTATUS(status));
     }
 
     if (WIFSIGNALED(status) && WTERMSIG(status) != SIGTERM) {
-        g_error("Forked dbus service child exited on wrong signal number %d", WTERMSIG(status));
+        g_error("Forked dbus service child exited on wrong signal number %d",
+                WTERMSIG(status));
     }
 
-    big_debug(BIG_DEBUG_IN_TESTS,
-              "waitpid() for second child");
+    big_debug(BIG_DEBUG_IN_TESTS, "waitpid() for second child");
 
     result = waitpid(test_io_pid, &status, 0);
     if (result < 0) {
@@ -2601,11 +2496,13 @@ bigtest_test_func_util_dbus_client(void)
     }
 
     if (WIFEXITED(status) && WEXITSTATUS(status) != 0) {
-        g_error("Forked dbus service child exited with error code %d", WEXITSTATUS(status));
+        g_error("Forked dbus service child exited with error code %d",
+                WEXITSTATUS(status));
     }
 
     if (WIFSIGNALED(status) && WTERMSIG(status) != SIGTERM) {
-        g_error("Forked dbus service child exited on wrong signal number %d", WTERMSIG(status));
+        g_error("Forked dbus service child exited on wrong signal number %d",
+                WTERMSIG(status));
     }
 
     big_debug(BIG_DEBUG_IN_TESTS, "dbus client test completed");
@@ -2630,36 +2527,33 @@ bigtest_test_func_util_dbus_client(void)
  */
 
 static gboolean currently_have_test_service = FALSE;
-static GObject *test_service_object = NULL;
+static GObject* test_service_object = NULL;
 
 static void
-test_service_get_some_stuff_sync(DBusConnection  *connection,
-                                 DBusMessage     *message,
-                                 DBusMessageIter *in_iter,
-                                 DBusMessageIter *out_iter,
-                                 void            *data,
-                                 DBusError       *error)
+test_service_get_some_stuff_sync(DBusConnection* connection,
+                                 DBusMessage* message,
+                                 DBusMessageIter* in_iter,
+                                 DBusMessageIter* out_iter,
+                                 void* data,
+                                 DBusError* error)
 {
-    big_debug(BIG_DEBUG_IN_TESTS,
-              "com.litl.TestService got getSomeStuffSync");
+    big_debug(BIG_DEBUG_IN_TESTS, "com.litl.TestService got getSomeStuffSync");
 
     g_assert(G_IS_OBJECT(data));
 
-    big_dbus_append_json_entry_BOOLEAN(out_iter,
-                                       "haveTestService",
+    big_dbus_append_json_entry_BOOLEAN(out_iter, "haveTestService",
                                        currently_have_test_service);
 }
 
 static void
-test_service_always_error_sync(DBusConnection  *connection,
-                               DBusMessage     *message,
-                               DBusMessageIter *in_iter,
-                               DBusMessageIter *out_iter,
-                               void            *data,
-                               DBusError       *error)
+test_service_always_error_sync(DBusConnection* connection,
+                               DBusMessage* message,
+                               DBusMessageIter* in_iter,
+                               DBusMessageIter* out_iter,
+                               void* data,
+                               DBusError* error)
 {
-    big_debug(BIG_DEBUG_IN_TESTS,
-              "com.litl.TestService got alwaysErrorSync");
+    big_debug(BIG_DEBUG_IN_TESTS, "com.litl.TestService got alwaysErrorSync");
 
     g_assert(G_IS_OBJECT(data));
 
@@ -2667,72 +2561,57 @@ test_service_always_error_sync(DBusConnection  *connection,
                    "Did not find some kind of file! Help!");
 }
 
-static BigDBusJsonMethod test_service_methods[] = {
-    { "getSomeStuffSync", test_service_get_some_stuff_sync, NULL },
-    { "alwaysErrorSync",  test_service_always_error_sync, NULL }
-};
+static BigDBusJsonMethod test_service_methods[]
+  = { { "getSomeStuffSync", test_service_get_some_stuff_sync, NULL },
+      { "alwaysErrorSync", test_service_always_error_sync, NULL } };
 
 static void
-on_test_service_acquired(DBusConnection *connection,
-                         const char     *name,
-                         void           *data)
+on_test_service_acquired(DBusConnection* connection,
+                         const char* name,
+                         void* data)
 {
     g_assert(!currently_have_test_service);
     currently_have_test_service = TRUE;
 
-    big_debug(BIG_DEBUG_IN_TESTS,
-              "com.litl.TestService acquired by child");
+    big_debug(BIG_DEBUG_IN_TESTS, "com.litl.TestService acquired by child");
 
-    big_dbus_register_json(connection,
-                           "com.litl.TestIface",
+    big_dbus_register_json(connection, "com.litl.TestIface",
                            test_service_methods,
                            G_N_ELEMENTS(test_service_methods));
 
     test_service_object = g_object_new(G_TYPE_OBJECT, NULL);
 
-    big_dbus_register_g_object(connection,
-                               "/com/litl/test/object42",
-                               test_service_object,
-                               "com.litl.TestIface");
+    big_dbus_register_g_object(connection, "/com/litl/test/object42",
+                               test_service_object, "com.litl.TestIface");
 }
 
 static void
-on_test_service_lost(DBusConnection *connection,
-                     const char     *name,
-                     void           *data)
+on_test_service_lost(DBusConnection* connection, const char* name, void* data)
 {
     g_assert(currently_have_test_service);
     currently_have_test_service = FALSE;
 
-    big_debug(BIG_DEBUG_IN_TESTS,
-              "com.litl.TestService lost by child");
+    big_debug(BIG_DEBUG_IN_TESTS, "com.litl.TestService lost by child");
 
-    big_dbus_unregister_g_object(connection,
-                                 "/com/litl/test/object42");
+    big_dbus_unregister_g_object(connection, "/com/litl/test/object42");
 
-    big_dbus_unregister_json(connection,
-                             "com.litl.TestIface");
+    big_dbus_unregister_json(connection, "com.litl.TestIface");
 }
 
-static BigDBusNameOwnerFuncs test_service_funcs = {
-    "com.litl.TestService",
-    BIG_DBUS_NAME_SINGLE_INSTANCE,
-    on_test_service_acquired,
-    on_test_service_lost
-};
+static BigDBusNameOwnerFuncs test_service_funcs
+  = { "com.litl.TestService", BIG_DBUS_NAME_SINGLE_INSTANCE,
+      on_test_service_acquired, on_test_service_lost };
 
 static void
 do_test_service_child(void)
 {
-    GMainLoop *loop;
+    GMainLoop* loop;
 
     g_type_init();
 
     loop = g_main_loop_new(NULL, FALSE);
 
-    big_dbus_acquire_name(DBUS_BUS_SESSION,
-                          &test_service_funcs,
-                          NULL);
+    big_dbus_acquire_name(DBUS_BUS_SESSION, &test_service_funcs, NULL);
 
     g_main_loop_run(loop);
 
@@ -2745,25 +2624,24 @@ do_test_service_child(void)
  */
 
 static gboolean currently_have_test_io = FALSE;
-static GObject *test_io_object = NULL;
+static GObject* test_io_object = NULL;
 
-static BigDBusInputStream  *io_input_stream = NULL;
-static BigDBusOutputStream *io_output_stream = NULL;
+static BigDBusInputStream* io_input_stream = NULL;
+static BigDBusOutputStream* io_output_stream = NULL;
 
-static GString *input_buffer = NULL;
+static GString* input_buffer = NULL;
 
 static void
-test_io_confirm_streams_data(DBusConnection  *connection,
-                             DBusMessage     *message,
-                             DBusMessageIter *in_iter,
-                             DBusMessageIter *out_iter,
-                             void            *data,
-                             DBusError       *error)
+test_io_confirm_streams_data(DBusConnection* connection,
+                             DBusMessage* message,
+                             DBusMessageIter* in_iter,
+                             DBusMessageIter* out_iter,
+                             void* data,
+                             DBusError* error)
 {
-    const char *received;
+    const char* received;
 
-    big_debug(BIG_DEBUG_IN_TESTS,
-              "com.litl.TestIO got confirmStreamsData");
+    big_debug(BIG_DEBUG_IN_TESTS, "com.litl.TestIO got confirmStreamsData");
 
     g_assert(G_IS_OBJECT(data));
 
@@ -2775,8 +2653,7 @@ test_io_confirm_streams_data(DBusConnection  *connection,
 
     if (strcmp(received, stream_data_from_io_service) != 0) {
         g_error("We sent the main process '%s' but it says it got '%s'",
-                stream_data_from_io_service,
-                received);
+                stream_data_from_io_service, received);
         return;
     }
 
@@ -2790,46 +2667,41 @@ test_io_confirm_streams_data(DBusConnection  *connection,
         g_main_context_iteration(NULL, TRUE);
     }
 
-    big_dbus_append_json_entry_STRING(out_iter,
-                                      "received",
-                                      input_buffer->str);
+    big_dbus_append_json_entry_STRING(out_iter, "received", input_buffer->str);
 
     g_string_free(input_buffer, TRUE);
     input_buffer = NULL;
 }
 
 static void
-on_input_ready(BigDBusInputStream *dbus_stream,
-               void               *data)
+on_input_ready(BigDBusInputStream* dbus_stream, void* data)
 {
-    GInputStream *stream;
+    GInputStream* stream;
     char buf[3];
     gssize result;
-    GError *error;
+    GError* error;
 
     stream = G_INPUT_STREAM(dbus_stream);
 
     g_assert(dbus_stream == io_input_stream);
 
     /* test get_received() */
-    g_assert(big_dbus_input_stream_get_received(dbus_stream) <= strlen(stream_data_to_io_service));
+    g_assert(big_dbus_input_stream_get_received(dbus_stream)
+             <= strlen(stream_data_to_io_service));
 
     /* Should not block, since we got the ready-to-read signal */
     error = NULL;
-    result = g_input_stream_read(G_INPUT_STREAM(io_input_stream),
-                                 buf,
-                                 sizeof(buf),
-                                 NULL,
-                                 &error);
+    result = g_input_stream_read(G_INPUT_STREAM(io_input_stream), buf,
+                                 sizeof(buf), NULL, &error);
     if (result < 0) {
-        g_error("Error reading bytes from input stream: %s",
-                error->message);
+        g_error("Error reading bytes from input stream: %s", error->message);
         g_error_free(error);
     }
 
     if (result == 0) {
         /* EOF */
-        if (!g_input_stream_close(G_INPUT_STREAM(io_input_stream), NULL, &error)) {
+        if (!g_input_stream_close(G_INPUT_STREAM(io_input_stream), NULL,
+                                  &error)) {
             g_error("Error closing input stream in child: %s", error->message);
             g_error_free(error);
         }
@@ -2847,21 +2719,20 @@ on_input_ready(BigDBusInputStream *dbus_stream,
 }
 
 static void
-test_io_setup_streams(DBusConnection  *connection,
-                      DBusMessage     *message,
-                      DBusMessageIter *in_iter,
-                      DBusMessageIter *out_iter,
-                      void            *data,
-                      DBusError       *error)
+test_io_setup_streams(DBusConnection* connection,
+                      DBusMessage* message,
+                      DBusMessageIter* in_iter,
+                      DBusMessageIter* out_iter,
+                      void* data,
+                      DBusError* error)
 {
-    const char *stream_path;
+    const char* stream_path;
     gsize total;
     gsize remaining;
     gssize result;
-    GError *gerror;
+    GError* gerror;
 
-    big_debug(BIG_DEBUG_IN_TESTS,
-              "com.litl.TestIO got setupStreams");
+    big_debug(BIG_DEBUG_IN_TESTS, "com.litl.TestIO got setupStreams");
 
     g_assert(G_IS_OBJECT(data));
 
@@ -2873,30 +2744,22 @@ test_io_setup_streams(DBusConnection  *connection,
     }
 
     /* Create output stream to write to caller's path */
-    io_output_stream =
-        big_dbus_output_stream_new(connection,
-                                   dbus_message_get_sender(message),
+    io_output_stream
+      = big_dbus_output_stream_new(connection, dbus_message_get_sender(message),
                                    stream_path);
 
     /* Create input stream and return its path to caller */
-    io_input_stream =
-        g_object_new(BIG_TYPE_DBUS_INPUT_STREAM,
-                     NULL);
-    big_dbus_input_stream_attach(io_input_stream,
-                                 connection);
+    io_input_stream = g_object_new(BIG_TYPE_DBUS_INPUT_STREAM, NULL);
+    big_dbus_input_stream_attach(io_input_stream, connection);
     stream_path = big_dbus_input_stream_get_path(io_input_stream);
 
-    big_dbus_append_json_entry_STRING(out_iter,
-                                      "stream",
-                                      stream_path);
+    big_dbus_append_json_entry_STRING(out_iter, "stream", stream_path);
 
     /* Set up callbacks to read input stream in an async way */
     input_buffer = g_string_new(NULL);
 
-    g_signal_connect(io_input_stream,
-                     "ready-to-read",
-                     G_CALLBACK(on_input_ready),
-                     NULL);
+    g_signal_connect(io_input_stream, "ready-to-read",
+                     G_CALLBACK(on_input_ready), NULL);
 
     /* Write to output stream */
     gerror = NULL;
@@ -2907,10 +2770,9 @@ test_io_setup_streams(DBusConnection  *connection,
          * code of course
          */
         result = g_output_stream_write(G_OUTPUT_STREAM(io_output_stream),
-                                       stream_data_from_io_service + (total - remaining),
-                                       1,
-                                       NULL,
-                                       &gerror);
+                                       stream_data_from_io_service
+                                         + (total - remaining),
+                                       1, NULL, &gerror);
         if (result < 0) {
             g_assert(gerror != NULL);
             g_error("Error writing to output stream: %s", gerror->message);
@@ -2927,13 +2789,15 @@ test_io_setup_streams(DBusConnection  *connection,
     /* flush should do nothing here, and is not needed, but
      * just calling it to test it
      */
-    if (!g_output_stream_flush(G_OUTPUT_STREAM(io_output_stream), NULL, &gerror)) {
+    if (!g_output_stream_flush(G_OUTPUT_STREAM(io_output_stream), NULL,
+                               &gerror)) {
         g_assert(gerror != NULL);
         g_error("Error flushing output stream: %s", gerror->message);
         g_error_free(gerror);
     }
 
-    if (!g_output_stream_close(G_OUTPUT_STREAM(io_output_stream), NULL, &gerror)) {
+    if (!g_output_stream_close(G_OUTPUT_STREAM(io_output_stream), NULL,
+                               &gerror)) {
         g_assert(gerror != NULL);
         g_error("Error closing output stream: %s", gerror->message);
         g_error_free(gerror);
@@ -2941,78 +2805,59 @@ test_io_setup_streams(DBusConnection  *connection,
     g_object_unref(io_output_stream);
     io_output_stream = NULL;
 
-
     /* Now return, and wait for our input stream data to come in from
      * the main process
      */
 }
 
-static BigDBusJsonMethod test_io_methods[] = {
-    { "setupStreams", test_io_setup_streams, NULL },
-    { "confirmStreamsData", test_io_confirm_streams_data, NULL }
-};
+static BigDBusJsonMethod test_io_methods[]
+  = { { "setupStreams", test_io_setup_streams, NULL },
+      { "confirmStreamsData", test_io_confirm_streams_data, NULL } };
 
 static void
-on_test_io_acquired(DBusConnection *connection,
-                    const char     *name,
-                    void           *data)
+on_test_io_acquired(DBusConnection* connection, const char* name, void* data)
 {
     g_assert(!currently_have_test_io);
     currently_have_test_io = TRUE;
 
-    big_debug(BIG_DEBUG_IN_TESTS,
-              "com.litl.TestIO acquired by child");
+    big_debug(BIG_DEBUG_IN_TESTS, "com.litl.TestIO acquired by child");
 
-    big_dbus_register_json(connection,
-                           "com.litl.TestIO",
-                           test_io_methods,
+    big_dbus_register_json(connection, "com.litl.TestIO", test_io_methods,
                            G_N_ELEMENTS(test_io_methods));
 
     test_io_object = g_object_new(G_TYPE_OBJECT, NULL);
 
-    big_dbus_register_g_object(connection,
-                               "/com/litl/test/object47",
-                               test_io_object,
-                               "com.litl.TestIO");
+    big_dbus_register_g_object(connection, "/com/litl/test/object47",
+                               test_io_object, "com.litl.TestIO");
 }
 
 static void
-on_test_io_lost(DBusConnection *connection,
-                const char     *name,
-                void           *data)
+on_test_io_lost(DBusConnection* connection, const char* name, void* data)
 {
     g_assert(currently_have_test_io);
     currently_have_test_io = FALSE;
 
-    big_debug(BIG_DEBUG_IN_TESTS,
-              "com.litl.TestIO lost by child");
+    big_debug(BIG_DEBUG_IN_TESTS, "com.litl.TestIO lost by child");
 
-    big_dbus_unregister_g_object(connection,
-                                 "/com/litl/test/object47");
+    big_dbus_unregister_g_object(connection, "/com/litl/test/object47");
 
-    big_dbus_unregister_json(connection,
-                             "com.litl.TestIO");
+    big_dbus_unregister_json(connection, "com.litl.TestIO");
 }
 
-static BigDBusNameOwnerFuncs test_io_funcs = {
-    "com.litl.TestIO",
-    BIG_DBUS_NAME_SINGLE_INSTANCE,
-    on_test_io_acquired,
-    on_test_io_lost
-};
+static BigDBusNameOwnerFuncs test_io_funcs
+  = { "com.litl.TestIO", BIG_DBUS_NAME_SINGLE_INSTANCE, on_test_io_acquired,
+      on_test_io_lost };
 
 static void
 do_test_io_child(void)
 {
-    GMainLoop *loop;
+    GMainLoop* loop;
 
     g_type_init();
 
     loop = g_main_loop_new(NULL, FALSE);
 
-    big_dbus_acquire_name(DBUS_BUS_SESSION,
-                          &test_io_funcs,
-                          NULL);
+    big_dbus_acquire_name(DBUS_BUS_SESSION, &test_io_funcs, NULL);
 
     g_main_loop_run(loop);
 
