@@ -715,6 +715,23 @@ seed_gobject_method_invoked(JSContextRef ctx,
 
     // might need to add g_type_info_is_pointer (type_info) check here..
 
+    // We force a return array in the following situation:
+    // There's more than one n_out_args OR
+    // There's one out_arg AND tag != GI_TYPE_TAG_VOID
+    // AND, of course, if it's not an INTERFACE.
+    gboolean force_return_array = false;
+#ifdef SEED_ENABLE_GJSCOMPAT
+    if (seed_arg_gjs_compatiblity)
+        force_return_array = (tag != GI_TYPE_TAG_INTERFACE);
+#endif
+
+    if (force_return_array) {
+        if (n_out_args + !!(tag != GI_TYPE_TAG_VOID) > 1) {
+            retval_ref = JSObjectMake(ctx, NULL, NULL);
+            use_return_as_out = 1;
+        }
+    }
+
     if (tag == GI_TYPE_TAG_VOID) {
         // if we have no out args - returns undefined
         // otherwise we return an object, and put the return values into that
@@ -763,9 +780,15 @@ seed_gobject_method_invoked(JSContextRef ctx,
             array_len = (&out_values[out_pos[length_arg_pos]])->v_uint32;
         }
         SEED_NOTE(INVOCATION, "array_len=%" G_GUINT64_FORMAT "\n", array_len);
-        retval_ref
+
+        JSValueRef jsout_val
           = seed_value_from_gi_argument_full(ctx, &retval, type_info, exception,
                                              array_len, tag);
+        if (use_return_as_out && force_return_array) {
+            seed_object_set_property(ctx, (JSObjectRef) retval_ref, "0",
+                                     jsout_val);
+        } else
+            retval_ref = jsout_val;
 
         if (sunk)
             g_object_unref(G_OBJECT(retval.v_pointer));
@@ -782,7 +805,10 @@ seed_gobject_method_invoked(JSContextRef ctx,
     // etc..
 
     in_args_pos = out_args_pos = 0;
+    gint array_return_count = 1;
     for (i = 0; (i < n_args); i++) {
+        // We start array_return_count as 1 because the position 0 is
+        // the real returned value.
         JSValueRef jsout_val;
         arg_info = g_callable_info_get_arg((GICallableInfo*) info, i);
         dir = g_arg_info_get_direction(arg_info);
@@ -906,10 +932,17 @@ seed_gobject_method_invoked(JSContextRef ctx,
         // if we add it to the return argument and/or the first out arguement
 
         if (use_return_as_out) {
-            seed_object_set_property(ctx, (JSObjectRef) retval_ref,
-                                     g_base_info_get_name(
-                                       (GIBaseInfo*) arg_info),
-                                     jsout_val);
+            if (force_return_array) {
+                g_autofree gchar* int_str
+                  = g_strdup_printf("%d", array_return_count++);
+                seed_object_set_property(ctx, (JSObjectRef) retval_ref, int_str,
+                                         jsout_val);
+            } else {
+                seed_object_set_property(ctx, (JSObjectRef) retval_ref,
+                                         g_base_info_get_name(
+                                           (GIBaseInfo*) arg_info),
+                                         jsout_val);
+            }
         }
 
         if ((first_out > -1) && !JSValueIsNull(ctx, arguments[first_out])
