@@ -112,6 +112,7 @@ AC_SUBST(WEBKIT_LDFLAGS)
 AC_SUBST(SEED_GTK_VERSION)
 
 dnl =========================Introspection=====================================
+GOBJECT_INTROSPECTION_CHECK([1.41.4])
 
 PKG_CHECK_MODULES(GOBJECT_INTROSPECTION, gobject-introspection-1.0 >= 0.6.3)
 AC_SUBST(GOBJECT_INTROSPECTION_CFLAGS)
@@ -485,6 +486,8 @@ doc/modules/sandbox/Makefile
 doc/mapping/mapping.html
 
 libseed/Makefile
+libgjs-private/Makefile
+
 po/Makefile.in
 src/Makefile
 extensions/Makefile
