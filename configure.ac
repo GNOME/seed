@@ -327,7 +327,7 @@ AC_ARG_ENABLE(gtkbuilder-module,
 			  [want_gtkbuilder_module=$enableval],[want_gtkbuilder_module="yes"])
 
 if test x"$want_gtkbuilder_module" = x"yes" ; then
-   if test x"$with_webkit" = x"3.0" ; then
+   if test x"$with_webkit" = x"3.0" || test x"$with_webkit" = x"4.0" ; then
 	PKG_CHECK_MODULES(GTK, gtk+-3.0)
    else
 	PKG_CHECK_MODULES(GTK, gtk+-2.0)
