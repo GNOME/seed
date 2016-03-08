@@ -630,6 +630,7 @@ seed_importer_get_search_path(JSContextRef ctx, JSValueRef* exception)
 static JSObjectRef seed_importer_handle_file(JSContextRef ctx,
                                              const gchar* dir,
                                              const gchar* file,
+                                             const gchar* module_name,
                                              JSValueRef* exception);
 
 static JSObjectRef
@@ -673,7 +674,7 @@ seed_importer_handle_native_module(JSContextRef ctx,
     JSValueProtect(ctx, module_obj);
 
     file_path = g_strconcat("libseed_", prop, ".js", NULL);
-    seed_importer_handle_file(ctx, dir, file_path, exception);
+    seed_importer_handle_file(ctx, dir, file_path, prop, exception);
     g_free(file_path);
 
     return module_obj;
@@ -696,12 +697,13 @@ static JSObjectRef
 seed_importer_handle_file(JSContextRef ctx,
                           const gchar* dir,
                           const gchar* file,
+                          const gchar* module_name,
                           JSValueRef* exception)
 {
     JSContextRef nctx;
     JSValueRef js_file_dirname;
     JSObjectRef global, c_global;
-    JSStringRef file_contents, file_name;
+    JSStringRef file_contents, file_name, initscript;
     gchar *contents, *walk, *file_path, *canonical, *absolute_path;
     char* normalized_path;
 
@@ -765,6 +767,16 @@ seed_importer_handle_file(JSContextRef ctx,
 
     JSEvaluateScript(nctx, file_contents, NULL, file_name, 0, exception);
 
+    if (gi_imports && g_hash_table_lookup(gi_imports, module_name)) {
+        SEED_NOTE(IMPORTER, "Calling %s_init():", module_name);
+        g_autofree gchar* initstr = g_strdup_printf(
+          "if (typeof(_init) === \"function\") { _init.apply(imports.gi.%s)}",
+          module_name, module_name);
+        initscript = JSStringCreateWithUTF8CString(initstr);
+        JSEvaluateScript(nctx, initscript, NULL, file_name, 0, exception);
+        JSStringRelease(initscript);
+    }
+
     // Does leak...but it's a debug statement.
     SEED_NOTE(IMPORTER, "Evaluated file, exception: %s",
               *exception ? seed_exception_to_string(ctx, *exception)
@@ -797,7 +809,7 @@ seed_importer_try_load(JSContextRef ctx,
     // check if prop is a file or dir (imports['foo.js'] or imports.mydir)
     file_path = g_build_filename(test_path, prop, NULL);
     if (g_file_test(file_path, G_FILE_TEST_IS_REGULAR | G_FILE_TEST_IS_DIR)) {
-        ret = seed_importer_handle_file(ctx, test_path, prop, exception);
+        ret = seed_importer_handle_file(ctx, test_path, prop, prop, exception);
         g_free(file_path);
         return ret;
     }
@@ -806,7 +818,8 @@ seed_importer_try_load(JSContextRef ctx,
     // check if prop is file ending with '.js'
     file_path = g_build_filename(test_path, prop_as_js, NULL);
     if (g_file_test(file_path, G_FILE_TEST_IS_REGULAR)) {
-        ret = seed_importer_handle_file(ctx, test_path, prop_as_js, exception);
+        ret = seed_importer_handle_file(ctx, test_path, prop_as_js, prop,
+                                        exception);
         g_free(file_path);
         return ret;
     }

@@ -351,7 +351,8 @@ function _init() {
         return GObject.param_spec_param(name, nick, blurb, param_type, flags);
     };
 
-    this.ParamSpec.override = Gi.override_property;
+    // XXX:: Commented out due to compatibility issues
+    //this.ParamSpec.override = Gi.override_property;
 
     Object.defineProperties(this.ParamSpec.prototype, {
         'name': { configurable: false,
@@ -386,23 +387,27 @@ function _init() {
 
     this.Class = GObjectMeta;
     this.Interface = GObjectInterface;
-    this.Object.prototype.__metaclass__ = this.Class;
 
-    // For compatibility with Lang.Class... we need a _construct
-    // or the Lang.Class constructor will fail.
-    this.Object.prototype._construct = function() {
-        this._init.apply(this, arguments);
-        return this;
-    };
+    /* XXX: removed due to compability issues between gjs and seed
+     * 
+     * //this.Object.prototype.__metaclass__ = this.Class;
+     *
+     * // For compatibility with Lang.Class... we need a _construct
+     * // or the Lang.Class constructor will fail.
+     * this.Object.prototype._construct = function() {
+     *     this._init.apply(this, arguments);
+     *     return this;
+     * };
 
-    // fake enum for signal accumulators, keep in sync with gi/object.c
-    this.AccumulatorType = {
-        NONE: 0,
-        FIRST_WINS: 1,
-        TRUE_HANDLED: 2
-    };
+     * // fake enum for signal accumulators, keep in sync with gi/object.c
+     * this.AccumulatorType = {
+     *     NONE: 0,
+     *     FIRST_WINS: 1,
+     *     TRUE_HANDLED: 2
+     * };
 
-    this.Object.prototype.disconnect = function(id) {
-        return GObject.signal_handler_disconnect(this, id);
-    };
+     * this.Object.prototype.disconnect = function(id) {
+     *     return GObject.signal_handler_disconnect(this, id);
+     * };
+     */
 }
