@@ -933,7 +933,7 @@ seed_gobject_method_invoked(JSContextRef ctx,
 
         if (use_return_as_out) {
             if (force_return_array) {
-                g_autofree gchar* int_str
+                gchar* int_str
                   = g_strdup_printf("%d", array_return_count++);
                 seed_object_set_property(ctx, (JSObjectRef) retval_ref, int_str,
                                          jsout_val);
