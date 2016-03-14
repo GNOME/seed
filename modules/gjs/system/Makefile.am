@@ -1,5 +1,3 @@
-if SEED_ENABLE_GJSCOMPAT
-
 seedlibdir = ${libdir}/seed@SEED_GTK_VERSION@/gjs
 
 seedlib_LTLIBRARIES = \
@@ -21,8 +19,4 @@ libseed_system_la_LDFLAGS = \
 libseed_system_la_LIBADD = \
 	$(top_builddir)/libseed/libseed@SEED_GTK_VERSION@.la \
 	$(SEED_PROFILE_LIBS)
-
-endif
-
-
 

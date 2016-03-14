@@ -58,21 +58,14 @@ if PROFILE_MODULES
 	cd modules/sqlite/.libs ; gcov *.c
 endif
 
-#gjs compat
 if PROFILE_MODULES
-if SEED_ENABLE_GJSCOMPAT
 	cp modules/gjs/system/*.c modules/system/.libs/
-endif
 endif
 
 profile-gui: profile
 
 if PROFILE_MODULES
-if SEED_ENABLE_GJSCOMPAT
 	lcov --directory libseed/.libs --directory modules/cairo/.libs --directory modules/canvas/.libs --directory modules/dbus/.libs --directory modules/example/.libs --directory modules/system/.libs --directory modules/gettext/.libs --directory modules/gtkbuilder/.libs --directory modules/libxml/.libs --directory modules/os/.libs --directory modules/readline/.libs --directory modules/sandbox/.libs --directory modules/sqlite/.libs --capture --output-file seed.info
-else
-	lcov --directory libseed/.libs --directory modules/cairo/.libs --directory modules/canvas/.libs --directory modules/dbus/.libs --directory modules/example/.libs --directory modules/gettext/.libs --directory modules/gtkbuilder/.libs --directory modules/libxml/.libs --directory modules/os/.libs --directory modules/readline/.libs --directory modules/sandbox/.libs --directory modules/sqlite/.libs --capture --output-file seed.info
-endif
 else
 	lcov --directory libseed/.libs --capture --output-file seed.info
 endif

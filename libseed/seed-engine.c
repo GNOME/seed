@@ -32,10 +32,8 @@
 JSObjectRef function_proto;
 
 JSObjectRef seed_obj_ref;
-#ifdef SEED_ENABLE_GJSCOMPAT
 JSObjectRef ARGV_obj_ref;
 JSObjectRef window_obj_ref;
-#endif
 
 GQuark qname;
 GQuark qprototype;
@@ -56,9 +54,6 @@ GQuark js_ref_quark;
 
 guint seed_debug_flags = 0;              /* global seed debug flag */
 gboolean seed_arg_print_version = FALSE; // Flag to print version and quit
-#ifdef SEED_ENABLE_GJSCOMPAT
-gboolean seed_arg_gjs_compatiblity = FALSE;
-#endif
 
 pthread_key_t seed_next_gobject_wrapper_key;
 
@@ -112,10 +107,8 @@ seed_prepare_global_context(JSContextRef ctx)
     seed_object_set_property(ctx, global, "imports", importer);
     seed_object_set_property(ctx, global, "GType", seed_gtype_constructor);
     seed_object_set_property(ctx, global, "Seed", seed_obj_ref);
-#ifdef SEED_ENABLE_GJSCOMPAT
     seed_object_set_property(ctx, global, "ARGV", ARGV_obj_ref);
     seed_object_set_property(ctx, global, "window", window_obj_ref);
-#endif
     seed_object_set_property(ctx, global, "print", seed_print_ref);
     seed_object_set_property(ctx, global, "printerr", seed_printerr_ref);
 
@@ -720,10 +713,7 @@ seed_gobject_method_invoked(JSContextRef ctx,
     // There's one out_arg AND tag != GI_TYPE_TAG_VOID
     // AND, of course, if it's not an INTERFACE.
     gboolean force_return_array = false;
-#ifdef SEED_ENABLE_GJSCOMPAT
-    if (seed_arg_gjs_compatiblity)
-        force_return_array = (tag != GI_TYPE_TAG_INTERFACE);
-#endif
+    force_return_array = (tag != GI_TYPE_TAG_INTERFACE);
 
     if (force_return_array) {
         if (n_out_args + !!(tag != GI_TYPE_TAG_VOID) > 1) {
@@ -1640,10 +1630,6 @@ static GOptionEntry seed_args[] = {
     { "seed-no-debug", 0, 0, G_OPTION_ARG_CALLBACK, seed_arg_no_debug_cb,
       "Disable Seed debugging", "FLAGS" },
 #endif /* SEED_ENABLE_DEBUG */
-#ifdef SEED_ENABLE_GJSCOMPAT
-    { "seed-gjs-compatibility", 0, 0, G_OPTION_ARG_NONE,
-      &seed_arg_gjs_compatiblity, "Enable gjs compatibility", 0 },
-#endif /* SEED_ENABLE_GJSCOMPAT */
     { "seed-version", 0, 0, G_OPTION_ARG_NONE, &seed_arg_print_version,
       "Print libseed version", 0 },
     {
@@ -1795,12 +1781,10 @@ seed_init_constrained_with_context_and_group(gint* argc,
     seed_object_set_property(eng->context, eng->global, "Seed", seed_obj_ref);
     JSValueProtect(eng->context, seed_obj_ref);
 
-#ifdef SEED_ENABLE_GJSCOMPAT
     window_obj_ref = JSObjectMake(eng->context, NULL, NULL);
     seed_object_set_property(eng->context, eng->global, "window",
                              window_obj_ref);
     JSValueProtect(eng->context, window_obj_ref);
-#endif
     g_irepository_require(g_irepository_get_default(), "GObject", NULL, 0, 0);
     g_irepository_require(g_irepository_get_default(), "GIRepository", NULL, 0,
                           0);

@@ -1,6 +1,4 @@
-if SEED_ENABLE_GJSCOMPAT
 SUBDIRS = gjs
-endif
 
 EXTRA_DIST= GLib.js Gio.js Seed.js.in Gtk.js GObject.js Clutter.js Gst.js repl.js
 

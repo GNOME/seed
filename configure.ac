@@ -447,19 +447,6 @@ AC_SUBST(SEED_DEBUG_CFLAGS)
 
 AC_CHECK_HEADERS(pty.h)
 
-dnl =============================Gjs-Compatibility=============================
-AC_ARG_ENABLE(gjs-compatibility,
-			  AC_HELP_STRING([--enable-gjs-compatibility],
-							 [enable gjs compatibility. [default=no]]),
-			  [enable_gjscompat="yes"],[enable_gjscompat="no"])
-
-if test "x$enable_gjscompat" = "xyes"; then
-	SEED_GJSCOMPAT_CFLAGS="-DSEED_ENABLE_GJSCOMPAT"
-fi
-
-AC_SUBST(SEED_GJSCOMPAT_CFLAGS)
-AM_CONDITIONAL(SEED_ENABLE_GJSCOMPAT, test "x$enable_gjscompat" = "xyes")
-
 dnl =============================gtk-doc=======================================
 GTK_DOC_CHECK(1.9)
 
@@ -537,7 +524,6 @@ Build Configuration:
    Profiling/Coverage.........$enable_profile
    Profiling for Modules......$enable_profile_modules
    gtk-doc....................$enable_gtk_doc
-   Gjs compatiblity...........$enable_gjscompat
 
 Installation:
    Prefix.....................$prefix

@@ -862,21 +862,17 @@ seed_importer_search_dirs(JSContextRef ctx,
 
     ret = NULL;
     walk = path;
-#ifdef SEED_ENABLE_GJSCOMPAT
-    if (seed_arg_gjs_compatiblity) {
-        while (walk) {
-            gchar* test_path = g_strconcat(walk->data, "/gjs", NULL);
+    while (walk) {
+        gchar* test_path = g_strconcat(walk->data, "/gjs", NULL);
 
-            ret = seed_importer_try_load(ctx, test_path, script_path, prop,
-                                         prop_as_js, prop_as_lib, exception);
-            g_free(test_path);
-            walk = walk->next;
+        ret = seed_importer_try_load(ctx, test_path, script_path, prop,
+                                     prop_as_js, prop_as_lib, exception);
+        g_free(test_path);
+        walk = walk->next;
 
-            if (ret)
-                break;
-        }
+        if (ret)
+            break;
     }
-#endif
     if (!ret) {
         walk = path;
         while (walk) {
