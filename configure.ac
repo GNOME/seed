@@ -511,6 +511,7 @@ modules/ffi/Makefile
 modules/DynamicObject/Makefile
 
 modules/gjs/system/Makefile
+modules/gjs/_gi/Makefile
 extensions/gjs/Makefile
 modules/gjs/Makefile
 
