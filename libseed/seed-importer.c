@@ -769,12 +769,13 @@ seed_importer_handle_file(JSContextRef ctx,
 
     if (gi_imports && g_hash_table_lookup(gi_imports, module_name)) {
         SEED_NOTE(IMPORTER, "Calling %s_init():", module_name);
-        g_autofree gchar* initstr = g_strdup_printf(
+        gchar* initstr = g_strdup_printf(
           "if (typeof(_init) === \"function\") { _init.apply(imports.gi.%s)}",
-          module_name, module_name);
+          module_name);
         initscript = JSStringCreateWithUTF8CString(initstr);
         JSEvaluateScript(nctx, initscript, NULL, file_name, 0, exception);
         JSStringRelease(initscript);
+        g_free(initstr);
     }
 
     // Does leak...but it's a debug statement.
