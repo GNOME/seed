@@ -74,11 +74,11 @@ AC_SUBST(FFI_LDFLAGS)
 AC_SUBST(FFI_CFLAGS)
 
 dnl ==============================WebKit=======================================
-m4_define([webkit_default], [3.0])
+m4_define([webkit_default], [4.0])
 
 AC_ARG_WITH([webkit],
             [AC_HELP_STRING([--with-webkit=@<:@4.0/3.0/1.0@:>@],
-                            [Select the Webkit backend, default=3.0])],
+                            [Select the Webkit backend, default=4.0])],
 	    [],
             [with_webkit=webkit_default])
 
