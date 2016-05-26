@@ -1,5 +1,5 @@
 AC_PREREQ(2.59)
-AC_INIT(seed, 3.8.2)
+AC_INIT(seed, 4.0.0)
 
 AM_INIT_AUTOMAKE([1.7 -Wno-portability])
 AM_MAINTAINER_MODE([enable])
