@@ -485,6 +485,17 @@ _process_skipped_arguments(const JSValueRef arguments[],
     return skip;
 }
 
+void
+_add_jsvalue_in_array(JSContextRef ctx,
+                      JSObjectRef dest,
+                      gint pos,
+                      JSValueRef obj)
+{
+    gchar* int_str = g_strdup_printf("%d", pos);
+    seed_object_set_property(ctx, (JSObjectRef) dest, int_str, obj);
+    g_free(int_str);
+}
+
 static JSValueRef
 seed_gobject_method_invoked(JSContextRef ctx,
                             JSObjectRef function,
@@ -518,6 +529,7 @@ seed_gobject_method_invoked(JSContextRef ctx,
     GError* error = 0;
     gint length_arg_pos = 0;
     guint64 array_len = 0;
+    gint array_return_value_count = 0;
 
     info = JSObjectGetPrivate(function);
 
@@ -544,6 +556,9 @@ seed_gobject_method_invoked(JSContextRef ctx,
     int out_skipped_args = 0;
     skipped_args
       = _process_skipped_arguments(arguments, info, &out_skipped_args);
+
+    SEED_NOTE(INVOCATION, "Calling seed_object_method_invoked for function %s",
+              g_base_info_get_name(info));
 
     // now loop through all the other args.
     for (i = 0, j = 0; (i < (n_args)); i++) {
@@ -824,9 +839,10 @@ seed_gobject_method_invoked(JSContextRef ctx,
         JSValueRef jsout_val
           = seed_value_from_gi_argument_full(ctx, &retval, type_info, exception,
                                              array_len, tag);
+
         if (use_return_as_out && force_return_array) {
-            seed_object_set_property(ctx, (JSObjectRef) retval_ref, "0",
-                                     jsout_val);
+            _add_jsvalue_in_array(ctx, (JSObjectRef) retval_ref,
+                                  array_return_value_count++, jsout_val);
         } else
             retval_ref = jsout_val;
 
@@ -845,10 +861,7 @@ seed_gobject_method_invoked(JSContextRef ctx,
     // etc..
 
     in_args_pos = out_args_pos = 0;
-    gint array_return_count = 1;
     for (i = 0; (i < n_args); i++) {
-        // We start array_return_count as 1 because the position 0 is
-        // the real returned value.
         JSValueRef jsout_val;
         arg_info = g_callable_info_get_arg((GICallableInfo*) info, i);
         dir = g_arg_info_get_direction(arg_info);
@@ -973,10 +986,8 @@ seed_gobject_method_invoked(JSContextRef ctx,
 
         if (use_return_as_out) {
             if (force_return_array) {
-                gchar* int_str = g_strdup_printf("%d", array_return_count++);
-                seed_object_set_property(ctx, (JSObjectRef) retval_ref, int_str,
-                                         jsout_val);
-                g_free(int_str);
+                _add_jsvalue_in_array(ctx, (JSObjectRef) retval_ref,
+                                      array_return_value_count++, jsout_val);
             } else {
                 seed_object_set_property(ctx, (JSObjectRef) retval_ref,
                                          g_base_info_get_name(
