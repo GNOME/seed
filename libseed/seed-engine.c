@@ -530,6 +530,7 @@ seed_gobject_method_invoked(JSContextRef ctx,
     gint length_arg_pos = 0;
     guint64 array_len = 0;
     gint array_return_value_count = 0;
+    gboolean return_only_one_out = false;
 
     info = JSObjectGetPrivate(function);
 
@@ -788,11 +789,17 @@ seed_gobject_method_invoked(JSContextRef ctx,
     }
 
     if (tag == GI_TYPE_TAG_VOID) {
-        // if we have no out args - returns undefined
-        // otherwise we return an object, and put the return values into that
-        // along with supporting the old object.value way
+        // * if we have no out args - returns undefined
+        // * if we have *one* out_arg but no return type,
+        //   do nothing here and return the OUT as return later.
+        // * otherwise we return an object, and put the return values into that
+        //   along with supporting the old object.value way
         if (n_out_args < 1)
             retval_ref = JSValueMakeUndefined(ctx);
+        else if (n_out_args == 1){
+            return_only_one_out = true;
+            use_return_as_out = 1;
+        }
         else {
             retval_ref = JSObjectMake(ctx, NULL, NULL);
             use_return_as_out = 1;
@@ -985,7 +992,9 @@ seed_gobject_method_invoked(JSContextRef ctx,
         // if we add it to the return argument and/or the first out arguement
 
         if (use_return_as_out) {
-            if (force_return_array) {
+            if (return_only_one_out) {
+                retval_ref = jsout_val;
+            } else if (force_return_array) {
                 _add_jsvalue_in_array(ctx, (JSObjectRef) retval_ref,
                                       array_return_value_count++, jsout_val);
             } else {
@@ -1013,6 +1022,8 @@ seed_gobject_method_invoked(JSContextRef ctx,
     }
 
 invoke_return:
+    SEED_NOTE(INVOCATION, "END seed_object_method_invoked for function %s",
+              g_base_info_get_name(info));
 
     // clean up everything..
     for (i = 0; (i < (n_args)); i++)
