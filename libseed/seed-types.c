@@ -147,6 +147,7 @@ seed_release_arg(GITransfer transfer,
                     case GI_TYPE_TAG_GTYPE:
                     case GI_TYPE_TAG_FLOAT:
                     case GI_TYPE_TAG_UINT8:
+                    case GI_TYPE_TAG_INT32:
                     case GI_TYPE_TAG_UINT32:
                         g_free(arg->v_pointer);
                         break;
