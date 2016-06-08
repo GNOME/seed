@@ -1063,6 +1063,27 @@ seed_value_from_gi_argument_full(JSContextRef ctx,
                 g_base_info_unref(interface);
                 return seed_value_from_long(ctx, arg->v_long, exception);
             } else if (interface_type == GI_INFO_TYPE_STRUCT) {
+
+                // Trying to find out if this struct can be converted into GValue
+                // If it can be converted, just send the converted value back to JS context instead
+                // of the GValue itself.
+                GType gtype = g_registered_type_info_get_g_type((GIRegisteredTypeInfo*)interface);
+                if (G_TYPE_IS_INSTANTIATABLE(gtype) ||
+                    G_TYPE_IS_INTERFACE(gtype))
+                   gtype = G_TYPE_FROM_INSTANCE(arg->v_pointer);
+
+                SEED_NOTE(INVOCATION, "gtype of INTERFACE is %s", g_type_name(gtype));
+                if (g_type_is_a(gtype, G_TYPE_VALUE)) {
+                    JSValueRef ret;
+                    // We're using seed_value_from_gvalue_for_signal with NULL signal handler
+                    // the current code will only handle basic types.
+                    if ((ret = seed_value_from_gvalue_for_signal(ctx, arg->v_pointer, exception, NULL, 0))) {
+                        g_base_info_unref(interface);
+                        return ret;
+                    }
+                }
+
+
                 JSValueRef strukt;
 
                 strukt = seed_make_struct(ctx, arg->v_pointer, interface);
