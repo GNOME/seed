@@ -331,18 +331,29 @@ seed_gi_make_array_from_string(JSContextRef ctx,
     guint real_size = JSStringGetUTF8CString(js_string, buffer, length);
 
     switch (element_type) {
+        case GI_TYPE_TAG_INT8:
         case GI_TYPE_TAG_UINT8: {
             *array_p = buffer;
+
+            // So, GJS doesn't computer the \0 at the end of line.
+            // it does make sense, as converting a string to an array
+            // we don't want the EOS. However, I couldn't find a way to do it
+            // with
+            // JSC, so I'm basically reducing one byte.
+            if (out_array_length)
+                *out_array_length = real_size - 1;
             break;
         }
+        case GI_TYPE_TAG_INT16:
+        case GI_TYPE_TAG_UINT16:
+        // TODO: implement utf16 support
         default: {
             seed_make_exception(ctx, exception, "ArgumentError",
-                                "Unhandled array element type");
+                                "Cannot convert string to array of '%s'",
+                                g_type_tag_to_string(element_type));
             return FALSE;
         }
     }
-    if (out_array_length)
-        *out_array_length = real_size;
 
     return TRUE;
 }
