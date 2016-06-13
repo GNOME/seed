@@ -1005,6 +1005,24 @@ seed_value_from_gi_argument_full(JSContextRef ctx,
                 g_base_info_unref((GIBaseInfo*) array_type_info);
 
                 return ret_ptr_array;
+            } else if (array_type == GI_ARRAY_TYPE_C) {
+
+                if (g_type_info_is_zero_terminated(type_info)) {
+                    GITypeInfo* param_info;
+                    param_info = g_type_info_get_param_type(type_info, 0);
+                    g_assert(param_info != NULL);
+
+                    // TODO: this is pretty simple and probably incomplete.
+                    // GJS makes possible the return of an array, supporting
+                    // all types. We're only supporting strings ATM.
+                    ret
+                      = seed_value_from_string(ctx, arg->v_pointer, exception);
+
+                    g_base_info_unref((GIBaseInfo*) param_info);
+                    g_base_info_unref((GIBaseInfo*) array_type_info);
+
+                    return ret;
+                }
             }
 
             // technically gir has arrays of bytes, eg.
