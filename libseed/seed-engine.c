@@ -796,11 +796,10 @@ seed_gobject_method_invoked(JSContextRef ctx,
         //   along with supporting the old object.value way
         if (n_out_args < 1)
             retval_ref = JSValueMakeUndefined(ctx);
-        else if (n_out_args == 1){
+        else if (n_out_args == 1) {
             return_only_one_out = true;
             use_return_as_out = 1;
-        }
-        else {
+        } else {
             retval_ref = JSObjectMake(ctx, NULL, NULL);
             use_return_as_out = 1;
         }
