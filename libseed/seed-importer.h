@@ -29,4 +29,9 @@ JSObjectRef seed_gi_importer_do_namespace(JSContextRef ctx,
                                           gchar* namespace,
                                           JSValueRef* exception);
 
+gboolean seed_importer_get_file_contents(const gchar* filename,
+                                         gchar** contents,
+                                         gsize* length,
+                                         GError** error);
+
 #endif

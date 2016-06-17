@@ -21,6 +21,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <gio/gio.h>
 
 #include "seed-private.h"
 
@@ -72,9 +73,47 @@ GHashTable* file_imports;
  *        for that context.
  */
 
+gboolean
+seed_file_test(const gchar* path, GFileTest test)
+{
+    // XXX: This is a nasty hack. what we should do is probably
+    // to check for GResource children in a given path and
+    // then return TRUE if any children exists for that path
+    gboolean exists = FALSE;
+    gboolean isdir = FALSE;
+
+    if (g_str_has_prefix(path, "/org/seed")) {
+        if (g_strcmp0(path, "/org/seed") == 0
+            || g_strcmp0(path, "/org/seed/extensions") == 0
+            || g_strcmp0(path, "/org/seed/extensions/gjs") == 0) {
+            isdir = TRUE;
+            exists = TRUE;
+        } else if (g_resources_get_info(path, G_RESOURCE_LOOKUP_FLAGS_NONE,
+                                        NULL, NULL, NULL)) {
+            isdir = FALSE;
+            exists = TRUE;
+        }
+
+        // Return only if file is in GResource.
+        // Otherwise fallback to g_file_test
+        if (exists) {
+            if (test & G_FILE_TEST_EXISTS)
+                return TRUE;
+            if (test & G_FILE_TEST_IS_REGULAR)
+                if (!isdir)
+                    return !isdir;
+            if (test & G_FILE_TEST_IS_DIR)
+                if (isdir)
+                    return isdir;
+        }
+    }
+
+    return g_file_test(path, test);
+}
+
 /*
 * Handle definition of toplevel functions in a namespace.
-* i.e. Gtk.main
+* i.e. Gtk.main.
 */
 
 static gboolean
@@ -555,6 +594,23 @@ seed_gi_importer_get_property(JSContextRef ctx,
     return ret;
 }
 
+gboolean
+seed_importer_get_file_contents(const gchar* filename,
+                                gchar** contents,
+                                gsize* length,
+                                GError** error)
+{
+    GBytes* bytes
+      = g_resources_lookup_data(filename, G_RESOURCE_LOOKUP_FLAGS_NONE, NULL);
+    if (bytes) {
+        *contents = g_strdup(g_bytes_get_data(bytes, length));
+        g_bytes_unref(bytes);
+        return true;
+    }
+
+    return g_file_get_contents(filename, contents, length, error);
+}
+
 static JSObjectRef
 seed_make_importer_dir(JSContextRef ctx, gchar* path)
 {
@@ -564,7 +620,7 @@ seed_make_importer_dir(JSContextRef ctx, gchar* path)
     dir = JSObjectMake(ctx, importer_dir_class, path);
 
     init = g_build_filename(path, "__init__.js", NULL);
-    if (g_file_test(init, G_FILE_TEST_IS_REGULAR)) {
+    if (seed_file_test(init, G_FILE_TEST_IS_REGULAR)) {
         SeedScript* s;
         SEED_NOTE(IMPORTER, "Found __init__.js (%s)", path);
 
@@ -617,10 +673,11 @@ seed_importer_get_search_path(JSContextRef ctx, JSValueRef* exception)
                                        exception);
         entry = seed_value_to_string(ctx, entry_ref, exception);
 
-        if (g_file_test(entry, G_FILE_TEST_EXISTS) == TRUE)
+        if (seed_file_test(entry, G_FILE_TEST_EXISTS) == TRUE)
             path = g_slist_append(path, entry);
-        else
+        else {
             g_free(entry);
+        }
     }
 
     return path;
@@ -719,15 +776,15 @@ seed_importer_handle_file(JSContextRef ctx,
         return global;
     }
 
-    if (!g_file_test(file_path, G_FILE_TEST_IS_REGULAR)) {
-        if (g_file_test(file_path, G_FILE_TEST_IS_DIR)) {
+    if (!seed_file_test(file_path, G_FILE_TEST_IS_REGULAR)) {
+        if (seed_file_test(file_path, G_FILE_TEST_IS_DIR)) {
             SEED_NOTE(IMPORTER, "File is directory");
             return seed_make_importer_dir(ctx, file_path);
         }
         return NULL;
     }
 
-    g_file_get_contents(file_path, &contents, 0, NULL);
+    seed_importer_get_file_contents(file_path, &contents, 0, NULL);
     walk = contents;
     if (*walk == '#') {
         while (*walk != '\n')
@@ -809,7 +866,8 @@ seed_importer_try_load(JSContextRef ctx,
 
     // check if prop is a file or dir (imports['foo.js'] or imports.mydir)
     file_path = g_build_filename(test_path, prop, NULL);
-    if (g_file_test(file_path, G_FILE_TEST_IS_REGULAR | G_FILE_TEST_IS_DIR)) {
+    if (seed_file_test(file_path,
+                       G_FILE_TEST_IS_REGULAR | G_FILE_TEST_IS_DIR)) {
         ret = seed_importer_handle_file(ctx, test_path, prop, prop, exception);
         g_free(file_path);
         return ret;
@@ -818,7 +876,7 @@ seed_importer_try_load(JSContextRef ctx,
 
     // check if prop is file ending with '.js'
     file_path = g_build_filename(test_path, prop_as_js, NULL);
-    if (g_file_test(file_path, G_FILE_TEST_IS_REGULAR)) {
+    if (seed_file_test(file_path, G_FILE_TEST_IS_REGULAR)) {
         ret = seed_importer_handle_file(ctx, test_path, prop_as_js, prop,
                                         exception);
         g_free(file_path);
@@ -828,7 +886,7 @@ seed_importer_try_load(JSContextRef ctx,
 
     // check if file is native module
     file_path = g_build_filename(test_path, prop_as_lib, NULL);
-    if (g_file_test(file_path, G_FILE_TEST_IS_REGULAR)) {
+    if (seed_file_test(file_path, G_FILE_TEST_IS_REGULAR)) {
         ret
           = seed_importer_handle_native_module(ctx, test_path, prop, exception);
         g_free(file_path);
@@ -898,6 +956,7 @@ seed_importer_search_dirs(JSContextRef ctx,
 static JSObjectRef
 seed_importer_search(JSContextRef ctx, gchar* prop, JSValueRef* exception)
 {
+
     JSObjectRef ret = NULL;
     GSList* path = seed_importer_get_search_path(ctx, exception);
     ret = seed_importer_search_dirs(ctx, path, prop, exception);
@@ -1021,7 +1080,7 @@ seed_importer_construct_dir(JSContextRef ctx,
     }
     path = seed_value_to_string(ctx, arguments[0], exception);
 
-    if (!g_file_test(path, G_FILE_TEST_IS_DIR)) {
+    if (!seed_file_test(path, G_FILE_TEST_IS_DIR)) {
         seed_make_exception(ctx, exception, "ArgumentError",
                             "Path (%s) is not a directory", path);
         g_free(path);
@@ -1133,6 +1192,8 @@ JSClassDefinition importer_dir_class_def = {
     NULL,                                   /* Has Instance */
     NULL                                    /* Convert To Type */
 };
+
+extern GResource* libseed_get_resource(void);
 
 void
 seed_initialize_importer(JSContextRef ctx, JSObjectRef global)

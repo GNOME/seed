@@ -23,7 +23,10 @@ libseed@SEED_GTK_VERSION@_la_SOURCES = \
 	seed-types.h \
 	seed-importer.c \
 	seed-importer.h \
-	seed-path.h
+	seed-path.h \
+	../jsextensions/libseed-resources.c
+
+
 
 libseed@SEED_GTK_VERSION@_la_CFLAGS = \
 	-Wall \

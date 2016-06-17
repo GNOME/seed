@@ -1,6 +1,7 @@
 if(!imports.searchPath || (imports.searchPath.length == 0))
 {
-	imports.searchPath = [ "%gnomejsdir%",
+	imports.searchPath = [ "/org/seed",
+	                       "%gnomejsdir%",
 	                       "%pkglibdir%",
 	                       "%pkgdatadir%",
 	                       "/usr/local/lib/seed",
@@ -8,7 +9,7 @@ if(!imports.searchPath || (imports.searchPath.length == 0))
 	                       "/usr/lib/seed",
 	                       "/usr/share/seed" ];
 
-        const GLib = imports.gi.GLib;
+	const GLib = imports.gi.GLib;
 	if(Seed.argv.length > 1)
 	{
 		__script_path__ = GLib.path_get_dirname(Seed.argv[1]);

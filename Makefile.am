@@ -1,13 +1,13 @@
 ## Process this file with automake to produce Makefile.in
 
 ACLOCAL_AMFLAGS = -I m4 ${ACLOCAL_FLAGS}
-DISTCHECK_CONFIGURE_FLAGS = --enable-introspection
+DISTCHECK_CONFIGURE_FLAGS = --enable-introspection --enable-gtk-doc
 
 SUBDIRS = po \
+	jsextensions \
 	libseed \
 	libgjs-private \
 	src \
-	jsextensions \
 	modules \
 	tests \
 	doc
@@ -25,8 +25,6 @@ pkgconfigdir = $(libdir)/pkgconfig
 man_MANS = doc/seed.1
 
 EXTRA_DIST = $(pkgconfig_DATA)
-
-DISTCHECK_CONFIGURE_FLAGS=--enable-gtk-doc
 
 profile-reset:
 	find -name '*.gcda' -delete

@@ -252,7 +252,7 @@ seed_script_new_from_file(JSContextRef ctx, gchar* file)
     GError* e = NULL;
     gchar* contents = NULL;
 
-    g_file_get_contents(file, &contents, NULL, &e);
+    seed_importer_get_file_contents(file, &contents, NULL, &e);
     script = seed_make_script(ctx, contents, file, 0);
     if (e) {
         seed_make_exception_from_gerror(ctx, &script->exception, e);

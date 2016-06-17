@@ -1897,7 +1897,7 @@ seed_init_with_context_and_group(gint* argc,
     seed_gtype_init(eng);
 
     defaults_script = JSStringCreateWithUTF8CString(
-      "Seed.include(\"" SEED_PREFIX_PATH "extensions/Seed.js\");");
+      "Seed.include(\"/org/seed/extensions/Seed.js\");");
 
     JSEvaluateScript(eng->context, defaults_script, NULL, NULL, 0, NULL);
 

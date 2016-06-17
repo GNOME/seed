@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/org/seed/extensions">
+	<file>Gio.js</file>
+	<file>GLib.js</file>
+	<file>Gtk.js</file>
+	<file>GObject.js</file>
+	<file>Gst.js</file>
+	<file>gjs/Gio.js</file>
+	<file>gjs/GLib.js</file>
+	<file>gjs/Gtk.js</file>
+	<file>gjs/GObject.js</file>
+	<file>Seed.js</file>
+	<file>Clutter.js</file>
+  </gresource>
+
+  <gresource prefix="/org/seed">
+	<file>repl.js</file>
+  </gresource>
+</gresources>

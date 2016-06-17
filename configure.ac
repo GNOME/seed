@@ -512,7 +512,6 @@ modules/DynamicObject/Makefile
 
 modules/gjs/system/Makefile
 modules/gjs/_gi/Makefile
-jsextensions/gjs/Makefile
 modules/gjs/Makefile
 
 libseed/seed-path.h

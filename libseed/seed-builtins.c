@@ -22,6 +22,7 @@
 #include <sys/mman.h>
 #include <stdio.h>
 #include <signal.h>
+#include <gio/gio.h>
 
 JSValueRef seed_print_ref;
 JSValueRef seed_printerr_ref;
@@ -54,7 +55,7 @@ seed_include(JSContextRef ctx,
 
     /* just try current dir if no path set, or use the absolute path */
     if (!eng->search_path || g_path_is_absolute(import_file))
-        g_file_get_contents(import_file, &buffer, 0, NULL);
+        seed_importer_get_file_contents(import_file, &buffer, 0, NULL);
     else /* A search path is set and path given is not absolute.  */
     {
         len = g_strv_length(eng->search_path);
@@ -66,7 +67,7 @@ seed_include(JSContextRef ctx,
 
             abs_path = g_build_filename(eng->search_path[i], import_file, NULL);
 
-            if (g_file_get_contents(abs_path, &buffer, 0, NULL)) {
+            if (seed_importer_get_file_contents(abs_path, &buffer, 0, NULL)) {
                 g_free(abs_path);
                 g_dir_close(dir);
                 break;
@@ -138,7 +139,7 @@ seed_scoped_include(JSContextRef ctx,
 
     /* just try current dir if no path set, or use the absolute path */
     if (!eng->search_path || g_path_is_absolute(import_file))
-        g_file_get_contents(import_file, &buffer, 0, NULL);
+        seed_importer_get_file_contents(import_file, &buffer, 0, NULL);
     else /* A search path is set and path given is not absolute.  */
     {
         for (i = 0; i < g_strv_length(eng->search_path); ++i) {
@@ -149,7 +150,7 @@ seed_scoped_include(JSContextRef ctx,
 
             abs_path = g_build_filename(eng->search_path[i], import_file, NULL);
 
-            if (g_file_get_contents(abs_path, &buffer, 0, NULL)) {
+            if (seed_importer_get_file_contents(abs_path, &buffer, 0, NULL)) {
                 g_free(abs_path);
                 break;
             }
