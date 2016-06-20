@@ -7,7 +7,7 @@ SUBDIRS = po \
 	libseed \
 	libgjs-private \
 	src \
-	extensions \
+	jsextensions \
 	modules \
 	tests \
 	doc

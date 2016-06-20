@@ -477,7 +477,7 @@ libgjs-private/Makefile
 
 po/Makefile.in
 src/Makefile
-extensions/Makefile
+jsextensions/Makefile
 tests/Makefile
 tests/javascript/Makefile
 tests/javascript/gtypes/Makefile
@@ -512,7 +512,7 @@ modules/DynamicObject/Makefile
 
 modules/gjs/system/Makefile
 modules/gjs/_gi/Makefile
-extensions/gjs/Makefile
+jsextensions/gjs/Makefile
 modules/gjs/Makefile
 
 libseed/seed-path.h
