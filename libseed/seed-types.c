@@ -312,6 +312,92 @@ seed_gi_make_jsarray(JSContextRef ctx,
     return ret;
 }
 
+JSValueRef
+seed_array_from_zero_terminated_c_array(JSContextRef ctx,
+                                        gpointer pointer,
+                                        GITypeInfo* param_info,
+                                        JSValueRef* exception)
+{
+    JSObjectRef ret;
+    GITypeTag element_type;
+    GArgument arg;
+    guint i;
+
+    element_type = g_type_info_get_tag(param_info);
+
+    // Special case handling array(guint8), which happens to be a string
+    // in most cases
+    if (element_type == GI_TYPE_TAG_UINT8) {
+        // TODO: this is pretty simple and probably incomplete.
+        // GJS makes possible the return of an array, supporting
+        // all types. We're only supporting strings ATM.
+        ret = seed_value_from_string(ctx, pointer, exception);
+        return ret;
+    }
+
+    ret = JSObjectMakeArray(ctx, NULL, NULL, NULL);
+
+#define ITERATE(type)                                                          \
+    do {                                                                       \
+        g##type* array = (g##type*) pointer;                                   \
+        for (i = 0; array[i]; i++) {                                           \
+            arg.v_##type = array[i];                                           \
+            JSValueRef val                                                     \
+              = seed_value_from_gi_argument(ctx, &arg, param_info, exception); \
+            seed_object_set_property_at_index(ctx, ret, i, val, exception);    \
+        }                                                                      \
+    } while (0);
+
+    switch (element_type) {
+        /* We handle GI_TYPE_TAG_UINT8 above. */
+        case GI_TYPE_TAG_INT8:
+            ITERATE(int8);
+            break;
+        case GI_TYPE_TAG_UINT16:
+            ITERATE(uint16);
+            break;
+        case GI_TYPE_TAG_INT16:
+            ITERATE(int16);
+            break;
+        case GI_TYPE_TAG_UINT32:
+            ITERATE(uint32);
+            break;
+        case GI_TYPE_TAG_INT32:
+            ITERATE(int32);
+            break;
+        case GI_TYPE_TAG_UINT64:
+            ITERATE(uint64);
+            break;
+        case GI_TYPE_TAG_INT64:
+            ITERATE(int64);
+            break;
+        case GI_TYPE_TAG_FLOAT:
+            ITERATE(float);
+            break;
+        case GI_TYPE_TAG_DOUBLE:
+            ITERATE(double);
+            break;
+        case GI_TYPE_TAG_GTYPE:
+        case GI_TYPE_TAG_UTF8:
+        case GI_TYPE_TAG_FILENAME:
+        case GI_TYPE_TAG_ARRAY:
+        case GI_TYPE_TAG_INTERFACE:
+        case GI_TYPE_TAG_GLIST:
+        case GI_TYPE_TAG_GSLIST:
+        case GI_TYPE_TAG_GHASH:
+        case GI_TYPE_TAG_ERROR:
+            ITERATE(pointer);
+            break;
+        default:
+            seed_make_exception(ctx, exception, "Argumenterror",
+                                "Unknown element-type %d", element_type);
+    }
+
+#undef ITERATE
+
+    return ret;
+}
+
 static gboolean
 seed_gi_make_array_from_string(JSContextRef ctx,
                                JSStringRef js_string,
@@ -1012,11 +1098,8 @@ seed_value_from_gi_argument_full(JSContextRef ctx,
                     param_info = g_type_info_get_param_type(type_info, 0);
                     g_assert(param_info != NULL);
 
-                    // TODO: this is pretty simple and probably incomplete.
-                    // GJS makes possible the return of an array, supporting
-                    // all types. We're only supporting strings ATM.
-                    ret
-                      = seed_value_from_string(ctx, arg->v_pointer, exception);
+                    ret = seed_array_from_zero_terminated_c_array(
+                      ctx, arg->v_pointer, param_info, exception);
 
                     g_base_info_unref((GIBaseInfo*) param_info);
                     g_base_info_unref((GIBaseInfo*) array_type_info);
