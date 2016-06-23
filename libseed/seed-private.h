@@ -41,6 +41,7 @@ struct _SeedEngine
     gchar** search_path;
 
     JSContextGroupRef group;
+    gchar* program_name;
 };
 
 #include "seed-debug.h"

@@ -66,6 +66,7 @@ typedef struct _SeedEngine
     gchar** search_path;
 
     SeedContextGroup group;
+    gchar* program_name;
 } SeedEngine;
 
 /*

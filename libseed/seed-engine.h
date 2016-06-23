@@ -84,6 +84,6 @@ JSValueRef seed_simple_evaluate(JSContextRef ctx,
                                 const gchar* script,
                                 JSValueRef* exception);
 
-GOptionGroup* seed_get_option_group(void);
+GOptionGroup* seed_get_option_group(SeedEngine* engine);
 
 #endif

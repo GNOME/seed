@@ -196,7 +196,6 @@ SeedObject
 gjs_compat_define_system_stuff(SeedEngine* eng)
 {
     SeedContext context = eng->context;
-    char* program_name = "gnome-weather";
     SeedObject module;
     gboolean ret;
 
@@ -206,23 +205,11 @@ gjs_compat_define_system_stuff(SeedEngine* eng)
     SeedValue seed = seed_object_get_property(context, eng->global, "Seed");
     SeedValue argv = seed_object_get_property(context, seed, "argv");
 
-    g_print("Seed: %p\n", seed);
-    g_print("Argv: %p\n", argv);
-
-    // gjs_context = (GjsContext*) JS_GetContextPrivate(context);
-    // g_object_get(gjs_context,
-    //             "program-name", &program_name,
-    //             NULL);
-
-    // if (!gjs_string_from_utf8(context, program_name,
-    //                          -1, &value))
-    //    goto out;
-
     /* The name is modeled after program_invocation_name,
        part of the glibc */
     ret = seed_object_set_property(
       context, module, "programInvocationName",
-      (SeedValue) seed_value_from_string(context, program_name, NULL));
+      (SeedValue) seed_value_from_string(context, eng->program_name, NULL));
     g_print("Module: %d\n", ret);
 
     ret = seed_object_set_property(

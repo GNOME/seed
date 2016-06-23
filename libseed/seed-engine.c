@@ -1691,27 +1691,30 @@ seed_arg_no_debug_cb(const char* key, const char* value, gpointer user_data)
 }
 #endif /* SEED_ENABLE_DEBUG */
 
-static GOptionEntry seed_args[] = {
-#ifdef SEED_ENABLE_DEBUG
-    { "seed-debug", 0, 0, G_OPTION_ARG_CALLBACK, seed_arg_debug_cb,
-      "Seed debugging messages to show. Comma separated list of: all, misc, "
-      "finalization, initialization, construction, invocation, signal, "
-      "structs, gtype.",
-      "FLAGS" },
-    { "seed-no-debug", 0, 0, G_OPTION_ARG_CALLBACK, seed_arg_no_debug_cb,
-      "Disable Seed debugging", "FLAGS" },
-#endif /* SEED_ENABLE_DEBUG */
-    { "seed-version", 0, 0, G_OPTION_ARG_NONE, &seed_arg_print_version,
-      "Print libseed version", 0 },
-    {
-      NULL,
-    },
-};
-
 GOptionGroup*
-seed_get_option_group(void)
+seed_get_option_group(SeedEngine* eng)
 {
     GOptionGroup* group;
+
+    GOptionEntry seed_args[] = {
+#ifdef SEED_ENABLE_DEBUG
+        { "seed-debug", 0, 0, G_OPTION_ARG_CALLBACK, seed_arg_debug_cb,
+          "Seed debugging messages to show. Comma separated list of: all, "
+          "misc, "
+          "finalization, initialization, construction, invocation, signal, "
+          "structs, gtype.",
+          "FLAGS" },
+        { "seed-no-debug", 0, 0, G_OPTION_ARG_CALLBACK, seed_arg_no_debug_cb,
+          "Disable Seed debugging", "FLAGS" },
+#endif /* SEED_ENABLE_DEBUG */
+        { "seed-version", 0, 0, G_OPTION_ARG_NONE, &seed_arg_print_version,
+          "Print libseed version", 0 },
+        { "program-name", 0, 0, G_OPTION_ARG_STRING, &eng->program_name,
+          "Program Name", 0 },
+        {
+          NULL,
+        },
+    };
 
     group = g_option_group_new("seed", "Seed Options", "Show Seed Options",
                                NULL, NULL);
@@ -1721,7 +1724,7 @@ seed_get_option_group(void)
 }
 
 static gboolean
-seed_parse_args(int* argc, char*** argv)
+seed_parse_args(SeedEngine* eng, int* argc, char*** argv)
 {
     GOptionContext* option_context;
     GOptionGroup* seed_group;
@@ -1734,8 +1737,7 @@ seed_parse_args(int* argc, char*** argv)
     g_option_context_set_help_enabled(option_context, TRUE);
 
     /* Initiate any command line options from the backend */
-
-    seed_group = seed_get_option_group();
+    seed_group = seed_get_option_group(eng);
     g_option_context_add_group(option_context, seed_group);
 
     if (!g_option_context_parse(option_context, argc, argv, &error)) {
@@ -1746,6 +1748,9 @@ seed_parse_args(int* argc, char*** argv)
 
         ret = FALSE;
     }
+
+    if (!eng->program_name)
+        eng->program_name = g_strdup(*argv[0]);
 
     g_option_context_free(option_context);
 
@@ -1799,7 +1804,9 @@ seed_init_constrained_with_context_and_group(gint* argc,
 #endif
     g_log_set_handler("GLib-GObject", G_LOG_LEVEL_WARNING, seed_log_handler, 0);
 
-    if ((argc != 0) && seed_parse_args(argc, argv) == FALSE) {
+    eng = (SeedEngine*) g_malloc(sizeof(SeedEngine));
+
+    if ((argc != 0) && seed_parse_args(eng, argc, argv) == FALSE) {
         SEED_NOTE(MISC, "failed to parse arguments.");
         return FALSE;
     }
@@ -1814,8 +1821,6 @@ seed_init_constrained_with_context_and_group(gint* argc,
     js_ref_quark = g_quark_from_static_string("js-ref");
 
     pthread_key_create(&seed_next_gobject_wrapper_key, NULL);
-
-    eng = (SeedEngine*) g_malloc(sizeof(SeedEngine));
 
     context_group = group;
 
