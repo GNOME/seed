@@ -158,18 +158,13 @@ gjs_compat_define_gi_stuff(SeedEngine* eng)
     gboolean ret;
 
     module = seed_make_object(context, seed_create_class(&system_def), NULL);
-    g_print("Module: %p\n", module);
 
     SeedValue seed = seed_object_get_property(context, eng->global, "Seed");
     SeedValue argv = seed_object_get_property(context, seed, "argv");
 
-    g_print("Seed: %p\n", seed);
-    g_print("Argv: %p\n", argv);
-
     ret = seed_object_set_property(
       context, module, "version",
       (SeedValue) seed_value_from_int(context, GJS_COMPAT_VERSION, NULL));
-    g_print("Module: %d\n", ret);
 
     return module;
 }
