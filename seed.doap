@@ -32,4 +32,11 @@
       <gnome:userid>alank</gnome:userid>
     </foaf:Person>
   </maintainer>
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Danilo Cesar Lemes de Paula</foaf:name>
+      <foaf:mbox rdf:resource="mailto:danilocesar.dp+seed@gmail.com" />
+      <gnome:userid>danilocesar</gnome:userid>
+    </foaf:Person>
+  </maintainer>
 </Project>
