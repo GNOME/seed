@@ -459,6 +459,19 @@ seed_gi_importer_get_version(JSContextRef ctx,
     return version;
 }
 
+static JSObjectRef
+lookup_init_override(JSContextRef ctx, JSObjectRef module)
+{
+    JSValueRef ret = NULL;
+
+    ret = seed_object_get_property(ctx, module, "_init");
+
+    if (JSValueIsObject(ctx, ret))
+        return JSValueToObject(ctx, ret, NULL);
+
+    return NULL;
+}
+
 JSObjectRef
 seed_gi_importer_do_namespace(JSContextRef ctx,
                               gchar* namespace,
@@ -556,9 +569,26 @@ seed_gi_importer_do_namespace(JSContextRef ctx,
 
     jsextension = g_strdup_printf("imports.extensions.%s", namespace);
     extension_script = JSStringCreateWithUTF8CString(jsextension);
-    JSEvaluateScript(ctx, extension_script, NULL, NULL, 0, exception);
+    JSValueRef extension = JSEvaluateScript(ctx, extension_script, NULL, NULL, 0, exception);
     JSStringRelease(extension_script);
     g_free(jsextension);
+
+    if (JSValueIsObject(ctx, extension)) {
+        JSObjectRef init = NULL;
+        init = lookup_init_override(ctx, JSValueToObject(ctx, extension, NULL));
+        if (init && JSObjectIsFunction(ctx, init)) {
+            JSValueRef loc_exception = NULL;
+
+            SEED_NOTE(IMPORTER, "Calling %s_init():", namespace);
+            JSObjectCallAsFunction(ctx, init, namespace_ref, 0, NULL, &loc_exception);
+            if (loc_exception) {
+                gchar *ext_text = seed_exception_to_string(ctx, loc_exception);
+                g_critical("Exception when calling _init for %s: %s", namespace, ext_text);
+                g_free(ext_text);
+            }
+        }
+    }
+
 
     return namespace_ref;
 }
@@ -760,7 +790,7 @@ seed_importer_handle_file(JSContextRef ctx,
     JSContextRef nctx;
     JSValueRef js_file_dirname;
     JSObjectRef global, c_global;
-    JSStringRef file_contents, file_name, initscript;
+    JSStringRef file_contents, file_name;
     gchar *contents, *walk, *file_path, *canonical, *absolute_path;
     char* normalized_path;
 
@@ -824,17 +854,6 @@ seed_importer_handle_file(JSContextRef ctx,
 
     JSEvaluateScript(nctx, file_contents, NULL, file_name, 0, exception);
 
-    if (gi_imports && g_hash_table_lookup(gi_imports, module_name)) {
-        SEED_NOTE(IMPORTER, "Calling %s_init():", module_name);
-        gchar* initstr = g_strdup_printf(
-          "if (typeof(_init) === \"function\") { _init.apply(imports.gi.%s)}",
-          module_name);
-        initscript = JSStringCreateWithUTF8CString(initstr);
-        JSEvaluateScript(nctx, initscript, NULL, file_name, 0, exception);
-        JSStringRelease(initscript);
-        g_free(initstr);
-    }
-
     // Does leak...but it's a debug statement.
     SEED_NOTE(IMPORTER, "Evaluated file, exception: %s",
               *exception ? seed_exception_to_string(ctx, *exception)
@@ -869,8 +888,7 @@ seed_importer_try_load(JSContextRef ctx,
     if (seed_file_test(file_path,
                        G_FILE_TEST_IS_REGULAR | G_FILE_TEST_IS_DIR)) {
         ret = seed_importer_handle_file(ctx, test_path, prop, prop, exception);
-        g_free(file_path);
-        return ret;
+        goto found;
     }
     g_free(file_path);
 
@@ -879,8 +897,7 @@ seed_importer_try_load(JSContextRef ctx,
     if (seed_file_test(file_path, G_FILE_TEST_IS_REGULAR)) {
         ret = seed_importer_handle_file(ctx, test_path, prop_as_js, prop,
                                         exception);
-        g_free(file_path);
-        return ret;
+        goto found;
     }
     g_free(file_path);
 
@@ -889,10 +906,12 @@ seed_importer_try_load(JSContextRef ctx,
     if (seed_file_test(file_path, G_FILE_TEST_IS_REGULAR)) {
         ret
           = seed_importer_handle_native_module(ctx, test_path, prop, exception);
-        g_free(file_path);
-        return ret;
+        goto found;
     }
-    g_free(file_path);
+
+found:
+    if (file_path)
+        g_free(file_path);
 
     return ret;
 }
