@@ -49,6 +49,17 @@ gboolean seed_object_set_property(JSContextRef ctx,
                                   const gchar* name,
                                   JSValueRef value);
 
+void seed_object_set_property_at_index(JSContextRef ctx,
+                                       JSObjectRef object,
+                                       gint index,
+                                       JSValueRef value,
+                                       JSValueRef* exception);
+
+JSValueRef seed_object_get_property_at_index(JSContextRef ctx,
+                                             JSObjectRef object,
+                                             gint index,
+                                             JSValueRef* exception);
+
 gboolean seed_value_to_gi_argument(JSContextRef ctx,
                                    JSValueRef value,
                                    GITypeInfo* type_info,

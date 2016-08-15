@@ -318,7 +318,7 @@ seed_array_from_zero_terminated_c_array(JSContextRef ctx,
                                         GITypeInfo* param_info,
                                         JSValueRef* exception)
 {
-    JSObjectRef ret;
+    JSValueRef ret;
     GITypeTag element_type;
     GArgument arg;
     guint i;
@@ -335,7 +335,7 @@ seed_array_from_zero_terminated_c_array(JSContextRef ctx,
         return ret;
     }
 
-    ret = JSObjectMakeArray(ctx, NULL, NULL, NULL);
+    ret = JSObjectMakeArray(ctx, 0, NULL, NULL);
 
 #define ITERATE(type)                                                          \
     do {                                                                       \
@@ -344,7 +344,7 @@ seed_array_from_zero_terminated_c_array(JSContextRef ctx,
             arg.v_##type = array[i];                                           \
             JSValueRef val                                                     \
               = seed_value_from_gi_argument(ctx, &arg, param_info, exception); \
-            seed_object_set_property_at_index(ctx, ret, i, val, exception);    \
+            seed_object_set_property_at_index(ctx, (JSObjectRef) ret, i, val, exception);    \
         }                                                                      \
     } while (0);
 

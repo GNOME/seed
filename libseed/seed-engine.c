@@ -783,7 +783,7 @@ seed_gobject_method_invoked(JSContextRef ctx,
 
     if (force_return_array) {
         if (n_out_args + !!(tag != GI_TYPE_TAG_VOID) > 1) {
-            retval_ref = JSObjectMakeArray(ctx, NULL, NULL, NULL);
+            retval_ref = JSObjectMakeArray(ctx, 0, NULL, NULL);
             use_return_as_out = 1;
         }
     }
