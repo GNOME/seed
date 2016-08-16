@@ -129,13 +129,21 @@ seed_struct_constructor_invoked(JSContextRef ctx,
     GIBaseInfo* info = JSObjectGetPrivate(constructor);
     JSValueRef ret;
     JSObjectRef parameters = 0;
+    GType gtype = g_registered_type_info_get_g_type((GIRegisteredTypeInfo*) info);
+    if (gtype == G_TYPE_VARIANT) {
+        JSObjectRef new_internal = (JSObjectRef) seed_object_get_property(ctx,
+                                                                          constructor,
+                                                                          "_new_internal");
 
+        if (JSObjectIsFunction(ctx, new_internal)) {
+            ret = JSObjectCallAsFunction(ctx, new_internal, NULL, argumentCount, arguments, exception);
+            return (JSObjectRef) ret;
+        }
+    }
     if (argumentCount == 1) {
         if (!JSValueIsObject(ctx, arguments[0])) {
 
             // new GObject.GValue()  can accept anything as a argument...
-            GType gtype
-              = g_registered_type_info_get_g_type((GIRegisteredTypeInfo*) info);
             if (!g_type_is_a(gtype, G_TYPE_VALUE)) {
                 seed_make_exception(ctx, exception, "ArgumentError",
                                     "Constructor expects object as argument");

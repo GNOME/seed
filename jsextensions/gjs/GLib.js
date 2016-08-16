@@ -250,6 +250,7 @@ function _init() {
 
     GLib = this;
 
+
     // small HACK: we add a matches() method to standard Errors so that
     // you can do "catch(e if e.matches(Ns.FooError, Ns.FooError.SOME_CODE))"
     // without checking instanceof
@@ -272,6 +273,7 @@ function _init() {
     this.Variant.prototype.unpack = function() {
 	return _unpack_variant(this, false);
     };
+
     this.Variant.prototype.deep_unpack = function() {
 	return _unpack_variant(this, true);
     };

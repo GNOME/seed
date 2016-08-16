@@ -1540,6 +1540,15 @@ seed_value_to_gvalue(JSContextRef ctx,
                 g_base_info_unref(info);
             }
         }
+    } else if (g_type_is_a(type, G_TYPE_VARIANT)) {
+        gpointer p = seed_pointer_get_pointer(ctx, val);
+        if (p) {
+            g_value_init(ret, type);
+            g_value_set_variant(ret, p);
+            return TRUE;
+        } else {
+            g_critical("Couldn't not convert to GVariant. Probably something is not implemented");
+        }
     }
 
     switch (type) {
