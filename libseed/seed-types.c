@@ -1760,7 +1760,7 @@ gboolean
 seed_value_to_boolean(JSContextRef ctx, JSValueRef val, JSValueRef* exception)
 {
     if (!JSValueIsBoolean(ctx, val) && !JSValueIsNumber(ctx, val)) {
-        if (!JSValueIsNull(ctx, val)) {
+        if (!JSValueIsNull(ctx, val) && !JSValueIsUndefined(ctx, val)) {
             seed_make_exception(eng->context, exception, "ConversionError",
                                 "Can not convert Javascript value to boolean");
             return FALSE;
