@@ -209,7 +209,6 @@ gjs_compat_define_system_stuff(SeedEngine* eng)
     ret = seed_object_set_property(
       context, module, "programInvocationName",
       (SeedValue) seed_value_from_string(context, eng->program_name, NULL));
-    g_print("Module: %d\n", ret);
 
     ret = seed_object_set_property(
       context, module, "version",
