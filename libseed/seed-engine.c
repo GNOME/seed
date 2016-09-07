@@ -1836,6 +1836,7 @@ seed_init_constrained_with_context_and_group(gint* argc,
     eng->global = JSContextGetGlobalObject(eng->context);
     eng->group = context_group;
     eng->search_path = NULL;
+    eng->program_name = NULL;
 
     function_proto
       = (JSObjectRef) seed_simple_evaluate(eng->context, "Function.prototype",
