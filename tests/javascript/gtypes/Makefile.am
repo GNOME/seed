@@ -31,3 +31,7 @@ TESTS = \
 	gtype-gtype-class-init.js \
 	gtype-signal.js
 
+XFAIL_TESTS = \
+	gtype-class-init-exception.js \
+	gtype-typerror.js \
+	$(NULL)

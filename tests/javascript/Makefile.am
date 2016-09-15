@@ -75,3 +75,13 @@ TESTS = \
     syntax-test.js \
     type-conversion.js
 
+XFAIL_TESTS = \
+	function-info.js \
+	gerror.js \
+	array-gtype.js \
+	constructor-args.js \
+	gvalue-argument.js \
+	gdk-event.js \
+	object-info.js \
+	property-glib-exception.js \
+	$(NULL)

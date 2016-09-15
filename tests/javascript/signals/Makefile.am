@@ -22,3 +22,7 @@ TESTS = \
 	signal.js \
 	signal-nofunc.js \
 	signal-userdata.js
+
+XFAIL_TESTS = \
+	signal-connect.js \
+	$(NULL)
