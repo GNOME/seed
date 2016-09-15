@@ -39,6 +39,24 @@ MKTMPL_OPTIONS=
 # e.g. FIXXREF_OPTIONS=--extra-dir=../gdk-pixbuf/html --extra-dir=../gdk/html
 FIXXREF_OPTIONS=
 
+extra_paths = \
+	$(abs_builddir) \
+	$(abs_top_srcdir)/doc/modules/readline \
+	$(abs_top_builddir)/doc/modules/readline \
+	$(abs_top_srcdir)/doc/modules/sqlite \
+	$(abs_top_builddir)/doc/modules/sqlite \
+	$(abs_top_srcdir)/doc/modules/gtkbuilder \
+	$(abs_top_builddir)/doc/modules/gtkbuilder \
+	$(abs_top_srcdir)/doc/modules/sandbox \
+	$(abs_top_builddir)/doc/modules/sandbox \
+	$(NULL)
+
+
+space = $(NULL) $(NULL)
+
+# Add the builddirs to the HTML path so that built files are found
+MKHTML_OPTIONS=--path=$(subst $(space),:,$(extra_paths))
+
 # Used for dependencies. The docs will be rebuilt if any of these change.
 # e.g. HFILE_GLOB=$(top_srcdir)/gtk/*.h
 # e.g. CFILE_GLOB=$(top_srcdir)/gtk/*.c
