@@ -399,6 +399,13 @@ fi
 AM_CONDITIONAL(BUILD_MPFR_MODULE, test "x$want_mpfr_module" = "xyes")
 AC_SUBST(BUILD_MPFR_MODULE)
 
+dnl ==== glib-compile-resources ====
+
+AC_PATH_PROG([GLIB_COMPILE_RESOURCES],[glib-compile-resources])
+AS_IF([test "$GLIB_COMPILE_RESOURCES" == ""],[
+	AC_MSG_ERROR([glib-compile-resources not found])
+])
+
 dnl ===========================Profiling=======================================
 AC_ARG_ENABLE(profile,
 			  AC_HELP_STRING([--enable-profile],
