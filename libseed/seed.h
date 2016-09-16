@@ -121,10 +121,10 @@ SeedValue seed_engine_expose_gobject(SeedEngine* engine,
                                      gchar* js_name,
                                      GObject* object,
                                      gchar* gir_namespace,
-                                     SeedException exception);
+                                     SeedException *exception);
 SeedValue seed_engine_expose_namespace(SeedEngine* engine,
                                        gchar* namespace_name,
-                                       SeedException exception);
+                                       SeedException *exception);
 GOptionGroup* seed_get_option_group(void);
 
 /*
