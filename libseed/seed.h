@@ -67,6 +67,7 @@ typedef struct _SeedEngine
 
     SeedContextGroup group;
     gchar* program_name;
+    gboolean importer_initialized;
 } SeedEngine;
 
 /*
@@ -116,6 +117,8 @@ gchar* seed_exception_get_stack(SeedContext ctx, SeedException exception);
 gchar* seed_exception_to_string(SeedContext ctx, SeedException exception);
 
 SeedValue seed_evaluate(SeedContext ctx, SeedScript* s, SeedObject this_object);
+
+void seed_engine_initialize_importer(SeedEngine *engine);
 
 SeedValue seed_engine_expose_gobject(SeedEngine* engine,
                                      gchar* js_name,

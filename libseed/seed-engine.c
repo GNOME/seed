@@ -1837,6 +1837,7 @@ seed_init_constrained_with_context_and_group(gint* argc,
     eng->group = context_group;
     eng->search_path = NULL;
     eng->program_name = NULL;
+    eng->importer_initialized = FALSE;
 
     function_proto
       = (JSObjectRef) seed_simple_evaluate(eng->context, "Function.prototype",
@@ -2019,6 +2020,22 @@ seed_init_constrained(gint* argc, gchar*** argv)
     return seed_init_constrained_with_context_and_group(
       argc, argv, JSGlobalContextCreateInGroup(context_group, NULL),
       context_group);
+}
+
+/*
+ * seed_engine_initialize_importer:
+ * @engine: A #SeedEngine created with seed_init_constrained() or
+ * seed_init_constrained_with_context_and_group().
+ *
+ * Initializes the importer for this engine, if it was not done before,
+ * otherwise silently returns.
+ */
+void
+seed_engine_initialize_importer(SeedEngine *engine)
+{
+    if (!engine->importer_initialized)
+      seed_initialize_importer(eng->context, eng->global);
+    engine->importer_initialized = TRUE;
 }
 
 /*

@@ -42,6 +42,7 @@ struct _SeedEngine
 
     JSContextGroupRef group;
     gchar* program_name;
+    gboolean importer_initialized;
 };
 
 #include "seed-debug.h"
