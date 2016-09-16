@@ -92,4 +92,8 @@ dist-hook:
 		echo A git clone is required to generate a ChangeLog >&2; \
 	fi
 
+CLEANFILES = \
+	.ycm_extra_conf.pyc \
+	$(NULL)
+
 -include $(top_srcdir)/git.mk

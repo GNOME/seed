@@ -16,4 +16,7 @@ install-data-local:
 CLEANFILES = html/*
 endif 
 
+uninstall-local:
+	rm -rf $(DESTDIR)$(docdir)/modules
+
 -include $(top_srcdir)/git.mk

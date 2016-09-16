@@ -23,6 +23,8 @@ EXTRA_DIST = \
 	packing.svg \
 	tutorial.html.in
 
+uninstall-local:
+	rm -rf $(docdir)/tutorial
 	
 
 ## File created by the gnome-build tools

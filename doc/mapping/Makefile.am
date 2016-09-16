@@ -1,4 +1,3 @@
-
 tutorialdir=$(docdir)/mapping
 tutorial_DATA = \
 	mapping.html \
@@ -6,6 +5,9 @@ tutorial_DATA = \
 EXTRA_DIST = \
 	mapping.html.in \
 	enum-mapping.png
+
+uninstall-local:
+	rm -rf $(docdir)/mapping
 
 ## File created by the gnome-build tools
 
