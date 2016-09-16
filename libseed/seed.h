@@ -91,6 +91,9 @@ SeedEngine* seed_init_constrained_with_context_and_group(
   gchar*** argv,
   SeedGlobalContext context,
   SeedContextGroup group);
+
+void seed_init_builtins(SeedEngine* local_eng, gint* argc, gchar*** argv);
+
 void seed_engine_destroy(SeedEngine* eng);
 
 SeedValue seed_simple_evaluate(SeedContext ctx,
