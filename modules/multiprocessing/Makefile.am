@@ -27,3 +27,5 @@ libseed_multiprocessing_la_LIBADD = \
 endif
 
 
+
+-include $(top_srcdir)/git.mk

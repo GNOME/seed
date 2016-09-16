@@ -86,3 +86,5 @@ XFAIL_TESTS = \
 	object-info.js \
 	property-glib-exception.js \
 	$(NULL)
+
+-include $(top_srcdir)/git.mk

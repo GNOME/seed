@@ -11,3 +11,5 @@ CLEANFILES=gtkbuilder-funcs.xml
 gtkbuilderdocsdir = \
 	$(docdir)/modules/gtkbuilder/html
 gtkbuilderdocs_DATA = gtkbuilder-funcs.xml
+
+-include $(top_srcdir)/git.mk

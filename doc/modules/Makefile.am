@@ -15,3 +15,5 @@ install-data-local:
 
 CLEANFILES = html/*
 endif 
+
+-include $(top_srcdir)/git.mk

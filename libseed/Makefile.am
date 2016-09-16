@@ -57,3 +57,5 @@ seedheaders_HEADERS = seed.h seed-debug.h seed-module.h
 
 seedheadersdir = $(pkgincludedir)@SEED_GTK_VERSION@
 
+
+-include $(top_srcdir)/git.mk

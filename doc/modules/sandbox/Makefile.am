@@ -8,3 +8,5 @@ CLEANFILES=sandbox-funcs.xml
 sandboxdocsdir = \
 	$(docdir)/modules/sandbox/html
 sandboxdocs_DATA = sandbox-funcs.xml
+
+-include $(top_srcdir)/git.mk

@@ -22,3 +22,5 @@ TESTS = \
 	struct-enumerate.js \
 	struct-offsets.js
 
+
+-include $(top_srcdir)/git.mk

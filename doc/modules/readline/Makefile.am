@@ -14,3 +14,5 @@ readlinedocs_DATA = readline-funcs.xml
 #	mv *.html *.css *.png html
 
 #readlinedocs_DATA = html/*
+
+-include $(top_srcdir)/git.mk

@@ -14,3 +14,5 @@ doc_DATA = index.html runtime.html conventions.html style.css sh.css sh.js sh_js
 
 ## File created by the gnome-build tools
 
+
+-include $(top_srcdir)/git.mk

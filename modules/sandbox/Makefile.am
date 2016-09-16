@@ -24,3 +24,5 @@ libseed_sandbox_la_LIBADD = \
 
 
 
+
+-include $(top_srcdir)/git.mk

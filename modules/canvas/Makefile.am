@@ -28,3 +28,5 @@ libseed_canvas_la_LIBADD = \
 
 endif
 
+
+-include $(top_srcdir)/git.mk

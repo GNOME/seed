@@ -34,3 +34,5 @@ EXTRA_DIST = \
 	libseed.gresources.xml \
 	Seed.js.in \
 	$(js_files)
+
+-include $(top_srcdir)/git.mk

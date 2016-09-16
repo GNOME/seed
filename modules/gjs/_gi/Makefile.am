@@ -20,3 +20,5 @@ libseed__gi_la_LIBADD = \
 	$(top_builddir)/libseed/libseed@SEED_GTK_VERSION@.la \
 	$(SEED_PROFILE_LIBS)
 
+
+-include $(top_srcdir)/git.mk

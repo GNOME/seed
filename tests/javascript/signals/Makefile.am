@@ -26,3 +26,5 @@ TESTS = \
 XFAIL_TESTS = \
 	signal-connect.js \
 	$(NULL)
+
+-include $(top_srcdir)/git.mk

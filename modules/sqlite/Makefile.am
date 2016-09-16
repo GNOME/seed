@@ -28,3 +28,5 @@ libseed_sqlite_la_LIBADD = \
 	$(SEED_PROFILE_LIBS)
 
 endif
+
+-include $(top_srcdir)/git.mk

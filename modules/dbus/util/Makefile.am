@@ -3,3 +3,5 @@ EXTRA_DIST = \
 	dbus-private.h \
 	dbus-proxy.h \
 	log.h
+
+-include $(top_srcdir)/git.mk

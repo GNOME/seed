@@ -28,3 +28,5 @@ test_LDFLAGS = \
 test_LDADD = \
 	../../libseed/libseed@SEED_GTK_VERSION@.la
 
+
+-include $(top_srcdir)/git.mk

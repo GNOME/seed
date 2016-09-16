@@ -14,3 +14,5 @@ sqlitedocs_DATA = sqlite-funcs.xml
 #	mv *.html *.css *.png html
 
 #sqlitedocs_DATA = html/*
+
+-include $(top_srcdir)/git.mk
