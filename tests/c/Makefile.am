@@ -1,3 +1,9 @@
+TESTS_ENVIRONMENT = \
+	GI_TYPELIB_PATH=$(top_builddir)/libgjs-private:$$GI_TYPELIB_PATH  \
+	LD_LIBRARY_PATH=$(top_builddir)/libgjs-private/.libs:$$LD_LIBRARY_PATH \
+	SEED_MODULE_PATH=$(top_srcdir)/modules:$$SEED_MODULE_PATH \
+	$(NULL)
+
 noinst_PROGRAMS = test
 
 TESTS = test

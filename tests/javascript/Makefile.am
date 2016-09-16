@@ -21,13 +21,14 @@ EXTRA_DIST = \
     gobject-scope.js \
     gvalue-argument.js \
     include.js \
+    included.js.in \
     include-syntax.js \
     introspect.js \
     json-constructor.js \
     json.js \
     list-test.js \
     modules.js \
-    modules-noasserts.js \
+    modules-noasserts.js.in \
     native-closure-exception.js \
     native-closure.js \
     object-info.js \
@@ -37,7 +38,7 @@ EXTRA_DIST = \
     quit.js \
     sqlite.js \
     syntax-test.js \
-    syntax-test-noasserts.js \
+    syntax-test-noasserts.js.in \
     type-conversion.js \
     testsuite.js
 

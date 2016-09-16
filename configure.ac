@@ -487,6 +487,9 @@ src/Makefile
 jsextensions/Makefile
 tests/Makefile
 tests/javascript/Makefile
+tests/javascript/included.js
+tests/javascript/syntax-test-noasserts.js
+tests/javascript/modules-noasserts.js
 tests/javascript/gtypes/Makefile
 tests/javascript/signals/Makefile
 tests/javascript/structs/Makefile

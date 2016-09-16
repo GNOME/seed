@@ -1,0 +1,3 @@
+#!/usr/bin/env seed
+
+included_varaiable = 42;

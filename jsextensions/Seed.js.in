@@ -34,6 +34,30 @@ if(!imports.searchPath || (imports.searchPath.length == 0))
 	}
 
 	imports.searchPath.unshift(".");
+
+	var user_paths = GLib.getenv("SEED_MODULE_PATH");
+	if (user_paths != null) {
+		var i = null;
+
+		user_paths = user_paths.split(":");
+		for (i=0; i<user_paths.length; i++) {
+			try
+			{
+				var module_path = user_paths[i];
+
+				if(!GLib.path_is_absolute(module_path)) {
+					module_path = GLib.build_filenamev([GLib.get_current_dir(),
+									    module_path]);
+				}
+				if (module_path && module_path != "")
+					imports.searchPath.unshift(module_path);
+			}
+			catch(e)
+			{
+				print(imports.JSON.stringify(e));
+			}
+		}
+	}
 }
 
 // TODO: This will work, but won't work if not installed
