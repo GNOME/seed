@@ -1218,6 +1218,7 @@ void
 seed_initialize_importer(JSContextRef ctx, JSObjectRef global)
 {
     JSObjectRef dir_constructor;
+    JSObjectRef imports, array;
 
     importer_class = JSClassCreate(&importer_class_def);
     importer = JSObjectMake(ctx, importer_class, NULL);
@@ -1243,4 +1244,11 @@ seed_initialize_importer(JSContextRef ctx, JSObjectRef global)
     seed_object_set_property(ctx, importer, "Directory", dir_constructor);
 
     seed_object_set_property(ctx, global, "imports", importer);
+
+    imports
+      = (JSObjectRef) seed_object_get_property(ctx,
+                                               global,
+                                               "imports");
+    array = JSObjectMakeArray(ctx, 0, NULL, NULL);
+    seed_object_set_property(ctx, imports, "searchPath", array);
 }
