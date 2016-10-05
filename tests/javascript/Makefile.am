@@ -77,7 +77,6 @@ TESTS = \
     type-conversion.js
 
 XFAIL_TESTS = \
-	function-info.js \
 	gerror.js \
 	array-gtype.js \
 	constructor-args.js \

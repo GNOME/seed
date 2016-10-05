@@ -1097,14 +1097,11 @@ seed_gobject_define_property_from_function_info(JSContextRef ctx,
         name = "c_new";
     }
     seed_object_set_property(ctx, object, name, method_ref);
-    /*
-      //  Disabled as this crashes in a recursive loop now
     seed_object_set_property (ctx, method_ref, "info",
                               seed_make_struct (ctx,
                                                 g_base_info_ref ((GIBaseInfo *)
                                                                  info),
                                                 base_info_info));
-    */
 }
 
 static void
