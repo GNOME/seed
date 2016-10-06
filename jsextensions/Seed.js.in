@@ -63,8 +63,10 @@ if(!imports.searchPath || (imports.searchPath.length == 0))
 // TODO: This will work, but won't work if not installed
 // that's a bit OK at the moment, as Seed doesn't work properly uninstalled anyway.
 // But it should be fixed soon!
+(function(){
 const GIRepository = imports.gi.GIRepository;
 GIRepository.Repository.prepend_search_path("%pkglibdir%/girepository-1.0/");
+})()
 
 Seed.sprintf = function ()
 {

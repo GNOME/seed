@@ -79,7 +79,6 @@ TESTS = \
 XFAIL_TESTS = \
 	gerror.js \
 	gdk-event.js \
-	object-info.js \
 	property-glib-exception.js \
 	$(NULL)
 
