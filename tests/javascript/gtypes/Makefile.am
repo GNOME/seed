@@ -32,7 +32,6 @@ TESTS = \
 	gtype-signal.js
 
 XFAIL_TESTS = \
-	gtype-typerror.js \
 	$(NULL)
 
 -include $(top_srcdir)/git.mk

@@ -807,7 +807,7 @@ seed_gtype_constructor_invoked(JSContextRef ctx,
         seed_make_exception(ctx, exception, "TypeError",
                             "GType constructor expected GType for parent");
 
-        return (JSObjectRef) JSValueMakeNull(ctx);
+        return NULL;
     }
 
     // TODO: GType is of variable length, so this is an incorrect fix
