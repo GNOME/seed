@@ -6,7 +6,7 @@ Gtk.init(Seed.argv);
 
 var s = new Gtk.ListStore();
 
-s.set_column_types(3, [GObject.TYPE_STRING, GObject.TYPE_INT, Gtk.Label.type]);
+s.set_column_types([GObject.TYPE_STRING, GObject.TYPE_INT, Gtk.Label.type]);
 
 var ret = {};
 

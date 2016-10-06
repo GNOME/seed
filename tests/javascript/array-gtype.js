@@ -8,10 +8,10 @@ Gtk.init(Seed.argv);
 try
 {
     list = new Gtk.ListStore();
-    list.set_column_types(2, [GObject.TYPE_STRING, GObject.TYPE_INT]);
+    list.set_column_types([GObject.TYPE_STRING, GObject.TYPE_INT]);
 }
 catch(e)
 {
-    print(e)
+    print(e.message)
     imports.testsuite.unreachable()
 }

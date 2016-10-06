@@ -78,8 +78,6 @@ TESTS = \
 
 XFAIL_TESTS = \
 	gerror.js \
-	array-gtype.js \
-	gvalue-argument.js \
 	gdk-event.js \
 	object-info.js \
 	property-glib-exception.js \
