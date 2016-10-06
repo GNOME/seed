@@ -194,7 +194,7 @@ seed_gobject_constructor_invoked(JSContextRef ctx,
     if (class_init_exception) {
         *exception = class_init_exception;
         g_type_set_qdata(type, class_init_exception_q, NULL);
-        return (JSObjectRef) JSValueMakeNull(ctx);
+        return NULL;
     }
 
     if (argumentCount > 1) {
@@ -203,7 +203,7 @@ seed_gobject_constructor_invoked(JSContextRef ctx,
                             " 1 argument, got %zd",
                             argumentCount);
 
-        return (JSObjectRef) JSValueMakeNull(ctx);
+        return NULL;
     }
 
     if (argumentCount == 1) {
@@ -211,7 +211,7 @@ seed_gobject_constructor_invoked(JSContextRef ctx,
             seed_make_exception(ctx, exception, "ArgumentError",
                                 "Constructor expects object as argument");
             g_type_class_unref(oclass);
-            return (JSObjectRef) JSValueMakeNull(ctx);
+            return NULL;
         }
 
         jsprops = JSObjectCopyPropertyNames(ctx, (JSObjectRef) arguments[0]);
