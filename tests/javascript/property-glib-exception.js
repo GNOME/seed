@@ -14,7 +14,7 @@ try
 catch(e)
 {
     testsuite.assert(e.name == "PropertyError")
-    testsuite.assert(e.message == "value \"3.000000\" of type `gdouble' is invalid or out of range for property `opacity' of type `gdouble'")
+    testsuite.assert(e.message == "value \"3,000000\" of type 'gdouble' is invalid or out of range for property 'opacity' of type 'gdouble'")
 }
 
 testsuite.checkAsserts(2)

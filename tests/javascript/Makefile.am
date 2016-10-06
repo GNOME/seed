@@ -79,7 +79,6 @@ TESTS = \
 XFAIL_TESTS = \
 	gerror.js \
 	gdk-event.js \
-	property-glib-exception.js \
 	$(NULL)
 
 -include $(top_srcdir)/git.mk
