@@ -1754,8 +1754,10 @@ seed_parse_args(SeedEngine* eng, int* argc, char*** argv)
         ret = FALSE;
     }
 
-    if (!eng->program_name)
-        eng->program_name = g_strdup(*argv[0]);
+    if (!eng->program_name) {
+        int program_name_idx = *argc > 1 ? 1 : 0;
+        eng->program_name = g_strdup((*argv)[program_name_idx]);
+    }
 
     g_option_context_free(option_context);
 
@@ -1811,6 +1813,15 @@ seed_init_constrained_with_context_and_group(gint* argc,
 
     eng = (SeedEngine*) g_malloc(sizeof(SeedEngine));
 
+    context_group = group;
+
+    eng->context = context;
+    eng->global = JSContextGetGlobalObject(eng->context);
+    eng->group = context_group;
+    eng->search_path = NULL;
+    eng->program_name = NULL;
+    eng->importer_initialized = FALSE;
+
     if ((argc != 0) && seed_parse_args(eng, argc, argv) == FALSE) {
         SEED_NOTE(MISC, "failed to parse arguments.");
         return FALSE;
@@ -1826,15 +1837,6 @@ seed_init_constrained_with_context_and_group(gint* argc,
     js_ref_quark = g_quark_from_static_string("js-ref");
 
     pthread_key_create(&seed_next_gobject_wrapper_key, NULL);
-
-    context_group = group;
-
-    eng->context = context;
-    eng->global = JSContextGetGlobalObject(eng->context);
-    eng->group = context_group;
-    eng->search_path = NULL;
-    eng->program_name = NULL;
-    eng->importer_initialized = FALSE;
 
     function_proto
       = (JSObjectRef) seed_simple_evaluate(eng->context, "Function.prototype",
