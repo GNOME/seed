@@ -85,13 +85,11 @@ AC_ARG_WITH([webkit],
 dnl=== support all 1.0, 3.0 and 4.0 (default 3.0) ==
 AS_CASE([$with_webkit],
 	[3.0], [
-		WEBKIT_PC=webkitgtk-3.0
 		SEED_GTK_VERSION=-gtk3
 		AC_CHECK_LIB(webkitgtk-3.0, JSContextGroupCreate,,
 	                AC_CHECK_LIB(javascriptcoregtk-3.0, JSContextGroupCreate,WEBKIT_PC=javascriptcoregtk-3.0)) 
 	],
 	[4.0], [
-		WEBKIT_PC=webkitgtk-4.0
 		SEED_GTK_VERSION=-gtk4
 		AC_CHECK_LIB(webkitgtk-4.0, JSContextGroupCreate,,
 	                AC_CHECK_LIB(javascriptcoregtk-4.0, JSContextGroupCreate,WEBKIT_PC=javascriptcoregtk-4.0))
@@ -150,7 +148,7 @@ if test x"$want_canvas_module" = x"yes" ; then
 	PKG_CHECK_MODULES(CAIRO, cairo)
 	AC_SUBST(CAIRO_CFLAGS)
 	AC_SUBST(CAIRO_LDFLAGS)
-	if test x"$with_webkit" = x"3.0" ; then
+	if test x"$with_webkit" = x"3.0" || test x"$with_webkit" = x"4.0" ; then
 		PKG_CHECK_MODULES(GDK, gdk-3.0)
 	else
 		PKG_CHECK_MODULES(GDK, gdk-2.0)
