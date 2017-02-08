@@ -445,7 +445,7 @@ seed_gi_importer_handle_constant(JSContextRef ctx,
 
 static gchar*
 seed_gi_importer_get_version(JSContextRef ctx,
-                             gchar* namespace,
+                             const gchar* namespace,
                              JSValueRef* exception)
 {
     JSValueRef version_ref;
@@ -474,7 +474,7 @@ lookup_init_override(JSContextRef ctx, JSObjectRef module)
 
 JSObjectRef
 seed_gi_importer_do_namespace(JSContextRef ctx,
-                              gchar* namespace,
+                              const gchar* namespace,
                               JSValueRef* exception)
 {
     GIBaseInfo* info;
@@ -768,7 +768,7 @@ seed_importer_handle_native_module(JSContextRef ctx,
 }
 
 static gchar*
-seed_importer_canonicalize_path(gchar* path)
+seed_importer_canonicalize_path(const gchar* path)
 {
     GFile* file;
     gchar* absolute_path;
@@ -1045,7 +1045,7 @@ seed_importer_dir_finalize(JSObjectRef dir)
 }
 
 void
-seed_importer_add_global(JSObjectRef global, gchar* name)
+seed_importer_add_global(JSObjectRef global, const gchar* name)
 {
     JSValueProtect(eng->context, global);
     g_hash_table_insert(file_imports, seed_importer_canonicalize_path(name),

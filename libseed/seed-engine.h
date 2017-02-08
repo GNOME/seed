@@ -57,7 +57,7 @@ void seed_gobject_define_property_from_function_info(JSContextRef ctx,
                                                      JSObjectRef object,
                                                      gboolean instance);
 void seed_create_function(JSContextRef ctx,
-                          gchar* name,
+                          const gchar* name,
                           gpointer func,
                           JSObjectRef obj);
 
@@ -71,7 +71,7 @@ SeedScript* seed_make_script(JSContextRef ctx,
                              const gchar* js,
                              const gchar* source_url,
                              gint line_number);
-SeedScript* seed_script_new_from_file(JSContextRef ctx, gchar* file);
+SeedScript* seed_script_new_from_file(JSContextRef ctx, const gchar* file);
 JSValueRef seed_script_exception(SeedScript* s);
 
 JSValueRef seed_evaluate(JSContextRef ctx,

@@ -41,8 +41,8 @@ void seed_pointer_set_free(JSContextRef ctx,
                            JSValueRef pointer,
                            gboolean free_pointer);
 
-GIFieldInfo* seed_struct_find_field(GIStructInfo* info, gchar* field_name);
-GIFieldInfo* seed_union_find_field(GIUnionInfo* info, gchar* field_name);
+GIFieldInfo* seed_struct_find_field(GIStructInfo* info, const gchar* field_name);
+GIFieldInfo* seed_union_find_field(GIUnionInfo* info, const gchar* field_name);
 
 JSObjectRef seed_construct_struct_type_with_parameters(JSContextRef ctx,
                                                        GIBaseInfo* info,

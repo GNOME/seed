@@ -1617,7 +1617,7 @@ JSClassDefinition struct_constructor_def = {
  */
 void
 seed_create_function(JSContextRef ctx,
-                     gchar* name,
+                     const gchar* name,
                      gpointer func,
                      JSObjectRef obj)
 {
@@ -2055,9 +2055,9 @@ seed_engine_initialize_importer(SeedEngine *engine)
  */
 JSValueRef
 seed_engine_expose_gobject(SeedEngine* engine,
-                           gchar* js_name,
+                           const gchar* js_name,
                            GObject* object,
-                           gchar* gir_namespace,
+                           const gchar* gir_namespace,
                            JSValueRef* exception)
 {
     GError* error = NULL;

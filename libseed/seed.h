@@ -97,7 +97,7 @@ void seed_init_builtins(SeedEngine* local_eng, gint* argc, gchar*** argv);
 void seed_engine_destroy(SeedEngine* eng);
 
 SeedValue seed_simple_evaluate(SeedContext ctx,
-                               gchar* source,
+                               const gchar* source,
                                SeedException* exception);
 
 SeedScript* seed_make_script(SeedContext ctx,
@@ -124,12 +124,12 @@ SeedValue seed_evaluate(SeedContext ctx, SeedScript* s, SeedObject this_object);
 void seed_engine_initialize_importer(SeedEngine *engine);
 
 SeedValue seed_engine_expose_gobject(SeedEngine* engine,
-                                     gchar* js_name,
+                                     const gchar* js_name,
                                      GObject* object,
-                                     gchar* gir_namespace,
+                                     const gchar* gir_namespace,
                                      SeedException *exception);
 SeedValue seed_engine_expose_namespace(SeedEngine* engine,
-                                       gchar* namespace_name,
+                                       const gchar* namespace_name,
                                        SeedException *exception);
 GOptionGroup* seed_get_option_group(void);
 
@@ -145,7 +145,7 @@ void seed_context_collect(SeedGlobalContext ctx);
 
 SeedObject seed_context_get_global_object(SeedContext ctx);
 
-void seed_importer_add_global(SeedContext ctx, gchar* name);
+void seed_importer_add_global(SeedContext ctx, const gchar* name);
 void seed_importer_set_search_path(SeedContext ctx, gchar** search_path);
 void seed_prepare_global_context(SeedContext ctx);
 void seed_importer_add_search_path(SeedContext ctx, gchar* search_path);

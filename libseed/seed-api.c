@@ -246,7 +246,7 @@ seed_make_script(JSContextRef ctx,
  *
  */
 SeedScript*
-seed_script_new_from_file(JSContextRef ctx, gchar* file)
+seed_script_new_from_file(JSContextRef ctx, const gchar* file)
 {
     SeedScript* script;
     GError* e = NULL;
