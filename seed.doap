@@ -17,7 +17,7 @@
   <license rdf:resource="http://usefulinc.com/doap/licenses/gpl" />
   <license rdf:resource="http://usefulinc.com/doap/licenses/lgpl" />
   <license rdf:resource="http://usefulinc.com/doap/licenses/mpl" />
-  <bug-database rdf:resource="http://bugzilla.gnome.org/enter_bug.cgi?product=seed"/>
+  <bug-database rdf:resource="https://gitlab.gnome.org/GNOME/seed/issues/" />
 
 
   <programming-language>C</programming-language>
