@@ -13,7 +13,7 @@
 
   <description xml:lang="en">GNOME WebKit Javascript bindings</description>
 
-  <homepage rdf:resource="http://live.gnome.org/Seed" />
+  <homepage rdf:resource="https://wiki.gnome.org/Projects/Seed" />
   <license rdf:resource="http://usefulinc.com/doap/licenses/gpl" />
   <license rdf:resource="http://usefulinc.com/doap/licenses/lgpl" />
   <license rdf:resource="http://usefulinc.com/doap/licenses/mpl" />
