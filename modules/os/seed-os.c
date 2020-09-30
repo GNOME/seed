@@ -38,6 +38,8 @@
 #include <termios.h>
 #if defined(__FreeBSD__)
 #include <libutil.h>
+#elif defined(__APPLE__)
+#include <util.h>
 #endif
 #include <unistd.h>
 
